@@ -415,7 +415,7 @@ static int GRIB2Inventory2to7 (sChar sectNum, FILE *fp, sInt4 gribLen,
    double fstSurfValue; /* Value of first fixed surface. */
    sInt4 value;         /* The scaled value from GRIB2 file. */
    sChar factor;        /* The scaled factor from GRIB2 file */
-   uChar scale;         /* Surface scale as opposed to probility factor. */
+   sChar scale;         /* Surface scale as opposed to probility factor. */
    uChar sndSurfType;   /* Type of the second fixed surface. */
    double sndSurfValue; /* Value of second fixed surface. */
    sChar f_sndValue;    /* flag if SndValue is valid. */
@@ -701,7 +701,7 @@ enum { GS4_ANALYSIS, GS4_ENSEMBLE, GS4_DERIVED, GS4_PROBABIL_PNT = 5,
       fstSurfType = (*buffer)[23 - 5];
       scale = (*buffer)[24 - 5];
       MEMCPY_BIG (&value, *buffer + 25 - 5, sizeof (sInt4));
-      if ((value == GRIB2MISSING_4) || (scale == GRIB2MISSING_1)) {
+      if ((value == GRIB2MISSING_4) || (scale == GRIB2MISSING_s1)) {
          fstSurfValue = 0;
       } else {
          fstSurfValue = value * pow (10, (int) (-1 * scale));
@@ -709,8 +709,8 @@ enum { GS4_ANALYSIS, GS4_ENSEMBLE, GS4_DERIVED, GS4_PROBABIL_PNT = 5,
       sndSurfType = (*buffer)[29 - 5];
       scale = (*buffer)[30 - 5];
       MEMCPY_BIG (&value, *buffer + 31 - 5, sizeof (sInt4));
-      if ((value == GRIB2MISSING_4) || (scale == GRIB2MISSING_1) ||
-          (sndSurfType == GRIB2MISSING_1)) {
+      if ((value == GRIB2MISSING_4) || (scale == GRIB2MISSING_s1) ||
+          (sndSurfType == GRIB2MISSING_u1)) {
          sndSurfValue = 0;
          f_sndValue = 0;
       } else {

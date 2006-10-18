@@ -207,6 +207,13 @@ static void Usage (char *argv0, userType *usr)
          printf ("      waveheight waveh wh 'Wave Height'\n");
          printf ("      apparentt  apt   at 'Apparent Temperature (wind chill or heat index)'\n");
          printf ("      rh         rhm   rh 'Relative Humidity'\n");
+         printf ("      windgust   wgust wg 'Wind Speed Gust'\n");
+         printf ("      probwindspd34i tcwspdabv34i i3 'Probabilistic Tropical Cyclone Surface Wind Speeds > 34Kts (incremental)'\n");
+         printf ("      probwindspd50i tcwspdabv50i i5 'Probabilistic Tropical Cyclone Surface Wind Speeds > 50Kts (incremental)'\n");
+         printf ("      probwindspd64i tcwspdabv64i i6 'Probabilistic Tropical Cyclone Surface Wind Speeds > 64Kts (incremental)'\n");
+         printf ("      probwindspd34c tcwspdabv34c c3 'Probabilistic Tropical Cyclone Surface Wind Speeds > 34Kts (cumulative)'\n");
+         printf ("      probwindspd50c tcwspdabv50c c5 'Probabilistic Tropical Cyclone Surface Wind Speeds > 50Kts (cumulative)'\n");
+         printf ("      probwindspd64c tcwspdabv64c c6 'Probabilistic Tropical Cyclone Surface Wind Speeds > 64Kts (cumulative)'\n");
          printf ("   Example:  -ndfdConven 1\n");
          printf ("   -gribFilter [string]\n");
          printf ("      By default when expanding a directory to find GRIB files or database\n");
@@ -364,6 +371,13 @@ static void Usage (char *argv0, userType *usr)
          printf ("      waveheight waveh wh 'Wave Height'\n");
          printf ("      apparentt  apt   at 'Apparent Temperature (wind chill or heat index)'\n");
          printf ("      rh         rhm   rh 'Relative Humidity'\n");
+         printf ("      windgust   wgust wg 'Wind Speed Gust'\n");
+         printf ("      probwindspd34i tcwspdabv34i i3 'Probabilistic Tropical Cyclone Surface Wind Speeds > 34Kts (incremental)'\n");
+         printf ("      probwindspd50i tcwspdabv50i i5 'Probabilistic Tropical Cyclone Surface Wind Speeds > 50Kts (incremental)'\n");
+         printf ("      probwindspd64i tcwspdabv64i i6 'Probabilistic Tropical Cyclone Surface Wind Speeds > 64Kts (incremental)'\n");
+         printf ("      probwindspd34c tcwspdabv34c c3 'Probabilistic Tropical Cyclone Surface Wind Speeds > 34Kts (cumulative)'\n");
+         printf ("      probwindspd50c tcwspdabv50c c5 'Probabilistic Tropical Cyclone Surface Wind Speeds > 50Kts (cumulative)'\n");
+         printf ("      probwindspd64c tcwspdabv64c c6 'Probabilistic Tropical Cyclone Surface Wind Speeds > 64Kts (cumulative)'\n");
          printf ("   Example:  -ndfdConven 1\n");
          printf ("   -gribFilter [string]\n");
          printf ("      By default when expanding a directory to find GRIB files or database\n");
@@ -555,7 +569,7 @@ int main (int argc, char **argv)
       /* check if it is a file or directory */
       if ((type != MYSTAT_ISDIR) && (type != MYSTAT_ISFILE)) {
          Usage (argv[0], &usr);
-         printf ("\nError was: '%s' is not a file or direcory\n\n", argv[1]);
+         printf ("\nError was: '%s' is nOt a file or directory\n\n", argv[1]);
          return 1;
       }
       /* check that it is readable */
@@ -578,7 +592,7 @@ int main (int argc, char **argv)
             /* check if it is a file or directory */
             if ((type != MYSTAT_ISDIR) && (type != MYSTAT_ISFILE)) {
                Usage (argv[0], &usr);
-               printf ("\nError was: '%s' is not a file or direcory\n\n",
+               printf ("\nError was: '%s' is noT a file or directory\n\n",
                        argv[i]);
                for (j = 0; j < usr.numInNames; j++) {
                   free (usr.inNames[j]);

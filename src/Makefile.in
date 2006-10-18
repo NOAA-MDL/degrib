@@ -1,4 +1,13 @@
 SHELL = @SHELL@
+###############################################################################
+#
+#   degrib created by 5/2003 Arthur Taylor (MDL / RSIS)
+#   Package and version information:
+#         @PACKAGE_STRING@
+#   send bugreports to <@PACKAGE_BUGREPORT@>
+#
+################################################################################
+
 abs_top_builddir = @abs_top_builddir@
 AIXCMD = @AIXCMD@
 CC = @CC@
@@ -26,7 +35,8 @@ libxml/Makefile: libxml/Makefile.in zlib/libz.a
               --with-zlib=$(abs_top_builddir)/zlib)
 
 netcdf/macros.make:
-	(cd ./netcdf && $(AIXCMD) CFLAGS="-O" ARFLAGS="cru" CXX="" FC="" F90="" ./configure)
+	(cd ./netcdf && $(AIXCMD) export CC=$(CC) && CFLAGS="-O" ARFLAGS="cru"\
+                              CXX="" FC="" F90="" ./configure)
 
 libraries: zlib/libz.a emapf-c/libemapf.a gd/libgd.a jpeg2000/src/libjasper/.libs/libjasper.a libxml/libxml2.la libpng/libpng.a netcdf/libsrc/libnetcdf.a grib2lib/libgrib2.a
 

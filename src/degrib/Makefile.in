@@ -6,9 +6,13 @@ SHELL = @SHELL@
 # DESCRIPTION
 #    Makefile template for configure to use to create Makefile that makes and
 #    installs degrib
+#    Package and Version Information:
+#         @PACKAGE_STRING@
+#   send bugreports to <@PACKAGE_BUGREPORT@>
+
 #
 # HISTORY
-#    Created by Albion Taylor, Aug, 2006
+#    Makefile.in Created by Albion Taylor, Aug, 2006
 #    degrib created 5/2003 Arthur Taylor (MDL): Created.
 #
 # NOTES
@@ -297,4 +301,3 @@ dpgenprobe.o : $(H_SOURCES)
 
 %.obj : %.c $(H_SOURCES)
 	$(CC) -c $(GUIFLAGS) $(STUB_DEF) -o $@ $<
-

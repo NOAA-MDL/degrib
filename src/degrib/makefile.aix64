@@ -50,7 +50,7 @@ XML_CLEAN = (cd ../dwmllib && make -f makefile clean)
 ############################
 # Standard Defines
 ############################
-STD_DEF = -D_UNIX_ -D_BAD_TCL_SSH_EXIT -D_64Bit $(XML_DEF)
+STD_DEF = $(XML_DEF) -DSIZEOF_LONG_INT=8 -DWORDS_BIGENDIAN -D_BAD_TCL_SSH_EXIT
 
 ############################
 # Standard Includes

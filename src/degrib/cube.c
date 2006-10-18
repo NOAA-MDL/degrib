@@ -455,7 +455,7 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
    meta->pds2.sect4.fstSurfType = 1; /* Surface level */
    meta->pds2.sect4.fstSurfValue = 0; /* NDFD used missing == -1. */
    meta->pds2.sect4.fstSurfScale = -1; /* NDFD used missing == -1. */
-   meta->pds2.sect4.sndSurfType = GRIB2MISSING_1;
+   meta->pds2.sect4.sndSurfType = GRIB2MISSING_u1;
    meta->pds2.sect4.sndSurfValue = -1; /* NDFD used missing == -1. */
    meta->pds2.sect4.sndSurfScale = -1; /* NDFD used missing == -1. */
    meta->pds2.sect4.validTime = (time_t) valTime;
@@ -473,7 +473,7 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
       } else if ((elemNum == QPF) || (elemNum == SNOW)) {
          meta->pds2.sect4.Interval[0].processID = 1;
       }
-      meta->pds2.sect4.Interval[0].incrType = GRIB2MISSING_1;
+      meta->pds2.sect4.Interval[0].incrType = GRIB2MISSING_u1;
       meta->pds2.sect4.Interval[0].timeRangeUnit = 1;
       if ((elemNum == MAXT) || (elemNum == MINT)) {
          meta->pds2.sect4.Interval[0].lenTime = 12;
@@ -483,8 +483,8 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
       meta->pds2.sect4.Interval[0].incrUnit = 1;
       meta->pds2.sect4.Interval[0].timeIncr = 0;
    } else if (meta->pds2.sect4.templat == 9) {
-      meta->pds2.sect4.foreProbNum = GRIB2MISSING_1;
-      meta->pds2.sect4.numForeProbs = GRIB2MISSING_1;
+      meta->pds2.sect4.foreProbNum = GRIB2MISSING_u1;
+      meta->pds2.sect4.numForeProbs = GRIB2MISSING_u1;
       meta->pds2.sect4.probType = 1;
       /* Next line should be GRIB2MISSING_1, but factor has to have sign,
        * since we use one for the upper limit so we use -1, even though that
@@ -502,7 +502,7 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
       if (elemNum == POP12) {
          meta->pds2.sect4.Interval[0].processID = 1; /* For PoP12 */
       }
-      meta->pds2.sect4.Interval[0].incrType = GRIB2MISSING_1;
+      meta->pds2.sect4.Interval[0].incrType = GRIB2MISSING_u1;
       meta->pds2.sect4.Interval[0].timeRangeUnit = 1;
       meta->pds2.sect4.Interval[0].lenTime = 12;
       meta->pds2.sect4.Interval[0].incrUnit = 1;

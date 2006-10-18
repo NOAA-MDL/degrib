@@ -187,10 +187,40 @@ static void PrintProbeWx (FILE *out_fp, double ans, sect2_WxType *wx,
  * NOTES
  *****************************************************************************
  */
-static void GRIB2ProbeStyle0 (sChar f_label, FILE **pnt_fps,
-                              char *f_firstFps, double *grib_Data,
-                              sInt4 grib_DataLen, userType *usr,
-                              int numPnts, Point * pnts, char **labels,
+void GRIB2ProbeLabel0 (FILE **pnt_fps, char *f_firstFps,
+                       char *separator, int numPnts, char **labels,
+                       sChar f_surface)
+{
+   int i;               /* Counter for the points. */
+
+   for (i = 0; i < numPnts; i++) {
+         /* Print labels */
+      if (f_firstFps[i]) {
+         if (f_surface != 0) {
+            fprintf (pnt_fps[i], "element%sunit%sSurface%srefTime"
+                     "%svalidTime%s", separator, separator, separator,
+                     separator, separator);
+         } else {
+            fprintf (pnt_fps[i], "element%sunit%srefTime%svalidTime%s",
+                     separator, separator, separator, separator);
+         }
+      }
+      if (i != numPnts - 1) {
+         fprintf (pnt_fps[i], "%s%s", labels[i], separator);
+      } else {
+         fprintf (pnt_fps[i], "%s", labels[i]);
+      }
+   }
+   for (i = 0; i < numPnts; i++) {
+      if (f_firstFps[i]) {
+         fprintf (pnt_fps[i], "\n");
+      }
+   }
+}
+
+static void GRIB2ProbeStyle0 (FILE **pnt_fps, char *f_firstFps,
+                              double *grib_Data, sInt4 grib_DataLen,
+                              userType *usr, int numPnts, Point * pnts,
                               grib_MetaData *meta, myMaparam *map,
                               double missing, sChar f_surface)
 {
@@ -203,111 +233,84 @@ static void GRIB2ProbeStyle0 (sChar f_label, FILE **pnt_fps,
    double ans;          /* The interpolated value at a given point. */
    sChar f_missing;     /* flag whether the cell fell off the grid. */
 
-   if (f_label) {
-      for (i = 0; i < numPnts; i++) {
-         /* Print labels */
-         if (f_firstFps[i]) {
-            if (f_surface != 0) {
-               fprintf (pnt_fps[i], "element%sunit%sSurface%srefTime"
-                        "%svalidTime%s", usr->separator, usr->separator,
-                        usr->separator, usr->separator, usr->separator);
-            } else {
-               fprintf (pnt_fps[i], "element%sunit%srefTime%svalidTime%s",
-                        usr->separator, usr->separator, usr->separator,
-                        usr->separator);
-            }
-         }
-         if (i != numPnts - 1) {
-            fprintf (pnt_fps[i], "%s%s", labels[i], usr->separator);
+   /* Print out probe data. */
+   for (i = 0; i < numPnts; i++) {
+      if (f_firstFps[i]) {
+         if (meta->unitName != NULL) {
+            fprintf (pnt_fps[i], "%s%s%s%s", meta->element,
+                     usr->separator, meta->unitName, usr->separator);
          } else {
-            fprintf (pnt_fps[i], "%s", labels[i]);
+            fprintf (pnt_fps[i], "%s%s%s%s", meta->element,
+                     usr->separator, meta->comment, usr->separator);
          }
-      }
-      for (i = 0; i < numPnts; i++) {
-         if (f_firstFps[i]) {
-            fprintf (pnt_fps[i], "\n");
+         if (f_surface == 1) {
+            fprintf (pnt_fps[i], "%s%s", meta->shortFstLevel,
+                     usr->separator);
+         } else if (f_surface == 2) {
+            fprintf (pnt_fps[i], "%s%s", meta->longFstLevel,
+                     usr->separator);
          }
+         fprintf (pnt_fps[i], "%s%s%s%s", meta->refTime, usr->separator,
+                  meta->validTime, usr->separator);
       }
-   } else {
-      /* Print out probe data. */
-      for (i = 0; i < numPnts; i++) {
-         if (f_firstFps[i]) {
-            if (meta->unitName != NULL) {
-               fprintf (pnt_fps[i], "%s%s%s%s", meta->element,
-                        usr->separator, meta->unitName, usr->separator);
-            } else {
-               fprintf (pnt_fps[i], "%s%s%s%s", meta->element,
-                        usr->separator, meta->comment, usr->separator);
-            }
-            if (f_surface == 1) {
-               fprintf (pnt_fps[i], "%s%s", meta->shortFstLevel,
-                        usr->separator);
-            } else if (f_surface == 2) {
-               fprintf (pnt_fps[i], "%s%s", meta->longFstLevel,
-                        usr->separator);
-            }
-            fprintf (pnt_fps[i], "%s%s%s%s", meta->refTime, usr->separator,
-                     meta->validTime, usr->separator);
-         }
-      }
+   }
 
-      sprintf (format, "%%.%df", usr->decimal);
-      for (i = 0; i < numPnts; i++) {
-         myCll2xy (map, pnts[i].Y, pnts[i].X, &newX, &newY);
-         f_missing = 0;
-         /* Find the nearest grid cell. */
-         if (newX < .5) {
-            x1 = 1;
-            f_missing = 1;
-         } else if ((newX + .5) > meta->gds.Nx) {
-            x1 = meta->gds.Nx;
-            f_missing = 1;
-         } else {
-            x1 = (sInt4) (newX + .5);
-         }
-         if (newY < .5) {
-            y1 = 1;
-            f_missing = 1;
-         } else if ((newY + .5) > meta->gds.Ny) {
-            y1 = meta->gds.Ny;
-            f_missing = 1;
-         } else {
-            y1 = (sInt4) (newY + .5);
-         }
-         if (!(usr->f_interp)) {
-            /* Get the x1, y1 value. */
-            if (!f_missing) {
-               XY2ScanIndex (&row, x1, y1, GRIB2BIT_2, meta->gds.Nx,
-                             meta->gds.Ny);
-               ans = grib_Data[row];
-            } else {
-               ans = missing;
-            }
-         } else {
-            /* Figure out data value at this lat/lon */
-            ans = BiLinearCompute (grib_Data, map, pnts[i].Y, pnts[i].X,
-                                   meta->gds.Nx, meta->gds.Ny,
-                                   meta->gridAttrib.f_miss, missing,
-                                   meta->gridAttrib.missSec);
-         }
-         if (strcmp (meta->element, "Wx") != 0) {
-            fprintf (pnt_fps[i], format, myRound (ans, usr->decimal));
-         } else {
-            /* Handle the weather case. */
-            PrintProbeWx (pnt_fps[i], ans, &(meta->pds2.sect2.wx),
-                          usr->logName, x1, y1, pnts[i].Y, pnts[i].X,
-                          usr->separator, meta->element, meta->unitName,
-                          meta->comment, meta->refTime, meta->validTime,
-                          usr->f_WxParse);
-         }
-         if (i != numPnts - 1) {
-            fprintf (pnt_fps[i], "%s", usr->separator);
-         }
+   sprintf (format, "%%.%df", usr->decimal);
+   for (i = 0; i < numPnts; i++) {
+      myCll2xy (map, pnts[i].Y, pnts[i].X, &newX, &newY);
+      f_missing = 0;
+      /* Find the nearest grid cell. */
+      if (newX < .5) {
+         x1 = 1;
+         f_missing = 1;
+      } else if ((newX + .5) > meta->gds.Nx) {
+         x1 = meta->gds.Nx;
+         f_missing = 1;
+      } else {
+         x1 = (sInt4) (newX + .5);
       }
-      for (i = 0; i < numPnts; i++) {
-         if (f_firstFps[i]) {
-            fprintf (pnt_fps[i], "\n");
+      if (newY < .5) {
+         y1 = 1;
+         f_missing = 1;
+      } else if ((newY + .5) > meta->gds.Ny) {
+         y1 = meta->gds.Ny;
+         f_missing = 1;
+      } else {
+         y1 = (sInt4) (newY + .5);
+      }
+      if (!(usr->f_interp)) {
+         /* Get the x1, y1 value. */
+         if (!f_missing) {
+            XY2ScanIndex (&row, x1, y1, GRIB2BIT_2, meta->gds.Nx,
+                          meta->gds.Ny);
+            ans = grib_Data[row];
+         } else {
+            ans = missing;
          }
+      } else {
+         /* Figure out data value at this lat/lon */
+         ans = BiLinearCompute (grib_Data, map, pnts[i].Y, pnts[i].X,
+                                meta->gds.Nx, meta->gds.Ny,
+                                meta->gridAttrib.f_miss, missing,
+                                meta->gridAttrib.missSec);
+      }
+      if (strcmp (meta->element, "Wx") != 0) {
+         fprintf (pnt_fps[i], format, myRound (ans, usr->decimal));
+      } else {
+         /* Handle the weather case. */
+         PrintProbeWx (pnt_fps[i], ans, &(meta->pds2.sect2.wx),
+                       usr->logName, x1, y1, pnts[i].Y, pnts[i].X,
+                       usr->separator, meta->element, meta->unitName,
+                       meta->comment, meta->refTime, meta->validTime,
+                       usr->f_WxParse);
+      }
+      if (i != numPnts - 1) {
+         fprintf (pnt_fps[i], "%s", usr->separator);
+      }
+   }
+   for (i = 0; i < numPnts; i++) {
+      if (f_firstFps[i]) {
+         fprintf (pnt_fps[i], "\n");
       }
    }
 }
@@ -357,7 +360,40 @@ static void GRIB2ProbeStyle0 (sChar f_label, FILE **pnt_fps,
  * NOTES
  *****************************************************************************
  */
-static void GRIB2ProbeStyle1 (sChar f_label, FILE **pnt_fps,
+void GRIB2ProbeLabel1 (FILE **pnt_fps, char *f_firstFps,
+                       char *separator, uInt4 numPnts,
+                       char **labels, sChar f_surface, sChar f_cells)
+{
+   size_t i;            /* Counter for the points. */
+
+   if (f_cells == 2) { /* All cells. */
+      if (f_surface != 0) {
+         fprintf (pnt_fps[0], "Location%sElement[Unit]%sSurface%srefTime"
+                  "%svalidTime%sValue\n", separator, separator,
+                  separator, separator, separator);
+      } else {
+         fprintf (pnt_fps[0], "Location%sElement[Unit]%srefTime"
+                  "%svalidTime%sValue\n", separator, separator,
+                  separator, separator);
+      }
+   } else {
+      for (i = 0; i < numPnts; i++) {
+         if (f_firstFps[i]) {
+            if (f_surface != 0) {
+               fprintf (pnt_fps[i], "Location%sElement[Unit]%sSurface"
+                        "%srefTime%svalidTime%sValue\n", separator,
+                        separator, separator, separator, separator);
+            } else {
+               fprintf (pnt_fps[i], "Location%sElement[Unit]%srefTime"
+                        "%svalidTime%sValue\n", separator,
+                        separator, separator, separator);
+            }
+         }
+      }
+   }
+}
+
+static void GRIB2ProbeStyle1 (FILE **pnt_fps,
                               char *f_firstFps, double *grib_Data,
                               sInt4 grib_DataLen, userType *usr,
                               uInt4 numPnts, Point * pnts, char **labels,
@@ -376,78 +412,87 @@ static void GRIB2ProbeStyle1 (sChar f_label, FILE **pnt_fps,
    sChar f_missing;     /* flag whether the cell fell off the grid. */
 
    /* Print labels */
-   if (f_label) {
+   sprintf (format, "%%.%df", usr->decimal);
+   f_continue = 1;
+   i = 0;            /* counter over cells or lat/lon. */
+   while (f_continue) {
+      f_missing = 0;
       if (f_cells == 2) { /* All cells. */
-         if (f_surface != 0) {
-            fprintf (pnt_fps[0], "Location%sElement[Unit]%sSurface%srefTime"
-                     "%svalidTime%sValue\n", usr->separator, usr->separator,
-                     usr->separator, usr->separator, usr->separator);
-         } else {
-            fprintf (pnt_fps[0], "Location%sElement[Unit]%srefTime"
-                     "%svalidTime%sValue\n", usr->separator, usr->separator,
-                     usr->separator, usr->separator);
+         if (i == meta->gds.Nx * meta->gds.Ny) {
+            f_continue = 0;
+            break;
          }
-      } else {
-         for (i = 0; i < numPnts; i++) {
-            if (f_firstFps[i]) {
-               if (f_surface != 0) {
-                  fprintf (pnt_fps[i], "Location%sElement[Unit]%sSurface"
-                           "%srefTime%svalidTime%sValue\n", usr->separator,
-                           usr->separator, usr->separator, usr->separator,
-                           usr->separator);
-               } else {
-                  fprintf (pnt_fps[i], "Location%sElement[Unit]%srefTime"
-                           "%svalidTime%sValue\n", usr->separator,
-                           usr->separator, usr->separator, usr->separator);
-               }
-            }
+         x1 = (i % meta->gds.Nx) + 1;
+         y1 = (i / meta->gds.Nx) + 1;
+         newX = x1;
+         newY = y1;
+         myCxy2ll (map, x1, y1, &lat, &lon);
+         lat = myRound (lat, usr->LatLon_Decimal);
+         lon = myRound (lon, usr->LatLon_Decimal);
+         /* Get the x1, y1 value. */
+         XY2ScanIndex (&row, x1, y1, GRIB2BIT_2, meta->gds.Nx,
+                       meta->gds.Ny);
+         ans = grib_Data[row];
+
+      } else if (f_cells == 1) { /* Specified cells. */
+         if (i == numPnts) {
+            f_continue = 0;
+            break;
          }
-      }
-   } else {
-      sprintf (format, "%%.%df", usr->decimal);
-      f_continue = 1;
-      i = 0;            /* counter over cells or lat/lon. */
-      while (f_continue) {
-         f_missing = 0;
-         if (f_cells == 2) { /* All cells. */
-            if (i == meta->gds.Nx * meta->gds.Ny) {
-               f_continue = 0;
-               break;
-            }
-            x1 = (i % meta->gds.Nx) + 1;
-            y1 = (i / meta->gds.Nx) + 1;
-            newX = x1;
-            newY = y1;
-            myCxy2ll (map, x1, y1, &lat, &lon);
-            lat = myRound (lat, usr->LatLon_Decimal);
-            lon = myRound (lon, usr->LatLon_Decimal);
-            /* Get the x1, y1 value. */
+         x1 = (sInt4) pnts[i].X;
+         y1 = (sInt4) pnts[i].Y;
+         newX = x1;
+         newY = y1;
+         myCxy2ll (map, x1, y1, &lat, &lon);
+         lat = myRound (lat, usr->LatLon_Decimal);
+         lon = myRound (lon, usr->LatLon_Decimal);
+         if (x1 < .5) {
+            f_missing = 1;
+         } else if ((x1 + .5) > meta->gds.Nx) {
+            f_missing = 1;
+         }
+         if (y1 < .5) {
+            f_missing = 1;
+         } else if ((y1 + .5) > meta->gds.Ny) {
+            f_missing = 1;
+         }
+         /* Get the x1, y1 value. */
+         if (!f_missing) {
             XY2ScanIndex (&row, x1, y1, GRIB2BIT_2, meta->gds.Nx,
                           meta->gds.Ny);
             ans = grib_Data[row];
+         } else {
+            ans = missing;
+         }
 
-         } else if (f_cells == 1) { /* Specified cells. */
-            if (i == numPnts) {
-               f_continue = 0;
-               break;
-            }
-            x1 = (sInt4) pnts[i].X;
-            y1 = (sInt4) pnts[i].Y;
-            newX = x1;
-            newY = y1;
-            myCxy2ll (map, x1, y1, &lat, &lon);
-            lat = myRound (lat, usr->LatLon_Decimal);
-            lon = myRound (lon, usr->LatLon_Decimal);
-            if (x1 < .5) {
-               f_missing = 1;
-            } else if ((x1 + .5) > meta->gds.Nx) {
-               f_missing = 1;
-            }
-            if (y1 < .5) {
-               f_missing = 1;
-            } else if ((y1 + .5) > meta->gds.Ny) {
-               f_missing = 1;
-            }
+      } else {       /* lat/lon point. */
+         if (i == numPnts) {
+            f_continue = 0;
+            break;
+         }
+         lat = pnts[i].Y;
+         lon = pnts[i].X;
+         /* Find the nearest grid cell. */
+         myCll2xy (map, lat, lon, &newX, &newY);
+         if (newX < .5) {
+            x1 = 1;
+            f_missing = 1;
+         } else if ((newX + .5) > meta->gds.Nx) {
+            x1 = meta->gds.Nx;
+            f_missing = 1;
+         } else {
+            x1 = (sInt4) (newX + .5);
+         }
+         if (newY < .5) {
+            y1 = 1;
+            f_missing = 1;
+         } else if ((newY + .5) > meta->gds.Ny) {
+            y1 = meta->gds.Ny;
+            f_missing = 1;
+         } else {
+            y1 = (sInt4) (newY + .5);
+         }
+         if (!(usr->f_interp)) {
             /* Get the x1, y1 value. */
             if (!f_missing) {
                XY2ScanIndex (&row, x1, y1, GRIB2BIT_2, meta->gds.Nx,
@@ -456,140 +501,203 @@ static void GRIB2ProbeStyle1 (sChar f_label, FILE **pnt_fps,
             } else {
                ans = missing;
             }
+         } else {
+            /* Figure out data value at this lat/lon */
+            ans = BiLinearCompute (grib_Data, map, pnts[i].Y, pnts[i].X,
+                                   meta->gds.Nx, meta->gds.Ny,
+                                   meta->gridAttrib.f_miss, missing,
+                                   meta->gridAttrib.missSec);
+         }
+      }
 
-         } else {       /* lat/lon point. */
-            if (i == numPnts) {
-               f_continue = 0;
-               break;
-            }
-            lat = pnts[i].Y;
-            lon = pnts[i].X;
-            /* Find the nearest grid cell. */
-            myCll2xy (map, lat, lon, &newX, &newY);
-            if (newX < .5) {
-               x1 = 1;
-               f_missing = 1;
-            } else if ((newX + .5) > meta->gds.Nx) {
-               x1 = meta->gds.Nx;
-               f_missing = 1;
+      /* Print the first part of the line. */
+      /* Find out if user doesn't want us to use labels[], for -cells all,
+       * we never use labels[]. */
+      if (f_cells == 2) {
+         fprintf (pnt_fps[0], "(%f,%f,%f,%f)%s",
+                  myRound (newX, usr->LatLon_Decimal),
+                  myRound (newY, usr->LatLon_Decimal), lat, lon,
+                  usr->separator);
+         if (meta->unitName != NULL) {
+            fprintf (pnt_fps[0], "%s%s%s", meta->element, meta->unitName,
+                     usr->separator);
+         } else {
+            fprintf (pnt_fps[0], "%s%s%s", meta->element, meta->comment,
+                     usr->separator);
+         }
+         if (f_surface == 1) {
+            fprintf (pnt_fps[0], "%s%s", meta->shortFstLevel,
+                     usr->separator);
+         } else if (f_surface == 2) {
+            fprintf (pnt_fps[0], "%s%s", meta->longFstLevel,
+                     usr->separator);
+         }
+         fprintf (pnt_fps[0], "%s%s%s%s", meta->refTime, usr->separator,
+                  meta->validTime, usr->separator);
+         if (strcmp (meta->element, "Wx") != 0) {
+            fprintf (pnt_fps[0], format, myRound (ans, usr->decimal));
+         } else {
+            /* Handle the weather case. */
+            if (!f_missing) {
+               PrintProbeWx (pnt_fps[0], ans, &(meta->pds2.sect2.wx),
+                             usr->logName, x1, y1, lat, lon,
+                             usr->separator, meta->element,
+                             meta->unitName, meta->comment, meta->refTime,
+                             meta->validTime, usr->f_WxParse);
             } else {
-               x1 = (sInt4) (newX + .5);
-            }
-            if (newY < .5) {
-               y1 = 1;
-               f_missing = 1;
-            } else if ((newY + .5) > meta->gds.Ny) {
-               y1 = meta->gds.Ny;
-               f_missing = 1;
-            } else {
-               y1 = (sInt4) (newY + .5);
-            }
-            if (!(usr->f_interp)) {
-               /* Get the x1, y1 value. */
-               if (!f_missing) {
-                  XY2ScanIndex (&row, x1, y1, GRIB2BIT_2, meta->gds.Nx,
-                                meta->gds.Ny);
-                  ans = grib_Data[row];
-               } else {
-                  ans = missing;
-               }
-            } else {
-               /* Figure out data value at this lat/lon */
-               ans = BiLinearCompute (grib_Data, map, pnts[i].Y, pnts[i].X,
-                                      meta->gds.Nx, meta->gds.Ny,
-                                      meta->gridAttrib.f_miss, missing,
-                                      meta->gridAttrib.missSec);
+               fprintf (pnt_fps[0], "%.0f", ans);
             }
          }
+         fprintf (pnt_fps[0], "\n");
 
-         /* Print the first part of the line. */
-         /* Find out if user doesn't want us to use labels[], for -cells all, 
-          * we never use labels[]. */
-         if (f_cells == 2) {
-            fprintf (pnt_fps[0], "(%f,%f,%f,%f)%s",
+      } else {
+         if (usr->f_nLabel) {
+            fprintf (pnt_fps[i], "(%f,%f,%f,%f)%s",
                      myRound (newX, usr->LatLon_Decimal),
                      myRound (newY, usr->LatLon_Decimal), lat, lon,
                      usr->separator);
-            if (meta->unitName != NULL) {
-               fprintf (pnt_fps[0], "%s%s%s", meta->element, meta->unitName,
-                        usr->separator);
-            } else {
-               fprintf (pnt_fps[0], "%s%s%s", meta->element, meta->comment,
-                        usr->separator);
-            }
-            if (f_surface == 1) {
-               fprintf (pnt_fps[0], "%s%s", meta->shortFstLevel,
-                        usr->separator);
-            } else if (f_surface == 2) {
-               fprintf (pnt_fps[0], "%s%s", meta->longFstLevel,
-                        usr->separator);
-            }
-            fprintf (pnt_fps[0], "%s%s%s%s", meta->refTime, usr->separator,
-                     meta->validTime, usr->separator);
-            if (strcmp (meta->element, "Wx") != 0) {
-               fprintf (pnt_fps[0], format, myRound (ans, usr->decimal));
-            } else {
-               /* Handle the weather case. */
-               if (!f_missing) {
-                  PrintProbeWx (pnt_fps[0], ans, &(meta->pds2.sect2.wx),
-                                usr->logName, x1, y1, lat, lon,
-                                usr->separator, meta->element,
-                                meta->unitName, meta->comment, meta->refTime,
-                                meta->validTime, usr->f_WxParse);
-               } else {
-                  fprintf (pnt_fps[0], "%.0f", ans);
-               }
-            }
-            fprintf (pnt_fps[0], "\n");
-
          } else {
-            if (usr->f_nLabel) {
-               fprintf (pnt_fps[i], "(%f,%f,%f,%f)%s",
-                        myRound (newX, usr->LatLon_Decimal),
-                        myRound (newY, usr->LatLon_Decimal), lat, lon,
-                        usr->separator);
-/*
-            fprintf (out_fp, "(%ld,%ld,%f,%f)%s", x1, y1, lat, lon,
+            fprintf (pnt_fps[i], "%s%s", labels[i], usr->separator);
+         }
+         if (meta->unitName != NULL) {
+            fprintf (pnt_fps[i], "%s%s%s", meta->element, meta->unitName,
                      usr->separator);
-*/
+         } else {
+            fprintf (pnt_fps[i], "%s%s%s", meta->element, meta->comment,
+                     usr->separator);
+         }
+         if (f_surface == 1) {
+            fprintf (pnt_fps[i], "%s%s", meta->shortFstLevel,
+                     usr->separator);
+         } else if (f_surface == 2) {
+            fprintf (pnt_fps[i], "%s%s", meta->longFstLevel,
+                     usr->separator);
+         }
+         fprintf (pnt_fps[i], "%s%s%s%s", meta->refTime, usr->separator,
+                  meta->validTime, usr->separator);
+         if (strcmp (meta->element, "Wx") != 0) {
+            fprintf (pnt_fps[i], format, myRound (ans, usr->decimal));
+         } else {
+            /* Handle the weather case. */
+            if (!f_missing) {
+               PrintProbeWx (pnt_fps[i], ans, &(meta->pds2.sect2.wx),
+                             usr->logName, x1, y1, lat, lon,
+                             usr->separator, meta->element,
+                             meta->unitName, meta->comment, meta->refTime,
+                             meta->validTime, usr->f_WxParse);
             } else {
-               fprintf (pnt_fps[i], "%s%s", labels[i], usr->separator);
+               fprintf (pnt_fps[i], "%.0f", ans);
             }
-            if (meta->unitName != NULL) {
-               fprintf (pnt_fps[i], "%s%s%s", meta->element, meta->unitName,
-                        usr->separator);
+         }
+         fprintf (pnt_fps[i], "\n");
+      }
+
+      i++;
+   }
+}
+
+int GRIB2ProbeOpenOutFile (userType *usr, int numPnts, char **pntFiles,
+                           FILE *** pnt_fps, char ** f_firstFps)
+{
+   char f_default;      /* True if we need to open the default output file. */
+   int i, j;            /* Loop counters. */
+   char *outfile;       /* Temporary storage for output filename. */
+   int outLen;          /* Length of outfile. */
+   FILE *out_fp = NULL; /* The default output file. */
+   char f_usedOut;      /* Flag if we've used out_fp yet. */
+
+   /* Open the output files. */
+   /* Find out if we need the "default" output file. */
+   f_default = 1;
+   if (usr->f_pntType != 2) {
+      f_default = 0;
+      for (i = 0; i < numPnts; i++) {
+         if (pntFiles[i] == NULL) {
+            f_default = 1;
+            break;
+         }
+      }
+   }
+
+   if (f_default) {
+      if (usr->f_stdout) {
+         out_fp = stdout;
+      } else if (usr->outName != NULL) {
+         outLen = strlen (usr->outName);
+         outfile = (char *) malloc ((outLen + 1) * sizeof (char));
+         strcpy (outfile, usr->outName);
+         outfile[outLen] = '\0';
+         strncpy (outfile + outLen - 3, "prb", 3);
+         if ((out_fp = fopen (outfile, "wt")) == NULL) {
+            errSprintf ("ERROR: unable to open %s.\n", outfile);
+
+            free (outfile);
+            return -2;
+         }
+         free (outfile);
+      } else {
+         out_fp = stdout;
+      }
+   }
+
+   if (usr->f_pntType != 2) {
+      *pnt_fps = (FILE **) malloc (numPnts * sizeof (FILE *));
+      *f_firstFps = (char *) malloc (numPnts * sizeof (char));
+      f_usedOut = 0;
+      for (i = 0; i < numPnts; i++) {
+         if (pntFiles[i] == NULL) {
+            (*pnt_fps)[i] = out_fp;
+            if (f_usedOut) {
+               (*f_firstFps)[i] = 0;
             } else {
-               fprintf (pnt_fps[i], "%s%s%s", meta->element, meta->comment,
-                        usr->separator);
+               (*f_firstFps)[i] = 1;
+               f_usedOut = 1;
             }
-            if (f_surface == 1) {
-               fprintf (pnt_fps[i], "%s%s", meta->shortFstLevel,
-                        usr->separator);
-            } else if (f_surface == 2) {
-               fprintf (pnt_fps[i], "%s%s", meta->longFstLevel,
-                        usr->separator);
-            }
-            fprintf (pnt_fps[i], "%s%s%s%s", meta->refTime, usr->separator,
-                     meta->validTime, usr->separator);
-            if (strcmp (meta->element, "Wx") != 0) {
-               fprintf (pnt_fps[i], format, myRound (ans, usr->decimal));
-            } else {
-               /* Handle the weather case. */
-               if (!f_missing) {
-                  PrintProbeWx (pnt_fps[i], ans, &(meta->pds2.sect2.wx),
-                                usr->logName, x1, y1, lat, lon,
-                                usr->separator, meta->element,
-                                meta->unitName, meta->comment, meta->refTime,
-                                meta->validTime, usr->f_WxParse);
-               } else {
-                  fprintf (pnt_fps[i], "%.0f", ans);
+         } else {
+            /* Find out if this is the first instance of this file. */
+            (*f_firstFps)[i] = 1;
+            for (j = 0; j < i; j++) {
+               if (pntFiles[j] != NULL) {
+                  if (strcmpNoCase (pntFiles[i], pntFiles[j]) == 0) {
+                     (*f_firstFps)[i] = 0;
+                     break;
+                  }
                }
             }
-            fprintf (pnt_fps[i], "\n");
+            if (!((*f_firstFps)[i])) {
+               (*pnt_fps)[i] = (*pnt_fps)[j];
+            } else {
+               if (((*pnt_fps)[i] = fopen (pntFiles[i], "wt")) == NULL) {
+                  errSprintf ("ERROR: unable to open '%s'.\n", pntFiles[i]);
+                  free (*pnt_fps);
+                  free (*f_firstFps);
+                  return -2;
+               }
+            }
          }
-
-         i++;
       }
+   } else {
+      (*pnt_fps) = (FILE **) malloc (sizeof (FILE *));
+      (*f_firstFps) = (char *) malloc (sizeof (char));
+      (*pnt_fps)[0] = out_fp;
+      (*f_firstFps)[0] = 1;
+   }
+   return 0;
+}
+
+void GRIB2ProbeCloseOutFile (userType *usr, int numPnts, FILE ** pnt_fps,
+                             char * f_firstFps)
+{
+   int i;            /* Loop counters. */
+
+   if (usr->f_pntType != 2) {
+      for (i = 0; i < numPnts; i++) {
+         if (f_firstFps[i]) {
+            fclose (pnt_fps[i]);
+         }
+      }
+   } else {
+      fclose (pnt_fps[0]);
    }
 }
 
@@ -602,11 +710,12 @@ static void GRIB2ProbeStyle1 (sChar f_label, FILE **pnt_fps,
  *   Main control procedure for the -P option.
  *
  * ARGUMENTS
- *      usr = User choices. (Input)
- *       is = Un-parsed meta data for this GRIB2 message. As well as some
- *            memory used by the unpacker. (Reduce memory load) (In)
- *     meta = The meta structure for a GRIB2 message.
- *            (Passed in to reduce memory load) (Input)
+ *        usr = User choices. (Input)
+ *         is = Un-parsed meta data for this GRIB2 message. As well as some
+ *              memory used by the unpacker. (Reduce memory load) (In)
+ *       meta = The meta structure for a GRIB2 message.
+ *              (Passed in to reduce memory load) (Input)
+ * f_fileType = 0 for GRIB, 1 for data cube. (Input)
  *
  * FILES/DATABASES:
  *    Opens a GRIB2 file for reading given its filename.
@@ -638,20 +747,14 @@ static void GRIB2ProbeStyle1 (sChar f_label, FILE **pnt_fps,
  *   Passing 'is' and 'meta' in, mainly for tcldegrib memory considerations.
  *****************************************************************************
  */
-int GRIB2Probe (userType *usr, IS_dataType *is, grib_MetaData *meta,
-                int numPnts, Point * pnts, char **labels, char **pntFiles,
-                sChar f_pntType)
+int GRIB2Probe (userType *usr, int numPnts, Point * pnts, char **labels,
+                char **pntFiles)
 {
    FILE **pnt_fps = NULL; /* Array of output file pointers for the points. */
    char *f_firstFps = NULL; /* Array of flags saying it is the first pointer
                              * to a given output file. */
    FILE *grib_fp;       /* The opened grib2 file for input. */
-   char *outfile;       /* Temporary storage for output filename. */
-   int outLen;          /* Length of outfile. */
-   FILE *out_fp = NULL; /* The default output file. */
-   char f_usedOut;      /* Flag if we've used out_fp yet. */
-   char f_default;      /* True if we need to open the default output file. */
-   int i, j;            /* Loop counters. */
+   int i;               /* Loop counters. */
    sChar f_style;       /* 0 use Style0(), 1 use Style1() */
    sChar f_surface;     /* 0 no surface info, 1 short form of surface name */
    myMaparam map;       /* Used to compute the grid lat/lon points. */
@@ -662,6 +765,11 @@ int GRIB2Probe (userType *usr, IS_dataType *is, grib_MetaData *meta,
    int subgNum = 0;     /* The subgrid in the message that we are interested
                          * in. */
    sInt4 f_endMsg = 1;  /* 1 if we read the last grid in a GRIB message */
+#ifndef DP_ONLY
+   IS_dataType is;      /* Un-parsed meta data for this GRIB2 message. As
+                         * well as some memory used by the unpacker. */
+   grib_MetaData meta;  /* The meta structure for this GRIB2 message. */
+#endif
 
    /* Open the grib file. */
    if (usr->inNames[0] != NULL) {
@@ -673,82 +781,10 @@ int GRIB2Probe (userType *usr, IS_dataType *is, grib_MetaData *meta,
       grib_fp = stdin;
    }
 
-   /* Open the output files. */
-   /* Find out if we need the "default" output file. */
-   if (f_pntType != 2) {
-      f_default = 0;
-      for (i = 0; i < numPnts; i++) {
-         if (pntFiles[i] == NULL) {
-            f_default = 1;
-            break;
-         }
-      }
-   } else {
-      f_default = 1;
-   }
-   if (f_default) {
-      if (usr->f_stdout) {
-         out_fp = stdout;
-      } else if (usr->outName != NULL) {
-         outLen = strlen (usr->outName);
-         outfile = (char *) malloc ((outLen + 1) * sizeof (char));
-         strcpy (outfile, usr->outName);
-         outfile[outLen] = '\0';
-         strncpy (outfile + outLen - 3, "prb", 3);
-         if ((out_fp = fopen (outfile, "wt")) == NULL) {
-            errSprintf ("ERROR: unable to open %s.\n", outfile);
-            fclose (grib_fp);
-            free (outfile);
-            return -2;
-         }
-         free (outfile);
-      } else {
-         out_fp = stdout;
-      }
-   }
-   if (f_pntType != 2) {
-      pnt_fps = (FILE **) malloc (numPnts * sizeof (FILE *));
-      f_firstFps = (char *) malloc (numPnts * sizeof (char));
-      f_usedOut = 0;
-      for (i = 0; i < numPnts; i++) {
-         if (pntFiles[i] == NULL) {
-            pnt_fps[i] = out_fp;
-            if (f_usedOut) {
-               f_firstFps[i] = 0;
-            } else {
-               f_firstFps[i] = 1;
-               f_usedOut = 1;
-            }
-         } else {
-            /* Find out if this is the first instance of this file. */
-            f_firstFps[i] = 1;
-            for (j = 0; j < i; j++) {
-               if (pntFiles[j] != NULL) {
-                  if (strcmpNoCase (pntFiles[i], pntFiles[j]) == 0) {
-                     f_firstFps[i] = 0;
-                     break;
-                  }
-               }
-            }
-            if (!f_firstFps[i]) {
-               pnt_fps[i] = pnt_fps[j];
-            } else {
-               if ((pnt_fps[i] = fopen (pntFiles[i], "wt")) == NULL) {
-                  errSprintf ("ERROR: unable to open '%s'.\n", pntFiles[i]);
-                  free (pnt_fps);
-                  free (f_firstFps);
-                  fclose (grib_fp);
-                  return -2;
-               }
-            }
-         }
-      }
-   } else {
-      pnt_fps = (FILE **) malloc (sizeof (FILE *));
-      f_firstFps = (char *) malloc (sizeof (char));
-      f_usedOut = 1;
-      pnt_fps[0] = out_fp;
-      f_firstFps[0] = 1;
+   if (GRIB2ProbeOpenOutFile (usr, numPnts, pntFiles, &pnt_fps,
+                              &f_firstFps) != 0) {
+      fclose (grib_fp);
+      return -2;
    }
 
    f_surface = usr->f_surface;
@@ -759,29 +795,33 @@ int GRIB2Probe (userType *usr, IS_dataType *is, grib_MetaData *meta,
          f_surface = 1;
       }
    }
-   if (f_pntType == 2) {
+   if (usr->f_pntType == 2) {
       f_style = 1;
    }
 
    if (f_style == 0) {
 /* Call GRIB2ProbeStyle0 for just header. */
-      GRIB2ProbeStyle0 (1, pnt_fps, f_firstFps, NULL, 0, usr, numPnts, pnts,
-                        labels, meta, &map, missing, f_surface);
+      GRIB2ProbeLabel0 (pnt_fps, f_firstFps, usr->separator, numPnts, labels,
+                        f_surface);
    } else {
 /* Call GRIB2ProbeStyle1 for just header. */
-      GRIB2ProbeStyle1 (1, pnt_fps, f_firstFps, NULL, 0, usr, numPnts, pnts,
-                        labels, meta, &map, missing, f_surface, f_pntType);
+      GRIB2ProbeLabel1 (pnt_fps, f_firstFps, usr->separator, numPnts, labels,
+                        f_surface, usr->f_pntType);
    }
 
    /* Start loop for all messages. */
    grib_DataLen = 0;
    grib_Data = NULL;
 
+#ifndef DP_ONLY
+   MetaInit (&meta);
+   IS_Init (&is);
+#endif
    while ((c = fgetc (grib_fp)) != EOF) {
       ungetc (c, grib_fp);
       /* Read the GRIB message. */
       if (ReadGrib2Record (grib_fp, usr->f_unit, &grib_Data, &grib_DataLen,
-                           meta, is, subgNum, usr->majEarth, usr->minEarth,
+                           &meta, &is, subgNum, usr->majEarth, usr->minEarth,
                            usr->f_SimpleVer, &f_endMsg, &(usr->lwlf),
                            &(usr->uprt)) != 0) {
          preErrSprintf ("ERROR: In call to ReadGrib2Record.\n");
@@ -794,15 +834,19 @@ int GRIB2Probe (userType *usr, IS_dataType *is, grib_MetaData *meta,
          free (f_firstFps);
          fclose (grib_fp);
          free (grib_Data);
+#ifndef DP_ONLY
+         MetaFree (&meta);
+         IS_Free (&is);
+#endif
          return -3;
       }
 
       if (usr->f_validRange > 0) {
          /* valid max. */
          if (usr->f_validRange > 1) {
-            if (meta->gridAttrib.max > usr->validMax) {
+            if (meta.gridAttrib.max > usr->validMax) {
                errSprintf ("ERROR: %f > valid Max of %f\n",
-                           meta->gridAttrib.max, usr->validMax);
+                           meta.gridAttrib.max, usr->validMax);
                for (i = 0; i < numPnts; i++) {
                   if (f_firstFps[i]) {
                      fclose (pnt_fps[i]);
@@ -812,14 +856,18 @@ int GRIB2Probe (userType *usr, IS_dataType *is, grib_MetaData *meta,
                free (f_firstFps);
                fclose (grib_fp);
                free (grib_Data);
+#ifndef DP_ONLY
+               MetaFree (&meta);
+               IS_Free (&is);
+#endif
                return -3;
             }
          }
          /* valid min. */
          if (usr->f_validRange % 2) {
-            if (meta->gridAttrib.min < usr->validMin) {
+            if (meta.gridAttrib.min < usr->validMin) {
                errSprintf ("ERROR: %f < valid Min of %f\n",
-                           meta->gridAttrib.min, usr->validMin);
+                           meta.gridAttrib.min, usr->validMin);
                for (i = 0; i < numPnts; i++) {
                   if (f_firstFps[i]) {
                      fclose (pnt_fps[i]);
@@ -829,6 +877,10 @@ int GRIB2Probe (userType *usr, IS_dataType *is, grib_MetaData *meta,
                free (f_firstFps);
                fclose (grib_fp);
                free (grib_Data);
+#ifndef DP_ONLY
+               MetaFree (&meta);
+               IS_Free (&is);
+#endif
                return -3;
             }
          }
@@ -840,7 +892,7 @@ int GRIB2Probe (userType *usr, IS_dataType *is, grib_MetaData *meta,
       }
 
       /* Check that gds is valid before setting up map projection. */
-      if (GDSValid (&meta->gds) != 0) {
+      if (GDSValid (&(meta.gds)) != 0) {
          preErrSprintf ("ERROR: Sect3 was not Valid.\n");
          for (i = 0; i < numPnts; i++) {
             if (f_firstFps[i]) {
@@ -851,64 +903,52 @@ int GRIB2Probe (userType *usr, IS_dataType *is, grib_MetaData *meta,
          free (f_firstFps);
          fclose (grib_fp);
          free (grib_Data);
+#ifndef DP_ONLY
+         MetaFree (&meta);
+         IS_Free (&is);
+#endif
          return -4;
       }
       /* Set up the map projection. */
-      SetMapParam (&map, &(meta->gds));
+      SetMapParam (&map, &(meta.gds));
 
       /* Figure out a missing value, if there isn't one, so that when we
        * interpolate and we are out of bounds, we can return something. */
-      if (meta->gridAttrib.f_miss == 0) {
+      if (meta.gridAttrib.f_miss == 0) {
          missing = 9999;
-         if (meta->gridAttrib.f_maxmin) {
-            if ((missing <= meta->gridAttrib.max) &&
-                (missing >= meta->gridAttrib.min)) {
-               missing = meta->gridAttrib.max + 1;
+         if (meta.gridAttrib.f_maxmin) {
+            if ((missing <= meta.gridAttrib.max) &&
+                (missing >= meta.gridAttrib.min)) {
+               missing = meta.gridAttrib.max + 1;
             }
          }
       } else {
-         missing = meta->gridAttrib.missPri;
+         missing = meta.gridAttrib.missPri;
       }
+
       if (f_style == 0) {
-         GRIB2ProbeStyle0 (0, pnt_fps, f_firstFps, grib_Data, grib_DataLen,
-                           usr, numPnts, pnts, labels, meta, &map, missing,
-                           f_surface);
+         GRIB2ProbeStyle0 (pnt_fps, f_firstFps, grib_Data, grib_DataLen,
+                           usr, numPnts, pnts, &meta, &map, missing, f_surface);
       } else {
-         GRIB2ProbeStyle1 (0, pnt_fps, f_firstFps, grib_Data, grib_DataLen,
-                           usr, numPnts, pnts, labels, meta, &map, missing,
-                           f_surface, f_pntType);
+         GRIB2ProbeStyle1 (pnt_fps, f_firstFps, grib_Data, grib_DataLen,
+                           usr, numPnts, pnts, labels, &meta, &map, missing,
+                           f_surface, usr->f_pntType);
       }
-/*
-      IS_Free (is);
-      IS_Init (is);
-*/
-      MetaFree (meta);
+      MetaFree (&meta);
    }
    /* End loop for all messages. */
    free (grib_Data);
+#ifndef DP_ONLY
+   MetaFree (&meta);
+   IS_Free (&is);
+#endif
 
-   if (f_pntType != 2) {
-      for (i = 0; i < numPnts; i++) {
-         if (f_firstFps[i]) {
-            fclose (pnt_fps[i]);
-         }
-      }
-   } else {
-      fclose (pnt_fps[0]);
-   }
+   GRIB2ProbeCloseOutFile (usr, numPnts, pnt_fps, f_firstFps);
 
    free (pnt_fps);
    free (f_firstFps);
    fclose (grib_fp);
-   if (!usr->f_stdout) {
-      if ((f_default) && (usr->outName != NULL)) {
-         /* following could already be handled since pnt_fps[] points to
-          * out_fp. */
-         if (!f_usedOut) {
-            fclose (out_fp);
-         }
-      }
-   }
+   /* May need to close out_fp?  Probably not since it was in pnt_fps*/
    return 0;
 }
 

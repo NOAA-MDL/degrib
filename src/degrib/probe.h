@@ -18,8 +18,21 @@
 #include "meta.h"
 #include "degrib2.h"
 
-int GRIB2Probe (userType * usr, IS_dataType * is, grib_MetaData * meta,
-                int numPnts, Point *pnts, char **labels, char **pntFiles,
-                sChar f_pntType);
+void GRIB2ProbeLabel0 (FILE **pnt_fps, char *f_firstFps,
+                       char *separator, int numPnts, char **labels,
+                       sChar f_surface);
+
+void GRIB2ProbeLabel1 (FILE **pnt_fps, char *f_firstFps,
+                       char *separator, uInt4 numPnts,
+                       char **labels, sChar f_surface, sChar f_cells);
+
+int GRIB2ProbeOpenOutFile (userType *usr, int numPnts, char **pntFiles,
+                           FILE *** pnt_fps, char ** f_firstFps);
+
+void GRIB2ProbeCloseOutFile (userType *usr, int numPnts, FILE ** pnt_fps,
+                             char * f_firstFps);
+
+int GRIB2Probe (userType * usr, int numPnts, Point *pnts, char **labels,
+                char **pntFiles);
 
 #endif

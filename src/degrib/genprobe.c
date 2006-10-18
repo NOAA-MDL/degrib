@@ -52,6 +52,15 @@ static const genElemDescript NdfdElements[] = {
    {NDFD_WH,2, 8,MISSING_2,0, 0,10,0,5,0, 1,0.0,0.0 },
    {NDFD_AT,2, 8,MISSING_2,0, 0,0,0,193,0, 1,0.0,0.0 },
    {NDFD_RH,2, 8,MISSING_2,0, 0,0,1,1,0, 1,0.0,0.0 },
+/*
+   {NDFD_WG,2, 8,MISSING_2,0, 0,0,2,22,0, 1,0.0,0.0 },
+   {NDFD_INC34,2, 8,MISSING_2,0, 9,0,2,1,6, 103,10.0,0.0 },
+   {NDFD_INC50,2, 8,MISSING_2,0, 9,0,2,1,6, 103,10.0,0.0 },
+   {NDFD_INC64,2, 8,MISSING_2,0, 9,0,2,1,6, 103,10.0,0.0 },
+   {NDFD_CUM34,2, 8,MISSING_2,0, 9,0,2,1,6, 103,10.0,0.0 },
+   {NDFD_CUM50,2, 8,MISSING_2,0, 9,0,2,1,6, 103,10.0,0.0 },
+   {NDFD_CUM64,2, 8,MISSING_2,0, 9,0,2,1,6, 103,10.0,0.0 },
+*/
    {NDFD_UNDEF,2, MISSING_2,MISSING_2,MISSING_1,
                   MISSING_2,MISSING_1,MISSING_1,MISSING_1,0,
                   MISSING_1,0.0,0.0 },
@@ -90,6 +99,23 @@ static const uChar NdfdElementsLen = (sizeof (NdfdElements) /
  *          NDFD_AT, NDFD_RH, NDFD_UNDEF, NDFD_MATCHALL };
  *****************************************************************************
  */
+/*
+static char *NDFD_Type[] = { "maxt", "mint", "pop12", "t", "winddir",
+   "windspd", "td", "sky", "qpf", "snowamt", "wx", "waveheight",
+   "apparentt", "rh", "windgust", "probwindspd34i", "probwindspd50c",
+   "probwindspd64c", "probwindspd34c", "probwindspd50c", "probwindspd64c",
+   NULL
+};
+static char *NDFD_File[] = { "maxt", "mint", "pop12", "temp", "wdir",
+   "wspd", "td", "sky", "qpf", "snow", "wx", "waveh", "apt", "rhm",
+   "wgust", "tcwspdabv34i", "tcwspdabv50i", "tcwspdabv64i",
+   "tcwspdabv34c", "tcwspdabv50c", "tcwspdabv64c", NULL
+};
+static char *NDFD_File2[] = { "mx", "mn", "po", "tt", "wd",
+   "ws", "dp", "cl", "qp", "sn", "wx", "wh", "at", "rh", "wg", "i3",
+   "i5", "i6", "c3", "c5", "c6", NULL
+};
+*/
 static char *NDFD_Type[] = { "maxt", "mint", "pop12", "t", "winddir",
    "windspd", "td", "sky", "qpf", "snowamt", "wx", "waveheight",
    "apparentt", "rh", NULL
@@ -2388,11 +2414,6 @@ int Grib2DataProbe (userType *usr, int numPnts, Point * pnts, char **labels,
 
 int ProbeCmd (sChar f_Command, userType *usr)
 {
-#ifndef DP_ONLY
-   IS_dataType is;      /* Un-parsed meta data for this GRIB2 message. As
-                         * well as some memory used by the unpacker. */
-   grib_MetaData meta;  /* The meta structure for this GRIB2 message. */
-#endif
    char *msg;           /* Used to print the error stack */
 
    size_t numPnts = 0;  /* How many points in pnts */
@@ -2449,14 +2470,11 @@ int ProbeCmd (sChar f_Command, userType *usr)
    }
 
    /* Do XML Parse */
+   f_fileType = 0;
+   if (f_Command == CMD_DATAPROBE) {
+      f_fileType = 1;
+   }
    if ((usr->f_XML != 0) || (usr->f_Graph != 0) || (usr->f_MOTD != 0)) {
-      if (f_Command == CMD_PROBE) {
-         f_fileType = 0;
-      } else if (f_Command == CMD_DATAPROBE) {
-         f_fileType = 1;
-      } else {
-         f_fileType = 0;
-      }
 
       /* Find out the Major sectors for all the points? */
       /* Probe geodata for all the points, and get TZ and Daylight If geoData 
@@ -2542,17 +2560,12 @@ int ProbeCmd (sChar f_Command, userType *usr)
    } else {
 #ifndef DP_ONLY
       if (f_Command == CMD_PROBE) {
-         IS_Init (&is);
-         MetaInit (&meta);
-         ans = GRIB2Probe (usr, &is, &meta, numPnts, pnts, labels, pntFiles,
-                           usr->f_pntType);
+         ans = GRIB2Probe (usr, numPnts, pnts, labels, pntFiles);
          if (ans != 0) {
             msg = errSprintf (NULL);
             printf ("ERROR: In call to GRIB2Probe.\n%s\n", msg);
             free (msg);
          }
-         MetaFree (&meta);
-         IS_Free (&is);
       } else if (f_Command == CMD_DATAPROBE) {
 #endif
          ans = Grib2DataProbe (usr, numPnts, pnts, labels, pntFiles);

@@ -230,3 +230,34 @@ AC_DEFUN([AAT_DBADTCLSSH],
   AC_SUBST([DBAD_TCLSSH])
 ]
 )
+
+AC_DEFUN([ADT_AIXSIZE],[
+
+AC_ARG_ENABLE(aixsize,
+  [AS_HELP_STRING([--enable-aixsize=val],
+         [build val-bit (32 or 64, default 64) libraries for aix])],
+   [at_c_savcflags=${CFLAGS}
+    at_c_savarflags=${ARFLAGS}
+    case ${enableval}x in
+    32x)
+      if test "$ac_compiler_gnu" = yes; then
+        CFLAGS="${CFLAGS} -maix32"
+      else
+        CFLAGS="${CFLAGS} -q32"
+      fi
+      FFLAGS="${FFLAGS} -q32"
+      ARFLAGS="${ARFLAGS} -X32";;
+    64x)
+      if test "$ac_compiler_gnu" = yes; then
+        CFLAGS="${CFLAGS} -maix64"
+      else
+        CFLAGS="${CFLAGS} -q64"
+      fi
+      FFLAGS="${FFLAGS} -q64"
+      ARFLAGS="${ARFLAGS} -X64";;
+    *)
+      AC_MSG_WARN([Invalid aixsize value- ${enableval}])
+    esac
+    ],
+    )
+])

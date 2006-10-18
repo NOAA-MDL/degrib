@@ -345,8 +345,8 @@ int WriteGrib2Record (grib_MetaData *meta, double *Grib_Data,
          is->is[4][17 - 1] = NearestInt ((meta->pds2.sect4.cutOff % 3600) /
                                          60);
       } else {
-         is->is[4][15 - 1] = GRIB2MISSING_2;
-         is->is[4][17 - 1] = GRIB2MISSING_1;
+         is->is[4][15 - 1] = GRIB2MISSING_u2;
+         is->is[4][17 - 1] = GRIB2MISSING_u1;
       }
       if (IsData_NDFD (meta->center, meta->subcenter)) {
          is->is[4][18 - 1] = 1; /* Hours */
@@ -356,7 +356,7 @@ int WriteGrib2Record (grib_MetaData *meta, double *Grib_Data,
          is->is[4][19 - 1] = NearestInt (meta->pds2.sect4.foreSec);
       }
       is->is[4][23 - 1] = meta->pds2.sect4.fstSurfType;
-      if (meta->pds2.sect4.fstSurfScale == (sChar) GRIB2MISSING_1) {
+      if (meta->pds2.sect4.fstSurfScale == GRIB2MISSING_s1) {
          is->is[4][24 - 1] = GRIB2MISSING_4;
          is->is[4][25 - 1] = GRIB2MISSING_4;
       } else {
@@ -366,7 +366,7 @@ int WriteGrib2Record (grib_MetaData *meta, double *Grib_Data,
                                            meta->pds2.sect4.fstSurfScale));
       }
       is->is[4][29 - 1] = meta->pds2.sect4.sndSurfType;
-      if (meta->pds2.sect4.sndSurfScale == (sChar) GRIB2MISSING_1) {
+      if (meta->pds2.sect4.sndSurfScale == GRIB2MISSING_s1) {
          is->is[4][30 - 1] = GRIB2MISSING_4;
          is->is[4][31 - 1] = GRIB2MISSING_4;
       } else {

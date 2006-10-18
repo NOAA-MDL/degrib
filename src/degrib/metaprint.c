@@ -249,7 +249,7 @@ static void PrintSect1 (pdsG2Type * pds2, unsigned short int center,
    } else {
       Print ("PDS-S1", "Originating center", Prt_D, center);
    }
-   if (subcenter != GRIB2MISSING_2) {
+   if (subcenter != GRIB2MISSING_u2) {
       ptr = subCenterLookup (center, subcenter);
       if (ptr != NULL) {
          Print ("PDS-S1", "Originating sub-center", Prt_DS, subcenter, ptr);
@@ -624,7 +624,7 @@ static int PrintSect4 (grib_MetaData *meta, sChar f_unit)
       }
       return 0;
    }
-   if (sect4->bgGenID != GRIB2MISSING_1) {
+   if (sect4->bgGenID != GRIB2MISSING_u1) {
       ptr = processLookup (meta->center, sect4->bgGenID);
       if (ptr != NULL) {
          Print ("PDS-S4", "Background generating process ID", Prt_DS,
@@ -634,7 +634,7 @@ static int PrintSect4 (grib_MetaData *meta, sChar f_unit)
                 sect4->bgGenID);
       }
    }
-   if (sect4->genID != GRIB2MISSING_1) {
+   if (sect4->genID != GRIB2MISSING_u1) {
       ptr = processLookup (meta->center, sect4->genID);
       if (ptr != NULL) {
          Print ("PDS-S4", "Forecast generating process ID", Prt_DS,
@@ -656,7 +656,7 @@ static int PrintSect4 (grib_MetaData *meta, sChar f_unit)
           sect4->fstSurfType, surf.comment, surf.unit);
    Print ("PDS-S4", "Value of first fixed surface", Prt_F,
           sect4->fstSurfValue);
-   if (sect4->sndSurfType != GRIB2MISSING_1) {
+   if (sect4->sndSurfType != GRIB2MISSING_u1) {
       surf = Table45Index (sect4->sndSurfType, &f_reserved, meta->center,
                            meta->subcenter);
       Print ("PDS-S4", "Type of second fixed surface", Prt_DSS,

@@ -45,6 +45,13 @@ typedef enum { UC_NONE, UC_K2F, UC_InchWater, UC_M2Feet, UC_M2Inch,
  */
 #ifndef NDFD_ENUM
 #define NDFD_ENUM
+/*
+enum { NDFD_MAX, NDFD_MIN, NDFD_POP, NDFD_TEMP, NDFD_WD, NDFD_WS,
+       NDFD_TD, NDFD_SKY, NDFD_QPF, NDFD_SNOW, NDFD_WX, NDFD_WH,
+       NDFD_AT, NDFD_RH, NDFD_WG, NDFD_INC34, NDFD_INC50, NDFD_INC64,
+       NDFD_CUM34, NDFD_CUM50, NDFD_CUM64, NDFD_UNDEF, NDFD_MATCHALL
+};
+*/
 enum { NDFD_MAX, NDFD_MIN, NDFD_POP, NDFD_TEMP, NDFD_WD, NDFD_WS,
        NDFD_TD, NDFD_SKY, NDFD_QPF, NDFD_SNOW, NDFD_WX, NDFD_WH,
        NDFD_AT, NDFD_RH, NDFD_UNDEF, NDFD_MATCHALL
@@ -59,9 +66,11 @@ enum { GB1S2_LATLON = 0, GB1S2_MERCATOR = 1, GB1S2_LAMBERT = 3,
 /* For TDLP GDS Types. */
 enum { TDLP_MERCATOR = 7, TDLP_LAMBERT = 3, TDLP_POLAR = 5};
 
-#define GRIB2MISSING_1 (int) (0xff)
-#define GRIB2MISSING_2 (int) (0xffff)
-#define GRIB2MISSING_4 (sInt4) (0xffffffff)
+#define GRIB2MISSING_u1 (uChar) (0xff)
+#define GRIB2MISSING_s1 (sChar) -1 * (0x7f)
+#define GRIB2MISSING_u2 (uShort2) (0xffff)
+#define GRIB2MISSING_s2 (sShort2) -1 * (0x7fff)
+#define GRIB2MISSING_4 (uInt4) (0xffffffff)
 
 #define NUM_UGLY_WORD 5
 #define NUM_UGLY_ATTRIB 5

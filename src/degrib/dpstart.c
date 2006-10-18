@@ -82,7 +82,7 @@ int main (int argc, char **argv)
       /* check if it is a file or directory */
       if ((type != MYSTAT_ISDIR) && (type != MYSTAT_ISFILE)) {
          Usage (argv[0], &usr);
-         printf ("\nError was: '%s' is not a file or direcory\n\n", argv[1]);
+         printf ("\nError was: '%s' is not a file or directory\n\n", argv[1]);
          return 1;
       }
       /* check that it is readable */
@@ -105,7 +105,7 @@ int main (int argc, char **argv)
             /* check if it is a file or directory */
             if ((type != MYSTAT_ISDIR) && (type != MYSTAT_ISFILE)) {
                Usage (argv[0], &usr);
-               printf ("\nError was: '%s' is not a file or direcory\n\n",
+               printf ("\nError was: '%s' is not a file or directory\n\n",
                        argv[i]);
                for (j = 0; j < usr.numInNames; j++) {
                   free (usr.inNames[j]);

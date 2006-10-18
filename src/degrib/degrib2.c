@@ -867,7 +867,7 @@ int ReadGrib2Record (FILE *fp, sChar f_unit, double **Grib_Data,
    uChar f_subGrid;     /* True if we have a subgrid. */
    sInt4 Nx, Ny;        /* original size of the data. */
 
-   /* 
+   /*
     * f_endMsg is 1 if in the past we either completed reading a message,
     * or we haven't read any messages.  In either case we need to read the
     * next message from file.
@@ -907,7 +907,7 @@ int ReadGrib2Record (FILE *fp, sChar f_unit, double **Grib_Data,
          return 0;
       }
 
-      /* 
+      /*
        * Make room for entire message, and read it in.
        */
       /* nd5 needs to be gribLen in (sInt4) units rounded up. */
@@ -933,7 +933,7 @@ int ReadGrib2Record (FILE *fp, sChar f_unit, double **Grib_Data,
          return -1;
       }
 
-      /* 
+      /*
        * Make sure the arrays are large enough for call to unpacker library.
        */
       /* FindSectLen Does not want (ipack / c_ipack) word swapped, because
@@ -953,12 +953,13 @@ int ReadGrib2Record (FILE *fp, sChar f_unit, double **Grib_Data,
                                            IS->ns[i] * sizeof (sInt4));
          }
       }
+
       /* Allocate room for sect 2. If local_ns[2] = -1 there is no sect 2. */
       if (local_ns[2] == -1) {
          nidat = 10;
          nrdat = 10;
       } else {
-         /* 
+         /*
           * See note 2) We have a section 2, so use:
           *     MAX (32 * local_ns[2],SECT2_INTSIZE)
           * and MAX (32 * local_ns[2],SECT2_FLOATSIZE)
@@ -1038,7 +1039,7 @@ int ReadGrib2Record (FILE *fp, sChar f_unit, double **Grib_Data,
                   &(IS->ns[6]), IS->is[7], &(IS->ns[7]), IS->ib, &ibitmap,
                   IS->ipack, &(IS->nd5), &xmissp, &xmisss, &inew, &iclean,
                   &l3264b, f_endMsg, jer, &ndjer, &kjer);
-      /* 
+      /*
        * Check for error messages...
        *   If we get an error message, print it, and return.
        */

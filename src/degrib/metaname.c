@@ -1150,7 +1150,7 @@ GRIB2LocalTable NCEP_LclTable[] = {
 int IsData_NDFD (unsigned short int center, unsigned short int subcenter)
 {
    return ((center == 8) &&
-           ((subcenter == GRIB2MISSING_2) || (subcenter == 0)));
+           ((subcenter == GRIB2MISSING_u2) || (subcenter == 0)));
 }
 
 int IsData_MOS (unsigned short int center, unsigned short int subcenter)
@@ -1209,7 +1209,7 @@ static GRIB2LocalTable *Choose_LocalParmTable (unsigned short int center,
          }
       case 8:          /* NWS Telecomunications gateway */
          switch (subcenter) {
-            case GRIB2MISSING_2: /* NDFD */
+            case GRIB2MISSING_u2: /* NDFD */
             case 0:    /* NDFD */
                *tableLen = sizeof (NDFD_LclTable) / sizeof (GRIB2LocalTable);
                return &NDFD_LclTable[0];
@@ -2242,10 +2242,10 @@ void ParseLevelName (unsigned short int center, unsigned short int subcenter,
                      char **longLevelName)
 {
    int f_reserved;
-   GRIB2SurfTable surf = Table45Index (surfType, &f_reserved, center,
-                                       subcenter);
    char valBuff[20];
    char sndBuff[20];
+   GRIB2SurfTable surf = Table45Index (surfType, &f_reserved, center,
+                                       subcenter);
 
    /* Check if index is defined... 191 is undefined. */
    free (*shortLevelName);

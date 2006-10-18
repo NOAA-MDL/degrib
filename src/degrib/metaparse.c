@@ -713,7 +713,7 @@ static int ParseSect3 (sInt4 *is3, sInt4 ns3, grib_MetaData *meta)
           * on: Y * 10^D = R, where Y = original value, D = scale factor, ___
           * R = scale value. */
 
-         if ((is3[16] != GRIB2MISSING_4) && (is3[15] != GRIB2MISSING_1)) {
+         if ((is3[16] != GRIB2MISSING_4) && (is3[15] != GRIB2MISSING_s1)) {
             /* Assumes data is given in m (not km). */
             meta->gds.majEarth = is3[16] / (pow (10, is3[15]) * 1000.);
             meta->gds.minEarth = meta->gds.majEarth;
@@ -750,8 +750,8 @@ static int ParseSect3 (sInt4 *is3, sInt4 ns3, grib_MetaData *meta)
          /* Incorrect Assumption (9/8/2003): scale factor / value are based
           * on: Y * 10^D = R, where Y = original value, D = scale factor, ___
           * R = scale value. */
-         if ((is3[21] != GRIB2MISSING_4) && (is3[20] != GRIB2MISSING_1) &&
-             (is3[26] != GRIB2MISSING_4) && (is3[25] != GRIB2MISSING_1)) {
+         if ((is3[21] != GRIB2MISSING_4) && (is3[20] != GRIB2MISSING_s1) &&
+             (is3[26] != GRIB2MISSING_4) && (is3[25] != GRIB2MISSING_s1)) {
             /* Assumes data is given in km (not m). */
             meta->gds.majEarth = is3[21] / (pow (10, is3[20]));
             meta->gds.minEarth = is3[26] / (pow (10, is3[25]));
@@ -775,8 +775,8 @@ static int ParseSect3 (sInt4 *is3, sInt4 ns3, grib_MetaData *meta)
          /* Incorrect Assumption (9/8/2003): scale factor / value are based
           * on: Y * 10^D = R, where Y = original value, D = scale factor, ___
           * R = scale value. */
-         if ((is3[21] != GRIB2MISSING_4) && (is3[20] != GRIB2MISSING_1) &&
-             (is3[26] != GRIB2MISSING_4) && (is3[25] != GRIB2MISSING_1)) {
+         if ((is3[21] != GRIB2MISSING_4) && (is3[20] != GRIB2MISSING_s1) &&
+             (is3[26] != GRIB2MISSING_4) && (is3[25] != GRIB2MISSING_s1)) {
             /* Assumes data is given in m (not km). */
             meta->gds.majEarth = is3[21] / (pow (10, is3[20]) * 1000.);
             meta->gds.minEarth = is3[26] / (pow (10, is3[25]) * 1000.);
@@ -1181,18 +1181,18 @@ static int ParseSect4 (sInt4 *is4, sInt4 ns4, grib_MetaData *meta)
          meta->pds2.sect4.bands[i].centWaveNum.value = is4[20 + 10 * i];
       }
 
-      meta->pds2.sect4.fstSurfType = GRIB2MISSING_1;
-      meta->pds2.sect4.fstSurfScale = (sChar) GRIB2MISSING_1;
+      meta->pds2.sect4.fstSurfType = GRIB2MISSING_u1;
+      meta->pds2.sect4.fstSurfScale = GRIB2MISSING_s1;
       meta->pds2.sect4.fstSurfValue = 0;
-      meta->pds2.sect4.sndSurfType = GRIB2MISSING_1;
-      meta->pds2.sect4.sndSurfScale = (sChar) GRIB2MISSING_1;
+      meta->pds2.sect4.sndSurfType = GRIB2MISSING_u1;
+      meta->pds2.sect4.sndSurfScale = GRIB2MISSING_s1;
       meta->pds2.sect4.sndSurfValue = 0;
 
       return 0;
    }
    meta->pds2.sect4.bgGenID = (uChar) is4[12];
    meta->pds2.sect4.genID = (uChar) is4[13];
-   if ((is4[14] == GRIB2MISSING_2) || (is4[16] == GRIB2MISSING_1)) {
+   if ((is4[14] == GRIB2MISSING_u2) || (is4[16] == GRIB2MISSING_u1)) {
       meta->pds2.sect4.f_validCutOff = 0;
       meta->pds2.sect4.cutOff = 0;
    } else {
@@ -1212,24 +1212,24 @@ static int ParseSect4 (sInt4 *is4, sInt4 ns4, grib_MetaData *meta)
    meta->pds2.sect4.validTime = (time_t) (meta->pds2.refTime +
                                           meta->pds2.sect4.foreSec);
 
-   /* 
+   /*
     * Following is based on what was needed to get correct Radius of Earth in
     * section 3.  (Hopefully they are consistent).
     */
    meta->pds2.sect4.fstSurfType = (uChar) is4[22];
-   if ((is4[24] == GRIB2MISSING_4) || (((uChar) is4[23]) == GRIB2MISSING_1)) {
-      meta->pds2.sect4.fstSurfScale = (uChar) GRIB2MISSING_1;
+   if ((is4[24] == GRIB2MISSING_4) || (is4[23] == GRIB2MISSING_s1)) {
+      meta->pds2.sect4.fstSurfScale = GRIB2MISSING_s1;
       meta->pds2.sect4.fstSurfValue = 0;
    } else {
-      meta->pds2.sect4.fstSurfScale = (uChar) is4[23];
+      meta->pds2.sect4.fstSurfScale = is4[23];
       meta->pds2.sect4.fstSurfValue = is4[24] / pow (10, is4[23]);
    }
    meta->pds2.sect4.sndSurfType = (uChar) is4[28];
-   if ((is4[30] == GRIB2MISSING_4) || (((uChar) is4[29]) == GRIB2MISSING_1)) {
-      meta->pds2.sect4.sndSurfScale = (uChar) GRIB2MISSING_1;
+   if ((is4[30] == GRIB2MISSING_4) || (is4[29] == GRIB2MISSING_s1)) {
+      meta->pds2.sect4.sndSurfScale = GRIB2MISSING_s1;
       meta->pds2.sect4.sndSurfValue = 0;
    } else {
-      meta->pds2.sect4.sndSurfScale = (uChar) is4[29];
+      meta->pds2.sect4.sndSurfScale = is4[29];
       meta->pds2.sect4.sndSurfValue = is4[30] / pow (10, is4[29]);
    }
    switch (meta->pds2.sect4.templat) {
@@ -1846,12 +1846,23 @@ int MetaParse (grib_MetaData *meta, sInt4 *is0, sInt4 ns0,
                                       + 2 + 1) * sizeof (char));
    sprintf (meta->comment, "%s [%s]", comment, unitName);
 */
-   if ((meta->pds2.sect4.sndSurfScale == (sChar) GRIB2MISSING_1) ||
-       (meta->pds2.sect4.sndSurfType == GRIB2MISSING_1)) {
-      ParseLevelName (meta->center, meta->subcenter,
-                      meta->pds2.sect4.fstSurfType,
-                      meta->pds2.sect4.fstSurfValue, 0, 0,
-                      &(meta->shortFstLevel), &(meta->longFstLevel));
+   if ((meta->pds2.sect4.sndSurfScale == GRIB2MISSING_s1) ||
+       (meta->pds2.sect4.sndSurfType == GRIB2MISSING_u1)) {
+/*
+      if ((meta->pds2.sect4.fstSurfScale == GRIB2MISSING_s1) ||
+          (meta->pds2.sect4.fstSurfType == GRIB2MISSING_u1)) {
+         ParseLevelName (meta->center, meta->subcenter,
+                         meta->pds2.sect4.fstSurfType, 0, 0, 0,
+                         &(meta->shortFstLevel), &(meta->longFstLevel));
+      } else {
+*/
+         ParseLevelName (meta->center, meta->subcenter,
+                         meta->pds2.sect4.fstSurfType,
+                         meta->pds2.sect4.fstSurfValue, 0, 0,
+                         &(meta->shortFstLevel), &(meta->longFstLevel));
+/*
+      }
+*/
    } else {
       ParseLevelName (meta->center, meta->subcenter,
                       meta->pds2.sect4.fstSurfType,

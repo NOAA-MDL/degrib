@@ -169,7 +169,7 @@ int GetOutputName (userType *usr, grib_MetaData *meta, char **buffer,
                   break;
                case 'g':
                   if (meta->GribVersion == 2) {
-                     if (meta->pds2.sect4.genID == GRIB2MISSING_1) {
+                     if (meta->pds2.sect4.genID == GRIB2MISSING_u1) {
                         reallocSprintf (buffer, "%03d",
                                         meta->pds2.sect4.bgGenID);
                      } else {

@@ -1,9 +1,19 @@
 #
-#----- Release: Version 1.84 09/20/2006 -----
+#----- Release: Version 1.84 09/29/2006 -----
 #
+ 9/29 ADT Moved ADT_AIXSIZE from configure.in to aclocal.m4 and fixed an error
+ 9/29 AAT Fixed (sign) bug in use of GRIB2MISSING which crashed when it
+          encountered Japanese GRIB2 file which didn't have a value associated
+          with the surface
+ 9/26 AAT Started adding wgust, and tropical cyclone products to genprobe.
+          Disabled for now to avoid errors in redundancy checks.
+ 9/26 AAT Finished redoing alaskatimezone.flt and alaskadaylight.flt in
+          /degrib/geodata based on the update to the Alaska grid spacing.
+ 9/25 AAT Adjusted Alaska's grid from a spacing of 5.953 km to 5.953125 km
+ 9/25 AAT Added QPF/Hi experimental in anticipation of 11/1 release.
  9/20 AAT Removed dependence on "/src/degrib/config.h.in"
  9/20 AAT Tested on linux.
- 9/20 AAT Created AAT_DYNAMIC_LIB
+ 9/20 AAT Created AAT_DYNAMIC_LIB in aclocal.m4
  9/20 AAT My build system needs:
           "configure TCL_PREFIX=c:/tcl832 TCL_VERSION=83"
  9/20 AAT Modified AT_PROG_TCL for the TCL_PREFIX != "" case.

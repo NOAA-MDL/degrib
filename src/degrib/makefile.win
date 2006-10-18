@@ -50,8 +50,7 @@ XML_CLEAN = (cd ../dwmllib && make -f makefile clean)
 ############################
 # Standard Defines
 ############################
-STD_DEF = -D_WINDOWS_ -D_GCC_ $(XML_DEF)
-#STD_DEF = -D_WINDOWS_ -D_GCC_ $(XML_DEF) -DMEMWATCH -DMEMWATCH_STDIO -DVERBOSE -DTIMING_INFO -DDEBUG
+STD_DEF = $(XML_DEF) -DSIZEOF_LONG_INT=4
 GUI_DEF = -D_WINDOWS_ -D_GCC_ $(XML_DEF)
 STUB_DEF = -DUSE_TCL_STUBS -DUSE_TK_STUBS -DEXPORTS
 
