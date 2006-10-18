@@ -1,6 +1,9 @@
 #
-#----- Release: Version 1.84 10/01/2006 -----
+#----- Release: Version 1.84 10/02/2006 -----
 #
+10/2  AAT Modified "/src/grib2lib/g2clib-1.0.2/grib2.h to use "SIZEOF_LONG_INT"
+          instead of "__64BIT__" (note my code use to use "_64Bit")
+10/2  AAT Updated the makefile.* files in /src/grib2lib with current #defines.
  9/29 ADT Moved ADT_AIXSIZE from configure.in to aclocal.m4 and fixed an error
  9/29 AAT Fixed (sign) bug in use of GRIB2MISSING which crashed when it
           encountered Japanese GRIB2 file which didn't have a value associated
