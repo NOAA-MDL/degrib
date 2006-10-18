@@ -1,0 +1,164 @@
+#menuitem A:link {
+color : white;
+text-decoration : none;
+}
+A:link {
+	color : #0000FF;
+	text-decoration : none;
+}
+
+#menuitem A:Visited {
+color : #FFFFFF;
+text-decoration : none;
+}
+A:Visited {
+	color : #003399;
+	text-decoration : none;
+}
+
+#menuitem A:hover {
+color : #F0E68C;
+text-decoration : underline;
+}
+A:hover {
+	color : #FF0000;
+	#text-decoration : underline;
+	text-decoration : none;
+}
+
+h1 {
+	font-size : 20pt;
+	font-family : Arial, Helvetica, San Serif;
+ }
+
+h2 {
+	font-size : 18pt;
+	font-family : Arial, Helvetica, San Serif;
+ }
+
+
+h3 {
+	font-size : 13pt;
+	font-family : Arial, Helvetica, San Serif;
+ }
+
+.white {
+	font-size : 8pt;
+	color : #FFFFFF;
+	font-weight : bold;
+	font-family : Arial, Helvetica, San Serif;
+ }
+
+.whitetop {
+	font-size : 10pt;
+	color : #FFFFFF;
+	font-weight : bold;
+	font-family : Arial, Helvetica, San Serif;
+ }
+
+.black {
+	font-size : 8pt;
+	color : #000000;
+	font-weight : bold;
+	font-family : Arial, Helvetica, San Serif;
+ }
+
+.red {
+	font-size : 10pt;
+	color : red;
+	font-weight : bold;
+	font-family : Arial, Helvetica, San Serif;
+ }
+
+.yellow {
+	font-size : 8pt;
+	color : #F0E68C;
+	font-weight : bold;
+	font-family : Arial, Helvetica, San Serif;
+ }
+
+.rolloverfont {
+	font-size : 7pt;
+	color : darkblue;
+	font-family : Arial, Helvetica, San Serif;
+ }
+
+
+.gray {
+	font-size : 10pt;
+	color : #808080;
+	font-family : Arial, Helvetica, San Serif;
+ }
+
+td {
+	font-size : 10pt;
+	font-family : Arial, Helvetica, San Serif;
+ }
+
+.ndfdlink {
+	font-size : 11pt;
+        color : #FFFFFF;
+        text-decoration : none;
+        font-family : Arial, Helvetica, San Serif;
+ }
+
+.ndfdlinkyellow {
+	font-size : 11pt;
+        color : #FFF4CC;
+        text-decoration : none;
+        font-family : Arial, Helvetica, San Serif;
+ }
+
+.mediumfont {
+        font-size : 12pt;
+        color: #000000;
+	font-weight : bold;
+        text-decoration : none;
+        font-family : Arial, Helvetica, San Serif;
+ }
+
+.largefont {
+        font-size : 18pt;
+        color: #000000;
+	font-weight : bold;
+        text-decoration : none;
+        font-family : Arial, Helvetica, San Serif;
+ }
+
+.tablecap {
+        font-size : 14pt;
+        color: #000090;
+	font-weight : bold;
+        text-decoration : none;
+        font-family : Arial, Helvetica, San Serif;
+ }
+
+.biglinkyellow {
+        font-size : 14pt;
+        color : #FFF4CC;
+	font-weight : bold;
+        text-decoration : none;
+        font-family : Arial, Helvetica, San Serif;
+ }
+
+.biglinkwhite {
+        font-size : 14pt;
+        color : #FFFFFF;
+	font-weight : bold;
+        text-decoration : none;
+        font-family : Arial, Helvetica, San Serif;
+ }
+
+.nwslink {
+ 	font-size : 10pt;
+        color : darkblue;
+        text-decoration : none;
+        font-family : Arial, Helvetica, San Serif;
+ }
+
+.normaltext {
+        font-size : 12pt;
+        color: #000000;
+        text-decoration : none;
+        font-family : Arial, Helvetica, San Serif;
+ }

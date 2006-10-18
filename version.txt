@@ -1,0 +1,73 @@
+[comments]
+# My use of version...
+# It is somewhat free form, and all that really matters is that it
+# always increases, however:
+#   +.01 is for minor bug fixes / web updates.
+#   +.1 is for new features
+#   +1 is for a large set of new features
+
+[degrib]
+Version=1.83
+Date=09/14/2006
+Web=http://www.nws.noaa.gov/NDFD_GRIB2Decoder/index.htm
+
+[emapf]
+# Note: cmapf doesn't use Version in the conventional sense...
+#   3.0 is for eliptical earth.  2.0 is for Oblique and Transverse projections
+#   1.0 is simple projections on a sphere,
+#   note: there is no incremental steps, so bug fixes are tracked by date
+#   of download.
+Version=3.0
+Date=5/05/2004
+Web=http://www.arl.noaa.gov/ss/models/cmapf.html
+
+[grib2_unpacker]
+Version=1.5
+Date=10/24/2002
+Web=http://www.nws.noaa.gov/mdl/iwt/grib2/decoder.htm
+
+[g2clib-1.0.2]
+Version=1.0.2
+Date=3/23/2005
+Web=http://www.nco.ncep.noaa.gov/pmb/codes/GRIB2/
+
+[libjasper]
+# "jpeg2000" is a subset of libjasper
+Version=1.700.5
+Date=12/17/2003
+Web=http://www.ece.uvic.ca/~mdadams/jasper/
+
+[libpng]
+Version=1.2.5
+Date=5/30/2003
+Web=http://www.libpng.org/pub/png/libpng.html
+
+[zlib]
+Version=1.1.4
+Date=5/31/2003
+Web=http://www.gzip.org/zlib/
+
+[netcdf]
+Version=3.5.1
+Date=4/2/2004
+web=http://www.unidata.ucar.edu/packages/netcdf/
+
+[libxml]
+Version=2.6.23
+Date=2/16/2006
+web=ftp://xmlsoft.org/
+
+[gd]
+Version=2.0.33
+Date=7/12/2005
+web=http://www.boutell.com/gd/
+
+[drawshp]
+Version=1.03
+Date=7/12/2005
+
+[mkwidgets]
+Version=1.3
+Date=2/6/2003
+Web=http://mkextensions.sourceforge.net/
+

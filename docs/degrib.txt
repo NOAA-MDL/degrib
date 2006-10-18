@@ -1,0 +1,862 @@
+NAME
+   degrib: Work with GRIB files in various ways.
+
+SYNOPSIS
+   degrib [input GRIB file] [OPTIONS]...
+   degrib [OPTIONS]... -in [input GRIB file] [OPTIONS]...
+   degrib [OPTION]... < [GRIB file]
+
+   (**** See below for the various OPTIONS. ****)
+
+DESCRIPTION
+   Works with GRIB files in the following ways:
+      1) Inventory GRIB files.
+      2) Convert from GRIB to various formats.
+      3) Get Meta data from a GRIB message.
+      4) Probe GRIB files at a specified lat/lon.
+      5) Convert NDFD GRIB2 files to flat file database
+      6) Probe the flat file database.
+
+OPTIONS
+   Note: Behavior is controlled first by command line options, then by
+      configuration file options, and finally by default options.
+
+INPUT FILE OPTIONS
+   These options tell degrib what files to read for input.
+
+   -in [File]
+      You can provide the file to read the GRIB message from either:
+         1) right after "degrib",
+         2) using the "-in [File]" option,
+         3) on standard input.
+
+   -cfg [File]
+      You can provide a file that contains more configuration options. This
+      file is ASCII, with one option per line.
+      A '#' at the beginning of a line denotes a comment.
+      A '#' in the middle of a line means ignore the rest of the line.
+
+COMMAND OPTIONS   (Default: -V)
+   These options tell degrib what to do.  You must have 1 and only 1 of
+   these options.
+
+   -V   Print the version information.
+
+   -I   Perform an inventory on the input file.
+
+   -C   Convert a message, or several messages from the input file.
+   (**** See below for CONVERT OPTIONS. ****)
+
+   -P   Probes a GRIB file for all information at a single lat/lon or a
+        specified set of lat/lon points.
+   (**** See below for PROBE OPTIONS. ****)
+
+   -Data   Converts the NDFD GRIB2 file to an index file and a 'data cube',
+           the combination of which makes up a flat file database for use
+           with CGI programs (or with GrADS?).
+   (**** See below for DATABASE CREATE OPTIONS. ****)
+
+   -DP   Probes the "data cube" for all information at a single lat/lon.
+   (**** See below for DATABASE PROBE OPTIONS. ****)
+
+   -DC   Converts a message from the "data cube".
+   (**** See below for CONVERT OPTIONS. ****)
+
+   -refTime   Print the oldest reference time in the GRIB file to standard
+              output.
+   (**** See below for REFERENCE TIME OPTIONS. ****)
+
+   -Sector   Given a file of sectors, and a lat/lon, prints the sector(s)
+        that point is in.
+   (**** See below for SECTOR OPTIONS. ****)
+
+OUTPUT FILE OPTIONS   (Default: -nameStyle 2)
+   These options specify what the name of output files should be.
+
+   -out stdout
+      For command options that generate only one file, this tells the
+      program to send that file to standard output.
+
+   -out [File]
+      Name of the file to store the results.  Must have 1 and only 1 dot in
+      the name, and the extension must be 3 characters.  The extension will
+      be replaced depending on file format.
+
+   -nameStyle ["string" or "style numbers"]
+      File naming style.  (Only applicable if -out is NOT Specified)
+      "string" has the following special characters:
+         %e = [element] (MaxT, MinT, etc)
+         %V = [YYYYMMDDHHMM] (valid time)
+         %v = [MMDDHHMM] (valid time) short form shifted right.
+         %lv = [YYYYMMDDHH] (valid time short form shifted left.
+         %R = [YYYYMMDDHH] (reference time)
+         %p = [HH] (val time - ref time)
+         %c = [HH] The valid cycle.
+              Example: Today's 12Z forecast = 12
+         %D = [DDDD or MDDD] where DDDD is the difference in days (zulu)
+              between the reference and valid day. (the M means 'minus')
+              0000 => Reference day = Valid Day,
+              M001 => Reference day - 1 = Valid Day, (Probably an ob)
+              0001 => Reference day + 1 = Valid Day
+              Eg.: Ref. time 00Z, 1st NDFD maxt valid at 00Z => 0001 (1 if %d)
+              Eg.: Ref. time 00Z, 1st NDFD mint valid at 12Z => 0000 (0 if %d)
+              Eg.: Ref. time 00Z, 1st NDFD temp valid at 3Z => 0000 (0 if %d)
+              Eg.: Ref. time 19Z, 1st NDFD maxt valid at 00Z => 0001 (1 if %d)
+              Eg.: Ref. time 19Z, 1st NDFD mint valid at 12Z => 0001 (1 if %d)
+              Eg.: Ref. time 19Z, 1st NDFD temp valid at 21Z => 0000 (0 if %d)
+         %d = [d or Md] (No Leading 0's) where d is the difference in days
+              (zulu) between the reference and valid day. (the M means 'minus')
+              (See %D option)
+         %y = [###] ("020") integer part of lower left latitude.
+         %x = [###] ("121") abs (integer part of lower left longitude).
+         %s = [surface short form] (0[-]SFC)
+         %A = generating Center (author) example 007 (NMC)
+         %a = generating Subcenter (author) example 014 (MDL)
+         %g = generating ProcessID example 096 (GFS)
+         %E = For GRIB1 ensemble data from NCEP, "Type-ID Number-Prod ID" see:
+              http://www.emc.ncep.noaa.gov/gmb/ens/info/ens_grib.html
+      Predefined "style numbers":
+         0 = "%e_%V_%y%x.txt"
+         1 = "%e_%R_%p_%y%x.txt"
+         2 = "%e_%v.txt"
+         3 = "%e_%lv.txt"
+         4 = "%e_%v_%s.txt"
+
+   -namePath [Path]
+      Name of a directory to put the files in.
+      Only applicable if -out is NOT Specified.
+
+   -log [File]
+      Name of the file to log errors to.  Currently we only log weather key
+      probe errors to it, but it may have more uses in the future.
+
+CONVERT OPTIONS (see above for "-C" or "-DC")
+   (Default: -msg 1 -Met -nShp -nFlt -NetCDF 0 -nCsv -nGrib2 -MSB -Unit e
+    -Decimal 3)
+
+   -msg [messageNum]
+      Which GRIB message to convert (starts with message 1).  If
+      [messageNum] == 0 or "all", convert all messages.
+
+   CONVERT FILE TYPES OPTIONS:
+      -Met vs -nMet
+         Create the .txt file, which contains meta data about the message.
+
+      -Shp, -Shp2 vs -nShp
+         Create ESRI .shp files (ie .shp, .shx, .dbf, .prj and .ave files).
+         The -Shp2 means create verbose shape files if possible (ie have a
+         column labeled x, y, lon, lat).  The -nShp means don't create the
+         .shp files.
+      (**** See below for SHP SPECIFIC OPTIONS ****)
+
+      -Flt vs -nFlt
+         Create the .flt files.  This includes the .flt, .hdr, and .ave
+         files.  The -nFlt means don't create the .flt files.
+      (**** See below for FLT SPECIFIC OPTIONS ****)
+
+      -NetCDF [type]
+         "type" is required, and is defined as follows:
+            0 = Don't create NetCDF
+            1 = Create NetCDF (version 5/7/2004) based on CF format
+                http://www.cgd.ucar.edu/cms/eaton/cf-metadata/index.html
+                You can use "ncview" to view the data.
+                http://meteora.ucsd.edu/~pierce/ncview_home_page.html
+                Allows for 2 dimensional grids (X,Y)
+            2 = Create NetCDF (version 12/1/2004) based on CF format
+                Some surpurfulous elements were removed, and it allows for
+                3 dimensional grids (ValidTime,X,Y)
+                Developed by: Jason Craig (NCAR / RAP)
+            3 = Create NetCDF (version 9/16/2005) based on CF format
+                Some surpurfulous attributes were removed, and it should be
+                more CF compliant since it has projection_x_coordinate and
+                projection_y_coordinate variables.  "1" had them, but they
+                were set incorrectly.  Removed them in "2".
+
+      -Csv vs -nCsv
+         Create ASCII .csv file, which is a fixed field, comma delimited
+         file. The -nCsv means don't create the .csv file.
+
+      -Grib2 vs -nGrib2
+         Create a .grb file which contains GRIB2 messages repacked in GRIB2
+            1) This is not intended to convert GRIB1 messages to GRIB2.
+            2) This only works for a subset of the GRIB2 packing schemes,
+               specifically complex packing, and complex packing with
+               second order differencing.
+         The -nGrib2 means don't create the .grb file.
+
+      -IS0
+         Create .IS0 text file for diagnosing the GRIB message.
+   END CONVERT FILE TYPES OPTIONS:
+
+   -MSB vs -nMSB
+      When generating binary files use Most Significant Byte first (UNIX)
+      when applicable.  The -nMSB does the reverse and stores Least
+      Significant Byte first (PC).  Note: This only applies when the file
+      format is flexible enough.
+
+   -radEarth [value]
+      Allows the user to override the radius of earth in the GRIB message.
+      Came about because NCEP GRIB1 state they used 6367.47km, when they
+      actually use 6371.2km.  Current default for NCEP created GRIB1
+      messages is to use 6371.2
+
+   -Unit [type]
+      This converts recognized elements from their GRIB unit to their
+      native unit in the metric or English system. [type] is defined as:
+         none = Use GRIB units.
+         e or english = Use English units
+            (Kelvin->Fahrenheit) (M/S->Knots) (kg/m**2->inches)
+         m or metric = Use metric units
+            (Kelvin->Celsius)
+
+   -Decimal [Amount]
+      Number of decimals used to store the value. Data will be rounded to
+      this number. Default is 3, although "Amount" is allowed to range
+      between 0 and 17, since I used doubles to store the data internally.
+      Note: A 4 byte float can only store about 7 decimals, so
+      typically "Amount" is <= 5.
+
+   -validMax [value]
+      A maximum expected value in the field.  If a value in the grid is >
+      "value", then the file is probably corrupt, and degrib should abort.
+
+   -validMin [value]
+      A minimum expected value in the field.  If a value in the grid is <
+      "value", then the file is probably corrupt, and degrib should abort.
+
+   -lwlf [lat,lon]
+      Is the lower left corner of a sub region of the grid.  This is mainly
+      useful for the -Grib2 option when creating sub grids.
+      Note: lat,lon has no spaces, and lon is positive eastward.
+
+   -uprt [lat,lon]
+      Is the upper right corner of a sub region of the grid.  This is
+      mainly useful for the -Grib2 option when creating sub grids.
+      Note: lat,lon has no spaces, and lon is positive eastward.
+
+SHP SPECIFIC OPTIONS (see above for "-C" or "-DC" and "-Shp")
+   (Default: -poly 0)
+
+   -poly [type]
+      "type" is required, and is defined as follows:
+      0 = Create point shp files instead of polygon shape files.
+      1 or small = Create polygon shp files with 1 polygon per grid cell.
+         Results in small polygons, but large file sizes, which in turn has
+         slow redraws, but allows one to merge the data together in ESRI.
+      2 or big = Dissolve or merge the small polygons together when they
+         are the same value. Results in large polygons, but small file
+         sizes, which in turn has fast redraws, but the polygons change
+         making it difficult to merge data.
+
+   -nMissing
+      Don't store any missing values in the .shp files.
+
+FLT SPECIFIC OPTIONS (see above for "-C" or "-DC" and "-Flt")
+   (Default: -Interp 0 -nRevFlt -SimpleVer 4)
+
+   -GrADS [type] ("type" defaults to 1)
+      Create a GrADS Control file (.ctl) so .flt file can be used in GrADS.
+      1 = Create GrADS Control file with TDef = "Reference time"
+      2 = 9/19/2005 Create GrADS Control file with TDef = "Valid Time".
+          Needed if we are to implement multiple grids using a single .ctl
+          file.
+
+   -ESRIAsc
+      Create an ESRI ASCII Grid instead of a binary grid.  The binary grid
+      consists of a .flt and a .hdr file.  The ASCII grid combines the two
+      together. 
+
+   -Interp [type]
+      This interpolates to a lat/lon coverage grid using the following
+      types of interpolation schemes.  (Note: "type" is NOT required, and
+      defaults to 2.):
+      0 = Use the original GRIB2 projected grid.
+      1 or near = Use the nearest neighbor method.
+      2 or bilinear = Use the Bi-Linear interpolation method.
+
+   -revFlt vs -nRevFlt
+      Create a .tlf file which starts at the lower left instead of the .flt
+      file which starts in the upper left.  Typically used with the NDFD
+      program "imageGen", which needs "-revFlt -nMSB"
+      The -nRevFlt means don't create the .tlf file.
+
+   -SimpleWx
+      Use NDFD Weather Table to simplify the ugly weather strings when we
+      create the .flt file.
+
+   -SimpleVer [version]
+      1 = Use 6/2003 version of NDFD Simple Weather Code
+      2 = Use 1/2004 version of NDFD Simple Weather Code
+      3 = Use 2/2004 version of NDFD Simple Weather Code
+      4 = Use 11/2004 version of NDFD Simple Weather Code
+
+PROBE OPTIONS (see above for "-P")
+   (Default: -Interp 1 -pntStyle 0 -WxParse 0 -SimpleVer 4 -Separator ", "
+    -Unit e -Decimal 3)
+
+   -Interp [type]
+      Use this interpolation scheme to get to the specified lat/lon.
+      (Note: "type" is NOT required, and defaults to 2.)
+      1 or near = Use the nearest neighbor method.
+      2 or bilinear = Use the Bi-Linear interpolation method.
+
+   -pnt [lat,lon]
+      The geographic location of the point to probe. (For multiple points,
+      use -pntFile.)
+      Note: lat,lon has no spaces, and lon is positive eastward.
+
+   -pntFile [File]
+      An ASCII file containing a list of points to probe.  Each line
+      contains 1 point in the form of "label, lat, lon". A '#' indicates a
+      comment. "lon" is positive eastward.  (As of 1.65 requires comma as the
+      delimiter instead of either space or comma, so labels can have spaces).
+
+   -surface [form]
+      Add a column for the surface to the probed results.
+      "form" is defined as:
+         short = Use surface's abbreviation.
+         long = Spell out the surface type.
+
+   -pntStyle [type]
+      0 = Elem, Unit, refTime, valTime, (Value at Lat/lon 1), ...
+      1 = Stn Name(or lat,lon), Elem[Unit], refTime, valTime, value
+      2 = Stn Name(or lat,lon), Elem[Unit], Surface, refTime, valTime,
+          value (this is the same as "-pntStyle 1 -surface short").
+
+   -nLabel
+      Ignores the label using "(CellX,CellY,lat,lon)" instead. Useful if
+      one wants to do grid to lat/lon conversions.
+
+   -cells [flag]
+      This option allows one to specify grid cell values instead of lat/lon
+      to the -pnt option.  [flag] is defined as:
+      all = probe all grid cells regardless of -pnt, and -pntFile options.
+      true = treat -pnt and -pntFile option's lat/lon's as cell Y, cell X.
+
+   -validMax [value]
+      A maximum expected value in the field.  If a value in the grid is >
+      "value", then the file is probably corrupt, and degrib should abort.
+
+   -validMin [value]
+      A minimum expected value in the field.  If a value in the grid is <
+      "value", then the file is probably corrupt, and degrib should abort.
+
+   -WxParse
+      0 = Output Ugly strings,
+      1 = English Translation of Ugly strings
+      2 = SimpleWx code.
+
+   -SimpleVer [version]
+      (**** See "-WxParse 2" ****)
+      1 = Use 6/2003 version of NDFD Simple Weather Code
+      2 = Use 1/2004 version of NDFD Simple Weather Code
+      3 = Use 2/2004 version of NDFD Simple Weather Code
+      4 = Use 11/2004 version of NDFD Simple Weather Code
+
+   -Separator [string]
+      String to use to separate columns in the Probe output.
+
+   -radEarth [value]
+      Allows the user to override the radius of earth in the GRIB message.
+      Came about because NCEP GRIB1 state they used 6367.47km, when they
+      actually use 6371.2km.  Current default for NCEP created GRIB1
+      messages is to use 6371.2
+
+   -Unit [type]
+      This converts recognized elements from their GRIB unit to their
+      native unit in the metric or English system. [type] is defined as:
+         none = Use GRIB units.
+         e or english = Use English units
+            (Kelvin->Fahrenheit) (M/S->Knots) (kg/m**2->inches)
+         m or metric = Use metric units
+            (Kelvin->Celsius)
+
+   -Decimal [Amount]
+      Number of decimals used to store the value. Data will be rounded to
+      this number. Default is 3, although "Amount" is allowed to range
+      between 0 and 17, since I used doubles to store the data internally.
+      Note: A 4 byte float can only store about 7 decimals, so
+      typically "Amount" is <= 5.
+
+   -XML [type]
+      This converts NDFD specific data into various flavors of XML.  The
+      Default value is -XML 0 (don't create XML).
+      [type] is defined as:
+         1 = create DWML "time-series" product
+         2 = create a DWML "glance" product
+
+      See also -ndfdVars, -ndfdConven, -Icon, -startTime, and -endTime
+
+   -ndfdVars [string]
+      Specifies the NDFD elements (wind speed, sky cover, weather, etc.)
+      that you want to appear in the output DWML.  The string is a comma
+      delimited list of weather element codes.  The element codes
+      depend on the which -ndfdConven is used.  Omitting -ndfdVars will
+      yield DWML for all ndfd elements.
+
+      Example:  -ndfdVars mx,wx,dp (assumes an -ndfdConven 2)
+      See also -gribFilter -ndfdConven
+
+   -ndfdConven [type]
+      Defines the naming convention used for files containing NDFD GRIB
+      messages.  These names are also used with the -ndfdVars option to
+      tell degrib which NDFD elements to process.  Omitting -ndfdConven
+      is equivalent to -ndfdConven 1.
+      [type] is defined as:
+
+      [type]=0   1     2
+      maxt       maxt  mx "Maximum Temperature"
+      mint       mint  mn "Minimum Temperature"
+      pop12      pop12 po "12-Hour Probability of Precipitation"
+      t          temp  tt "Temperature"
+      winddir    wdir  wd "Wind Direction"
+      windspd    wspd  ws "Wind Speed"
+      td         td    dp "Dewpoint Temperature"
+      sky        sky   cl "Sky Cover"
+      qpf        qpf   qp "Quantitative Precipitation Forecast"
+      snowamt    snow  sn "Snowfall Amount"
+      wx         wx    wx "Weather"
+      waveheight waveh wh "Wave Height"
+      apparentt  apt   at "Apparent Temperature (wind chill or heat index)"
+      rh         rhm   rh "Relative Humidity"
+
+      Example:  -ndfdConven 1
+
+   -gribFilter [string]
+      By default when expanding a directory to find GRIB files or database
+      index files, it looks for (in the GRIB case *.bin) (in the database
+      case *.ind).  In addition, if it doesn't find *.bin (example maxt.bin),
+      then it also looks for ds.*.bin (example ds.maxt.bin).  The reason for
+      this is because while tcldegrib and tkdegrib rename the file without
+      the "ds.", the filename on the NDFD http site has a "ds.".
+
+      The -gribFilter option lets you over ride the "*.bin" to whatever
+      convention you are using.
+
+      If the -ndfdVars option is given, then it uses that to further qualify
+      the file.
+
+      Example: -ndfdVars maxt,mint -gribFilter "*.grb"
+         Means look for files "maxt.grb, mint.grb".  If you can't find them,
+         also look for "ds.maxt.grb, ds.mint.grb".
+
+      Example:  -gribFilter "*.grb"
+
+   -Icon [type]
+      Indicates that you want the DWML to contain icon information. The
+      default value is -Icon 0 (no icon information).
+      [type] is defined as:
+
+         0 = Degrib will not format icon XML elements in the DWML.
+         1 = Degrib will format icon XML elements in the DWML.
+
+         Example:  -Icon 1
+
+      NOTE:  To format icon elements, degrib will need temperature,
+             sky cover, wind speed, and weather files.
+
+   -startTime [string]
+      Establishes the beginning time of the period for which you want data.
+      The value is a UTC time and can be expressed in several ways.  If the
+      start time is omitted, the DWML document will contain the most recent
+      data available.  Two of the ways you can define the time string are:
+         YYYY-MM-DDTHH:MM:SS
+             YYYY = 4 digit year
+             MM   = 2 digit month
+             DD   = 2 digit day of the month
+             HH   = 2 digit hour of the day (24 hour clock)
+             SS   = 2 digit seconds
+             -    = character to delimit date components
+             T    = character to delimit date and time information
+             :    = character to delimit time components
+         "MM/DD/YYYY HH:MM"
+             YYYY = 4 digit year
+             MM   = 2 digit month
+             DD   = 2 digit day of the month
+             HH   = 1 or 2 digit hour of the day (24 hour clock)
+             SS   = 2 digit seconds
+             /    = character to delimit date components
+             :    = character to delimit time components
+         NOTE: The quotes are needed in this case to keep the day info
+               together with the time info.  Without the quotes, the space
+               would confuse the program into treating them as separate
+               arguments, and not knowing what to do with the time info.
+
+         Example:  -startTime "10/20/2005 5:00"
+         Example:  -startTime 2005-10-20T05:00:00
+         Example:  -startTime "20051020 5:00"
+         Example:  -startTime "2005-10-20 5:00"
+         Example:  -startTime "October 20, 2005 5:00"
+         Example:  -startTime "Oct 20, 2005 5:00"
+
+   -endTime [string]
+      Establishes the ending time of the period for which you want data.
+      The value is a UTC time and can be expressed in several ways.  If the
+      end time is omitted, the DWML document will contain the latest data
+      available.  Two of the ways you can define the time string are:
+         YYYY-MM-DDTHH:MM:SS
+             YYYY = 4 digit year
+             MM   = 2 digit month
+             DD   = 2 digit day of the month
+             HH   = 2 digit hour of the day (24 hour clock)
+             SS   = 2 digit seconds
+             -    = character to delimit date components
+             T    = character to delimit date and time information
+             :    = character to delimit time components
+         "MM/DD/YYYY HH:MM"
+             YYYY = 4 digit year
+             MM   = 2 digit month
+             DD   = 2 digit day of the month
+             HH   = 1 or 2 digit hour of the day (24 hour clock)
+             SS   = 2 digit seconds
+             /    = character to delimit date components
+             :    = character to delimit time components
+         NOTE: The quotes are needed in this case to keep the day info
+               together with the time info.  Without the quotes, the space
+               would confuse the program into treating them as separate
+               arguments, and not knowing what to do with the time info.
+
+         Example:  -endTime 2006-12-25T23:00:00
+
+DATABASE CREATE OPTIONS (see above for "-Data")
+   The flat file database is made up of 2 (or more) files consisting of:
+   1) An index file containing meta data and look up information.
+   2) 1 (or more) grid files.
+   The grid files are either several (.flt) files, or a single "Cube" file.
+
+   (Default: -Cube -msg 0 -Unit e -Decimal 3 -nMSB -revFlt)
+
+   -Index [File]
+      Index file to create or add entries to (*.flx).  This file is later
+      used when you want to probe the database.
+
+   -Cube
+      Store the grids to a single file cube specified in "-out".
+      If there is no -out, uses the -Index file and replace the extension
+      with .dat
+
+   -nCube
+      Uses "-nameStyle" and "-namePath" to create a set of .flt files for
+      each message, and update the -Index file.
+
+   -Append
+      Append data to the given Index file.
+      If "-Cube", then add it to the end of the "cube" file.
+
+   -msg [messageNum]
+      Which GRIB message to add.  Typically 0 or "all".
+
+   -MSB vs -nMSB
+      The index file is by definition not MSB, but the .flt or "cube" files
+      can be.  Preference is of -nMSB for Linux web servers.
+
+   -radEarth [value]
+      Allows the user to override the radius of earth in the GRIB message.
+      Came about because NCEP GRIB1 state they used 6367.47km, when they
+      actually use 6371.2km.  Current default for NCEP created GRIB1
+      messages is to use 6371.2
+
+   -Unit [type]
+      This converts recognized elements from their GRIB unit to their
+      native unit in the metric or English system. [type] is defined as:
+         none = Use GRIB units.
+         e or english = Use English units
+            (Kelvin->Fahrenheit) (M/S->Knots) (kg/m**2->inches)
+         m or metric = Use metric units
+            (Kelvin->Celsius)
+
+   -Decimal [Amount]
+      Number of decimals used to store the value. Data will be rounded to
+      this number. Default is 3, although "Amount" is allowed to range
+      between 0 and 17, since I used doubles to store the data internally.
+      Note: A 4 byte float can only store about 7 decimals, so
+      typically "Amount" is <= 5.
+
+   -validMax [value]
+      A maximum expected value in the field.  If a value in the grid is >
+      "value", then the file is probably corrupt, and degrib should abort.
+
+   -validMin [value]
+      A minimum expected value in the field.  If a value in the grid is <
+      "value", then the file is probably corrupt, and degrib should abort.
+
+   -revFlt vs -nRevFlt
+      Create the "cube" or ".flt" file starting at the lower left instead
+      of the upper left.
+      The -nRevFlt means don't create the .tlf file.
+
+DATABASE PROBE OPTIONS (see above for "-DP")
+   Given an Index file (.flx) find all information pertaining to a given
+   lat/lon.
+
+   (Default: -pntStyle 0 -WxParse 0 -Separator ", " -Decimal 3)
+
+   -Print
+      Print the Index file (useful for debugging).
+
+   -pnt [lat,lon]
+      The geographic location of the point to probe. (For multiple points,
+      use -pntFile.)
+      Note: lat,lon has no spaces, and lon is positive eastward.
+
+   -pntFile [File]
+      An ASCII file containing a list of points to probe.
+      Each line contains 1 point in the form of "label, lat, lon"
+      A '#' indicates a comment. "lon" is positive eastward.
+
+   -pntStyle [type]
+      0 = Elem, Unit, refTime, valTime, (Value at Lat/lon 1), ...
+      1 = Stn Name(or lat,lon), Elem[Unit], refTime, valTime, value
+
+   -WxParse
+      0 = Output Ugly strings,
+      1 = English Translation of Ugly strings
+      2 = SimpleWx code.
+
+   -Separator [string]
+      String to use to separate columns in the Probe output.
+
+   -radEarth [value]
+      Allows the user to override the radius of earth in the GRIB message.
+      Came about because NCEP GRIB1 state they used 6367.47km, when they
+      actually use 6371.2km.  Current default for NCEP created GRIB1
+      messages is to use 6371.2
+
+   -Decimal [Amount]
+      Number of decimals used to store the value. Data will be rounded to
+      this number. Default is 3, although "Amount" is allowed to range
+      between 0 and 17, since I used doubles to store the data internally.
+      Note: A 4 byte float can only store about 7 decimals, so
+      typically "Amount" is <= 5.
+
+   -XML [type]
+      This converts NDFD specific data into various flavors of XML.  The 
+      Default value is -XML 0 (don't create XML).
+      [type] is defined as:
+         1 = create DWML "time-series" product
+         2 = create a DWML "glance" product
+
+      See also -ndfdVars, -ndfdConven, -Icon, -startTime, and -endTime
+
+   -ndfdVars [string]
+      Specifies the NDFD elements (wind speed, sky cover, weather, etc.)
+      that you want to appear in the output DWML.  The string is a comma
+      delimited list of weather element codes.  The element codes
+      depend on the which -ndfdConven is used.  Omitting -ndfdVars will
+      yield DWML for all ndfd elements.
+
+      Example:  -ndfdVars mx,wx,dp (assumes an -ndfdConven 2)
+      See also -gribFilter -ndfdConven
+
+   -ndfdConven [type]
+      Defines the naming convention used for files containing NDFD GRIB
+      messages.  These names are also used with the -ndfdVars option to
+      tell degrib which NDFD elements to process.  Omitting -ndfdConven
+      is equivalent to -ndfdConven 1.
+      [type] is defined as:
+
+      [type]=0   1     2
+      maxt       maxt  mx "Maximum Temperature"
+      mint       mint  mn "Minimum Temperature"
+      pop12      pop12 po "12-Hour Probability of Precipitation"
+      t          temp  tt "Temperature"
+      winddir    wdir  wd "Wind Direction"
+      windspd    wspd  ws "Wind Speed"
+      td         td    dp "Dewpoint Temperature"
+      sky        sky   cl "Sky Cover"
+      qpf        qpf   qp "Quantitative Precipitation Forecast"
+      snowamt    snow  sn "Snowfall Amount"
+      wx         wx    wx "Weather"
+      waveheight waveh wh "Wave Height"
+      apparentt  apt   at "Apparent Temperature (wind chill or heat index)"
+      rh         rhm   rh "Relative Humidity"
+
+      Example:  -ndfdConven 1
+
+   -gribFilter [string]
+      By default when expanding a directory to find GRIB files or database
+      index files, it looks for (in the GRIB case *.bin) (in the database
+      case *.ind).  In addition, if it doesn't find *.bin (example maxt.bin),
+      then it also looks for ds.*.bin (example ds.maxt.bin).  The reason for
+      this is because while tcldegrib and tkdegrib rename the file without
+      the "ds.", the filename on the NDFD http site has a "ds.".
+
+      The -gribFilter option lets you over ride the "*.bin" to whatever
+      convention you are using.
+
+      If the -ndfdVars option is given, then it uses that to further qualify
+      the file.
+
+      Example: -ndfdVars maxt,mint -gribFilter "*.grb"
+         Means look for files "maxt.grb, mint.grb".  If you can't find them,
+         also look for "ds.maxt.grb, ds.mint.grb".
+
+      Example:  -gribFilter "*.grb"
+
+   -Icon [type]
+      Indicates that you want the DWML to contain icon information. The
+      default value is -Icon 0 (no icon information).
+      [type] is defined as:
+
+         0 = Degrib will not format icon XML elements in the DWML.
+         1 = Degrib will format icon XML elements in the DWML.
+
+         Example:  -Icon 1
+
+      NOTE:  To format icon elements, degrib will need temperature,
+             sky cover, wind speed, and weather files.
+
+   -startTime [string]
+      Establishes the beginning time of the period for which you want data.
+      The value is a UTC time and can be expressed in several ways.  If the
+      start time is omitted, the DWML document will contain the most recent
+      data available.  Two of the ways you can define the time string are:
+         YYYY-MM-DDTHH:MM:SS
+             YYYY = 4 digit year
+             MM   = 2 digit month
+             DD   = 2 digit day of the month
+             HH   = 2 digit hour of the day (24 hour clock)
+             SS   = 2 digit seconds
+             -    = character to delimit date components
+             T    = character to delimit date and time information
+             :    = character to delimit time components
+         "MM/DD/YYYY HH:MM"
+             YYYY = 4 digit year
+             MM   = 2 digit month
+             DD   = 2 digit day of the month
+             HH   = 1 or 2 digit hour of the day (24 hour clock)
+             SS   = 2 digit seconds
+             /    = character to delimit date components
+             :    = character to delimit time components
+         NOTE: The quotes are needed in this case to keep the day info
+               together with the time info.  Without the quotes, the space
+               would confuse the program into treating them as separate
+               arguments, and not knowing what to do with the time info.
+
+         Example:  -startTime "10/20/2005 5:00"
+         Example:  -startTime 2005-10-20T05:00:00
+         Example:  -startTime "20051020 5:00"
+         Example:  -startTime "2005-10-20 5:00"
+         Example:  -startTime "October 20, 2005 5:00"
+         Example:  -startTime "Oct 20, 2005 5:00"
+
+   -endTime [string]
+      Establishes the ending time of the period for which you want data.
+      The value is a UTC time and can be expressed in several ways.  If the
+      end time is omitted, the DWML document will contain the latest data
+      available.  Two of the ways you can define the time string are:
+         YYYY-MM-DDTHH:MM:SS
+             YYYY = 4 digit year
+             MM   = 2 digit month
+             DD   = 2 digit day of the month
+             HH   = 2 digit hour of the day (24 hour clock)
+             SS   = 2 digit seconds
+             -    = character to delimit date components
+             T    = character to delimit date and time information
+             :    = character to delimit time components
+         "MM/DD/YYYY HH:MM"
+             YYYY = 4 digit year
+             MM   = 2 digit month
+             DD   = 2 digit day of the month
+             HH   = 1 or 2 digit hour of the day (24 hour clock)
+             SS   = 2 digit seconds
+             /    = character to delimit date components
+             :    = character to delimit time components
+         NOTE: The quotes are needed in this case to keep the day info
+               together with the time info.  Without the quotes, the space
+               would confuse the program into treating them as separate
+               arguments, and not knowing what to do with the time info.
+
+         Example:  -endTime 2006-12-25T23:00:00
+
+REFERENCE TIME OPTIONS (see above for "-refTime")
+   (Default: -tmFormat "%D %H:%M")
+   -tmFormat [format]
+      Use "format" as the time format of the output.
+      (**** See: Tcl/Tk clock format for reference ****)
+
+SECTOR OPTIONS (see above for "-Sector")
+   -sectFile [filename]
+      The ASCII file containing the grid specifications for the sectors.
+      File is : delimitted with the following fields:
+        name, Type, Nx, Ny, Lat1, Lon1, OrientLon, Dx, Dy, MeshLat, Scan,
+        Lat2, Lon2, ScaleLat1, ScaleLat2, RadiusMax, RadiusMin, path
+      Typically located in "/degrib/bin/sector.tbl". If not provided, uses
+      the default NDFD sectors.
+
+   -pnt [lat,lon]
+      The geographic location of the point to determine the sector(s) for.
+      Note: lat,lon has no spaces, and lon is positive eastward.
+
+   -cells [flag]
+      This option allows one to print out lat, lon, cellX, cellY, in/out
+      for each sector.
+      flag == "all" => -pnt are lat/lon values
+      flag == "true" => -pnt are Y/X values
+
+EXAMPLES
+   degrib -V
+      Print version information.
+
+   degrib foo.bin -I
+      Print an inventory of the messages in file foo.bin.
+
+   degrib foo.bin -C -msg 2
+      Convert message 2 in foo.bin, creating the meta file (*.txt) and
+      saving it as [namestyle 2].txt.
+
+   degrib foo.bin -C -msg 2 -nMet -Shp -out sample.flt
+      Convert message 2 in foo.bin, creating the .shp files, saving them as
+      sample.shp, sample.shx, sample.dbf, sample.ave.
+
+   degrib foo.bin -C -msg 2 -nMet -Flt
+      Convert message 2 in foo.bin, creating the .flt set sending the
+      results to [namestyle 2].flt, [namestyle 2].hdr, and
+      [namestyle 2].ave.
+
+   degrib foo.bin -C -msg 2 -nMet -Flt -Interp 2
+      Convert message 2 in foo.bin, creating the .flt set, having first
+      created an unprojected cover grid, and using bi-linear interpolation
+      to fill that grid.  The results are stored in [namestyle 2].flt,
+      [namestyle 2].hdr, and [namestyle 2].ave.
+
+   degrib foo.bin -C -msg 2 -nMet -Flt -revFlt
+      Convert message 2 in foo.bin, creating the .tlf set which starts at
+      the lower left instead of the upper left.  The results are stored in
+      [namestyle 2].tlf, [namestyle 2].hdr, and [namestyle 2].ave.
+
+   degrib foo.bin -C -msg all -cfg test.cfg
+      Convert all messages from foo.bin, using options stored in test.cfg
+
+   degrib foo.bin -P -pnt 30,-90
+      Probe foo.bin for all the messages in foo.bin for data located at
+      lat=30, lon=-90, and print it to standard output.
+
+   degrib foo.bin -P -pntFile foo.txt
+      Probe foo.bin for all the messages in foo.bin for data located at
+      points specified in foo.txt, and print it to standard output.
+
+   degrib foo.bin -refTime -tmFormat "%D %H:%M"
+      Print out the oldest reference time in the file foo.bin.
+
+
+AUTHOR
+   Arthur Taylor (RSIS/MDL/NWS/NOAA) (8/26/2002 to 6/1/2004)
+   Arthur Taylor      (MDL/NWS/NOAA) (6/1/2004 to current time)
+
+REPORTING BUGS
+   Report bugs to arthur.taylor@noaa.gov
+
+HUMOR (Credit: deep c secrets)
+   Definition of "strong typing": Pound extra hard on the keyboard!
+   Take this out and a UNIX Demon will dog your steps from now until the
+      time_t's wrap around (preferably the lpd).
+   You can degrib a grid, but you can't degrid a grib.
+
+COPYRIGHT
+   Created 8/26/2002.  This is given out in hopes that it proves useful.
+   There is NO Warranty: not even for MERCHANTABILITY or FITNESS FOR A
+   PARTICULAR PURPOSE.
+
+SEE ALSO
+   http://weather.gov/mdl/degrib/

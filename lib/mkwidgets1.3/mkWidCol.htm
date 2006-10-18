@@ -1,0 +1,1435 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+  <title>mkWidgets Manual, Part 2 of 2</title>
+  <meta http-equiv="Content-Type" content="text/html"/>
+  <meta name="DESCRIPTION" content="Tcl/Tk mkWidgets collection"/>
+  <meta name="AUTHOR"      content="Michael Kraus"/>
+  <meta name="KEYWORDS"    content="Tcl, Tk, Tcl/Tk, Scriptics, Scripting, Programming, Extension, Package, mkWidgets"/>
+  <style type="text/css"><!--
+    body { font-family: Lucida Sans Unicode, Arial, Helvetica }
+    p    { font-family: Arial, Helvetica; font-size: .8em; margin: 1em }
+    h1   { font-size: 1.2em; font-weight: normal; color: #000000; background: #FFFF40; padding: 0.4em }
+    h2   { font-size: 1.0em; font-weight: normal; color: #000080; background: #DDDDDD; padding: 0.1em }
+    h3   { font-size: 0.8em; font-weight: normal; color: #000080 }
+    h6   { font-size: 0.7em; font-weight: normal; margin: 1em }
+    em   { font-size: 1em; font-weight: normal; font-style: normal; color: #AA0000 }
+    pre  { color: blue; margin: 1em 1em 1em 1em }
+    ul   { font-family: Arial, Helvetica; font-size: .8em; margin: 1em 1em 1em 3em }
+    a    { text-decoration: none }
+    img  { float: right; clear: right; margin: .5em }
+  --></style>
+</head>
+
+<body>
+  <h1><img src="TclLogo.gif" alt=""/>&nbsp;mkWidgets 1.3 Manual, Part 2 of 2</h1>
+  <h6>Permission to use, copy, modify, and distribute this software and its documentation
+  for any purpose and without fee is hereby granted. The author makes no representations
+  about the suitability of this software for any purpose.  It is provided "as is" without
+  express or implied warranty.  By use of this software the user agrees to indemnify and
+  hold harmless the author from any claims or liability for loss arising out of such use.<br/>&nbsp;</h6>
+
+  <h2>&nbsp;CONTENTS</h2>
+  <p>
+    mkWidgets 1.3 - A method for writing metawidgets, and a collection of these.
+    Part 2: My metawidget collection (<a href="mkWidMan.htm">Part 1</a>)
+  </p>
+  <p>
+    <a href="#introduction">Introduction</a><br/>
+    <a href="#aclock">Aclock</a><br/>
+    <a href="#calendar">Calendar</a><br/>
+    <a href="#combobox">Combobox</a><br/>
+    <a href="#document">Document</a><br/>
+    <a href="#gridcontrol">Gridcontrol</a><br/>
+    <a href="#ibutton">Ibutton</a><br/>
+    <a href="#iconbox">Iconbox</a><br/>
+    <a href="#listcontrol">Listcontrol</a><br/>
+    <a href="#pane">Pane</a><br/>
+    <a href="#progressbar">Progressbar</a><br/>
+    <a href="#scrollbox">Scrollbox</a><br/>
+    <a href="#spinentry">Spinentry</a><br/>
+    <a href="#statusbar">Statusbar</a><br/>
+    <a href="#tabcontrol">Tabcontrol</a><br/>
+    <a href="#textframe">Textframe</a><br/>
+    <a href="#toolbar">Toolbar</a><br/>
+    <a href="#tooltip">Tooltip</a><br/>
+    <a href="#treecontrol">Treecontrol</a><br/>
+    <a href="#window">Window</a><br/>
+    <a href="#author">Author</a><br/>
+  </p>
+
+  <h2><a name="introduction">&nbsp;INTRODUCTION</a></h2>
+  <p>
+    The following sections are the man pages for the metawidget collection that comes
+    with the mkWidgets extension. The mkWidgets extension is primarily a <i>method</i>
+    for defining metawidgets, i.e. compound widgets that consist of an arbitrary number
+    of regular TK standard widgets. The included metawidget collection, however, should
+    already cover most of the needs and wishes of GUI designers. It was a lot of work,
+    after all ;)
+  </p>
+  <p>
+    Particularly worth to mention are the complex metawidgets gridcontrol, treecontrol,
+    listcontrol and iconbox. They demonstrate nicely how powerful the standard text
+    widget can actually be.
+    Follow these links to screenshots for <a href="DemoWin.gif">Windows</a> and <a href="DemoLin.gif">Linux</a>.
+  </p>
+  <p>
+    Every metawidget understands the commands <em>cget</em> and <em>configure</em>.
+    Also, in each metawidget there is exactly <i>one</i> standard widget that is called the
+    <i>default widget</i>. All it means is that all options and commands not explicitely
+    implemented as part of the metawidget definiton are redirected to it.
+  </p>
+  <p>
+    Consequently, a metawidget understands all options and commands that the default widget
+    understands. E.g. if the default widget is a simple frame, then the metawidget will
+    understand the -relief option, but not the -font option (unless the -font option
+    is defined and implemented as part of the metawidget itself) . These default widget options
+    and commands are not described here but can rather be found in the Tcl/Tk man pages.
+  </p>
+  <p>
+    In addition, it is also important to
+    understand the limitations that apply to metawidgets as opposed to standard widgets.
+    Please see <a href="mkWidMan.htm">Part 1</a> of this manual for details on these
+    and for information about how metawidgets are built with the <em>metawidget</em> command.
+  </p>
+
+  <h2><a name="aclock">&nbsp;Aclock</a></h2>
+  <h3>Name</h3>
+  <p>
+    aclock - An "analog clock" metawidget
+  </p>
+  <h3>Description</h3>
+  <p>
+    The <em>aclock</em> metawidget resembles an analog clock, with an hour and a minute
+    pointer. The pointers can be dragged with the mouse. The clock can also be set with
+    two arrow buttons and a time entry field. A double-click on the gray area between
+    the buttons and the time entry field sets the current time.
+  </p>
+  <h3>Default</h3>
+  <p>
+    The default widget is of type <em>canvas</em> and displays the clock's graphical
+    elements, such as the pointers.
+    The metawidget accepts all commands and configuration options of this widget type.
+  </p>
+  <h3>Options</h3>
+  <p>
+    <em>-controls top|bottom</em><br/><br/>
+    Specifies the location of the control elements of the clock. The control elements are
+    the two arrow buttons and the time entry field. They can be either above or below the
+    clock.
+  </p>
+  <p>
+    <em>-format <i>format-string</i></em><br/><br/>
+    Accepts a format string like for the standard <em>clock format</em> command. The format
+    string controls the way the time is displayed in the entry field. Also, the <em>get</em>
+    widget command returns the time according to the format option.
+  </p>
+  <p>
+    <em>-font <i>font-spec</i></em><br/><br/>
+    Accepts a font specification like for the standard <em>-font</em> option. This options
+    is applied to the time entry field.
+  </p>
+  <h3>Commands</h3>
+  <p>
+    <em>set <i>?time-string?</i></em><br/><br/>
+    Sets the time of the clock. If no time-string is given, the current time is taken. the
+    string must be in a format acceptable to the standard <em>clock scan</em> command.
+  </p>
+  <p>
+    <em>get</em><br/><br/>
+    Returns the time the clock is set to, in the format specified by the <em>-format</em>
+    option.
+  </p>
+  <p>
+    <em>scroll <i>minutes</i></em><br/><br/>
+    Sets the clock's time forward or backward according to the specified minutes.
+  </p>
+  <p>
+    <em>bind <i>bind-arguments</i></em><br/><br/>
+    Same as the standard <em>bind</em> command, except that it applies bindings to the
+    clock's time entry field.
+  </p>
+
+  <h2><a name="calendar">&nbsp;Calendar</a></h2>
+  <h3>Name</h3>
+  <p>
+    calendar - A calendar metawidget
+  </p>
+  <h3>Description</h3>
+  <p>
+    The <em>calendar</em> metawidget provides a calendar that allows for selection
+    of a date by using the mouse or the keyboard. The user can scroll through the
+    days and weeks by using the cursor keys, and through the month and years with
+    two arrow buttons and the control key. A double-click on the date display field
+    sets the current day.
+  </p>
+  <h3>Default</h3>
+  <p>
+    The default widget is of type <em>text</em> and displays the calendar's days.
+    The metawidget accepts all commands and configuration options of this widget type.
+  </p>
+  <h3>Options</h3>
+  <p>
+    <em>-controls top|bottom</em><br/><br/>
+    Specifies the location of the control elements of the clock. The control elements are
+    the two arrow buttons and the date display field. They can be either above or below the
+    clock.
+  </p>
+  <p>
+    <em>-font <i>font-spec</i></em><br/><br/>
+    Accepts a font specification like for the standard <em>-font</em> option. This options
+    is applied to the calendar interior and the date display field.
+  </p>
+  <h3>Commands</h3>
+  <p>
+    <em>set <i>?date-string?</i></em><br/><br/>
+    Sets the date of the calendar. If no date-string is given, the current date is taken. the
+    string must be in a format acceptable to the standard <em>clock scan</em> command.
+  </p>
+  <p>
+    <em>get <i>?format-string?</i></em><br/><br/>
+    Returns the date the calendar is set to, using an optional format string. The latter
+    defaults to %m/%d/%Y, if not specified. The format string must be
+    acceptable to the standard <em>clock format</em> command.
+  </p>
+  <p>
+    <em>scroll <i>integer</i> ?days|months|years?</em><br/><br/>
+    Sets the calendar's date forward or backward according to the specified integer value
+    and unit. The latter defaults to months, if not specified.
+  </p>
+  <p>
+    <em>bind <i>bind-arguments</i></em><br/><br/>
+    Same as the standard <em>bind</em> command, except that it applies bindings to the
+    calendar's interior.
+  </p>
+  <p>
+    <em>headerconfig <i>option-value pairs</i></em><br/><br/>
+    Applies all option-value pairs to the calendar's headline, showing the weekdays.
+    Accepts all options that can be applied to a text widget tag.
+  </p>
+  <p>
+    <em>headercget <i>option</i></em><br/><br/>
+    Retrieves an option value of the calendar's headline, showing the weekdays.
+    Accepts all options that can be applied to a text widget tag.
+  </p>
+
+  <h2><a name="combobox">&nbsp;Combobox</a></h2>
+  <h3>Name</h3>
+  <p>
+    combobox - An entry widget with a pull-down menu, a.k.a. "combobox"
+  </p>
+  <h3>Description</h3>
+  <p>
+    The <em>combobox</em> metawidget is a combination of an entry widget and a
+    listbox. One can enter any text into the entry widget but also select one
+    of several predefined values from a pull-down list. This list appears whenever
+    the user clicks on the button on the right side of the entry widget.
+    In addition, the cursor keys can be used to scroll through the list whenever
+    the focus is in the entry widget.
+  </p>
+  <h3>Default</h3>
+  <p>
+    The default widget is of type <em>entry</em>. It is the entry field itself.
+    The metawidget accepts all commands and configuration options of this widget type.
+  </p>
+  <h3>Options</h3>
+  <p>
+    <em>-lines <i>integer</i></em><br/><br/>
+    Specifies the number of lines to be displayed in the list.
+  </p>
+  <p>
+    <em>-entries <i>arg arg ...</i></em><br/><br/>
+    Sets the values to be displayed in the list.
+  </p>
+  <p>
+    <em>-state normal|disabled|restricted</em><br/><br/>
+    Similar to the <em>-state</em> option of a regular <em>entry</em> widget.
+    In restricted mode, the combobox does only allow selection from the list.
+  </p>
+  <p>
+    <em>-command <i>command-string</i></em><br/><br/>
+    Executes the specified command-string whenever a new value is picked
+    from the list.
+  </p>
+  <h3>Commands</h3>
+  <p>
+    <em>see <i>?index?</i></em><br/><br/>
+    Sets a particular value from the pull-down menu, specified by <em>index</em>.
+    If <em>index</em> is not provided, the index of the current value is returned.
+    If this value is not part of the list, -1 is returned instead.
+  </p>
+
+  <h2><a name="document">&nbsp;Document</a></h2>
+  <h3>Name</h3>
+  <p>
+    document - A "multiple document interface"-like thing
+  </p>
+  <h3>Description</h3>
+  <p>
+    On Windows, MDI is a popular concept for applications that can have
+    several documents open at a time (e.g. a word processor). Instead of each open
+    document being displayed in its own window on the desktop, the documents are
+    organized in "sub-windows" that can only be moved around within the application's
+    main window.<br/><br/>
+    The <em>document</em> metawidget resembles this behavior. Other widgets can be
+    packed, placed or gridded inside a document window like in a toplevel window.
+    The document windows can be resized, minimized, maximized, moved around and, of course,
+    closed. The class function <em>Arrange</em> can be used to arrange all
+    document windows inside their parent window, which should be a <em>frame</em>.
+  </p>
+  <h3>Default</h3>
+  <p>
+    The default widget is of type <em>frame</em>.
+    The metawidget accepts all commands and configuration options of this widget type.
+  </p>
+  <h3>Options</h3>
+  <p>
+    <em>-title <i>string</i></em><br/><br/>
+    Sets the title to be displayed in the title bar.
+  </p>
+  <p>
+    <em>-image <i>image-name</i></em><br/><br/>
+    Specifies an icon to be displayed in the document window's title bar.
+  </p>
+  <p>
+    <em>-icontext <i>string</i></em><br/><br/>
+    Sets the title text to be used when the document window is iconfied.
+  </p>
+  <p>
+    <em>-x|-y|-width|-height <i>pixels</i></em><br/><br/>
+    These four options control position and size of the document window within
+    its parent window.
+  </p>
+  <p>
+    <em>-font <i>font-spec</i></em><br/><br/>
+    Sets the font for the document window's title bar.
+  </p>
+  <p>
+    <em>-foreground|-background <i>color</i></em><br/><br/>
+    For the active window, controls the foreground and background color for the title bar.
+  </p>
+  <p>
+    <em>-state normal|minimized|maximized|withdrawn</em><br/><br/>
+    Transforms the document window into one of four possible states. The <em>withdrawn</em>
+    state means that the document window disappears but is not actually deleted.
+  </p>
+  <p>
+    <em>-minsize <i>{width height}</i></em><br/><br/>
+    Controls the minimum width and height for a document window. The option argument must
+    be a proper tcl list with two integers.
+  </p>
+  <h3>Commands</h3>
+  <p>
+    <em>menu <i>options</i></em><br/><br/>
+    Modifies the pull-down menu that pops up below the document window's icon, when clicked
+    on the icon. The <em>options</em> can be all option-value pairs that the standard
+    <em>menu</em> widget accepts. This command allows to add or disable entries to the menu.
+  </p>
+  <p>
+    <em>lower|raise <i></i></em><br/><br/>
+    The document window is lowered, i.e. put behind all other windows, or raised respectively,
+    i.e., made the topmost, active window.
+  </p>
+  <p>
+    <em>pack|grid|place <i>widget args</i></em><br/><br/>
+    Allows for putting other widgets inside the document window. It is recommended to pack
+    a simple frame inside with <em>-fill both -expand 1</em> and then put all other windows
+    inside this frame by means of the standard pack, grid and place commands.
+  </p>
+  <p>
+    <em>Arrange horizontally|vertically|cascade|tile|icons|maximize|minimize</em><br/><br/>
+    Arranges all document windows according to the given parameter. <em>Arrange icons</em>
+    will arrange the icons rather than the windows.
+    This is a class-function and hence has to be called in the format <em>::Document::Arrange mode</em>
+  </p>
+
+  <h2><a name="gridcontrol">&nbsp;Gridcontrol</a></h2>
+  <h3>Name</h3>
+  <p>
+    gridcontrol - A spreadsheed, or table widget.
+  </p>
+  <h3>Description</h3>
+  <p>
+    The <em>gridcontrol</em> metawidget is a rather complex widget and can be used to display
+    data in rows and columns, hence in table format. Columns are addressed by name, rows by
+    number. Selection is supported in the regular way. Cells and cell ranges can be tagged
+    similar to text in a text widget. By configuring the tags, cells can change their color,
+    font etc. Columns can be resized with proper text clipping.<br/><br/>
+    Some commands require to specify a cell or a cell range. This is done in the format
+    <em><i>column-name.row-number</i></em>. E.g. <em>salary.4</em> specifies the cell in
+    the fourth row of the <em>salary</em> column. Wildcard are also allowed: <em>lastname.*</em>
+    specifies all cells of the column <em>lastname</em>, <em>*.12</em> all cells of row 12.
+    Consequently, <em>*.*</em> identifies the entire table.<br/><br/>
+    The entire widget is based on only three text widgets, regardless of the number of columns
+    specified.
+  </p>
+  <h3>Default</h3>
+  <p>
+    The default widget is the widget's interior area and is of type <em>text</em>.
+    The metawidget accepts all commands and configuration options of this widget type.
+  </p>
+  <h3>Options</h3>
+  <p>
+    <em>-font <i>font-spec</i></em><br/><br/>
+    Sets the font of the gridcontrol, including the column and row headers. The font for
+    individual cells or cell ranges can be controlled by means of the <em>tag</em> command.
+    (see below).
+  </p>
+  <p>
+    <em>-update full|partial|none</em><br/><br/>
+    Controls how a column is updated during a resize operation. <em>none</em> only resizes
+    the column header during dragging, <em>partial</em> resizes the column, too, but does
+    not perform clipping, <em>full</em> resizes and clips both the header and the column.
+  </p>
+  <p>
+    <em>-selectmode single|multiple</em><br/><br/>
+    Sets the select mode. If it is <em>single</em>, only one cell can be selected. In
+    <em>multiple</em> mode, cells and cell ranges can be selected by clicking on column
+    or row headers, or by using the shift and control key in combination with the mouse.
+  </p>
+  <p>
+    <em>-onselect <i>command-string</i></em><br/><br/>
+    If <em>command-string</em> is not empty, then it is evaluated each time the selection changes.
+  </p>
+  <h3>Commands</h3>
+  <p>
+    <em>column insert|delete|configure|cget|fit|bind|names|exists <i>?args?</i></em><br/><br/>
+    This command handles all column related matters. Columns are identified by a unique name and
+    have several configuration options.<br/>
+    <em>column insert <i>column-name position ?options?</i></em> inserts a new column
+    at the specified position (a non-negative integer, or "end"). In addition, configuration options
+    can be passed. <em>column delete <i>column-name</i></em> deletes the specified column.<br/>
+    <em>column configure <i>column-name ?options?</i></em> configures a column. There are three
+    special options: <em>-width <i>pixels</i></em> specifies the column's width.
+    <em>-align left|right|center|numeric</em> controls the alignment of text inside the column.
+    <em>-text <i>string</i></em> specifies the column heading. Otherwise, all options are accepted
+    that a text widget tag would accept. <em>column cget <i>column-name option</i></em> returns
+    the value of the given option.<br/>
+    <em>column fit <i>column-name</i></em> resizes a column so that all values of that columns can
+    be displayed without being clipped.
+    <em>column bind <i>column-name ?bind-args?</i></em> accepts arguments like the <em>bind</em>
+    command. They are passed directly to the column header.
+    Finally, <em>column names</em> returns a list of all currently defined columns, and
+    <em>column exists <i>column-name</i></em> returns 1 if a column exists, 0 otherwise.
+  </p>
+  <p>
+    <em>insert <i>row-number ?value-list ...?</i></em><br/><br/>
+    Inserts one or more rows, starting at the specified row number, and fill them up with
+    values. Each <em>valueList</em> must contain the values for an entire row and hence
+    have the same number of elements as columns specified. Row-number can be the string "end".
+  </p>
+  <p>
+    <em>delete <i>from-row ?to-row?</i></em><br/><br/>
+    Deletes a row or a range of rows. The string "end" can be used to denote the last row.
+  </p>
+  <p>
+    <em>set <i>cell-spec ?value-list ...?</i></em><br/><br/>
+    Sets values inside the grid. <em>cell-spec</em> specifies a cell that represents the top left
+    corner of the cell range whos values are to be replaced. E.g. <em>set Salary.5 80000</em> sets the
+    value in the Salary column in row 5 to 80000. <em>set Monday.3 {71 75 79} {58 65 61}</em> sets a
+    rectangular area of 3 columns by 2 rows. The top left cell is Monday.3 and is set to 71. Assumed
+    there is a column for every weekday, then Wednesday.4 is set to 61.
+  </p>
+  <p>
+    <em>get <i>?cell-spec1? ?cell-spec2?</i></em><br/><br/>
+    Returns the values of a cell or a range of cells. <em>cell-spec1</em> specifies the
+    top left corner, <em>cell-spec2</em> the bottom right corner of a rectangular-shaped
+    grid area. The values of that area are returned as a list, where each element represents
+    a row and is itself a list with the values of that row. If neither cell-spec is
+    specified, the entire grid contents is returned. In the above example,
+    <em>get Tuesday.3 Wednesday.4</em> returns {{75 79} {65 61}}.
+  </p>
+  <p>
+    <em>tag add|delete|remove|cget|configure|lower|raise|ranges|names|bind ?args?<i></i></em><br/><br/>
+    This command allows to apply and control tags for cells and cell ranges. This is very
+    similar to the way tags are used in the original <em>text</em> widget. Cells can have one
+    or more tags, which are identified by a name. Each tag can be configured, e.g. with a
+    certain background color, which in turn would apply this color to all cells that have this
+    particular tag.<br/>
+    <em>tag add <i>tag-name cell-spec1 ?cell-spec2?</i></em> adds the tag specified by tag-name to
+    the cell (range) specified by cell-spec1 (and cell-spec2).
+    <em>tag remove <i>tag-name cell-spec1 ?cell-spec2?</i></em> removes a previously added tag
+    from a cell or a cell range.
+    <em>tag names <i>cell-spec</i></em> returns all tags attached to a single cell. If a cell
+    range is specified, the first cell is taken.
+    <em>tag ranges <i>tag-name</i></em> returns all cells that have the specified tag currently
+    attached.
+    All other tag commands work exactly like the tag commands for the <em>text</em> widget.
+    In particular, the selection can be set by using the special tag "sel".
+  </p>
+  <p>
+    <em>bind <i>bind-arguments</i></em><br/><br/>
+    Applies bind arguments directly to the spreadsheet. The column and row headers do not
+    accept bindings.
+  </p>
+  <p>
+    <em>see <i>cell-spec</i></em><br/><br/>
+    Makes a particular cell visible, if it out of sight.
+  </p>
+  <p>
+    <em>rows</em><br/><br/>
+    Returns the total number of rows.
+  </p>
+
+  <h2><a name="ibutton">&nbsp;Ibutton</a></h2>
+  <h3>Name</h3>
+  <p>
+    ibutton - A button with an image
+  </p>
+  <h3>Description</h3>
+  <p>
+    The <em>ibutton</em> metawidget is just like a regular button, except it can have an image
+    inside it.
+  </p>
+  <h3>Default</h3>
+  <p>
+    The default widget is a regular <em>button</em>.
+    The metawidget accepts all commands and configuration options of this widget type.
+  </p>
+  <h3>Options</h3>
+  <p>
+    <em>-image <i>image-name</i></em><br/><br/>
+    Specifies the image to be displayed.
+  </p>
+  <h3>Commands</h3>
+  <p>
+    (none)
+  </p>
+
+  <h2><a name="iconbox">&nbsp;Iconbox</a></h2>
+  <h3>Name</h3>
+  <p>
+    iconbox - A container widget for icons
+  </p>
+  <h3>Description</h3>
+  <p>
+    The <em>iconbox</em> metawidget acts as a container for icons. An icon consists of
+    an image and a label and usually represent some object (e.g. a file). Hence, attributes
+    can also be displayed for each icon. There are three different views available: Large
+    icons, small icons, and list view. Only the latter one would display the attributes.
+    Bindings for the icons allow for callback scripts on events.
+  </p>
+  <h3>Default</h3>
+  <p>
+    The default widget is the inner area of the iconbox and is of type <em>text</em>.
+    The metawidget accepts all commands and configuration options of this widget type.
+  </p>
+  <h3>Options</h3>
+  <p>
+    <em>-font <i>font-spec</i></em><br/><br/>
+    Sets the font that is used for the label of the icons.
+  </p>
+  <p>
+    <em>-update full|partial|none</em><br/><br/>
+    When in list view, controls how a column is updated during a resize operation.
+    <em>none</em> only resizes the column header during dragging, <em>partial</em> resizes
+    the column, too, but does not perform clipping, <em>full</em> resizes and clips both
+    the header and the column while dragging.
+  </p>
+  <p>
+    <em>-selectmode single|multiple</em><br/><br/>
+    Sets the select mode. If it is <em>single</em>, only one icon can be selected. In
+    <em>multiple</em> mode, more than one icon can be selected
+    by using the shift and control key in combination with the mouse.
+  </p>
+  <p>
+    <em>-onselect <i>command-string</i></em><br/><br/>
+    If <em>command-string</em> is not empty, then it is evaluated each time the selection changes.
+  </p>
+  <p>
+    <em>-view large|small|list</em><br/><br/>
+    Sets the display mode for the iconbox: Large icons, small icons, and list view.
+    For list view, a column header row appears and the icon attributes are displayed.
+  </p>
+  <p>
+    <em>-columns <i>column-spec-list</i></em><br/><br/>
+    Specifies how to display icon attributes when the iconbox is in list view. Each
+    column specification in the list must itself be a proper list containing up to
+    4 elements: Caption, alignment, width and minimal width. The caption
+    is mandatory, the others are optional. An alignmentis specified by one of l (left),
+    r (right), c (center) or n (numeric). Width and minimal is be specified in pixels.
+  </p>
+  <h3>Commands</h3>
+  <p>
+    <em>insert <i>position icon-name ?options?</i></em><br/><br/>
+    Inserts a new icon at the specified position (an integer, or "end"). Icons are
+    referenced by their name, which must be unique for the iconbox. The icon is
+    configured with optional option-value pairs (see <em>iconconfigure</em> below).
+  </p>
+  <p>
+    <em>delete <i>?icon-name ...?</i></em><br/><br/>
+    Deletes one or more icons from the iconbox. If no icon names are given, then all
+    icons are deleted.
+  </p>
+  <p>
+    <em>iconconfigure <i>icon-name option value ?option value ...?</i></em><br/><br/>
+    Configures an icon. Icon specific options are<br/>
+    <em>-text <i>string</i></em>: The label to be used for the icon<br/>
+    <em>-image <i>image-name</i></em>: The image to be used when in "large icons" view<br/>
+    <em>-smallimage <i>image-name</i></em>: The image to be used when in "small icons" and list view<br/>
+    <em>-values <i>list</i></em>: The attributes to be displayed when in list view<br/>
+    <em>-user <i>user-data</i></em>: Arbitrary user data. Just stored with the icon but never used<br/>
+    All other options are applied to the icon's label (-font, -bg etc.).
+  </p>
+  <p>
+    <em>iconcget <i>icon-name option</i></em><br/><br/>
+    Returns an option value. For accepted options, see above.
+  </p>
+  <p>
+    <em>iconbind <i>icon-name bind-arguments</i></em><br/><br/>
+    Defines a binding script for an icon. See the generic <em>bind</em> man page for
+    more information. This is used primarily for mouse events, e.g. double-clicks,
+    whereas key events are defined using the <em>bind</em> metawidget command (an
+    icon cannot have the focus, since it consists of just two labels. Therefore it
+    does not generate key events).
+  </p>
+  <p>
+    <em>selection clear|get|set <i>?icon-names-list?</i></em><br/><br/>
+    Controls the selection. <em>clear</em> clears the selection, <em>set icon-names-list</em>
+    sets the selections for the specified icons, <em>get</em> returns a list of all icons
+    that are currently selected.
+  </p>
+  <p>
+    <em>sort ?-column <i>column-caption? ?lsort-options?</i></em><br/><br/>
+    Sorts the icons, either by their label or by a particular column, specified by its
+    caption as set with the <em>-columns</em> option. In addition, the options accepted
+    by the <em>lsort</em> command can be used.
+  </p>
+  <p>
+    <em>see <i>icon-name</i></em><br/><br/>
+    Makes an icon visible if it is out of sight.
+  </p>
+  <p>
+    <em>bind <i>bind-arguments</i></em><br/><br/>
+    Same as the standard <em>bind</em> command, except that it applies bindings to the
+    iconbox (a text widget).
+  </p>
+  <p>
+    <em>size</em><br/><br/>
+    Returns the number of icons in the iconbox.
+  </p>
+  <p>
+    <em>names</em><br/><br/>
+    Returns a list with the names of all icons in the iconbox.
+  </p>
+
+  <h2><a name="listcontrol">&nbsp;Listcontrol</a></h2>
+  <h3>Name</h3>
+  <p>
+    listcontrol - An enhanced listbox type widget
+  </p>
+  <h3>Description</h3>
+  <p>
+    The <em>listcontrol</em> metawidget is a multicolumn listbox. Columns can be resized
+    by dragging them. An icon can be placed into each column for each row individually.
+    Cells or cell ranges can be tagged similar like with the <em>gridcontrol</em> widget.
+    By configuring the tags, cells can change their color, font etc. A cell is specified with
+    <em><i>column-name.row-number</i></em>. E.g. <em>salary.4</em> specifies the cell in
+    the fourth row of the <em>salary</em> column. Wildcard are also allowed: <em>lastname.*</em>
+    specifies all cells of the column <em>lastname</em>, <em>*.12</em> all cells of row 12.
+    Consequently, <em>*.*</em> identifies the entire listcontrol.<br/><br/>
+    The entire widget is based on only two text widgets, regardless of the number of columns
+    specified.
+  </p>
+  <h3>Default</h3>
+  <p>
+    The default widget is the widget's interior area and is of type <em>text</em>.
+    The metawidget accepts all commands and configuration options of this widget type.
+  </p>
+  <h3>Options</h3>
+  <p>
+    <em>-font <i>font-spec</i></em><br/><br/>
+    Sets the font of the listcontrol, including the column headers. The font for
+    individual rows can be controlled by means of the <em>tag</em> command.
+    (see below).
+  </p>
+  <p>
+    <em>-update full|partial|none</em><br/><br/>
+    Controls how a column is updated during a resize operation. <em>none</em> only resizes
+    the column header during dragging, <em>partial</em> resizes the column, too, but does
+    not perform clipping, <em>full</em> resizes and clips both the header and the column.
+  </p>
+  <p>
+    <em>-selectmode single|multiple</em><br/><br/>
+    Sets the select mode. If it is <em>single</em>, only one row can be selected. In
+    <em>multiple</em> mode, several rows can be selected
+    by using the shift and control key in combination with the mouse.
+  </p>
+  <p>
+    <em>-onselect <i>command-string</i></em><br/><br/>
+    If <em>command-string</em> is not empty, then it is evaluated each time the selection changes.
+  </p>
+  <h3>Commands</h3>
+  <p>
+    <em>column insert|delete|configure|cget|fit|bind|names|exists <i>?args?</i></em><br/><br/>
+    This command handles all column related matters. Columns are identified by a unique name and
+    have several configuration options.<br/>
+    <em>column insert <i>column-name position ?options?</i></em> inserts a new column
+    at the specified position (a non-negative integer, or "end"). In addition, configuration options
+    can be passed. <em>column delete <i>column-name</i></em> deletes the specified column.<br/>
+    <em>column configure <i>column-name ?options?</i></em> configures a column. There are four
+    special options: <em>-width <i>pixels</i></em> specifies the column's width.
+    <em>-align left|right|center|numeric</em> controls the alignment of text inside the column.
+    <em>-text <i>string</i></em> specifies the column heading. <em>-minsize <i>pixels</i></em>
+    specifies the column's minimal width. Otherwise, all options are accepted
+    that a text widget tag would accept. <em>column cget <i>column-name option</i></em> returns
+    the value of the given option.<br/>
+    <em>column fit <i>column-name</i></em> resizes a column so that all values of that columns can
+    be displayed without being clipped.
+    <em>column bind <i>column-name ?bind-args?</i></em> accepts arguments like the <em>bind</em>
+    command. They are passed directly to the column header.
+    Finally, <em>column names</em> returns a list of all currently defined columns, and
+    <em>column exists <i>column-name</i></em> returns 1 if a column exists, 0 otherwise.
+  </p>
+  <p>
+    <em>insert <i>row-number ?value-list ...?</i></em><br/><br/>
+    Inserts one or more rows, starting at the specified row number, and fill them up with
+    values. Each <em>valueList</em> must contain the values for an entire row and hence
+    have the same number of elements as columns specified. Row-number can be the string "end".
+  </p>
+  <p>
+    <em>delete <i>from-row ?to-row?</i></em><br/><br/>
+    Deletes a row or a range of rows. The string "end" can be used to denote the last row.
+  </p>
+  <p>
+    <em>set ?-columns <i>column-list? start-row ?value-list ...?</i></em><br/><br/>
+    Sets new values for one or more rows. If the <em>-columns</em> option is specified, only
+    the values for certain columns will be set. Columns are addressed by their caption
+    as specified with the column property <em>-text</em>.
+  </p>
+  <p>
+    <em>get ?-columns <i>column-list? first-row ?last-row?</i></em><br/><br/>
+    Returns the values of a row or a range of rows. If the <em>-columns</em> option is specified,
+    only the values for the given columns are returned.
+  </p>
+  <p>
+    <em>tag add|delete|remove|cget|configure|lower|raise|ranges|names|bind ?args?<i></i></em><br/><br/>
+    This command allows to apply and control tags. This is very
+    similar to the way tags are used in the original <em>text</em> widget. Cells can have one
+    or more tags, which are identified by a name. Each tag can be configured, e.g. with a
+    certain background color, which in turn would apply this color to all cells that have this
+    particular tag.<br/>
+    <em>tag add <i>tag-name cell-spec1 ?cell-spec2?</i></em> adds the tag specified by tag-name to
+    the cell (range) specified by cell-spec1 (and cell-spec2).
+    <em>tag remove <i>tag-name cell-spec1 ?cell-spec2?</i></em> removes a previously added tag
+    from a cell or a cell range.
+    <em>tag names <i>cell-spec</i></em> returns all tags attached to a single cell. If a cell
+    range is specified, the first cell is taken.
+    <em>tag ranges <i>tag-name</i></em> returns all cells that have the specified tag currently
+    attached.
+    All other tag commands work exactly like the tag commands for the <em>text</em> widget.
+  </p>
+  <p>
+    <em>selection clear|get|set <i>?row-range ...?</i></em><br/><br/>
+    Controls the selection. <em>clear</em> clears the selection, <em>set row-range ?...?</em>
+    sets the selection for the specified row or range of rows,
+    <em>get</em> returns a list of all rows that are currently selected.
+  </p>
+  <p>
+    <em>image create|delete|configure|cget|names <i>?cell-spec? ?image-options?</i></em><br/><br/>
+    Allows to attach an image to a particular cell or cell range. The image options must
+    be those as accepted by the <em>image</em> command of the <em>text</em> widget.
+  </p>
+  <p>
+    <em>bind <i>bind-arguments</i></em><br/><br/>
+    Applies bind arguments directly to the listcontrol. The column headers do not
+    accept bindings.
+  </p>
+  <p>
+    <em>see <i>row</i></em><br/><br/>
+    Makes a particular cell visible, if it out of sight.
+  </p>
+  <p>
+    <em>size</em><br/><br/>
+    Returns the total number of rows.
+  </p>
+
+  <h2><a name="pane">&nbsp;Pane</a></h2>
+  <h3>Name</h3>
+  <p>
+    pane - A pane widget
+  </p>
+  <h3>Description</h3>
+  <p>
+    The <em>pane</em> metawidget is a container for two user-defined widgets.
+    Between these two widgets is a thin frame that can be dragged and hereby
+    resizes the two user widgets.
+  </p>
+  <h3>Default</h3>
+  <p>
+    The default widget is the draggable frame.
+    The metawidget accepts all commands and configuration options of this widget type.
+  </p>
+  <h3>Options</h3>
+  <p>
+    <em>-orientation vertical|horizontal</em><br/><br/>
+    Determines if the pane shall separate the two user widgets horizontally or vertically.
+  </p>
+  <p>
+    <em>-width <i>pixels</i></em><br/><br/>
+    Sets the width of the draggable frame.
+  </p>
+  <p>
+    <em>-resize both|first|second</em><br/><br/>
+    Controls how the two user widgets are being resized when the pane widget itself is
+    resized. <em>both</em> resizes the widgets proportionally, <em>first</em> resizes
+    only the left (top) widget, and <em>second</em> resizes only the
+    right (top) widget.
+  </p>
+  <p>
+    <em>-update <i>boolean</i></em><br/><br/>
+    Defines if the two user widgets shall be redrawn during dragging. If not, they
+    will be redrawn only after the mouse button is released.
+  </p>
+  <h3>Commands</h3>
+  <p>
+    <em>set <i>position</i> ?both|first|second?</em><br/><br/>
+    Sets the pane to a new position.  If <em>both</em> (the default) is specified,
+    <em>position</em> is taken as a percentage value (e.g. <em>set 50</em> would center the pane).
+    Otherwise as a pixel value (e.g. <em>set 50 first</em> makes the left (top) widget 50 pixels
+    wide (tall)).
+  </p>
+  <p>
+    <em>get ?both|first|second?</em><br/><br/>
+    The counterpart of <em>set</em>. Returns the position of the pane, either in percent
+    or in pixels.
+  </p>
+  <p>
+    <em>place|pack|grid first|second <i>window-name ?args?</i></em><br/><br/>
+    Places, packgs or grids a window either into the first (left, top) or second (right, bottom) part of the
+    container widget.
+  </p>
+
+  <h2><a name="progressbar">&nbsp;Progressbar</a></h2>
+  <h3>Name</h3>
+  <p>
+    progressbar - A simple "analog" progress bar
+  </p>
+  <h3>Description</h3>
+  <p>
+    The <em>progressbar</em> metawidget allows to visualize the progress of some process,
+    e.g. the loading of a file or processing of data.
+  </p>
+  <h3>Default</h3>
+  <p>
+    The default widget is the area behind the progress bar and is of type <em>frame</em>.
+    The metawidget accepts all commands and configuration options of this widget type.
+  </p>
+  <h3>Options</h3>
+  <p>
+    <em>-background <i>color</i></em><br/><br/>
+    Sets the color of the progress bar.
+  </p>
+  <p>
+    <em>-foreground <i>color</i></em><br/><br/>
+    Sets the color of the text display.
+  </p>
+  <p>
+    <em>-font <i>font-spec</i></em><br/><br/>
+    Sets the font of the text display.
+  </p>
+  <p>
+    <em>-format <i>format-string</i></em><br/><br/>
+    Defines the format to be used for the text display.
+  </p>
+  <h3>Commands</h3>
+  <p>
+    <em>set <i>value ?base-value?</i></em><br/><br/>
+    Sets the progress bar. If no base value is given, <em>value</em> is interpreted as
+    a percent value (0-100). The base value determines the maximum value to be used for
+    <em>value</em>. For value==base-value, the progress bar is fully displayed.
+  </p>
+
+  <h2><a name="scrollbox">&nbsp;Scrollbox</a></h2>
+  <h3>Name</h3>
+  <p>
+    scrollbox - A standard listbox with automatic scrollbars
+  </p>
+  <h3>Description</h3>
+  <p>
+    The <em>scrollbox</em> metawidget is identical to a regular listbox, except it has
+    a vertical and a horizonal scrollbar attached that pop up only when they are
+    needed. That is, they are not displayed, when all lines of the listbox can be
+    displayed in full, and no information is outside the viewable area.
+    In addition, a few "luxury commands" have been implemented. They allow to address
+    entries in the listbox by their name (i.e. the text that is displayed) rather than their index.
+  </p>
+  <h3>Default</h3>
+  <p>
+    The default widget is the listbox.
+    The metawidget accepts all commands and configuration options of this widget type.
+  </p>
+  <h3>Options</h3>
+  <p>
+    <em>-scrollbar auto|on|off</em><br/><br/>
+    Controls if the scrollbars should be displayed automatically when needed, or if
+    they should always be on respectively off.
+  </p>
+  <h3>Commands</h3>
+  <p>
+    <em>find <i>entry ?entry ...?</i></em><br/><br/>
+    A list is returned containing the indexes (position) of those entries that could be found in the listbox.
+  </p>
+  <p>
+    <em>selection setbyval|get|<i>standard-options ?args?</i></em><br/><br/>
+    Extents the standard listbox selection command by two functions: <em>setbyval</em> sets the selection
+    for all entries (not indexes) in <em>args</em>. <em>get</em> returns a list of all currently selected
+    entries (not indexes).
+  </p>
+  <p>
+    <em>set <i>entry ?entry ...?</i></em><br/><br/>
+    Deletes all existing entries and inserts new ones.
+  </p>
+  <p>
+    <em>remove <i>entry ?entry ...?</i></em><br/><br/>
+    Removes particular entries from the list.
+  </p>
+  <p>
+    <em>sort <i>standard-lsort-args</i></em><br/><br/>
+    Sorts the entries. The arguments must be those accepted by the <em>lsort</em> command.
+  </p>
+
+  <h2><a name="spinentry">&nbsp;Spinentry</a></h2>
+  <h3>Name</h3>
+  <p>
+    spinentry - An entry field with up and down arrows
+  </p>
+  <h3>Description</h3>
+  <p>
+    The <em>spinentry</em> metawidget is almost identical to a standard entry widget, except
+    it has two arrow buttons on the right side. Pressing these buttons or using the up and
+    down cursor keys increments or decrements a numeric value inside the entry widget.
+  </p>
+  <h3>Default</h3>
+  <p>
+    The default widget is the entry widget.
+    The metawidget accepts all commands and configuration options of this widget type.
+  </p>
+  <h3>Options</h3>
+  <p>
+    <em>-step <i>value</i></em><br/><br/>
+    Sets the step width to be used for increments and decrements.
+  </p>
+  <p>
+    <em>-speed <i>milliseconds</i></em><br/><br/>
+    Sets the scrolling speed to be used when the mouse is held down on the arrow buttons.
+  </p>
+  <p>
+    <em>-minimum|-maximum <i>value</i></em><br/><br/>
+    Defines a minimum and maximum value for the entry widget.
+  </p>
+  <p>
+    <em>-onerror <i>cmd</i></em><br/><br/>
+    Defines a script to be called when the value in the entry widget cannot be incremented
+    respectively decremented. If <em>cmd</em> is an empty string, then errors will not be caught.
+  </p>
+  <p>
+    <em>-value <i>value</i></em><br/><br/>
+    Sets the value inside the entry widget. Also checks if the value is of numeric type.
+    If not, an error is returned.
+  </p>
+  <h3>Commands</h3>
+  <p>
+    (none)
+  </p>
+
+  <h2><a name="statusbar">&nbsp;Statusbar</a></h2>
+  <h3>Name</h3>
+  <p>
+    statusbar - A flexible status bar at the bottom of a window
+  </p>
+  <h3>Description</h3>
+  <p>
+    The <em>statusbar</em> metawidget sticks to the bottom of a window and displays some
+    text (normally some helpful status information). In addition, it may show a "digital" progress
+    bar and an arbitrary number of additional fields, which may contain an icon and text.
+
+  </p>
+  <h3>Default</h3>
+  <p>
+    The default widget is the label that displays the status text.
+    The metawidget accepts all commands and configuration options of this widget type.
+  </p>
+  <h3>Options</h3>
+  <p>
+    <em>-ticks <i>number</i></em><br/><br/>
+    Displays a progress bar at the right side of the status bar, with the specified number of "lights"
+    (i.e., gray rectangles). To show a certain progress value, use the option <em>-progress</em>.
+  </p>
+  <p>
+    <em>-progress <i>value</i></em><br/><br/>
+    Visualizes a certain progress in the progress bar. The value must be between 0 and 1. 1 would
+    switch on all "lights" in the progress bar, 0.5 only the left half of them, 0 none.
+  </p>
+  <p>
+    <em>-state normal|withdrawn</em><br/><br/>
+    Shows or hides the status bar. The status bar is always drawn inside its parent window.
+  </p>
+  <p>
+    <em>-text <i>string</i></em><br/><br/>
+    Sets a text in the status bar. The text can be overloaded with the <em>push</em> command
+    and be recovered without redefinition with the <em>pop</em> command.
+  </p>
+  <h3>Commands</h3>
+  <p>
+    <em>push <i>string</i></em><br/><br/>
+    Overloads the currently displayed text with a new text. The metawidget maintains a stack
+    of all overloaded texts, so they can be recovered in the opposite order.
+  </p>
+  <p>
+    <em>pop</em><br/><br/>
+    Removes the text defined with the last <em>push</em> command and displays the text that
+    is "underneath" it.
+  </p>
+  <p>
+    <em>add <i>field-name ?args?</i></em><br/><br/>
+    Installs a new field, which can display an icon and text. The field name must be unique for
+    the status bar. Any additional arguments are passed to <em>itemconf</em>.
+  </p>
+  <p>
+    <em>delete <i>field-name ?field-name ...?</i></em><br/><br/>
+    Removes fields from the status bar.
+  </p>
+  <p>
+    <em>itemconf <i>field-name option value ?option value ...?</i></em><br/><br/>
+    Configures a field. Each field consists of a frame, an image and a text label. Consequently,
+    all options are accepted that these three widget types would accept. The metawidget will
+    apply them to the appropriate inner widget(s).
+  </p>
+  <p>
+    <em>itemcget <i>field-name option</i></em><br/><br/>
+    Returns the value of a particular option of a field.
+  </p>
+
+  <h2><a name="tabcontrol">&nbsp;Tabcontrol</a></h2>
+  <h3>Name</h3>
+  <p>
+    tabcontrol - A multi-row tab widget
+  </p>
+  <h3>Description</h3>
+  <p>
+    The <em>tabcontrol</em> metawidget is a container widget that contains a row of
+    tabs at the top. Depending on what tab is activated, the widget will show a different
+    content. Usually, this is used for modal dialogs.
+  </p>
+  <h3>Default</h3>
+  <p>
+    The default widget is the outer frame of the container.
+    The metawidget accepts all commands and configuration options of this widget type.
+  </p>
+  <h3>Options</h3>
+  <p>
+    <em>-width auto|<i>pixels</i>|<i>percent</i>%</em><br/><br/>
+    Controls the width of the tab row. For <em>auto</em> the tabs will have the individual
+    size required to display the tab label. If a percentage value is specified, the tabs
+    will cover that percent of the entire widget's width. If a plain pixel value is specified,
+    the tabs will be drawn to cover exactly that amount of pixels.
+  </p>
+  <h3>Commands</h3>
+  <p>
+    <em>insert <i>tab-name row ?args?</i></em><br/><br/>
+    Creates a new tab. Tabs are identified by a tab-name which must be unique for the metawidget.
+    Tabs are filled into the specified row from the left to the right. Any additional arguments
+    are passed to <em>tabconfigure</em>.
+  </p>
+  <p>
+    <em>delete <i>tab-name</i></em><br/><br/>
+    Deletes the specified tab.
+  </p>
+  <p>
+    <em>tabconfigure <i>tab-name option value ?option value ...?</i></em><br/><br/>
+    Configures a tab. Each tab is actually a label, therefore all label options are accepted.
+    In addition there are two special options: <em>-window</em> specifies the user widget to
+    be displayed when the tab is active. <em>-command</em> specifies a script to be evaluated
+    each time the tab is activated.
+  </p>
+  <p>
+    <em>tabcget <i>tab-name option</i></em><br/><br/>
+    Returns an option value for a tab.
+  </p>
+  <p>
+    <em>invoke <i></i></em><br/><br/>
+    Activates a tab and shows its associated user widget.
+  </p>
+  <p>
+    <em>get ?active|<i>row</i>?</em><br/><br/>
+    If no arguments is specified, returns all tab names. If <em>active</em> is specified,
+    returns the active tab. If a valid row number is specified, returns the tabs in this row.
+  </p>
+  <p>
+    <em>bind <i>tab-name bind-arguments</i></em><br/><br/>
+    Applies bind arguments directly to a tab.
+  </p>
+
+  <h2><a name="textframe">&nbsp;Textframe</a></h2>
+  <h3>Name</h3>
+  <p>
+    textframe - A frame with a title text
+  </p>
+  <h3>Description</h3>
+  <p>
+    The <em>textframe</em> metawidget is a regular frame widget with a title text
+  </p>
+  <h3>Default</h3>
+  <p>
+    The default widget is the frame itself.
+    The metawidget accepts all commands and configuration options of this widget type.
+  </p>
+  <h3>Options</h3>
+  <p>
+    <em>-anchor n|s|w|e|c</em><br/><br/>
+    Specifies the anchor position of the title text relative to the frame.
+  </p>
+  <p>
+    <em>-offset <i>value</i></em><br/><br/>
+    Sets an offset value for the title text. There are three different formats:
+    E.g. 20% sets the label 20% of the frame's width off from the left.
+    20 sets the label 20 pixel from the left border (good with -anchor w).
+    end-20 sets it from the frame's right border (good with -anchor e).
+  </p>
+  <p>
+    <em>-font <i>font-spec</i></em><br/><br/>
+    Sets the font for the title text.
+  </p>
+  <p>
+    <em>-text <i>string</i></em><br/><br/>
+    Sets the title text.
+  </p>
+  <h3>Commands</h3>
+  <p>
+    <em>pack|place|grid <i>window ?args?</i></em><br/><br/>
+    Packs, places or grids user widgets inside the textframe widget.
+  </p>
+
+  <h2><a name="toolbar">&nbsp;Toolbar</a></h2>
+  <h3>Name</h3>
+  <p>
+    toolbar - A container widget for tool buttons
+  </p>
+  <h3>Description</h3>
+  <p>
+    Toolbars are popular elements in graphical applications. Toolbars contain a number
+    of icons that represent entries from the application's menu. Hence, they are like
+    shortcuts to certain application functions. The icons often behave like regular
+    buttons, but can also act like checkbuttons and radiobuttons.
+    The <em>toolbar</em> metawidget resembles such a complex widget. Buttons, checkbuttons
+    and radiobuttons can be defined, groups of buttons can be separated by a separator line,
+    and the entire toolbar can be dragged to the four sides of its parent window.
+  </p>
+  <h3>Default</h3>
+  <p>
+    The default widget is the outer frame that contains the tool buttons.
+    The metawidget accepts all commands and configuration options of this widget type.
+  </p>
+  <h3>Options</h3>
+  <p>
+    <em>-side top|bottom|left|right</em><br/><br/>
+    Attaches the toolbar to one of the four sides of its parent widget.
+  </p>
+  <p>
+    <em>-state normal|fixed|withdrawn</em><br/><br/>
+    Controls whether the toolbar shall be hidden or visible. For <em>-state fixed</em> the toolbar
+    cannot be dragged.
+  </p>
+  <h3>Commands</h3>
+  <p>
+    <em>add button|checkbutton|radiobutton|separator <i>name ?args?</i></em><br/><br/>
+    Adds a new item to the toolbar. Items are identifed by a name that must be unique for the
+    toolbar. Additional arguments are expected to be option-value pairs and are passed on to <em>itemconf</em>.
+    For the <em>radiobutton</em> type, there is one special option <em>-group <i>group-name</i></em>, which
+    identifies to which radiobutton group the item shall belong.
+  </p>
+  <p>
+    <em>delete <i>name ?name ...?</i></em><br/><br/>
+    Deletes items from the toolbar.
+  </p>
+  <p>
+    <em>itemconf <i>name option value ?option value ...?</i></em><br/><br/>
+    Configures an item. Accepts all options that a button widget would accept. In particular, <em>-image</em>
+    to set an icon and <em>-command</em> to define an action are important here.
+  </p>
+  <p>
+    <em>itemcget <i>name option</i></em><br/><br/>
+    Returns an option value of the specified item.
+  </p>
+  <p>
+    <em>invoke <i>name ?new-state?</i></em><br/><br/>
+    Invokes a tool button. Same as if it was pressed. If the item is of type checkbutton, then <em>new-state</em>,
+    a boolean, may define the new state of the checkbutton. This argument does not apply to button and radiobutton
+    item types.
+  </p>
+  <p>
+    <em>set <i>name ?new-state?</i></em><br/><br/>
+    Same as <em>invoke</em> except that the item's associated command is not called. This is used e.g. when the
+    function that the tool button represents has been called from somewhere else (e.g. from the menu) and now
+    the tool button needs to be updated only.
+  </p>
+  <p>
+    <em>get <i>name</i></em><br/><br/>
+    Returns the state of a tool button as boolean. For regular buttons, always returns 0.
+  </p>
+  <p>
+    <em>names <i>?pattern?</i></em><br/><br/>
+    Returns a list with the names of all tool buttons. If a glob-style pattern is given, only those names
+    are returned that match the pattern.
+  </p>
+
+  <h2><a name="tooltip">&nbsp;Tooltip</a></h2>
+  <h3>Name</h3>
+  <p>
+    tooltip - Pop-up information when moving over a widget
+  </p>
+  <h3>Description</h3>
+  <p>
+    The <em>tooltip</em> metawidget provides a feature that is standard of nowadays user interfaces:
+    Whenever the user hovers over an element, such as an icon, a often yellowish little text window pops up
+    after a second or so that explains the meaning of that button. The text disappers when the mouse leaves
+    the area of the button.
+  </p>
+  <h3>Default</h3>
+  <p>
+    The default widget is of type <em>label</em>. It is the tooltip window itself.
+    The metawidget accepts all commands and configuration options of this widget type.
+  </p>
+  <h3>Options</h3>
+  <p>
+    <em>-delay <i>milliseconds</i></em><br/><br/>
+    Time to expire before the tooltip shall pop up after the user entered a widget's area.
+  </p>
+  <h3>Commands</h3>
+  <p>
+    <em>add <i>widget-name string</i></em><br/><br/>
+    Activates the tooltip feature for a particular user-defined widget and defines the text to be displayed.
+    The text can be changed by calling this command again without having to call <em>forget</em> before.
+  </p>
+  <p>
+    <em>forget <i>widget-name</i></em><br/><br/>
+    Removes the tooltip feature for a particular widget.
+  </p>
+
+  <h2><a name="treecontrol">&nbsp;Treecontrol</a></h2>
+  <h3>Name</h3>
+  <p>
+    treecontrol - A fairly nice tree widget
+  </p>
+  <h3>Description</h3>
+  <p>
+    The <em>treecontrol</em> metawidget allows to built an Explorer-style tree with an arbitrary number
+    of nodes. A node consists of a +/- icon (to expand and collapse them), a user-defined icon and a label.
+    Selection behaves as expected, including the use of the Shift and Control keys. Navigation through
+    the tree is done via mouse or keyboard. A double-click on the +/- icon expands or collapses a node,
+    and so do the cursor keys for left and right. If, in addition, the Shift key is pressed then all
+    subnodes are expanded respectively collapsed as well.<br/><br/>
+    Callbacks are defined via node bindings. A particular useful feature is that the tree does not have
+    to be completely defined before being able to use it. Instead, it is sufficient to define the toplevel
+    nodes only, and then let the tree widget ask for a node's children whenever one of the toplevel nodes
+    is expanded. This is done via a special callback.<br/><br/>
+    The entire tree widget is built from a single text widget. My highest respect for its developer!
+  </p>
+  <h3>Default</h3>
+  <p>
+    The default widget is the tree widget itself and is of type <em>text</em>.
+    The metawidget accepts all commands and configuration options of this widget type.
+  </p>
+  <h3>Options</h3>
+  <p>
+    <em>-text <i>string</i></em><br/><br/>
+    Every tree has one root node that is always at the top of the widget. This option
+    sets the label of the root node.
+  </p>
+  <p>
+    <em>-image <i>image-name</i></em><br/><br/>
+    Sets the image to be used for the root node.
+  </p>
+  <p>
+    <em>-fullexpand <i>boolean</i></em><br/><br/>
+    Controls whether automatic expanding of all subnodes of a node shall be allowed, when the Shift key
+    was pressed by the user. This feature may be not desired e.g. if the tree represents a file system and the
+    user is in a high level directory, e.g. / or c:\. Expansion might virtually take forever.
+  </p>
+  <p>
+    <em>-selectmode <i>single|multiple</i></em><br/><br/>
+    Controls whether only one or more than one node can be selected at a time.
+  </p>
+  <p>
+    <em>-onexpand <i>command</i></em><br/><br/>
+    The command specified herein is evaluated whenever a node is being expanded and the children of that
+    node are not known yet, or the node is not defined as "final" (see <em>nodeconfigure</em> below).
+    The to-be-expanded node is appended to the command as an argument, and the command is expected to
+    add all children to the tree by means of the <em>insert</em> command. If <em>command</em> is an
+    empty string, no callback will be made.
+  </p>
+  <p>
+    <em>-onselect <i>command</i></em><br/><br/>
+    If the command is not an empty string, it is evaluated each time the selection changes.
+  </p>
+  <h3>Commands</h3>
+  <p>
+    <em>insert <i>node ?args?</i></em><br/><br/>
+    Inserts a new node to the tree. Nodes are referenced by a name that must be unique over the
+    entire tree. Additional arguments are expected to be option-value pairs and are passed on
+    to the <em>nodeconfigure</em> commmand (see below).
+  </p>
+  <p>
+    <em>delete <i>?node?</i></em><br/><br/>
+    Deletes a particular node and all its children, or the entire tree, if no name is specified.
+  </p>
+  <p>
+    <em>nodeconfigure <i>node option value ?option value ...?</i></em><br/><br/>
+    Configures a node. Allowed options are:<br/>
+    <em>-parent <i>node</i></em>: Sets a new parent node. The node will be drawn as a child of
+    that parent node. The tree's root node is represented by an empty string.<br/>
+    <em>-text <i>string</i></em>: Sets the nodes label.<br/>
+    <em>-image <i>image-name</i></em>: Sets an icon for the node. If the image name is an empty
+    string, removes the icon.<br/>
+    <em>-final <i>boolean</i></em>: Tells the tree wigdet that the given node is complete, i.e.
+    all of its children are defined. The tree widget will not call the <em>-onexpand</em> command
+    any more when this node gets expanded.<br/>
+    <em>-user <i>string</i></em>: Arbitrary user data. Just stored with the node but never used.<br/>
+  </p>
+  <p>
+    <em>nodecget <i>node option</i></em><br/><br/>
+    Returns the value of a node option. Besides from the options described under <em>nodeconfigure</em>,
+    the following options are accepted:<br/>
+    <em>-children</em> returns a list of all child nodes.<br/>
+    <em>-indention</em> returns the current indention level of the node.<br/>
+    <em>-expanded</em> returns a boolean indicating if the node is currently expanded.<br/>
+    <em>-tags</em> returns a list of all tags currently associated with the node (see below).<br/>
+    <em>-visible</em> returns a boolean indicating if the node is visible, i.e. all of its parents
+    are expanded. (The node can still be not on the screen because the tree's viewport is somewhere else.)
+  </p>
+  <p>
+    <em>nodebind <i>node ?bind-arguments?</i></em><br/><br/>
+    Creates bindings for a particular node. This allows to define different actions for different node types.
+    E.g. in a filesystem tree, double-clicking a directory normally expands it, while double-clicking a file
+    displays it.
+  </p>
+  <p>
+    <em>expand <i>node ?recursive-flag?</i></em><br/><br/>
+    Expands a node and, if the optional flag is true, all of its subnodes.
+  </p>
+  <p>
+    <em>collapse <i>node ?recursive-flag?</i></em><br/><br/>
+    Collapses a node and, if the optional flag is true, all of its subnodes.
+  </p>
+  <p>
+    <em>move <i>node</i> ?-byname? ?-after? <i>position</i></em><br/><br/>
+    Moves a node to a specified position within its siblings. If <em>-byname</em> is specified, <em>position</em>
+    must be the name of a sibling node (or any other node, in which case the node specified by <em>node</em> gets
+    reparented). The node will be placed before the sibling node, unless <em>-after</em> is specified.
+  </p>
+  <p>
+    <em>tag add|delete|remove|cget|configure|lower|raise|names|nodes|bind ?args?<i></i></em><br/><br/>
+    This command allows to apply and control tags for nodes in the tree. This is very
+    similar to the way tags are used in the original <em>text</em> widget. Nodes can have one
+    or more tags, which are identified by a name. Each tag can be configured, e.g. with a
+    certain background color, which in turn would apply this color to all nodes that have this
+    particular tag.<br/>
+    <em>tag add <i>tag-name node ?node ...?</i></em> adds the tag specified by tag-name to one or more nodes.
+    <em>tag remove <i>tag-name node ?node ...?</i></em> removes a previously added tag from one or more nodes.
+    <em>tag names <i>node</i></em> returns all tags attached to a node.
+    <em>tag nodes <i>tag-name</i></em> returns all nodes that currently have the specified tag.
+    All other tag commands work exactly like the tag commands for the <em>text</em> widget.
+  </p>
+  <p>
+    <em>selection clear|get|set <i>?node-names-list?</i></em><br/><br/>
+    Controls the selection. <em>clear</em> clears the selection, <em>set node-names-list</em>
+    sets the selections for the specified nodes, <em>get</em> returns a list of all nodes
+    that are currently selected.
+  </p>
+  <p>
+    <em>get <i>from-row ?to-row?</i></em><br/><br/>
+    Returns a list of nodes that are between the two specified rows. The returned list depends on which
+    nodes are expanded and which ones are collapsed, i.e., nodes that are not visible because their parent is
+    collapsed, are not part of the list.
+  </p>
+  <p>
+    <em>see <i>node</i></em><br/><br/>
+    Makes a node visible on the screen. If any of the node's parents are collapsed, then they are expanded first, so that
+    the node is drawn into the widget. Then the viewport is set, so that the node appears on the screen.
+  </p>
+  <p>
+    <em>bind <i>bind-arguments</i></em><br/><br/>
+    Applies bindings directly to the tree widget.
+  </p>
+  <p>
+    <em>nodes</em><br/><br/>
+    Returns an unordered list of all nodes, whether visible or not.
+  </p>
+  <p>
+    <em>tree <i>node</i></em><br/><br/>
+    Returns the structure of the subtree starting at the specified node as a recursive list.
+    Each list element is itself a list with two elements: the node's unique name and its child nodes.
+  </p>
+
+  <h2><a name="window">&nbsp;Window</a></h2>
+  <h3>Name</h3>
+  <p>
+    window - A wrapper around the toplevel widget and the wm command
+  </p>
+  <h3>Description</h3>
+  <p>
+    The <em>window</em> metawidget's purpose is to unify the window widget and the wm command.
+    It is in so far not a true metawidget, but it makes the handling of toplevel widgets easier.
+  </p>
+  <h3>Default</h3>
+  <p>
+    The default widget is a toplevel widget.
+    The metawidget accepts all commands and configuration options of this widget type.
+  </p>
+  <h3>Options</h3>
+  <p>
+    <em>-geometry <i>geometry-string</i></em><br/><br/>
+    Sets position and size of the window. The geometry string must have the same format
+    as described under "wm geometry".
+  </p>
+  <p>
+    <em>-minsize|-maxsize <i>list</i></em><br/><br/>
+    Sets the minimum and maximum size of the window. The list must contain the width and height to be set.
+  </p>
+  <p>
+    <em>-resizable <i>list</i></em><br/><br/>
+    Specifies if the window can be resized in x and/or y direction. The list must contain two booleans
+    for the x and y direction.
+  </p>
+  <p>
+    <em>-override <i>boolean</i></em><br/><br/>
+    Controls if the window is ignored by the window manager.
+  </p>
+  <p>
+    <em>-ondelete <i>command</i></em><br/><br/>
+    Specifies a command to run whenever the window manager wants to close the window. The command
+    must eventually destroy the window itself.
+  </p>
+  <p>
+    <em>-title <i>string</i></em><br/><br/>
+    Sets the window title.
+  </p>
+  <p>
+    <em>-state normal|iconic|withdrawn</em><br/><br/>
+    Sets the window's state: Normal, iconified, or hidden.
+  </p>
+  <h3>Commands</h3>
+  <p>
+    <em>resize <i>width height</i></em><br/><br/>
+    Sets the size of the window.
+  </p>
+  <p>
+    <em>move <i>x y</i></em><br/><br/>
+    Moves the window to a new position.
+  </p>
+  <p>
+    <em>protocol <i>wm-protocol-args</i></em><br/><br/>
+    All arguments are directly passed to <em>wm protocol</em>.
+  </p>
+
+  <h2><a name="author">&nbsp;AUTHOR</a></h2>
+  <p>
+    Michael Kraus<br/>
+    <a href="mailto:mmg_kraus@compuserve.com">mailto:mmg_kraus@compuserve.com</a><br/>
+    <a href="http://ourworld.compuserve.com/homepages/mmg_kraus">http://ourworld.compuserve.com/homepages/mmg_kraus</a><br/>
+  </p>
+</body>
+
+</html>

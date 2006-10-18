@@ -1,0 +1,610 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+  <title>mkWidgets Manual, Part 1 of 2</title>
+  <meta http-equiv="Content-Type" content="text/html"/>
+  <meta name="DESCRIPTION" content="Tcl/Tk mkWidgets"/>
+  <meta name="AUTHOR"      content="Michael Kraus"/>
+  <meta name="KEYWORDS"    content="Tcl, Tk, Tcl/Tk, Scriptics, Scripting, Programming, Extension, Package, mkWidgets"/>
+  <style type="text/css"><!--
+    body { font-family: Lucida Sans Unicode, Arial, Helvetica }
+    p    { font-family: Arial, Helvetica; font-size: .8em; margin: 1em }
+    h1   { font-size: 1.2em; font-weight: normal; color: #000000; background: #FFFF40; padding: 0.4em }
+    h2   { font-size: 1.0em; font-weight: normal; color: #000080; background: #DDDDDD; padding: 0.1em }
+    h3   { font-size: 0.8em; font-weight: normal; color: #000080 }
+    h6   { font-size: 0.7em; font-weight: normal; margin: 1em }
+    em   { font-size: 1em; font-weight: normal; font-style: normal; color: #000080 }
+    pre  { color: blue; margin: 1em 1em 1em 1em }
+    ul   { font-family: Arial, Helvetica; font-size: .8em; margin: 1em 1em 1em 3em }
+    a    { text-decoration: none }
+    img  { float: right; clear: right; margin: .5em }
+  --></style>
+</head>
+
+<body>
+  <h1><img src="TclLogo.gif" alt=""/>&nbsp;mkWidgets 1.3 Manual, Part 1 of 2</h1>
+  <h6>Permission to use, copy, modify, and distribute this software and its documentation
+  for any purpose and without fee is hereby granted. The author makes no representations
+  about the suitability of this software for any purpose.  It is provided "as is" without
+  express or implied warranty.  By use of this software the user agrees to indemnify and
+  hold harmless the author from any claims or liability for loss arising out of such use.<br/>&nbsp;</h6>
+
+  <h2>&nbsp;CONTENTS</h2>
+  <p>
+    mkWidgets 1.3 - A method for writing metawidgets, and a collection of these.
+    Part 1: How to build metawidgets (<a href="mkWidCol.htm">Part 2</a>)
+  </p>
+  <p>
+    <a href="#introduction">Introduction</a><br/>
+    <a href="#metawidget">The Metawidget Command</a><br/>
+    <a href="#specials">Special Commands</a><br/>
+    <a href="#tools">Tool Commands</a><br/>
+    <a href="#notes">Notes</a><br/>
+    <a href="#examples">Examples</a><br/>
+    <a href="#installation">Installation</a><br/>
+    <a href="#changes">Changes</a><br/>
+    <a href="#author">Author</a><br/>
+  </p>
+
+  <h2><a name="introduction">&nbsp;INTRODUCTION</a></h2>
+  <p>
+    A metawidget is composed of several standard widgets and behaves like a standard widget itself
+    (well, almost). Since there is no limit in regards to the number of standard widgets inside a
+    metawidget and its overall functionality, metawidgets can be anything from as simple as a
+    combobox to as complex as a treecontrol and more. See <a href="mkWidCol.htm">Part 2</a> of
+    this manual for details.
+  </p>
+  <p>
+    mkWidgets 1.2 is written entirely in Tcl/Tk and does not require any other extensions (unlike version 1.0,
+    where mkGeneric and mkClasses was required). It provides two things:
+  </p>
+  <ul>
+    <li>A fairly easy method to write metawidgets, provided by the package <em>Metawidget</em>. It uses
+        namespaces to implement something similar to classes and objects.</li>
+    <li>A collection of metawidgets, some of them being pretty snappy. This collection is loaded with
+        the package "mkWidgets" which itself requests the Metawidget package.</li>
+  </ul>
+  <p>
+    The main characteristics of a regular widget in Tk are:
+  </p>
+  <ul>
+    <li>It is an instance of a widget class, e.g. "Button".</li>
+    <li>It can have methods, called "widget commands".</li>
+    <li>It has properties, called "options" which are controlled by the method "configure".</li>
+    <li>It is organized in a tree-shaped hierarchy, i.e. it has one parent and may have children.</li>
+    <li>It is destroyed by the "destroy" command, including all children.</li>
+    <li>It can have event bindings attached to it.</li>
+    <li>It can be packed, placed and gridded.</li>
+  </ul>
+  <p>
+    The <em>Metawidget</em> package allows for the definition of metawidgets that behave
+    almost the same way as regular Tk widgets. A metawidget’s attributes are:
+  </p>
+  <ul>
+    <li>It is an instance of a class defined with the command "metawidget"</li>
+    <li>It can have commands, which are defined via "metawidget command"</li>
+    <li>It has options, which are defined via "metawidget option"</li>
+    <li>It is defined in the same hierarchy tree like all other widgets</li>
+    <li>It is destroyed with "destroy" like all other widgets</li>
+    <li>It can have event bindings like all other widgets. Some restrictions apply.</li>
+    <li>It can be packed, placed and gridded. Some restrictions apply to children.</li>
+  </ul>
+  <p>
+    The Metawidget package is basically a code generator. One can build metawidgets in a
+    rather abstract and simple way by defining new widget commands and options,
+    while the package takes care of namespace handling and Tcl code generation.
+  </p>
+  <p>
+    A nice new feature in this version is the <em>metawidget export</em> command.
+    It returns the standard Tcl code that is generated by the Metawidget package
+    for a particular metawidget. By simply integrating this code into an application,
+    the dependency to mkWidgets can be eliminated.
+  </p>
+
+  <h2><a name="metawidget">&nbsp;THE METAWIDGET COMMAND</a></h2>
+  <p>
+    A Metawidget is defined with the "metawidget" command and its subcommands "create",
+    "proc", "option" and "command". It can be deleted with "delete", and information can be
+    retrieved with "info" or "names".
+  </p>
+  <h3>metawidget create ClassName InitProc ExitProc ?-type WidgetType? ?-default WidgetName? ?-command CommandName? ?args?</h3>
+  <p>
+    This command creates a new metawidget class with the name ClassName. According to existing
+    naming conventions, ClassName must start with an uppercase letter. InitProc specifies a script
+    that is evaluated on each instantiation of a metawidget. It usually contains code to create
+    any internal widgets that make up the metawidget, and to initialize options and other state
+    information. The current metawidget is referenced by means of the automatic variable $this.
+    ExitProc is evaluated when a metawidget is destroyed. As with InitProc, the metawidget's
+    name is stored in the variable $this. The ExitProc usually releases any resources such as
+    open channels.
+  </p>
+  <p>
+    Each metawidget has a widget that encloses all other widgets. This widget is automatically
+    created and is an invisible frame by default. By means of the -type option, a different widget
+    type can be specified, for instants a toplevel widget.
+  </p>
+  <p>
+    The -default option specifies where calls to the standard metawidget commands configure and cget
+    shall be redirected to, if they are not explicitely defined with "metawidget option".
+    Also, all commands not explicitely defined with "metawidget command" will be redirected to the default widget.
+    WidgetName must be the name of one of the internal widgets, <em>relative</em> to its enclosing widget.
+    If no default widget is specified, the enclosing widget is taken.
+  </p>
+  <p>
+    The -command option specifies what the name of the new widget command shall be. By default, it
+    is the same as the metawidget's ClassName, but all in lowercase letters.
+  </p>
+  <p>
+    In addition, an arbitrary number of option-value pairs may be specified. They will directly be
+    applied to the enclosing widget and hence must be allowed option values for a frame or whatever
+    widget type has been specified by means of the -type option.
+  </p>
+
+  <h3>metawidget proc ClassName ProcName Args Body</h3>
+  <p>
+    This command defines a procedure that is associated with a metawidget. It is defined just like
+    a regular procedure, i.e. it has a name, a list of arguments, and a body. As with the InitProc
+    and the ExitProc from the "metawidget create" command, the automatic variable $this represents
+    the current metawidget. Metawidget procedures can be called only from within another metawidget
+    procedure of the very same widget instance. They are used to implement code that is associated
+    to metawidget options and/or commands.
+  </p>
+
+  <h3>metawidget command ClassName CommandName ProcName</h3>
+  <p>
+    This defines a metawidget command and associates it with a metawidget procedure.
+    Metawidget commands are identical to regular widget commands and are specified right
+    after the widget name, like in ".mybutton invoke". When a metawidget's command is
+    called, its associated procedure is executed, hereby passing all arguments that might
+    have been specified after the command. Note that even if no metawidget commands
+    are defined, a metawidget will still accept all commands that exist for its default widget.
+  </p>
+
+  <h3>metawidget option ClassName OptionName ?SetProc? ?GetProc?</h3>
+  <p>
+    This defines a metawidget option. Metawidget options are those that require special
+    processing, i.e. they are in most cases not a real option of any of its internal widgets.
+    As with metawidget commands, a metawidget that has no such metawidget options defined
+    will still accept all options that apply to the metawidget's default widget.
+  </p>
+  <p>
+    There are three ways to define metawidget options: By means of a widget-variable (see below),
+    by means of a metawidget procedure or with a combination of both:
+  </p>
+  <p>
+    Some options do not require immediate processing. It is rather sufficient to store their
+    value in a variable for later reference. An example is the -command option of a regular
+    button: When this option is set, nothing happens. A metawidget option of that kind
+    is created without specifying SetProc and GetProc. The metawidget will simply store
+    the value in a widget-variable that has the same name as the option.
+  </p>
+  <p>
+    Many times, when an option is set, it requires code to be executed. For instants, there
+    must be <em>some</em> code that actually changes a button's background color, when its
+    value for the -background option is changed. If that piece of code eventually stores the
+    new color in a variable, then the option's current value can always be looked up there.
+    This is equivalent to creating a metawidget option where SetProc is a metawidget procedure.
+    Every time this option is set, SetProc is called with the new option value as its only
+    argument. If the option's value is retrieved by means of the cget command, the actual
+    value is taken from its widget-variable. Therefore SetProc <em>must</em> set this widget-variable
+    to the option's new value.
+  </p>
+  <p>
+    If, in addition, a GetProc is specified, then it is called every time the option's value
+    is requested with the cget command. GetProc <em>must</em> return the option's value,
+    in whatever way it is retrieved, and is called without arguments.
+  </p>
+
+  <h3>metawidget delete ClassName</h3>
+  <p>
+    The delete subcommand deletes a metawidget class. This should not be called if instances
+    of that class still exist.
+  </p>
+
+  <h3>metawidget names</h3>
+  <p>
+    This simply returns all currently defined metawidgets.
+  </p>
+
+  <h3>metawidget info ClassName procs | commands | options</h3>
+  <p>
+    This returns the procedures, commands and options defined for the specified class.
+    It always returns a list where each element is a sublist of the arguments that
+    were used during the definition of the procs, commands or options.
+  </p>
+
+  <h3>metawidget export ClassName</h3>
+  <p>
+    The code as generated by the Metawidget package is returned. It is standard Tcl with
+    no dependencies to the package itself. Consequently, by simply pasting the code into
+    a standard application, metawidgets can be used without their definition and without
+    having to source the Metawidget package.
+  </p>
+
+  <h2><a name="specials">&nbsp;SPECIAL COMMANDS</a></h2>
+  <p>
+    A metawidget instance is basically like an object in the object oriented programming world:
+    It has a constructor (InitProc), a destructor (ExitProc), methods (the commands), and
+    properties (the options). Consequently, it has something like private variables, here
+    called widget-variables, and also class-static variables, called class-variables.
+  </p>
+  <p>
+    A widget-variable is specific to an <em>instance</em> of a metawidget. Widget-variables
+    can be set and retrieved in any metawidget procedure and remain state in-between calls.
+    They are neither really global nor local, and can have a different value in each instance.
+    Widget-variables are controlled by a set of "my" commands.
+  </p>
+  <p>
+    A class-variable is specific to a metawidget's <em>class</em>. As with widget-variables
+    class-variables can be set and retrieved in any metawidget procedure and remain state
+    in-between calls. They exist exactly once for all instances of a class and are therefore
+    suited to exchange data between objects and to store information that is identical
+    for all instances of a class. Widget-variables are controlled by a set of "our" commands.
+  </p>
+
+  <h3>my WidgetVar ?NewValue?</h3>
+  <p>
+    Sets or retrieves a widget-variable. Similar to the standard "set" command, it can be called with
+    the name of a variable to retrieve the value of this variable or to set it to a new value.
+  </p>
+
+  <h3>unmy WidgetVar ?WidgetVar ...?</h3>
+  <p>
+    Unsets widget-variables. Although the command's name seems nonsense, it is a nice equivalent to
+    the standard command "unset".
+  </p>
+
+  <h3>myarray option WidgetArray ?args?</h3>
+  <p>
+    Not only scalar widget-variables can be defined, but also arrays. This command is just
+    like the standard "array" command, except that it applies to widget-arrays.
+  </p>
+
+  <h3>myinfo class, myinfo vars, myinfo exists WidgetVar</h3>
+  <p>
+    Either returns the metawidget's class name, or all currently defined widget-variables,
+    or a flag if the specified WidgetVar exists.
+  </p>
+
+  <h3>our ClassVar ?NewValue?</h3>
+  <p>
+    Sets or retrieves a class-variable. Similar to the standard "set" command, it can be called with
+    the name of a variable to retrieve the value of this variable or to set it to a new value.
+  </p>
+
+  <h3>unour ClassVar ?ClassVar ...?</h3>
+  <p>
+    Unsets class-variables. Although the command's name seems nonsense, it is a nice equivalent to
+    the standard command "unset".
+  </p>
+
+  <h3>ourarray option ClassArray ?args?</h3>
+  <p>
+    Not only scalar class-variables can be defined, but also arrays. This command is just
+    like the standard "array" command, except that it applies to class-arrays.
+  </p>
+
+  <h3>ourinfo vars, ourinfo exists ClassVar</h3>
+  <p>
+    Either returns all currently defined class-variables, or a flag if the specified ClassVar exists.
+  </p>
+
+  <h2><a name="tools">&nbsp;TOOL COMMANDS</a></h2>
+
+  <p>
+    Some tool commands are also imported into every metawidget class. They all start with
+    "mkw." and are not really necessary, but make some things easier (they are merely Tcl-only
+    rip-offs of my favorites from the mkGeneric package).
+  </p>
+
+  <h3>mkw.lassign List ?VarName ...?</h3>
+  <p>
+    Assigns all elements in List to the given VarNames from left to right. I.e. the first
+    element in List is assigned to the first VarName, the second element to the second
+    VarName and so on. If there are more VarNames than elements in List,
+    the remaining VarNames are left unchanged.
+  </p>
+
+  <h3>mkw.lextend List ?Value ...?</h3>
+  <p>
+    If Value is not yet an element of List, Value is appended to the list and the extended list
+    is returned. Otherwise, the command simply returns List.
+  </p>
+
+  <h3>mkw.lshrink List ?Value ...?</h3>
+  <p>
+    If Value is an element of List, Value is deleted from the list and the reduced list is returned.
+    Otherwise, the command simply returns List.
+  </p>
+
+  <h3>mkw.lchange List OldValue NewValue</h3>
+  <p>
+    If OldValue is an element of List, OldValue is replaced by NewValue and the modified list
+    is returned. Otherwise, the command simply returns List.
+  </p>
+
+  <h3>mkw.decode Expr List ?DefaultValue?</h3>
+  <p>
+    List must consist of an even number of elements. Each odd-numbered element in List is compared
+    against Expr. If it matches, the element on the right of the matching element in List is returned.
+    If there is no match and a DefaultValue is specified, it is returned. Otherwise the command
+    returns nothing. (This is similar to "string map", which is not available in Tcl 8.0).
+  </p>
+
+  <h3>mkw.complete Expr List</h3>
+  <p>
+    Expr is compared against each of the elements in List to find a match. A match occurs if Expr
+    is identical to one of the elements, or if it is a unique abbreviation for exactly one of them.
+    In this case the matching element is returned, otherwise an error is created.
+  </p>
+
+  <h3>mkw.options List ?OptionSpec ...?</h3>
+  <p>
+    This is a simple option processing routine. options can have no arguments (like
+    with lsort -dictionary) or one argument (like fconfigure ... -blocking 1). List is
+    expected to consist of any combination of zero- or one-argument options, e.g.
+    '-dictionary -command mySort -index 1 -decreasing'. Allowed options are specified with
+    an arbitrary number of option specifications. For options with no argument, the OptionSpec
+    is simply the name of the option, e.g. -dictionary. For options with a value, an OptionSpec
+    consists of two or three elements: The first is the option name, the second either a list of
+    allowed values or an asterisk * for any value. The third element is optional and specifies a
+    default value if the option is not found in List.
+  </p>
+  <p>
+    For each option found, a variable with the same name as the option is set in the calling
+    procedure's context. This variable's value is either a 1 for options without argument,
+    or the option's value. Option names can be abbreviated, as well as option values that map to
+    a list of allowed values in the OptionSpec. The command will return an error message, if an
+    unknown option was found, or, if one of the OptionSpecs is a plain *, return all elements
+    in List that could not be resolved.
+  </p>
+
+  <h2><a name="notes">&nbsp;NOTES</a></h2>
+
+  <h3>Bindings</h3>
+  <p>
+    The bindtags of a metawidget are modified, so that the widget type of the enclosing widget
+    is replaced by the class name of the metawidget. The default class binding for the event
+    &lt;Destroy&gt; is redefined and now calls the metawidget's ExitProc. Besides that,
+    any binding to a metawidget will apply to its enclosing widget.
+  </p>
+  <p>
+    If a metawidget procedure needs to be called from within a binding script, then this
+    procedure has to be "exported" via a metawidget command. Binding scripts are evaluated from
+    within the global namespace and therefore don't know any of the metawidget's procedures.
+  </p>
+
+  <h3>Geometry Management</h3>
+  <p>
+    Many metawidgets are "final". That is, they won’t have child widgets other than their internal
+    widgets (those that constitute the metawidget). A combobox, for instants, would not like to
+    have other widgets packed inside it. However, some metawidgets like the Textframe example below,
+    make only sense with other widgets inside them. Other metawidgets of that kind are Document, Pane
+    and Tabcontrol.
+  </p>
+  <p>
+    This can be a problem, if these widgets are true children of the metawidget, for a) the metawidget
+    has already some children (or it wouldn't be a metawidget...), and b) there is no control of where
+    the new children will be placed, gridded or packed together with the metawidget's own children.
+  </p>
+  <p>
+    One solution is to simply document the particular child of the metawidget where other children may be legally
+    placed into. E.g. in the case of the Document metawidget, this would be <em>$this.work</em>. This is
+    a document's work area, and other widgets should be put inside it. These widgets may or may not be logical
+    children of <em>$this.work</em>.
+  </p>
+  <p>
+    Another solution is to define the metawidget commands pack, place and grid. They would accept the usual arguments
+    for these three native commands, but would also ensure that widgets appear in the right spot, by sort of
+    redirecting the widgets into the work area.
+    Obviously, that is not so nice as using pack, place and grid in the usual way. However, it's
+    not really new either: Complex widgets like canvas and text also place other objects inside
+    them by using e.g. .canvas create ... or .text window ...
+  </p>
+
+  <h3>Option Database</h3>
+  <p>
+    The option database is not supported in this version (quote from "Tcl and the Tk Toolkit":
+    "I suggest that you use it as little as possible").
+  </p>
+
+  <h3>Configure Command</h3>
+  <p>
+    Calling a metawidget with the configure command but without additional arguments will only
+    return the options list of the default widget but not the metawidget options.
+  </p>
+
+  <h3>Command and Option Abbreviation</h3>
+  <p>
+    Commands and options can be abbreviated, but the way they are being resolved is not quite clean.
+    As described above, a command (or option) that is not specified with "metawidget command" (or
+    "metawidget option") will be applied to the default widget. An abbreviated command (or option)
+    would first be resolved within the metawidget commands (or metawidget options), and then within
+    the default widget commands (or options). So, if there's a metawidget option "-compute" and the
+    default widget is a button, then the string "-com" would apply to both "-compute" and "-command".
+    However, instead of raising an error, "-compute" will be called.
+  </p>
+  <h3>Backward Compatibility</h3>
+  <p>
+    The current version 1.3 introduces a minor incompatibility that was necessary to make metawidgets
+    behave a bit more like native widgets: The <em>-type</em> option of the <em>metawidget</em> command
+    now only accepts the values <em>frame</em> and <em>toplevel</em>. Other widget types are not allowed
+    anymore. The benefit of this is that a call to <em>winfo class <i>metawidget</i></em> now returns
+    the correct class name of that metawidget (which is achieved with the <em>-class</em> option only
+    available for <em>frame</em> and <em>toplevel</em> window types).
+  </p>
+  <p>
+    Document metawidget: If you pack, place or grid a widget inside a document metawidget, and this widget
+    is a logical child of the document metawidget, then it will get an <Enter> binding which will reset
+    the mouse cursor whenever it enters this widget. If the widget is not a child of the document
+    metawidget, then the binding will not be applied because it is not required for a correct mouse cursor
+    behavior. The new <Enter> bind script would overwrite other <Enter> bind scripts that you might
+    have defined. Conversively, you'd have to be careful not to overwrite this <Enter> bind script.
+  </p>
+
+
+  <h2><a name="examples">&nbsp;EXAMPLES</a></h2>
+  <p>
+    The collection of metawidgets that comes with this package provides a good source of
+    examples. Each file contains a procedure "test" that creates an instance of
+    the related metawidget.
+  </p>
+  <p>
+    Nevertheless, here is closer look on a metawidget called Textframe. It is nothing more
+    but a decorative frame with a title text embedded in the upper part.
+  </p>
+  <p>
+    So, in the first approach, it would consist of a frame widget and a label widget. But
+    since the label sticks out of the decorative frame in both directions, this frame cannot
+    be the enclosing object. Also, all external widgets that shall be put inside the textframe,
+    would probably overlap or otherwise interfere with the label widget. Therefore,
+    two additional, invisible frames must be defined: One is the enclosing widget, the
+    other one is used for packing, placing or gridding all external widgets inside it.
+    In between these two frames is the decorative, visible frame and the label.
+  </p>
+
+  <pre>
+  +-----------------+
+  | %% LABEL %%%%%% |--- enclosing frame
+  | % +---------+ % |
+  | % | ....... | %----- decorative frame
+  | % | ....... | % |
+  | % | ....... |------- inner frame
+  | % +---------+ % |
+  | %%%%%%%%%%%%%%% |
+  +-----------------+
+  </pre>
+
+  <pre>
+  package require Metawidget
+
+  # metawidget textframe
+  # creates a frame with a title text. other widgets can be packed inside
+  # the textframe. The textframe can be configured like a regular frame
+  # widget. Extra options are -text for the title text and -font
+  # for the title font.
+
+  metawidget create Textframe {
+    # create all internal widgets
+    frame $this._frm_ -border 2 -relief groove  ;# decorative frame
+    frame $this._inn_ -border 0                 ;# inner frame
+    label $this._txt_ -border 0 -padx 0 -pady 0 ;# label
+
+    # position all internal widgets.
+    # only one here, the other two are packed in the -font member.
+    place $this._txt_ -in $this._frm_ -x 12 -y 0 -anchor w
+
+    # preset all metawidget options.
+    -text {}
+    -font [$this._txt_ cget -font]
+  } {} -default _frm_
+
+  # option -text
+  # since the default widget is the decorative frame, all options for
+  # the label widget must be explicitely redirected to it.
+
+  metawidget proc Textframe -text { sText } {
+    $this._txt_ configure -text $sText
+    my -text $sText
+  }
+
+  # option -font
+  # this is more complex. the font cannot just be set and that's it.
+  # the decorative frame needs to cross the label vertically centered.
+  # the new height of the label determines the padding of the decorative
+  # and the inner frames, requiring them to be repacked each time the
+  # font is changed.
+
+  metawidget proc Textframe -font { sFont } {
+    $this._txt_ configure -font $sFont
+    my -font $sFont
+
+    update
+
+    set iPad [expr [winfo height $this._txt_] / 2 + 1]
+    pack $this._frm_ -fill both -expand 1 -padx $iPad -pady $iPad
+    pack $this._inn_ -in $this._frm_ -fill both -expand 1 -padx $iPad -pady $iPad
+  }
+
+  # command pack
+  # command for packing other widgets inside the text frame. for grid and
+  # place this can be implemented in a similar way. the option -in
+  # $this._inn_ takes care that everything ends up in the inner frame.
+
+  metawidget proc Textframe pack_ { sWidget args } {
+    eval pack $sWidget -in $this._inn_ $args
+  }
+
+  # define metawidget options and commands with their associated procs
+
+  metawidget option  Textframe -text -text
+  metawidget option  Textframe -font -font
+  metawidget command Textframe pack  pack_
+
+  # test it
+
+  textframe .t -text { Title }
+  button .b -text Destroy -command { destroy .t }
+
+  pack .t -fill both -expand 1
+  pack .b -fill x -side bottom
+
+  array set aFont {0 {Helv 9} 1 {Courier 15 bold}}
+  array set aFrame {0 groove 1 solid}
+
+  checkbutton .c1 -text {Other Font} -variable iC1 -command { .t config -font $aFont($iC1) }
+  checkbutton .c2 -text {Other Frame} -variable iC2 -command { .t config -relief $aFrame($iC2) }
+
+  .t pack .c1 -side top -anchor w
+  .t pack .c2 -side top -anchor w
+  </pre>
+
+  <h2><a name="installation">&nbsp;INSTALLATION</a></h2>
+  <p>
+    mkWidgets is written in pure Tcl/Tk (version 8) and does not contain any other
+    package dependencies.
+  </p>
+  <p>
+    To install, place the directory "mkWidgets1.2" in one of the directories contained in
+    the global Tcl variable "auto_path". For a standard Tcl/Tk installation, this is commonly
+    "c:/program files/tcl/lib" (Windows) and "/usr/local/lib" (Unix).
+  </p>
+
+  <h2><a name="changes">&nbsp;CHANGES</a></h2>
+  <p>
+    Changes from 1.0 to 1.2
+  </p>
+  <ul>
+    <li>Eliminated dependency to mkGeneric and mkClasses</li>
+    <li>Added the <em>metawidget export</em> feature</li>
+    <li>Significantly extented the metawidgets collection</li>
+    <li>Fixed some bugs</li>
+  </ul>
+  <p>
+    Changes from 1.2 to 1.3
+  </p>
+  <ul>
+    <li>Fixed various bugs. Thanks much to all who contributed!</li>
+    <li>Added the <em>names</em> member to the Toolbar metawidget</li>
+    <li>Added an always visible position indicator when a Pane is being dragged</li>
+    <li>Made the Combobox metawidget behave better</li>
+    <li>Document windows cannot be moved outside their parent anymore</li>
+    <li>A Document window now remembers its former position when deiconified</li>
+    <li>The mouse cursor changes to arrows over the border of a Document window</li>
+    <li>Improved the Arrange class function of the Document metawidget</li>
+    <li>Added <em>column exists</em> to Listcontrol and Gridcontrol metawidgets</li>
+    <li>Names for tags, icons, columns, nodes are now list-protected and may contain white spaces</li>
+    <li><em>winfo class <i>metawidget</i></em> now returns the correct class, but...</li>
+    <li>Had to restrict the allowed values for the <em>-type<em> option of the metawidget command to <em>frame</em> and <em>toplevel</em></li>
+  </ul>
+
+  <h2><a name="author">&nbsp;AUTHOR</a></h2>
+  <p>
+    Michael Kraus<br/>
+    <a href="mailto:mmg_kraus@compuserve.com">mailto:mmg_kraus@compuserve.com</a><br/>
+    <a href="http://ourworld.compuserve.com/homepages/mmg_kraus">http://ourworld.compuserve.com/homepages/mmg_kraus</a><br/>
+  </p>
+</body>
+
+</html>

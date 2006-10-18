@@ -1,0 +1,104 @@
+<html>
+<head>
+<TITLE>NDFD GRIB2 Decoder</TITLE>
+</head>
+<body ><!---bgcolor=#bbeeff--->
+
+<h2><center>NDFD GRIB2 Decoder</center></h2>
+
+<p>The NDFD (National Digital Forecast Database) is an effort by the NWS
+(National Weather Service) to provide forecasts on a grid across the US,
+instead of at stations (typically located at airports).  For more information
+about the NDFD, how and why it was created, please see:
+<ul>
+<li><a href="http://www.nws.noaa.gov/mdl/NDFD_GRIB2Decoder/papers/IFPFuture.PDF">Interactive Forecast Preparation -
+The Future has come.(2002)(pdf)</a></li>
+<li><a href="http://www.nws.noaa.gov/mdl/NDFD_GRIB2Decoder/papers/CreateNDFD.PDF">Creating a National Digital Forecast
+Database of Official National Weather Service Forecasts (2003)(pdf)</a></li>
+<li><a href="http://www.nws.noaa.gov/mdl/NDFD_GRIB2Decoder/papers/NDFDdesign.pdf">National Digital Forecast Database
+Design and Development (2003)(pdf)</a></li>
+<li><a href="http://www.nws.noaa.gov/mdl/NDFD_GRIB2Decoder/papers/newDB.pdf">The New Digital Forecast Database of the
+National Weather Service (Feb 2003)(pdf)</a></li>
+
+</ul>
+
+<hr>
+The <b>NDFD (National Digital Forecast Database)</b> is available for
+the <b>conus (continuous U.S.)</b> on both the anonymous ftp site
+(tgftp.nws.noaa.gov) and the web site (http://weather.noaa.gov).
+The currently available sectors are "CONUS", all sectors in the "CONUS",
+and "Puerto Rico".  All sectors should have (MaxT, MinT, PoP12, Sky, Td, Temp,
+Wdir, Wspd, SnowAmount, QPF, Wx, and Waveh).</p>
+<p>The data is distributed in
+<b>GRIB2 (<u>Gri</u>dded <u>B</u>inary Edition 2)</b> format, which is
+outlined in the <b>WMO (World Meteorological Organization)</b> document:
+<a href=http://205.156.54.206/cgi-bin/nwsexit.pl?url=http://www.wmo.ch/web/www/DPS/grib-2.html>
+The WMO GRIB2 Document FM92-X11 GRIB</a>.
+A web friendly version of which is available
+<a href=http://www.nws.noaa.gov/tdl/iwt/grib2/frameset_grib2.htm>
+here</a>
+</p>
+
+<p>In order to take advantage of this data, <b>MDL (Meteorological
+Development Laboratory)</b> created and maintains the
+official <a href=http://www.nws.noaa.gov/mdl/iwt/grib2/decoder.htm>
+<b>GRIB2</b> Decoder library</a>.  The GRIB2 Decoder library does a very
+good job of unpacking <b>GRIB2</b> messages, but in order to understand how to
+use it, and what is returned, one needs a working knowledge of
+"The WMO GRIB2 Document FM92-X11 GRIB".</p>
+
+<p><b>MDL</b> felt that in order to make it easier for people to
+use <b>NDFD</b> data, a "driver" for the library should be provided.  The
+main purposes for the driver are:<ol>
+<li>Provide an example of how to call the Decoder library.</li>
+<li>Provide software to convert from <b>GRIB2</b> to a simpler
+(albeit larger) file format.
+<li>Provide a means to view the "meta" data without needing to reference
+"The WMO GRIB2 Document FM92-X11 GRIB" document.
+</ol>
+
+<hr>
+
+<h3><a href="http://www.nws.noaa.gov/mdl/NDFD_GRIB2Decoder/howto.htm">
+So how do I get/use the Driver?</a></h3>
+
+<img src="images/sample.gif"><br><br>
+<img src="images/sample2.gif"><br>
+
+<hr>
+
+<p>To satisfy requirement (2), the driver converts a particular grid in
+the <b>GRIB2</b> file to a ".flt" file.  The ".flt" file is
+N by M floats (4 byte Real numbers), where N and M are the dimensions of
+the grid.  In particular, the grid starts in the <b>Upper Left Corner</b>,
+traverses across a row, and then continues at the left on the next row
+(similar to refreshing a TV screen).  This format was chosen because it
+happens to match the binary format required
+by <b>ESRI ArcView's Spatial Analyst</b>.</p>
+
+<p>It was felt that the simplicity of the ".flt" file format would
+allow the user to write code to convert to their particular <b>GIS
+(Geographical Information System)</b> package, if it was not ESRI.  The
+program can also create <b>"point .shp"</b> or <b>"polygon .shp"</b> files,
+for use in ESRI ArcView, when one does not have Spatial
+Analyst.</p>
+
+<p>To satisfy requirement (3), the driver creates a .txt file in which it has
+already looked up the parameters in the various tables in the GRIB2
+document.  The .txt file is a | separated file, because both ':' and ','
+could be part of a variable description.</p>
+
+<p>In addition, it was felt that the program should be able to be run
+either via a <b>GUI (Graphical User Interface)</b> or from a command line.
+For portability sake, the <b>GUI</b> part relies on
+<a href="http://www.scriptics.com">Tcl/Tk</a>. (More specifically, it was
+designed for <a href="ftp://ftp.tcl.tk/pub/tcl/tcl8_3/"> version 8.3.2</a>,
+although it has been tested on a system with version 8.0.4.)</p>
+
+<hr>
+
+<h3><a href="http://www.nws.noaa.gov/mdl/NDFD_GRIB2Decoder/howto.htm">
+Ok, but how do I get/use it?</a></h3>
+
+</body>
+</html>

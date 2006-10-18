@@ -1,0 +1,5 @@
+-68.1953  16.8287	# Lower left lon, lat
+-63.9724  19.7474	# upper right lon, lat
+0    0			# lower left i, j
+176  128		# upper right i, j
+1			# grib

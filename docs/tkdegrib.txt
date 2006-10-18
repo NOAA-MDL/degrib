@@ -1,0 +1,106 @@
+NAME
+   tkdegrib: Provide a GUI front end to degrib, which allows one to work
+      with GRIB files in various ways.
+
+SYNOPSIS
+   tkdegrib
+
+DESCRIPTION
+   Allows a GUI interface to the following degrib functions:
+      1) Inventory GRIB files.
+      2) Convert from GRIB to various formats.
+
+   Does not provide GUI access to these degrib functions:
+      3) Get Meta data from a GRIB message.
+         - Can create the .txt file, but can't easily view it.
+
+   Does not provide any access to these degrib functions:
+      4) Probe GRIB files at a specified lat/lon.
+      5) Convert NDFD GRIB2 files to flat file database
+      6) Probe the flat file database.
+
+   It does the GUI part by implementing a Grib2 package in Tcl/Tk.
+
+COMMANDS IN GRIB2 package:
+   Grib2Init [Grib2 Command name]
+      Creats a new "object" with the given command name
+
+   [Grib Command name] [subcommand] ?options?
+      Possible subcommands:
+         "inquire" or "-I",
+         "convert" or "-C",
+         "about" or "-V",
+         "isGrib2",
+         "-refTime"
+
+   [Grib Command name] inquire ?options?  (depricated)
+   [Grib Command name] -I ?options?
+      Options:
+         "-in $fileName"
+      Perform an inventory on the given file, which determines how many GRIB
+      messages there are and what variables they contain.
+
+   [Grib Command name] convert ?options?  (depricated)
+   [Grib Command name] -C ?options?
+      Options:
+         "-in $inFile"
+         "-out $outFile"
+         "-nameStyle 3"
+         "-namePath $ray(dir,Mosaic)"
+         "-msg $msg" "-msg $msgNum"
+         "-Met true"
+         "-Shp false"
+         "-Flt" "-Flt true"
+         "-NetCDF $ray(NetCDF_Version)"
+         "-Csv true"
+         "-MSB $ray(f_msb)" "-nMSB"
+         "-majEarth $ray(majEarth)"
+         "-minEarth $ray(minEarth)"
+         "-Unit e" "-Unit $ray(f_unit)"
+         "-Decimal $ray(decimal)"
+         "-poly $ray(f_poly)"
+         "-nMissing $nMissing"
+         "-GrADS $ray(f_GrADS)"
+         "-Interp $ray(f_Interp)"
+         "-revFlt" "-revFlt $ray(f_revFlt)"
+         "-SimpleWx true" "-SimpleWx $ray(f_simpleWx)"
+      This converts a given message from a given file.  It converts it to all
+      formats specified in the option list, storing the results to a file
+      specified by outputName or by namingStyle.  Finally, interpolate tells it
+      whether to create a lat/lon converage grid, and interpolate to that
+      grid, or use the grid specified in the GRIB message.
+
+   [Grib Command name] about  (depricated)
+   [Grib Command name] -V
+      Returns information about the version of the tkdegrib program.
+
+   [Grib Command name] isGrib2 ?options?
+      Options:
+         "-in $filename"
+      Returns true if the given file contains a GRIB message.
+
+   [Grib Command name] -refTime ?options?
+      Options:
+         "-in $filename"
+
+COMMAND LINE OPTIONS
+   NONE
+
+AUTHOR
+   Arthur Taylor (RSIS/MDL/NWS/NOAA) (8/26/2002 to 6/1/2004)
+   Arthur Taylor (MDL/NWS/NOAA)      (6/1/2004 to current time)
+
+REPORTING BUGS
+   Report bugs to arthur.taylor@noaa.gov
+
+COPYRIGHT
+   Created 8/26/2002.  This is given out in hopes that it proves useful.
+   There is NO Warranty: not even for MERCHANTABILITY or FITNESS FOR A
+   PARTICULAR PURPOSE.
+
+SEE ALSO
+   http://weather.gov/mdl/degrib/
+   The "degrib" man page at either:
+      1) /degrib/docs/degrib.txt
+      2) http://weather.gov/mdl/degrib/degrib.txt
+

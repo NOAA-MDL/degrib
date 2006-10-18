@@ -1,0 +1,198 @@
+#!/bin/make
+SHELL=/bin/sh
+
+CC=cc
+F77 = /usr/bin/xlf
+STD_FLAGS= -qmaxmem=8192 -O -qchars=signed -qcpluscmt
+FFLAGS = -qmaxmem=8192 -O2 -qstrict -qfixed -qarch=auto -qintlog -qintsize=4 -qrealsize=4
+
+LD_FLAGS=
+ARFLAGS=-r -v -u
+STD_DEF=-DUSE_JPEG2000 -DUSE_PNG -D_UNIX_ -D_FORTRAN -D_64Bit
+#STD_DEF=-DUSE_JPEG2000 -DUSE_PNG -D_UNIX_
+
+STD_INC=-Ig2clib-1.0.2 -I../jpeg2000/src/libjasper/include \
+        -I../libpng -I../zlib
+STD_LIB=
+PRJ_NAME=libgrib2.a
+CFLAGS=$(STD_FLAGS) $(STD_DEF) $(STD_INC)
+
+VPATH = ./g2clib-1.0.2:./grib2unpacker:./grib2packer
+
+all: $(PRJ_NAME)
+
+$(PRJ_NAME)(gridtemplates.o): gridtemplates.h
+
+$(PRJ_NAME)(pdstemplates.o): pdstemplates.h
+
+$(PRJ_NAME)(drstemplates.o): drstemplates.h
+
+C_GRIB2_OBJS = $(PRJ_NAME)(gridtemplates.o) \
+   $(PRJ_NAME)(drstemplates.o) \
+   $(PRJ_NAME)(pdstemplates.o) \
+   $(PRJ_NAME)(gbits.o) \
+   $(PRJ_NAME)(g2_unpack1.o) \
+   $(PRJ_NAME)(g2_unpack2.o) \
+   $(PRJ_NAME)(g2_unpack3.o) \
+   $(PRJ_NAME)(g2_unpack4.o) \
+   $(PRJ_NAME)(g2_unpack5.o) \
+   $(PRJ_NAME)(g2_unpack6.o) \
+   $(PRJ_NAME)(g2_unpack7.o) \
+   $(PRJ_NAME)(g2_free.o) \
+   $(PRJ_NAME)(g2_info.o) \
+   $(PRJ_NAME)(g2_getfld.o) \
+   $(PRJ_NAME)(simunpack.o) \
+   $(PRJ_NAME)(comunpack.o) \
+   $(PRJ_NAME)(specpack.o) \
+   $(PRJ_NAME)(specunpack.o) \
+   $(PRJ_NAME)(rdieee.o) \
+   $(PRJ_NAME)(mkieee.o) \
+   $(PRJ_NAME)(int_power.o) \
+   $(PRJ_NAME)(simpack.o) \
+   $(PRJ_NAME)(compack.o) \
+   $(PRJ_NAME)(jpcpack.o) \
+   $(PRJ_NAME)(jpcunpack.o) \
+   $(PRJ_NAME)(pngpack.o) \
+   $(PRJ_NAME)(pngunpack.o) \
+   $(PRJ_NAME)(dec_jpeg2000.o) \
+   $(PRJ_NAME)(enc_jpeg2000.o) \
+   $(PRJ_NAME)(dec_png.o) \
+   $(PRJ_NAME)(enc_png.o) \
+   $(PRJ_NAME)(g2_create.o) \
+   $(PRJ_NAME)(g2_addlocal.o) \
+   $(PRJ_NAME)(g2_addgrid.o) \
+   $(PRJ_NAME)(g2_addfield.o) \
+   $(PRJ_NAME)(g2_gribend.o) \
+   $(PRJ_NAME)(getdim.o) \
+   $(PRJ_NAME)(getpoly.o) \
+   $(PRJ_NAME)(seekgb.o) \
+   $(PRJ_NAME)(cmplxpack.o) \
+   $(PRJ_NAME)(g2_miss.o) \
+   $(PRJ_NAME)(misspack.o) \
+   $(PRJ_NAME)(pack_gp.o) \
+   $(PRJ_NAME)(reduce.o) 
+
+FORT_UNPK_OBJS = $(PRJ_NAME)(boundary.o) \
+   $(PRJ_NAME)(endomess.o) \
+   $(PRJ_NAME)(ierx.o) \
+   $(PRJ_NAME)(locpos.o) \
+   $(PRJ_NAME)(rdi3e.o) \
+   $(PRJ_NAME)(unboustro.o) \
+   $(PRJ_NAME)(unpk_g2mdl.o) \
+   $(PRJ_NAME)(unpkbg.o) \
+   $(PRJ_NAME)(unpkbmap.o) \
+   $(PRJ_NAME)(unpk_temp40.o) \
+   $(PRJ_NAME)(unpk_temp41.o) \
+   $(PRJ_NAME)(unpk_temp42.o) \
+   $(PRJ_NAME)(unpk_temp48.o) \
+   $(PRJ_NAME)(unpk_temp49.o) \
+   $(PRJ_NAME)(unpk_temp420.o) \
+   $(PRJ_NAME)(unpk_temp430.o) \
+   $(PRJ_NAME)(unpk_trace.o) \
+   $(PRJ_NAME)(unpk_cylinder.o) \
+   $(PRJ_NAME)(unpk_equator.o) \
+   $(PRJ_NAME)(unpk_lambert.o) \
+   $(PRJ_NAME)(unpk_mercator.o) \
+   $(PRJ_NAME)(unpk_orthographic.o) \
+   $(PRJ_NAME)(unpk_polster.o) \
+   $(PRJ_NAME)(unpk_azimuth.o) \
+   $(PRJ_NAME)(unearth.o) \
+   $(PRJ_NAME)(unpkoo.o) \
+   $(PRJ_NAME)(unpkpo.o) \
+   $(PRJ_NAME)(unpkps.o) \
+   $(PRJ_NAME)(unpk_refer.o) \
+   $(PRJ_NAME)(unpksecdif.o) \
+   $(PRJ_NAME)(unpk_sect0.o) \
+   $(PRJ_NAME)(unpk_sect1.o) \
+   $(PRJ_NAME)(unpk_sect2.o) \
+   $(PRJ_NAME)(unpk_sect3.o) \
+   $(PRJ_NAME)(unpk_sect4.o) \
+   $(PRJ_NAME)(unpk_sect5.o) \
+   $(PRJ_NAME)(unpk_sect6.o) \
+   $(PRJ_NAME)(unpk_sect7.o) \
+   $(PRJ_NAME)(unpk_smple.o) \
+   $(PRJ_NAME)(unpkcmbm.o) \
+   $(PRJ_NAME)(unpk_cmplx.o) \
+   $(PRJ_NAME)(unpklxbm.o) \
+   $(PRJ_NAME)(unpklx.o) \
+   $(PRJ_NAME)(unpk_endian.o) \
+   $(PRJ_NAME)(timpr.o)
+
+FORT_PACK_OBJS = $(PRJ_NAME)(boustro_int.o) \
+   $(PRJ_NAME)(boustro_flt.o) \
+   $(PRJ_NAME)(check_flt.o) \
+   $(PRJ_NAME)(check_int.o) \
+   $(PRJ_NAME)(earth.o) \
+   $(PRJ_NAME)(flr.o) \
+   $(PRJ_NAME)(flt_map.o) \
+   $(PRJ_NAME)(fmkieee.o) \
+   $(PRJ_NAME)(int_map.o) \
+   $(PRJ_NAME)(length.o) \
+   $(PRJ_NAME)(pack_gp2.o) \
+   $(PRJ_NAME)(pack_opt.o) \
+   $(PRJ_NAME)(pk_azimuth.o) \
+   $(PRJ_NAME)(pk_bmap.o) \
+   $(PRJ_NAME)(pk_c7.o) \
+   $(PRJ_NAME)(pk_cmplx.o) \
+   $(PRJ_NAME)(pk_cylinder.o) \
+   $(PRJ_NAME)(pk_equator.o) \
+   $(PRJ_NAME)(pk_grib2.o) \
+   $(PRJ_NAME)(pk_lambert.o) \
+   $(PRJ_NAME)(pk_mercator.o) \
+   $(PRJ_NAME)(pk_missp.o) \
+   $(PRJ_NAME)(pk_nomiss.o) \
+   $(PRJ_NAME)(pk_orthographic.o) \
+   $(PRJ_NAME)(pk_polster.o) \
+   $(PRJ_NAME)(pk_sect0.o) \
+   $(PRJ_NAME)(pk_sect1.o) \
+   $(PRJ_NAME)(pk_sect2.o) \
+   $(PRJ_NAME)(pk_sect3.o) \
+   $(PRJ_NAME)(pk_sect4.o) \
+   $(PRJ_NAME)(pk_sect5.o) \
+   $(PRJ_NAME)(pk_sect6.o) \
+   $(PRJ_NAME)(pk_sect7.o) \
+   $(PRJ_NAME)(pk_sect8.o) \
+   $(PRJ_NAME)(pk_smple.o) \
+   $(PRJ_NAME)(pk_s7.o) \
+   $(PRJ_NAME)(pk_temp40.o) \
+   $(PRJ_NAME)(pk_temp41.o) \
+   $(PRJ_NAME)(pk_temp42.o) \
+   $(PRJ_NAME)(pk_temp48.o) \
+   $(PRJ_NAME)(pk_temp49.o) \
+   $(PRJ_NAME)(pk_temp420.o) \
+   $(PRJ_NAME)(pk_temp430.o) \
+   $(PRJ_NAME)(pk_trace.o) \
+   $(PRJ_NAME)(pkbg.o) \
+   $(PRJ_NAME)(prepr.o) \
+   $(PRJ_NAME)(prep_flt.o) \
+   $(PRJ_NAME)(prep_int.o) \
+   $(PRJ_NAME)(prep_noval.o) \
+   $(PRJ_NAME)(prep_sect2_int.o) \
+   $(PRJ_NAME)(prep_sect2_real.o) \
+   $(PRJ_NAME)(pk_endian.o) \
+   $(PRJ_NAME)(reduce2.o)
+
+$(PRJ_NAME): $(C_GRIB2_OBJS) $(FORT_UNPK_OBJS) $(FORT_PACK_OBJS) \
+   $(PRJ_NAME)(myassert.o) \
+   $(PRJ_NAME)(scan.o) \
+   $(PRJ_NAME)(tendian.o) \
+   $(PRJ_NAME)(engribapi.o) \
+   $(PRJ_NAME)(grib2api.o)
+	ranlib $(PRJ_NAME)
+
+#$(PRJ_NAME): $(C_GRIB2_OBJS) \
+#   $(PRJ_NAME)(myassert.o) \
+#   $(PRJ_NAME)(scan.o) \
+#   $(PRJ_NAME)(tendian.o) \
+#   $(PRJ_NAME)(grib2api.o)
+#	ranlib $(PRJ_NAME)
+
+.f.o:
+	${F77} -c ${FFLAGS} $< -o $@
+
+.c.o:
+	$(CC) -c $(CFLAGS) $< -o $@
+
+.o.a:
+	ar $(ARFLAGS) -ruv $@ $<
+	rm -f $<

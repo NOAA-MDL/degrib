@@ -1,0 +1,19 @@
+#Process        Src     Sink    Category
+#               File
+#-----------------------------------------
+all             all     file       all = on
+all             all     file       debug = off
+all             all     file       verbose = off
+all             all     tty        all = off  # nothing goes to a terminal
+all             all     collective all = off
+
+all             all     file       use = on
+
+all  ImageCreator.C     file       verbose = on
+
+# Prefixes
+all   timeStamp = on         # time stamps on
+#all   processName = off     # process name off
+#all   processID = off       # process id off
+all   fileName = on         # filenames wanted
+all   lineNo = on           # line numbers wanted

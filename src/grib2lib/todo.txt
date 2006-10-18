@@ -1,0 +1,7 @@
+todo.txt
+
+1) Finish commenting / cleaning unpk_grib2, which is a wrapper for Steve's
+   unpacker library
+
+2) Create a "switch" routine to choose Glahn and then Steve depending on
+   templates.

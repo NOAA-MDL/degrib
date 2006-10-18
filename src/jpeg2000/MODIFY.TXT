@@ -1,0 +1,103 @@
+This is based on jasper-1.700.5 (http://www.ece.uvic.ca/~mdadams/jasper/)
+
+However, I decided to reduce the amount of space that was needed when I
+released it with my own source.  I removed the following directories:
+./data
+./doc
+./src/msvc
+./src/appl
+./src/libjasper/bmp
+./src/libjasper/jp2
+./src/libjasper/jpg
+./src/libjasper/mif
+./src/libjasper/pgx
+./src/libjasper/pnm
+./src/libjasper/ras
+
+Note: Removing bmp/jp2/jpg/mif/pgx/pnm/ and ras makes libjasper.a compile
+faster, smaller, and simpler, but it results in a libjasper.a that is
+different from the standard distribution.  The "simpler" adjective is what
+sold me on doing this because of issues with HP-UX.
+
+To do this, I needed to change "./configure":
+and create a line that looked like:
+          ac_config_files="$ac_config_files Makefile \
+          src/Makefile src/libjasper/Makefile \
+          src/libjasper/base/Makefile \
+          src/libjasper/include/Makefile \
+          src/libjasper/include/jasper/Makefile \
+          src/libjasper/jpc/Makefile jasper.spec"
+I also looked for other cases of msvc/appl/bmp/jp2/jpg/mif/pgx/pnm/ras and
+commented them out:
+#  "src/msvc/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/msvc/Makefile" ;;
+#  "src/appl/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/appl/Makefile" ;;
+
+Next I changed "./src/Makefile.am" and "./src/Makefile.in"
+to have: SUBDIRS = libjasper
+instead of: SUBDIRS = libjasper appl msvc
+
+I also had to change "./src/libjapser/Makefile.am" and
+"./src/libjapser/Makefile.in"
+
+-----------------------
+
+To compile on mingw:
+1) configure
+2) cp libtool.mingw libtool
+3) make
+
+On other systems you don't need step 2).
+
+-----------------------
+
+On the HP, I found that
+./src/libjasper/include/jasper/jas_types.h
+had to be modified with:
+/*
+ * The C language implementation does not provide the standard header file
+ * "stdint.h" as required by ISO/IEC 9899:1999.  Try to compensate for this
+ * braindamage below.
+ */
+#include <limits.h>
+#ifdef __INTTYPES_INCLUDED
+  #if !defined(INT_FAST8_MIN)
+  #define INT_FAST8_MIN	(-127)
+  #define INT_FAST8_MAX	128
+  #endif
+  /**********/
+  #if !defined(UINT_FAST8_MAX)
+  #define UINT_FAST8_MAX	255
+  #endif
+  /**********/
+  #if !defined(INT_FAST16_MIN)
+  #define INT_FAST16_MIN	SHRT_MIN
+  #define INT_FAST16_MAX	SHRT_MAX
+  #endif
+  /**********/
+  #if !defined(UINT_FAST16_MAX)
+  #define UINT_FAST16_MAX	USHRT_MAX
+  #endif
+  /**********/
+  #if !defined(INT_FAST32_MIN)
+  #define INT_FAST32_MIN	INT_MIN
+  #define INT_FAST32_MAX	INT_MAX
+  #endif
+  /**********/
+  #if !defined(UINT_FAST32_MAX)
+  #define UINT_FAST32_MAX	UINT_MAX
+  #endif
+  /**********/
+  #if !defined(INT_FAST64_MIN)
+  #define INT_FAST64_MIN	LLONG_MIN
+  #define INT_FAST64_MAX	LLONG_MAX
+  #endif
+  /**********/
+  #if !defined(UINT_FAST64_MAX)
+  #define UINT_FAST64_MAX	ULLONG_MAX
+  #endif
+  /**********/
+#else
+...
+#endif
+
+

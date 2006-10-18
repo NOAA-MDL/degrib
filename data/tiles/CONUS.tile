@@ -1,0 +1,5 @@
+-121.554    20.191999   #lower left lon, lat
+-60.885601  50.105999   #upper right lon, lat
+0     0                 #lower left i, j
+1072  688               #upper right i, j
+1                       #grib

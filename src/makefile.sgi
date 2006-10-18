@@ -1,0 +1,171 @@
+#!/bin/make
+#SHELL = /bin/sh
+
+all: config zlib libpng emapf
+	@echo "This assumes that we have gcc and gmake on a SGI system"
+	@echo "-----------------------------"
+	@echo "Attempting to compile jpeg2000..."
+	@echo "You may already have jasper (libjasper.a).  If so, you could change"
+	@echo "   the makefiles in ./degrib to use it, skipping this step"
+	@echo "What I have provided is the subset of jasper used by the GRIB2 library"
+	@echo "If it doesn't work, try the complete jasper library available at:"
+	@echo "   http://www.ece.uvic.ca/~mdadams/jasper/"
+	@echo "If you use -ljasper.a, you may need to change the makefiles in ./degrib"
+	@echo "-----------------------------"
+	(cd ./jpeg2000 && make)
+	@echo "Finished with jpeg2000..."
+	@echo "-----------------------------"
+	@echo ""
+	@echo "-----------------------------"
+	@echo "Attempting to compile grib2lib..."
+	@echo "-----------------------------"
+	(cd grib2lib && gmake -f makefile.sgi)
+	@echo "Finished with grib2lib..."
+	@echo "-----------------------------"
+	@echo ""
+	@echo "-----------------------------"
+	@echo "Attempting to compile gd..."
+	@echo "-----------------------------"
+	(cd ./gd && make -f makefile.sgi)
+	@echo "Finished with gd..."
+	@echo "-----------------------------"
+	@echo ""
+	@echo "-----------------------------"
+	@echo "Attempting to compile netcdf..."
+	@echo "-----------------------------"
+	(cd netcdf && make -f Makefile)
+	cp ./netcdf/ncdump/ncdump ../bin
+	@echo "Finished with netcdf..."
+	@echo "-----------------------------"
+	@echo ""
+	@echo "-----------------------------"
+	@echo "Attempting to compile libxml..."
+	@echo "-----------------------------"
+	(cd ./libxml && make libxml2.la)
+	@echo "Finished with libxml..."
+	@echo "-----------------------------"
+	@echo ""
+	@echo "-----------------------------"
+	@echo "Attempting to compile degrib..."
+	@echo "-----------------------------"
+	(cd degrib && make -f makefile.sgi)
+	@echo "Finished with degrib"
+	@echo "-----------------------------"
+	@echo ""
+	@echo "-----------------------------"
+	@echo "Attempting to install degrib..."
+	@echo "-----------------------------"
+	(cd degrib && make -f makefile.sgi install)
+	@echo "Finished with install of degrib"
+	@echo "-----------------------------"
+
+zlib: config
+	@echo "-----------------------------"
+	@echo "Attempting to compile Zlib..."
+	@echo "You may already have zlib (libz.a).  If so, you could change"
+	@echo "   the makefiles in ./degrib to use it, skipping this step"
+	@echo "-----------------------------"
+	(cd ./zlib && make)
+	@echo "Finished with Zlib..."
+	@echo "-----------------------------"
+	@echo ""
+
+libpng: config
+	@echo "-----------------------------"
+	@echo "Attempting to compile libpng..."
+	@echo "You may already have libpng (libpng.a).  If so, you could change"
+	@echo "   the makefiles in ./degrib to use it, skipping this step"
+	@echo "-----------------------------"
+	(cd ./libpng && make -f ./scripts/makefile.sgi)
+	@echo "Finished with libpng..."
+	@echo "-----------------------------"
+	@echo ""
+
+emapf: config
+	@echo "-----------------------------"
+	@echo "Attempting to compile emapf-c..."
+	@echo "-----------------------------"
+	(cd emapf-c &&	make)
+	@echo "Finished with emapf-c..."
+	@echo "-----------------------------"
+	@echo ""
+
+config: config.status
+
+config.status:
+	@echo "-----------------------------"
+	@echo "Attempting to configure Zlib..."
+	@echo "-----------------------------"
+	(cd ./zlib && ./configure)
+	@echo "Finished with Zlib..."
+	@echo "-----------------------------"
+	@echo ""
+	@echo "-----------------------------"
+	@echo "Attempting to configure jpeg2000..."
+	@echo "-----------------------------"
+	(cd ./jpeg2000 && ./configure)
+	# following is only needed for mingw version.
+	#(cd ./jpeg2000 && cp libtool.mingw libtool)
+	@echo "Finished with jpeg2000..."
+	@echo "-----------------------------"
+	@echo ""
+	@echo "-----------------------------"
+	@echo "Attempting to configure emapf-c..."
+	@echo "-----------------------------"
+	(cd ./emapf-c && ./configure)
+	@echo "Finished with emapf-c..."
+	@echo "-----------------------------"
+	@echo ""
+	@echo "-----------------------------"
+	@echo "Attempting to configure netcdf..."
+	@echo "-----------------------------"
+	(cd ./netcdf && CXX="" FC="" F90="" ./configure)
+	@echo "Finished with netcdf..."
+	@echo "-----------------------------"
+	@echo ""
+	@echo "-----------------------------"
+	@echo "Attempting to configure libxml..."
+	@echo "-----------------------------"
+	(cd ./libxml && ./configure --with-minimum --with-tree --with-output --enable-shared=no)
+#	(cd ./libxml && ./configure --with-minimum --without-threads --without-python --without-ftp --enable-shared=no --without-html --without-legacy --without-modules)
+	@echo "Finished with libxml..."
+	@echo "-----------------------------"
+	@echo "configure ok" > config.status
+
+####
+# Tidy means I don't have to run configure again, but I have to recompile
+# all the code.
+####
+tidy:
+	(cd ./zlib && rm -f *.a *.o *~ example example.exe minigzip minigzip.exe foo.gz so_locations _match.s maketree)
+	(cd ./libpng && rm -f *.a *.pic.o *.o pngtest-stat.exe pngtest.exe pngout.png libpng.def libpng-config libpng.pc pngtesti.exe)
+	(cd ./grib2lib && rm -f *.a)
+	(cd ./emapf-c && rm -f *.o *.a)
+	(cd ./degrib && rm -f *.o degrib degrib.exe tcldegrib tcldegrib.exe tkdegrib tkdegrib.exe)
+	(cd ./jpeg2000 && make clean)
+	(cd ./netcdf && make clean)
+	(cd ./libxml && make clean)
+	(cd ./gd && make -f makefile.sun clean)
+
+####
+# clean means I try to return as close as possible to the distribution state.
+# aka distclean
+####
+distclean: clean
+
+clean: config.status
+	(cd ./zlib && rm -f *.a *.o *~ example example.exe minigzip minigzip.exe foo.gz so_locations _match.s maketree)
+	(cd ./libpng && rm -f *.a *.pic.o *.o pngtest-stat.exe pngtest.exe pngout.png libpng.def libpng-config libpng.pc pngtesti.exe)
+	(cd ./grib2lib && rm -f *.a)
+	(cd ./emapf-c && rm -f *.o *.a config.log config.status Makefile)
+	(cd ./degrib && rm -f *.o degrib degrib.exe tcldegrib tcldegrib.exe tkdegrib tkdegrib.exe)
+	rm -f config.status
+	(cd ./zlib && rm -f Makefile)
+	(cd ./jpeg2000 && make distclean)
+	(cd ./netcdf && make distclean)
+	(cd ./netcdf && rm -f macros.make)
+	(cd ./netcdf/ncdump && rm -f ncdump)
+	(cd ./netcdf/ncgen && rm -f ncgen)
+	(cd ./libxml && make distclean)
+	(cd ./gd && make -f makefile.sun clean)
+

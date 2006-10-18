@@ -1,0 +1,17 @@
+PROJCS["NDFD_Lambert_Conformal_Conic",
+       GEOGCS["NCEP Sphere",
+              DATUM["NCEP Sphere",
+                    SPHEROID["NCEP Sphere",6371200,0.0]
+                   ],
+              PRIMEM["Greenwich",0],
+              UNIT["Degree",0.0174532925199432955]
+             ],
+       PROJECTION["Lambert_Conformal_Conic"],
+       PARAMETER["False_Easting",0],
+       PARAMETER["False_Northing",0],
+       PARAMETER["Central_Meridian",-95],
+       PARAMETER["Standard_Parallel_1",25],
+       PARAMETER["Standard_Parallel_2",25],
+       PARAMETER["Latitude_Of_Origin",25],
+       UNIT["Meter",1]
+      ]

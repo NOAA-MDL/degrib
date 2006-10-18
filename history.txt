@@ -1,0 +1,1527 @@
+#
+#----- Release: Version 1.83 09/14/2006 -----
+#
+ 9/14 AAT Removed old images before creating new ones (avoids stale images).
+ 9/14 AAT Forgot to re-enable "exit" at end of "Close" in tkdegrib.  Could
+          leave extra processes for version 1.81 and 1.82.
+ 9/14 AAT Cleaned up the image generation messages.
+ 9/13 AAT Reconfigured day1-7 snow,qpf,wgust from "expr" to "expr-split" since
+          they don't have a day 4-7, and expr looks for a day 4-7.
+ 9/13 AAT Re-enabled the same image generation available in 1.80.
+ 9/13 AAT Fixed the "usage" message in web.tcl
+ 9/11 AAT Updated the "encoding" routines for wgust, and adjusted DSF for QPF,
+          and WindSpd.
+#
+#----- Release: Version 1.82 09/08/2006 -----
+#
+ 9/8  AAT+Carl+Paul: Upgraded clock.c to include Carl's Clock_Holiday() routine.
+ 9/8  AAT Bug found in genProbeCube() "reused the numSupPDS for loop counter".
+ 9/8  AAT Changed behavior of status "expr" and "opnl" (days 1-7) to no longer
+          look in generic directory, but always combine 001-003 with 004-007
+          in web.tcl and tkdegrib.
+ 9/8  AAT Increased number of attempts to try to get a URL in web.tcl and
+          tkdegrib from 2 to 3.
+ 9/7  AAT Stopped web.tcl from creating empty directories for "NA" variables.
+ 9/7  AAT Added a -quiet option to web.tcl
+ 9/7  AAT snow, wind gust, and QPF don't have day 4-7.
+ 9/1  AAT Fixed bug in ndfd.tcl which configured the non existant "imgGen"
+          button to disabled if no imgGen .exe (Broke linux tkdegrib).
+ 9/1  AAT Fixed http.tcl DownloadSelect to understand status of "NA"
+          (impossible to reach because of RefreshFolderList)
+ 9/1  AAT Fixed web.tcl DownloadSelect to understand a status of "NA"
+#
+#----- Release: Version 1.81 08/31/2006 -----
+#
+ 8/31 AAT Put in more checks that the download directory exists (or create it)
+          before doing the download
+ 8/31 AAT Removed puts $file from ndfd.tcl when deleting files
+ 8/31 AAT Forgot to package config2.tcl and browse.tcl
+ 8/30 AAT Updated web.tcl
+ 8/30 AAT Implemented a "expr-pure" and a "opnl-pure" (see ozone)
+ 8/29 AAT !!!! Modified "GUST" to have UC_MS2Knots instead of UC_NONE !!!
+             Potential incompatibility because -Unit is default "e" instead
+             of -Unit "none".
+ 8/28 AAT Implement WindGust NDFD abreviation.
+ 8/28 AAT Fixed -Data multiple file option.
+ 8/28 Marc S. found "-Append" option
+ 8/28 AAT Tested -Data multiple file option.
+ 8/25 AAT Looked into -Data option with multiple GRIB files on the command line.
+ 8/24 ADT Fixed tclstart.c exit() function (needs a return)
+ 8/23 AAT Fixed TDLPack bug introduced between version 1.77 and 1.79.
+          (Dealt with uInt4 vers sInt4 for the max value in the group).
+ 8/17 AAT Worked on makefile.win to create libdegrib.dll (tcl/tk extension
+          library).  There appears to be a problem if I link in the xml library
+          as it hogs all the exports.
+ 8/17 AAT Found out that Gridded MOS became operational (TIN05-56 ammended)
+ 8/17 AAT Found out that Gridded MOS has wdir, wspd, pts03, pts06, pts12
+ 8/17 AAT Found out that Gridded LAMP became available with ots02, pts02
+          on 8/8/2006 (TIN06-14)
+ 8/17 AAT Started modifying ndfd.tcl to handle the sept 6 issues.
+ 8/16 AAT Started modifying ndfd.ini to be able to handle the sept 6 issues.
+ 8/16 AAT Adjusted the download web page to avoid confusion, and reduced the
+          number of packaging schemes.
+ 8/15 AAT Adjusted makefile's in degrib to have ability to NOT have XML.
+ 8/15 AAT Re-discovered bug with test 117 (-XML 4) (but only in debug mode).
+ 8/15 AAT Solved test 116 bug: hawaii,conus but only conus daylight info
+ 8/8  AAT Added ability to set the current time for regression testing.
+ 8/8  AAT Updated to most recent version of DWML Lib which has support for
+          -XML version 3 and 4.
+ 8/7  AAT Added a dependency to dpgenprobe.o (for genprobe.c) to makefiles.
+ 7/19 AAT At a request from "Dan Checkoway" switched makefile.linux to use 8.4
+          instead of 8.3
+#
+#----- Release: Version 1.80 07/17/2006 -----
+#
+ 7/13 AAT Fixed some makefile.aix issues.
+ 7/10 AAT Adjusted the /src/grib2lib/makefile.sun some to see if it helps
+          Sam_Garrigan and others.
+ 7/10 AAT Finished updating timezone / daylight files for "nhemi",
+          "conus" and "alaska" sectors.
+ 7/6  AAT Added "nhemi" to sector.c and to tkdegrib.
+ 7/6  AAT Started testing TPC / NDFD data in tkdegrib.
+ 7/5  AAT Updated the tables to match:
+          http://www.nco.ncep.noaa.gov/pmb/docs/grib2/grib2_table4-1.shtml
+ 7/5  AAT Started adding Prob. TC Wind fields for TIN 06-37
+ 6/20 AAT Added support for Template 4.11 (Ensemble + Stats).
+ 6/20 AAT Fixed fact that Satelite data does not have Surfaces.
+ 6/15 AAT Added /degrib/src/zlib/makefile.sun to the release (accidently left
+          it out... found out thanks to Andrew Molthan.
+ 6/14 AAT Fixed double section 1 length counting bug (thanks to Jack
+          Settelmaier) in degrib1.c (when dealing with inventory of GRIB1).
+ 6/12 AAT Modified "long" to sInt4 in engrib code.
+ 5/30 AAT Updated makefiles for (dwmllib). (released to tyr 1.80a)
+ 5/30 AAT Experimented with complex pack (GRIB1)
+#
+#----- Release: Version 1.79 05/22/2006 -----
+#
+ 5/16 AAT updated xmlparse.c (with version that takes care of last mem error)
+ 5/15 AAT Added solar.c and links to xmlparse.c
+ 5/15 AAT Updated /degrib/docs/degrib.txt.
+ 5/11 AAT Pushed the code to get filenames from the directory into genProbe()
+          This gives the XMLParse the ability to choose "extra" files that
+          aren't specified in the ndfdVars option.
+ 5/10 AAT Thanks to Jack Wasey, added "src/gd/makefile.cyg",
+          "src/grib2lib/makefile.cyg" and modified "src/makefile.cyg".
+ 5/8  AAT Updated Paul's version of xmlparse.c
+ 5/8  AAT Added changed geodata to "Generic" from "GUI" so all distributions
+          have it.
+ 5/2  AAT Added libxml to the distribution code.
+ 5/2  AAT Updated makefiles for libxml
+ 5/2  AAT Copied Paul's version of xmlparse.c / xmlparse.h
+ 5/2  AAT Tweaked metaname support for psurge
+ 5/2  AAT Updated code to accept master version 3
+ 5/1  AAT Added support for template 4.10 (for storm surge)
+ 5/1  AAT Added metaname support for psurge.
+ 4/27 AAT Finished adding "engribapi.c" to grib2lib.
+ 4/24 AAT Found bug when reading polar stereographic TDLPack.  Tangent lat
+          was typically 60 instead of 90.  Meshlat (not tangent) should be 60
+ 4/24 AAT Found bug when reading mercator TDLPack.  Tangent lat was
+          occassionally 20 instead of 90.  Meshlat (not tangent) should be 20
+ 4/20 AAT PDSTemplate 5 should probably have signed scale values (see NCEP)
+ 4/20 AAT Continued working on encoding routines.
+ 4/18 AAT Modified pack.c "InitEarth" to fix type 3 vs type 7.
+ 4/5  AAT DeVine gave example of bad NCEP "whole ensemble" data which didn't
+          have octets 61 to 86.
+ 4/5  AAT Started experimenting with ECMWF ensemble extended GRIB1 PDS section.
+ 4/5  AAT Added ECMWF Subcenters to metaname.c
+ 4/5  AAT Added "12 hourly" and "24 hourly" to -XML option.
+ 3/28 AAT Worked with the -Map option some more.
+#
+#----- Internal Release: Version 1.78 03/22/2006 -----
+#
+ 3/22 AAT removed "static" from grpprobe.c "matchCompare()"
+ 3/22 AAT Added isPntInASector() to sector.c/sector.h
+ 3/21 AAT Added -icon option.
+#
+#----- Release: Version 1.77 03/15/2006 -----
+#
+ 3/15 AAT Updated tables based on:
+          http://www.nco.ncep.noaa.gov/pmb/docs/grib2/grib2_table4-1.shtml
+ 3/14 AAT Updated tables based on:
+          http://www.nco.ncep.noaa.gov/pmb/docs/grib2/grib2_table4-5.shtml
+ 3/13 AAT Added athens table to grib1 tables based on
+          "degrib/data/chad/mm5togrib"
+ 3/13 AAT Added ability to handle "local surfaces" (table 4.5 metaname.c)
+ 3/9  AAT Changed FindGRIBMsg() back to return -2 at EOF (which is what it
+          was supposed to do).  The mutliple files had changed it since they
+          weren't an "error".  Changed the calls in cube.c and commands.c to
+          treat -1 as error, but not -2.
+ 3/9  C_D (Claude Desrochers): Modified makefile.sgi to have:
+          "DP_LIB = -L../emapf-c/ -lemapf -L/usr/lib32 -lm"
+ 3/8  AAT Modified the weather error log option in probe.c and weather.c
+ 2/28 AAT Modified -Freq to round before creating the freq table.
+ 2/24 AAT Added libxml to makefile.linux.
+#
+#----- Release: Version 1.76 02/24/2006 -----
+#
+ 2/23 AAT Jack Settelmaier found a bug with configuration of the NDGD 4-7
+          day forecasts for PoP12, PoP06, and RHM.
+ 2/22 AAT Jack Settelmaier found a bug with tcldegrib -V used from the
+          tkdegrib about window. (one fewer element in list caused a indexing
+          problem) 2/19 AAT Switched from OperDir to OpnlDir in ndfd.ini for
+          consistencey
+ 2/21 AAT Gave out first version of 1.76.
+ 2/19 AAT Updated ndfd.tcl,http.tcl to key off of opnl instead of oper for
+          both NDGD and NDFD (used to be oper for NDGD, opnl for NDFD)
+ 2/19 AAT Intro opnl version of AQ (ozone01, ozone08).  Need both opnl, expr.
+ 2/18 AAT Added ability for -XML to recognize ds.maxt.bin and maxt.bin
+ 2/17 AAT Created MOTD 3 option (for 33 column text displays).
+ 2/17 AAT Added parsing for "-XML glance" option.
+ 2/17 AAT Added a -Freq option to create a frequency distribution of the
+          values in the grid.
+ 2/17 AAT For -NetCDF 2,3, before appending a message, it now checks if the
+          message has the same reference time as the one in the file.  If so
+          it adds it.  If not, it overwrites the file.
+ 2/16 AAT Added code in metaname.c to handle thunderstorm 03 / 06 / 12.
+ 2/16 AAT Added -Sector command back into the degrib_DP code.
+ 2/15 AAT Checked NCEP's meta tables for updates.  Found "0,3,198".
+ 2/15 AAT Made sure that metaname.c can handle the new gridded MOS PoP's
+ 2/13 AAT Created degrib_DP (for just the -DP option).
+ 2/10 AAT Completed commenting the genProbe.c routines.
+ 2/8  AAT Completed test routines for -DP option.
+ 2/7  AAT Adjusted short name on ProbWindSpd to ProbWindSpd06.
+ 2/6  AAT Started in on genProbe and -DP option.
+ 2/2  AAT Fixed a bug found by "george" in myMapf.c handling of lat/lon grids
+          when lon1=-11, and lonN=3 (ie U.K.).
+ 2/2  AAT Went back and commented genprobe.c
+ 2/1  AAT Tracked down test failures on other OS's.  Currently reduced it to:
+          "test40 (linux) -> Round error"
+          "test62 (lin/aix) -> differ picture encode)",
+          "test69 (all) -> want different behavior"
+ 1/31 AAT Removed checks for 255 when looking at lenTime (template 4.5, 4.8,
+          4.9 (maybe 4.12)).  If lenTime is "missing" it should be set to
+          2^32 -1 instead of 2^8 -1.
+ 1/31 AAT Found a bug in clock when dealing with timezones:
+          ./clock scan "1/31/2006 9:08:27 CST" |
+          ./clock format stdin -format "%D %T" -zone CST
+          Did not return the original value.  It needed to treat timezone as
+          hour (rather than sometimes sec) to add to local time to get UTC.
+ 1/30 AAT Detected a bug in AllocSprintf when it is called with
+          buffLen > strlen(buff).
+ 1/30 AAT Introduced -gribFilter for finding files when "expanding" a directory
+ 1/30 AAT Introduced -ndfdConven for -NDFDVars option.
+ 1/27 AAT Adjusted labeling to help differentiate cumulative vs incremental
+          wind (and other elements) probabilities.
+ 1/27 AAT Added DSF and BSF to the metadata output.
+ 1/27 AAT Added better checking that input files are actually files.
+ 1/26 AAT started implementing "-geoDataDir" and "-NDFDDir"
+ 1/26 AAT Found a bug in cstart.c when checking if variables in list are
+          files or valid arguments.
+ 1/26 AAT Finished -NDFDvars option.
+ 1/25 AAT Introduced -NDFDvars option (primarily for XML parse)
+ 1/25 AAT Worked on adding ability to convert log10(µg/m^3) to µg/m^3
+ 1/25 AAT Introduced multiple point option. (-pnt x1,y1 -pnt x2,y2 ...)
+ 1/25 AAT Introduced -startTime and -endTime options.
+ 1/25 AAT Did a little work on "MOTD" option.
+ 1/18 AAT Updated "0, 13, 192" and "0, 13, 193" for the NDGD
+ 1/17 AAT Updated the -MOTD option 2.
+ 1/13 AAT Created a -MOTD option 1 and 2
+ 1/10 AAT Debugged genProbe command.
+ 1/5  AAT Worked on genProbe command.
+ 1/3  AAT Updated metaname.c tables based on (version 3):
+          http://www.wmo.ch/web/www/WMOCodes/Operational/GRIB2/FM92-GRIB2-2005nov.pdf
+12/29 AAT Thanks to Jack Settelmaier got access to some GRIB1 clustered
+          ensemble data and found that the section length was 86 instead of
+          100.  Modified degrib1.c to not complain about a length of 86.
+12/29 AAT Added memwatch code to cstart.c and userparse.c
+12/29 AAT Updated NCEP local table (metaname.c) (and table 4.2 : 0.19)
+12/16 AAT Continued work on genProbe code.
+12/15 AAT Removed fatal error for master table version = 0.
+12/15 AAT Added calls to "strip" to makefile.win to reduce size of degrib.exe
+12/14 AAT Started in on genProbe code and xmlParse.
+12/11 AAT Thanks to Kevin Cross, Fixed a typo (meaurable) in
+          /degrib/output/web_data/defineQPF.html".
+#
+#----- Release: Version 1.75 12/07/2005 -----
+#
+12/7  AAT Investigated the inventory of a probability file.  The inventory
+          was not decoding the limit factor correctly for template 4.9.
+          This is because GRIB2 uses a 1 in the most significant bit to denote
+          a negative value, instead of casting the sChar to an uChar.  Found
+          a bug in NCEP's encoder because for template 4.5 it cast the sChar
+          to a uChar.
+12/7  AAT Adjusted metaname.c to watch for APCP and tack on the # of hours
+          used in the accumulation (APCP12, APCP06, etc)
+12/7  AAT Created makefile.aix64 which has 64 bit support.  Have tested it
+          against the test suite, and behaves the same as the makefile.aix32
+          NOTE: tcldegrib and tkdegrib don't compile as the libraries on
+          the IBM were made in 32 bit mode.
+12/7  AAT Added some meta data support for ensemble GRIB1 messages.  See:
+          http://www.emc.ncep.noaa.gov/gmb/ens/info/ens_grib.html
+12/6  AAT Switched all "long int" to "sInt4" (to get 64 bit compliance)
+12/6  AAT Improved check for "degrib <file> -C -NetCDF -msg 1" syntax error.
+12/6  AAT Added check in tkdegrib configure to make sure custom is 20x20.
+12/6  AAT "degrib file.ind -DC -Help" error message was less than informative.
+12/6  AAT Fixed "-DP -Asc2Flx" error when it doesn't have -pnt.
+12/6  AAT Fixed -Asc2Flx errors for dates larger than year=2001.
+12/6  AAT Fixed tkdegrib problem with inventory'ing a directory with files
+          with [] in the name (Jack Settelmaier Bug).
+11/16 AAT Updated Ws/Wd to operational in preparation for 12/8.
+11/16 AAT Found a bug in config.tcl dealing with the change from the tree
+          structure being labeled ndgd to it being labeled ndgd2
+          Bug exists in 1.74, but could exist in version 1.70 to 1.73
+11/16 AAT Found out that Guam had gone operational (tt,mx,mn,po,dp,wx) on
+          9/20/2005
+11/15 AAT Updated GRIB1 meta data to have a:
+          "PDS-S4 | Output grid" statement (with a "-Unit e")
+11/9  AAT Started adding template 4.12 (see sref data).
+          changes to metaparse.c, metaprint.c, inventory.c
+          Need to double check, and determine which files get overwritten
+          (894 txt files, but 932 messages with -nameStyle %e_%v_%s.txt).
+          (905..908 appear (-I) to be identical?)
+          Turns out to be APCP-3,6,12,24
+11/9  AAT Changed behavior of Local Use look up for NCEP.  If not HPC
+          uses NCEP's standard local use look up, otherwise uses HPC's.
+11/9  AAT Updated subcenters in metaname.c NCEP now has Space Environment
+          Center
+11/8  AAT Found out that IBM pow function doesn't like uChar for input
+          pow (10, uchar value) -> pow (10, (int) (uchar value))
+11/8  AAT Resolved a portability bug in Inventory (rounding of delt time
+          in inventory print.
+11/8  AAT Resolved a portabilty bug in metaprint (used %g instead of %f for
+          Lower Limit / Upper Limit).
+11/8  AAT Put in a check if the NetCDF file has a different unit than the
+          requested unit, then it overwrites the old NetCDF file.
+11/8  AAT Managed to test against Ryan Boyles NetCDF bug.
+11/7  AAT Implemented web.tcl on the IBM, and created RenameConv 2 to handle
+          some naming convention issues.
+11/4  AAT Re-wrote web.tcl to handle all the NDGD, and cleaned it up some.
+11/4  AAT Re-wrote web.tcl to handle apt.bin and rhm.bin
+11/4  AAT Removed "[NDGD_Variables], [NDGD_Sectors]" sections of ndfd.ini
+11/4  AAT moved mosgfs/conus/day1-3/maxt.bin to gfsmos/conus/maxt_d13.bin
+11/4  AAT Switched order of "MOS GFS" to "GFS MOS"
+11/4  AAT Adjusted ndfd.ini so ozone is under "AirQual" Folder and put in
+          "/data/ndgd/aq" instead of "CONUS" and "/data/ndgd/conus/"
+11/4  AAT Fixed web.tcl so it will download NDGD/Ozone again.
+11/1  AAT Fixed default "-C -Map" (didn't init the ramp structure correctly)
+#
+#----- Release: Version 1.74 10/29/2005 -----
+#
+10/27 AAT Introduced text attribute of EarthRadius, EarthMajorAxis,
+          EarthMinorAxis to the "-NetCDF *" MapProjection.  The difference is
+          that EarthRadius is "6371.2 km" in text, while EarthRadius_KM is
+          "6371.2" as a double.
+10/27 AAT Fixed -NetCDF 3: attribute TrueGridLength_Latitude, moved from map
+          projection to XCells, YCells
+10/27 AAT Better handling of extensions for the -out option.
+10/27 AAT Fixed a memory leak introduced by adding multiple GRIB files.
+10/26 AAT Improved "-NetCDF 2" and "-NetCDF 3": the FirstProjectionHR
+          attribute etc to be able to handle grids that are out of order.
+10/26 AAT Improved "-NetCDF 2" and "-NetCDF 3": the valid_min,valid_max
+          attribute to be the whole file's valid_min/valid_max.
+10/26 AAT Improved "-NetCDF 2" and "-NetCDF 3" to do an insert, instead of
+          appending the data to the end.
+10/26 AAT Thanks to Anne Frigon: Found out that in the NetCDF I used
+          the msgNum to specify where to insert the data.  This results
+          in ProjHour filled with numerous missings.  Switched to adding
+          to the end.  This results in non-monotonic ProjHour
+10/26 AAT Thanks to Anne Frigon: fixed a typo in the NetCDF attributes
+          (LowerLeftLatiude -> LowerLeftLatitude)
+10/25 AAT Thanks to Kirby Cook, found out that I didn't add a '\0' to end
+          of a buffer in writenc.c.  This was used in a test to see if the
+          file was created using -NetCDF 1,2,3.  The result made all files
+          look like they were created by different options, resulting in
+          only allowing 1 message per file.
+10/25 AAT Increased the size of gribcut from 15x15 degrees to 20x20 degrees.
+10/25 AAT Fixed a "download NDGD folder" bug.
+10/25 AAT Updated comments about "GetURL.tcl"
+10/25 AAT Added the new Gridded MOS data sets.
+10/24 AAT Worked some more on the scale for the -C -Map option.
+10/23 AAT Began work on adding multiple files to command line.
+10/21 AAT Converted from time.h to clock.h to enable people to work with
+          reanalysis data from 1952.  (time.h has a limitation of 1970 on
+          some platforms).
+10/23 C_D (Claude Desrochers): Added makefile.sgi to appropriate locations.
+10/23 AAT Started to gain the ability to have multiple GRIB files on the
+          command line, for help with the XML code.
+10/21 AAT Shifted from time.h to clock.h.  To assist Kevin Pace work with
+          Reanalysis data from 1954.
+10/21 AAT Fixed the calls to gdImageFilledRectangle from fill4SidedObject
+10/21 AAT Converted "Inconsistent Projection" in TDLPack to a warning instead
+          of a fatal error.
+10/19 AAT Modified /degrib/src/gd/makefile.sample to have "gd_security"
+#----- Patch: Version 1.73.a 10/18/2005 -----
+10/17 AAT Added GRIB1 "parm_table_nohrsc" for Chad Shafer.
+#
+#----- Release: Version 1.73 10/14/2005 -----
+#
+10/12 AAT Added %a, %A, and %g options to -nameStyle.
+10/12 AAT Added lookup tables for the meta text file for which:
+          center/subcenter/genID.
+ 10/5 AAT Re-did meta.h to move center/subcenter to common area
+          (from a copy in each of pds1, pds2)
+ 10/5 AAT Check if NetCDF file was correct "degrib version" before append.
+          If not, then over-write.
+ 10/4 AAT Default choice for MSB is true from degrib, false from tkdegrib
+          choose to go with true for default.
+ 10/4 AAT Added -SimpleVer to tkdegrib (Add simple Wx over ride to the GUI)
+ 10/4 AAT Added -AscGrid to tkdegrib
+ 10/4 AAT Added -AscGrid to -Interp option
+ 10/4 AAT Reason "-Grib" was not working is because "reduce2" function line
+          had too many columns.
+ 10/4 AAT Added "-C -Map" option (needs improvement).
+ 9/28 AAT Introduced "GetURL.tcl" to /degrib/bin, which allows one to get an
+          arbitrary URL by typing "/degrib/bin/tcldegrib GetURL.tcl <URL>"
+ 9/21 AAT Worked on "-Flt -AscGrid" option
+ 9/21 AAT Update to "-NetCDF 3" to have HrCells become ProjectionHr, and make
+          ProjectionHr a coordinate variable.
+ 9/19 AAT Introduced "-GrADS 2" (valid time vs reference time)
+ 9/19 AAT Figured out why "-P -out stdout" behaved differently from
+          "-P -stdout"
+ 9/19 AAT Figured out why multiple calls to -NetCDF 3 -out maxt.nc resulted
+          in 1 grid, whereas -NetCDF 3 -msg all -out maxt2.nc resulted in
+          8 grids.  Is now consistent.
+ 9/16 AAT Finished "-NetCDF 3" which should be more "CF" compliant... Modeled
+          off RUC example see:
+          http://www.unidata.ucar.edu/packages/netcdf/examples/files.html
+ 9/16 AAT Added Code to handle MOS PoP06 and MOS PoP12.
+ 9/12 AAT Changed NetCDF output to have "standard_parallel" attribute with
+          2 elements, rather than a standard_parallel_1 and
+          standard_parallel_2. (Started to introduced "-NetCDF 3")
+ 9/8  AAT Switched from "," to ";" in several elements in metaname.c for
+          Christopher McIntyre
+ 9/8  AAT Added NCEP GRIB1 table 131 for Michael Allard and Andrew P Revering
+#
+#----- Release: Version 1.72 06/20/2005 -----
+#
+ 6/20 AAT They started releasing "Relative Humidity" (ds.rhm.bin) and
+          "Apparent Temperature" (ds.apt.bin).  Tested image generation
+          capability.
+#
+#----- Release: Version 1.71 06/15/2005 -----
+#
+ 6/15 AAT Thanks to Ken Waters... remembered to add ApparentT and RH
+          colortables
+#
+#----- Release: Version 1.7 06/15/2005 -----
+#
+ 6/15 AAT Thanks to Eishi ISOYA was able to update the macosx makefiles.
+ 6/14 AAT put md5sum on download page.
+ 6/14 AAT Added support for downloading mosGFS from the NDGD using tkdegrib.
+          Still need to do this for web.tcl.
+ 6/14 AAT Added Variables "Relative Humidity", and "Apparent Temperature"
+          for 6/15/2005 update to NDFD.
+ 6/14 AAT Found out that Hawaii has Experimental SnowAmt (not configured
+          correctly)
+ 6/14 AAT Reconfigured Variables : MaxT, MinT, Temp, DP, PoP12, Wx become
+          operational for PR and Hawaii on 6/15/2005
+          (see David Ruth email 5/10/2005)
+ 6/14 AAT Thanks to Gimond Manuel (5/6/2005) was able to get sun makefiles.
+ 6/14 AAT Added ncdump.exe to distribution in response to
+          Alec.Richardson email on 6/8/2005.
+ 5/24 AAT Got a copy of Apparent Temperature and Relative Humidity to
+          experiment with (modified metaname.c)
+ 5/12 AAT Thanks to "rob.doornbos" found a bug dealing with multiple
+          closing's of the same file.  Fixed "fclose (out_fp)" in GRIB2Probe()
+          in probe.c
+ 5/4  AAT Switch "FLT tab" .tlf option from Upper Left to lower left in GIS.tcl
+ 5/4  AAT Updated "appendix.php" to fix definition of .tlf.
+ 4/4  AAT Moved clock up in the compile list to just after degrib.
+ 4/1  AAT Switched from "PROB-" to "Prob".
+ 4/1  AAT Did a code walk through of myutil.c
+#
+#----- Release: Version 1.68 03/30/2005 -----
+#
+ 3/28 AAT Adjusted the inventory of Probability data again.
+ 3/28 AAT Figured out why degrib was flipping 0p5 degree grib2 data from
+          NCEP's GFS model output. (90,0 was lat1/lon1 instead of -90,0)
+ 3/24 AAT Fixed the methods used to determine timeZone. (Broken for UTC-1)
+ 3/23 AAT Upgraded to 1.0.2 version of NCEP's GRIB2 library.
+ 3/23 AAT Improve Probability inventory to contain threshold value.
+ 3/22 AAT Added MOSGFS- to names from center 7, subcenter 14 which are
+          generated by process 96.  Added MOS- to names of all other products
+          from center 7 subcenter 14.
+ 3/22 AAT Get Rid of SNOD NDFD over-ride in metaname.c
+ 3/21 AAT Probability forecasts from TPC (Template 4.5)
+ 3/17 AAT Revisited handling of MOS.  Added it after determining short name,
+          so that it uses NDFD conventions for the short name, but prepends
+          a "MOS-" to it.  May need a "MOSGFS-" instead.
+ 3/16 AAT Gave Marc 1.67a.
+ 3/16 AAT Added MOS_Overide[] table, and created IsData_MOS() in metaname.c
+#
+#----- Release: Version 1.67 03/15/2005 -----
+#
+ 3/15 AAT ParseSect4() Added a cast to (uChar) when comparing to
+          GRIB2MISSING_1
+ 3/15 AAT Temp, DP, and Wx for conus became operational.
+ 3/8  AAT Instructed to migrate away from use of MDL's GRIB2 library
+ 3/8  AAT Minor adjustment to "/src/grib2lib/grib2unpacker/rdieee.f"
+ 3/8  AAT Fixed a bug with comunpack.c (my copy of Steve's 1.0.1 version)
+          line 193 should be > ndpts instead of >= ndpts.
+ 2/23 AAT Fixed a bug with TDLPack "no missing" second order difference.
+ 2/16 AAT Fixed verbose shapefile option: Was always on in 1.65 tkdegrib.
+ 2/15 AAT Started work on a -NC which is similar to -DC and -C except with
+          NetCDF.  Needed to check some GFE created bytemasks.
+ 2/7  AAT Fixed a Big_Endian bug in TDLPack reading "ReadTDLPSect4()"
+          -- Gave out fixed version (1.65 2/7/2005)
+ 2/3  AAT Finished up first version of NDFD & Weather.
+ 1/31 AAT created a "select custom grid page" (until new one is finished).
+ 1/31 AAT Updated web pages with newest release note.
+ 1/31 AAT fixed release note 1.30 (problems with "<>")
+ 1/31 AAT removed "warning about 9 bytes" when using -C with TDLPack data.
+ 1/31 AAT removed "warning about 9 bytes" when using -I with TDLPack data.
+#
+#----- Release: Version 1.65 01/27/2005 -----
+#
+ 1/26 AAT Finished the initial version of the -Sector option.
+ 1/25 AAT Introduced the "-Sector" option.
+ 1/25 AAT Fixed bug found by "chrism" in metaparse.c::ParseSect4Time2()
+          unit2sec[] had an extra 0, so 10 got mapped to 0 (instead of 10800)
+ 1/25 AAT Added Icon for TDLPack file types
+ 1/25 AAT Fixed netCDF tdlpack GUI != netCDF tdlpack command line bug.
+ 1/24 AAT Added verbose .shp file format.
+ 1/24 AAT Debugged Multiple output probe point.
+ 1/23 AAT PntFile: Due to some requests (KimW), degrib allows (optional) one
+          to specify a forth element which is the file to output that point
+          to.
+ 1/23 AAT PntFile: Due to some requests (chrism and others), degrib no longer
+          allow the space separator.  This allows stations with spaces.  So
+          you have to use commas.
+ 1/23 AAT Added prj file creation to gribWriteShp() to help with ArcGIS.
+ 1/23 AAT Cleaned up documentation on %D %d nameStyle options.
+ 1/21 AAT Made Inventory displays what it can when it detects a bug.
+ 1/13 AAT Worked on -nameStyle "%c" "%d" and "%D"... Checking if this is
+          desired result.
+ 1/13 AAT fixed "-IS0 -nMet -out stdout"
+ 1/13 AAT commented TDLPack routines, final compression 148,400, also improved
+          speed.
+ 1/12 AAT Continued TDLPack compression: Glahn: 151,176 me: 156,136 -> 148,416
+ 1/11 AAT Continued TDLPack compression: Glahn: 151,176 me: 156,744 -> 156,160
+ 1/10 AAT Continued TDLPack compression: Glahn: 151,176 me: 230,856 -> 230,480
+ 1/7  AAT Continued TDLPack compression: Glahn: 151,176 me: 302,192
+ 1/5  AAT Started in on TDLPack writing routines. Not very good compression:
+          Glahn: 151,176 me: 618,672 -> 330,848
+12/29 AAT Adjusted code to handle "missing" for sndSurface type.
+12/29 AAT Fixed MetaPrint for table4.5 entry 109.
+12/22 AAT --- 1.63.A replaced weather.c on gate.weather.gov
+12/22 AAT Fixed Simple Weather code for SW/BS (ignore BS).
+12/21 AAT Changed GRIB1 code to return warning if they didn't count section 5.
+12/20 AAT fixed tdlpack reading bug.
+12/14 AAT Updated "metaname.c::Choose_LocalParmTable" for HPC Grids.
+12/13 AAT --- 1.64 Handed jcraig a preliminary copy of the changes he
+          suggested to writenc.c for him to evaluate.
+12/13 AAT Updated some of the web pages.
+12/13 AAT Finished incorporating "jcraig" changes to writenc.c
+          (Adds a "-NetCDF 2" option (version 2)).
+12/13 AAT Updated makefiles to handle pure cygwin situation "better".
+12/8  AAT Changed "stderr" to "stdout" in web.tcl so the .'s are in the
+          correct chronological order in cron jobs.
+12/3  AAT Added a "-validMin" and "-validMax" to make sure numbers are
+          resonable.
+12/3  AAT Fixed web site's copy of "history.txt" (modified the font some).
+12/3  AAT Switched to NCEP GRIB2 current library and return 7 if we
+          have a corrupt section 7.
+          1) Detects "too many byte read" due to corrupt group width
+          2) Detects "too many numbers" due to corrupt group length.
+12/2  AAT Adjusted MDL GRIB2 library to 705 if
+          1) Detects "too many byte read" due to corrupt group width
+          2) Detects "too many numbers" due to corrupt group length.
+12/1  AAT Adjusted NCEP GRIB2 library to return 14 if we have corrupt
+          section 7.
+          1) Detects "too many byte read" due to corrupt group width
+          2) Detects "too many numbers" due to corrupt group length.
+12/1  AAT Search for "CASE" in other files.
+12/1  "jcraig" provided enhanced NetCDF code.
+12/1  "jcraig" pointed out that "SELECT CASE" is not F77 compliant.
+          He provided changed code for "unpkSect3.f".
+12/1  AAT Detected that GRIB2 library doesn't handle corrupt section 7s well.
+          1) Can try to read too many bytes due to corrupt group width
+          2) Can try to store too many numbers due to corrupt group length.
+12/1  AAT Fixed bug in library that caused it to always use NCEP's library.
+12/1  AAT Fixed a memory leak in "FindGRIBMsg()".
+#
+#----- Release: Version 1.63 11/30/2004 -----
+#
+11/29 AAT Implemented sector based operational/experimental variables.
+11/23 AAT Implemented "Simple Weather Version 4". (New Default).
+#
+#----- Release: Version 1.61.A (Announced Web site update) 11/18/2004 -----
+#
+10/29 AAT Found bug with handling of missing / undef with GrADS ctl files.
+          Thanks to "DNovak3098"
+10/20 AAT Found a bug with commands.c::GetOutputName when using -out stdout.
+          When code changes the file extension and there isn't any memory
+          allocated (bug introduced in 1.60, and 1.61).
+10/6  AAT Worked on support for extracting a TDLPack gridded message.
+10/5  AAT Added support for Inventory'ing TDLPack.
+ 9/29 AAT Don Bauer pointed out that images weren't being generated except
+          for wave height.  This lead me to detect a bug in ndfd.tcl which
+          was blocking the creation of images unless waveh images needed to
+          be created, at which point it generated all the images.
+ 9/16 AAT Dave mentioned problems with "Chc:T:...^Def:RW:..." does not get the
+          correct color (due to Marc's Algorithm).  Need new -SimpleVer
+ 9/14 AAT Experimented with metaname.c :: Choose_LocalParmTable();
+ 9/14 AAT Corrected writeshp.c :: CreateWxDbf()
+          fprintf (fp, formBuf1, id, buffer, index, vis, index);
+#
+#----- Release: Version 1.61 08/30/2004 -----
+#
+ 8/26 AAT Added ability for hawaii and guam to generate images.
+#
+#----- Release: Version 1.60 08/24/2004 -----
+#
+ 8/24 AAT Thanks to Ken Waters found a typo in NDFD_GenImages
+ 8/23 AAT Thanks to Ken Waters (and myself) we detected a bug in my handling
+          of mercator grids when I used NCEP's routines.  The result was
+          a "scan mode 80" error, and a DX=.064 meters.
+ 8/23 AAT Added /degrib/arcview/readme.txt to distrib lists.
+ 8/23 AAT Activated Hawaii, and Guam Sectors of NDFD.
+ 8/23 AAT Bind return in GIS Tab (top RT pane) to be double click.
+ 8/23 AAT "-C -out stdout" and "-C -stdout" sends meta to standard out.
+ 8/20 AAT Redid how age of files are handled in tkdegrib (faster)
+ 8/20 AAT Tested web.tcl with "custom ndfd".
+ 8/20 AAT Tested web.tcl with ndgd and ndfd.
+ 8/19 AAT Adjusted Inventory so it looks at first 5000 bytes in a ".tar" file
+          before giving up.
+ 8/19 AAT Finished the browse button.
+ 8/19 AAT Attempted to fix all other "file open bugs".
+ 8/18 AAT Fixed file open bug in "Grib2IsGrib2Obj()"
+ 8/18 AAT Started to add browse button...
+ 8/17 AAT Finished adding NDGD.
+ 8/16 AAT Modified "english weather translation" in "probe.c" to have
+          "A, B and C" instead of "A and B and C".
+ 8/16 AAT Finished debuging weather.c for "unknown coverages".
+ 8/13 AAT Adjusted the Weather Table for the new weather keys.
+          ESRI Weather issue: Original "HazCode" was based on 5 hazards,
+          where each hazard was a number between 0 and 10 which I sorted and
+          created a 5 digit number out of.  That is no longer feasible since
+          there are now 11 Hazarads.  So the new "HazCode" is a 10 digit
+          number.
+ 8/12 AAT Added -refTime command option.
+ 8/11 AAT Adjusted tkdegrib to use tree structure on the download page.
+          This will allow one to download a subset of variables,
+          and allow one to start handling the NDGD.
+ 8/6  AAT Adjusted ParseElemName() so Template 4.9 gets units of % and there
+          is no unit conversion.
+ 8/2  AAT Added "GenericProbe()" "hook" for FORTRAN to call, instead of
+          using temporary files, or messing with "user" function.
+ 8/2  AAT Adjusted radEarth from GRIB1 files to be 6371.2 if from NCEP.
+ 8/2  AAT Adjusted metaprint.c and metaparse.c to handle
+          40000->40 and 40010->41 shifts.
+ 8/2  AAT Adjusted drstemplates.h, g2_addfield.c, and g2_unpack7.c to handle
+          40000->40 and 40010->41 shifts.
+ 8/2  AAT Adjusted grib2api.c to allow 40, 41 to also have is5[20] determine
+          if it is float or int data. (aka: not depend on 40000, 40010).
+ 8/2  AAT Adjusted unearth.f to handle case code table 3.2 cases 4,5,7.
+ 8/2  AAT Updated code for new code table 3.2 (and put in checks that radEarth
+          is in range of 6300 km to 6400 km. (should be 6371.2 km).
+ 8/2  AAT Fixed 0.0000-SFC for NDFD inventoriy. (Related to 7/22 fix).
+ 7/30 AAT Finished AirForce Param Table.
+ 7/29 AAT Worked on AirForce Param Table.
+ 7/28 AAT NOAA 2004 Web Conference Talk!
+ 7/26 AAT Worked on AirForce Param Table.
+ 7/23 AAT Worked on AirForce Param Table.
+ 7/22 AAT Resolved GetOutputName when surface is '0.33'.
+ 7/22 AAT Modified metaname.c::ParseLevelName() to allow a 0.33 surface.
+ 7/20 AAT Added handling for "template 4.8 with no time range."
+ 6/21 AAT Adjusted handling of code table 3.2 to be "hard wired" values.
+#
+#----- Release: Version 1.53 06/18/2004 -----
+#
+ 6/18 AAT Tested some AirQual grids.  I should key off lenTime instead of
+          timeIncr to find the "length of the Average".  (ie 0zone8 has
+          lenTime=8 since it is an 8hr average, but timeIncr of 0).
+ 6/18 AAT Custom becomes official! See:
+          http://products.weather.gov/viewliste.php?page=4
+ 6/9  AAT Modified GRIB1 part to allow "extended" lat/lon grids (ie stretched
+          or stretched and rotated lat/lon grids.
+ 6/2  AAT Continued to update the ozone names.
+ 6/1  AAT Updated names ozone names (to reflect 8 and 1 hour averages).
+ 5/24 AAT Allowed -pnt to take non lat/lon values (for -grid true option).
+ 5/24 AAT Added some checks for ASCII corrupted GRIB2 messages to degrib2.c
+ 5/24 AAT Finished updating GRIB1 table NCEP OPN/129/130
+ 5/20 AAT GRIB1: Paid attention to table 5 (Time range indicator) and which of
+          P1 and P2 are the valid times.  This means better calculations of
+          valid time for GRIB1 messages.
+ 5/20 AAT Fixed undesirable probe in off grid cell locations.  When not using
+          -Interp, if a lat/lon results in a cell that is off the grid, it had
+          returned the value of the nearest grid cell.  Now returns missing.
+#
+#----- Release: Version 1.51 05/18/2004 -----
+#
+ 5/18 AAT Found a bug in MetaPrint.c:PrintSect4_Category.
+ 5/18 AAT Added an entry in metaname.c for NDFD AirQual.
+ 5/17 AAT Ported to various platforms
+ 5/14 AAT Added a way to handle a bad Tcl/SSH exit on NCEP's machines.
+          (Exiting Tcl in a SSH session causes the session to lock.)
+          (Solution: create an exit handler that just exits... just make
+           sure you actually call "exit" from the tcl script.)
+ 5/13 AAT Bug in tendian.c::memBitRead(), for big-endian machines, it didn't
+          correctly right justify the bytes when numBytes != sizeof (dst).
+ 5/12 AAT Adjusted probe.c with -nLabel to all decimals (instead of integer)
+ 5/11 AAT Added local section info for ozone project (metaname.c)
+ 5/11 AAT Fixed metaparse.c::ParseGrid() so that it computes the correct range
+          of values when dealing with a bitmap.
+ 5/11 AAT Fixed call to GRIB2 library.  Was expecting "clean" to be 0, instead
+          of 1.  This affects simple packing with bitmaps.  I expected some
+          kind of holder value to be embeded in the data (clean of 1 doesn't
+          do that.  clean of 0 does).
+ 5/10 AAT Can now handle GRIB2 compressed files with "complex" or "complex
+          spatial differencing" methods" which have a bitmap (MDL-Library
+          does not support this).
+ 5/10 AAT Found out that I used the opposite definition for bitmap
+          Correct answer is: 0 = missing, 1 = valid.
+#
+#----- Release: Version 1.50 05/07/2004 -----
+#
+ 5/7  AAT Changed default of "-Flt" to "-nFlt".
+ 5/6  AAT Started putting in links from GUI to NetCDF routines.
+ 5/6  AAT Ported to AIX-32, and HP-Gcc platforms (linux was simple).
+ 5/5  AAT Switched to 2 decimal (from 1) recomendation for QPF.
+ 5/5  AAT Finished commenting "writenc.c" : Now have NetCDF capability
+          (1 message to 1 NetCDF file).
+          Need: a) -Interp option, b) Multiple messages to 1 NetCDF file.
+ 5/5  AAT Updated the version of "emapf-c"
+ 5/5  AAT Announced the 2004 Partner's Workshop meeting.
+ 4/30 AAT Added gridID to pdsG1Type (see meta.h)
+ 4/23 AAT Bug fix: writeshp.c::gribWriteShp() Incorrect in computation of
+          fieldLen1 / fieldLen2.  Didn't handle a min values of "-0.01"
+          correctly.  Assumed log10() was always positive.. log10(0.01) = -2.
+          (found this bug due to "aviation GRIB1 Supercooled large droplet")
+ 4/22 AAT Bug for web.tcl (occassional 0 byte files) Hypothesis, the http
+          lines were full.  Solution: More attempts, pause between attempts,
+          another diagnostic message.
+ 4/15 AAT Initial experiments with NetCDF complete... Starting writenc.c
+ 4/5  AAT Bug in -P -Interp (chrism)... Probing points outside the grid
+          returns 9999.  Not a bug, but undesired behavior for Lat/Lon
+          grids which have the left border 1 grid cell away from the right
+          border.  In that particular case, we can interpolate outside the
+          grid.
+ 4/2  AAT In GIS tab browse on "program files" causes stack trace. (drice57)
+#
+#----- Release: Version 1.48 04/01/2004 -----
+#
+ 3/29 AAT In GIS tab, full filename is in path (instead of just directory)
+ 3/29 AAT Cleaned up files (comments / long int->sInt4) stopped with database.c
+ 3/26 AAT Added -LatLon_Decimals option.
+ 3/25 AAT Found out that grib1tab.c was not consistent.  Cleaned up the tables
+          and made sure the short name contained none of the following:
+          " ./+()<=>"
+ 3/24 AAT Added UC_K2F for all [K] variables (GRIB1 and GRIB2).
+ 3/24 AAT Worked on short surface name (replaced : with - in 2 level values
+          version of GRIB1 code)
+ 3/24 AAT Worked on short surface name (added 2 level values to GRIB2 code)
+ 3/24 AAT Updated metaprint label for jpeg and png type compression.
+ 3/24 AAT Fixed problems with surface names for GRIB1... Used to start
+          tacking surfaces together.. example:
+          0-MSL0-MSL0-SFC0-SFC0-SFC2-HTGL2-HTGL10
+ 3/23 AAT Fix based on chrism bug... mymapf.c was setting up a lat/lon grid
+          incorrectly if the scan mode was anything except 64.
+ 3/23 AAT Added ability to convert GRIB1 data's units to english / metric.
+          (wasn't paying attention to the TMP, MAXT... stuff).
+ 3/22 AAT Introduced -nLabel option.
+ 3/22 AAT Error in default name style. Should be "%e_%v.txt" not "%E_%v.txt"
+ 3/22 AAT Taught the GRIB1 variables TMP, MAXT, MINT, APCP about
+          UC_K2F and UC_InchWater
+ 3/22 AAT Modified output meta to emphasize computed unit conversions
+ 3/17 AAT Web page updates...
+#
+#----- Release: Version 1.47 03/17/2004 -----
+#
+ 3/16 AAT Bug fix: chrism reports -pntStyle 1 and -pntStyle 2 don't do labels
+          correctly... Fix was in probe.c::GRIB2ProbeStyle1()
+#
+#----- Release: Version 1.46 03/15/2004 -----
+#
+ 3/15 AAT Fixed the ParseLevelName() command to stop "tacking on" surfaces
+          when doing a -msg all -nameStyle "%s.txt"
+ 3/15 AAT Fixed some bugs with then new -nameStyle
+ 3/12 AAT Made the -nameStyle more flexible, and added surface option to it.
+ 3/12 AAT Added "-cells true" to "-cells all".  This allows one to probe a
+          specified set of grid cell (see -pnt and -pntFile) instead of all
+          cells, without knowing the lat/lon of that cell.
+ 3/12 AAT Created -surface short, -surface long... During a probe this will
+          output the surface level either in the short form or the long form
+ 3/12 AAT Discovered that the "split poly" during big poly save was not
+          completed (that is, the first and last point were not the same)
+ 3/11 AAT Cleaned up the big polygon dateline split.
+ 3/10 AAT Fixed small polygons for Alaska.
+ 3/5  AAT Relabeled inventory from "#, Byte, ..." to "MsgNum, Byte, ..."
+ 3/5  AAT Switched ParmTable (GRIB1) to GRIB1ParmTable (should fix GRIB1
+          unit probe label problem.)
+ 3/5  AAT For LATLON grids made sure that lon is in 0..360
+ 3/4  AAT Switched to 6 places of accuracy (because that is native of GRIB2
+          messages... note this may cause HP problems with tests)
+ 3/4  AAT degrib1.c:ReadGrib1Sect4() Switched {# Pts * (# Bits in a Group) +
+          # of unused bits != # of available bits} to a warning from an error.
+ 3/4  AAT Added timing diagnostics (miliseconds) on downloads)
+ 2/23 AAT Improvement on web.tcl (suggested by chrism) (puts current filename)
+ 2/20 AAT Bug Fix to "web.tcl" for missing directory (AK). (Reported by chrism)
+ 2/20 AAT Bug Fix to "web.tcl" for missing snow in PR. (reported by chrism)
+ 2/20 AAT Some experimentation with importing into ArcGIS
+ 2/20 AAT Found out that "c:/ndfd/degrib1.4/..." is not a good name for
+          ArcGIS toolbox... Use "c:/ndfd/degrib1_4/..." instead.
+ 2/19 AAT Added -majEarth and -minEarth options to tkdegrib.
+#
+#----- Release: Version 1.44 02/17/2004 -----
+#
+ 2/11 AAT Add GUI CSV option
+ 2/11 AAT Finished the fixed column, Comma delimited text format (-Csv).
+ 2/11 AAT Can now take data from stdin.
+ 2/11 AAT Remember to ask Mark Price to check out Debian issue (see 2/2)
+ 2/11 AAT Adjusted metaparse to accept GRIB2 master table version 2.
+ 2/10 AAT Added ability to convert ASCII (.ini type) file to index (flx) file
+ 2/10 AAT Tested subgrid communication potential.
+ 2/9  AAT Completed the subgrid options for -Grib2 option, and tested on a
+          linux machine.
+ 2/7  AAT Enable stdout writes for -Grib2 option.
+          NOTE: To do this in Win32, we are no longer using -ansi.
+          because in windows, stdout is ascii, and can't be changed inside
+          C using ansi C (shouldn't be true in unix/linux).
+ 2/7  AAT Update copy of NDFD usage document.
+ 2/7  AAT Relabel -lowLeft -lwlf and -upRight -uprt
+ 2/7  AAT While inventorying ./data/fh.0001_tl.press_gr.bgrib, found that it
+          is a corrupt file... This caused ParseTime from ReadGrib1Sect1()
+          to segFault (because the year was 1300)  Now using ParseTime to
+          detect if GRIB1 files are corrupt (from download).
+ 2/6  AAT Solved the -lowLeft -upRight problem for both -C and -DC.
+ 2/6  AAT Solved the "decode grib2" -> "encode grib2", and
+          "decode grib2" -> Data Cube -> "encode grib2" problem for NDFD.
+ 2/5  AAT Save 7 decimals to the data cube so we don't lose accuracy when we
+          re-read it, and pack it as a GRIB2 file.
+ 2/5  AAT BUG:: -msg all didn't get subgrids
+ 2/4  AAT BUG:: metaparse.c didn't allow non-meteo or ocean products
+ 2/4  AAT BUG:: grib2api.c For submessages, I did a mem-swap twice, which
+          corrupted the data.
+ 2/4  AAT BUG:: metaname.c ParseLevelName did not properly anticipate local
+          defined level tables.
+ 2/4  AAT BUG:: inv->shortFstLevel = NULL added for subgrid messages.
+ 2/4  AAT BUG:: Inventory line 726 fread -> FREAD_BIG (to determine if we have
+          end of message.
+ 2/2  AAT Removed having both a ain and iain data element.
+          (speed increase of 10%)
+ 2/2  AAT Removed a number of the automatic array dependencies.
+          (Mark Price brought this up in 1/21/2004 email)
+ 1/29 AAT Removed a level diagnostic in GRIB1 parsing.
+ 1/28 AAT Update to emapf configure files... haven't tested.
+ 1/27 AAT Learned about proxy http servers, added option to configure window.
+#
+#----- Release: Version 1.42a 01/26/2004 -----
+#
+ 1/26 AAT Added Simple Weather Table version 3.
+ 1/26 AAT Relabel "Waterspouts" to "Water Spouts"
+#
+#----- Release: Version 1.42 01/23/2004 -----
+#
+ 1/22 AAT Added an "automatic select" of -Decimal in "Recommend" button.
+ 1/22 AAT Changed the default for -Decimal back from 0 to 3 because the image
+          Generation didn't work.  Better solution have a default based on
+          variable... Put that on todo list.
+ 1/22 AAT Worked on making sure the release is valid (and started in on some
+          packer codes).
+ 1/21 AAT Replace 'D' comments with 'C' comments in the Fortran code
+          (This is so that it works in Mac OSX with Bell labs f2c).
+          (Wyatt Miller brought this up in 11/13/2003 email)
+ 1/21 AAT Fixed the size issue of the UNIX GUI (wm geometry after wm minsize)
+ 1/21 AAT Fixed reported failure of GUI on linux (SystemButtonFace -> Gray85)
+ 1/21 AAT Changed default Wx.colortable to new version.
+ 1/21 AAT Added movable walls in inventory part of GIS tab.
+ 1/21 Doug Marcy: New Weather table .avl files
+ 1/21 AAT Added some GRIB1 height/level parsing.
+ 1/21 AAT Return longFstLevl to Tcl/Tk.
+ 1/21 AAT Add shortFstLevl to invertory print.
+ 1/21 Albion Taylor: (1/15/2004) updated emapf (AAT Downloaded on 1/21).
+ 1/20 AAT Finished unpacking the ArcView Tables.
+ 1/20 AAT Added new simple weather codes (and -SimpleVer option to get
+          original version) (-SimpleVer 1 => 6/2003 version)
+          (-SimpleVer 2 => 1/2004 version) (defaults to -SimpleVer 2).
+ 1/20 AAT Added a "recommend" button for filename selection in the GUI.
+ 1/20 AAT Fixed GUI occurance of GMT -> UTC
+ 1/20 AAT Added new Weather types (specifically WX_BN, WX_ZF, WX_IC, WX_IF,
+          WX_VA, WX_ZY, WX_WP).  Added them to end of list, instead of
+          changing "wx-inten".
+ 1/16 Doug Marcy: Gave a ArcView Legends Tutorial Doc
+ 1/16 Doug Marcy: Gave a version of his ArcView Legend files (to mimic the
+          imageGen color tables)
+ 1/16 AAT Finally entered in GRIB1 NCEP Parameter Table 130.
+ 1/16 AAT Added shortFstLevel and longFstLevel to meta data structure, and
+          inventory data structure..
+ 1/16 AAT Updated the list of variable abreviations and created a NDFD
+          override abreviation method.
+ 1/15 AAT complete PrintSect4_Category().
+ 1/15 AAT Add a -log option to log weather key probe errors.
+ 1/14 AAT Improved metaprint.c to use metaname.c's comment variable.
+ 1/14 AAT Added handling of "OR" and "MX" in weather.c
+ 1/14 AAT Added some flexibility to the ComputeUnit() function.
+ 1/14 AAT Add comments to metaname.c
+ 1/13 AAT Verified switch to emapf (supports eliptical earth) (see ruc data).
+ 1/13 AAT Modified mymapf.c to output lon in range of -180..180
+          This allows support of the "1/2 degree grid from NCEP."
+ 1/13 AAT Found out that eqvlat has to be after mkGeoid for emapf
+ 1/12 AAT Entered in most of NCEP's GRIB2 local tables into metaname.c
+ 1/12 AAT Decided to add a column of "long form", and remove the "ForeHr"
+          field to the GUI.
+ 1/12 AAT Detected that [clock seconds] in Win98 returns system timezone,
+          instead of GMT which WinXP returns.
+ 1/12 AAT Made image generation button dependent on existance of
+          "superImageGen.exe" (instead of imageGen.exe)
+ 1/12 AAT Added check of file size of .png != 0 before sending to pngqudim
+ 1/12 AAT Michael Pat Murphy had problems installing to "program files" (win98),
+          Needed to change open "|$imageGenName... to open "|{$imageGenName}...
+ 1/9  AAT Modified "browse for file" to have either .shp or .flt type.
+          instead of always .flt.  Bug fix at request of Doug Marcy.
+ 1/9  AAT Changed the default for -Decimal from 3 to 0 at request of Doug
+          Marcy.  Most variables need 0, although some might need 1.  One
+          possibility is to make the default change based on variable.
+ 1/9  AAT Switched from using dmapf-c to emapf-c because of eliptical earth in
+          some of the RUC fields.
+ 1/9  AAT Thanks to Mark Fenbers suggestion, I've updated ./src/Makefiles to
+          have "make clean" be "cleaner". :-)
+ 1/7  AAT Continued work on "metaname.c".
+ 1/7  AAT Updated some of the tables in metaparse.c
+ 1/7  AAT Downloaded most recent version of GRIB2 document, and found deltas
+ 1/6  AAT Discovered enumeration of Meteo categories in meta.h didn't have
+          "momentum probabilities".
+ 1/6  AAT Started work on cleaning up naming conventions to handle ETA data.
+ 1/6  AAT Modified "unearth.f" to handle shape of Earth "6"
+ 1/6  AAT Realized that NCEP is giving out Radius of Earth as "6" in the code
+          table, but is not also providing the value in the message.
+#
+#----- Release: Version 1.41 12/29/2003 -----
+#
+12/29 AAT Changed degrib1.c :: ReadGrib1Sect2() so NV != 0 is a debug time
+          warning instead of a fatal error.  PV != 255 is still a fatal error.
+12/29 AAT Discussed with Albion Taylor about non-spherical map projections
+          Possible result : emapf.
+#
+#----- Release: Version 1.40b 12/25/2003 -----
+#
+12/24 AAT Fixed a bug in BigByteCpy() (sInt4 versus uInt4)
+#
+#----- Release: Version 1.40a 12/25/2003 -----
+#
+12/24 AAT Fixed the dependance on png.dll
+#
+#----- Release: Version 1.40 12/25/2003 -----
+#
+12/24 AAT Updated following colortables: MaxT_winter, MinT_winter, T_winter,
+          TD_winter, Wx, also updated some of the definitions for the web
+          page.
+12/24 AAT Changed references from GMT to UTC (at urging of: Mark Fenbers)
+12/24 AAT Finished getting things to compile on NCEP's IBM in 32 bit mode
+12/23 AAT Continued trying to get things to work on HP
+12/22 AAT trying to get things to work on HP
+12/19 AAT Updated myutil.c to most recent copy.
+12/19 AAT broke myassert.c out of myerror.c.
+12/18 AAT Continued work on cleaning up the distribution files.
+12/17 AAT Worked on cleaning up the distribution files.
+#
+#----- Limited Release (linux only version): Version 1.33 12/16/2003 -----
+#
+12/15 AAT Finished rough draft of API for NCEP GRIB2 decoder library,
+          and passed a linux only version (1.33) off to FSL.
+ 12/1 AAT Started in on a API wrapper around NCEP GRIB2 decoder
+11/21 - 11/29 Vacation (Sofia's baptism in CA, Thanksgiving in MA)
+11/20 AAT Worked on "ConvertChain2LtLn()" which should address the dateline
+          issue for "big polys".  (after changing "CreateBigPolyShp()" some)
+          Will then try to use a similar method for the small polygons.
+11/20 AAT Cleaned up the "chainType" structure (didn't need value since that
+          was in the "polyType" structure (chain.h)
+11/20 AAT Continued debugging the latlon projection shape file method.
+11/19 AAT Created a wrapper for the map projection calls so that the program
+          could handle latlon grids.
+11/13 AAT Bug report by Scott Archer... Debian Linux doesn't work with the
+          FORTRAN library (suggested problem with file (inventories fine))
+          (suggested --stack (Not available in non i386 ld))
+          (error code "303" = UNSUPPORTED GRID TEMPLATE INDICATED)
+11/13 AAT Bug report by Wyatt Miler... FORTRAN code wouldn't compile in OS X.
+          Suggested changing "D" for comments to "C".
+11/5  AAT Bug report by Wyatt Miler... NameStyle 3 had
+          fileNameLen != strlen(fileName)...
+#
+#----- Release: Version 1.31 10/24/2003 -----
+#
+10/21 AAT Improved http.tcl and ndfd.tcl to attempt to re-get data that is
+          incomplete.
+10/20 Matthew T. Kallio "matt" (weather underground):
+          Problem: CreateBigPolyShp() gave a seg-fault error on linux but not
+          on windows.  Solution:
+             FWRITE_LIT (&parts, sizeof (long int), numParts, sfp);
+          => FWRITE_LIT (parts, sizeof (long int), numParts, sfp);
+10/20 AAT (Release notes for 1.30 went out Today (Monday)).
+#
+#----- Release: Version 1.30 10/17/2003 -----
+#
+10/16 AAT Updated ./data/imageGen/cities/cities.sample
+10/16 AAT changed RootDir to "OperDir" and "ExprDir" in ndfd.ini
+          So we can have operational and experimental NDFD variables.
+10/16 AAT Added "-P -cells all"
+10/15 AAT Fixed f_interp "use weather code"
+10/15 AAT Added f_interp option to gribInterpFloat() (Now have "-Interp near")
+          Inform Peter Resch (9/30 request)
+10/15 AAT Continued validating variables all work for new GIS tab choices.
+10/15 AAT Memleak fixed when tcldegrib is called with invalid options.
+10/15 AAT Bug fix with computing bounds of a "big" polygon.  Initial value
+          was choosen incorrectly.
+10/14 AAT Added .5 to each point to get big poly to match little...
+          because chain used a grid that started at 0,0.  projections used
+          a grid that started at 1,1.  Also the chain centered the values,
+          where-as the projections had the values on the latice points.
+10/14 AAT Added preliminary improvement for new GIS tab choices.
+10/7  AAT Allowed -DP to have "-Index ./conus/ds.maxt.ind".  This used to be
+          an error.  It only allowed "-Index ds.maxt.ind", so you had to cd to
+          the data directory first.
+10/7  AAT Allow "ds.maxt.ind" as an -Index file. (two '.'s in filename)
+10/7  AAT Worked on Tcl and C calls to "-poly big".
+10/6  AAT Finished the -poly big option (20 seconds)
+10/3  AAT Finished the -poly big option (13 min .. 10 min .. 8 min .. 5 min)
+ 9/30 James Scott "JAScott1": Provided a new makefile for Mac OS X
+ 9/30 AAT "download.htm" had 2 degrib-cd.tar.gz and no degrib-cd.exe
+ 9/26 James Scott "JAScott1": Provided a makefile for Mac OS X
+ 9/23 *** ----- NWS Focus Article 9/23/2003 -----
+      *** ----- http://www.weather.gov/com/nwsfocus/fs092303.htm -----
+      *** ----- Request for "NDFD Success Stories" -----
+ 9/22 AAT "register.htm" : Repeated word ("that")
+ 9/22 AAT "download.htm", "howto.htm", "index.htm" had some spacing issues
+ 9/22 AAT Spelling errors in "compileu.htm"
+ 9/22 Charlie Paxton : Typo (avialable -> available on "Howto.htm")
+ 9/15 AAT Updated MakeData.tcl to work on Bunge's web site.
+ 9/15 AAT Fixed: -DP required "rw" permissions on .ind file to read.
+          database.c::OpenFlx().
+ 9/15 *** ----- NWS Focus Article 9/15/2003 -----
+      *** ----- http://www.weather.gov/com/nwsfocus/fs091503.htm -----
+      *** ----- NDFD Technical Workshop Presentations Available Online -----
+ 9/12 Peter Resch "peterr": Bug fix for Name Style 1
+         (valid - refTime can be 3 characters). command.c::GetOutputName()
+ 9/9  AAT Remember to thank tony.simmers for the NCEP GRIB2 information,
+          and his tar ball
+#
+#----- Release: Version 1.27 09/09/2003 -----
+#
+ 9/9  AAT Created a MakeData.tcl script (in case MakeDataBase.sh doesn't work).
+ 9/9  AAT Adjusted makefiles to use /usr/lib/ instead of /lib for -lm & -lg2c
+ 9/9  AAT Modified makefiles to consistently use ranlib (in grib2unpacker)
+ 9/9  AAT Validated Radius of Earth change (6367.47 -> 6371.2 km)
+ 9/9  AAT Created automatic way to get rid of ^M in source code.
+ 9/8  AAT Adjusted interpretation of scale value / factor for metaparse.c
+          when dealing with RadEarth, and fstSurfValue / sndSurfValue.
+ 9/8  *** ----- NWS Focus Article 9/8/2003 -----
+      *** ----- http://weather.gov/com/nwsfocus/fs090803.htm -----
+      *** ----- (WFO Reno Hands on meeting with GIS) -----
+ 9/8  AAT Adjusted ndfd.tcl to use MaxT_Tropical.colortable (for PR).
+ 9/8  AAT Updated ./docs/NDFD_GRIB2Decoder.html
+ 9/8  AAT Removed some unused colortables (plain MaxT, MinT, and T, and
+          WindGust).  Added "MaxT_Tropical", "MinT_Tropical", "T_Tropical",
+          and "Td_Tropical"
+ 9/8  AAT Updated "./data/imageGen/cities/cities.sample"
+ 9/8  AAT Created a web.tcl script in ./degrib/bin
+          Purpose: Sample automated method of "getting" the http files from
+          the web (Used Tcl but not Tk, so it can be put in cron).
+ 9/5  AAT Created a "MakeDataBase.sh" script in ./degrib/bin
+          Purpose: Convert GRIB2 files to "database" files, for -DP option.
+ 9/5  AAT Finished up some of the extra -DP options debugging.
+ 9/4  AAT Got default -Data and -DP to work correctly for current variables.
+ 9/3  ***
+      *** ----- Message on the unidata GIS list -----
+      ***
+ 8/25-8/29 ----- Great Divide Workshop -----
+ 8/22 AAT Added images of sectors to "Howto.htm" page.
+ 8/22 AAT Finished getting ready for "Great Divide Workshop"
+ 8/21 AAT Almost finished the -DP and -Data options.
+ 8/21 AAT Added -nRevFlt option.
+ 8/20 AAT Removed dependence on fileLen... (May now start using stdin?)
+ 8/20 AAT Improved the error catching in inventory.c::GRIB2SectJump() by
+          paying attention to return from fread, and checking fseek with a
+          fgetc / ungetc combo, instead of "computing" where we should be.
+ 8/19 AAT Changed the 8/14 ugly string "" fix from a new table item to an
+          adjustment to weather.c::UglyLookUp()
+ 8/19 AAT Consolidated cstart.c and tcldegrib.c version of ConvertCmd().
+ 8/19 AAT Updated probe test because of 7/22 fix.
+ 8/18 AAT Improved "usage" so user doesn't have to read too much.
+ 8/18 AAT Switched to just one command per run.
+ 8/18 AAT Started to introduce assert statements (see myerror.h)
+ 8/16 AAT Found out how to save a tiny bit of memory by re-arranging typedef
+          structures.
+ 8/14 AAT NOTE: Mark Maciver (maciver) had problems downloading complete data
+          Possible cause: Data updated about 20 after the hour, so it may have
+          interupted his data retrieval.
+ 8/14 AAT Fixed Wx bug that Marc Pointed out.  metaparse.c::ParseSect2_Wx()
+          When the section2 group does not have a '\0' at the end, I made a
+          false assumption when storing the last string.  This caused a string
+          to not have a '\0' terminator.
+ 8/14 AAT In ugly strings: allowed "" in 'visibility' field, 'intensity' field,
+          'weather' field, and 'coverage' field (already allowed in 'hazard'
+          field).
+ 8/13 AAT ----- NDFD Technical Workshop -----
+ 8/11 AAT Put release notes on-line.
+ 8/11 Rici Yu: Updated version of superImageGen (hopefully avoids infinite
+          loop case that was detected with conus / PR for MaxT)
+ 8/8  AAT Probe.c bug fix for wx. Send missing to 9999 instead "missing"
+#
+#----- Release: Version 1.25 08/07/2003 -----
+#
+ 8/7  AAT Resolved: "degrib foo -I" where foo is NOT a GRIB2 file.
+ 8/6  AAT fixed: 'tk_messageBox debug message left in when converting to .flt'
+ 8/6  AAT Added -pntStyle option, (at the request of Matt and Jim Scott).
+ 8/6  AAT Found a logic error when parsing "-pntFile".  Can now handle
+          "lat,lon", in addition to "station,lat,lon"
+ 8/6  AAT Added -WxParse option for Probe point when dealing with weather.
+ 8/6  AAT Fixed spelling of "hazzard" to "hazard" in creation of .shp file
+          for weather.
+ 8/6  AAT Added -Separator option for probe point.
+ 8/5  AAT Found out how to import .flt files into ArcGIS with the correct
+          projection.  Now providing:
+           ./degrib/arcview/ndfd.prj -> For setting a layer's projection
+           ./degrib/arcview/prj.adf -> For setting a grid's projection.
+ 8/5  AAT cstart.c:ParseUserChoice(), improved handling of next = NULL error.
+ 8/1  AAT inventory.c:GRIB2Inventory(), made it so that it only has a
+          GRIB_LIMIT for the first message in the file.  After that
+          there can be unlimitted bytes between messages.
+ 8/1  AAT Updated qpf.colortable, and sky.colortable
+ 8/1  AAT Updated cities.sample ./degrib/data/imageGen/cities
+ 8/1  AAT Memory leak in degrib1.c:ReadGrib1Record() I had allocated UnitName,
+          copied data into it, then set it to NULL (The set to NULL was
+          probably a debug test that got left in).
+#
+#----- Release: Version 1.23 07/31/2003 -----
+#
+ 7/31 AAT Added defense for the case where there are fewer Wdir and Wspd
+          messages than Temperature.
+ 7/31 AAT Added new version of htmlmaker (for "help" key)
+ 7/31 AAT Got new definitions for help pages used by htmlmaker
+ 7/31 AAT Updated colortables.
+ 7/30 AAT Resolved "Ken Water and Jamie D. Perez" bug with regards to the
+          space in the filename (mkWidget's : pkgIndex.tcl needed work)
+ 7/30 AAT + Rici Yu : Started in on updating help pages from htmlmaker.
+ 7/30 AAT Changed weather.c::InitUglySting to initialize the entire UglyString
+          data sturcture.  Previously may have been looking at undefined
+          values, causing occasional problems.
+ 7/29 ... Ken Water reports "space" bug in installation.
+ 7/29 AAT Switched to having meta out of Grib2Type structure in tcldegrib.c
+          Thought was that MetaInit and MetaFree should be called more
+          frequently to prevent wx mistakes.
+ 7/28 AAT Incoperated "superImageGen" into ndfd.tcl. Idea of "superImageGen"
+          is if you call image creation program 1 time instead of N times
+          (once per image) it will speed things up (fewer execs)...
+          Turns out it slows it down slightly... Don't know why yet.
+ 7/28 AAT When tkdegrib needs reftime for a file, can now use "reftime" option
+          to just inventory the first message (instead of all messages).
+          Speed improvement to start program from approx
+          2 min 40 sec (on a 1.7 gHz, with heavy load, and all sectors)
+          to: 8 sec (same machine, same situation)
+ 7/22 AAT Found out that I used ScanIndex incorrectly in probe point...
+          The map routines return x,y in range of 1,1 .. Nx,Ny because of NCEP
+          (ie FORTRAN) definitions.  ScanIndex expected n,y in range of
+          0,0 .. Nx-1,Ny-1 because of "C" definitions.  Switched ScanIndex
+          to take 1,1 .. Nx,Ny.
+ 7/22 AAT Made waveHt with "english" units be "feet"
+ 7/18 AAT Created a -radEarth option to override the radEarth in the GRIB
+          message because NCEP lies in GRIB1 messages giving 6371.2 instead
+          of what they claim of 6367.47
+ 7/17 AAT Found out why after converting a grid using the GIS, one can't
+          generate images.  This is because -out option tells the program
+          to generate files in output directory instead of in "mosaic"
+          directory.  Solution1: Don't preserve any "user" options between
+          calls. (Solution2: Preserve some of the options) (chose solution1).
+ 7/17 AAT Found out that tcl/tk was not calling Grib2CmdDel() on exit.
+          Forced it to by using proc foo {} {} to overwrite the cmd.
+ 7/17 AAT tcldegrib.c::Grib2ConvertObj() did not free outfile correctly.
+ 7/17 AAT cstart.c::DegribIt() did not free outfile correctly.
+ 7/17 AAT inventory.c::GRIB2InventoryFree() did not free inv->unitName.
+#
+#----- Release: Version 1.22 07/15/2003 -----
+#
+ 7/15 Matthew T. Kallio "matt" (weather underground):
+          Problem: Probe gave a seg-fault error with (52.2,-78.4436).
+          Solution: Adjust an if/else clause in probe.c::GRIB2Probe().
+ 7/14 AAT Adjusted things so it doesn't try to generate html for snow if snow
+          doesn't exist (see PR).
+ 7/14 AAT Adjusted tcldegrib.c::Grib2ParseObj() to reset the error result
+          when it is finished.
+ 7/14 AAT Added an error check if Wx does not have Section 2 data.
+ 7/14 AAT Orientation of polygons is once again wrong because 5/30 change was
+          after the 5/15 "fix".
+ 7/14 Marc Saccucci: Update to NDFD Tile files.
+ 7/14 AAT writeflt::gribWriteFloat() If index not in colortable set to
+          undef rather than 0.
+ 7/14 AAT GS2_WXTYPE error more prevalent than I thought. To solve, created
+          a MetaReset() routine called by degrib2::ReadGrib2Record().
+          Slightly slower, but safer.
+ 7/11 AAT Dealt with error when the entire field was missing. (I had added 1
+          to the missing number if it fell in the range of min/max, which
+          happened with weather?).
+ 7/11 Rici Yu: Updated version of htmlmaker (better handling of which grids
+          ndfd is giving out.
+ 7/11 AAT made tcl script clean up mosaic files after finished with them.
+ 7/11 AAT Concerned about meta->pds2.sect2.ptrType == GS2_WXTYPE as test
+          for "if the grid is weather".
+ 7/8  AAT For Dx != Dy, changed from average (Dx, Dy) to using a "wrapper"
+          around all calls to the map routines (using a ratio of Dy/Dx).
+ 7/5  AAT Fixed menu-option download bug (ambiguous command)
+#
+#----- Release: Version 1.21 07/03/2003 -----
+#
+ 7/3  AAT Allowed probe to go to stdout (instead of file).
+ 7/2  Rici Yu: Gave a new version of htmlmaker (for Puerto Rico)
+ 7/2  Rici Yu: Updated version of imageGen.exe:
+          Takes a -mapdef option ("sju" for Puerto Rico, "conus" is default)
+          Uses the new legend scheme for Wx.
+          Has (--logo option) to not add the logos at the bottom of the image
+          Other changes to make consistent with other versions of imageGen
+ 7/1  AAT Finished (I think) the -SimpleWx option for NDFD imageGen.
+ 7/1  AAT Bug with 0 = max = min when dealing with .dbf file.
+ 7/1  AAT Continued NDFD_WxTable() (-SimpleWx option).
+ 6/30 AAT Fixed a bug reported by "matt" (weather underground).  I had a
+          memory leak in metaparse.c::ParseSect2_Wx().
+ 6/27 AAT No longer delete the mosaic files since they were deleted before
+          imageGen was able to use them.
+ 6/23 Matthew T. Kallio "matt" (weather underground):
+          "wmo" dimension increased to WMO_HEADER_LEN + 1 (for '\0' char)
+ 6/23 Rici Yu: Updated version of imageGen.exe
+#
+#----- Release: Version 1.20 06/16/2003 -----
+#
+ 6/16 AAT Handle "P6SM" for visibility.
+ 6/16 AAT Minor Bug with metaprint for wave height.
+ 6/16 AAT Slight change in metaparse for wave height type.
+ 6/16 AAT Change in .ini entry of "waveht" to "waveh" for download from site.
+ 6/16 AAT Update to colortable manipualation in ndfd.tcl
+ 6/16 AAT Change in .ini entry of PR (last element from NA to puertori)
+ 6/16 AAT Back from trip, and began testing new data sets..
+ 6/9  AAT Found a bug in http.tcl (from 1.18) A bad call to ns_Print::puts
+#
+#----- Release: Version 1.18 06/06/2003 -----
+#
+ 6/6  AAT Finished adding primitive GrADS support (created a .ctl file)
+ 6/5  AAT Split write.c into writeflt.c and writeshp.c.
+ 6/4  AAT Switched from aborting if Dx != Dy, to using the average.  I do
+          still print a Warning to stderr.
+ 6/3  AAT Enabled progress indicator of http download.
+ 6/3  AAT Got rid of  # -timeout 16000 or 64000 in http.tcl::copy to handle
+          7 meg temperature grids.
+ 6/3  AAT Enabled one to run "degrib all.grib -C -msg 1"
+          (no explicit -in option)
+ 6/3  AAT Fixed minor bug of not initializing subgNum to -1 and then to 0.
+ 6/3  AAT Added wx and waveheight to .ini file.
+ 6/3  AAT Added metaprint.c::PrintSect4_Ocean() for wave height support.
+#
+#----- Release: Version 1.17 06/02/2003 -----
+#
+ 6/2  *** ----- NWS Focus Article 6/2/2003 -----
+      *** ----- http://weather.gov/com/nwsfocus/fs060203.htm -----
+ 6/2  AAT Added option -IS0 to dump the IS0 arrays for diagnostics of GRIB2
+          files.
+ 6/2  AAT Added ability to download via http in addition to via ftp.
+ 6/2  AAT Added button notification when done converting to .shp or .flt.
+ 5/30 AAT Added calls to dmapf to allow us to set the RadEarth correctly.
+          Can now handle any spherical earth.
+ 5/30 AAT Removed reliance on errno (since Tcl/Tk confuses the issue).
+ 5/30 AAT Changed orientation of shp files to start in lower left,
+          instead of upper right to be consistent with wgrib, as well
+          as the GRID specifications.
+ 5/30 AAT Relabeled endian.h to tendian.h (because AWIPS Linux has an
+          endian.h in the system folder).
+ 5/30-5/27 AAT Finished a good weather handler (amongst distractions).
+ 5/27 AAT Commented weather.c
+ 5/23 AAT Worked on getting a better weather .dbf file (weather.c)
+ 5/23 AAT Started work on CreateWxDbf(), so ArcView can view our weather data.
+ 5/22 AAT Minor fix for metaprint GRIB1 GDS secion.
+ 5/21 AAT Improved the probe capability for weather.
+ 5/21 AAT Found out that my section 2 weather handler didn't play nice with
+          memory.  It does now, but may be a little slower.
+ 5/20 AAT Found that a stack of 4000000 had problems with some MaxT data
+          changed to a stack of 8000000.
+ 5/20 AAT Changed probe to allow nearest point in addition to interpolated.
+ 5/20 AAT Switched from using cmapf-c to using dmapf-c.
+ 5/19 AAT Found a bug in fval_360 (used for degrib1 reference values)
+ 5/15 AAT Created a simple method of dealing with date-line polygons.
+          For polys that span the date-line I use all negative.  The
+          problem with this is when we project it.
+ 5/15 AAT Fixed the inside out polygons... Separate code for non-missing
+          was still generating counter-clockwise polygons.
+ 5/15 AAT Fixed the list view binds to handle double click...
+          Bug was icon=foo.txt and a [split $icon .] in mkwidgets.
+ 5/15 AAT Tweaked the GUI to have iconBox start in small list form.
+ 5/15 AAT Allows GRIB1 missing value to be 9999, if possible, otherwise use
+          9.999e20, if possible, if not, uses max of field + 1.
+ 5/14 AAT Made the probe command pay attention to -Decimal option.
+ 5/14 AAT Can probe a GRIB1 file now.  Minor bug fix in updating offset before
+          call to ReadGrib1Record.
+#
+#----- Release: Version 1.13 05/14/2003 -----
+#
+ 5/14 AAT Found out that my polygons are "inside out".
+          They are "counter-clockwise" instead of "clockwise".
+ 5/13 AAT Minor bug in degrib2.c::FindSectLen()
+ 5/13 AAT Created Icons for GRIB1.
+ 5/13 AAT Tweaked the # field in the GUI a little.
+ 5/13 AAT Sped up the "IsGrib2" option from Tcl/Tk, by putting a limit on
+          how many bytes to search for the GRIB message in (300).
+#
+#----- Release: Version 1.12 05/12/2003 -----
+#
+ 5/12 AAT Found that on 64 bit machines a long int is 8 not 4 bytes.
+          This impacts everything!! (all the sizeof() calls in file IOs)
+          (using -q32 for now...)
+ 5/12 AAT Cleaned up Tcl/Tk "About" routine.
+ 5/9  AAT Tried to get it to compile and run on the new IBM (Snow).
+ 5/8  AAT Added -Decimal option.
+ 5/7  AAT Improved on the GUI to allow it access to options that were
+          previously only available on the command line.
+ 5/7  AAT Fixed up errors in poly creator
+ 5/7  AAT Enabled -nMissing option so we don't store missing values.
+          (smaller files, faster)
+ 5/6  AAT Cleaned up the .ave script, and added polar, mercator, latlon
+          capability.  Tested the polar.
+ 5/5  AAT Found bug in cmapf-c (eqvlat(90,90) does not return 90).
+ 5/5  AAT Found bug with regards to GRIB1 polar stereographic.  Need tangent
+          lat of 90 or -90, rather than 0 (which is mercator).
+ 5/5  AAT Fixed .dbf to handle the default missing value from GRIB1.  It now
+          increases (or decreases) to fit the data being stored.
+ 5/5  AAT Got rid of .prj creation by the -Flt option, since ArcView
+          doesn't need it, and it gets in the way of ArcExplorer using .shp
+          files.
+#
+#----- Release: Version 1.1 05/02/2003 -----
+#
+ 5/2  AAT Cleaned up makefile's some.
+ 5/1  AAT Started running tests and getting ready to test on other platforms
+ 4/30 AAT Added inventory capability to the grib1 code.
+ 4/29 AAT Cleaned up the grib1 code.
+ 4/29 AAT Finished off the "small" polgon addition.
+ 4/28 AAT Added the ability to save to "small" polygon shape file.
+ 4/10 - 4/25 [ :-)  ...Vacation...  :-) ]
+ 4/9  AAT Use meters instead of mm for Dx,Dy. (gds)
+ 4/9  AAT Continue parsing GRIB1 PDS section.
+ 4/9  AAT Renaming of Di,Dj -> Dx,Dy, along with other changes to sect3 (gds)
+ 4/8  AAT Started merging GRIB 1 code with GRIB 2 code
+ 4/2-3 AAT Continued GRIB 1.
+ 4/1  AAT Started adding GRIB 1 capability.
+ 3/31 AAT Fixed the warning generated by compiling using g++.
+ 3/31 AAT errno is not necessarily reset before calling code, so .shp write
+          could have "failed" before it tried.  We now set it to 0 first.
+          see http://sources.redhat.com/ml/libc-alpha/2002-06/msg00044.html
+ 3/28 AAT Started in on updates to gis.tcl..
+ 3/27 AAT Continued work on message numbers... finished?? tcldegrib.c
+          Need to work on .tcl side of it.
+ 3/26 AAT Started using 1.0, 1.1, 2.0 for message numbers where major number
+          is which GRIB2 message, minor is which grid in that message.
+ 3/26 AAT Implemented multiple grids in same GRIB2 message for read option.
+ 3/26 AAT Got rid of #undef NEED_IWORK from degrib.c (an experiment with
+          Fortran / C interfaces.
+ 3/25 AAT Implemented multiple grids in the same GRIB2 message during
+          an inventory.
+ 3/25 AAT Converted "IsGRIB2" from Tcl to C.
+ 3/25 AAT During Inventory: If we detect at least 1 GRIB2 message, then
+          allow trailing bytes.  This allows for GRIB2 messages which are
+          padd'ed out to the 4 byte boundary, or use FORTRAN binary routines.
+ 3/25 AAT satellite data: can now inventory it.
+ 3/21 AAT Found trailing %s in calls to preErrSprintf... Causes memory fault.
+ 3/19 AAT Added reftime,mtimeList to ndfd.tcl check of the date on the data
+          files, since they may be updated by other programs.
+ 3/19 AAT Continued to add support for satellite data.
+ 3/17 AAT Started to add support for GS4_SATELLITE (template 4.30)
+#
+#----- Release: Version 1.01 03/12/2003 -----
+#
+ 2/26 AAT & Rici Yu : realized that imageGen.logPref needs lf instead of crlf.
+ 2/26 AAT Added "catch {}" around imageGen exec (ndfd.tcl:NDFD_GenImages)
+          to avoid logPref errors.
+ 2/26 AAT At request of NWS Forecasters, replaced all instances of "Region"
+          with "Sector".
+ 2/26 AAT Replaced B/W paper with Color ("newDB.pdf")
+#
+#----- Release: Version 1.0 02/21/2003 -----
+#
+ 2/21 AAT Found error in myerror.c:AllocSprintf () (need to have 330 bytes for
+          printing a double since the max double is +1.7E+308, and I need room
+          for stuff after decimal place.  This affected the PoP12 test suite
+          since it uses really old data that has really old threshold numbers.
+ 2/21 AAT Finished up meta print (version 1) for Weather.
+ 2/20 AAT Did some more work on Weather, and thought about NetCDF
+ 2/19 AAT Started work on Weather
+ 2/11 (Rici Yu) solution to win98 bug: have "w9xpopen.exe" in ./bin
+ 2/11 (Ana Canizares) Started distributing CONUS (Max / Min) Temperature fields
+ 2/10 AAT Discovered error with python and win98
+ 2/9-2/14 AAT AMS Conference...
+#
+#----- Release: Version 0.98 02/06/2003 -----
+#
+ 2/6  AAT Changed interpretation of (scale factor / value) to be consistent
+          with what the WMO experts suggested. (Affects meta data for PoP12)
+ 2/6  AAT Bug in location of the .flt files.  Need to shift by half a grid
+          cell, due to the fact that ArcView appears to work with the center
+          of the grid, as opposed what we had been computing which was the
+          lower left corner.  If all is corect, putting the .shp file on top
+          of the .flt file will result in the .shp file point being in the
+          center of the .flt grids.
+ 2/5  AAT Renamed tcldegrib to tkdegrib (since it requires Tk...)
+ 2/5  AAT Added -reset option to reset the inventory in the Tcl interface.
+          Used when we have downloaded a file, and want to make sure we get
+          a new inventory.
+ 1/31 AAT Added -nMSB -nFlt -nShp -nMet to Tcl interface to be similar to
+          degrib interface.
+ 1/31 AAT Enabled all Boolean operators through Tcl interface to have either
+          1 or 2 args... If Tcl doesn't recognize following argument as a
+          boolean it uses default value.  This affects -Flt -Shp -Met
+          -Interp -revFlt -MSB
+ 1/31 AAT Added -I / -C / -V to Tcl interface to be similar to degrib interface
+#
+#----- Release: Version 0.93 01/29/2003 -----
+#
+ 1/29 AAT Found out it was 202 not 208 to handle section 2 data, also
+          increased the loop to 8 times through instead of 5 for extra safety.
+#
+#----- Release: Version 0.92 01/28/2003 -----
+#
+ 1/28 AAT Prepared Version 0.92 for release...
+ 1/27 AAT Continued on the AMS CD (python 2 exe issues)
+ 1/24 AAT Continued work on the AMS CD (mainly config GUI work)
+ 1/23 AAT Informed we will have weather grids shortly
+ 1/22 AAT Tracked down bug in degrib2.c::ReadSECT0()
+ 1/22 AAT Switched ../tclsrc to ./tclsrc in tclstart.c (so we have /bin/tclsrc)
+ 1/21 AAT Worked with Bill Cassanova Weather Channel to get it to work on Sun
+ 1/16 AAT Relabeled "sky" to "Sky"
+ 1/15 AAT Rename of /NDFD_grib2Decoder to /NDFD_GRIB2Decoder
+          (now have 3 names: /degrib /NDFD_grib2Decoder /NDFD_GRIB2Decoder)
+ 1/15 AAT Continued with NDFD AMS CD,
+          Found that lower/left lat/lon in midatlantic did not match the tile
+ 1/14 AAT Got Download part of AMS CD download program working
+ 1/13 AAT Design phase of AMS CD download program
+#
+#----- Release: Version 0.91 12/31/2002 -----
+#
+ 1/2  AAT Started work on the "combo" code for joining the points into polygon
+          shape files...
+12/31 AAT Added imbeded version info.
+12/31 AAT Continued work on ParseGrid().
+12/24 AAT Performance Boost ~.15 sec / message.
+          metaparse.c ParseGrid() Made it assume scan 0100 (valid 99.9%)
+          in fast loop, but still have slow loop for generic case.
+12/24 AAT Added preErrSprintf() (CR1).
+12/23 AAT Updated files based on second code Review.
+12/18 (AAT & Rici Yu & Fangyu Chi & Mark Armstrong & Tim Boyer)
+          Code Review (myerror.c, endian.c, write.c, interp.c)
+12/17 AAT Finished up -pntFile option to -P.
+12/16 AAT Created reallocFGets (see myutil.c)
+12/16 AAT Found and fixed error in myerror.c (mallocSprintf (""))
+12/16 AAT Updated files based on first code Review.
+#
+#----- Release: Version 0.9 12/12/2002 -----
+#
+12/12 AAT Found out that cygwin gcc uses -Wl,--stack,2000000.  The unpacker
+          library needs at lease -Wl,--stack,3500000 (Don't need alternative
+          method for unpksecdif)
+12/11 AAT Note: a Cygwin compile with -mno-cygwin does not handle the -g2c
+          FORTRAN library correctly.  Use mingw, or give out cygwin1.dll(940k)?
+          (To not use mingw, remove mingw from path in .cshrc)
+12/11 AAT Tested alternative method for unpksecdif.
+12/11 AAT Printed out code for review 2.
+12/10 AAT Still looking for better way to handle automatic array issue.
+12/9  (AAT & Tim Kempisty & Ana Canizares & Tim Boyer & Marc Saccucci)
+          Code Review (cstart.c, userparse.c, degrib2.c, inventory.c)
+12/6  AAT Finished -P option (takes 2 min to run, need to improve)
+12/4  AAT Found that I cast tcldegrib message num to (sChar) instead of (int)
+12/4  AAT Found that if IWORK is an automatic array in unpksecdif.f, then
+          it causes a sofware exception and crash on MS-Windows(cygwin + g77)
+          compilation... Decided to allocate that in degrib2.c and pass it
+          in to FORTRAN.  Other autotmaic arrays are considerably smaller.
+          (Sample data was message 2 from kwbn_dt.161915_20021204160000.conus)
+          This affects: UNPK_GRIB2.f, UNPK_SECT7.f, UNPK_CMPLX.f, UNPKSECDIF.f
+12/2  AAT Started in on -P command.
+12/2  AAT Added "-namePath [Path]" option to "tcldegrib" (since GUI does not
+          use -nameStyle option yet, jury rigged a test)
+11/27 AAT added "-namePath [Path]" to "degrib"
+11/27 AAT added "-nameStyle 3" to "degrib" and "tcldegrib"
+11/27 AAT Added "-msg all" to "degrib" and "tcldegrib"
+11/26 AAT Completed -Unit option, should affect the following tests:
+          maxT, minT, T, Td, Wnds, newmaxT
+11/26 AAT Updated references to the web site from 140 site to
+          www.nws.noaa.gov/mdl/NDFD_grib2Decoder
+11/25 AAT Switched to MOIST_TOT_SNOW in ElementName() (degrib2.c)
+11/25 AAT Noticed enum error in meta.h (missing MOIST_CLOUDMIX_RATIO,
+          MOIST_ICEMIX_RATIO, MOIST_RAINMIX_RATIO)
+11/25 AAT Moved web site from 140 site to
+          www.nws.noaa.gov/mdl/NDFD_grib2Decoder
+11/22 AAT Discovered fprintf (fp, msg); bug... If msg has a % in it (unit),
+          then the unit does not get printed.  use (fp, "%s", msg);
+          Affects "./test/testsky.sh" results.
+11/21 AAT Finished printing out the Code Review material.
+#
+#----- Release: Version 0.85 11/20/2002 -----
+#
+11/20 AAT Finished testing it on PC/Linux/HP/AIX systems.
+11/20 AAT Found that FindGRIBMsg needs offset = 0.
+11/20 AAT Found memory problem when using UserFree() in cstart.c
+11/19 AAT Doesn't complain about a length of 0, 21, 21+19 or 21+19+21+19 bytes
+          for the wmo header before the "GRIB" signifying a grib message.
+11/19 AAT Handles "missing" subcentre issue
+11/19 AAT Handles "missing" Cutoff hour bug
+11/19 AAT Got some of the "New" format GRIB2 data, and some newer (11/15)
+          "old" 11/15 GRIB2 data to test.
+11/19 AAT Finished the commenting on the Tcl/Tk code.
+11/18 AAT Finished the commenting on the C code.
+11/15 AAT Figured out how to compile only a -mwindows (rather than a -mconsole)
+          in Cygwin/Mingw
+11/15 AAT Broke userparse.c out of cstart.c and tcldegrib.c and Re-worked
+          tcldegrib.c
+11/14 AAT Finished all the degrib.c commenting.
+11/13 AAT Broke Inventory procedures out of degrib.c and into inventory.c
+11/13 AAT Decided that .flt file should stay by default Big Endian, since
+          other programs I have written assume Big Endian (and GRIB2 message
+          itself is Big Endian).
+11/8  (Albion D Taylor) Reports success with tcldegrib using new
+          makefile.aix on his systems.
+11/8  AAT Added option to create Little Endian .flt / .tlf files
+          (for interface to NDFD GD .png creator).
+11/8  AAT Added option to create .tlf files (for interface to NDFD GD .png
+          creator) (changed the call to gribWriteFloat)
+11/6  AAT Realized that I wasn't looking for GRIB "missing" values before
+          doing computations for radius of earth, unit conversion etc.
+          (could have had 4294967295 * 10 ** 255 or -2147483647 * 10 ** -127)
+11/6  AAT Was using old definition of Scale Factor & Scale Value.
+11/6  AAT Found that tcldegrib doesn't work yet on AIX.
+11/6  AAT Created grib2unpacker makefile.linux, and makefile.win.  This
+          replaces makefile.g77
+#
+#----- Release: Version 0.8 11/05/2002 -----
+#
+11/5  AAT diff -b does not work (the same way) on suitland AIX.
+          "clean" the ./degrib/ans text files (to replace CR/LF with only LF)
+11/5  AAT Ran into unsigned char / signed char problem on Suitland AIX system
+          char usually is a signed char (on AIX char is a unsigned char)
+          use: -qchars=signed (and use signed/unsigned more consistently in
+          own code)
+11/4  AAT Found that 5 decimals for lat/lon in .shp gives identical files
+          on HP/Linux/PC.  6 decimals works for Linux/PC, 7 doesn't match.
+          Using 5 decimals.
+11/4  AAT Found that when writing the .dbf file in linux, it doesn't like
+          'const' variables mixed in with the fwrite or fputc commands.
+11/4  AAT Found and fixed bug in degrib: -C without a -I caused problems.
+10/31 AAT Found that #defines in endian.h did not work properly on Linux.
+          Needed to #undef BIG_ENDIAN before test.
+10/31 AAT Found out that the HP is not creating correct size for .shp set.
+          Cause: NFS mounted directory was timing out on the 20Meg write.
+10/30 AAT implemented version.txt and history.txt
+10/30 AAT Enabled -msg option, and -interp option.
+10/28 AAT Created and tested basic command line options for 'degrib'
+10/28 AAT Sent out Beta Release to a number of MDL people for them to check
+          out the web site.
+#
+#----- Release: Version 0.7 10/25/2002 -----
+#
+10/23 AAT Submitted second primitive version to Dr. Glahn...
+          completed howto.htm, and this time there were download files.
+10/18 AAT Submitted first primitive version of Web Site for review by David
+          Ruth... NO download files, missing last sections of the howto.htm.
+10/18 AAT Completed a coverage scheme, where I create an unprojected lat/lon
+          grid and interpolate to the grid.
+#
+#----- Release: Version 0.55 10/9/2002 -----
+#
+10/9  AAT Made a second port to the HP to test GUI, and to hopefully assist
+          with NDFD verification.
+#
+#----- Release: Version 0.5 10/4/2002 -----
+#
+10/4  AAT Gave out a primitive version to allow experimentation with ArcIMS
+10/3  AAT Started developing delivery system.
+ 9/27 AAT Spent time going back and commenting code, causing some questions
+          to arise with regards to what to expect in the NDFD use of grib2.
+ 9/20 AAT Polished off the corrections to the grib2 unpacker library.
+ 9/20 AAT First port to the HP.
+ 9/13 AAT Worked out bugs in meta file output, completed write.c functions
+          Made sure ArcView understood the radius of earth we use.
+ 9/6  AAT Got a primitive driver and started in on the GRIB2 document's tables
+ 8/30 AAT Was able to compile grib2_unpacker using gnu f77 on a pc using cygwin
+ 8/26 AAT (Arthur A Taylor) Started...

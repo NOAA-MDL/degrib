@@ -1,0 +1,68 @@
+#  Color definitions file for WX
+255 255 255                       # Background RGB value
+255 255 255                       # Missing value RGB value
+0 0 0                             # Map (shapefile) RGB color value
+0 0 0                             # Legend RGB color value
+0 0 0                             # Sample point RGB color value
+1                                 # Step size of color table
+0 58 1                            # Legend Values: Min, Max, Interval
+0                                 # Sample Value: # of post-decimal point values
+0   255 239 231  _    __None__     # Code/RGB/Wx Type/Description/Comment
+1   198 255 173  L       Rain 		(LoProb L)	# NOTE: Use '_' in 
+2   198 255 173  R-      Rain 		(LoProb R-)	# Description Field for
+3   198 255 173  R       Rain 		(LoProb R)	# Multiple word 
+4   198 255 173  R+      Rain 		(LoProb R+)	# Descriptors!
+5   198 255 173  R/T     Rain 		(LoProb R/T)
+6   198 255 173  RW      Rain 		(LoProb Rw)
+7   198 255 173  RW/T    Rain 		(LoProb RW/T)
+8   198 255 173  T       Rain 		(LoProb T)
+9   0   206 0    L       Rain 		(HiProb L)
+10  0   206 0    R-      Rain 		(HiProb R-)
+11  0   206 0    R       Rain 		(HiProb R)
+12  0   206 0    R+      Rain 		(HiProb R+)
+13  0   206 0    R/T     Rain 		(HiProb R/T)
+14  0   206 0    RW      Rain 		(HiProb RW)
+15  0   206 0    RW/T    Rain 		(HiProb RW/T)
+16  0   206 0    T       Rain 		(HiProb T)
+17  255 0   0    T+      Severe
+18  197 255 254  R/S     Mix 		(LoProb R/S)
+19  197 255 254  RW/SW   Mix 		(LoProb RW/SW)
+20  197 255 254  R/IP    Mix 		(LoProb R/IP)
+21  197 255 254  S/IP    Mix 		(LoProb S/IP)
+22  0   222 239  R/S     Mix 		(HiProb R/S)
+23  0   222 239  RW/SW   Mix 		(HiProb RW/SW)
+24  0   222 239  R/IP    Mix 		(HiProb R/IP)
+25  0   222 239  S/IP    Mix 		(HiProb S/IP)
+26  224 200 252  IP-     Ice 		(LoProb IP-)
+27  224 200 252  IP      Ice 		(LoProb IP)
+28  224 200 252  IP+     Ice 		(LoProb IP+)
+29  224 200 252  ZL      Ice 		(LoProb ZL)
+30  224 200 252  ZL/R    Ice 		(LoProb R/ZL)
+31  224 200 252  ZR-     Ice 		(LoProb ZR-)
+32  224 200 252  ZR      Ice 		(LoProb ZR)
+33  224 200 252  ZR+     Ice 		(LoProb ZR+)
+34  224 200 252  ZR/R    Ice 		(LoProb R/ZR)
+35  224 200 252  ZR/IP   Ice 		(LoProb ZR/IP)
+36  206 156 255  IP-     Ice 		(HiProb IP-)
+37  206 156 255  IP      Ice 		(HiProb IP)
+38  206 156 255  IP+     Ice 		(HiProb IP+)
+39  206 156 255  ZL      Ice 		(HiProb ZL)
+40  206 156 255  ZL/R    Ice 		(HiProb R/ZL)
+41  206 156 255  ZR-     Ice 		(HiProb ZR-)
+42  206 156 255  ZR      Ice 		(HiProb ZR)
+43  206 156 255  ZR+     Ice 		(HiProb ZR+)
+44  206 156 255  ZR/R    Ice 		(HiProb R/ZR)
+45  206 156 255  ZR/IP   Ice 		(HiProb ZR/IP)
+46  139 150 255  SW      Snow 		(LoProb SW)
+47  139 150 255  S-      Snow 		(LoProb S-)
+48  139 150 255  S       Snow 		(LoProb S)
+49  139 150 255  S+      Snow 		(LoProb S+)
+50  0   49  255  SW      Snow 		(HiProb SW)
+51  0   49  255  S-      Snow 		(HiProb S-)
+52  0   49  255  S       Snow 		(HiProb S)
+53  0   49  255  S+      Snow 		(HiProb S+)
+54  255 255 0    F       Fog
+55  206 206 206  H       Haze
+56  148 148 148  K       Smoke
+57  232 129 18   BS      Blowing
+58  232 129 18   BD      Blowing

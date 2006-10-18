@@ -1,0 +1,97 @@
+#!/bin/make
+SHELL = /bin/sh
+
+# Compiler macro
+F77 = /opt/fortran/bin/f77
+
+# Library builder program #1 (archiver).
+AR = ar
+
+# Library program #2 (inserts a table of contents into the archive).
+# The archive is the UNIX rendition of a library.
+RANLIB = ranlib
+
+# These are the command-line flags to the archiver.
+ARFLAGS = rvu
+
+# Add extra compilation arguments here.
+# Example FFLAG macro
+FFLAGS = +O2 +U77
+
+# List FORTRAN source modules. 
+# Here we specify all the .f files in a macro.
+# Notice the \ character to continue this macro.
+# THERE MAY BE A LIMIT TO THE NUMBER OF LINES IN THE LIST!!
+LIB_SOURCES = boustro_int.f\
+            boustro_flt.f\
+            check_flt.f\
+            check_int.f\
+            earth.f\
+            flr.f\
+            flt_map.f\
+            fmkieee.f\
+            int_map.f\
+            length.f\
+            pack_gp.f\
+            pack_opt.f\
+            pk_azimuth.f\
+            pk_bmap.f\
+            pk_c7.f\
+            pk_cmplx.f\
+            pk_cylinder.f\
+            pk_equator.f\
+            pk_grib2.f\
+            pk_lambert.f\
+            pk_mercator.f\
+            pk_missp.f\
+            pk_nomiss.f\
+            pk_orthographic.f\
+            pk_polster.f\
+            pk_sect0.f\
+            pk_sect1.f\
+            pk_sect2.f\
+            pk_sect3.f\
+            pk_sect4.f\
+            pk_sect5.f\
+            pk_sect6.f\
+            pk_sect7.f\
+            pk_sect8.f\
+            pk_smple.f\
+            pk_s7.f\
+            pk_temp40.f\
+            pk_temp41.f\
+            pk_temp42.f\
+            pk_temp48.f\
+            pk_temp49.f\
+            pk_temp420.f\
+            pk_temp430.f\
+            pk_trace.f\
+            pkbg.f\
+            prepr.f\
+            prep_flt.f\
+            prep_int.f\
+            prep_noval.f\
+            prep_sect2_int.f\
+            prep_sect2_real.f\
+            pk_endian.f\
+            reduce.f\
+            timpr.f
+
+              
+# Now substitute all the .f extensions with .o 
+# Here we specify all the object files in a macro.
+LIB_OBJECTS = ${LIB_SOURCES:.f=.o} 
+
+# Specify default rules for .F and .o files.
+.SUFFIXES: .f .o
+
+#-------------------- Rule for compiling a FORTRAN file ----------
+.f.o :
+	$(F77) -c $(FFLAGS) $<
+
+# Library target.
+libpk_grib2lib.a:	${LIB_OBJECTS}
+	$(AR) $(ARFLAGS) $@ $(LIB_OBJECTS)
+	$(RANLIB) $@
+
+# Dependencies for object files

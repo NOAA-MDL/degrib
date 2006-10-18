@@ -1,0 +1,31 @@
+#!/bin/make
+
+# Set by calling makefile CC='$(CC)'
+# Set by calling makefile CFLAGS='$(CFLAGS)'
+AR=ar
+RANLIB=ranlib
+ARFLAGS=-ruv -X32
+LIBNAME=dwml
+LIBA=lib$(LIBNAME).a
+
+
+C_OBJS=$(LIBA)(xmlparse.o)
+
+H_SOURCES=xmlparse.h
+
+all: $(LIBA)
+
+$(LIBA): $(C_OBJS) $(H_SOURCES)
+	$(RANLIB) $(LIBA)
+
+install:
+
+clean:
+	rm -f *.o *.a
+
+.c.o:
+	$(CC) -c $(CFLAGS) $< -o $@
+
+.o.a:
+	$(AR) $(ARFLAGS) $@ $<
+

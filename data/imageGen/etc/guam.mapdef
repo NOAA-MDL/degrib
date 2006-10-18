@@ -1,0 +1,7 @@
+# Map definition file for Guam grids (subdomain of AWIPS204)
+merc                #mercator projection
+20.00               #origin latitude
+-179.564            #center meridian
+-216.313  12.3499   #lon, lat of lower left corner of grid
+-211.72   16.7944   #lon, lat of upper right corner of grid
+193  193            #number of grid points along x, y, 2.5 km grid

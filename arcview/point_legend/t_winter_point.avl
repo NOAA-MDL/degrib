@@ -1,0 +1,4929 @@
+/3.2
+(ODB.1
+	FirstRootClassName:	"Legend"
+	Roots:	2
+	Version:	32
+)
+
+(Legend.2
+	LegType:	0x08
+	ClassType:	0x03
+	FieldNames:	3
+	Symbols:	4
+	Class:	719
+	Class:	720
+	Class:	721
+	Class:	722
+	Class:	723
+	Class:	724
+	Class:	725
+	Class:	726
+	Class:	727
+	Class:	728
+	Class:	729
+	Class:	730
+	Class:	731
+	Class:	732
+	Class:	733
+	Class:	734
+	Class:	735
+	Class:	736
+	Class:	737
+	Class:	738
+	Class:	739
+	Class:	740
+	Class:	741
+	Class:	742
+	Class:	743
+	Class:	744
+	Class:	745
+	Class:	746
+	Class:	747
+	Class:	748
+	Class:	749
+	Class:	750
+	Class:	751
+	Class:	752
+	Class:	753
+	Class:	754
+	Class:	755
+	Class:	756
+	Class:	757
+	Class:	758
+	Class:	759
+	Class:	760
+	Class:	761
+	Class:	762
+	Class:	763
+	Class:	764
+	Class:	765
+	Class:	766
+	Class:	767
+	Class:	768
+	Class:	769
+	Class:	770
+	Class:	771
+	Class:	772
+	Class:	773
+	Class:	774
+	Class:	775
+	Class:	776
+	Class:	777
+	Class:	778
+	Class:	779
+	Class:	780
+	Class:	781
+	Class:	782
+	Class:	783
+	Class:	784
+	Class:	785
+	Class:	786
+	Class:	787
+	Class:	788
+	Class:	789
+	Class:	790
+	Class:	791
+	Class:	792
+	Class:	793
+	Class:	794
+	Class:	795
+	Class:	796
+	Class:	797
+	Class:	798
+	Class:	799
+	Class:	800
+	Class:	801
+	Class:	802
+	Class:	803
+	Class:	804
+	Class:	805
+	Class:	806
+	Class:	807
+	Class:	808
+	Class:	809
+	Class:	810
+	Class:	811
+	Class:	812
+	Class:	813
+	Class:	814
+	Class:	815
+	Class:	816
+	Class:	817
+	Class:	818
+	Class:	819
+	Class:	820
+	StdDevs:	1.00000000000000
+	NullSym:	821
+	NullValues:	828
+	StatValues:	829
+	Precision:	-3
+)
+
+(AVStr.3
+	S:	"T"
+)
+
+(SymList.4
+	Child:	5
+	Child:	12
+	Child:	19
+	Child:	26
+	Child:	33
+	Child:	40
+	Child:	47
+	Child:	54
+	Child:	61
+	Child:	68
+	Child:	75
+	Child:	82
+	Child:	89
+	Child:	96
+	Child:	103
+	Child:	110
+	Child:	117
+	Child:	124
+	Child:	131
+	Child:	138
+	Child:	145
+	Child:	152
+	Child:	159
+	Child:	166
+	Child:	173
+	Child:	180
+	Child:	187
+	Child:	194
+	Child:	201
+	Child:	208
+	Child:	215
+	Child:	222
+	Child:	229
+	Child:	236
+	Child:	243
+	Child:	250
+	Child:	257
+	Child:	264
+	Child:	271
+	Child:	278
+	Child:	285
+	Child:	292
+	Child:	299
+	Child:	306
+	Child:	313
+	Child:	320
+	Child:	327
+	Child:	334
+	Child:	341
+	Child:	348
+	Child:	355
+	Child:	362
+	Child:	369
+	Child:	376
+	Child:	383
+	Child:	390
+	Child:	397
+	Child:	404
+	Child:	411
+	Child:	418
+	Child:	425
+	Child:	432
+	Child:	439
+	Child:	446
+	Child:	453
+	Child:	460
+	Child:	467
+	Child:	474
+	Child:	481
+	Child:	488
+	Child:	495
+	Child:	502
+	Child:	509
+	Child:	516
+	Child:	523
+	Child:	530
+	Child:	537
+	Child:	544
+	Child:	551
+	Child:	558
+	Child:	565
+	Child:	572
+	Child:	579
+	Child:	586
+	Child:	593
+	Child:	600
+	Child:	607
+	Child:	614
+	Child:	621
+	Child:	628
+	Child:	635
+	Child:	642
+	Child:	649
+	Child:	656
+	Child:	663
+	Child:	670
+	Child:	677
+	Child:	684
+	Child:	691
+	Child:	698
+	Child:	705
+	Child:	712
+)
+
+(BMkSym.5
+	Color:	6
+	BgColor:	7
+	Font:	8
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.6
+	Red:	0xff00
+	Green:	0xc800
+	Blue:	0xff00
+)
+
+(TClr.7
+	Name:	"Transparent"
+)
+
+(NFont.8
+	Family:	9
+	Name:	10
+	Style:	11
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.9
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.10
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.11
+	S:	"Normal"
+)
+
+(BMkSym.12
+	Color:	13
+	BgColor:	14
+	Font:	15
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.13
+	Red:	0xff00
+	Green:	0xb400
+	Blue:	0xff00
+)
+
+(TClr.14
+	Name:	"Transparent"
+)
+
+(NFont.15
+	Family:	16
+	Name:	17
+	Style:	18
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.16
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.17
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.18
+	S:	"Normal"
+)
+
+(BMkSym.19
+	Color:	20
+	BgColor:	21
+	Font:	22
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.20
+	Red:	0xff00
+	Green:	0xa500
+	Blue:	0xff00
+)
+
+(TClr.21
+	Name:	"Transparent"
+)
+
+(NFont.22
+	Family:	23
+	Name:	24
+	Style:	25
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.23
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.24
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.25
+	S:	"Normal"
+)
+
+(BMkSym.26
+	Color:	27
+	BgColor:	28
+	Font:	29
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.27
+	Red:	0xff00
+	Green:	0x9600
+	Blue:	0xff00
+)
+
+(TClr.28
+	Name:	"Transparent"
+)
+
+(NFont.29
+	Family:	30
+	Name:	31
+	Style:	32
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.30
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.31
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.32
+	S:	"Normal"
+)
+
+(BMkSym.33
+	Color:	34
+	BgColor:	35
+	Font:	36
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.34
+	Red:	0xfa00
+	Green:	0x9100
+	Blue:	0xfa00
+)
+
+(TClr.35
+	Name:	"Transparent"
+)
+
+(NFont.36
+	Family:	37
+	Name:	38
+	Style:	39
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.37
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.38
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.39
+	S:	"Normal"
+)
+
+(BMkSym.40
+	Color:	41
+	BgColor:	42
+	Font:	43
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.41
+	Red:	0xf500
+	Green:	0x8c00
+	Blue:	0xf500
+)
+
+(TClr.42
+	Name:	"Transparent"
+)
+
+(NFont.43
+	Family:	44
+	Name:	45
+	Style:	46
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.44
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.45
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.46
+	S:	"Normal"
+)
+
+(BMkSym.47
+	Color:	48
+	BgColor:	49
+	Font:	50
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.48
+	Red:	0xf000
+	Green:	0x8700
+	Blue:	0xf000
+)
+
+(TClr.49
+	Name:	"Transparent"
+)
+
+(NFont.50
+	Family:	51
+	Name:	52
+	Style:	53
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.51
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.52
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.53
+	S:	"Normal"
+)
+
+(BMkSym.54
+	Color:	55
+	BgColor:	56
+	Font:	57
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.55
+	Red:	0xeb00
+	Green:	0x8200
+	Blue:	0xeb00
+)
+
+(TClr.56
+	Name:	"Transparent"
+)
+
+(NFont.57
+	Family:	58
+	Name:	59
+	Style:	60
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.58
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.59
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.60
+	S:	"Normal"
+)
+
+(BMkSym.61
+	Color:	62
+	BgColor:	63
+	Font:	64
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.62
+	Red:	0xe600
+	Green:	0x7d00
+	Blue:	0xe600
+)
+
+(TClr.63
+	Name:	"Transparent"
+)
+
+(NFont.64
+	Family:	65
+	Name:	66
+	Style:	67
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.65
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.66
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.67
+	S:	"Normal"
+)
+
+(BMkSym.68
+	Color:	69
+	BgColor:	70
+	Font:	71
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.69
+	Red:	0xe100
+	Green:	0x7800
+	Blue:	0xe100
+)
+
+(TClr.70
+	Name:	"Transparent"
+)
+
+(NFont.71
+	Family:	72
+	Name:	73
+	Style:	74
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.72
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.73
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.74
+	S:	"Normal"
+)
+
+(BMkSym.75
+	Color:	76
+	BgColor:	77
+	Font:	78
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.76
+	Red:	0xdc00
+	Green:	0x7300
+	Blue:	0xdc00
+)
+
+(TClr.77
+	Name:	"Transparent"
+)
+
+(NFont.78
+	Family:	79
+	Name:	80
+	Style:	81
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.79
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.80
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.81
+	S:	"Normal"
+)
+
+(BMkSym.82
+	Color:	83
+	BgColor:	84
+	Font:	85
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.83
+	Red:	0xd700
+	Green:	0x6e00
+	Blue:	0xd700
+)
+
+(TClr.84
+	Name:	"Transparent"
+)
+
+(NFont.85
+	Family:	86
+	Name:	87
+	Style:	88
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.86
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.87
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.88
+	S:	"Normal"
+)
+
+(BMkSym.89
+	Color:	90
+	BgColor:	91
+	Font:	92
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.90
+	Red:	0xd400
+	Green:	0x6b00
+	Blue:	0xd400
+)
+
+(TClr.91
+	Name:	"Transparent"
+)
+
+(NFont.92
+	Family:	93
+	Name:	94
+	Style:	95
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.93
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.94
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.95
+	S:	"Normal"
+)
+
+(BMkSym.96
+	Color:	97
+	BgColor:	98
+	Font:	99
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.97
+	Red:	0xd200
+	Green:	0x6900
+	Blue:	0xd200
+)
+
+(TClr.98
+	Name:	"Transparent"
+)
+
+(NFont.99
+	Family:	100
+	Name:	101
+	Style:	102
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.100
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.101
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.102
+	S:	"Normal"
+)
+
+(BMkSym.103
+	Color:	104
+	BgColor:	105
+	Font:	106
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.104
+	Red:	0xc800
+	Green:	0x6400
+	Blue:	0xc800
+)
+
+(TClr.105
+	Name:	"Transparent"
+)
+
+(NFont.106
+	Family:	107
+	Name:	108
+	Style:	109
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.107
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.108
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.109
+	S:	"Normal"
+)
+
+(BMkSym.110
+	Color:	111
+	BgColor:	112
+	Font:	113
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.111
+	Red:	0xbf00
+	Green:	0x5d00
+	Blue:	0xc600
+)
+
+(TClr.112
+	Name:	"Transparent"
+)
+
+(NFont.113
+	Family:	114
+	Name:	115
+	Style:	116
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.114
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.115
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.116
+	S:	"Normal"
+)
+
+(BMkSym.117
+	Color:	118
+	BgColor:	119
+	Font:	120
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.118
+	Red:	0xb600
+	Green:	0x5600
+	Blue:	0xc400
+)
+
+(TClr.119
+	Name:	"Transparent"
+)
+
+(NFont.120
+	Family:	121
+	Name:	122
+	Style:	123
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.121
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.122
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.123
+	S:	"Normal"
+)
+
+(BMkSym.124
+	Color:	125
+	BgColor:	126
+	Font:	127
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.125
+	Red:	0xad00
+	Green:	0x4f00
+	Blue:	0xc100
+)
+
+(TClr.126
+	Name:	"Transparent"
+)
+
+(NFont.127
+	Family:	128
+	Name:	129
+	Style:	130
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.128
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.129
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.130
+	S:	"Normal"
+)
+
+(BMkSym.131
+	Color:	132
+	BgColor:	133
+	Font:	134
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.132
+	Red:	0xa400
+	Green:	0x4800
+	Blue:	0xbf00
+)
+
+(TClr.133
+	Name:	"Transparent"
+)
+
+(NFont.134
+	Family:	135
+	Name:	136
+	Style:	137
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.135
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.136
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.137
+	S:	"Normal"
+)
+
+(BMkSym.138
+	Color:	139
+	BgColor:	140
+	Font:	141
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.139
+	Red:	0x9b00
+	Green:	0x4100
+	Blue:	0xbd00
+)
+
+(TClr.140
+	Name:	"Transparent"
+)
+
+(NFont.141
+	Family:	142
+	Name:	143
+	Style:	144
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.142
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.143
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.144
+	S:	"Normal"
+)
+
+(BMkSym.145
+	Color:	146
+	BgColor:	147
+	Font:	148
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.146
+	Red:	0x9200
+	Green:	0x3a00
+	Blue:	0xbb00
+)
+
+(TClr.147
+	Name:	"Transparent"
+)
+
+(NFont.148
+	Family:	149
+	Name:	150
+	Style:	151
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.149
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.150
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.151
+	S:	"Normal"
+)
+
+(BMkSym.152
+	Color:	153
+	BgColor:	154
+	Font:	155
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.153
+	Red:	0x8700
+	Green:	0x3200
+	Blue:	0xb900
+)
+
+(TClr.154
+	Name:	"Transparent"
+)
+
+(NFont.155
+	Family:	156
+	Name:	157
+	Style:	158
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.156
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.157
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.158
+	S:	"Normal"
+)
+
+(BMkSym.159
+	Color:	160
+	BgColor:	161
+	Font:	162
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.160
+	Red:	0x7e00
+	Green:	0x2e00
+	Blue:	0xb600
+)
+
+(TClr.161
+	Name:	"Transparent"
+)
+
+(NFont.162
+	Family:	163
+	Name:	164
+	Style:	165
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.163
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.164
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.165
+	S:	"Normal"
+)
+
+(BMkSym.166
+	Color:	167
+	BgColor:	168
+	Font:	169
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.167
+	Red:	0x7500
+	Green:	0x2a00
+	Blue:	0xb200
+)
+
+(TClr.168
+	Name:	"Transparent"
+)
+
+(NFont.169
+	Family:	170
+	Name:	171
+	Style:	172
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.170
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.171
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.172
+	S:	"Normal"
+)
+
+(BMkSym.173
+	Color:	174
+	BgColor:	175
+	Font:	176
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.174
+	Red:	0x6c00
+	Green:	0x2600
+	Blue:	0xae00
+)
+
+(TClr.175
+	Name:	"Transparent"
+)
+
+(NFont.176
+	Family:	177
+	Name:	178
+	Style:	179
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.177
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.178
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.179
+	S:	"Normal"
+)
+
+(BMkSym.180
+	Color:	181
+	BgColor:	182
+	Font:	183
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.181
+	Red:	0x6300
+	Green:	0x2200
+	Blue:	0xaa00
+)
+
+(TClr.182
+	Name:	"Transparent"
+)
+
+(NFont.183
+	Family:	184
+	Name:	185
+	Style:	186
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.184
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.185
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.186
+	S:	"Normal"
+)
+
+(BMkSym.187
+	Color:	188
+	BgColor:	189
+	Font:	190
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.188
+	Red:	0x5a00
+	Green:	0x1e00
+	Blue:	0xa600
+)
+
+(TClr.189
+	Name:	"Transparent"
+)
+
+(NFont.190
+	Family:	191
+	Name:	192
+	Style:	193
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.191
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.192
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.193
+	S:	"Normal"
+)
+
+(BMkSym.194
+	Color:	195
+	BgColor:	196
+	Font:	197
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.195
+	Red:	0x5100
+	Green:	0x1a00
+	Blue:	0xa200
+)
+
+(TClr.196
+	Name:	"Transparent"
+)
+
+(NFont.197
+	Family:	198
+	Name:	199
+	Style:	200
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.198
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.199
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.200
+	S:	"Normal"
+)
+
+(BMkSym.201
+	Color:	202
+	BgColor:	203
+	Font:	204
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.202
+	Red:	0x4800
+	Green:	0x1600
+	Blue:	0x9e00
+)
+
+(TClr.203
+	Name:	"Transparent"
+)
+
+(NFont.204
+	Family:	205
+	Name:	206
+	Style:	207
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.205
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.206
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.207
+	S:	"Normal"
+)
+
+(BMkSym.208
+	Color:	209
+	BgColor:	210
+	Font:	211
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.209
+	Red:	0x3f00
+	Green:	0x1200
+	Blue:	0x9a00
+)
+
+(TClr.210
+	Name:	"Transparent"
+)
+
+(NFont.211
+	Family:	212
+	Name:	213
+	Style:	214
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.212
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.213
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.214
+	S:	"Normal"
+)
+
+(BMkSym.215
+	Color:	216
+	BgColor:	217
+	Font:	218
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.216
+	Red:	0x3700
+	Green:	0xe00
+	Blue:	0x9800
+)
+
+(TClr.217
+	Name:	"Transparent"
+)
+
+(NFont.218
+	Family:	219
+	Name:	220
+	Style:	221
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.219
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.220
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.221
+	S:	"Normal"
+)
+
+(BMkSym.222
+	Color:	223
+	BgColor:	224
+	Font:	225
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.223
+	Red:	0x3200
+	Green:	0xa00
+	Blue:	0x9600
+)
+
+(TClr.224
+	Name:	"Transparent"
+)
+
+(NFont.225
+	Family:	226
+	Name:	227
+	Style:	228
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.226
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.227
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.228
+	S:	"Normal"
+)
+
+(BMkSym.229
+	Color:	230
+	BgColor:	231
+	Font:	232
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.230
+	Red:	0x2d00
+	Green:	0x2000
+	Blue:	0xa000
+)
+
+(TClr.231
+	Name:	"Transparent"
+)
+
+(NFont.232
+	Family:	233
+	Name:	234
+	Style:	235
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.233
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.234
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.235
+	S:	"Normal"
+)
+
+(BMkSym.236
+	Color:	237
+	BgColor:	238
+	Font:	239
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.237
+	Red:	0x2800
+	Green:	0x3600
+	Blue:	0xaa00
+)
+
+(TClr.238
+	Name:	"Transparent"
+)
+
+(NFont.239
+	Family:	240
+	Name:	241
+	Style:	242
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.240
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.241
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.242
+	S:	"Normal"
+)
+
+(BMkSym.243
+	Color:	244
+	BgColor:	245
+	Font:	246
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.244
+	Red:	0x2300
+	Green:	0x4c00
+	Blue:	0xb400
+)
+
+(TClr.245
+	Name:	"Transparent"
+)
+
+(NFont.246
+	Family:	247
+	Name:	248
+	Style:	249
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.247
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.248
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.249
+	S:	"Normal"
+)
+
+(BMkSym.250
+	Color:	251
+	BgColor:	252
+	Font:	253
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.251
+	Red:	0x1e00
+	Green:	0x6200
+	Blue:	0xbe00
+)
+
+(TClr.252
+	Name:	"Transparent"
+)
+
+(NFont.253
+	Family:	254
+	Name:	255
+	Style:	256
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.254
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.255
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.256
+	S:	"Normal"
+)
+
+(BMkSym.257
+	Color:	258
+	BgColor:	259
+	Font:	260
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.258
+	Red:	0x1c00
+	Green:	0x6e00
+	Blue:	0xc300
+)
+
+(TClr.259
+	Name:	"Transparent"
+)
+
+(NFont.260
+	Family:	261
+	Name:	262
+	Style:	263
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.261
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.262
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.263
+	S:	"Normal"
+)
+
+(BMkSym.264
+	Color:	265
+	BgColor:	266
+	Font:	267
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.265
+	Red:	0x1900
+	Green:	0x7800
+	Blue:	0xc800
+)
+
+(TClr.266
+	Name:	"Transparent"
+)
+
+(NFont.267
+	Family:	268
+	Name:	269
+	Style:	270
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.268
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.269
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.270
+	S:	"Normal"
+)
+
+(BMkSym.271
+	Color:	272
+	BgColor:	273
+	Font:	274
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.272
+	Red:	0x1700
+	Green:	0x8500
+	Blue:	0xcd00
+)
+
+(TClr.273
+	Name:	"Transparent"
+)
+
+(NFont.274
+	Family:	275
+	Name:	276
+	Style:	277
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.275
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.276
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.277
+	S:	"Normal"
+)
+
+(BMkSym.278
+	Color:	279
+	BgColor:	280
+	Font:	281
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.279
+	Red:	0x1400
+	Green:	0x9100
+	Blue:	0xd200
+)
+
+(TClr.280
+	Name:	"Transparent"
+)
+
+(NFont.281
+	Family:	282
+	Name:	283
+	Style:	284
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.282
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.283
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.284
+	S:	"Normal"
+)
+
+(BMkSym.285
+	Color:	286
+	BgColor:	287
+	Font:	288
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.286
+	Red:	0xf00
+	Green:	0xa400
+	Blue:	0xdc00
+)
+
+(TClr.287
+	Name:	"Transparent"
+)
+
+(NFont.288
+	Family:	289
+	Name:	290
+	Style:	291
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.289
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.290
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.291
+	S:	"Normal"
+)
+
+(BMkSym.292
+	Color:	293
+	BgColor:	294
+	Font:	295
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.293
+	Red:	0xa00
+	Green:	0xba00
+	Blue:	0xe600
+)
+
+(TClr.294
+	Name:	"Transparent"
+)
+
+(NFont.295
+	Family:	296
+	Name:	297
+	Style:	298
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.296
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.297
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.298
+	S:	"Normal"
+)
+
+(BMkSym.299
+	Color:	300
+	BgColor:	301
+	Font:	302
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.300
+	Red:	0x500
+	Green:	0xcf00
+	Blue:	0xf300
+)
+
+(TClr.301
+	Name:	"Transparent"
+)
+
+(NFont.302
+	Family:	303
+	Name:	304
+	Style:	305
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.303
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.304
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.305
+	S:	"Normal"
+)
+
+(BMkSym.306
+	Color:	307
+	BgColor:	308
+	Font:	309
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.307
+	Green:	0xe100
+	Blue:	0xfa00
+)
+
+(TClr.308
+	Name:	"Transparent"
+)
+
+(NFont.309
+	Family:	310
+	Name:	311
+	Style:	312
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.310
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.311
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.312
+	S:	"Normal"
+)
+
+(BMkSym.313
+	Color:	314
+	BgColor:	315
+	Font:	316
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.314
+	Green:	0xe000
+	Blue:	0xef00
+)
+
+(TClr.315
+	Name:	"Transparent"
+)
+
+(NFont.316
+	Family:	317
+	Name:	318
+	Style:	319
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.317
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.318
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.319
+	S:	"Normal"
+)
+
+(BMkSym.320
+	Color:	321
+	BgColor:	322
+	Font:	323
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.321
+	Green:	0xdf00
+	Blue:	0xe500
+)
+
+(TClr.322
+	Name:	"Transparent"
+)
+
+(NFont.323
+	Family:	324
+	Name:	325
+	Style:	326
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.324
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.325
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.326
+	S:	"Normal"
+)
+
+(BMkSym.327
+	Color:	328
+	BgColor:	329
+	Font:	330
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.328
+	Red:	0x100
+	Green:	0xde00
+	Blue:	0xdb00
+)
+
+(TClr.329
+	Name:	"Transparent"
+)
+
+(NFont.330
+	Family:	331
+	Name:	332
+	Style:	333
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.331
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.332
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.333
+	S:	"Normal"
+)
+
+(BMkSym.334
+	Color:	335
+	BgColor:	336
+	Font:	337
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.335
+	Red:	0x100
+	Green:	0xdd00
+	Blue:	0xd100
+)
+
+(TClr.336
+	Name:	"Transparent"
+)
+
+(NFont.337
+	Family:	338
+	Name:	339
+	Style:	340
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.338
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.339
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.340
+	S:	"Normal"
+)
+
+(BMkSym.341
+	Color:	342
+	BgColor:	343
+	Font:	344
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.342
+	Red:	0x100
+	Green:	0xdc00
+	Blue:	0xbc00
+)
+
+(TClr.343
+	Name:	"Transparent"
+)
+
+(NFont.344
+	Family:	345
+	Name:	346
+	Style:	347
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.345
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.346
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.347
+	S:	"Normal"
+)
+
+(BMkSym.348
+	Color:	349
+	BgColor:	350
+	Font:	351
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.349
+	Red:	0x100
+	Green:	0xd700
+	Blue:	0xa700
+)
+
+(TClr.350
+	Name:	"Transparent"
+)
+
+(NFont.351
+	Family:	352
+	Name:	353
+	Style:	354
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.352
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.353
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.354
+	S:	"Normal"
+)
+
+(BMkSym.355
+	Color:	356
+	BgColor:	357
+	Font:	358
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.356
+	Red:	0x100
+	Green:	0xd200
+	Blue:	0x8600
+)
+
+(TClr.357
+	Name:	"Transparent"
+)
+
+(NFont.358
+	Family:	359
+	Name:	360
+	Style:	361
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.359
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.360
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.361
+	S:	"Normal"
+)
+
+(BMkSym.362
+	Color:	363
+	BgColor:	364
+	Font:	365
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.363
+	Red:	0x100
+	Green:	0xcd00
+	Blue:	0x6400
+)
+
+(TClr.364
+	Name:	"Transparent"
+)
+
+(NFont.365
+	Family:	366
+	Name:	367
+	Style:	368
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.366
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.367
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.368
+	S:	"Normal"
+)
+
+(BMkSym.369
+	Color:	370
+	BgColor:	371
+	Font:	372
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.370
+	Green:	0xc800
+	Blue:	0x4300
+)
+
+(TClr.371
+	Name:	"Transparent"
+)
+
+(NFont.372
+	Family:	373
+	Name:	374
+	Style:	375
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.373
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.374
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.375
+	S:	"Normal"
+)
+
+(BMkSym.376
+	Color:	377
+	BgColor:	378
+	Font:	379
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.377
+	Green:	0xc300
+	Blue:	0x2200
+)
+
+(TClr.378
+	Name:	"Transparent"
+)
+
+(NFont.379
+	Family:	380
+	Name:	381
+	Style:	382
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.380
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.381
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.382
+	S:	"Normal"
+)
+
+(BMkSym.383
+	Color:	384
+	BgColor:	385
+	Font:	386
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.384
+	Green:	0xbe00
+)
+
+(TClr.385
+	Name:	"Transparent"
+)
+
+(NFont.386
+	Family:	387
+	Name:	388
+	Style:	389
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.387
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.388
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.389
+	S:	"Normal"
+)
+
+(BMkSym.390
+	Color:	391
+	BgColor:	392
+	Font:	393
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.391
+	Green:	0xb900
+)
+
+(TClr.392
+	Name:	"Transparent"
+)
+
+(NFont.393
+	Family:	394
+	Name:	395
+	Style:	396
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.394
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.395
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.396
+	S:	"Normal"
+)
+
+(BMkSym.397
+	Color:	398
+	BgColor:	399
+	Font:	400
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.398
+	Green:	0xbe00
+)
+
+(TClr.399
+	Name:	"Transparent"
+)
+
+(NFont.400
+	Family:	401
+	Name:	402
+	Style:	403
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.401
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.402
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.403
+	S:	"Normal"
+)
+
+(BMkSym.404
+	Color:	405
+	BgColor:	406
+	Font:	407
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.405
+	Red:	0x1900
+	Green:	0xc100
+	Blue:	0x100
+)
+
+(TClr.406
+	Name:	"Transparent"
+)
+
+(NFont.407
+	Family:	408
+	Name:	409
+	Style:	410
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.408
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.409
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.410
+	S:	"Normal"
+)
+
+(BMkSym.411
+	Color:	412
+	BgColor:	413
+	Font:	414
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.412
+	Red:	0x3200
+	Green:	0xc400
+	Blue:	0x100
+)
+
+(TClr.413
+	Name:	"Transparent"
+)
+
+(NFont.414
+	Family:	415
+	Name:	416
+	Style:	417
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.415
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.416
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.417
+	S:	"Normal"
+)
+
+(BMkSym.418
+	Color:	419
+	BgColor:	420
+	Font:	421
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.419
+	Red:	0x4b00
+	Green:	0xc700
+	Blue:	0x200
+)
+
+(TClr.420
+	Name:	"Transparent"
+)
+
+(NFont.421
+	Family:	422
+	Name:	423
+	Style:	424
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.422
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.423
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.424
+	S:	"Normal"
+)
+
+(BMkSym.425
+	Color:	426
+	BgColor:	427
+	Font:	428
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.426
+	Red:	0x7d00
+	Green:	0xcd00
+	Blue:	0x300
+)
+
+(TClr.427
+	Name:	"Transparent"
+)
+
+(NFont.428
+	Family:	429
+	Name:	430
+	Style:	431
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.429
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.430
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.431
+	S:	"Normal"
+)
+
+(BMkSym.432
+	Color:	433
+	BgColor:	434
+	Font:	435
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.433
+	Red:	0x9600
+	Green:	0xd000
+	Blue:	0x300
+)
+
+(TClr.434
+	Name:	"Transparent"
+)
+
+(NFont.435
+	Family:	436
+	Name:	437
+	Style:	438
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.436
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.437
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.438
+	S:	"Normal"
+)
+
+(BMkSym.439
+	Color:	440
+	BgColor:	441
+	Font:	442
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.440
+	Red:	0xa600
+	Green:	0xd200
+	Blue:	0x300
+)
+
+(TClr.441
+	Name:	"Transparent"
+)
+
+(NFont.442
+	Family:	443
+	Name:	444
+	Style:	445
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.443
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.444
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.445
+	S:	"Normal"
+)
+
+(BMkSym.446
+	Color:	447
+	BgColor:	448
+	Font:	449
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.447
+	Red:	0xb900
+	Green:	0xd300
+	Blue:	0x400
+)
+
+(TClr.448
+	Name:	"Transparent"
+)
+
+(NFont.449
+	Family:	450
+	Name:	451
+	Style:	452
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.450
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.451
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.452
+	S:	"Normal"
+)
+
+(BMkSym.453
+	Color:	454
+	BgColor:	455
+	Font:	456
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.454
+	Red:	0xc800
+	Green:	0xdc00
+	Blue:	0x500
+)
+
+(TClr.455
+	Name:	"Transparent"
+)
+
+(NFont.456
+	Family:	457
+	Name:	458
+	Style:	459
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.457
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.458
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.459
+	S:	"Normal"
+)
+
+(BMkSym.460
+	Color:	461
+	BgColor:	462
+	Font:	463
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.461
+	Red:	0xe400
+	Green:	0xe000
+	Blue:	0x500
+)
+
+(TClr.462
+	Name:	"Transparent"
+)
+
+(NFont.463
+	Family:	464
+	Name:	465
+	Style:	466
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.464
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.465
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.466
+	S:	"Normal"
+)
+
+(BMkSym.467
+	Color:	468
+	BgColor:	469
+	Font:	470
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.468
+	Red:	0xea00
+	Green:	0xe500
+	Blue:	0x400
+)
+
+(TClr.469
+	Name:	"Transparent"
+)
+
+(NFont.470
+	Family:	471
+	Name:	472
+	Style:	473
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.471
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.472
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.473
+	S:	"Normal"
+)
+
+(BMkSym.474
+	Color:	475
+	BgColor:	476
+	Font:	477
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.475
+	Red:	0xf200
+	Green:	0xed00
+	Blue:	0x300
+)
+
+(TClr.476
+	Name:	"Transparent"
+)
+
+(NFont.477
+	Family:	478
+	Name:	479
+	Style:	480
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.478
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.479
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.480
+	S:	"Normal"
+)
+
+(BMkSym.481
+	Color:	482
+	BgColor:	483
+	Font:	484
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.482
+	Red:	0xf500
+	Green:	0xf100
+	Blue:	0x300
+)
+
+(TClr.483
+	Name:	"Transparent"
+)
+
+(NFont.484
+	Family:	485
+	Name:	486
+	Style:	487
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.485
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.486
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.487
+	S:	"Normal"
+)
+
+(BMkSym.488
+	Color:	489
+	BgColor:	490
+	Font:	491
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.489
+	Red:	0xfa00
+	Green:	0xfb00
+	Blue:	0x100
+)
+
+(TClr.490
+	Name:	"Transparent"
+)
+
+(NFont.491
+	Family:	492
+	Name:	493
+	Style:	494
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.492
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.493
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.494
+	S:	"Normal"
+)
+
+(BMkSym.495
+	Color:	496
+	BgColor:	497
+	Font:	498
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.496
+	Red:	0xff00
+	Green:	0xff00
+)
+
+(TClr.497
+	Name:	"Transparent"
+)
+
+(NFont.498
+	Family:	499
+	Name:	500
+	Style:	501
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.499
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.500
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.501
+	S:	"Normal"
+)
+
+(BMkSym.502
+	Color:	503
+	BgColor:	504
+	Font:	505
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.503
+	Red:	0xff00
+	Green:	0xf000
+)
+
+(TClr.504
+	Name:	"Transparent"
+)
+
+(NFont.505
+	Family:	506
+	Name:	507
+	Style:	508
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.506
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.507
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.508
+	S:	"Normal"
+)
+
+(BMkSym.509
+	Color:	510
+	BgColor:	511
+	Font:	512
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.510
+	Red:	0xff00
+	Green:	0xe000
+)
+
+(TClr.511
+	Name:	"Transparent"
+)
+
+(NFont.512
+	Family:	513
+	Name:	514
+	Style:	515
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.513
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.514
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.515
+	S:	"Normal"
+)
+
+(BMkSym.516
+	Color:	517
+	BgColor:	518
+	Font:	519
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.517
+	Red:	0xff00
+	Green:	0xd800
+)
+
+(TClr.518
+	Name:	"Transparent"
+)
+
+(NFont.519
+	Family:	520
+	Name:	521
+	Style:	522
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.520
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.521
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.522
+	S:	"Normal"
+)
+
+(BMkSym.523
+	Color:	524
+	BgColor:	525
+	Font:	526
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.524
+	Red:	0xff00
+	Green:	0xd200
+)
+
+(TClr.525
+	Name:	"Transparent"
+)
+
+(NFont.526
+	Family:	527
+	Name:	528
+	Style:	529
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.527
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.528
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.529
+	S:	"Normal"
+)
+
+(BMkSym.530
+	Color:	531
+	BgColor:	532
+	Font:	533
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.531
+	Red:	0xff00
+	Green:	0xc000
+)
+
+(TClr.532
+	Name:	"Transparent"
+)
+
+(NFont.533
+	Family:	534
+	Name:	535
+	Style:	536
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.534
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.535
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.536
+	S:	"Normal"
+)
+
+(BMkSym.537
+	Color:	538
+	BgColor:	539
+	Font:	540
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.538
+	Red:	0xff00
+	Green:	0xb400
+)
+
+(TClr.539
+	Name:	"Transparent"
+)
+
+(NFont.540
+	Family:	541
+	Name:	542
+	Style:	543
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.541
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.542
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.543
+	S:	"Normal"
+)
+
+(BMkSym.544
+	Color:	545
+	BgColor:	546
+	Font:	547
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.545
+	Red:	0xff00
+	Green:	0xa100
+)
+
+(TClr.546
+	Name:	"Transparent"
+)
+
+(NFont.547
+	Family:	548
+	Name:	549
+	Style:	550
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.548
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.549
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.550
+	S:	"Normal"
+)
+
+(BMkSym.551
+	Color:	552
+	BgColor:	553
+	Font:	554
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.552
+	Red:	0xff00
+	Green:	0x9b00
+)
+
+(TClr.553
+	Name:	"Transparent"
+)
+
+(NFont.554
+	Family:	555
+	Name:	556
+	Style:	557
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.555
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.556
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.557
+	S:	"Normal"
+)
+
+(BMkSym.558
+	Color:	559
+	BgColor:	560
+	Font:	561
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.559
+	Red:	0xff00
+	Green:	0x8c00
+)
+
+(TClr.560
+	Name:	"Transparent"
+)
+
+(NFont.561
+	Family:	562
+	Name:	563
+	Style:	564
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.562
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.563
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.564
+	S:	"Normal"
+)
+
+(BMkSym.565
+	Color:	566
+	BgColor:	567
+	Font:	568
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.566
+	Red:	0xff00
+	Green:	0x7d00
+)
+
+(TClr.567
+	Name:	"Transparent"
+)
+
+(NFont.568
+	Family:	569
+	Name:	570
+	Style:	571
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.569
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.570
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.571
+	S:	"Normal"
+)
+
+(BMkSym.572
+	Color:	573
+	BgColor:	574
+	Font:	575
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.573
+	Red:	0xfd00
+	Green:	0x6e00
+)
+
+(TClr.574
+	Name:	"Transparent"
+)
+
+(NFont.575
+	Family:	576
+	Name:	577
+	Style:	578
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.576
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.577
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.578
+	S:	"Normal"
+)
+
+(BMkSym.579
+	Color:	580
+	BgColor:	581
+	Font:	582
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.580
+	Red:	0xfb00
+	Green:	0x5f00
+)
+
+(TClr.581
+	Name:	"Transparent"
+)
+
+(NFont.582
+	Family:	583
+	Name:	584
+	Style:	585
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.583
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.584
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.585
+	S:	"Normal"
+)
+
+(BMkSym.586
+	Color:	587
+	BgColor:	588
+	Font:	589
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.587
+	Red:	0xfa00
+	Green:	0x5000
+)
+
+(TClr.588
+	Name:	"Transparent"
+)
+
+(NFont.589
+	Family:	590
+	Name:	591
+	Style:	592
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.590
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.591
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.592
+	S:	"Normal"
+)
+
+(BMkSym.593
+	Color:	594
+	BgColor:	595
+	Font:	596
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.594
+	Red:	0xf900
+	Green:	0x4100
+)
+
+(TClr.595
+	Name:	"Transparent"
+)
+
+(NFont.596
+	Family:	597
+	Name:	598
+	Style:	599
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.597
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.598
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.599
+	S:	"Normal"
+)
+
+(BMkSym.600
+	Color:	601
+	BgColor:	602
+	Font:	603
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.601
+	Red:	0xf800
+	Green:	0x2300
+)
+
+(TClr.602
+	Name:	"Transparent"
+)
+
+(NFont.603
+	Family:	604
+	Name:	605
+	Style:	606
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.604
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.605
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.606
+	S:	"Normal"
+)
+
+(BMkSym.607
+	Color:	608
+	BgColor:	609
+	Font:	610
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.608
+	Red:	0xf600
+	Green:	0xa00
+)
+
+(TClr.609
+	Name:	"Transparent"
+)
+
+(NFont.610
+	Family:	611
+	Name:	612
+	Style:	613
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.611
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.612
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.613
+	S:	"Normal"
+)
+
+(BMkSym.614
+	Color:	615
+	BgColor:	616
+	Font:	617
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.615
+	Red:	0xf300
+)
+
+(TClr.616
+	Name:	"Transparent"
+)
+
+(NFont.617
+	Family:	618
+	Name:	619
+	Style:	620
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.618
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.619
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.620
+	S:	"Normal"
+)
+
+(BMkSym.621
+	Color:	622
+	BgColor:	623
+	Font:	624
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.622
+	Red:	0xf000
+)
+
+(TClr.623
+	Name:	"Transparent"
+)
+
+(NFont.624
+	Family:	625
+	Name:	626
+	Style:	627
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.625
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.626
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.627
+	S:	"Normal"
+)
+
+(BMkSym.628
+	Color:	629
+	BgColor:	630
+	Font:	631
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.629
+	Red:	0xec00
+	Green:	0x600
+	Blue:	0x600
+)
+
+(TClr.630
+	Name:	"Transparent"
+)
+
+(NFont.631
+	Family:	632
+	Name:	633
+	Style:	634
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.632
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.633
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.634
+	S:	"Normal"
+)
+
+(BMkSym.635
+	Color:	636
+	BgColor:	637
+	Font:	638
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.636
+	Red:	0xe900
+	Green:	0x900
+	Blue:	0x900
+)
+
+(TClr.637
+	Name:	"Transparent"
+)
+
+(NFont.638
+	Family:	639
+	Name:	640
+	Style:	641
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.639
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.640
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.641
+	S:	"Normal"
+)
+
+(BMkSym.642
+	Color:	643
+	BgColor:	644
+	Font:	645
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.643
+	Red:	0xe600
+	Green:	0xc00
+	Blue:	0xc00
+)
+
+(TClr.644
+	Name:	"Transparent"
+)
+
+(NFont.645
+	Family:	646
+	Name:	647
+	Style:	648
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.646
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.647
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.648
+	S:	"Normal"
+)
+
+(BMkSym.649
+	Color:	650
+	BgColor:	651
+	Font:	652
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.650
+	Red:	0xdc00
+	Green:	0x1300
+	Blue:	0x1300
+)
+
+(TClr.651
+	Name:	"Transparent"
+)
+
+(NFont.652
+	Family:	653
+	Name:	654
+	Style:	655
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.653
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.654
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.655
+	S:	"Normal"
+)
+
+(BMkSym.656
+	Color:	657
+	BgColor:	658
+	Font:	659
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.657
+	Red:	0xc800
+	Green:	0x1500
+	Blue:	0x1500
+)
+
+(TClr.658
+	Name:	"Transparent"
+)
+
+(NFont.659
+	Family:	660
+	Name:	661
+	Style:	662
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.660
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.661
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.662
+	S:	"Normal"
+)
+
+(BMkSym.663
+	Color:	664
+	BgColor:	665
+	Font:	666
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.664
+	Red:	0xbe00
+	Green:	0x1400
+	Blue:	0x1400
+)
+
+(TClr.665
+	Name:	"Transparent"
+)
+
+(NFont.666
+	Family:	667
+	Name:	668
+	Style:	669
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.667
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.668
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.669
+	S:	"Normal"
+)
+
+(BMkSym.670
+	Color:	671
+	BgColor:	672
+	Font:	673
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.671
+	Red:	0xb900
+	Green:	0x1200
+	Blue:	0x1200
+)
+
+(TClr.672
+	Name:	"Transparent"
+)
+
+(NFont.673
+	Family:	674
+	Name:	675
+	Style:	676
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.674
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.675
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.676
+	S:	"Normal"
+)
+
+(BMkSym.677
+	Color:	678
+	BgColor:	679
+	Font:	680
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.678
+	Red:	0xb400
+	Green:	0x1000
+	Blue:	0x1000
+)
+
+(TClr.679
+	Name:	"Transparent"
+)
+
+(NFont.680
+	Family:	681
+	Name:	682
+	Style:	683
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.681
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.682
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.683
+	S:	"Normal"
+)
+
+(BMkSym.684
+	Color:	685
+	BgColor:	686
+	Font:	687
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.685
+	Red:	0xb000
+	Green:	0xc00
+	Blue:	0xc00
+)
+
+(TClr.686
+	Name:	"Transparent"
+)
+
+(NFont.687
+	Family:	688
+	Name:	689
+	Style:	690
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.688
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.689
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.690
+	S:	"Normal"
+)
+
+(BMkSym.691
+	Color:	692
+	BgColor:	693
+	Font:	694
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.692
+	Red:	0xaa00
+	Green:	0x800
+	Blue:	0x800
+)
+
+(TClr.693
+	Name:	"Transparent"
+)
+
+(NFont.694
+	Family:	695
+	Name:	696
+	Style:	697
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.695
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.696
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.697
+	S:	"Normal"
+)
+
+(BMkSym.698
+	Color:	699
+	BgColor:	700
+	Font:	701
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.699
+	Red:	0xa000
+	Green:	0x400
+	Blue:	0x400
+)
+
+(TClr.700
+	Name:	"Transparent"
+)
+
+(NFont.701
+	Family:	702
+	Name:	703
+	Style:	704
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.702
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.703
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.704
+	S:	"Normal"
+)
+
+(BMkSym.705
+	Color:	706
+	BgColor:	707
+	Font:	708
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.706
+	Red:	0x9600
+	Green:	0x300
+	Blue:	0x300
+)
+
+(TClr.707
+	Name:	"Transparent"
+)
+
+(NFont.708
+	Family:	709
+	Name:	710
+	Style:	711
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.709
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.710
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.711
+	S:	"Normal"
+)
+
+(BMkSym.712
+	Color:	713
+	BgColor:	714
+	Font:	715
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.713
+	Name:	"Transparent"
+)
+
+(TClr.714
+	Name:	"Transparent"
+)
+
+(NFont.715
+	Family:	716
+	Name:	717
+	Style:	718
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.716
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.717
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.718
+	S:	"Normal"
+)
+
+(LClass.719
+	Label:	"-20"
+	MinNum:	-20.00000000000000
+	MaxNum:	-20.00000000000000
+	Precision:	-3
+)
+
+(LClass.720
+	Label:	"-19"
+	MinNum:	-19.00000000000000
+	MaxNum:	-19.00000000000000
+	Precision:	-3
+)
+
+(LClass.721
+	Label:	"-18"
+	MinNum:	-18.00000000000000
+	MaxNum:	-18.00000000000000
+	Precision:	-3
+)
+
+(LClass.722
+	Label:	"-17"
+	MinNum:	-17.00000000000000
+	MaxNum:	-17.00000000000000
+	Precision:	-3
+)
+
+(LClass.723
+	Label:	"-16"
+	MinNum:	-16.00000000000000
+	MaxNum:	-16.00000000000000
+	Precision:	-3
+)
+
+(LClass.724
+	Label:	"-15"
+	MinNum:	-15.00000000000000
+	MaxNum:	-15.00000000000000
+	Precision:	-3
+)
+
+(LClass.725
+	Label:	"-14"
+	MinNum:	-14.00000000000000
+	MaxNum:	-14.00000000000000
+	Precision:	-3
+)
+
+(LClass.726
+	Label:	"-13"
+	MinNum:	-13.00000000000000
+	MaxNum:	-13.00000000000000
+	Precision:	-3
+)
+
+(LClass.727
+	Label:	"-12"
+	MinNum:	-12.00000000000000
+	MaxNum:	-12.00000000000000
+	Precision:	-3
+)
+
+(LClass.728
+	Label:	"-11"
+	MinNum:	-11.00000000000000
+	MaxNum:	-11.00000000000000
+	Precision:	-3
+)
+
+(LClass.729
+	Label:	"-10"
+	MinNum:	-10.00000000000000
+	MaxNum:	-10.00000000000000
+	Precision:	-3
+)
+
+(LClass.730
+	Label:	"-9"
+	MinNum:	-9.00000000000000
+	MaxNum:	-9.00000000000000
+	Precision:	-3
+)
+
+(LClass.731
+	Label:	"-8"
+	MinNum:	-8.00000000000000
+	MaxNum:	-8.00000000000000
+	Precision:	-3
+)
+
+(LClass.732
+	Label:	"-7"
+	MinNum:	-7.00000000000000
+	MaxNum:	-7.00000000000000
+	Precision:	-3
+)
+
+(LClass.733
+	Label:	"-6"
+	MinNum:	-6.00000000000000
+	MaxNum:	-6.00000000000000
+	Precision:	-3
+)
+
+(LClass.734
+	Label:	"-5"
+	MinNum:	-5.00000000000000
+	MaxNum:	-5.00000000000000
+	Precision:	-3
+)
+
+(LClass.735
+	Label:	"-4"
+	MinNum:	-4.00000000000000
+	MaxNum:	-4.00000000000000
+	Precision:	-3
+)
+
+(LClass.736
+	Label:	"-3"
+	MinNum:	-3.00000000000000
+	MaxNum:	-3.00000000000000
+	Precision:	-3
+)
+
+(LClass.737
+	Label:	"-2"
+	MinNum:	-2.00000000000000
+	MaxNum:	-2.00000000000000
+	Precision:	-3
+)
+
+(LClass.738
+	Label:	"-1"
+	MinNum:	-1.00000000000000
+	MaxNum:	-1.00000000000000
+	Precision:	-3
+)
+
+(LClass.739
+	Label:	"0"
+	Precision:	-3
+)
+
+(LClass.740
+	Label:	"1"
+	MinNum:	1.00000000000000
+	MaxNum:	1.00000000000000
+	Precision:	-3
+)
+
+(LClass.741
+	Label:	"2"
+	MinNum:	2.00000000000000
+	MaxNum:	2.00000000000000
+	Precision:	-3
+)
+
+(LClass.742
+	Label:	"3"
+	MinNum:	3.00000000000000
+	MaxNum:	3.00000000000000
+	Precision:	-3
+)
+
+(LClass.743
+	Label:	"4"
+	MinNum:	4.00000000000000
+	MaxNum:	4.00000000000000
+	Precision:	-3
+)
+
+(LClass.744
+	Label:	"5"
+	MinNum:	5.00000000000000
+	MaxNum:	5.00000000000000
+	Precision:	-3
+)
+
+(LClass.745
+	Label:	"6"
+	MinNum:	6.00000000000000
+	MaxNum:	6.00000000000000
+	Precision:	-3
+)
+
+(LClass.746
+	Label:	"7"
+	MinNum:	7.00000000000000
+	MaxNum:	7.00000000000000
+	Precision:	-3
+)
+
+(LClass.747
+	Label:	"8"
+	MinNum:	8.00000000000000
+	MaxNum:	8.00000000000000
+	Precision:	-3
+)
+
+(LClass.748
+	Label:	"9"
+	MinNum:	9.00000000000000
+	MaxNum:	9.00000000000000
+	Precision:	-3
+)
+
+(LClass.749
+	Label:	"10"
+	MinNum:	10.00000000000000
+	MaxNum:	10.00000000000000
+	Precision:	-3
+)
+
+(LClass.750
+	Label:	"11"
+	MinNum:	11.00000000000000
+	MaxNum:	11.00000000000000
+	Precision:	-3
+)
+
+(LClass.751
+	Label:	"12"
+	MinNum:	12.00000000000000
+	MaxNum:	12.00000000000000
+	Precision:	-3
+)
+
+(LClass.752
+	Label:	"13"
+	MinNum:	13.00000000000000
+	MaxNum:	13.00000000000000
+	Precision:	-3
+)
+
+(LClass.753
+	Label:	"14"
+	MinNum:	14.00000000000000
+	MaxNum:	14.00000000000000
+	Precision:	-3
+)
+
+(LClass.754
+	Label:	"15"
+	MinNum:	15.00000000000000
+	MaxNum:	15.00000000000000
+	Precision:	-3
+)
+
+(LClass.755
+	Label:	"16"
+	MinNum:	16.00000000000000
+	MaxNum:	16.00000000000000
+	Precision:	-3
+)
+
+(LClass.756
+	Label:	"17"
+	MinNum:	17.00000000000000
+	MaxNum:	17.00000000000000
+	Precision:	-3
+)
+
+(LClass.757
+	Label:	"18"
+	MinNum:	18.00000000000000
+	MaxNum:	18.00000000000000
+	Precision:	-3
+)
+
+(LClass.758
+	Label:	"19"
+	MinNum:	19.00000000000000
+	MaxNum:	19.00000000000000
+	Precision:	-3
+)
+
+(LClass.759
+	Label:	"20"
+	MinNum:	20.00000000000000
+	MaxNum:	20.00000000000000
+	Precision:	-3
+)
+
+(LClass.760
+	Label:	"21"
+	MinNum:	21.00000000000000
+	MaxNum:	21.00000000000000
+	Precision:	-3
+)
+
+(LClass.761
+	Label:	"22"
+	MinNum:	22.00000000000000
+	MaxNum:	22.00000000000000
+	Precision:	-3
+)
+
+(LClass.762
+	Label:	"23"
+	MinNum:	23.00000000000000
+	MaxNum:	23.00000000000000
+	Precision:	-3
+)
+
+(LClass.763
+	Label:	"24"
+	MinNum:	24.00000000000000
+	MaxNum:	24.00000000000000
+	Precision:	-3
+)
+
+(LClass.764
+	Label:	"25"
+	MinNum:	25.00000000000000
+	MaxNum:	25.00000000000000
+	Precision:	-3
+)
+
+(LClass.765
+	Label:	"26"
+	MinNum:	26.00000000000000
+	MaxNum:	26.00000000000000
+	Precision:	-3
+)
+
+(LClass.766
+	Label:	"27"
+	MinNum:	27.00000000000000
+	MaxNum:	27.00000000000000
+	Precision:	-3
+)
+
+(LClass.767
+	Label:	"28"
+	MinNum:	28.00000000000000
+	MaxNum:	28.00000000000000
+	Precision:	-3
+)
+
+(LClass.768
+	Label:	"29"
+	MinNum:	29.00000000000000
+	MaxNum:	29.00000000000000
+	Precision:	-3
+)
+
+(LClass.769
+	Label:	"30"
+	MinNum:	30.00000000000000
+	MaxNum:	30.00000000000000
+	Precision:	-3
+)
+
+(LClass.770
+	Label:	"31"
+	MinNum:	31.00000000000000
+	MaxNum:	31.00000000000000
+	Precision:	-3
+)
+
+(LClass.771
+	Label:	"32"
+	MinNum:	32.00000000000000
+	MaxNum:	32.00000000000000
+	Precision:	-3
+)
+
+(LClass.772
+	Label:	"33"
+	MinNum:	33.00000000000000
+	MaxNum:	33.00000000000000
+	Precision:	-3
+)
+
+(LClass.773
+	Label:	"34"
+	MinNum:	34.00000000000000
+	MaxNum:	34.00000000000000
+	Precision:	-3
+)
+
+(LClass.774
+	Label:	"35"
+	MinNum:	35.00000000000000
+	MaxNum:	35.00000000000000
+	Precision:	-3
+)
+
+(LClass.775
+	Label:	"36"
+	MinNum:	36.00000000000000
+	MaxNum:	36.00000000000000
+	Precision:	-3
+)
+
+(LClass.776
+	Label:	"37"
+	MinNum:	37.00000000000000
+	MaxNum:	37.00000000000000
+	Precision:	-3
+)
+
+(LClass.777
+	Label:	"38"
+	MinNum:	38.00000000000000
+	MaxNum:	38.00000000000000
+	Precision:	-3
+)
+
+(LClass.778
+	Label:	"39"
+	MinNum:	39.00000000000000
+	MaxNum:	39.00000000000000
+	Precision:	-3
+)
+
+(LClass.779
+	Label:	"40"
+	MinNum:	40.00000000000000
+	MaxNum:	40.00000000000000
+	Precision:	-3
+)
+
+(LClass.780
+	Label:	"41"
+	MinNum:	41.00000000000000
+	MaxNum:	41.00000000000000
+	Precision:	-3
+)
+
+(LClass.781
+	Label:	"42"
+	MinNum:	42.00000000000000
+	MaxNum:	42.00000000000000
+	Precision:	-3
+)
+
+(LClass.782
+	Label:	"43"
+	MinNum:	43.00000000000000
+	MaxNum:	43.00000000000000
+	Precision:	-3
+)
+
+(LClass.783
+	Label:	"44"
+	MinNum:	44.00000000000000
+	MaxNum:	44.00000000000000
+	Precision:	-3
+)
+
+(LClass.784
+	Label:	"45"
+	MinNum:	45.00000000000000
+	MaxNum:	45.00000000000000
+	Precision:	-3
+)
+
+(LClass.785
+	Label:	"46"
+	MinNum:	46.00000000000000
+	MaxNum:	46.00000000000000
+	Precision:	-3
+)
+
+(LClass.786
+	Label:	"47"
+	MinNum:	47.00000000000000
+	MaxNum:	47.00000000000000
+	Precision:	-3
+)
+
+(LClass.787
+	Label:	"48"
+	MinNum:	48.00000000000000
+	MaxNum:	48.00000000000000
+	Precision:	-3
+)
+
+(LClass.788
+	Label:	"49"
+	MinNum:	49.00000000000000
+	MaxNum:	49.00000000000000
+	Precision:	-3
+)
+
+(LClass.789
+	Label:	"50"
+	MinNum:	50.00000000000000
+	MaxNum:	50.00000000000000
+	Precision:	-3
+)
+
+(LClass.790
+	Label:	"51"
+	MinNum:	51.00000000000000
+	MaxNum:	51.00000000000000
+	Precision:	-3
+)
+
+(LClass.791
+	Label:	"52"
+	MinNum:	52.00000000000000
+	MaxNum:	52.00000000000000
+	Precision:	-3
+)
+
+(LClass.792
+	Label:	"53"
+	MinNum:	53.00000000000000
+	MaxNum:	53.00000000000000
+	Precision:	-3
+)
+
+(LClass.793
+	Label:	"54"
+	MinNum:	54.00000000000000
+	MaxNum:	54.00000000000000
+	Precision:	-3
+)
+
+(LClass.794
+	Label:	"55"
+	MinNum:	55.00000000000000
+	MaxNum:	55.00000000000000
+	Precision:	-3
+)
+
+(LClass.795
+	Label:	"56"
+	MinNum:	56.00000000000000
+	MaxNum:	56.00000000000000
+	Precision:	-3
+)
+
+(LClass.796
+	Label:	"57"
+	MinNum:	57.00000000000000
+	MaxNum:	57.00000000000000
+	Precision:	-3
+)
+
+(LClass.797
+	Label:	"58"
+	MinNum:	58.00000000000000
+	MaxNum:	58.00000000000000
+	Precision:	-3
+)
+
+(LClass.798
+	Label:	"59"
+	MinNum:	59.00000000000000
+	MaxNum:	59.00000000000000
+	Precision:	-3
+)
+
+(LClass.799
+	Label:	"60"
+	MinNum:	60.00000000000000
+	MaxNum:	60.00000000000000
+	Precision:	-3
+)
+
+(LClass.800
+	Label:	"61"
+	MinNum:	61.00000000000000
+	MaxNum:	61.00000000000000
+	Precision:	-3
+)
+
+(LClass.801
+	Label:	"62"
+	MinNum:	62.00000000000000
+	MaxNum:	62.00000000000000
+	Precision:	-3
+)
+
+(LClass.802
+	Label:	"63"
+	MinNum:	63.00000000000000
+	MaxNum:	63.00000000000000
+	Precision:	-3
+)
+
+(LClass.803
+	Label:	"64"
+	MinNum:	64.00000000000000
+	MaxNum:	64.00000000000000
+	Precision:	-3
+)
+
+(LClass.804
+	Label:	"65"
+	MinNum:	65.00000000000000
+	MaxNum:	65.00000000000000
+	Precision:	-3
+)
+
+(LClass.805
+	Label:	"66"
+	MinNum:	66.00000000000000
+	MaxNum:	66.00000000000000
+	Precision:	-3
+)
+
+(LClass.806
+	Label:	"67"
+	MinNum:	67.00000000000000
+	MaxNum:	67.00000000000000
+	Precision:	-3
+)
+
+(LClass.807
+	Label:	"68"
+	MinNum:	68.00000000000000
+	MaxNum:	68.00000000000000
+	Precision:	-3
+)
+
+(LClass.808
+	Label:	"69"
+	MinNum:	69.00000000000000
+	MaxNum:	69.00000000000000
+	Precision:	-3
+)
+
+(LClass.809
+	Label:	"70"
+	MinNum:	70.00000000000000
+	MaxNum:	70.00000000000000
+	Precision:	-3
+)
+
+(LClass.810
+	Label:	"71"
+	MinNum:	71.00000000000000
+	MaxNum:	71.00000000000000
+	Precision:	-3
+)
+
+(LClass.811
+	Label:	"72"
+	MinNum:	72.00000000000000
+	MaxNum:	72.00000000000000
+	Precision:	-3
+)
+
+(LClass.812
+	Label:	"73"
+	MinNum:	73.00000000000000
+	MaxNum:	73.00000000000000
+	Precision:	-3
+)
+
+(LClass.813
+	Label:	"74"
+	MinNum:	74.00000000000000
+	MaxNum:	74.00000000000000
+	Precision:	-3
+)
+
+(LClass.814
+	Label:	"75"
+	MinNum:	75.00000000000000
+	MaxNum:	75.00000000000000
+	Precision:	-3
+)
+
+(LClass.815
+	Label:	"76"
+	MinNum:	76.00000000000000
+	MaxNum:	76.00000000000000
+	Precision:	-3
+)
+
+(LClass.816
+	Label:	"77"
+	MinNum:	77.00000000000000
+	MaxNum:	77.00000000000000
+	Precision:	-3
+)
+
+(LClass.817
+	Label:	"78"
+	MinNum:	78.00000000000000
+	MaxNum:	78.00000000000000
+	Precision:	-3
+)
+
+(LClass.818
+	Label:	"79"
+	MinNum:	79.00000000000000
+	MaxNum:	79.00000000000000
+	Precision:	-3
+)
+
+(LClass.819
+	Label:	"80"
+	MinNum:	80.00000000000000
+	MaxNum:	80.00000000000000
+	Precision:	-3
+)
+
+(LClass.820
+	IsNoData:	1
+	Label:	"No Data"
+	MaxNum:	-1.00000000000000
+	Precision:	-3
+)
+
+(BMkSym.821
+	Color:	822
+	BgColor:	823
+	Font:	824
+	Size:	8.00000000000000
+	Pattern:	35
+	Angle:	360.00000000000000
+)
+
+(TClr.822
+	Name:	"Transparent"
+)
+
+(TClr.823
+	Name:	"Transparent"
+)
+
+(NFont.824
+	Family:	825
+	Name:	826
+	Style:	827
+	Weight:	1
+	Wideness:	1
+)
+
+(AVStr.825
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.826
+	S:	"ESRI Geometric Symbols"
+)
+
+(AVStr.827
+	S:	"Normal"
+)
+
+(NameDict.828
+)
+
+(NameDict.829
+)
+

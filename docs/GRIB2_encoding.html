@@ -1,0 +1,2808 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"><html><head><title>NWS Data Management</title>
+
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"></head>
+
+<body>
+  <table cellspacing="0" cellpadding="0" border="0" width="100%" background="GRIB2_encoding_files/topbanner.jpg">
+
+    <tbody><tr> 
+
+      <td align="right" height="19"> <a href="#contents"><img src="GRIB2_encoding_files/skipgraphic.gif" alt="Skip Navigation Links" width="1" height="1" border="0"></a> 
+
+        <a href="http://www.nws.noaa.gov/"><span class="nwslink">weather.gov</span></a>&nbsp;</td>
+
+    </tr>
+
+  </tbody></table>
+
+  <table cellspacing="0" cellpadding="0" border="0" width="100%">
+
+    <tbody><tr> 
+
+      <td rowspan="2"> <a href="http://www.noaa.gov/"><img src="GRIB2_encoding_files/noaaleft.jpg" alt="NOAA logo-Select to go to the NOAA homepage" width="85" height="78" border="0"></a></td>
+
+      <td align="left"><img src="GRIB2_encoding_files/noaa_title.jpg" alt="National Oceanic Atmospheric Administration" width="500" height="20" border="0"></td>
+
+      <td rowspan="2" width="100%" background="GRIB2_encoding_files/wfo_bkgrnd.jpg">&nbsp;</td>
+
+      <td rowspan="2" align="right"> <a href="http://www.nws.noaa.gov/"><img src="GRIB2_encoding_files/nwsright.jpg" alt="Select to go to the NWS homepage" width="85" height="78" border="0"></a></td>
+
+    </tr>
+
+    <tr> 
+
+      
+    <td><a href="http://www.nws.noaa.gov/datamgmt/"><img src="GRIB2_encoding_files/Data_Management.jpg" width="500" height="58" border="0"></a></td>
+
+    </tr>
+
+  </tbody></table>
+
+  <table cellspacing="0" cellpadding="0" border="0" background="GRIB2_encoding_files/navbkgrnd.gif" width="100%">
+
+    <tbody><tr> 
+
+      <td align="left" valign="top" width="94"><img src="GRIB2_encoding_files/navbarleft.jpg" alt="" width="94" height="23" border="0"></td>
+
+      <td class="nav" width="15%" align="center" id="menuitem" nowrap="nowrap"><a href="http://www.nws.noaa.gov/sitemap.html">Site 
+
+        Map</a></td>
+
+      <td class="nav" width="15%" align="right" id="menuitem"><a href="http://www.nws.noaa.gov/pa/">News</a></td>
+
+      <td class="nav" width="20%" align="right" id="menuitem"><a href="http://www.nws.noaa.gov/organization.html">Organization</a></td>
+
+      <td class="yellow" align="right" width="20%"><label for="search">Search</label> 
+
+        &nbsp;</td>
+
+      <td align="left" class="searchinput" width="20%" nowrap="nowrap"> <input type="hidden" name="parsed" value="true"> 
+
+        <input type="hidden" name="rn" value="3"> <input type="hidden" name="in0" value="domain"> 
+
+        <input type="hidden" name="dom0" value="nws.noaa.gov, weather.gov, wrh.noaa.gov, srh.noaa.gov, crh.noaa.gov, prh.noaa.gov, polar.wwb.noaa.gov, arh.noaa.gov, alaska.net/~nwsar, erh.noaa.gov, ncep.noaa.gov, spc.noaa.gov, nhc.noaa.gov, sec.noaa.gov, aviationweather.gov, aviationweather.noaa.gov, weather.noaa.gov, roc.noaa.gov, nohrsc.nws.gov, nwstc.noaa.gov, wdtb.noaa.gov, npmoc.navy.mil, ndbc.noaa.gov"> 
+
+        <input type="text" name="mw0" value="Enter Search Here" id="search" size="20" maxlength="256"> 
+
+        &nbsp; <input type="submit" name="Go2" value="Go"> </td>
+
+      <td width="10%">&nbsp;</td>
+
+      
+    <td align="right" valign="bottom" width="24"><img src="GRIB2_encoding_files/navbarendcap.jpg" alt="" width="24" height="23" border="0"></td>
+
+    </tr>
+
+  </tbody></table>
+
+
+ <center>
+      <h1><font color="#0000cc">GRIB2 Encoding Details for the National Weather 
+        Service Digital Forecast Database</font></h1>
+		</center>
+      <hr>
+      <h2 align="left"><strong>Background</strong></h2>
+        
+The National Weather Service (NWS) is creating a National Digital Forecast&nbsp;
+Database (NDFD) which will contain gridded forecasts of several weather&nbsp;
+elements.&nbsp; In general, the weather parameters in the NDFD will be
+ground-based, sensible weather elements.&nbsp; The forecast grids&nbsp;
+that comprise the NDFD will come from multiple sources, including the NWS'
+Weather Forecast Offices&nbsp;&nbsp; (WFO) and the National Centers for
+Environmental&nbsp; Prediction (NCEP).&nbsp; The World Meteorological Organization
+(WMO) has&nbsp; adopted Edition 2 of the GRIB code as a standard for sharing
+<u>GRI</u>
+dded <u>B</u> inary data.&nbsp; GRIB, Edition 2 (GRIB2) will be involved&nbsp;
+in the NDFD in two ways.&nbsp; First, GRIB2 will be the code form used
+to&nbsp; transmit gridded forecasts from contributing&nbsp; offices to
+the NDFD.&nbsp; Second, GRIB2 will be one of the primary forms used to
+transmit the NDFD grids to NWS customers and partners.
+<p>The purpose of this document is to describe, in detail, the techniques
+that will be used to encode NWS forecasts into NDFD GRIB2 bulletins.&nbsp;
+When dealing with a code as general and as flexible as GRIB2, one often
+encounters multiple, plausible ways to accomplish the encoding task.&nbsp;
+It is hoped that this document will clarify the many decisions made during
+the creation of the NDFD.
+</p><h2>
+References</h2>
+This document will assume that the reader has access to and a working knowledge
+of the WMO publication FM 92-XII GRIB <i>General Regularly-distributed
+Information in Binary Form.&nbsp; </i><a href="http://www.nws.noaa.gov/tdl/iwt/grib2/frameset_grib2.htm">This
+link</a> should provide access to a version that has been formatted for
+web access.&nbsp; Additionally, the following links provide access to several
+documents that describe <a href="http://www.nws.noaa.gov/tdl/iwt/grib2/encoder.htm">encode</a>/<a href="http://www.nws.noaa.gov/tdl/iwt/grib2/decoder.htm">
+decode</a> routines developed by the NWS' Meteorological Development Laboratory
+(MDL).&nbsp; These documents provide valuable commentary on some of the
+fields used in the GRIB2 code form.
+<br>The NWS has created an <a href="http://www.weather.gov/ndfd">NDFD information
+web page</a>.&nbsp; There you will find the latest news regarding NDFD
+plans and recent developments.&nbsp; In addition, MDL developers have written
+software that may be downloaded and used for accessing and decoding NDFD
+GRIB2 files from the NWS Telecommunications Gateway.&nbsp; To obtain the
+latest version of this software, follow <a href="http://www.nws.noaa.gov/mdl/NDFD_grib2Decoder">this
+link</a>.
+<h2>
+File, and Bulletin Structure</h2>
+A single file will contain multiple GRIB2 bulletins.&nbsp; One file will
+contain all forecast projections for a given weather element covering a
+specific geographic region.&nbsp; There will be NDFD grids available for
+16 different CONUS sub-sectors as well as for the CONUS itself.&nbsp; See
+this <a href="http://www.nws.noaa.gov/datamgmt/doc/ndfdindex.html">link</a>
+for a detailed list of geographic sectors, filenames, and WMO header information
+with regards to NDFD data.
+<p>Every NDFD GRIB file begins with a flag field separator of the format:
+</p><p>****nnnnnnnnnn****\lf
+</p><p>where the "nnnnnnnnnn" is the size in bytes of the file, (minus the
+separator),&nbsp;&nbsp; right justified with leading zeroes, and with a
+trailing "\lf".&nbsp; The "\lf" character represents a single octet with
+the decimal value of 10.&nbsp; The size of the Flag field separator is
+19 bytes.
+</p><p>&nbsp;&nbsp;&nbsp; Following the flag field separator is a WMO super
+header.&nbsp; Check&nbsp; this&nbsp; <a href="http://www.nws.noaa.gov/datamgmt/doc/ndfdref.html">link</a>&nbsp;&nbsp;
+above&nbsp; for specific format of NDFD WMO headers.&nbsp; The WMO super
+header&nbsp; is 21&nbsp; bytes long, the trailing "\cr\cr\lf" inclusive.&nbsp;
+The "\cr" character represents a single octet with the decimal value of
+13.&nbsp; Immediately&nbsp; following the super header is another flag
+field separator for the first GRIB2 bulletin in the file.&nbsp; It contains
+the size of the bulletin to follow.
+</p><p>The bulletin itself begins with a WMO header.&nbsp; Again, refer to
+the link above to get detailed information regarding the format of&nbsp;
+the header.&nbsp; The header contains the valid time of the GRIB2 bulletin.&nbsp;
+The WMO&nbsp; header is also 21 bytes long, the trailing "\cr\cr\lf" inclusive.&nbsp;
+Following the header is the packed GRIB2 grid.&nbsp; It begins with the
+ASCII text "GRIB"&nbsp; and ends with the ASCII text "7777".&nbsp; The
+packed data contains all the GRIB2 sections for that grid, as well as the
+packed grid.
+<br>Here's an example of the file format (individual components are bracketed
+with "&lt; &gt;"):
+</p><p><tt><font size="+1">&lt;file flag field separator\lf&gt;</font></tt>
+<br><tt><font size="+1">&lt;WMO super header\cr\cr\lf&gt;</font></tt>
+<br><tt><font size="+1">&lt;bulletin 1 flag field separator\lf&gt;</font></tt>
+<br><tt><font size="+1">&lt;WMO header 1 for bulletin\cr\cr\lf&gt;</font></tt>
+<br><tt><font size="+1">&lt;"GRIB"packed data7777&gt;&lt;bulletin 2 flag field
+separator\lf&gt;</font></tt>
+<br><tt><font size="+1">&lt;WMO header 2 for bulletin\cr\cr\lf&gt;</font></tt>
+<br><tt><font size="+1">&lt;"GRIB"packed data7777&gt;&lt;bulletin 3 flag field
+separator\lf&gt;</font></tt>
+<br><tt><font size="+1">.</font></tt>
+<br><tt><font size="+1">.</font></tt>
+<br><tt><font size="+1">.</font></tt>
+<br><tt><font size="+1">&lt;WMO header nn for bulletin\cr\cr\lf&gt;</font></tt>
+<br><tt><font size="+1">&lt;"GRIB"packed data7777&gt;</font></tt>
+</p><h2>
+Octet Contents</h2>
+The sections that follow list the contents of the GRIB2 bulletin, octet
+by octet.&nbsp; When contents are described as "Missing," all bits are
+set to "1" in accordance with regulation 92.1.4.&nbsp; When contents are
+described by a number, that number will be stored in the apprpriate octet.
+<h2>
+Section 0--Indicator Section</h2>
+
+<center><br><table border="1" width="100%">
+<caption>
+<center></center></caption><tbody>
+</tbody>
+
+
+<tbody><tr>
+<td width="10%"><b>Octet No.</b></td>
+
+<td><b>Contents</b></td>
+</tr>
+
+<tr>
+<td>1-4</td>
+
+<td>"GRIB"</td>
+</tr>
+
+<tr>
+<td>5-6</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>7</td>
+
+<td>0 - for Meteorological Products, 10 - for Oceanographic Products</td>
+</tr>
+
+<tr>
+<td>8</td>
+
+<td>2</td>
+</tr>
+
+<tr>
+<td>9-16</td>
+
+<td>Total length of GRIB message in octets (including Section 0)</td>
+</tr>
+</tbody></table></center>
+
+<h2>
+Section 1--Identification Section</h2>
+In Section 1, octets 13-19 contain the reference time for the GRIB bulletin.&nbsp;
+The NDFD is currently produced once an hour.&nbsp; The reference time in
+Section 1 represents the day/hour of the current NDFD production cycle.
+<br>&nbsp;
+<center><br><table border="1" width="100%">
+<caption>
+<center></center></caption><tbody>
+</tbody>
+
+
+<tbody><tr>
+<td width="10%"><b>Octet No.</b></td>
+
+<td><b>Contents</b></td>
+</tr>
+
+<tr>
+<td>1-4</td>
+
+<td>21</td>
+</tr>
+
+<tr>
+<td>5</td>
+
+<td>1</td>
+</tr>
+
+<tr>
+<td>6-7</td>
+
+<td>8</td>
+</tr>
+
+<tr>
+<td>8-9</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>10</td>
+
+<td>1</td>
+</tr>
+
+<tr>
+<td>11</td>
+
+<td>0 - Value will be used to designate the version number of the GRIB2-encoding
+software that produced the bulletin.&nbsp; When changes to this published
+format occur, this version number will be updated.&nbsp;</td>
+</tr>
+
+<tr>
+<td>12</td>
+
+<td>1</td>
+</tr>
+
+<tr>
+<td>13-14</td>
+
+<td>Year (4 digits)</td>
+</tr>
+
+<tr>
+<td>15</td>
+
+<td>Month</td>
+</tr>
+
+<tr>
+<td>16</td>
+
+<td>Day</td>
+</tr>
+
+<tr>
+<td>17</td>
+
+<td>Hour</td>
+</tr>
+
+<tr>
+<td>18</td>
+
+<td>Minute</td>
+</tr>
+
+<tr>
+<td>19</td>
+
+<td>Second</td>
+</tr>
+
+<tr>
+<td>20</td>
+
+<td>0 or 1</td>
+</tr>
+
+<tr>
+<td>21</td>
+
+<td>1</td>
+</tr>
+</tbody></table></center>
+
+<h2>
+Section 2--Local Use Section</h2>
+Certain weather elements have provided particular challenges in encoding&nbsp;&nbsp;
+them in GRIB2.&nbsp; Using Section 2 to encode various forms of metadata
+provides one solution.&nbsp; For the NDFD element Weather, ("Wx"), MDL
+GRIB2 encoding software uses the Local Use section for packing metadata
+unique to each grid.&nbsp; At this time, for parameters other than Wx,
+the Local Use section is omitted.
+<p>Grids of Wx are stored as two distinct entities.&nbsp; The&nbsp;&nbsp;
+first entity is a grid&nbsp; of small integer values that will generally&nbsp;
+store very compactly in Section&nbsp; 6.&nbsp; The second entity is a series&nbsp;
+of null-terminated strings of ASCII&nbsp; characters called Weather Keys.&nbsp;&nbsp;&nbsp;
+The integers on the weather grid serve&nbsp; as indices, each pointing
+to&nbsp;&nbsp; one of the Weather Keys in the series.&nbsp;&nbsp;&nbsp;
+Each Weather Key is comprised&nbsp; of one or more weather subkeys, separated
+by&nbsp; a caret "^".
+</p><p>Essentially, the metadata packed in the Local Use Section for the parameter
+Wx is a lookup table.&nbsp; The ASCII characters are loaded, one per octet,
+and then compressed using the Simple Packing Scheme for integers defined
+for Section 5.&nbsp; The Simple Packing Scheme treats the set of Weather
+Keys as an integer array.&nbsp; Each integer in the array is a decimal
+representation that corresponds to an ASCII character.&nbsp; For instance,
+the integer 65 translates to the ASCII character "A".&nbsp; The null character
+is represented by the integer 0, so that whenever a 0 is encountered in
+the array, it marks the ending of a unique Weather Key.&nbsp; The tables
+that follow show the specific contents of the Weather Keys and subkeys.
+<br>&nbsp;
+</p><center><br><table border="1" width="100%">
+<caption>
+<center></center></caption><tbody>
+</tbody>
+
+
+<tbody><tr>
+<td width="10%"><b>Octet No.</b></td>
+
+<td><b>Contents</b></td>
+</tr>
+
+<tr>
+<td>1-4</td>
+
+<td>Length of section in octets (nn)</td>
+</tr>
+
+<tr>
+<td>5</td>
+
+<td>2</td>
+</tr>
+
+<tr>
+<td>6</td>
+
+<td>Total number of characters comprising the series of Weather Keys&nbsp;</td>
+</tr>
+
+<tr>
+<td valign="top">7</td>
+
+<td valign="top">0</td>
+</tr>
+
+<tr>
+<td valign="top">8-nn</td>
+
+<td valign="top">The Weather Keys needed to describe the weather on the grid,
+packed using the Simple Packing scheme</td>
+</tr>
+</tbody></table></center>
+
+<h3>
+Weather Keys and Subkeys</h3>
+
+<div class="1Heading">A weather subkey has five parts, seperated by colons
+":".&nbsp; These parts include</div>
+
+<blockquote>
+<li class="1Heading">
+one weather type code.&nbsp; See Weather Type Codes, below.</li>
+</blockquote>
+
+<div class="1Heading">
+<blockquote>
+<li>
+one coverage/probability code.&nbsp; See Coverage/probability Codes, below.</li>
+</blockquote>
+</div>
+
+<div class="1Heading">
+<blockquote>
+<li>
+one intensity code.&nbsp; See Intensity Codes, below.</li>
+</blockquote>
+</div>
+
+<div class="1Heading">
+<blockquote>
+<li>
+one visibility code.&nbsp; See Visibility Codes, below.</li>
+</blockquote>
+</div>
+
+<div class="1Heading">
+<ul>
+<li>
+zero or more attribute codes, seperated by commas ",".&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+See Attribute Codes, below.</li>
+</ul>
+
+<h2>
+Weather Type Codes</h2>
+
+<center><br><table border="1" cols="4" width="100%">
+<caption>
+<center></center></caption><tbody>
+</tbody>
+
+
+<tbody><tr>
+<td><b>Code</b></td>
+
+<td><b>Meaning</b></td>
+
+<td><b>Code</b></td>
+
+<td><b>Meaning</b></td>
+</tr>
+
+<tr>
+<td>&lt;NoWx&gt;</td>
+
+<td>No Weather</td>
+
+<td>T</td>
+
+<td>Thunder</td>
+</tr>
+
+<tr>
+<td>A</td>
+
+<td>Hail</td>
+
+<td>R</td>
+
+<td>Rain</td>
+</tr>
+
+<tr>
+<td>RW</td>
+
+<td>Rain Showers</td>
+
+<td>L</td>
+
+<td>Drizzle</td>
+</tr>
+
+<tr>
+<td>ZR</td>
+
+<td>Freezing Rain</td>
+
+<td>ZL</td>
+
+<td>Freezing Drizzle</td>
+</tr>
+
+<tr>
+<td>S</td>
+
+<td>Snow</td>
+
+<td>SW</td>
+
+<td>Snow Showers</td>
+</tr>
+
+<tr>
+<td>IP</td>
+
+<td>Ice Pellets (sleet)</td>
+
+<td>F</td>
+
+<td>Fog</td>
+</tr>
+
+<tr>
+<td>H</td>
+
+<td>Haze</td>
+
+<td>BS</td>
+
+<td>Blowing Snow</td>
+</tr>
+
+<tr>
+<td>K</td>
+
+<td>Smoke</td>
+
+<td>BD</td>
+
+<td>Blowing Dust</td>
+</tr>
+
+<tr>
+<td>FR</td>
+
+<td>Frost</td>
+
+<td>BN</td>
+
+<td>Blowing Sand</td>
+</tr>
+
+<tr>
+<td>IF</td>
+
+<td>Ice Fog</td>
+
+<td>IC</td>
+
+<td>Ice Crystals</td>
+</tr>
+
+<tr>
+<td>ZF</td>
+
+<td>Freezing Fog</td>
+
+<td>ZY</td>
+
+<td>Freezing Spray</td>
+</tr>
+
+<tr>
+<td>VA</td>
+
+<td>Volcanic Ash</td>
+
+<td>WP</td>
+
+<td>Water Spouts</td>
+</tr>
+</tbody></table></center>
+
+<h2>
+Coverage/probability Codes</h2>
+
+<center><br><table border="1" cols="4" width="100%">
+<caption>
+<center></center></caption><tbody>
+</tbody>
+
+
+<tbody><tr>
+<td><b>Code</b></td>
+
+<td><b>Meaning</b></td>
+
+<td><b>Code</b></td>
+
+<td><b>Meaning</b></td>
+</tr>
+
+<tr>
+<td>&lt;NoCov&gt;</td>
+
+<td>No Coverage/probability</td>
+
+<td>Iso</td>
+
+<td>Isolated</td>
+</tr>
+
+<tr>
+<td>Sct</td>
+
+<td>Scattered</td>
+
+<td>Num</td>
+
+<td>Numerous</td>
+</tr>
+
+<tr>
+<td>Wide</td>
+
+<td>Widespread</td>
+
+<td>Ocnl</td>
+
+<td>Occasional</td>
+</tr>
+
+<tr>
+<td>SChc</td>
+
+<td>Slight Chance</td>
+
+<td>Chc</td>
+
+<td>Chance</td>
+</tr>
+
+<tr>
+<td>Lkly</td>
+
+<td>Likely</td>
+
+<td>Def</td>
+
+<td>Definite</td>
+</tr>
+
+<tr>
+<td>Patchy</td>
+
+<td>Patchy</td>
+
+<td>Areas</td>
+
+<td>Areas of</td>
+</tr>
+</tbody></table></center>
+
+<h2>
+Intensity Codes</h2>
+
+<center><br><table border="1" cols="4" width="100%">
+<caption>
+<center></center></caption><tbody>
+</tbody>
+
+
+<tbody><tr>
+<td><b>Code</b></td>
+
+<td><b>Meaning</b></td>
+
+<td><b>Code</b></td>
+
+<td><b>Meaning</b></td>
+</tr>
+
+<tr>
+<td>&lt;NoInten&gt;</td>
+
+<td>No Intensity</td>
+
+<td>--</td>
+
+<td>Very Light</td>
+</tr>
+
+<tr>
+<td>-</td>
+
+<td>Light</td>
+
+<td>m</td>
+
+<td>Moderate</td>
+</tr>
+
+<tr>
+<td>+</td>
+
+<td>Heavy</td>
+
+<td></td>
+
+<td></td>
+</tr>
+</tbody></table></center>
+
+<h2>
+Visibility Codes</h2>
+The following visibility codes may appear in WFO-generated GRIB2 bulletins.&nbsp;
+The units are statute miles:&nbsp; &lt;NoVis&gt;, 0SM, 1/4SM, 1/2SM, 3/4SM,
+1SM, 11/2SM, 2SM, 21/2SM, 3SM, 4SM, 5SM, 6SM, P6SM.
+<h2>
+Attribute Codes</h2>
+
+<center><br><table border="1" cols="4" width="100%">
+<caption>
+<center></center></caption><tbody>
+</tbody>
+
+
+<tbody><tr>
+<td><b>Code</b></td>
+
+<td><b>Meaning</b></td>
+
+<td><b>Code</b></td>
+
+<td><b>Meaning</b></td>
+</tr>
+
+<tr>
+<td>FL</td>
+
+<td>Frequent Lightning</td>
+
+<td>GW</td>
+
+<td>Gusty Winds</td>
+</tr>
+
+<tr>
+<td>HvyRn</td>
+
+<td>Heavy Rain</td>
+
+<td>DmgW</td>
+
+<td>Damaging Winds</td>
+</tr>
+
+<tr>
+<td>SmA</td>
+
+<td>Small Hail</td>
+
+<td>LgA</td>
+
+<td>Large Hail</td>
+</tr>
+
+<tr>
+<td>OLA</td>
+
+<td>Outlying Areas</td>
+
+<td>OBO</td>
+
+<td>on Bridges and Overpasses</td>
+</tr>
+</tbody></table></center>
+</div>
+
+<h3 class="1Heading">
+Size Limitations for NDFD National Grids</h3>
+
+<div class="1Heading">There is no (practical) limit to the number of weather
+keys, subkeys, etc.&nbsp; For NDFD grids that are national mosaicks of
+WFO-generated grids, the following limitations will be applied:</div>
+
+<center><br><table border="1" cols="2" width="100%">
+<caption>
+<center></center></caption><tbody>
+</tbody>
+
+
+<tbody><tr>
+<td><b>Item</b></td>
+
+<td><b>Maximum number that will be present</b></td>
+</tr>
+
+<tr>
+<td>Weather Attributes in a Weather Subkey</td>
+
+<td>5</td>
+</tr>
+
+<tr>
+<td>Weather Subkeys in a Weather Key</td>
+
+<td>5</td>
+</tr>
+</tbody></table></center>
+
+<h2 class="1Heading">
+Weather Key Examples</h2>
+
+<br><table border="1" cols="2" width="100%">
+<caption></caption><tbody>
+</tbody>
+
+<tbody><tr>
+<td><b>Sample Weather Key</b></td>
+
+<td><b>Meaning</b></td>
+</tr>
+
+<tr>
+<td><tt>Sct:SW:-:&lt;NoVis&gt;:</tt></td>
+
+<td>Scattered snow showers</td>
+</tr>
+
+<tr>
+<td><tt>Ocnl:R:-:&lt;NoVis&gt;:^S:Ocnl:-:&lt;NoVis&gt;:^</tt>
+<br><tt>SChc:ZR:-:&lt;NoVis&gt;:</tt></td>
+
+<td>Occasional rain and snow, with a slight chance of freezing rain</td>
+</tr>
+
+<tr>
+<td><tt>Wide:FR:-:&lt;NoVis&gt;:OLA</tt></td>
+
+<td>Widespread frost in the outlying areas</td>
+</tr>
+
+<tr>
+<td><tt>&lt;NoWx&gt;:&lt;NoCov&gt;:&lt;NoInten&gt;:&lt;NoVis&gt;:</tt></td>
+
+<td>No weather</td>
+</tr>
+
+<tr>
+<td><tt>Sct:RW:-:&lt;NoVis&gt;:^T:Iso:m:&lt;NoVis&gt;:</tt></td>
+
+<td>Scattered showers with isolated thunderstorms</td>
+</tr>
+
+<tr>
+<td><tt>Sct:T:+:&lt;NoVis&gt;:DmgW,LgA</tt></td>
+
+<td>Scattered severe thunderstorms with damaging winds and large hail</td>
+</tr>
+</tbody></table>
+
+<h2>
+Section 3--Grid Definition Section</h2>
+Section 3 will vary depending upon the&nbsp; map projection the grid is&nbsp;
+defined.&nbsp; This document will be updated as these grid definitions
+become better defined.&nbsp; Latitude and longitude values are in 10<tt><sup>
+-6</sup></tt> degrees.
+<h3>
+Lambert Conformal</h3>
+
+<center><br><table border="1" width="100%">
+<caption>
+<center></center></caption><tbody>
+</tbody>
+
+
+<tbody><tr>
+<td width="10%"><b>Octet No.</b></td>
+
+<td><b>Contents</b></td>
+</tr>
+
+<tr>
+<td>1-4</td>
+
+<td>Length of section in octets (nn)</td>
+</tr>
+
+<tr>
+<td>5</td>
+
+<td>3</td>
+</tr>
+
+<tr>
+<td>6</td>
+
+<td>0</td>
+</tr>
+
+<tr>
+<td>7-10</td>
+
+<td>Number of data points</td>
+</tr>
+
+<tr>
+<td>11</td>
+
+<td>0</td>
+</tr>
+
+<tr>
+<td>12</td>
+
+<td>0</td>
+</tr>
+
+<tr>
+<td>13-14</td>
+
+<td>30 - template number</td>
+</tr>
+
+<tr>
+<td>15</td>
+
+<td>1</td>
+</tr>
+
+<tr>
+<td>16</td>
+
+<td>0</td>
+</tr>
+
+<tr>
+<td>17-20</td>
+
+<td>6371200 - Radius of the earth</td>
+</tr>
+
+<tr>
+<td>21</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>22-25</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>26</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>27-30</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>31-34</td>
+
+<td>Nx - number of points along the X-axis</td>
+</tr>
+
+<tr>
+<td>35-38</td>
+
+<td>Ny - number of points along the Y-axis</td>
+</tr>
+
+<tr>
+<td>39-42</td>
+
+<td>La1 - latitude of first grid point</td>
+</tr>
+
+<tr>
+<td>43-46</td>
+
+<td>Lo1 - longitude of first grid point</td>
+</tr>
+
+<tr>
+<td>47</td>
+
+<td>0</td>
+</tr>
+
+<tr>
+<td>48-51</td>
+
+<td>25,000,000 - Latitude where grid spacing is defined</td>
+</tr>
+
+<tr>
+<td>52-55</td>
+
+<td>265,000,000 - Orientation longitude</td>
+</tr>
+
+<tr>
+<td>56-59</td>
+
+<td>5,079,406 - Dx, X-direction grid length</td>
+</tr>
+
+<tr>
+<td>60-63</td>
+
+<td>5,079,406&nbsp; - Dy, Y-direction grid length&nbsp;</td>
+</tr>
+
+<tr>
+<td>64</td>
+
+<td>0</td>
+</tr>
+
+<tr>
+<td>65</td>
+
+<td>80 - Scanning Mode</td>
+</tr>
+
+<tr>
+<td>66-69</td>
+
+<td>25,000,000 - Latin1, first secant latitude</td>
+</tr>
+
+<tr>
+<td>70-73</td>
+
+<td>25,000,000 - Latin2, second secant latitude</td>
+</tr>
+
+<tr>
+<td>74-77</td>
+
+<td>-90,000,000 - Latitude of southern pole&nbsp;</td>
+</tr>
+
+<tr>
+<td>78-81</td>
+
+<td>0 - Longitude of southern pole</td>
+</tr>
+</tbody></table></center>
+
+<h3>
+Polar Stereographic</h3>
+
+<br><table border="1" width="100%">
+<caption></caption><tbody>
+</tbody>
+
+<tbody><tr>
+<td width="10%"><b>Octet No.</b></td>
+
+<td><b>Contents</b></td>
+</tr>
+
+<tr>
+<td>1-4</td>
+
+<td>Length of section in octets (nn)</td>
+</tr>
+
+<tr>
+<td>5</td>
+
+<td>3</td>
+</tr>
+
+<tr>
+<td>6</td>
+
+<td>0</td>
+</tr>
+
+<tr>
+<td>7-10</td>
+
+<td>Number of data points</td>
+</tr>
+
+<tr>
+<td>11</td>
+
+<td>0</td>
+</tr>
+
+<tr>
+<td>12</td>
+
+<td>0</td>
+</tr>
+
+<tr>
+<td>13-14</td>
+
+<td>20 - template number</td>
+</tr>
+
+<tr>
+<td>15</td>
+
+<td>1</td>
+</tr>
+
+<tr>
+<td>16</td>
+
+<td>0</td>
+</tr>
+
+<tr>
+<td>17-20</td>
+
+<td>6371200 - Radius of the earth</td>
+</tr>
+
+<tr>
+<td>21</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>22-25</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>26</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>27-30</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>31-34</td>
+
+<td>Nx - number of points along the X-axis</td>
+</tr>
+
+<tr>
+<td>35-38</td>
+
+<td>Ny - number of points along the Y-axis</td>
+</tr>
+
+<tr>
+<td>39-42</td>
+
+<td>La1 - latitude of first grid point</td>
+</tr>
+
+<tr>
+<td>43-46</td>
+
+<td>Lo1 - longitude of first grid point</td>
+</tr>
+
+<tr>
+<td>47</td>
+
+<td>0</td>
+</tr>
+
+<tr>
+<td>48-51</td>
+
+<td>Lat where mesh length is true</td>
+</tr>
+
+<tr>
+<td>52-55</td>
+
+<td>Orientation longitude of grid</td>
+</tr>
+
+<tr>
+<td>56-59</td>
+
+<td>Dx</td>
+</tr>
+
+<tr>
+<td>60-63</td>
+
+<td>Dy</td>
+</tr>
+
+<tr>
+<td>64</td>
+
+<td>0 - Projection center flag</td>
+</tr>
+
+<tr>
+<td>65</td>
+
+<td>80 - Scanning mode</td>
+</tr>
+</tbody></table>
+
+<h3>
+Mercator</h3>
+
+<br><table border="1" width="100%">
+<caption></caption><tbody>
+</tbody>
+
+<tbody><tr>
+<td width="10%"><b>Octet No.</b></td>
+
+<td><b>Contents</b></td>
+</tr>
+
+<tr>
+<td>1-4</td>
+
+<td>Length of section in octets (nn)</td>
+</tr>
+
+<tr>
+<td>5</td>
+
+<td>3</td>
+</tr>
+
+<tr>
+<td>6</td>
+
+<td>0</td>
+</tr>
+
+<tr>
+<td>7-10</td>
+
+<td>Number of data points</td>
+</tr>
+
+<tr>
+<td>11</td>
+
+<td>0</td>
+</tr>
+
+<tr>
+<td>12</td>
+
+<td>0</td>
+</tr>
+
+<tr>
+<td>13-14</td>
+
+<td>10 - template number</td>
+</tr>
+
+<tr>
+<td>15</td>
+
+<td>1</td>
+</tr>
+
+<tr>
+<td>16</td>
+
+<td>0</td>
+</tr>
+
+<tr>
+<td>17-20</td>
+
+<td>6371200 - Radius of the earth</td>
+</tr>
+
+<tr>
+<td>21</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>22-25</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>26</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>27-30</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>31-34</td>
+
+<td>Nx - number of points along the X-axis</td>
+</tr>
+
+<tr>
+<td>35-38</td>
+
+<td>Ny - number of points along the Y-axis</td>
+</tr>
+
+<tr>
+<td>39-42</td>
+
+<td>La1 - latitude of first grid point</td>
+</tr>
+
+<tr>
+<td>43-46</td>
+
+<td>Lo1 - longitude of first grid point</td>
+</tr>
+
+<tr>
+<td>47</td>
+
+<td>0</td>
+</tr>
+
+<tr>
+<td>48-51</td>
+
+<td>Lat where projection intersects the Earth (where mesh length defined)</td>
+</tr>
+
+<tr>
+<td>52-55</td>
+
+<td>La2 - latitude of last gridpoint</td>
+</tr>
+
+<tr>
+<td>56-59</td>
+
+<td>Lo2 - longitude of last gridpoint</td>
+</tr>
+
+<tr>
+<td>60-63</td>
+
+<td>80 - Scanning mode</td>
+</tr>
+
+<tr>
+<td>61-64</td>
+
+<td>Orientation angle of the grid</td>
+</tr>
+
+<tr>
+<td>65-68</td>
+
+<td>Di - longitudinal direction grid length&nbsp;</td>
+</tr>
+
+<tr>
+<td>69-72</td>
+
+<td>Dj - latitudinal direction grid length</td>
+</tr>
+</tbody></table>
+
+<h2>
+Section 4--Product Definition Section</h2>
+Section 4 will vary from one weather element to the next.&nbsp; The formats
+for the various elements are detailed in the following sections:
+<h3>
+Maximum Temperature (MaxT), Minimum Temperature (MinT)</h3>
+
+<center><br><table border="1" width="100%">
+<caption>
+<center></center></caption><tbody>
+</tbody>
+
+
+<tbody><tr>
+<td width="10%"><b>Octet No.</b></td>
+
+<td><b>Contents</b></td>
+</tr>
+
+<tr>
+<td>1-4</td>
+
+<td>58</td>
+</tr>
+
+<tr>
+<td>5</td>
+
+<td>4</td>
+</tr>
+
+<tr>
+<td>6-7</td>
+
+<td>0</td>
+</tr>
+
+<tr>
+<td>8-9</td>
+
+<td>8</td>
+</tr>
+
+<tr>
+<td>10</td>
+
+<td>0</td>
+</tr>
+
+<tr>
+<td>11</td>
+
+<td>4 for MaxT&nbsp;
+<br>5 for MinT</td>
+</tr>
+
+<tr>
+<td>12</td>
+
+<td>2</td>
+</tr>
+
+<tr>
+<td>13</td>
+
+<td>0</td>
+</tr>
+
+<tr>
+<td>14</td>
+
+<td>0</td>
+</tr>
+
+<tr>
+<td>15-16</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>17</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>18</td>
+
+<td>1</td>
+</tr>
+
+<tr>
+<td>19-22</td>
+
+<td>Hours from reference time to beginning of MaxT/MinT valid period.&nbsp;</td>
+</tr>
+
+<tr>
+<td>23</td>
+
+<td>1</td>
+</tr>
+
+<tr>
+<td>24</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>25-28</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>29</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>30</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>31-34</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>35-36</td>
+
+<td>Year of end of MaxT/MinT valid period in GMT.</td>
+</tr>
+
+<tr>
+<td>37</td>
+
+<td>Month of end of MaxT/MinT valid period in GMT.&nbsp;</td>
+</tr>
+
+<tr>
+<td>38</td>
+
+<td>Day of end of MaxT/MinT valid period in GMT.</td>
+</tr>
+
+<tr>
+<td>39</td>
+
+<td>Hour of end of MaxT/MinT valid period in GMT.</td>
+</tr>
+
+<tr>
+<td>40</td>
+
+<td>Minute of end of MaxT/MinT valid period in GMT.</td>
+</tr>
+
+<tr>
+<td>41</td>
+
+<td>Second of end of MaxT/MinT valid period in GMT.</td>
+</tr>
+
+<tr>
+<td>42</td>
+
+<td>1</td>
+</tr>
+
+<tr>
+<td>43-46</td>
+
+<td>0</td>
+</tr>
+
+<tr>
+<td>47</td>
+
+<td>2 for MaxT.&nbsp; 3 for MinT.</td>
+</tr>
+
+
+<tr>
+<td>48</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>49</td>
+
+<td>1</td>
+</tr>
+
+<tr>
+<td>50-53</td>
+
+<td>12</td>
+</tr>
+
+<tr>
+<td>54</td>
+
+<td>1</td>
+</tr>
+
+<tr>
+<td>55-58</td>
+
+<td>0</td>
+</tr>
+</tbody></table></center>
+
+<h3>
+Twelve-hour Probability of Precipitation (PoP12)</h3>
+
+<center><br><table border="1" width="100%">
+<caption>
+<center></center></caption><tbody>
+</tbody>
+
+
+<tbody><tr>
+<td width="10%"><b>Octet No.</b></td>
+
+<td><b>Contents</b></td>
+</tr>
+
+<tr>
+<td>1-4</td>
+
+<td>Length of section in octets (nn)</td>
+</tr>
+
+<tr>
+<td>5</td>
+
+<td>4</td>
+</tr>
+
+<tr>
+<td>6-7</td>
+
+<td>0</td>
+</tr>
+
+<tr>
+<td>8-9</td>
+
+<td>9</td>
+</tr>
+
+<tr>
+<td>10</td>
+
+<td>1</td>
+</tr>
+
+<tr>
+<td>11</td>
+
+<td>8</td>
+</tr>
+
+<tr>
+<td>12</td>
+
+<td>2</td>
+</tr>
+
+<tr>
+<td>13</td>
+
+<td>0</td>
+</tr>
+
+<tr>
+<td>14</td>
+
+<td>0</td>
+</tr>
+
+<tr>
+<td>15-16</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>17</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>18</td>
+
+<td>1</td>
+</tr>
+
+<tr>
+<td>19-22</td>
+
+<td>Hours from reference time to beginning of PoP12 valid period.&nbsp;</td>
+</tr>
+
+<tr>
+<td>23</td>
+
+<td>1</td>
+</tr>
+
+<tr>
+<td>24</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>25-28</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>29</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>30</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>31-34</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>35</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>36</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>37</td>
+
+<td>1</td>
+</tr>
+
+<tr>
+<td>38</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>39-42</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>43</td>
+
+<td>-3</td>
+</tr>
+
+<tr>
+<td>44-47</td>
+
+<td>254</td>
+</tr>
+
+<tr>
+<td>48-49</td>
+
+<td>Year of end of PoP12 valid period in GMT.</td>
+</tr>
+
+<tr>
+<td>50</td>
+
+<td>Month of end of PoP12 valid period in GMT.</td>
+</tr>
+
+<tr>
+<td>51</td>
+
+<td>Day of end of PoP12 valid period in GMT.</td>
+</tr>
+
+<tr>
+<td>52</td>
+
+<td>Hour of end of PoP12 valid period in GMT.</td>
+</tr>
+
+<tr>
+<td>53</td>
+
+<td>Minute of end of PoP12 valid period in GMT.</td>
+</tr>
+
+<tr>
+<td>54</td>
+
+<td>Second of end of PoP12 valid period in GMT.</td>
+</tr>
+
+<tr>
+<td>55</td>
+
+<td>1</td>
+</tr>
+
+<tr>
+<td>56-59</td>
+
+<td>0</td>
+</tr>
+
+<tr>
+<td>60</td>
+
+<td>1</td>
+</tr>
+
+<tr>
+<td>61</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>62</td>
+
+<td>1</td>
+</tr>
+
+<tr>
+<td>63-66</td>
+
+<td>12</td>
+</tr>
+
+<tr>
+<td>67</td>
+
+<td>1</td>
+</tr>
+
+<tr>
+<td>68-71</td>
+
+<td>0</td>
+</tr>
+</tbody></table></center>
+
+<h3>
+Temperature, Dewpoint, Sky, Wind Speed, Wind Direction, Wave Height, 20Ft
+Wind Speed, 20Ft Wind Direction, Weather, Wind Gust</h3>
+
+<br><table border="1" width="100%">
+<caption></caption><tbody>
+</tbody>
+
+<tbody><tr>
+<td><b>Octet No.</b></td>
+
+<td><b>Contents</b></td>
+</tr>
+
+<tr>
+<td>1-4</td>
+
+<td>Length of section in octets (nn)</td>
+</tr>
+
+<tr>
+<td>5</td>
+
+<td>4</td>
+</tr>
+
+<tr>
+<td>6-7</td>
+
+<td>0</td>
+</tr>
+
+<tr>
+<td>8-9</td>
+
+<td>0</td>
+</tr>
+
+<tr>
+<td>10</td>
+
+<td>Parameter Category (FM 92 GRIB, Code Table 4.1) See table below for
+specific values</td>
+</tr>
+
+<tr>
+<td>11</td>
+
+<td>Parameter Number (FM 92 GRIB, Code Table 4.2) See table below for specific
+values</td>
+</tr>
+
+<tr>
+<td>12</td>
+
+<td>2</td>
+</tr>
+
+<tr>
+<td>13</td>
+
+<td>0</td>
+</tr>
+
+<tr>
+<td>14</td>
+
+<td>0</td>
+</tr>
+
+<tr>
+<td>15-16</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>17</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>18</td>
+
+<td>1</td>
+</tr>
+
+<tr>
+<td>19-22</td>
+
+<td>Forecast projection in hours</td>
+</tr>
+
+<tr>
+<td>23</td>
+
+<td>1</td>
+</tr>
+
+<tr>
+<td>24</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>25-28</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>29</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>30</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>31-34</td>
+
+<td>Missing</td>
+</tr>
+</tbody></table>
+
+<h3>
+Parameter Categories and Numbers for Product Definition Template 0 elements</h3>
+
+<br><table border="1" cellspacing="2" cellpadding="2" width="100%">
+<caption></caption><tbody>
+</tbody>
+
+<tbody><tr>
+<td valign="top"><b>Parameter</b></td>
+
+<td valign="top"><b>Category</b></td>
+
+<td valign="top"><b>Number</b></td>
+</tr>
+
+<tr>
+<td valign="top">Temperature</td>
+
+<td valign="top">0</td>
+
+<td valign="top">0</td>
+</tr>
+
+<tr>
+<td valign="top">Dewpoint</td>
+
+<td valign="top">0</td>
+
+<td valign="top">6</td>
+</tr>
+
+<tr>
+<td valign="top">Sky</td>
+
+<td valign="top">6</td>
+
+<td valign="top">1</td>
+</tr>
+
+<tr>
+<td valign="top">Wind Speed</td>
+
+<td valign="top">2</td>
+
+<td valign="top">1</td>
+</tr>
+
+<tr>
+<td valign="top">Wind Direction</td>
+
+<td valign="top">2</td>
+
+<td valign="top">0</td>
+</tr>
+
+<tr>
+<td valign="top">Wave Height (see Note 1)</td>
+
+<td valign="top">0</td>
+
+<td valign="top">5</td>
+</tr>
+
+<tr>
+<td valign="top">Weather</td>
+
+<td valign="top">1</td>
+
+<td valign="top">192</td>
+</tr>
+
+<tr>
+<td valign="top">20Ft Wind Speed</td>
+
+<td valign="top">2</td>
+
+<td valign="top">1</td>
+</tr>
+
+<tr>
+<td valign="top">20Ft Wind Direction</td>
+
+<td valign="top">2</td>
+
+<td valign="top">0</td>
+</tr>
+
+<tr>
+<td valign="top">Wind Gust</td>
+
+<td valign="top">2</td>
+
+<td valign="top">22</td>
+</tr>
+</tbody></table>
+
+<p>Note 1: Wave Height is defined as an Oceanographic Product in the Indicator
+Section, octet 7.
+</p><h3>
+QPF, and Snow Amount</h3>
+&nbsp;
+<br><table border="1" width="100%">
+<caption></caption><tbody>
+</tbody>
+
+<tbody><tr>
+<td width="10%"><b>Octet No.</b></td>
+
+<td><b>Contents</b></td>
+</tr>
+
+<tr>
+<td>1-4</td>
+
+<td>Length of section in octets (nn)</td>
+</tr>
+
+<tr>
+<td>5</td>
+
+<td>4</td>
+</tr>
+
+<tr>
+<td>6-7</td>
+
+<td>0</td>
+</tr>
+
+<tr>
+<td>8-9</td>
+
+<td>8</td>
+</tr>
+
+<tr>
+<td>10</td>
+
+<td>1</td>
+</tr>
+
+<tr>
+<td>11</td>
+
+<td>8&nbsp;&nbsp;&nbsp;&nbsp; for QPF
+<br>29&nbsp;&nbsp; for Snow Amount&nbsp;</td>
+</tr>
+
+<tr>
+<td>12</td>
+
+<td>2</td>
+</tr>
+
+<tr>
+<td>13</td>
+
+<td>0</td>
+</tr>
+
+<tr>
+<td>14</td>
+
+<td>0</td>
+</tr>
+
+<tr>
+<td>15-16</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>17</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>18</td>
+
+<td>1</td>
+</tr>
+
+<tr>
+<td>19-22</td>
+
+<td>Hours from reference time to beginning of valid period.&nbsp;</td>
+</tr>
+
+<tr>
+<td>23</td>
+
+<td>1</td>
+</tr>
+
+<tr>
+<td>24</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>25-28</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>29</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>30</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>31-34</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>35-36</td>
+
+<td>Year of end of valid period in GMT.&nbsp;</td>
+</tr>
+
+<tr>
+<td>37</td>
+
+<td>Month of end of valid period in GMT.</td>
+</tr>
+
+<tr>
+<td>38</td>
+
+<td>Day of end of valid periodin GMT.</td>
+</tr>
+
+<tr>
+<td>39</td>
+
+<td>Hour of end of valid period in GMT.</td>
+</tr>
+
+<tr>
+<td>40</td>
+
+<td>Minute of end of valid period in GMT.</td>
+</tr>
+
+<tr>
+<td>41</td>
+
+<td>Second of end of valid period in GMT.&nbsp;</td>
+</tr>
+
+<tr>
+<td>42</td>
+
+<td>1</td>
+</tr>
+
+<tr>
+<td>43-46</td>
+
+<td>0</td>
+</tr>
+
+<tr>
+<td>47</td>
+
+<td>1</td>
+</tr>
+
+<tr>
+<td>48</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>49</td>
+
+<td>1</td>
+</tr>
+
+<tr>
+<td>50-53</td>
+
+<td>6</td>
+</tr>
+
+<tr>
+<td>54</td>
+
+<td>1</td>
+</tr>
+
+<tr>
+<td>55-58</td>
+
+<td>0</td>
+</tr>
+</tbody></table>
+
+<h2>
+Section 5--Data Representation Section</h2>
+The GRIB2 standard supports six forms of data packing.&nbsp; Grids transmitted
+as part of the NDFD will either use complex packing and spatial differencing
+(Data Representation Template 5.3) or complex packing (Data Representation
+Template 5.2).&nbsp; For each grid, the encoding software will assess the
+effectiveness of applying spatial differencing.&nbsp; If no value is found,
+complex packing will be used for that grid.&nbsp; Applications that decode
+NDFD grids should be prepared to encounter either form of data packing.
+<p>NDFD grids will generally contain a significant number of missing values.&nbsp;
+National mosaic grids are defined to be rectangles, and they generally
+extend into areas where NWS WFOs do not have forecast responsibility.
+</p><center><br><table border="1" width="100%">
+<caption>
+<center></center></caption><tbody>
+</tbody>
+
+
+<tbody><tr>
+<td width="10%"><b>Octet No.</b></td>
+
+<td><b>Contents</b></td>
+</tr>
+
+<tr>
+<td>1-4</td>
+
+<td>47</td>
+</tr>
+
+<tr>
+<td>5</td>
+
+<td>5</td>
+</tr>
+
+<tr>
+<td>6-9</td>
+
+<td>Total number of data points.</td>
+</tr>
+
+<tr>
+<td>10-11</td>
+
+<td>2 or 3</td>
+</tr>
+
+<tr>
+<td>12-15</td>
+
+<td>Reference value (R) as an IEEE 32-bit floating-point value.&nbsp; Varies
+from grid to grid.</td>
+</tr>
+
+<tr>
+<td>16-17</td>
+
+<td>Binary scale factor (E).&nbsp; Varies from weather element to weather
+element.&nbsp; See <a href="#Element%20Encoding%20Charateristics">Element Encoding
+Characteristics</a> Table for values.</td>
+</tr>
+
+<tr>
+<td>18-19</td>
+
+<td>Decimal scale factor (D).&nbsp; Varies from weather element to weather
+element.&nbsp; See <a href="#Element%20Encoding%20Charateristics">Element Encoding
+Characteristics</a> Table for values.</td>
+</tr>
+
+<tr>
+<td>20</td>
+
+<td>Number of bits used for each group reference value.</td>
+</tr>
+
+<tr>
+<td>21</td>
+
+<td>1 (integer) for Weather grids; 0 (floating point) for all other weather
+elements.</td>
+</tr>
+
+<tr>
+<td>22</td>
+
+<td>1</td>
+</tr>
+
+<tr>
+<td>23</td>
+
+<td>1</td>
+</tr>
+
+<tr>
+<td>24-27</td>
+
+<td>Primary missing value substitute.&nbsp; See <a href="#Element%20Encoding%20Charateristics">Element
+Encoding Characteristics</a> Table for values.&nbsp; The values in the
+table will appear in the GRIB2 bulletins in Section 5, but will not appear
+with the data in section 7.&nbsp; The GRIB2 standard calls for missing
+values to be carried as the largest value possible in a particular group.</td>
+</tr>
+
+<tr>
+<td>28-31</td>
+
+<td>Missing</td>
+</tr>
+
+<tr>
+<td>32-47</td>
+
+<td>See GRIB2 documentation.</td>
+</tr>
+
+<tr>
+<td valign="top">48</td>
+
+<td valign="top">Order of spatial differencing</td>
+</tr>
+</tbody></table></center>
+
+<h2>
+Section 6--Bit-map Section</h2>
+Bit-maps will not be used in NDFD GRIB bulletins.&nbsp; Missing values
+will appear in those grid locations where forecasts are not valid.
+<br>&nbsp;
+<center><br><table border="1" width="100%">
+<caption>
+<center></center></caption><tbody>
+</tbody>
+
+
+<tbody><tr>
+<td width="10%"><b>Octet No.</b></td>
+
+<td><b>Contents</b></td>
+</tr>
+
+<tr>
+<td>1-4</td>
+
+<td>Length of section in octets (nn)</td>
+</tr>
+
+<tr>
+<td>5</td>
+
+<td>6</td>
+</tr>
+
+<tr>
+<td>6</td>
+
+<td>255</td>
+</tr>
+</tbody></table></center>
+
+<h2>
+Section 7--Data Section</h2>
+
+<center><br><table border="1" width="100%">
+<caption>
+<center></center></caption><tbody>
+</tbody>
+
+
+<tbody><tr>
+<td width="10%"><b>Octet No.</b></td>
+
+<td><b>Contents</b></td>
+</tr>
+
+<tr>
+<td>1-4</td>
+
+<td>Length of section in octets (nn)</td>
+</tr>
+
+<tr>
+<td>5</td>
+
+<td>7</td>
+</tr>
+
+<tr>
+<td>6-nn</td>
+
+<td>See GRIB2 documentation.</td>
+</tr>
+</tbody></table></center>
+
+<h2>
+Section 8--End Section</h2>
+
+<br><table border="1" width="100%">
+<caption></caption><tbody>
+</tbody>
+
+<tbody><tr>
+<td width="10%"><b>Octet No.</b></td>
+
+<td><b>Contents</b></td>
+</tr>
+
+<tr>
+<td>1-4</td>
+
+<td>"7777"</td>
+</tr>
+</tbody></table>
+
+<h2>
+<a name="Element Encoding Charateristics"></a>Element Encoding Characteristics</h2>
+
+<center><br><table border="1" width="100%">
+<caption>
+<center></center></caption><tbody>
+</tbody>
+
+
+<tbody><tr>
+<td><b>Weather</b>
+<br><b>Element</b></td>
+
+<td valign="top"><b>Original</b>
+<br><b>NDFD</b>
+<br><b>Units</b></td>
+
+<td valign="top"><b>GRIB-</b>
+<br><b>encoded</b>
+<br><b>Units</b></td>
+
+<td><b>Binary Scale</b>
+<br><b>Factor</b></td>
+
+<td><b>Decimal Scale</b>
+<br><b>Factor</b></td>
+
+<td><b>Primary Missing&nbsp;</b>
+<br><b>Value Substitute</b></td>
+</tr>
+
+<tr>
+<td>MaxT</td>
+
+<td valign="top">Fahrenheit</td>
+
+<td valign="top">Kelvin</td>
+
+<td>0</td>
+
+<td>1</td>
+
+<td>9999</td>
+</tr>
+
+<tr>
+<td>MinT</td>
+
+<td valign="top">Fahrenheit</td>
+
+<td valign="top">Kelvin</td>
+
+<td>0</td>
+
+<td>1</td>
+
+<td>9999</td>
+</tr>
+
+<tr>
+<td>PoP12</td>
+
+<td valign="top">Percent Probability</td>
+
+<td valign="top">Percent
+<br>Probability</td>
+
+<td>0</td>
+
+<td>0</td>
+
+<td>9999</td>
+</tr>
+
+<tr>
+<td valign="top">T</td>
+
+<td valign="top">Fahrenheit</td>
+
+<td valign="top">Kelvin</td>
+
+<td valign="top">0</td>
+
+<td valign="top">1</td>
+
+<td valign="top">9999</td>
+</tr>
+
+<tr>
+<td valign="top">Td</td>
+
+<td valign="top">Fahrenheit</td>
+
+<td valign="top">Kelvin</td>
+
+<td valign="top">0</td>
+
+<td valign="top">1</td>
+
+<td valign="top">9999</td>
+</tr>
+
+<tr>
+<td valign="top">Sky</td>
+
+<td valign="top">Percentage
+<br>Total sky coverage</td>
+
+<td valign="top">Percentage
+<br>Total sky
+<br>coverage</td>
+
+<td valign="top">0</td>
+
+<td valign="top">0</td>
+
+<td valign="top">9999</td>
+</tr>
+
+<tr>
+<td valign="top">Wind Speed</td>
+
+<td valign="top">knots</td>
+
+<td valign="top">ms-1</td>
+
+<td valign="top">0</td>
+
+<td valign="top">1</td>
+
+<td valign="top">9999</td>
+</tr>
+
+<tr>
+<td valign="top">Wind Direction</td>
+
+<td valign="top">degrees true</td>
+
+<td valign="top">degrees true</td>
+
+<td valign="top">0</td>
+
+<td valign="top">0</td>
+
+<td valign="top">9999</td>
+</tr>
+
+<tr>
+<td valign="top">Weather</td>
+
+<td valign="top">N/A</td>
+
+<td valign="top">N/A</td>
+
+<td valign="top">0</td>
+
+<td valign="top">0</td>
+
+<td valign="top">9999</td>
+</tr>
+
+<tr>
+<td valign="top">QPF</td>
+
+<td valign="top">inches</td>
+
+<td valign="top">kgm-2</td>
+
+<td valign="top">0</td>
+
+<td valign="top">1</td>
+
+<td valign="top">9999</td>
+</tr>
+
+<tr>
+<td valign="top">SnowAmt</td>
+
+<td valign="top">inches</td>
+
+<td valign="top">meters</td>
+
+<td valign="top">0</td>
+
+<td valign="top">1</td>
+
+<td valign="top">9999</td>
+</tr>
+
+<tr>
+<td valign="top">Wave Height</td>
+
+<td valign="top">feet</td>
+
+<td valign="top">meters</td>
+
+<td valign="top">0</td>
+
+<td valign="top">0</td>
+
+<td valign="top">9999</td>
+</tr>
+
+<tr>
+<td valign="top">20Ft Wind Speed</td>
+
+<td valign="top">knots</td>
+
+<td valign="top">ms-1</td>
+
+<td valign="top">0</td>
+
+<td valign="top">1</td>
+
+<td valign="top">9999</td>
+</tr>
+
+<tr>
+<td valign="top">20Ft Wind Direction</td>
+
+<td valign="top">degrees true</td>
+
+<td valign="top">degrees true</td>
+
+<td valign="top">0</td>
+
+<td valign="top">0</td>
+
+<td valign="top">9999</td>
+</tr>
+
+<tr>
+<td valign="top">Wind Gust</td>
+
+<td valign="top">knots</td>
+
+<td valign="top">ms-1</td>
+
+<td valign="top">0</td>
+
+<td valign="top">1</td>
+
+<td valign="top">9999</td>
+</tr>
+</tbody></table></center>
+  <div align="left"> 
+    <p> 
+      <!-- END BODY OF TEXT HERE -->
+      <!-- footer -->
+    </p>
+  </div>
+
+<div align="left"></div>
+<div align="left"></div>
+<div align="left"></div>
+<div align="left"></div>
+<table width="98%" cellspacing="2" cellpadding="2" border="0">
+  <tbody><tr> 
+    <td colspan="3"> <hr> </td>
+  </tr>
+  <tr valign="top"> 
+    <td height="175" bordercolor="#0000FF" bgcolor="#ffffff" class="blue"><a href="http://www.doc.gov/"><span class="blue"><font color="#0000ff">US 
+      Dept of Commerce</font></span></a><font color="#0000ff"><a href="http://www.noaa.gov/"><br>
+      <span class="blue">National Oceanic and Atmospheric Adminstration</span></a></font><font color="#999999"><br>
+      <a href="http://www.nws.noaa.gov/"><font color="#0000ff">National Weather 
+      Service</font></a><br>
+      Office of the Chief Information Officer (OCIO11)<br>
+      1325 East West Highway<br>
+      Silver Spring, MD 20910<br>
+      Page last modified: June 10, 2003<br>
+      Page Author:</font> <u><font color="#0000ff"><a href="mailto:NWS.DM@noaa.gov">Data 
+      Management</a></font></u></td>
+    <td><a href="http://www.nws.noaa.gov/disclaimer.html"><span class="gray">Disclaimer</span></a><br> 
+      <a href="http://weather.gov/feedback.php"><span class="gray">Feedback</span></a> 
+    </td>
+    <td align="right"><div align="left"><a href="http://www.nws.noaa.gov/notice.html"><span class="gray">Privacy 
+        Notice</span></a><br>
+        <a href="http://weather.gov/credits.html"><span class="gray">Credits</span></a> 
+      </div></td>
+  </tr>
+</tbody></table>
+</body></html>

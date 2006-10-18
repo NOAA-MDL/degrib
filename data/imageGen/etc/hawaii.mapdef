@@ -1,0 +1,8 @@
+# Map definition file for Hawaii grids (subdomain of AWIPS208)
+merc                #mercator projection
+20.00               #origin latitude
+-157.082            #center meridian
+-161.625  18.0668   #lon, lat of lower left corner of grid
+-153.969  23.082    #lon, lat of upper right corner of grid
+321  225            #number of grid points along x, y, 2.5 km grid
+
