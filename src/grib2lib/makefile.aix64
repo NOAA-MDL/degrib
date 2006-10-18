@@ -8,8 +8,8 @@ FFLAGS = -qmaxmem=8192 -O2 -qstrict -qfixed -qarch=auto -qintlog -qintsize=4 -qr
 
 LD_FLAGS=
 ARFLAGS=-r -v -u
-STD_DEF=-DUSE_JPEG2000 -DUSE_PNG -D_UNIX_ -D_FORTRAN -D_64Bit
-#STD_DEF=-DUSE_JPEG2000 -DUSE_PNG -D_UNIX_
+STD_DEF=-DUSE_JPEG2000 -DUSE_PNG -DWORDS_BIGENDIAN -D_FORTRAN -DSIZEOF_LONG_INT=8
+#STD_DEF=-DUSE_JPEG2000 -DUSE_PNG -DWORDS_BIGENDIAN -DSIZEOF_LONG_INT=8
 
 STD_INC=-Ig2clib-1.0.2 -I../jpeg2000/src/libjasper/include \
         -I../libpng -I../zlib

@@ -1,5 +1,5 @@
 #
-#----- Release: Version 1.84 09/29/2006 -----
+#----- Release: Version 1.84 10/01/2006 -----
 #
  9/29 ADT Moved ADT_AIXSIZE from configure.in to aclocal.m4 and fixed an error
  9/29 AAT Fixed (sign) bug in use of GRIB2MISSING which crashed when it
