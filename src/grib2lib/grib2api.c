@@ -21,18 +21,22 @@
 #include "scan.h"
 #include "tendian.h"
 #include "myassert.h"
+#include "config.h" /*config.h created by configure - ADT mod*/
 
 /* Declare the external FORTRAN routine
  * gcc has two __ if there is one _ in the procedure name. */
 #ifdef _FORTRAN
-#ifdef _GCC_
-#define UNPK_G2MDL unpk_g2mdl__
-extern void unpk_g2mdl__
-#else
-#define UNPK_G2MDL unpk_g2mdl
-extern void unpk_g2mdl
-#endif
+  #if 1==0  /*Name mangling shifted to config.h by ADT 8/24/2006 */
+    #ifdef _GCC_
+      #define UNPK_G2MDL unpk_g2mdl__
+      extern void unpk_g2mdl__
+    #else
+      #define UNPK_G2MDL unpk_g2mdl
+      extern void unpk_g2mdl
+    #endif
+  #endif
 
+   extern void UNPK_G2MDL
    (sInt4 * kfildo, sInt4 * jmin, sInt4 * lbit, sInt4 * nov, sInt4 * iwork,
    float * ain, sInt4 * iain, sInt4 * nd2x3, sInt4 * idat, sInt4 * nidat,
    float * rdat, sInt4 * nrdat, sInt4 * is0, sInt4 * ns0, sInt4 * is1,
@@ -43,14 +47,16 @@ extern void unpk_g2mdl
    sInt4 * inew, sInt4 * iclean, sInt4 * l3264b, sInt4 * iendpk, sInt4 * jer,
    sInt4 * ndjer, sInt4 * kjer);
 
-#ifdef _GCC_
-#define PK_G2MDL pk_g2mdl__
-extern void pk_g2mdl__
-#else
-#define PK_G2MDL pk_g2mdl
-extern void pk_g2mdl
-#endif
-
+  #if 1==0  /*Name mangling shifted to config.h by ADT 8/24/2006 */
+    #ifdef _GCC_
+      #define PK_G2MDL pk_g2mdl__
+      extern void pk_g2mdl__
+    #else
+      #define PK_G2MDL pk_g2mdl
+      extern void pk_g2mdl
+    #endif
+  #endif
+   extern void PK_G2MDL
    (sInt4 * kfildo, sInt4 * jmax, sInt4 * jmin, sInt4 * lbit, sInt4 * nov,
    sInt4 * misslx, float * a, sInt4 * ia, sInt4 * newbox, sInt4 * newboxp,
    float * ain, sInt4 * iain, sInt4 * nx, sInt4 * ny, sInt4 * idat,

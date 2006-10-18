@@ -1,4 +1,31 @@
 #
+#----- Release: Version 1.84 09/20/2006 -----
+#
+ 9/20 AAT Removed dependence on "/src/degrib/config.h.in"
+ 9/20 AAT Tested on linux.
+ 9/20 AAT Created AAT_DYNAMIC_LIB
+ 9/20 AAT My build system needs:
+          "configure TCL_PREFIX=c:/tcl832 TCL_VERSION=83"
+ 9/20 AAT Modified AT_PROG_TCL for the TCL_PREFIX != "" case.
+ 9/20 AAT Modified "/src/degrib/makefile.in" X_LIB variable.
+ 9/20 AAT Modified "AT_TCL_VERSION" to not over-ride user selection
+ 9/20 AAT Modified "ADT_SPECFLAGS" to have an ANSIFLAG (needed for degrib to
+          link with gd)
+ 9/19 AAT Added a AAT_JPEG2000_LIBTOOL_FIX and AAT_DWINDOWS to aclocal.m4
+ 9/19 AAT Modified to match "/src/grib2lib/grib2api.c" "/src/grib2lib/type.h"
+          "/src/grib2lib/tendian.h"
+ 9/18 AAT Modified "/src/degrib/Makefile.in" to update to 1.83
+ 9/18 ADT Added "/src/makefile.in" "/src/configure.in" "/src/install-sh"
+          "/src/config.sub" "/src/config.guess" "/src/aclocal.m4"
+          "/src/grib2lib/Makefile.in" "/src/grib2lib/config.h.in"
+          "/src/degrib/Makefile.in" "/src/degrib/config.h.in".
+          "/src/zlib/scripts/Makefile.in"
+          "/src/libpng/scripts/Makefile.in"
+          "/src/gd/scripts/Makefile.in"
+          Use "autoconf", "configure", "make".
+ 9/15 AAT In web.tcl when producing an error message for missing -variable
+          forgot to "exit".
+#
 #----- Release: Version 1.83 09/14/2006 -----
 #
  9/14 AAT Removed old images before creating new ones (avoids stale images).
@@ -46,7 +73,7 @@
  8/28 Marc S. found "-Append" option
  8/28 AAT Tested -Data multiple file option.
  8/25 AAT Looked into -Data option with multiple GRIB files on the command line.
- 8/24 ADT Fixed tclstart.c exit() function (needs a return)
+ 8/24 ADT Fixed tclstart.c exit() function (needs a return value)
  8/23 AAT Fixed TDLPack bug introduced between version 1.77 and 1.79.
           (Dealt with uInt4 vers sInt4 for the max value in the group).
  8/17 AAT Worked on makefile.win to create libdegrib.dll (tcl/tk extension

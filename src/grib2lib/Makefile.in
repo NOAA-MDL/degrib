@@ -1,15 +1,16 @@
-#!/bin/make
-SHELL=/bin/sh
+SHELL = @SHELL@
 
-CC=gcc
-F77 = g77
-STD_FLAGS=-O3 -Wall
-FFLAGS = -O2
+CC = @CC@
+F77 = @F77@
+#STD_FLAGS= -q32 -qmaxmem=8192 -O -qchars=signed -qcpluscmt
+STD_FLAGS = @CFLAGS@ @CSGFLAGS@
+#FFLAGS = -q32 -qmaxmem=8192 -O2 -qstrict -qfixed -qarch=auto -qintlog -qintsize=4 -qrealsize=4
+FFLAGS = @FFLAGS@ 
 
-LD_FLAGS=
-ARFLAGS=
-STD_DEF=-DUSE_JPEG2000 -DUSE_PNG -D_WINDOWS_ -D_GCC_ -DDEBUG -D_FORTRAN
-#STD_DEF=-DUSE_JPEG2000 -DUSE_PNG -D_WINDOWS_ -D_GCC_ -DDEBUG
+LD_FLAGS=@LD_FLAGS@
+ARFLAGS = -ruv @ARFLAGS@
+STD_DEF=-DUSE_JPEG2000 -DUSE_PNG -D_FORTRAN @DSIZEOF_LONG_INT@ @DWORDS_BIGENDIAN@
+#STD_DEF=-DUSE_JPEG2000 -DUSE_PNG -D_UNIX_
 
 STD_INC=-Ig2clib-1.0.2 -I../jpeg2000/src/libjasper/include \
         -I../libpng -I../zlib
@@ -194,5 +195,21 @@ $(PRJ_NAME): $(C_GRIB2_OBJS) $(FORT_UNPK_OBJS) $(FORT_PACK_OBJS) \
 	$(CC) -c $(CFLAGS) $< -o $@
 
 .o.a:
-	ar $(ARFLAGS) -ruv $@ $<
+	ar $(ARFLAGS) $@ $<
 	rm -f $<
+
+.f.a:
+	$(F77) $(FFLAGS) -c $<
+	$(AR) $(ARFLAGS) $@ $*.o
+	rm -f $*.o
+
+.c.a:
+	$(CC) $(CFLAGS) -c $<
+	$(AR) $(ARFLAGS) $@ $*.o
+	rm -f $*.o
+
+clean:
+	rm -f *.o *.a
+
+distclean: clean
+	rm -f Makefile config.h

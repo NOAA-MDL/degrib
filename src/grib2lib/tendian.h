@@ -24,12 +24,8 @@
 #undef BIG_ENDIAN
 #undef LITTLE_ENDIAN
 
-#if defined(_LINUX_)
-  #define LITTLE_ENDIAN
-#elif defined(_UNIX_)
+#ifdef WORDS_BIGENDIAN
   #define BIG_ENDIAN
-#elif defined(_WINDOWS_)
-  #define LITTLE_ENDIAN
 #else
   #define LITTLE_ENDIAN
 #endif

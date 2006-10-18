@@ -1,0 +1,104 @@
+AC_INIT(degrib/degrib1.c)
+AC_CONFIG_HEADERS([grib2lib/config.h])
+AC_CANONICAL_HOST()
+AC_PROG_CC()
+AC_PROG_F77()
+AC_F77_WRAPPERS()
+AC_PROG_INSTALL()
+AC_PROG_RANLIB()
+AC_C_BIGENDIAN(AC_SUBST(DWORDS_BIGENDIAN,"-DWORDS_BIGENDIAN"))
+AC_C_CHAR_UNSIGNED()
+ADT_MYSIGN
+AC_CHECK_PROG(AR,ar,ar,:)
+AC_ARG_WITH([nocygwin],
+[AS_HELP_STRING([--with-nocygwin], [Create stand-alone executables for windows.])],
+[],
+[with_nocygwin=no])
+AS_IF([test "x$with_nocygwin" != xno],[
+  case "$build" in
+  *-*-cygwin*)
+    if test "$ac_cv_c_compiler_gnu" = yes; then
+     CFLAGS="${CFLAGS} -mno-cygwin"
+    else
+      AC_MSG_WARN([nocygwin available only with gcc.  Ignoring.])
+    fi;;
+  *) AC_MSG_WARN([nocygwin available only in a cygwin environment.  Ignoring.]);;
+  esac
+])
+AC_ARG_VAR([TCL_PREFIX],[Base Directory for TCL/TK])
+AC_ARG_VAR([TK_PREFIX],[Base Directory for TCL/TK])
+AC_ARG_VAR([TCL_VERSION],[Version Number for TCL/TK])
+AC_ARG_WITH([strip],
+[AS_HELP_STRING([--without-strip], [disable symbol stripping in binaries.])],
+[],
+[with_strip=yes])
+STRIP=:
+AS_IF([test "x$with_strip" != xno],
+[AC_PATH_PROG([STRIP], [strip],[:])
+])
+AC_SUBST([STRIP])
+AT_PROG_TCL()
+AC_PATH_XTRA()
+AAT_XLIBS()
+AAT_DYNAMIC_LIB()
+AT_TCL_VERSION()
+AC_ARG_ENABLE(aixsize,
+  [  --enable-aixsize=val     build val-bit (32 or 64, default 64)libraries for aix],
+   [at_c_savcflags=${CFLAGS}
+    at_c_savarflags=${ARFLAGS}
+    if test "$enableval" = 32; then
+      if test "$ac_cv_c_compiler_gnu" = yes; then
+        CFLAGS="${CFLAGS} -maix32"
+      else
+        CFLAGS="${CFLAGS} -q32"
+      fi
+      if test "$ac_cv_f77_compiler_gnu" = yes; then
+        FFLAGS="${FFLAGS} -maix32"
+      else
+        FFLAGS="${FFLAGS} -q32"
+      fi
+      AIXCMD="export OBJECT_MODE=32 &&"
+      ARFLAGS="${ARFLAGS} -X32"
+    else
+      if test "$ac_compiler_gnu" = yes; then
+        CFLAGS="${CFLAGS} -maix64"
+      else
+        CFLAGS="${CFLAGS} -q64"
+      fi
+      if test "$ac_cv_f77_compiler_gnu" = yes; then
+        FFLAGS="${FFLAGS} -maix64"
+      else
+        FFLAGS="${FFLAGS} -q64"
+      fi
+      AIXCMD="export OBJECT_MODE=64 &&"
+      ARFLAGS="${ARFLAGS} -X64"
+    fi
+    ],
+    [
+      AC_CHECK_TYPE(int,
+       [
+         AC_MSG_NOTICE([aixsize=${enableval}])
+       ],
+       [
+         CFLAGS=${at_c_savcflags}
+         ARFLAGS=${at_c_arflags}
+         AC_MSG_ERROR([aixsize not valid])
+       ])
+    ],
+    )
+ADT_SPECFLAGS
+AAT_JPEG2000_LIBTOOL_FIX
+AAT_DWINDOWS
+AAT_DBADTCLSSH
+AC_CHECK_SIZEOF([int])
+AC_CHECK_SIZEOF([long int])
+# AC_SUBST(DSIZEOF_INT,"-DSIZEOF_INT=$ac_cv_sizeof_int")
+AC_SUBST(DSIZEOF_LONG_INT,"-DSIZEOF_LONG_INT=$ac_cv_sizeof_long_int")
+AC_SUBST(LD_FLAGS)
+AC_SUBST(AIXCMD,)
+AC_SUBST(ARFLAGS,)
+AC_SUBST(CSGFLAGS)
+AC_CONFIG_FILES([Makefile grib2lib/Makefile degrib/Makefile zlib/Makefile:zlib/scripts/Makefile.in])
+AC_CONFIG_FILES([libpng/Makefile:libpng/scripts/Makefile.in])
+AC_CONFIG_FILES([gd/Makefile:gd/scripts/Makefile.in])
+AC_OUTPUT()

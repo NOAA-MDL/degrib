@@ -8,8 +8,7 @@ FFLAGS = -O2
 
 LD_FLAGS=
 ARFLAGS=
-STD_DEF=-DUSE_JPEG2000 -DUSE_PNG -D_LINUX_ -D_GCC_ -D_FORTRAN
-#STD_DEF=-DUSE_JPEG2000 -DUSE_PNG -D_LINUX_ -D_GCC_
+STD_DEF=-DUSE_JPEG2000 -DUSE_PNG -D_FORTRAN
 
 STD_INC=-Ig2clib-1.0.2 -I../jpeg2000/src/libjasper/include \
         -I../libpng -I../zlib
@@ -19,7 +18,7 @@ CFLAGS=$(STD_FLAGS) $(STD_DEF) $(STD_INC)
 
 VPATH = ./g2clib-1.0.2:./grib2unpacker:./grib2packer
 
-all: $(PRJ_NAME)
+all: config.h $(PRJ_NAME)
 
 $(PRJ_NAME)(gridtemplates.o): gridtemplates.h
 
@@ -196,3 +195,7 @@ $(PRJ_NAME): $(C_GRIB2_OBJS) $(FORT_UNPK_OBJS) $(FORT_PACK_OBJS) \
 .o.a:
 	ar $(ARFLAGS) -ruv $@ $<
 	rm -f $<
+
+config.h: ./config_H/config.h.gcc
+	cp ./config_H/config.h.gcc config.h
+

@@ -27,7 +27,7 @@ all: config zlib libpng emapf
 	@echo "-----------------------------"
 	@echo "Attempting to compile gd..."
 	@echo "-----------------------------"
-	(cd ./gd && make -f makefile.sun)
+	(cd ./gd && make -f ./scripts/makefile.sun)
 	@echo "Finished with gd..."
 	@echo "-----------------------------"
 	@echo ""
@@ -146,7 +146,7 @@ tidy:
 	(cd ./jpeg2000 && make clean)
 	(cd ./netcdf && make clean)
 	(cd ./libxml && make clean)
-	(cd ./gd && make -f makefile.sun clean)
+	(cd ./gd && make -f ./scripts/makefile.sun clean)
 
 ####
 # clean means I try to return as close as possible to the distribution state.
@@ -168,5 +168,5 @@ clean: config.status
 	(cd ./netcdf/ncdump && rm -f ncdump)
 	(cd ./netcdf/ncgen && rm -f ncgen)
 	(cd ./libxml && make distclean)
-	(cd ./gd && make -f makefile.sun clean)
+	(cd ./gd && make -f ./scripts/makefile.sun clean)
 

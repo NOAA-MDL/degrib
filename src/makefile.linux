@@ -25,7 +25,7 @@ all: config zlib libpng emapf
 	@echo "-----------------------------"
 	@echo "Attempting to compile gd..."
 	@echo "-----------------------------"
-	(cd ./gd && make -f makefile.linux)
+	(cd ./gd && make -f ./scripts/makefile.linux)
 	@echo "Finished with gd..."
 	@echo "-----------------------------"
 	@echo ""
@@ -144,7 +144,7 @@ tidy:
 	(cd ./jpeg2000 && make clean)
 	(cd ./netcdf && make clean)
 	(cd ./libxml && make clean)
-	(cd ./gd && make -f makefile.linux clean)
+	(cd ./gd && make -f ./scripts/makefile.linux clean)
 
 ####
 # clean means I try to return as close as possible to the distribution state.
@@ -155,9 +155,9 @@ distclean: clean
 clean: config.status
 	(cd ./zlib && rm -f *.a *.o *~ example example.exe minigzip minigzip.exe foo.gz so_locations _match.s maketree)
 	(cd ./libpng && rm -f *.a *.pic.o *.o pngtest-stat.exe pngtest.exe pngout.png libpng.def libpng-config libpng.pc pngtesti.exe)
-	(cd ./grib2lib && rm -f *.a)
+	(cd ./grib2lib && rm -f *.a config.h)
 	(cd ./emapf-c && rm -f *.o *.a config.log config.status Makefile)
-	(cd ./degrib && rm -f *.o degrib degrib.exe tcldegrib tcldegrib.exe tkdegrib tkdegrib.exe)
+	(cd ./degrib && rm -f *.o degrib degrib.exe tcldegrib tcldegrib.exe tkdegrib tkdegrib.exe) 
 	rm -f config.status
 	(cd ./zlib && rm -f Makefile)
 	(cd ./jpeg2000 && make distclean)
@@ -166,4 +166,4 @@ clean: config.status
 	(cd ./netcdf/ncdump && rm -f ncdump)
 	(cd ./netcdf/ncgen && rm -f ncgen)
 	(cd ./libxml && make distclean)
-	(cd ./gd && make -f makefile.linux clean)
+	(cd ./gd && make -f ./scripts/makefile.linux clean)

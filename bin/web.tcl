@@ -1058,6 +1058,7 @@ if {(! [info exists usr(-dataSet)]) ||
 if {![info exists usr(-variable)]} {
   Usage $argv0
   puts "Please specify -variable\n"
+  exit
 } elseif {$usr(-variable) != "all"} {
   set usr(-variable) [split $usr(-variable) ,]
 }

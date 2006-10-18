@@ -1,48 +1,48 @@
-#!/bin/make
-#SHELL = /bin/sh
+SHELL = @SHELL@
 
 ##############################################################################
+# makefile.in
+#
 # DESCRIPTION
-#    This makefile makes the project on MS-Windows machines.  It was intended
-# to be used with MinGW in conjuction with either MSYS or CYGWIN.
+#    Makefile template for configure to use to create Makefile that makes and
+#    installs degrib
+#
+# HISTORY
+#    Created by Albion Taylor, Aug, 2006
+#    degrib created 5/2003 Arthur Taylor (MDL): Created.
 #
 # NOTES
-#   CYGWIN & MINGW users: If you use the -mno-cygwin flag, then
-#   the libg2c.a from MINGW works better than CYGWIN's.
-#      -> Check ../g2c-mingw.
 ##############################################################################
 
 ############################
 # SYSTEM Directories
 ############################
-TCL_PREFIX=c:/tcl832
-TK_PREFIX=$(TCL_PREFIX)
-TCL_VERSION = 83
+TCL_PREFIX=@TCL_PREFIX@
+TK_PREFIX=@TK_PREFIX@
+# asp/bsp
+TCL_VERSION = @TCL_VERSION@
 
 ############################
 # DEFAULT Compilers and Compiler flags.
 ############################
-CC = gcc
-STRIP = strip
-# Can't use -ansi because of we may need stdout to be binary.
-#STD_FLAGS = -O3 -Wall -mno-cygwin
-STD_FLAGS = -O3 -Wall -pedantic -ansi -mno-cygwin
+#CC = cc
+CC = @CC@
+STRIP = @STRIP@
+#STD_FLAGS = -O -q32 -qchars=signed -qmaxmem=8192
+STD_FLAGS = @CFLAGS@ @CSGFLAGS@ @ANSIFLAG@
+EXEEXT = @EXEEXT@
 
 ############################
 # Link Flags
 ############################
-LD_FLAGS = -Wl,--stack,4000000
-# Use -mconsole if you want to use "puts" diagnostics...
-# Use -mwindows if you want to ship out the program...
-TK_LD_FLAGS = ${LD_FLAGS} -mwindows
-#TK_LD_FLAGS = ${LD_FLAGS} -mconsole
-TCL_LD_FLAGS = ${LD_FLAGS} -mconsole
+LD_FLAGS = @LD_FLAGS@
+FORTLIBS = @FLIBS@
 
 ############################
 # XML Dependence
 ############################
 XML_DEF = -D_DWML_
-XML_INC = -I../libxml/include -I../dwmllib
+XML_INC = -I../degrib -I../libxml/include -I../dwmllib
 XML_LIB = -L../dwmllib -ldwml -L../libxml/.libs/ -lxml2
 XML_DEP = ../dwmllib/libdwml.a ../libxml/.libs/libxml2.a
 XML_CLEAN = (cd ../dwmllib && make -f makefile clean)
@@ -50,21 +50,20 @@ XML_CLEAN = (cd ../dwmllib && make -f makefile clean)
 ############################
 # Standard Defines
 ############################
-STD_DEF = -D_WINDOWS_ -D_GCC_ $(XML_DEF)
-#STD_DEF = -D_WINDOWS_ -D_GCC_ $(XML_DEF) -DMEMWATCH -DMEMWATCH_STDIO -DVERBOSE -DTIMING_INFO -DDEBUG
-STUB_DEF = $(STD_DEF) -DTCL_USE_STUBS
+STD_DEF = @DSIZEOF_LONG_INT@ @DWORDS_BIGENDIAN@ @DBAD_TCLSSH@ @DWINDOWS@ $(XML_DEF) 
 
 ############################
 # Do we want to watch memory?
 ############################
 MEMWATCH=
 #MEMWATCH = memwatch.o
+MEMWATCH_OBJ=
+#MEMWATCH_OBJ = memwatch.obj
 
 ############################
 # Standard Includes
 ############################
-STD_INC= -I../degrib -I../emapf-c -I../grib2lib -I../netcdf/libsrc -I../gd $(XML_INC)
-#STD_INC= -I../degrib -I../emapf-c -I../grib2lib -I../netcdf/libsrc -I../gd $(XML_INC) -I./memwatch
+STD_INC= -I../emapf-c -I../grib2lib -I../netcdf/libsrc -I../gd $(XML_INC)
 TCL_INC=-I$(TCL_PREFIX)/include
 TK_INC=-I$(TK_PREFIX)/include
 GUI_INC=$(TCL_INC) $(TK_INC) $(STD_INC)
@@ -72,25 +71,28 @@ GUI_INC=$(TCL_INC) $(TK_INC) $(STD_INC)
 ############################
 # Standard Libraries
 ############################
-# The g2c from mingw works better than the g2c from cygwin.
-# (Assuming you have the -mno_cygwin flag).
 CLOCK_LIB = -L/usr/lib -lm
 DP_LIB = -L../emapf-c/ -lemapf $(XML_LIB) -L../zlib -lz -L/usr/lib -lm
-DRAWSHP_LIB = -L../gd -lgd -L../libpng -lpng -L../zlib -lz \
+DRAWSHP_LIB = -L../gd/ -lgd -L../libpng -lpng -L../zlib -lz \
           -L../emapf-c/ -lemapf -L/usr/lib -lm
 STD_LIB = -L../grib2lib -lgrib2 -L../gd -lgd -L../libpng -lpng \
           $(XML_LIB) -L../zlib -lz \
           -L../jpeg2000/src/libjasper/jpc/.libs/ -ljpc \
           -L../jpeg2000/src/libjasper/base/.libs/ -lbase \
-          -L../netcdf/libsrc/ -lnetcdf \
-          -L../g2c-mingw/ -lg2c -L../emapf-c/ -lemapf -L/usr/lib -lm
+          -L../netcdf/libsrc/ -lnetcdf $(FORTLIBS) \
+          -L../emapf-c/ -lemapf -L/usr/lib -lm
 
-TK_LIB=-L$(TK_PREFIX)/lib -ltk$(TCL_VERSION)
-TCL_LIB=-L$(TCL_PREFIX)/lib -ltcl$(TCL_VERSION)
-GUI_LIB=$(TK_LIB) $(TCL_LIB) $(STD_LIB)
-TKSTUB_LIB=$(TK_PREFIX)/lib/tkstub$(TCL_VERSION).lib
-TCLSTUB_LIB=$(TCL_PREFIX)/lib/tclstub$(TCL_VERSION).lib
-STUB_LIB=$(TKSTUB_LIB) $(TCLSTUB_LIB) $(STD_LIB)
+#TCL_LIB=-L$(TCL_PREFIX)/lib -ltcl$(TCL_VERSION)
+#TK_LIB=-L$(TK_PREFIX)/lib -ltk$(TCL_VERSION)
+#X_LIB=-L/usr/X11R6/lib -lX11
+# DYNAMIC_LIB = -ldld
+
+TCL_LIB = @TCL_LIBS@
+TK_LIB = @TK_LIBS@
+#X_LIB=@X_LIBS@ -lX11
+X_LIB=@X_LIBS@
+DYNAMIC_LIB = @DYNAMIC_LIB@
+GUI_LIB=$(TK_LIB) $(TCL_LIB) $(X_LIB) $(DYNAMIC_LIB) $(STD_LIB)
 
 ############################
 # Project names
@@ -101,52 +103,50 @@ DRAWSHP_NAME = drawshp
 PRJ_NAME = degrib
 TCL_NAME = tcldegrib
 TK_NAME = tkdegrib
-TK_DLL = tkdegrib.dll
 
 CFLAGS = $(STD_FLAGS) $(STD_DEF) $(STD_INC)
 GUIFLAGS = $(STD_FLAGS) $(STD_DEF) $(GUI_INC)
-STUBFLAGS = $(STD_FLAGS) -shared $(STUB_DEF) $(GUI_INC)
 
 ############################
 # FILES
 ############################
-C_SOURCES = myutil.c \
-            clock.c \
-            mymapf.c \
-            myerror.c \
-            myassert.c \
-            tendian.c \
-            scan.c \
-            metaname.c \
-            metaparse.c \
-            weather.c \
-            grib1tab.c \
-            metaprint.c \
-            writeflt.c \
-            chain.c \
-            writecsv.c \
-            writeshp.c \
-            writegra.c \
-            writenc.c \
-            readnc.c \
-            interp.c \
-            inventory.c \
-            probe.c \
-            userparse.c \
-            tdlpack.c \
-            degrib1.c \
-            degrib2.c \
-            pack.c \
-            cube.c \
-            drawgrib.c \
-            commands.c \
-            database.c \
-            mapini.c \
-            drawlib.c \
-            genprobe.c \
-            solar.c \
-            grpprobe.c \
-            sector.c
+C_OBJECTS = myutil.o \
+            clock.o \
+            mymapf.o \
+            myerror.o \
+            myassert.o \
+            tendian.o \
+            scan.o \
+            metaname.o \
+            metaparse.o \
+            weather.o \
+            grib1tab.o \
+            metaprint.o \
+            writeflt.o \
+            chain.o \
+            writecsv.o \
+            writeshp.o \
+            writegra.o \
+            writenc.o \
+            readnc.o \
+            interp.o \
+            inventory.o \
+            probe.o \
+            userparse.o \
+            tdlpack.o \
+            degrib1.o \
+            degrib2.o \
+            pack.o \
+            cube.o \
+            drawgrib.o \
+            commands.o \
+            database.o \
+            mapini.o \
+            drawlib.o \
+            genprobe.o \
+            solar.o \
+            grpprobe.o \
+            sector.o
 
 H_SOURCES = type.h \
             myutil.h \
@@ -179,46 +179,31 @@ H_SOURCES = type.h \
             grpprobe.h \
             sector.h
 
-CLOCK_SOURCES = myassert.c \
-            myutil.c \
-            myerror.c \
-            clock.c
+CLOCK_OBJECTS = myassert.o \
+            myutil.o \
+            myerror.o \
+            clock.o
 
-DP_SOURCES = myutil.c \
-            clock.c \
-            mymapf.c \
-            myerror.c \
-            myassert.c \
-            tendian.c \
-            weather.c \
-            interp.c \
-            userparse.c \
-            database.c \
-            solar.c \
-            grpprobe.c \
-            sector.c
+DP_OBJECTS = myutil.o \
+            clock.o \
+            mymapf.o \
+            myerror.o \
+            myassert.o \
+            tendian.o \
+            weather.o \
+            interp.o \
+            userparse.o \
+            database.o \
+            solar.o \
+            grpprobe.o \
+            sector.o \
+            dpgenprobe.o
 
-DRAWSHP_SOURCES = myassert.c \
-            myutil.c \
-            tendian.c \
-            mapini.c \
-            drawlib.c
-
-GUI_SOURCES = $(C_SOURCES) \
-            tcldegrib.c
-
-C_OBJECTS = $(C_SOURCES:.c=.o) \
-            $(MEMWATCH)
-
-CLOCK_OBJECTS = $(CLOCK_SOURCES:.c=.o) \
-            $(MEMWATCH)
-
-DP_OBJECTS = $(DP_SOURCES:.c=.o) \
-            dpgenprobe.o \
-            $(MEMWATCH)
-
-DRAWSHP_OBJECTS = $(DRAWSHP_SOURCES:.c=.o) \
-            $(MEMWATCH)
+DRAWSHP_OBJECTS = myassert.o \
+            myutil.o \
+            tendian.o \
+            mapini.o \
+            drawlib.o
 
 GUI_OBJECTS = $(C_OBJECTS) \
             tcldegrib.o
@@ -244,47 +229,47 @@ LIB_DEPENDS = ../emapf-c/libemapf.a ../grib2lib/libgrib2.a \
 # TARGETS
 #
 ############################
-all: $(PRJ_NAME) $(DP_NAME) $(CLOCK_NAME) $(DRAWSHP_NAME) $(TCL_NAME) $(TK_NAME)
+all: $(PRJ_NAME) $(CLOCK_NAME) $(DP_NAME) $(DRAWSHP_NAME) $(TCL_NAME) $(TK_NAME)
 
 $(PRJ_NAME): $(C_OBJECTS) $(C_MAIN) $(LIB_DEPENDS) $(H_SOURCES)
 	$(CC) $(C_MAIN) $(CFLAGS) $(LD_FLAGS) $(C_OBJECTS) $(STD_LIB) -o $(PRJ_NAME)
-	$(STRIP) -s $(PRJ_NAME).exe
+	$(STRIP) -s $(PRJ_NAME)$(EXEEXT)
 
 $(CLOCK_NAME): $(CLOCK_MAIN) $(CLOCK_OBJECTS) $(H_SOURCES)
 	$(CC) $(CLOCK_MAIN) $(CFLAGS) $(CLOCK_OBJECTS) $(CLOCK_LIB) -o $(CLOCK_NAME)
-	$(STRIP) -s $(CLOCK_NAME).exe
+	$(STRIP) -s $(CLOCK_NAME)$(EXEEXT)
 
 $(DP_NAME): $(DP_OBJECTS) $(DP_MAIN) $(LIB_DEPENDS) $(H_SOURCES)
 	$(CC) $(DP_MAIN) $(CFLAGS) $(LD_FLAGS) $(DP_OBJECTS) $(DP_LIB) -o $(DP_NAME)
-	$(STRIP) -s $(DP_NAME).exe
+	$(STRIP) -s $(DP_NAME)$(EXEEXT)
 
 $(DRAWSHP_NAME): $(DRAWSHP_MAIN) $(DRAWSHP_OBJECTS) $(H_SOURCES)
 	$(CC) $(DRAWSHP_MAIN) $(CFLAGS) $(DRAWSHP_OBJECTS) $(DRAWSHP_LIB) -o $(DRAWSHP_NAME)
-	$(STRIP) -s $(DRAWSHP_NAME).exe
+	$(STRIP) -s $(DRAWSHP_NAME)$(EXEEXT)
 
 $(TK_NAME): $(GUI_OBJECTS) $(GUI_MAIN) $(LIB_DEPENDS) $(H_SOURCES)
-	$(CC) $(GUI_MAIN) $(GUIFLAGS) $(TK_LD_FLAGS) $(GUI_OBJECTS) $(GUI_LIB) -o $(TK_NAME)
-	$(STRIP) -s $(TK_NAME).exe
+	$(CC) $(GUI_MAIN) $(GUIFLAGS) $(LD_FLAGS) $(GUI_OBJECTS) $(GUI_LIB) -o $(TK_NAME)
+	$(STRIP) -s $(TK_NAME)$(EXEEXT)
 
 $(TCL_NAME): $(GUI_OBJECTS) $(GUI_MAIN) $(LIB_DEPENDS) $(H_SOURCES)
-	$(CC) $(GUI_MAIN) $(GUIFLAGS) -DNO_TK $(TCL_LD_FLAGS) $(GUI_OBJECTS) $(GUI_LIB) -o $(TCL_NAME)
-	$(STRIP) -s $(TCL_NAME).exe
+	$(CC) $(GUI_MAIN) $(GUIFLAGS) -DNO_TK $(LD_FLAGS) $(GUI_OBJECTS) $(GUI_LIB) -o $(TCL_NAME)
+	$(STRIP) -s $(TCL_NAME)$(EXEEXT)
 
-$(TK_DLL): $(GUI_OBJECTS) $(H_SOURCES)
-	$(CC) $(STUBFLAGS) $(GUI_OBJECTS) $(STUB_LIB) $(TK_LD_FLAGS) -o $(TK_DLL) \
-         -Wl,--output-def,testdll.def,--out-implib,libtestdll.a
-
-install:
-	cp $(PRJ_NAME).exe ../../bin
-	cp $(CLOCK_NAME).exe ../../bin
-	cp $(DP_NAME).exe ../../bin
-	cp $(DRAWSHP_NAME).exe ../../bin
-	cp $(TCL_NAME).exe ../../bin
-	cp $(TK_NAME).exe ../../bin
+install: $(PRJ_NAME) $(CLOCK_NAME) $(DP_NAME) $(DRAWSHP_NAME) $(TCL_NAME) $(TK_NAME)
+	cp $(PRJ_NAME)$(EXEEXT) ../../bin
+	cp $(CLOCK_NAME)$(EXEEXT) ../../bin
+	cp $(DP_NAME)$(EXEEXT) ../../bin
+	cp $(DRAWSHP_NAME)$(EXEEXT) ../../bin
+	cp $(TCL_NAME)$(EXEEXT) ../../bin
+	cp $(TK_NAME)$(EXEEXT) ../../bin
 
 clean:
 	rm -f *.o *.bak *.BAK
+	rm -f $(PRJ_NAME)$(EXEEXT) $(CLOCK_NAME)$(EXEEXT) $(DP_NAME)$(EXEEXT)
+	rm -f $(DRAWSHP_NAME)$(EXEEXT) $(TCL_NAME)$(EXEEXT) $(TK_NAME)$(EXEEXT)
 	$(XML_CLEAN)
+
+distclean: clean
 
 ../dwmllib/libdwml.a:
 	@echo "-----------------------------"
@@ -304,8 +289,12 @@ tcldegrib.o: tcldegrib.c tcldegrib.h $(H_SOURCES)
 memwatch.o: ./memwatch/memwatch.c ./memwatch/memwatch.h
 	$(CC) -c $(CFLAGS) ./memwatch/memwatch.c
 
-dpgenprobe.o : $(H_SOURCES) genprobe.c
+dpgenprobe.o : $(H_SOURCES)
 	$(CC) -c $(CFLAGS) -DDP_ONLY genprobe.c -o dpgenprobe.o
 
 .c.o : $(H_SOURCES)
 	$(CC) -c $(CFLAGS) $<
+
+%.obj : %.c $(H_SOURCES)
+	$(CC) -c $(GUIFLAGS) $(STUB_DEF) -o $@ $<
+

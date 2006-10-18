@@ -19,7 +19,7 @@ CFLAGS=$(STD_FLAGS) $(STD_DEF) $(STD_INC)
 
 VPATH = ./g2clib-1.0.2:./grib2unpacker:./grib2packer
 
-all: $(PRJ_NAME)
+all: config.h $(PRJ_NAME)
 
 $(PRJ_NAME)(gridtemplates.o): gridtemplates.h
 
@@ -196,3 +196,7 @@ $(PRJ_NAME): $(C_GRIB2_OBJS) $(FORT_UNPK_OBJS) $(FORT_PACK_OBJS) \
 .o.a:
 	ar $(ARFLAGS) -ruv $@ $<
 	rm -f $<
+
+config.h: ./config_H/config.h.nonGcc
+	cp ./config_H/config.h.nonGcc config.h
+

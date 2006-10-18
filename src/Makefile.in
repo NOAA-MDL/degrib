@@ -1,0 +1,97 @@
+SHELL = @SHELL@
+abs_top_builddir = @abs_top_builddir@
+AIXCMD = @AIXCMD@
+CC = @CC@
+F77 = @F77@
+ARFLAGS = @ARFLAGS@
+CFLAGS = @CFLAGS@
+EXEEXT = @EXEEXT@
+HOST = @host@ x @host_cpu@ y @host_vendor@ z @host_os@
+HOST_OS = @host_os@
+
+all: configure libraries degrib
+
+configure: emapf-c/Makefile jpeg2000/Makefile libxml/Makefile netcdf/macros.make
+
+emapf-c/Makefile: emapf-c/Makefile.in
+	(cd emapf-c && $(AIXCMD) ./configure CC=$(CC) CFLAGS="$(CFLAGS)" ARFLAGS=$(ARFLAGS))
+
+jpeg2000/Makefile: jpeg2000/Makefile.in
+	(cd jpeg2000 && export CC=$(CC) && export CFLAGS="$(CFLAGS)" && ./configure)
+	@JPEG2000_LIBTOOL_FIX@
+
+libxml/Makefile: libxml/Makefile.in zlib/libz.a
+	(cd libxml && export CC=$(CC) && export CFLAGS="$(CFLAGS)" && \
+              ./configure --with-minimum  --with-tree --with-output --enable-shared=no \
+              --with-zlib=$(abs_top_builddir)/zlib)
+
+netcdf/macros.make:
+	(cd ./netcdf && $(AIXCMD) CFLAGS="-O" ARFLAGS="cru" CXX="" FC="" F90="" ./configure)
+
+libraries: zlib/libz.a emapf-c/libemapf.a gd/libgd.a jpeg2000/src/libjasper/.libs/libjasper.a libxml/libxml2.la libpng/libpng.a netcdf/libsrc/libnetcdf.a grib2lib/libgrib2.a
+
+zlib/libz.a:
+	(cd zlib && $(AIXCMD) make )
+
+netcdf/libsrc/libnetcdf.a: netcdf/macros.make
+	(cd netcdf && $(AIXCMD) make )
+
+netcdf/ncdump/ncdump$(EXEEXT): netcdf/libsrc/libnetcdf.a
+
+gd/libgd.a: libpng/libpng.a zlib/libz.a
+	(cd gd && $(AIXCMD) make INCLUDES=-I$(abs_top_builddir)/../include/libpng)
+
+emapf-c/libemapf.a: emapf-c/Makefile
+	(cd emapf-c && $(AIXCMD) make)
+
+jpeg2000/src/libjasper/.libs/libjasper.a: jpeg2000/Makefile
+	(cd jpeg2000 && $(AIXCMD) make)
+
+libpng/libpng.a: zlib/libz.a
+	(cd libpng && $(AIXCMD) make LIBNAME=libpng)
+
+libxml/libxml2.la: libxml/Makefile
+	(cd libxml && $(AIXCMD) make libxml2.la)
+
+grib2lib/libgrib2.a:
+	(cd grib2lib &&  $(AIXCMD) make)
+
+../bin/ncdump: netcdf/macros.make
+	- (cd netcdf &&  $(AIXCMD) make && cp ncdump/ncdump$(exeext) ../../bin)
+
+degrib: libraries ../bin/ncdump
+	(cd degrib && $(AIXCMD) make)
+
+install: libraries netcdf/ncdump/ncdump$(EXEEXT)
+	- (cd degrib && make install)
+	cp netcdf/ncdump/ncdump$(EXEEXT) ../bin
+
+clean:
+	- (cd emapf-c && make clean)
+	- (cd jpeg2000 && make clean && cd src/libjasper && rm -f .libs/impgen$(EXEEXT) /base/.libs/impgen$(EXEEXT) jpc/.libs/impgen$(EXEEXT) )
+	- (cd gd && make clean)
+	- (cd zlib && make clean && rm -f example$(EXEEXT) minigzip$(EXEEXT))
+	- (cd libxml && make clean)
+	- (cd libpng && make clean)
+	- (cd netcdf && make clean)
+	- (cd degrib && make clean)
+	- (cd grib2lib && make clean)
+	rm -f netcdf/ncdump/ncdump$(EXEEXT)
+	rm -f netcdf/ncgen/ncgen$(EXEEXT)
+
+distclean:
+	- (cd emapf-c && make distclean)
+	- (cd jpeg2000 && make distclean)
+	- (cd gd && make distclean)
+	- (cd zlib && make distclean)
+	- (cd libxml && make distclean)
+	- (cd libpng && make distclean)
+	- (cd netcdf && make distclean && rm macros.make)
+	- (cd degrib && make distclean)
+	- (cd grib2lib && make distclean)
+	- (cd ../lib && rm -f *.a)
+	- (cd ../include/libpng && rm -f *.h)
+	rm -f netcdf/ncdump/ncdump$(EXEEXT)
+	rm -f netcdf/ncgen/ncgen$(EXEEXT)
+	rm -f Makefile config.status config.log
+	rm -Rf autom4te.cache
