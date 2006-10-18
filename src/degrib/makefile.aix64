@@ -76,8 +76,8 @@ STD_LIB = -L../grib2lib -lgrib2 -L../gd -lgd -L../libpng -lpng \
 
 #TK_LIB=-L$(TK_PREFIX)/lib -bI:$(TK_PREFIX)/lib/libtk8.3.exp
 #TCL_LIB=-L$(TCL_PREFIX)/lib -bI:$(TCL_PREFIX)/lib/libtcl8.3.exp
-TK_LIB=-L$(TK_PREFIX)/lib -ltk8.3
-TCL_LIB=-L$(TCL_PREFIX)/lib -ltcl8.3
+TK_LIB=-L$(TK_PREFIX)/lib -ltk$(TCL_VERSION)
+TCL_LIB=-L$(TCL_PREFIX)/lib -ltcl$(TCL_VERSION)
 #X_LIB=-L/usr/X11R6/lib -lX11
 X_LIB=-lX11
 # DYNAMIC_LIB = -ldld
