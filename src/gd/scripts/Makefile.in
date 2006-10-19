@@ -8,7 +8,7 @@ LINK_SHARED_TAIL=
 #If the ar command fails on your system, consult the ar manpage
 #for your system.
 #AR=ar 
-
+DEFS=@DEFS@
 AR = @AR@
 ARFLAGS=@ARFLAGS@
 
@@ -54,7 +54,7 @@ VERSION=2.0.33
 COMPILER=@CC@
 EXEEXT= @EXEEXT@
 
-CC=$(COMPILER) $(INCLUDEDIRS)
+CC=$(COMPILER) $(DEFS) $(INCLUDEDIRS)
 LINK=$(CC) $(LIBDIRS) $(LIBS)
 
 PROGRAMS=$(BIN_PROGRAMS) $(TEST_PROGRAMS)

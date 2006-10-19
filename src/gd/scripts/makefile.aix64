@@ -10,7 +10,7 @@ AR=ar
 
 #CFLAGS=-g -DHAVE_LIBPNG -DHAVE_LIBZ -DHAVE_LIBJPEG -DHAVE_MALLOC_H -DHAVE_LIBFREETYPE -DHAVE_LIBXPM
 #CFLAGS=-g -qchars=signed -O2 -DHAVE_LIBPNG -DHAVE_LIBZ -DHAVE_LIBJPEG
-CFLAGS=-g -qchars=signed -O2 -DHAVE_LIBPNG -DHAVE_LIBZ
+CFLAGS=-g -qchars=signed -O2 -DHAVE_LIBPNG -DHAVE_LIBZ @DEFS@
 
 #LIBS=-lgd  -lpng -lz -ljpeg -lfreetype -lm
 #LIBS=-lgd -lpng -lz -ljpeg -lm
@@ -188,3 +188,6 @@ libgd.a: ${LIBOBJS}
 
 clean:
 	rm -f *.o *.a *.so ${PROGRAMS} test/gdtest.jpg test/gdtest.wbmp test/fttest.png test/fttest.jpg font*test*.png
+
+distclean: clean
+	rm -f config.h Makefile

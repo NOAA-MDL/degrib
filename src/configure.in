@@ -1,6 +1,7 @@
 AC_INIT([degrib],[1.84a],[arthur.taylor@noaa.gov])
 AC_CONFIG_SRCDIR([degrib/degrib1.c])
 AC_CONFIG_HEADERS([grib2lib/config.h])
+AC_CONFIG_HEADERS([gd/config.h:gd/scripts/config.hin])
 AC_CANONICAL_HOST()
 AC_PROG_CC()
 AC_PROG_F77()
@@ -11,6 +12,12 @@ AC_C_BIGENDIAN(AC_SUBST(DWORDS_BIGENDIAN,"-DWORDS_BIGENDIAN"))
 AC_C_CHAR_UNSIGNED()
 ADT_MYSIGN
 AC_CHECK_PROG(AR,ar,ar,:)
+AC_ARG_WITH([debug],AS_HELP_STRING([--with-debug],[set debug defines (default=no)]),[],
+[with_debug=no])
+AS_IF([test "x$with_debug" != xno],[
+  AC_SUBST(PNGDEBUG,["-g -DPNG_DEBUG=5"])
+  AC_SUBST(ZLIB_DEBUG,["-g -DDEBUG"])
+])
 AC_ARG_WITH([nocygwin],
 [AS_HELP_STRING([--with-nocygwin], [Create stand-alone executables for windows.])],
 [],

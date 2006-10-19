@@ -24,7 +24,7 @@ includedir = ${prefix}/include
 CC= @CC@
 
 #CFLAGS= $(CFLAGS) -O
-CFLAGS=@CFLAGS@
+CFLAGS=@CFLAGS@ @ZLIB_DEBUG@
 #CFLAGS=-O -DMAX_WBITS=14 -DMAX_MEM_LEVEL=7
 #CFLAGS=-g -DDEBUG
 #CFLAGS=-O3 -Wall -Wwrite-strings -Wpointer-arith -Wconversion \
