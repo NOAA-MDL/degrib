@@ -1,6 +1,10 @@
 #
 #----- Release: Version 1.84 10/02/2006 -----
 #
+10/19 AAT Fixed web.tcl to use http::myAppend instead of http::append 
+          (Broke on a version of linux)
+10/12 AAT updated /src/makefile.* clean step to clean up extra binaries.
+10/12 AAT updated /src/degrib/makefile.aix?? to pay attention $(TCL_VERSION)
 10/2  AAT Modified "/src/grib2lib/g2clib-1.0.2/grib2.h to use "SIZEOF_LONG_INT"
           instead of "__64BIT__" (note my code use to use "_64Bit")
 10/2  AAT Updated the makefile.* files in /src/grib2lib with current #defines.
