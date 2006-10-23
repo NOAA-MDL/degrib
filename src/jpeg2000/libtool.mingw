@@ -996,7 +996,7 @@ if test -z "$show_help"; then
     # We use this script file to make the link, it avoids creating a new file
     if test "$need_locks" = yes; then
       until $run ln "$0" "$lockfile" 2>/dev/null; do
-	$show "Waiting for $lockfile to be removed"
+	$show "1 Waiting for $lockfile to be removed"
 	sleep 2
       done
     elif test "$need_locks" = warn; then
@@ -1045,10 +1045,10 @@ compiler."
 	libobj="$dir/"`$echo "X$libobj" | $Xsed -e 's%^.*/%%'`
 
 	if test -d "$dir"; then
-	  $show "$rm $libobj"
-        $run $rm $libobj
+	  $show "2 $rm $libobj"
+     $run $rm $libobj
 	else
-	  $show "$mkdir $dir"
+	  $show "3 $mkdir $dir"
 	  $run $mkdir $dir
 	  status=$?
 	  if test $status -ne 0 && test ! -d $dir; then
@@ -1065,7 +1065,7 @@ compiler."
       fi
 
       $run $rm "$output_obj"
-      $show "$command"
+      $show "4 $command"
       if $run eval "$command"; then :
       else
 	test -n "$output_obj" && $run $rm $removelist
@@ -1094,7 +1094,7 @@ compiler."
 
       # Just move the object if needed, then go on to compile the next one
       if test x"$output_obj" != x"$libobj"; then
-	$show "$mv $output_obj $libobj"
+	$show "5 $mv $output_obj $libobj"
 	if $run $mv $output_obj $libobj; then :
 	else
 	  error=$?
@@ -1108,11 +1108,11 @@ compiler."
 	 test "$build_old_libs" = yes; then
 	# Rename the .lo from within objdir to obj
 	if test -f $obj; then
-	  $show "$rm $obj"
+	  $show "6 $rm $obj"
 	  $run $rm $obj
 	fi
 
-	$show "$mv $libobj $obj"
+	$show "7 $mv $libobj $obj"
 	if $run $mv $libobj $obj; then :
 	else
 	  error=$?
@@ -1129,7 +1129,7 @@ compiler."
 	baseobj=`$echo "X$obj" | $Xsed -e "s%.*/%%"`
 	libobj=`$echo "X$baseobj" | $Xsed -e "$o2lo"`
 	# Now arrange that obj and lo_libobj become the same file
-	$show "(cd $xdir && $LN_S $baseobj $libobj)"
+	$show "8 (cd $xdir && $LN_S $baseobj $libobj)"
 	if $run eval '(cd $xdir && $LN_S $baseobj $libobj)'; then
 	  # Unlock the critical section if it was locked
 	  if test "$need_locks" != no; then
@@ -1164,7 +1164,7 @@ compiler."
       # Suppress compiler output if we already did a PIC compilation.
       command="$command$suppress_output"
       $run $rm "$output_obj"
-      $show "$command"
+      $show "9 $command"
       if $run eval "$command"; then :
       else
 	$run $rm $removelist
@@ -1193,7 +1193,7 @@ compiler."
 
       # Just move the object if needed
       if test x"$output_obj" != x"$obj"; then
-	$show "$mv $output_obj $obj"
+	$show "10 $mv $output_obj $obj"
 	if $run $mv $output_obj $obj; then :
 	else
 	  error=$?
@@ -1205,11 +1205,11 @@ compiler."
       # Create an invalid libtool object if no PIC, so that we do not
       # accidentally link it into a program.
       if test "$build_libtool_libs" != yes; then
-	$show "echo timestamp > $libobj"
+	$show "11 echo timestamp > $libobj"
 	$run eval "echo timestamp > \$libobj" || exit $?
       else
 	# Move the .lo from within objdir
-	$show "$mv $libobj $lo_libobj"
+	$show "12 $mv $libobj $lo_libobj"
 	if $run $mv $libobj $lo_libobj; then :
 	else
 	  error=$?
@@ -1823,7 +1823,7 @@ compiler."
     fi
     # Create the object directory.
     if test ! -d $output_objdir; then
-      $show "$mkdir $output_objdir"
+      $show "13 $mkdir $output_objdir"
       $run $mkdir $output_objdir
       status=$?
       if test $status -ne 0 && test ! -d $output_objdir; then
@@ -2299,12 +2299,12 @@ compiler."
 	    # If the library has no export list, then create one now
 	    if test -f "$output_objdir/$soname-def"; then :
 	    else
-	      $show "extracting exported symbol list from \`$soname'"
+	      $show "14 extracting exported symbol list from \`$soname'"
 	      save_ifs="$IFS"; IFS='~'
 	      eval cmds=\"$extract_expsyms_cmds\"
 	      for cmd in $cmds; do
 		IFS="$save_ifs"
-		$show "$cmd"
+		$show "15 $cmd"
 		$run eval "$cmd" || exit $?
 	      done
 	      IFS="$save_ifs"
@@ -2312,12 +2312,12 @@ compiler."
 
 	    # Create $newlib
 	    if test -f "$output_objdir/$newlib"; then :; else
-	      $show "generating import library for \`$soname'"
+	      $show "16 generating import library for \`$soname'"
 	      save_ifs="$IFS"; IFS='~'
 	      eval cmds=\"$old_archive_from_expsyms_cmds\"
 	      for cmd in $cmds; do
 		IFS="$save_ifs"
-		$show "$cmd"
+		$show "17 $cmd"
 		$run eval "$cmd" || exit $?
 	      done
 	      IFS="$save_ifs"
@@ -2927,7 +2927,7 @@ compiler."
 
       if test "$mode" != relink; then
 	# Remove our outputs.
-	$show "${rm}r $output_objdir/$outputname $output_objdir/$libname.* $output_objdir/${libname}${release}.*"
+	$show "18 ${rm}r $output_objdir/$outputname $output_objdir/$libname.* $output_objdir/${libname}${release}.*"
 	$run ${rm}r $output_objdir/$outputname $output_objdir/$libname.* $output_objdir/${libname}${release}.*
       fi
 
@@ -3377,7 +3377,7 @@ EOF
 	  baseobj=`$echo "X$obj" | $Xsed -e 's%^.*/%%'`
 	  oldobj=`$echo "X$baseobj" | $Xsed -e "$lo2o"`
 	  if test ! -f $xdir/$oldobj; then
-	    $show "(cd $xdir && ${LN_S} $baseobj $oldobj)"
+	    $show "19 (cd $xdir && ${LN_S} $baseobj $oldobj)"
 	    $run eval '(cd $xdir && ${LN_S} $baseobj $oldobj)' || exit $?
 	  fi
 	done
@@ -3388,21 +3388,21 @@ EOF
 	# Prepare the list of exported symbols
 	if test -z "$export_symbols"; then
 	  if test "$always_export_symbols" = yes || test -n "$export_symbols_regex"; then
-	    $show "generating symbol list for \`$libname.la'"
+	    $show "20 generating symbol list for \`$libname.la'"
 	    export_symbols="$output_objdir/$libname.exp"
 	    $run $rm $export_symbols
 	    eval cmds=\"$export_symbols_cmds\"
 	    save_ifs="$IFS"; IFS='~'
 	    for cmd in $cmds; do
 	      IFS="$save_ifs"
-	      $show "$cmd"
+	      $show "21 $cmd"
 	      $run eval "$cmd" || exit $?
 	    done
 	    IFS="$save_ifs"
 	    if test -n "$export_symbols_regex"; then
-	      $show "egrep -e \"$export_symbols_regex\" \"$export_symbols\" > \"${export_symbols}T\""
+	      $show "22 egrep -e \"$export_symbols_regex\" \"$export_symbols\" > \"${export_symbols}T\""
 	      $run eval 'egrep -e "$export_symbols_regex" "$export_symbols" > "${export_symbols}T"'
-	      $show "$mv \"${export_symbols}T\" \"$export_symbols\""
+	      $show "23 $mv \"${export_symbols}T\" \"$export_symbols\""
 	      $run eval '$mv "${export_symbols}T" "$export_symbols"'
 	    fi
 	  fi
@@ -3417,9 +3417,9 @@ EOF
 	    eval libobjs=\"\$libobjs $whole_archive_flag_spec\"
 	  else
 	    gentop="$output_objdir/${outputname}x"
-	    $show "${rm}r $gentop"
+	    $show "24 ${rm}r $gentop"
 	    $run ${rm}r "$gentop"
-	    $show "mkdir $gentop"
+	    $show "25 mkdir $gentop"
 	    $run mkdir "$gentop"
 	    status=$?
 	    if test $status -ne 0 && test ! -d "$gentop"; then
@@ -3436,15 +3436,15 @@ EOF
 	      xlib=`$echo "X$xlib" | $Xsed -e 's%^.*/%%'`
 	      xdir="$gentop/$xlib"
 
-	      $show "${rm}r $xdir"
+	      $show "26 ${rm}r $xdir"
 	      $run ${rm}r "$xdir"
-	      $show "mkdir $xdir"
+	      $show "27 mkdir $xdir"
 	      $run mkdir "$xdir"
 	      status=$?
 	      if test $status -ne 0 && test ! -d "$xdir"; then
 		exit $status
 	      fi
-	      $show "(cd $xdir && $AR x $xabs)"
+	      $show "28 (cd $xdir && $AR x $xabs)"
 	      $run eval "(cd \$xdir && $AR x \$xabs)" || exit $?
 
 	      libobjs="$libobjs "`find $xdir -name \*.o -print -o -name \*.lo -print | $NL2SP`
@@ -3482,7 +3482,7 @@ EOF
 	save_ifs="$IFS"; IFS='~'
 	for cmd in $cmds; do
 	  IFS="$save_ifs"
-	  $show "$cmd"
+	  $show "29 $cmd"
 	  $run eval "$cmd" || exit $?
 	done
 	IFS="$save_ifs"
@@ -3496,7 +3496,7 @@ EOF
 	# Create links to the real library.
 	for linkname in $linknames; do
 	  if test "$realname" != "$linkname"; then
-	    $show "(cd $output_objdir && $rm $linkname && $LN_S $realname $linkname)"
+	    $show "30 (cd $output_objdir && $rm $linkname && $LN_S $realname $linkname)"
 	    $run eval '(cd $output_objdir && $rm $linkname && $LN_S $realname $linkname)' || exit $?
 	  fi
 	done
@@ -3567,9 +3567,9 @@ EOF
 	  eval reload_conv_objs=\"\$reload_objs $whole_archive_flag_spec\"
 	else
 	  gentop="$output_objdir/${obj}x"
-	  $show "${rm}r $gentop"
+	  $show "31 ${rm}r $gentop"
 	  $run ${rm}r "$gentop"
-	  $show "mkdir $gentop"
+	  $show "32 mkdir $gentop"
 	  $run mkdir "$gentop"
 	  status=$?
 	  if test $status -ne 0 && test ! -d "$gentop"; then
@@ -3586,15 +3586,15 @@ EOF
 	    xlib=`$echo "X$xlib" | $Xsed -e 's%^.*/%%'`
 	    xdir="$gentop/$xlib"
 
-	    $show "${rm}r $xdir"
+	    $show "33 ${rm}r $xdir"
 	    $run ${rm}r "$xdir"
-	    $show "mkdir $xdir"
+	    $show "34 mkdir $xdir"
 	    $run mkdir "$xdir"
 	    status=$?
 	    if test $status -ne 0 && test ! -d "$xdir"; then
 	      exit $status
 	    fi
-	    $show "(cd $xdir && $AR x $xabs)"
+	    $show "35 (cd $xdir && $AR x $xabs)"
 	    $run eval "(cd \$xdir && $AR x \$xabs)" || exit $?
 
 	    reload_conv_objs="$reload_objs "`find $xdir -name \*.o -print -o -name \*.lo -print | $NL2SP`
@@ -3610,7 +3610,7 @@ EOF
       save_ifs="$IFS"; IFS='~'
       for cmd in $cmds; do
 	IFS="$save_ifs"
-	$show "$cmd"
+	$show "36 $cmd"
 	$run eval "$cmd" || exit $?
       done
       IFS="$save_ifs"
@@ -3618,7 +3618,7 @@ EOF
       # Exit if we aren't doing a library object file.
       if test -z "$libobj"; then
 	if test -n "$gentop"; then
-	  $show "${rm}r $gentop"
+	  $show "37 ${rm}r $gentop"
 	  $run ${rm}r $gentop
 	fi
 
@@ -3627,13 +3627,13 @@ EOF
 
       if test "$build_libtool_libs" != yes; then
 	if test -n "$gentop"; then
-	  $show "${rm}r $gentop"
+	  $show "38 ${rm}r $gentop"
 	  $run ${rm}r $gentop
 	fi
 
 	# Create an invalid libtool object if no PIC, so that we don't
 	# accidentally link it into a program.
-	$show "echo timestamp > $libobj"
+	$show "39 echo timestamp > $libobj"
 	$run eval "echo timestamp > $libobj" || exit $?
 	exit 0
       fi
@@ -3646,13 +3646,13 @@ EOF
 	save_ifs="$IFS"; IFS='~'
 	for cmd in $cmds; do
 	  IFS="$save_ifs"
-	  $show "$cmd"
+	  $show "40 $cmd"
 	  $run eval "$cmd" || exit $?
 	done
 	IFS="$save_ifs"
       else
 	# Just create a symlink.
-	$show "$rm $libobj"
+	$show "41 $rm $libobj"
 	$run $rm $libobj
 	xdir=`$echo "X$libobj" | $Xsed -e 's%/[^/]*$%%'`
 	if test "X$xdir" = "X$libobj"; then
@@ -3662,12 +3662,12 @@ EOF
 	fi
 	baseobj=`$echo "X$libobj" | $Xsed -e 's%^.*/%%'`
 	oldobj=`$echo "X$baseobj" | $Xsed -e "$lo2o"`
-	$show "(cd $xdir && $LN_S $oldobj $baseobj)"
+	$show "42 (cd $xdir && $LN_S $oldobj $baseobj)"
 	$run eval '(cd $xdir && $LN_S $oldobj $baseobj)' || exit $?
       fi
 
       if test -n "$gentop"; then
-	$show "${rm}r $gentop"
+	$show "43 ${rm}r $gentop"
 	$run ${rm}r $gentop
       fi
 
@@ -3825,11 +3825,11 @@ EOF
 	  # Discover the nlist of each of the dlfiles.
 	  nlist="$output_objdir/${outputname}.nm"
 
-	  $show "$rm $nlist ${nlist}S ${nlist}T"
+	  $show "44 $rm $nlist ${nlist}S ${nlist}T"
 	  $run $rm "$nlist" "${nlist}S" "${nlist}T"
 
 	  # Parse the name list into a source file.
-	  $show "creating $output_objdir/$dlsyms"
+	  $show "45 creating $output_objdir/$dlsyms"
 
 	  test -z "$run" && $echo > "$output_objdir/$dlsyms" "\
 /* $dlsyms - symbol resolution table for \`$outputname' dlsym emulation. */
@@ -3846,14 +3846,14 @@ extern \"C\" {
 "
 
 	  if test "$dlself" = yes; then
-	    $show "generating symbol list for \`$output'"
+	    $show "46 generating symbol list for \`$output'"
 
 	    test -z "$run" && $echo ': @PROGRAM@ ' > "$nlist"
 
 	    # Add our own program objects to the symbol list.
 	    progfiles=`$echo "X$objs$old_deplibs" | $SP2NL | $Xsed -e "$lo2o" | $NL2SP`
 	    for arg in $progfiles; do
-	      $show "extracting global C symbols from \`$arg'"
+	      $show "47 extracting global C symbols from \`$arg'"
 	      $run eval "$NM $arg | $global_symbol_pipe >> '$nlist'"
 	    done
 
@@ -3880,7 +3880,7 @@ extern \"C\" {
 	  fi
 
 	  for arg in $dlprefiles; do
-	    $show "extracting global C symbols from \`$arg'"
+	    $show "48 extracting global C symbols from \`$arg'"
 	    name=`echo "$arg" | ${SED} -e 's%^.*/%%'`
 	    $run eval 'echo ": $name " >> "$nlist"'
 	    $run eval "$NM $arg | $global_symbol_pipe >> '$nlist'"
@@ -3973,11 +3973,11 @@ static const void *lt_preloaded_setup() {
 	  esac
 
 	  # Now compile the dynamic symbol file.
-	  $show "(cd $output_objdir && $CC -c$no_builtin_flag$pic_flag_for_symtable \"$dlsyms\")"
+	  $show "49 (cd $output_objdir && $CC -c$no_builtin_flag$pic_flag_for_symtable \"$dlsyms\")"
 	  $run eval '(cd $output_objdir && $CC -c$no_builtin_flag$pic_flag_for_symtable "$dlsyms")' || exit $?
 
 	  # Clean up the generated files.
-	  $show "$rm $output_objdir/$dlsyms $nlist ${nlist}S ${nlist}T"
+	  $show "50 $rm $output_objdir/$dlsyms $nlist ${nlist}S ${nlist}T"
 	  $run $rm "$output_objdir/$dlsyms" "$nlist" "${nlist}S" "${nlist}T"
 
 	  # Transform the symbol file into the correct name.
@@ -4005,13 +4005,13 @@ static const void *lt_preloaded_setup() {
 	link_command="$compile_command$compile_rpath"
 
 	# We have no uninstalled library dependencies, so finalize right now.
-	$show "$link_command"
+	$show "51 $link_command"
 	$run eval "$link_command"
 	status=$?
 
 	# Delete the generated files.
 	if test -n "$dlsyms"; then
-	  $show "$rm $output_objdir/${outputname}S.${objext}"
+	  $show "52 $rm $output_objdir/${outputname}S.${objext}"
 	  $run $rm "$output_objdir/${outputname}S.${objext}"
 	fi
 
@@ -4072,7 +4072,7 @@ static const void *lt_preloaded_setup() {
 	# Delete the old output file.
 	$run $rm $output
 	# Link the executable and exit
-	$show "$link_command"
+	$show "53 $link_command"
 	$run eval "$link_command" || exit $?
 	exit 0
       fi
@@ -4105,11 +4105,11 @@ static const void *lt_preloaded_setup() {
       # Delete the old output files.
       $run $rm $output $output_objdir/$outputname $output_objdir/lt-$outputname
 
-      $show "$link_command"
+      $show "54 $link_command"
       $run eval "$link_command" || exit $?
 
       # Now create the wrapper script.
-      $show "creating $output"
+      $show "55 creating $output"
 
       # Quote the relink command for shipping.
       if test -n "$relink_command"; then
@@ -4362,9 +4362,9 @@ fi\
 
       if test -n "$addlibs"; then
 	gentop="$output_objdir/${outputname}x"
-	$show "${rm}r $gentop"
+	$show "56 ${rm}r $gentop"
 	$run ${rm}r "$gentop"
-	$show "mkdir $gentop"
+	$show "57 mkdir $gentop"
 	$run mkdir "$gentop"
 	status=$?
 	if test $status -ne 0 && test ! -d "$gentop"; then
@@ -4382,17 +4382,17 @@ fi\
 	  xlib=`$echo "X$xlib" | $Xsed -e 's%^.*/%%'`
 	  xdir="$gentop/$xlib"
 
-	  $show "${rm}r $xdir"
+	  $show "58 ${rm}r $xdir"
 	  $run ${rm}r "$xdir"
-	  $show "mkdir $xdir"
+	  $show "59 mkdir $xdir"
 	  $run mkdir "$xdir"
 	  status=$?
 	  if test $status -ne 0 && test ! -d "$xdir"; then
 	    exit $status
 	  fi
-	  $show "(cd $xdir && cp $xabs . && $AR x *.a)"
+	  $show "60 (cd $xdir && cp $xabs . && $AR x *.a)"
 	  $run eval "(cd \$xdir && cp $xabs . && $AR x *.a)" || exit $?
-#	  $show "(cd $xdir && $AR x $xabs)"
+#	  $show "60 (cd $xdir && $AR x $xabs)"
 #	  $run eval "(cd \$xdir && $AR x \$xabs)" || exit $?
 
 	  oldobjs="$oldobjs "`find $xdir -name \*.${objext} -print -o -name \*.lo -print | $NL2SP`
@@ -4416,7 +4416,7 @@ fi\
 	    fi
 	    baseobj=`$echo "X$oldobj" | $Xsed -e 's%^.*/%%'`
 	    obj=`$echo "X$baseobj" | $Xsed -e "$o2lo"`
-	    $show "(cd $xdir && ${LN_S} $obj $baseobj)"
+	    $show "61 (cd $xdir && ${LN_S} $obj $baseobj)"
 	    $run eval '(cd $xdir && ${LN_S} $obj $baseobj)' || exit $?
 	  fi
 	done
@@ -4426,14 +4426,14 @@ fi\
       save_ifs="$IFS"; IFS='~'
       for cmd in $cmds; do
 	IFS="$save_ifs"
-	$show "$cmd"
+	$show "62 $cmd"
 	$run eval "$cmd" || exit $?
       done
       IFS="$save_ifs"
     done
 
     if test -n "$generated"; then
-      $show "${rm}r$generated"
+      $show "63 ${rm}r$generated"
       $run ${rm}r$generated
     fi
 
@@ -4442,7 +4442,7 @@ fi\
     *.la)
       old_library=
       test "$build_old_libs" = yes && old_library="$libname.$libext"
-      $show "creating $output"
+      $show "64 creating $output"
 
       # Preserve any variables that may affect compiler behavior
       for var in $variables_saved_for_relink; do
@@ -4555,7 +4555,7 @@ relink_command=\"$relink_command\""
 
       # Do a symbolic link so that the libtool archive can be found in
       # LD_LIBRARY_PATH before the program is installed.
-      $show "(cd $output_objdir && $rm $outputname && $LN_S ../$outputname $outputname)"
+      $show "65 (cd $output_objdir && $rm $outputname && $LN_S ../$outputname $outputname)"
       $run eval '(cd $output_objdir && $rm $outputname && $LN_S ../$outputname $outputname)' || exit $?
       ;;
     esac
@@ -4776,7 +4776,7 @@ relink_command=\"$relink_command\""
 	  fi
 
 	  $echo "$modename: warning: relinking \`$file'" 1>&2
-	  $show "$relink_command"
+	  $show "66 $relink_command"
 	  if $run eval "$relink_command"; then :
 	  else
 	    $echo "$modename: error: relink \`$file' with the above command before installing it" 1>&2
@@ -4795,10 +4795,10 @@ relink_command=\"$relink_command\""
 	  test -n "$relink_command" && srcname="$realname"T
 
 	  # Install the shared library and build the symlinks.
-	  $show "$install_prog $dir/$srcname $destdir/$realname"
+	  $show "67 $install_prog $dir/$srcname $destdir/$realname"
 	  $run eval "$install_prog $dir/$srcname $destdir/$realname" || exit $?
 	  if test -n "$stripme" && test -n "$striplib"; then
-	    $show "$striplib $destdir/$realname"
+	    $show "68 $striplib $destdir/$realname"
 	    $run eval "$striplib $destdir/$realname" || exit $?
 	  fi
 
@@ -4807,7 +4807,7 @@ relink_command=\"$relink_command\""
 	    for linkname
 	    do
 	      if test "$linkname" != "$realname"; then
-		$show "(cd $destdir && $rm $linkname && $LN_S $realname $linkname)"
+		$show "69 (cd $destdir && $rm $linkname && $LN_S $realname $linkname)"
 		$run eval "(cd $destdir && $rm $linkname && $LN_S $realname $linkname)"
 	      fi
 	    done
@@ -4819,7 +4819,7 @@ relink_command=\"$relink_command\""
 	  save_ifs="$IFS"; IFS='~'
 	  for cmd in $cmds; do
 	    IFS="$save_ifs"
-	    $show "$cmd"
+	    $show "70 $cmd"
 	    $run eval "$cmd" || exit $?
 	  done
 	  IFS="$save_ifs"
@@ -4828,7 +4828,7 @@ relink_command=\"$relink_command\""
 	# Install the pseudo-library for information purposes.
 	name=`$echo "X$file" | $Xsed -e 's%^.*/%%'`
 	instname="$dir/$name"i
-	$show "$install_prog $instname $destdir/$name"
+	$show "71 $install_prog $instname $destdir/$name"
 	$run eval "$install_prog $instname $destdir/$name" || exit $?
 
 	# Maybe install the static library, too.
@@ -4864,7 +4864,7 @@ relink_command=\"$relink_command\""
 
 	# Install the libtool object if requested.
 	if test -n "$destfile"; then
-	  $show "$install_prog $file $destfile"
+	  $show "72 $install_prog $file $destfile"
 	  $run eval "$install_prog $file $destfile" || exit $?
 	fi
 
@@ -4873,7 +4873,7 @@ relink_command=\"$relink_command\""
 	  # Deduce the name of the old-style object file.
 	  staticobj=`$echo "X$file" | $Xsed -e "$lo2o"`
 
-	  $show "$install_prog $staticobj $staticdest"
+	  $show "73 $install_prog $staticobj $staticdest"
 	  $run eval "$install_prog \$staticobj \$staticdest" || exit $?
 	fi
 	exit 0
@@ -4960,7 +4960,7 @@ relink_command=\"$relink_command\""
 	      # Replace the output file specification.
 	      relink_command=`$echo "X$relink_command" | $Xsed -e 's%@OUTPUT@%'"$outputname"'%g'`
 
-	      $show "$relink_command"
+	      $show "74 $relink_command"
 	      if $run eval "$relink_command"; then :
 	      else
 		$echo "$modename: error: relink \`$file' with the above command before installing it" 1>&2
@@ -4994,7 +4994,7 @@ relink_command=\"$relink_command\""
 	  esac
 	  ;;
 	esac
-	$show "$install_prog$stripme $file $destfile"
+	$show "75 $install_prog$stripme $file $destfile"
 	$run eval "$install_prog\$stripme \$file \$destfile" || exit $?
 	test -n "$outputname" && ${rm}r "$tmpdir"
 	;;
@@ -5007,11 +5007,11 @@ relink_command=\"$relink_command\""
       # Set up the ranlib parameters.
       oldlib="$destdir/$name"
 
-      $show "$install_prog $file $oldlib"
+      $show "76 $install_prog $file $oldlib"
       $run eval "$install_prog \$file \$oldlib" || exit $?
 
       if test -n "$stripme" && test -n "$striplib"; then
-	$show "$old_striplib $oldlib"
+	$show "77 $old_striplib $oldlib"
 	$run eval "$old_striplib $oldlib" || exit $?
       fi
 
@@ -5020,7 +5020,7 @@ relink_command=\"$relink_command\""
       save_ifs="$IFS"; IFS='~'
       for cmd in $cmds; do
 	IFS="$save_ifs"
-	$show "$cmd"
+	$show "78 $cmd"
 	$run eval "$cmd" || exit $?
       done
       IFS="$save_ifs"
@@ -5058,7 +5058,7 @@ relink_command=\"$relink_command\""
 	  save_ifs="$IFS"; IFS='~'
 	  for cmd in $cmds; do
 	    IFS="$save_ifs"
-	    $show "$cmd"
+	    $show "79 $cmd"
 	    $run eval "$cmd" || admincmds="$admincmds
        $cmd"
 	  done
@@ -5334,7 +5334,7 @@ relink_command=\"$relink_command\""
 	      save_ifs="$IFS"; IFS='~'
 	      for cmd in $cmds; do
 		IFS="$save_ifs"
-		$show "$cmd"
+		$show "80 $cmd"
 		$run eval "$cmd"
 		if test $? != 0 && test "$rmforce" != yes; then
 		  exit_status=1
@@ -5349,7 +5349,7 @@ relink_command=\"$relink_command\""
 	      save_ifs="$IFS"; IFS='~'
 	      for cmd in $cmds; do
 		IFS="$save_ifs"
-		$show "$cmd"
+		$show "81 $cmd"
 		$run eval "$cmd"
 		if test $? != 0 && test "$rmforce" != yes; then
 		  exit_status=1
@@ -5383,14 +5383,14 @@ relink_command=\"$relink_command\""
 	fi
 	;;
       esac
-      $show "$rm $rmfiles"
+      $show "82 $rm $rmfiles"
       $run $rm $rmfiles || exit_status=1
     done
 
     # Try to remove the ${objdir}s in the directories where we deleted files
     for dir in $rmdirs; do
       if test -d "$dir"; then
-	$show "rmdir $dir"
+	$show "83 rmdir $dir"
 	$run rmdir $dir >/dev/null 2>&1
       fi
     done
