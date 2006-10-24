@@ -43,7 +43,7 @@ TCL_LD_FLAGS = ${LD_FLAGS} -mconsole
 ############################
 XML_DEF = -D_DWML_
 XML_INC = -I../libxml/include -I../dwmllib
-XML_LIB = -L../dwmllib -ldwml -L../libxml/.libs/ -lxml2
+XML_LIB = -L../dwmllib -ldwml ../libxml/.libs/libxml2.a
 XML_DEP = ../dwmllib/libdwml.a ../libxml/.libs/libxml2.a
 XML_CLEAN = (cd ../dwmllib && make -f makefile clean)
 
@@ -83,8 +83,8 @@ DRAWSHP_LIB = -L../gd -lgd -L../libpng -lpng -L../zlib -lz \
 STD_LIB = -L../grib2lib -lgrib2 -L../gd -lgd -L../libpng -lpng \
           -L../zlib -lz -L../jpeg2000/src/libjasper/jpc/.libs/ -ljpc \
           -L../jpeg2000/src/libjasper/base/.libs/ -lbase \
-          -L../netcdf/libsrc/ -lnetcdf \
-          -L../g2c-mingw/ -lg2c -L../emapf-c/ -lemapf -L/usr/lib -lm $(XML_LIB)
+          -L../netcdf/libsrc/ -lnetcdf $(XML_LIB) \
+          -L../g2c-mingw/ -lg2c -L../emapf-c/ -lemapf -L/usr/lib -lm
 
 TCL_LIB=-L$(TCL_PREFIX)/lib -ltcl$(TCL_VERSION)
 TK_LIB=-L$(TK_PREFIX)/lib -ltk$(TCL_VERSION)
