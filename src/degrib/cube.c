@@ -490,7 +490,7 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
        * since we use one for the upper limit so we use -1, even though that
        * could have meaning. */
       meta->pds2.sect4.lowerLimit.factor = -1;
-      meta->pds2.sect4.lowerLimit.value = GRIB2MISSING_4;
+      meta->pds2.sect4.lowerLimit.value = GRIB2MISSING_s4;
       meta->pds2.sect4.upperLimit.factor = 3; /* Defin of scale factor. */
       meta->pds2.sect4.upperLimit.value = 254;
       meta->pds2.sect4.numInterval = 1;

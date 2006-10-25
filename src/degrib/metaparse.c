@@ -687,7 +687,7 @@ static int ParseSect3 (sInt4 *is3, sInt4 ns3, grib_MetaData *meta)
       return -3;
    }
 
-   /* 
+   /*
     * Handle variables common to the supported templates.
     */
    if (ns3 < 38) {
@@ -713,7 +713,7 @@ static int ParseSect3 (sInt4 *is3, sInt4 ns3, grib_MetaData *meta)
           * on: Y * 10^D = R, where Y = original value, D = scale factor, ___
           * R = scale value. */
 
-         if ((is3[16] != GRIB2MISSING_4) && (is3[15] != GRIB2MISSING_s1)) {
+         if ((is3[16] != GRIB2MISSING_s4) && (is3[15] != GRIB2MISSING_s1)) {
             /* Assumes data is given in m (not km). */
             meta->gds.majEarth = is3[16] / (pow (10, is3[15]) * 1000.);
             meta->gds.minEarth = meta->gds.majEarth;
@@ -750,8 +750,8 @@ static int ParseSect3 (sInt4 *is3, sInt4 ns3, grib_MetaData *meta)
          /* Incorrect Assumption (9/8/2003): scale factor / value are based
           * on: Y * 10^D = R, where Y = original value, D = scale factor, ___
           * R = scale value. */
-         if ((is3[21] != GRIB2MISSING_4) && (is3[20] != GRIB2MISSING_s1) &&
-             (is3[26] != GRIB2MISSING_4) && (is3[25] != GRIB2MISSING_s1)) {
+         if ((is3[21] != GRIB2MISSING_s4) && (is3[20] != GRIB2MISSING_s1) &&
+             (is3[26] != GRIB2MISSING_s4) && (is3[25] != GRIB2MISSING_s1)) {
             /* Assumes data is given in km (not m). */
             meta->gds.majEarth = is3[21] / (pow (10, is3[20]));
             meta->gds.minEarth = is3[26] / (pow (10, is3[25]));
@@ -775,8 +775,8 @@ static int ParseSect3 (sInt4 *is3, sInt4 ns3, grib_MetaData *meta)
          /* Incorrect Assumption (9/8/2003): scale factor / value are based
           * on: Y * 10^D = R, where Y = original value, D = scale factor, ___
           * R = scale value. */
-         if ((is3[21] != GRIB2MISSING_4) && (is3[20] != GRIB2MISSING_s1) &&
-             (is3[26] != GRIB2MISSING_4) && (is3[25] != GRIB2MISSING_s1)) {
+         if ((is3[21] != GRIB2MISSING_s4) && (is3[20] != GRIB2MISSING_s1) &&
+             (is3[26] != GRIB2MISSING_s4) && (is3[25] != GRIB2MISSING_s1)) {
             /* Assumes data is given in m (not km). */
             meta->gds.majEarth = is3[21] / (pow (10, is3[20]) * 1000.);
             meta->gds.minEarth = is3[26] / (pow (10, is3[25]) * 1000.);
@@ -832,9 +832,9 @@ static int ParseSect3 (sInt4 *is3, sInt4 ns3, grib_MetaData *meta)
             }
             unit = angle / (double) (subdivision);
          }
-         if ((is3[46] == GRIB2MISSING_4) || (is3[50] == GRIB2MISSING_4) ||
-             (is3[55] == GRIB2MISSING_4) || (is3[59] == GRIB2MISSING_4) ||
-             (is3[63] == GRIB2MISSING_4) || (is3[67] == GRIB2MISSING_4)) {
+         if ((is3[46] == GRIB2MISSING_s4) || (is3[50] == GRIB2MISSING_s4) ||
+             (is3[55] == GRIB2MISSING_s4) || (is3[59] == GRIB2MISSING_s4) ||
+             (is3[63] == GRIB2MISSING_s4) || (is3[67] == GRIB2MISSING_s4)) {
             errSprintf ("Lat/Lon grid is not defined completely.\n");
             return -2;
          }
@@ -861,9 +861,9 @@ static int ParseSect3 (sInt4 *is3, sInt4 ns3, grib_MetaData *meta)
          if (ns3 < 72) {
             return -1;
          }
-         if ((is3[38] == GRIB2MISSING_4) || (is3[42] == GRIB2MISSING_4) ||
-             (is3[47] == GRIB2MISSING_4) || (is3[51] == GRIB2MISSING_4) ||
-             (is3[55] == GRIB2MISSING_4) || (is3[60] == GRIB2MISSING_4)) {
+         if ((is3[38] == GRIB2MISSING_s4) || (is3[42] == GRIB2MISSING_s4) ||
+             (is3[47] == GRIB2MISSING_s4) || (is3[51] == GRIB2MISSING_s4) ||
+             (is3[55] == GRIB2MISSING_s4) || (is3[60] == GRIB2MISSING_s4)) {
             errSprintf ("Mercator grid is not defined completely.\n");
             return -2;
          }
@@ -880,14 +880,14 @@ static int ParseSect3 (sInt4 *is3, sInt4 ns3, grib_MetaData *meta)
          /* Resolve resolution flag(bit 3,4).  Copy Dx,Dy as appropriate. */
          if ((meta->gds.resFlag & GRIB2BIT_3) &&
              (!(meta->gds.resFlag & GRIB2BIT_4))) {
-            if (is3[64] == GRIB2MISSING_4) {
+            if (is3[64] == GRIB2MISSING_s4) {
                errSprintf ("Mercator grid is not defined completely.\n");
                return -2;
             }
             meta->gds.Dy = meta->gds.Dx;
          } else if ((!(meta->gds.resFlag & GRIB2BIT_3)) &&
                     (meta->gds.resFlag & GRIB2BIT_4)) {
-            if (is3[68] == GRIB2MISSING_4) {
+            if (is3[68] == GRIB2MISSING_s4) {
                errSprintf ("Mercator grid is not defined completely.\n");
                return -2;
             }
@@ -898,8 +898,8 @@ static int ParseSect3 (sInt4 *is3, sInt4 ns3, grib_MetaData *meta)
          if (ns3 < 65) {
             return -1;
          }
-         if ((is3[38] == GRIB2MISSING_4) || (is3[42] == GRIB2MISSING_4) ||
-             (is3[47] == GRIB2MISSING_4) || (is3[51] == GRIB2MISSING_4)) {
+         if ((is3[38] == GRIB2MISSING_s4) || (is3[42] == GRIB2MISSING_s4) ||
+             (is3[47] == GRIB2MISSING_s4) || (is3[51] == GRIB2MISSING_s4)) {
             errSprintf ("Polar Stereographic grid is not defined "
                         "completely.\n");
             return -2;
@@ -931,10 +931,10 @@ static int ParseSect3 (sInt4 *is3, sInt4 ns3, grib_MetaData *meta)
          if (ns3 < 81) {
             return -1;
          }
-         if ((is3[38] == GRIB2MISSING_4) || (is3[42] == GRIB2MISSING_4) ||
-             (is3[47] == GRIB2MISSING_4) || (is3[51] == GRIB2MISSING_4) ||
-             (is3[65] == GRIB2MISSING_4) || (is3[69] == GRIB2MISSING_4) ||
-             (is3[73] == GRIB2MISSING_4) || (is3[77] == GRIB2MISSING_4)) {
+         if ((is3[38] == GRIB2MISSING_s4) || (is3[42] == GRIB2MISSING_s4) ||
+             (is3[47] == GRIB2MISSING_s4) || (is3[51] == GRIB2MISSING_s4) ||
+             (is3[65] == GRIB2MISSING_s4) || (is3[69] == GRIB2MISSING_s4) ||
+             (is3[73] == GRIB2MISSING_s4) || (is3[77] == GRIB2MISSING_s4)) {
             errSprintf ("Lambert Conformal grid is not defined "
                         "completely.\n");
             return -2;
@@ -1199,7 +1199,7 @@ static int ParseSect4 (sInt4 *is4, sInt4 ns4, grib_MetaData *meta)
       meta->pds2.sect4.f_validCutOff = 1;
       meta->pds2.sect4.cutOff = is4[14] * 3600 + is4[16] * 60;
    }
-   if (is4[18] == GRIB2MISSING_4) {
+   if (is4[18] == GRIB2MISSING_s4) {
       errSprintf ("Missing 'forecast' time?\n");
       return -5;
    }
@@ -1217,7 +1217,8 @@ static int ParseSect4 (sInt4 *is4, sInt4 ns4, grib_MetaData *meta)
     * section 3.  (Hopefully they are consistent).
     */
    meta->pds2.sect4.fstSurfType = (uChar) is4[22];
-   if ((is4[24] == GRIB2MISSING_4) || (is4[23] == GRIB2MISSING_s1)) {
+   if ((is4[24] == GRIB2MISSING_s4) || (is4[23] == GRIB2MISSING_s1) ||
+       (meta->pds2.sect4.fstSurfType == GRIB2MISSING_u1)) {
       meta->pds2.sect4.fstSurfScale = GRIB2MISSING_s1;
       meta->pds2.sect4.fstSurfValue = 0;
    } else {
@@ -1225,7 +1226,8 @@ static int ParseSect4 (sInt4 *is4, sInt4 ns4, grib_MetaData *meta)
       meta->pds2.sect4.fstSurfValue = is4[24] / pow (10, is4[23]);
    }
    meta->pds2.sect4.sndSurfType = (uChar) is4[28];
-   if ((is4[30] == GRIB2MISSING_4) || (is4[29] == GRIB2MISSING_s1)) {
+   if ((is4[30] == GRIB2MISSING_s4) || (is4[29] == GRIB2MISSING_s1) ||
+       (meta->pds2.sect4.sndSurfType == GRIB2MISSING_u1)) {
       meta->pds2.sect4.sndSurfScale = GRIB2MISSING_s1;
       meta->pds2.sect4.sndSurfValue = 0;
    } else {
@@ -1783,7 +1785,7 @@ int MetaParse (grib_MetaData *meta, sInt4 *is0, sInt4 ns0,
                     meta->pds2.refTime) / 3600;
       }
 */
-      if (lenTime == GRIB2MISSING_4) {
+      if (lenTime == GRIB2MISSING_s4) {
          lenTime = 0;
       }
       ParseElemName (meta->center, meta->subcenter,

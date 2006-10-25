@@ -70,7 +70,10 @@ enum { TDLP_MERCATOR = 7, TDLP_LAMBERT = 3, TDLP_POLAR = 5};
 #define GRIB2MISSING_s1 (sChar) -1 * (0x7f)
 #define GRIB2MISSING_u2 (uShort2) (0xffff)
 #define GRIB2MISSING_s2 (sShort2) -1 * (0x7fff)
-#define GRIB2MISSING_4 (uInt4) (0xffffffff)
+#define GRIB2MISSING_u4 (uInt4) (0xffffffff)
+/* following is -1 * 2&31 because of the way signed integers are stored in
+   GRIB2. */
+#define GRIB2MISSING_s4 (sInt4) -2147483647
 
 #define NUM_UGLY_WORD 5
 #define NUM_UGLY_ATTRIB 5

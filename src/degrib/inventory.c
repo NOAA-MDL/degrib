@@ -644,7 +644,7 @@ enum { GS4_ANALYSIS, GS4_ENSEMBLE, GS4_DERIVED, GS4_PROBABIL_PNT = 5,
       printf ("Can't handle this timeRangeUnit\n");
       myAssert (timeRangeUnit == 1);
    }
-   if (lenTime == GRIB2MISSING_4) {
+   if (lenTime == GRIB2MISSING_s4) {
       lenTime = 0;
    }
    /* Find out what the name of this variable is. */
@@ -701,7 +701,7 @@ enum { GS4_ANALYSIS, GS4_ENSEMBLE, GS4_DERIVED, GS4_PROBABIL_PNT = 5,
       fstSurfType = (*buffer)[23 - 5];
       scale = (*buffer)[24 - 5];
       MEMCPY_BIG (&value, *buffer + 25 - 5, sizeof (sInt4));
-      if ((value == GRIB2MISSING_4) || (scale == GRIB2MISSING_s1)) {
+      if ((value == GRIB2MISSING_s4) || (scale == GRIB2MISSING_s1)) {
          fstSurfValue = 0;
       } else {
          fstSurfValue = value * pow (10, (int) (-1 * scale));
@@ -709,7 +709,7 @@ enum { GS4_ANALYSIS, GS4_ENSEMBLE, GS4_DERIVED, GS4_PROBABIL_PNT = 5,
       sndSurfType = (*buffer)[29 - 5];
       scale = (*buffer)[30 - 5];
       MEMCPY_BIG (&value, *buffer + 31 - 5, sizeof (sInt4));
-      if ((value == GRIB2MISSING_4) || (scale == GRIB2MISSING_s1) ||
+      if ((value == GRIB2MISSING_s4) || (scale == GRIB2MISSING_s1) ||
           (sndSurfType == GRIB2MISSING_u1)) {
          sndSurfValue = 0;
          f_sndValue = 0;
