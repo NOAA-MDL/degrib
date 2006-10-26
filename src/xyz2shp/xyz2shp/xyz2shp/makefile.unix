@@ -1,0 +1,84 @@
+#!/bin/make
+#SHELL = /bin/sh
+
+############################
+# DEFAULT Compilers and Compiler flags.
+############################
+CC = gcc
+GCC_DEF = -D_GCC_
+STD_FLAGS = -O3 -Wall -pedantic -ansi
+
+############################
+# Link Flags
+############################
+
+############################
+# MEMWATCH
+############################
+# DEBUG_DEF = -DDEBUG
+# MEMWATCH = memwatch.o
+# MEMWATCH_INC = -I./memwatch
+# MEMWATCH_DEF = -DMEMWATCH -DMEMWATCH_STDIO
+
+############################
+# System Choices
+############################
+# AIX32_DEF = -D_UNIX_ -D_64Bit
+UNIX_DEF = -D_UNIX_
+# LIN_DEF = -D_LINUX_
+# WIN_DEF = -D_WINDOWS_
+
+#----- No changes needed beyond here -----#
+
+############################
+# Standard Defines / Includes / Libraries
+############################
+STD_DEF = $(AIX32_DEF) $(UNIX_DEF) $(LIN_DEF) $(WIN_DEF) $(GCC_DEF) $(MEMWATCH_DEF) $(DEBUG_DEF)
+STD_INC = $(MEMWATCH_INC)
+STD_LIB = -L/usr/lib -lm
+CFLAGS = $(STD_FLAGS) $(STD_DEF) $(STD_INC)
+
+############################
+# Project names
+############################
+PRJ_NAME = xyz2shp
+
+############################
+# FILES
+############################
+C_SOURCES = tendian.c \
+            myutil.c \
+            myassert.c
+
+H_SOURCES = tendian.h \
+            myutil.h \
+            myassert.h \
+            type.h
+
+C_MAIN = xyz2shp.c
+
+C_OBJECTS = $(C_SOURCES:.c=.o) \
+            $(MEMWATCH)
+
+############################
+# TARGETS
+############################
+all: $(PRJ_NAME)
+
+$(PRJ_NAME): $(C_OBJECTS) $(C_MAIN) $(H_SOURCES)
+	$(CC) $(C_MAIN) $(CFLAGS) $(LD_FLAGS) $(C_OBJECTS) $(STD_LIB) -o $(PRJ_NAME)
+
+install:
+	cp $(PRJ_NAME).exe ../../bin
+
+clean:
+	rm -f *.o *.bak *.BAK
+
+############################
+# SUFFIXES
+############################
+memwatch.o: ./memwatch/memwatch.c ./memwatch/memwatch.h
+	$(CC) -c $(CFLAGS) ./memwatch/memwatch.c
+
+.c.o : $(H_SOURCES)
+	$(CC) -c $(CFLAGS) $<
