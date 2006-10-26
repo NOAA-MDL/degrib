@@ -56,7 +56,7 @@ foreach file [glob -nocomplain $GRIB_Dir/*.bin] {
        set tail [file tail $file]
     }
     set dst [file join $DstDir $tail]
-    exec $Exec $file -Data -Index [file rootname $dst].ind -out [file rootname $dst].dat
+    catch {exec $Exec $file -Data -Index [file rootname $dst].ind -out [file rootname $dst].dat}
     puts "Done with $file -Data -Index [file rootname $dst].ind -out [file rootname $dst].dat"
   }
 }
