@@ -1,0 +1,12 @@
+libxml-2.0.pc
+config.status
+config.log
+xml2-config
+config.h
+.deps
+Makefile
+libtool
+.libs
+stamp-h1
+libxml2.spec
+libxml-2.0-uninstalled.pc
