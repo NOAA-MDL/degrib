@@ -3,7 +3,6 @@ config.status
 config.log
 xml2-config
 config.h
-.deps
 Makefile
 libtool
 .libs

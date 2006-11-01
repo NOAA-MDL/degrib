@@ -281,8 +281,8 @@ install:
 	cp $(DRAWSHP_NAME).exe ../../bin
 	cp $(TCL_NAME).exe ../../bin
 	cp $(TK_NAME).exe ../../bin
-	cp $(PRJ_DLL) ../../lib/degrib
-	cp pkgIndex_win.tcl ../../lib/degrib/pkgIndex.tcl
+#	cp $(PRJ_DLL) ../../lib/degrib
+#	cp pkgIndex_win.tcl ../../lib/degrib/pkgIndex.tcl
 
 clean:
 	rm -f *.o *.bak *.BAK *.obj
