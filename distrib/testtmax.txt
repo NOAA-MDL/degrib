@@ -1,0 +1,21 @@
+StartDir=[file dirname $src_dir]
+ansFile=degrib-testtmax
+DestDir=[file join [file dirname $StartDir] degrib.web degrib2 download tests]
+Zip_Also=false
+
+# sample data
+test/data/test_maxt_*.grb
+
+# Test script
+test/testtmax.*
+test/chk_tmax.*
+test/test.cfg
+test/safe/testtmax.*
+test/safe/chk_tmax.*
+test/safe/test.cfg
+
+# Make sure working directory is created.
+test/cur/readme.txt
+
+# AnsFiles
+test/ans/MaxT_1115*

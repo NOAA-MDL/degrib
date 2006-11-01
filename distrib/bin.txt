@@ -1,0 +1,429 @@
+#
+# This packages "degrib-bin.tar.gz" which contains:
+#   YES: compiled exe.
+#   YES: compiled GUI.
+#   No: source code.
+#   NO: ams cd. (no imgGen in degrib-gui.*)
+#
+ansFile=degrib-bin
+Zip_Also=true
+DoGeneric=yes
+DoExe=yes
+DoGUI=yes
+DoSrc=no
+DoAMS=no
+
+#
+#------- Shouldn't have to modify beyond here --------
+# Except perhaps "UpdatePages"
+#-----------
+#
+
+Class_A=Generic
+Class_E=Exe
+Class_G=GUI
+Class_S=Src
+Class_AMS=AMS
+StartDir=e:/prj/ndfd/
+DestDir=e:/prj/ndfd/degrib.web/degrib2/download
+WebDir=e:/prj/ndfd/degrib.web/degrib2
+Version=[FindVersion e:/prj/ndfd/degrib]
+
+# General
+S:degrib/src/readme.txt
+A:degrib/bin/readme.txt
+G,E:degrib/bin/diff.exe
+
+# General source
+S:degrib/src/configure.in
+S:degrib/src/install-sh
+S:degrib/src/config.sub
+S:degrib/src/config.guess
+S:degrib/src/aclocal.m4
+S:degrib/src/configure
+S:degrib/src/Makefile.in
+S:degrib/src/makefile.aix32
+S:degrib/src/makefile.aix64
+S:degrib/src/makefile.cyg
+S:degrib/src/makefile.hpgcc
+S:degrib/src/makefile.lin64
+S:degrib/src/makefile.linux
+S:degrib/src/makefile.macosx
+S:degrib/src/makefile.sgi
+S:degrib/src/makefile.sun
+S:degrib/src/makefile.win
+
+# grib2lib source
+S:degrib/src/grib2lib/makefile.aix32
+S:degrib/src/grib2lib/makefile.aix64
+S:degrib/src/grib2lib/makefile.cyg
+S:degrib/src/grib2lib/makefile.hpgcc
+S:degrib/src/grib2lib/makefile.lin64
+S:degrib/src/grib2lib/makefile.linux
+S:degrib/src/grib2lib/makefile.mac
+S:degrib/src/grib2lib/makefile.sgi
+S:degrib/src/grib2lib/makefile.sun
+S:degrib/src/grib2lib/makefile.win
+S:degrib/src/grib2lib/Makefile.in
+S:degrib/src/grib2lib/*.c
+S:degrib/src/grib2lib/engribapi.h
+S:degrib/src/grib2lib/grib2api.h
+S:degrib/src/grib2lib/gridtemplates.h
+S:degrib/src/grib2lib/myassert.h
+S:degrib/src/grib2lib/scan.h
+S:degrib/src/grib2lib/tendian.h
+S:degrib/src/grib2lib/type.h
+S:degrib/src/grib2lib/config.h.in
+S:degrib/src/grib2lib/config_H/*
+S:degrib/src/grib2lib/*.txt
+
+# g2clib-1.0.2 source
+S:degrib/src/grib2lib/g2clib-1.0.2/make*
+S:degrib/src/grib2lib/g2clib-1.0.2/*.c
+S:degrib/src/grib2lib/g2clib-1.0.2/*.h
+S:degrib/src/grib2lib/g2clib-1.0.2/README
+S:degrib/src/grib2lib/g2clib-1.0.2/CHANGES
+S:degrib/src/grib2lib/g2clib-1.0.2/grib2c.doc
+
+# grib2unpacker source
+S:degrib/src/grib2lib/grib2unpacker/make*
+S:degrib/src/grib2lib/grib2unpacker/Make*
+S:degrib/src/grib2lib/grib2unpacker/*.f
+S:degrib/src/grib2lib/grib2unpacker/*.c
+S:degrib/src/grib2lib/grib2unpacker/grib2-makefile
+S:degrib/src/grib2lib/grib2unpacker/unpkgrib.315.wpd
+
+# grib2packer source
+S:degrib/src/grib2lib/grib2packer/makefile
+S:degrib/src/grib2lib/grib2packer/README
+S:degrib/src/grib2lib/grib2packer/*.f
+S:degrib/src/grib2lib/grib2packer/grib2-makefile
+S:degrib/src/grib2lib/grib2packer/*.c
+S:degrib/src/grib2lib/grib2packer/pk_grib2.315.wpd
+
+# pnglib source
+S:degrib/src/libpng/contrib/* recurse
+S:degrib/src/libpng/projects/* recurse
+S:degrib/src/libpng/scripts/* recurse
+S:degrib/src/libpng/*.c
+S:degrib/src/libpng/*.h
+S:degrib/src/libpng/ANNOUNCE
+S:degrib/src/libpng/CHANGES
+S:degrib/src/libpng/configure
+S:degrib/src/libpng/INSTALL
+S:degrib/src/libpng/KNOWNBUG
+S:degrib/src/libpng/*.3
+S:degrib/src/libpng/*.5
+S:degrib/src/libpng/libpng.txt
+S:degrib/src/libpng/LICENSE
+S:degrib/src/libpng/README
+S:degrib/src/libpng/TODO
+S:degrib/src/libpng/Y2KINFO
+
+# zlib source
+S:degrib/src/zlib/amiga/*   recurse
+S:degrib/src/zlib/contrib/*   recurse
+S:degrib/src/zlib/msdos/*   recurse
+S:degrib/src/zlib/nt/*   recurse
+S:degrib/src/zlib/os2/*   recurse
+S:degrib/src/zlib/*.c
+S:degrib/src/zlib/*.h
+S:degrib/src/zlib/ChangeLog
+S:degrib/src/zlib/FAQ
+S:degrib/src/zlib/INDEX
+S:degrib/src/zlib/README
+S:degrib/src/zlib/zlib.*
+S:degrib/src/zlib/configure
+S:degrib/src/zlib/algorithm.txt
+S:degrib/src/zlib/descrip.mms
+S:degrib/src/zlib/Make_vms.com
+S:degrib/src/zlib/Makefile.in
+S:degrib/src/zlib/Makefile.riscos
+S:degrib/src/zlib/makefile.sun
+S:degrib/src/zlib/scripts/Makefile.in
+
+# jasper source
+S:degrib/src/jpeg2000/*.am recurse
+S:degrib/src/jpeg2000/*.in recurse
+S:degrib/src/jpeg2000/README recurse
+S:degrib/src/jpeg2000/*.c recurse
+S:degrib/src/jpeg2000/src/libjasper/jpc/*.h
+S:degrib/src/jpeg2000/src/libjasper/include/jasper/jasper.h
+S:degrib/src/jpeg2000/src/libjasper/include/jasper/jas_cm.h
+### S:degrib/src/jpeg2000/src/libjasper/include/jasper/jas_config.h
+S:degrib/src/jpeg2000/src/libjasper/include/jasper/jas_config2.h
+S:degrib/src/jpeg2000/src/libjasper/include/jasper/jas_debug.h
+S:degrib/src/jpeg2000/src/libjasper/include/jasper/jas_fix.h
+S:degrib/src/jpeg2000/src/libjasper/include/jasper/jas_getopt.h
+S:degrib/src/jpeg2000/src/libjasper/include/jasper/jas_icc.h
+S:degrib/src/jpeg2000/src/libjasper/include/jasper/jas_image.h
+S:degrib/src/jpeg2000/src/libjasper/include/jasper/jas_init.h
+S:degrib/src/jpeg2000/src/libjasper/include/jasper/jas_malloc.h
+S:degrib/src/jpeg2000/src/libjasper/include/jasper/jas_math.h
+S:degrib/src/jpeg2000/src/libjasper/include/jasper/jas_seq.h
+S:degrib/src/jpeg2000/src/libjasper/include/jasper/jas_stream.h
+S:degrib/src/jpeg2000/src/libjasper/include/jasper/jas_string.h
+S:degrib/src/jpeg2000/src/libjasper/include/jasper/jas_tvp.h
+S:degrib/src/jpeg2000/src/libjasper/include/jasper/jas_types.h
+S:degrib/src/jpeg2000/src/libjasper/include/jasper/jas_version.h
+S:degrib/src/jpeg2000/acaux/*
+S:degrib/src/jpeg2000/COPYRIGHT
+S:degrib/src/jpeg2000/ChangeLog
+S:degrib/src/jpeg2000/INSTALL
+S:degrib/src/jpeg2000/LICENSE
+S:degrib/src/jpeg2000/NEWS
+S:degrib/src/jpeg2000/aclocal.m4
+S:degrib/src/jpeg2000/configure
+S:degrib/src/jpeg2000/configure.ac
+S:degrib/src/jpeg2000/libtool.mingw
+S:degrib/src/jpeg2000/MODIFY.TXT
+
+# emapf-c source
+S:degrib/src/emapf-c/*.in
+S:degrib/src/emapf-c/makefile*
+S:degrib/src/emapf-c/configure
+S:degrib/src/emapf-c/*.c
+S:degrib/src/emapf-c/*.hin
+S:degrib/src/emapf-c/*.h
+S:degrib/src/emapf-c/*.sh
+S:degrib/src/emapf-c/*.TXT
+
+# netcdf source
+S:degrib/src/netcdf/COMPATIBILITY
+S:degrib/src/netcdf/COPYRIGHT
+S:degrib/src/netcdf/INSTALL.html
+#S:degrib/src/netcdf/MANIFEST
+S:degrib/src/netcdf/Makefile
+S:degrib/src/netcdf/README
+S:degrib/src/netcdf/RELEASE_NOTES
+S:degrib/src/netcdf/VERSION
+S:degrib/src/netcdf/aclocal.m4
+S:degrib/src/netcdf/configure
+S:degrib/src/netcdf/configure.in
+S:degrib/src/netcdf/macros.make.in
+S:degrib/src/netcdf/rules.make
+S:degrib/src/netcdf/libsrc/Makefile
+S:degrib/src/netcdf/libsrc/depend
+S:degrib/src/netcdf/libsrc/*.c
+S:degrib/src/netcdf/libsrc/*.h
+S:degrib/src/netcdf/libsrc/*.3
+S:degrib/src/netcdf/libsrc/*.m4
+S:degrib/src/netcdf/libsrc/*.in
+S:degrib/src/netcdf/libsrc/*.sav
+S:degrib/src/netcdf/man/Makefile
+S:degrib/src/netcdf/man/*.m4
+S:degrib/src/netcdf/ncdump/Makefile
+S:degrib/src/netcdf/ncdump/depend
+S:degrib/src/netcdf/ncdump/*.c
+S:degrib/src/netcdf/ncdump/*.h
+S:degrib/src/netcdf/ncdump/*.1
+S:degrib/src/netcdf/ncdump/*.cdl
+S:degrib/src/netcdf/ncgen/Makefile
+S:degrib/src/netcdf/ncgen/depend
+S:degrib/src/netcdf/ncgen/*.c
+S:degrib/src/netcdf/ncgen/*.h
+S:degrib/src/netcdf/ncgen/*.1
+S:degrib/src/netcdf/ncgen/*.cdl
+S:degrib/src/netcdf/ncgen/*.l
+S:degrib/src/netcdf/ncgen/*.y
+
+# gd source
+S:degrib/src/gd/config/*
+S:degrib/src/gd/test/*
+S:degrib/src/gd/*.c
+S:degrib/src/gd/*.h
+S:degrib/src/gd/COPYING
+S:degrib/src/gd/INSTALL
+S:degrib/src/gd/scripts/*
+S:degrib/src/gd/Makefile.am
+S:degrib/src/gd/Makefile.in
+S:degrib/src/gd/*.TXT
+S:degrib/src/gd/*.m4
+S:degrib/src/gd/config*
+S:degrib/src/gd/*.png
+S:degrib/src/gd/depcomp
+S:degrib/src/gd/*.out
+S:degrib/src/gd/*.html
+S:degrib/src/gd/install*
+S:degrib/src/gd/missing
+S:degrib/src/gd/mkinstalldirs
+S:degrib/src/gd/readme.*
+S:degrib/src/gd/bdftogd
+
+# libxml source
+S:degrib/src/libxml/AUTHORS
+S:degrib/src/libxml/COPYING
+S:degrib/src/libxml/ChangeLog
+S:degrib/src/libxml/Copyright
+S:degrib/src/libxml/INSTALL
+S:degrib/src/libxml/Makefile.am
+S:degrib/src/libxml/*.in
+S:degrib/src/libxml/Makefile.tests
+S:degrib/src/libxml/ltmain.sh
+S:degrib/src/libxml/NEWS
+S:degrib/src/libxml/README*
+S:degrib/src/libxml/TODO*
+S:degrib/src/libxml/*.m4
+S:degrib/src/libxml/libxml.3
+S:degrib/src/libxml/xml2-config.1
+S:degrib/src/libxml/config.guess
+S:degrib/src/libxml/config.sub
+S:degrib/src/libxml/configure
+S:degrib/src/libxml/install-sh
+S:degrib/src/libxml/missing
+S:degrib/src/libxml/*.c
+S:degrib/src/libxml/*.h
+S:degrib/src/libxml/depcomp
+S:degrib/src/libxml/include/*.h
+S:degrib/src/libxml/include/libxml/*.h
+S:degrib/src/libxml/include/Makefile.am
+S:degrib/src/libxml/include/Makefile.in
+S:degrib/src/libxml/include/libxml/Makefile.am
+S:degrib/src/libxml/include/libxml/Makefile.in
+S:degrib/src/libxml/include/libxml/xmlversion.h.in
+S:degrib/src/libxml/doc/devhelp/Makefile.am
+S:degrib/src/libxml/doc/devhelp/Makefile.in
+S:degrib/src/libxml/doc/examples/Makefile.am
+S:degrib/src/libxml/doc/examples/Makefile.in
+S:degrib/src/libxml/doc/Makefile.am
+S:degrib/src/libxml/doc/Makefile.in
+S:degrib/src/libxml/example/Makefile.am
+S:degrib/src/libxml/example/Makefile.in
+S:degrib/src/libxml/python/Makefile.am
+S:degrib/src/libxml/python/Makefile.in
+S:degrib/src/libxml/python/setup.py.in
+S:degrib/src/libxml/python/tests/Makefile.am
+S:degrib/src/libxml/python/tests/Makefile.in
+S:degrib/src/libxml/xstc/Makefile.am
+S:degrib/src/libxml/xstc/Makefile.in
+
+# dwmllib source
+S:degrib/src/dwmllib/makefile*
+S:degrib/src/dwmllib/*.c
+S:degrib/src/dwmllib/*.h
+
+# degrib source
+S:degrib/src/degrib/readme.txt
+S:degrib/src/degrib/makefile.aix32
+S:degrib/src/degrib/makefile.aix64
+S:degrib/src/degrib/makefile.cyg
+S:degrib/src/degrib/makefile.hpgcc
+S:degrib/src/degrib/makefile.lin64
+S:degrib/src/degrib/makefile.linux
+S:degrib/src/degrib/makefile.mac
+S:degrib/src/degrib/makefile.sgi
+S:degrib/src/degrib/makefile.sun
+S:degrib/src/degrib/makefile.win
+S:degrib/src/degrib/Makefile.in
+S:degrib/src/degrib/*.c
+S:degrib/src/degrib/*.h
+
+# libg2c from Mingw.
+E:degrib/src/g2c-mingw/*
+
+# tclsrc
+#G,S:degrib/bin/tclsrc/grib2flt.tcl
+G,S,AMS:degrib/bin/ndfd.tcl
+G,S,AMS:degrib/bin/tclsrc/config2.tcl
+G,S,AMS:degrib/bin/tclsrc/browse.tcl
+G,S,AMS:degrib/bin/tclsrc/ftp_lib.tcl
+G,S,AMS:degrib/bin/tclsrc/gis.tcl
+G,S,AMS:degrib/bin/tclsrc/draw.tcl
+G,S,AMS:degrib/bin/tclsrc/http.tcl
+G,S,AMS:degrib/bin/tclsrc/pane.tcl
+G,S,AMS:degrib/bin/tclsrc/print.tcl
+G,S,AMS:degrib/bin/tclsrc/scroll.tcl
+G,S,AMS:degrib/bin/tclsrc/util.tcl
+G,S,AMS:degrib/bin/tclsrc/atdir3.tcl
+G,S,AMS:degrib/bin/tclsrc/icons/*.gif
+G,S,AMS:degrib/bin/ndfd.ini
+G,S,AMS:degrib/lib/mkwidgets1.3/*   recurse
+
+# GUI Bin
+G:degrib/bin/tcl83.dll
+G:degrib/bin/tk83.dll
+G:degrib/bin/tkdegrib.exe
+G:degrib/bin/tcldegrib.exe
+A,G:degrib/bin/web.tcl
+A,G:degrib/bin/getUrl.tcl
+A,G:degrib/bin/MakeData.tcl
+
+# GUI Lib
+G:degrib/lib/*    recurse
+
+# EXE Bin
+E:degrib/bin/degrib.exe
+E:degrib/bin/degrib_DP.exe
+E:degrib/bin/drawshp.exe
+E:degrib/bin/clock.exe
+E:degrib/bin/ncdump.exe
+A,E:degrib/bin/MakeDataBase.sh
+A,E:degrib/bin/sector.tbl
+
+# Docs
+A:degrib/readme.txt
+A:degrib/history.txt
+A:degrib/version.txt
+A:degrib/docs/readme.txt
+A:degrib/docs/degrib.txt
+A:degrib/docs/tkdegrib.txt
+A:degrib/docs/arcview_legends_tutorial.pdf
+A:degrib/docs/specs/*.pdf
+A:degrib/docs/GRIB2_encoding.html
+A:degrib/docs/NDFD_GRIB2Decoder.html
+A:degrib/docs/images/*
+
+# ArcView
+A:degrib/arcview/point_legend/*
+A:degrib/arcview/poly_legend/*
+A:degrib/arcview/prj.adf
+A:degrib/arcview/NDFD.prj
+A:degrib/arcview/readme.txt
+
+# Make sure the data directory gets created.
+A:degrib/data/readme.txt
+
+# Make sure the output directory gets created.
+A:degrib/output/readme.txt
+
+AMS:degrib/data/ndfd/readme.txt
+AMS:degrib/bin/ndfd.ico
+
+#
+# imgGen
+#
+AMS:degrib/bin/imageGen.exe
+AMS:degrib/bin/superImageGen.exe
+AMS:degrib/bin/cygwin1.dll
+AMS:degrib/bin/imageGen.logPref
+AMS:degrib/bin/log/readme.txt
+
+# Grab all supporting data for imgGen
+AMS:degrib/data/imageGen/cities/*
+AMS:degrib/data/imageGen/colortable/*
+AMS:degrib/data/imageGen/etc/*
+AMS:degrib/data/imageGen/shapefile/states.*
+AMS:degrib/data/imageGen/shapefile/states_pr.*
+AMS:degrib/data/imageGen/shapefile/states_gu.*
+AMS:degrib/data/imageGen/shapefile/states_hi.*
+AMS:degrib/data/tiles/*
+AMS:degrib/data/mosaic/readme
+AMS:degrib/output/images/readme.txt
+AMS:degrib/output/web_data/noaalogo2.png
+AMS:degrib/output/web_data/nwslogo.png
+
+#
+# htmlmaker
+#
+AMS:degrib/bin/_sre.pyd
+AMS:degrib/bin/python22.dll
+AMS:degrib/bin/w9xpopen.exe
+AMS:degrib/bin/htmlmaker.exe
+AMS:degrib/bin/pngQuDim.exe
+
+AMS:degrib/output/web_pages/readme.txt
+AMS:degrib/output/web_data/*
+
+# General data
+A:degrib/geodata/*
+

@@ -1,7 +1,19 @@
 #
-#----- Release: Version 1.84 10/02/2006 -----
+#----- Release: Version 1.84 11/01/2006 -----
 #
-10/19 AAT Fixed web.tcl to use http::myAppend instead of http::append 
+10/26 AAT Adjusted /bin/MakeData.tcl to use catch
+10/25 AAT Addressed the GRIB2MISSING_s4 issue.  Signed missing 4 byte integer
+          should be -1 * 2^31, while unsigned missing 4 byte integer should be
+          2^32 -1.  I had checked all 4 byte missings by casting them to
+          unsigned and comparing to 2^32 -1.  Without the cast, the
+          -1 * 2^31 is compared to 2^32 -1 resulting in no match (Error).
+          With the cast it becomes 2^31 +1, instead of 2^32 -1, (Error).
+          The solution is to check s4 against -1 * 2^31, and u4 against 2^32.
+10/19 ADT code in the gd subdirectory to take care of the case when a broken
+          unistd.h does not define some needed symbols.
+10/19 ADT The beginning of a --with-debug configure to turn on DEBUG defines:
+          Started in the png and zlib directories.
+10/19 AAT Fixed web.tcl to use http::myAppend instead of http::append
           (Broke on a version of linux)
 10/12 AAT updated /src/makefile.* clean step to clean up extra binaries.
 10/12 AAT updated /src/degrib/makefile.aix?? to pay attention $(TCL_VERSION)

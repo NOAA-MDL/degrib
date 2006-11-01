@@ -1,0 +1,21 @@
+StartDir=[file dirname $src_dir]
+ansFile=degrib-testpop
+DestDir=[file join [file dirname $StartDir] degrib.web degrib2 download tests]
+Zip_Also=false
+
+# sample data
+test/data/test_pop12_*.grb
+
+# Test script
+test/testpop.*
+test/chk_pop.*
+test/test.cfg
+test/safe/testpop.*
+test/safe/chk_pop.*
+test/safe/test.cfg
+
+# Make sure working directory is created.
+test/cur/readme.txt
+
+# AnsFiles
+test/ans/PoP12_*
