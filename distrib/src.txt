@@ -102,9 +102,16 @@ S:degrib/src/grib2lib/grib2packer/*.c
 S:degrib/src/grib2lib/grib2packer/pk_grib2.315.wpd
 
 # pnglib source
-S:degrib/src/libpng/contrib/* recurse
-S:degrib/src/libpng/projects/* recurse
-S:degrib/src/libpng/scripts/* recurse
+S:degrib/src/libpng/contrib/gregbook/LICENSE
+S:degrib/src/libpng/contrib/gregbook/README
+S:degrib/src/libpng/contrib/gregbook/*.*
+S:degrib/src/libpng/contrib/msvctest/*.*
+S:degrib/src/libpng/contrib/pngminus/README
+S:degrib/src/libpng/contrib/pngminus/*.*
+S:degrib/src/libpng/contrib/pngsuite/README
+S:degrib/src/libpng/contrib/pngsuite/*.*
+S:degrib/src/libpng/contrib/visupng/*.*
+S:degrib/src/libpng/scripts/*.*
 S:degrib/src/libpng/*.c
 S:degrib/src/libpng/*.h
 S:degrib/src/libpng/ANNOUNCE
@@ -121,11 +128,23 @@ S:degrib/src/libpng/TODO
 S:degrib/src/libpng/Y2KINFO
 
 # zlib source
-S:degrib/src/zlib/amiga/*   recurse
-S:degrib/src/zlib/contrib/*   recurse
-S:degrib/src/zlib/msdos/*   recurse
-S:degrib/src/zlib/nt/*   recurse
-S:degrib/src/zlib/os2/*   recurse
+S:degrib/src/zlib/amiga/*.*
+S:degrib/src/zlib/contrib/*.*
+S:degrib/src/zlib/contrib/asm386/*.*
+S:degrib/src/zlib/contrib/asm586/*.*
+S:degrib/src/zlib/contrib/asm686/*.*
+S:degrib/src/zlib/contrib/delphi/*.*
+S:degrib/src/zlib/contrib/delphi2/*.*
+S:degrib/src/zlib/contrib/iostream/*.*
+S:degrib/src/zlib/contrib/iostream2/*.*
+S:degrib/src/zlib/contrib/minizip/*.*
+S:degrib/src/zlib/contrib/minizip/Makefile
+S:degrib/src/zlib/contrib/minizip/ChangeLogUnzip
+S:degrib/src/zlib/contrib/untgz/Makefile
+S:degrib/src/zlib/contrib/untgz/*.*
+S:degrib/src/zlib/msdos/*.*
+S:degrib/src/zlib/nt/*.*
+S:degrib/src/zlib/os2/*.*
 S:degrib/src/zlib/*.c
 S:degrib/src/zlib/*.h
 S:degrib/src/zlib/ChangeLog
@@ -337,7 +356,9 @@ G,S,AMS:degrib/bin/tclsrc/util.tcl
 G,S,AMS:degrib/bin/tclsrc/atdir3.tcl
 G,S,AMS:degrib/bin/tclsrc/icons/*.gif
 G,S,AMS:degrib/bin/ndfd.ini
-G,S,AMS:degrib/lib/mkwidgets1.3/*   recurse
+G,S,AMS:degrib/lib/mkwidgets1.3/*.*
+G,S,AMS:degrib/lib/mkwidgets1.3/demos/*.*
+G,S,AMS:degrib/lib/mkwidgets1.3/demos/images/*.*
 
 # GUI Bin
 G:degrib/bin/tcl83.dll
@@ -349,7 +370,15 @@ A,G:degrib/bin/getUrl.tcl
 A,G:degrib/bin/MakeData.tcl
 
 # GUI Lib
-G:degrib/lib/*    recurse
+G:degrib/lib/degrib/*.*
+G:degrib/lib/tcl8.3/*.* recurse
+G:degrib/lib/tcl8.3/encoding/*.*
+G:degrib/lib/tk8.3/*.*
+G:degrib/lib/tk8.3/demos/Readme
+G:degrib/lib/tk8.3/demos/*.*
+G:degrib/lib/tk8.3/demos/images/*.*
+G:degrib/lib/tk8.3/images/Readme
+G:degrib/lib/tk8.3/images/*.*
 
 # EXE Bin
 E:degrib/bin/degrib.exe
@@ -426,4 +455,5 @@ AMS:degrib/output/web_data/*
 
 # General data
 A:degrib/geodata/*
+
 

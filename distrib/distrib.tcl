@@ -357,8 +357,9 @@ exec cp [file join [file dirname $src_dir] docs degrib.txt] \
         [file join $webDir degrib.txt]
 exec cp [file join [file dirname $src_dir] docs tkdegrib.txt] \
         [file join $webDir tkdegrib.txt]
-exec cp [file join [file dirname $src_dir] version.txt] \
-        [file join $webDir download version.txt]
+#exec cp [file join [file dirname $src_dir] version.txt] \
+#        [file join $webDir download version.txt]
+file copy -force [file join [file dirname $src_dir] version.txt] [file join $webDir download version.txt]
 
 puts "----------"
 puts "You may want to make the program and rerun distrib.tcl"
