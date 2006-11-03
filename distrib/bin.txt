@@ -372,9 +372,12 @@ A,G:degrib/bin/MakeData.tcl
 # GUI Lib
 G:degrib/lib/degrib/*.*
 G:degrib/lib/tcl8.3/*.* recurse
+G:degrib/lib/tcl8.3/tclIndex
 G:degrib/lib/tcl8.3/encoding/*.*
 G:degrib/lib/tk8.3/*.*
+G:degrib/lib/tk8.3/tclIndex
 G:degrib/lib/tk8.3/demos/Readme
+G:degrib/lib/tk8.3/demos/tclIndex
 G:degrib/lib/tk8.3/demos/*.*
 G:degrib/lib/tk8.3/demos/images/*.*
 G:degrib/lib/tk8.3/images/Readme
