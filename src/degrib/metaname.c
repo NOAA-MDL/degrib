@@ -133,7 +133,7 @@ char *centerLookup (unsigned short int center)
       {96, "Athens"},
       {97, "ESA-European Space Agency"},
       {98, "ECMWF"},
-      {99, "De Bilt"},
+      {99, "DeBilt"},
       {100, "Brazzaville"},
       {101, "Abidjan"},
       {102, "Libyan Arab Jamahiriya"},

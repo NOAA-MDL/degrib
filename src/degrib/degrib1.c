@@ -39,7 +39,8 @@
 #define NMC	7
 #define US_OTHER 9
 #define CPTEC 46
-/*#define CMC	54*/
+/* Canada Center */
+#define CMC	54
 #define AFWA 57
 #define DWD 78
 #define ECMWF 98
@@ -235,11 +236,14 @@ static GRIB1ParmTable *Choose_ParmTable (pdsG1Type *pdsMeta,
       case ATHENS:
          return &parm_table_athens[0];
          break;
-
+      case CMC:
+         return &parm_table_cmc[0];
+         break;
    }
    if ((pdsMeta->mstrVersion > 3) || (pdsMeta->cat > 127)) {
       printf ("Undefined parameter table (center %d-%d table %d).\n"
-              "Please email arthur.taylor@noaa.gov about adding this table.",
+              "Please email arthur.taylor@noaa.gov about adding this table.\n"
+              "to his 'degrib1.c' and 'grib1tab.c' files.",
               center, subcenter, pdsMeta->mstrVersion);
    }
    return &parm_table_undefined[0];
