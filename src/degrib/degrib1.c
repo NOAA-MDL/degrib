@@ -92,6 +92,8 @@ extern GRIB1ParmTable parm_table_ecmwf_180[256];
 
 extern GRIB1ParmTable parm_table_athens[256];
 
+extern GRIB1ParmTable parm_table_cmc[256];
+
 extern GRIB1ParmTable parm_table_undefined[256];
 
 /*****************************************************************************
