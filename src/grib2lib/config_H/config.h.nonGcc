@@ -2,7 +2,7 @@
 #ifndef _CONFIG_H_
 #define _CONFIG_H_
 
-#define F77_FUNC_(name,NAME) name ## _
+#define F77_FUNC_(name,NAME) name
 #define UNPK_G2MDL F77_FUNC_(unpk_g2mdl,UNPK_G2MDL)
 #define PK_G2MDL F77_FUNC_(pk_g2mdl,PK_G2MDL)
 
