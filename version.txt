@@ -8,7 +8,7 @@
 
 [degrib]
 Version=1.84
-Date=11/01/2006
+Date=11/03/2006
 Web=http://www.nws.noaa.gov/NDFD_GRIB2Decoder/index.htm
 
 [emapf]

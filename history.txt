@@ -1,5 +1,5 @@
 #
-#----- Release: Version 1.84 11/01/2006 -----
+#----- Release: Version 1.84 11/03/2006 -----
 #
 10/26 AAT Adjusted /bin/MakeData.tcl to use catch
 10/25 AAT Addressed the GRIB2MISSING_s4 issue.  Signed missing 4 byte integer
