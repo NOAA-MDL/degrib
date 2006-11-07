@@ -233,6 +233,10 @@ static GRIB1ParmTable *Choose_ParmTable (pdsG1Type *pdsMeta,
          switch (subcenter) {
             case 163:
                return &parm_table_nohrsc[0];
+            /* Based on 11/7/2006 email with Rob Doornbos, mimiced what wgrib
+             * did which was to use parm_table_ncep_opn. */
+            case 161:
+               return &parm_table_ncep_opn[0];
          }
          break;
       case ATHENS:
