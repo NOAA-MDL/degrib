@@ -1,3 +1,6 @@
+#define PROGRAM_VERSION "0.3"
+#define PROGRAM_DATE "11/08/2006"
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -322,16 +325,31 @@ int ReadXYZ (char *filename, statInfo_type ** Stat, int *numStat,
                (*Col)[i].type = 'N';
             } else {
                char *ptr = strchr (lineArgv[i], '-');
-               if ((ptr == NULL) || ((ptr[1] != 'C') && (ptr[1] != 'N'))) {
-                  printf ("Expecting LAT, LON, LABEL-C\n");
-                  printf ("or LAT, LON, LABEL-N\n");
-                  return -1;
+               if (ptr == NULL) {
+                  strncpy ((*Col)[i].label, lineArgv[i], 11);
+                  (*Col)[i].label[11] = '\0';
+                  /* Default is i == 2 => numeric, */
+                  if (i == 2) {
+                     (*Col)[i].type = 'N';
+                  /* i > 2 => ascii */
+                  } else {
+                     (*Col)[i].type = 'C';
+                  }
+               } else {
+                  /* numeric case */
+                  /* ASCII case */
+                  if ((ptr[1] == 'N') || (ptr[1] == 'C')) {
+                     *ptr = '\0';
+                     strncpy ((*Col)[i].label, lineArgv[i], 11);
+                     (*Col)[i].label[11] = '\0';
+                     *ptr = '-';
+                     (*Col)[i].type = ptr[1];
+                  } else {
+                     printf ("Expecting LAT, LON, LABEL-C\n");
+                     printf ("or LAT, LON, LABEL-N\n");
+                     return -1;
+                  }
                }
-               *ptr = '\0';
-               strncpy ((*Col)[i].label, lineArgv[i], 11);
-               (*Col)[i].label[11] = '\0';
-               *ptr = '-';
-               (*Col)[i].type = ptr[1];
             }
             (*Col)[i].fldLen = 0;
             (*Col)[i].fldDec = 0;
@@ -459,6 +477,11 @@ int main (int argc, char **argv)
 
    if (argc != 3) {
       printf ("usage %s <xyz file> <shapefile (with extension)>\n", argv[0]);
+      return -1;
+   }
+   if (strcmp (argv[1], "-V") == 0) {
+      printf ("xyz2shp\nVersion %s\nDate: %s\nAuthor: Arthur Taylor\n",
+              PROGRAM_VERSION, PROGRAM_DATE);
       return -1;
    }
 
