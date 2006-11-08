@@ -475,13 +475,13 @@ int main (int argc, char **argv)
    double maxLon;
    double maxLat;
 
-   if (argc != 3) {
-      printf ("usage %s <xyz file> <shapefile (with extension)>\n", argv[0]);
-      return -1;
-   }
    if (strcmp (argv[1], "-V") == 0) {
       printf ("xyz2shp\nVersion %s\nDate: %s\nAuthor: Arthur Taylor\n",
               PROGRAM_VERSION, PROGRAM_DATE);
+      return -1;
+   }
+   if (argc != 3) {
+      printf ("usage %s <xyz file> <shapefile (with extension)>\n", argv[0]);
       return -1;
    }
 
