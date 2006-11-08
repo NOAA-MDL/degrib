@@ -1,6 +1,17 @@
 #
+#----- Release: Version 1.85a 11/08/2006 -----
+#
+#
+#----- Release: Version 1.84.1 11/08/2006 -----
+#
+11/7  AAT updated degrib1.c to handle center 9 subcenter 161 data for GRIB1.
+#
 #----- Release: Version 1.84 11/03/2006 -----
 #
+11/3  AAT Added Canada tables to the GRIB1 handling code
+11/3  AAT Updated metaname.c to have an updated centers list (and added ARINC)
+11/3  AAT Fixed "/src/grib2lib/config_H/config.h.nonGcc to have no _ after the
+          name for FORTRAN name mangling purposes.
 10/26 AAT Adjusted /bin/MakeData.tcl to use catch
 10/25 AAT Addressed the GRIB2MISSING_s4 issue.  Signed missing 4 byte integer
           should be -1 * 2^31, while unsigned missing 4 byte integer should be

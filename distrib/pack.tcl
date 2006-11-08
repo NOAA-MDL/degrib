@@ -232,24 +232,29 @@ proc DoIt {filename} {
   close $fp
   catch {file delete -force $ansFile.tar.gz}
   eval {exec tar -Scf} $ansFile.tar -T$ansFile.txt
+#  if {$ansFile == "degrib-src"} {
+#     file copy -force degrib-src.tar degrib-temp.tar
+#  }
   if {$ansFile == "degrib-src"} {
-     file copy -force degrib-src.tar degrib-temp.tar
+    eval {exec gzip -c} $ansFile.tar > $ansFile.tar.gz 
+  } else {
+    eval {exec gzip} $ansFile.tar
   }
-  eval {exec gzip} $ansFile.tar
-  if {$ansFile == "degrib-src"} {
-     file copy -force degrib-temp.tar degrib-src.tar
-     file delete -force degrib-temp.tar
-  }
+#  if {$ansFile == "degrib-src"} {
+#     file copy -force degrib-temp.tar degrib-src.tar
+#     file delete -force degrib-temp.tar
+#  }
   if {$Zip_Also} {
     eval {exec zip -@} $ansFile.zip {<} $ansFile.txt
   }
   file delete -force $ansFile.txt
   if {$StartDir != $DestDir} {
     file copy -force $ansFile.tar.gz $DestDir
+    file delete -force $ansFile.tar.gz
     if {$ansFile == "degrib-src"} {
       file copy -force degrib-src.tar $DestDir
+      file delete -force degrib-src.tar
     }
-    file delete -force $ansFile.tar.gz
     if {$Zip_Also} {
       file copy -force $ansFile.zip $DestDir
       file delete -force $ansFile.zip
