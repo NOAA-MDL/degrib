@@ -624,9 +624,12 @@ double myRound (double data, uChar place)
  *
  * HISTORY
  *  10/2003 Arthur Taylor (MDL/RSIS): Created.
+ *  11/2006 Joe Lang and Arthur Taylor (MDL) : Modified for all space error.
  *
  * NOTES
  *   See K&R p106 for strcpy part.
+ *   Also: http://icecube.wisc.edu/~dglo/c_class/strmemfunc.html
+ *   Also: google with "strcpy memory overlap"
  *****************************************************************************
  */
 void strTrim (char *str)

@@ -1,9 +1,6 @@
 #
 #----- Release: Version 1.85a 11/08/2006 -----
 #
-#
-#----- Release: Version 1.84.1 11/08/2006 -----
-#
 11/7  AAT updated degrib1.c to handle center 9 subcenter 161 data for GRIB1.
 #
 #----- Release: Version 1.84 11/03/2006 -----
