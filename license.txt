@@ -1,0 +1,63 @@
+ DISCLAIMER: The United States Government makes no warranty, expressed or
+ implied, as to the usefulness of the software and documentation for any
+ purpose. The U.S. Government, its instrumentalities, officers, employees,
+ and agents assumes no responsibility (1) for the use of the software, or
+ (2) to provide technical support to users.
+ (see: http://www.nws.noaa.gov/im/softa.htm)
+
+ LICENSE: This software is provided 'as-is', without any express or implied
+ warranty.  In no event will the authors be held liable for any damages
+ arising from the use of this software.
+
+ Permission is granted to anyone to use this software for any purpose,
+ including commercial applications, and to alter it and redistribute it
+ freely, subject to the following restrictions:
+
+ 1. The origin of this software must not be misrepresented; you must not
+    claim that you wrote the original software. If you use this software
+    in a product, an acknowledgment in the product documentation would be
+    appreciated but is not required.
+ 2. Altered source versions must be plainly marked as such, and must not be
+    misrepresented as being the original software.
+ 3. This notice may not be removed or altered from any source distribution.
+
+ 2002-2005 Arthur Taylor
+
+************************************
+This software uses several different libraries, and as such may be subject to
+their licenses...
+************************************
+
+A) grib2_unpacker: No specified license.  Government software, and as such is
+in the public domain, and may be used freely by the public.  See disclaimer
+at the top.  For more info, see:
+ "http://www.nws.noaa.gov/mdl/iwt/grib2/decoder.htm"
+
+B) emapf-c: No specified license.  Government software, and as such is in the
+public domain, and may be used freely by the public.  See disclaimer at the
+top.  For more info, see "http://www.arl.noaa.gov/ss/models/cmapf.html"
+
+C) g2clib-1.0.2: No specified license.  Government software, and as such is
+in the public domain, and may be used freely by the public.  See disclaimer
+at the top.  For more info, see "http://www.nco.ncep.noaa.gov/pmb/codes/GRIB2/"
+
+D) Zlib:  Has a similar license to above.  See source distribution directory,
+or: http://www.gzip.org/zlib/
+
+E) libpng:  Has a similar license to above.  See source distribution directory,
+or: http://www.libpng.org/pub/png/libpng.html
+
+F) jpeg2000 (aka JasPer Software):  Has a similar license to above.  See source
+distribution directory, or: http://www.ece.uvic.ca/~mdadams/jasper/
+
+G) NetCDF: Has a similar license to above.  See source distribution directory,
+or:http://www.unidata.ucar.edu/packages/netcdf/
+
+H) Gd:  Has a similar license to above.  See source distribution directory,
+or: http://www.boutell.com/gd/
+
+I) Tcl/Tk: Has a similar license to above.
+See "http://www.tcl.tk/software/tcltk/"
+
+J) mkwidgets:  No license. See "http://mkextensions.sourceforge.net/"
+
