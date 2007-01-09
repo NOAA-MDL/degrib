@@ -2525,6 +2525,7 @@ int ProbeCmd (sChar f_Command, userType *usr)
                          usr->gribFilter, numSector, sector,
                          usr->f_ndfdConven);
 #endif
+         myAssert (1==0);
       }
       if (usr->f_Graph != 0) {
          ans2 = GraphProbe (usr->f_Graph, numPnts, pnts, pntInfo,

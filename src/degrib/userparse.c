@@ -25,6 +25,7 @@
 /*#ifdef HAVE_FCNTL_H*/
 #include <fcntl.h>
 /*#endif*/
+#include <math.h>
 #include "myassert.h"
 #include "myerror.h"
 #include "userparse.h"
@@ -138,6 +139,7 @@ void UserInit (userType *usr)
    usr->ndfdVarsBuff = NULL;
    usr->startTime = 0;
    usr->endTime = 0;
+   usr->f_timeFlavor = -1;
 }
 
 /*****************************************************************************
@@ -639,8 +641,9 @@ static char *UsrOpt[] = { "-cfg", "-in", "-I", "-C", "-P", "-V", "-Flt",
    "-nLabel", "-LatLon_Decimal", "-NetCDF", "-refTime", "-tmFormat",
    "-stdout", "-validMax", "-validMin", "-Tdl", "-nTdl", "-Sector",
    "-sectFile", "-NC", "-AscGrid", "-Map", "-MapIni", "-MapIniOptions",
-   "-XML", "-MOTD", "-Graph", "-startTime", "-endTime", "-ndfdVars",
-   "-geoData", "-gribFilter", "-ndfdConven", "-Freq", "-Icon", "-curTime",
+   "-XML", "-MOTD", "-Graph", "-startTime", "-endTime", "-startDate",
+   "-numDays", "-ndfdVars", "-geoData", "-gribFilter", "-ndfdConven",
+   "-Freq", "-Icon", "-curTime",
    NULL
 };
 
@@ -662,7 +665,8 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
       NO_LABEL, LATLON_DECIMAL, NETCDF, REFTIME, TMFORMAT, STDOUT, VALIDMAX,
       VALIDMIN, TDL, NO_TDL, SECTOR, SECTFILE, NCCONVERT, ASCGRID, MAP,
       MAPINIFILE, MAPINIOPTIONS, XML, MOTD, GRAPH, STARTTIME, ENDTIME,
-      NDFDVARS, GEODATA, GRIBFILTER, NDFDCONVEN, FREQUENCY, ICON, CURTIME
+      STARTDATE, NUMDAYS, NDFDVARS, GEODATA, GRIBFILTER, NDFDCONVEN,
+      FREQUENCY, ICON, CURTIME
    };
    int index;           /* "cur"'s index into Opt, which matches enum val. */
    double lat, lon;     /* Used to check on the -pnt option. */
@@ -673,6 +677,7 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
    int type;
    char perm;
    double curTime;
+   sInt4 totDay;
 
    /* Figure out which option. */
    if (GetIndexFromStr (cur, UsrOpt, &index) < 0) {
@@ -1031,6 +1036,13 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
          Clock_SetSeconds (&curTime, 1);
          return 2;
       case STARTTIME:
+         if (usr->f_timeFlavor == 2) {
+            errSprintf ("Inconsistent time flavor.\n"
+                        "Either use startTime, endTime, or startDate, numDays,"
+                        "but don't mix them.\n");
+            return -1;
+         }
+         usr->f_timeFlavor = 1;
          if ((usr->f_valTime != 1) && (usr->f_valTime != 3)) {
             /* f_gmt = 0 no adjust, 1 adjust as LDT, 2 adjust as LST */
             if (Clock_Scan (&(usr->startTime), next, 0) != 0) {
@@ -1046,6 +1058,13 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
          }
          return 2;
       case ENDTIME:
+         if (usr->f_timeFlavor == 2) {
+            errSprintf ("Inconsistent time flavor.\n"
+                        "Either use startTime, endTime, or startDate, numDays,"
+                        "but don't mix them.\n");
+            return -1;
+         }
+         usr->f_timeFlavor = 1;
          if ((usr->f_valTime != 2) && (usr->f_valTime != 3)) {
             /* f_gmt = 0 no adjust, 1 adjust as LDT, 2 adjust as LST */
             if (Clock_Scan (&(usr->endTime), next, 0) != 0) {
@@ -1059,6 +1078,54 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
 /*            printf ("end Time '%s' %f\n", next, usr->endTime);*/
          }
          return 2;
+      case STARTDATE:
+         if (usr->f_timeFlavor == 1) {
+            errSprintf ("Inconsistent time flavor.\n"
+                        "Either use startTime, endTime, or startDate, numDays,"
+                        "but don't mix them.\n");
+            return -1;
+         }
+         usr->f_timeFlavor = 2;
+         if ((usr->f_valTime != 1) && (usr->f_valTime != 3)) {
+            /* f_gmt = 0 no adjust, 1 adjust as LDT, 2 adjust as LST */
+            if (Clock_Scan (&(usr->startTime), next, 0) != 0) {
+               return 2;
+            }
+            /* Shift startTime to 5 z of that day. */
+            totDay = (sInt4) floor (usr->startTime / SEC_DAY);
+            usr->startTime = totDay * SEC_DAY + 5 * 3600.;
+            if (usr->f_valTime == -1) {
+               usr->f_valTime = 1;
+            } else {
+               usr->f_valTime = 3;
+               usr->endTime = (totDay + usr->endTime) * SEC_DAY + 36 * 3600.;
+            }
+/*            printf ("start Time '%s' %f\n", next, usr->startTime);*/
+            return 2;
+         }
+         return 2;
+      case NUMDAYS:
+         if (usr->f_timeFlavor == 1) {
+            errSprintf ("Inconsistent time flavor.\n"
+                        "Either use startTime, endTime, or startDate, numDays,"
+                        "but don't mix them.\n");
+            return -1;
+         }
+         usr->f_timeFlavor = 2;
+         if ((usr->f_valTime != 1) && (usr->f_valTime != 3)) {
+            if (myAtoI (next, &(li_temp)) != 1) {
+               errSprintf ("Bad value to '%s' of '%s'\n", cur, next);
+               return -1;
+            }
+            usr->endTime = li_temp;
+            if (usr->f_valTime == -1) {
+               usr->f_valTime = 2;
+            } else {
+               usr->f_valTime = 3;
+               totDay = (sInt4) floor (usr->startTime / SEC_DAY);
+               usr->endTime = (totDay + usr->endTime) * SEC_DAY + 36 * 3600.;
+            }
+         }
       case SIMPLEWX_VER:
          if (usr->f_SimpleVer == -1) {
 /*            usr->f_SimpleVer = atoi (next); */
@@ -1107,6 +1174,23 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
                   return -1;
                }
                usr->f_XML = li_temp;
+            }
+            if ((usr->f_XML == 1) || (usr->f_XML == 2)) {
+               if (usr->f_timeFlavor == 2) {
+                  errSprintf ("Inconsistent time flavor.\n"
+                              "XML 1,2 use startTime, endTime\n"
+                              "XML 3,4 use startDate, numDays\n");
+                  return -1;
+               }
+               usr->f_timeFlavor = 1;
+            } else if ((usr->f_XML == 3) || (usr->f_XML == 4)) {
+               if (usr->f_timeFlavor == 1) {
+                  errSprintf ("Inconsistent time flavor.\n"
+                              "XML 1,2 use startTime, endTime\n"
+                              "XML 3,4 use startDate, numDays\n");
+                  return -1;
+               }
+               usr->f_timeFlavor = 2;
             }
          }
          return 2;

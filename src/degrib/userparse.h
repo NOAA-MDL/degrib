@@ -131,6 +131,12 @@ typedef struct {
                          * and f_validEndTime */
    double startTime;    /* Start of "valid times" we're interested (inclusive) */
    double endTime;      /* End of "valid times" we're interested (inclusive) */
+   sChar f_timeFlavor;  /* -1 (have not seen StartDay,XML,numHr,startTime,etc
+                         * 0 have seen XML 3,4 or StartDay,numHour
+                         * 1 have seen XML 1,2 or StartTime,endTime
+                         * It is an error to see a type 1 thing if we have seen
+                         * a type 0 thing.
+                         */
    char *ndfdVarsBuff;  /* The NDFD Variables string before we parse it. */
    sChar f_ndfdConven;  /* NDFD naming convention to use. */
    uChar *ndfdVars;     /* The array of NDFD variables that we are interested
