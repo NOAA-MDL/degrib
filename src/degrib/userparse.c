@@ -1098,7 +1098,7 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
                usr->f_valTime = 1;
             } else {
                usr->f_valTime = 3;
-               usr->endTime = (totDay + usr->endTime) * SEC_DAY + 36 * 3600.;
+               usr->endTime = (totDay + usr->endTime) * SEC_DAY + 12 * 3600.;
             }
 /*            printf ("start Time '%s' %f\n", next, usr->startTime);*/
             return 2;
@@ -1123,7 +1123,7 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
             } else {
                usr->f_valTime = 3;
                totDay = (sInt4) floor (usr->startTime / SEC_DAY);
-               usr->endTime = (totDay + usr->endTime) * SEC_DAY + 36 * 3600.;
+               usr->endTime = (totDay + usr->endTime) * SEC_DAY + 12 * 3600.;
             }
          }
       case SIMPLEWX_VER:
