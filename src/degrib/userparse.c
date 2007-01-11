@@ -1112,7 +1112,7 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
             return -1;
          }
          usr->f_timeFlavor = 2;
-         if ((usr->f_valTime != 1) && (usr->f_valTime != 3)) {
+         if ((usr->f_valTime != 2) && (usr->f_valTime != 3)) {
             if (myAtoI (next, &(li_temp)) != 1) {
                errSprintf ("Bad value to '%s' of '%s'\n", cur, next);
                return -1;
