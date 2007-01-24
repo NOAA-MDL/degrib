@@ -634,9 +634,8 @@ double myRound (double data, uChar place)
  */
 void strTrim (char *str)
 {
-   size_t i;            /* loop counter for traversing str. */
-   size_t len;          /* The length of str. */
    char *ptr;           /* Pointer to where first non-white space is. */
+   char *ptr2;          /* Pointer to just past last non-white space. */
 
    /* str shouldn't be null, but if it is, we want to handle it. */
    myAssert (str != NULL);
@@ -644,16 +643,22 @@ void strTrim (char *str)
       return;
    }
 
-   /* Remove the trailing white space before working on the leading ones. */
-   len = strlen (str);
-   for (i = len - 1; ((i >= 0) && (isspace (str[i]))); i--) {
+   /* Trim the string to the left first. */
+   for (ptr = str; isspace (*ptr); ptr++) {
    }
-   len = i + 1;
-   str[len] = '\0';
+   /* Did we hit the end of an all space string? */
+   if (*ptr == '\0') {
+      *str = '\0';
+      return;
+   }
 
-   /* Find first non-white space char. */
-   for (ptr = str; (*ptr != '\0') && (isspace (*ptr)); ptr++) {
+   /* now work on the right side. */
+   for (ptr2 = ptr + (strlen (ptr) - 1); isspace (*ptr2); ptr2--) {
    }
+
+   /* adjust the pointer to add the null byte. */
+   ptr2++;
+   *ptr2 = '\0';
 
    if (ptr != str) {
       /* Can't do a strcpy here since we don't know that they start at left
@@ -686,7 +691,7 @@ void strTrim (char *str)
  */
 void strTrimRight (char *str, char c)
 {
-   size_t i;            /* loop counter for traversing str. */
+   int i;               /* loop counter for traversing str. */
 
    /* str shouldn't be null, but if it is, we want to handle it. */
    myAssert (str != NULL);
