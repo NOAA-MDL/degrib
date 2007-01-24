@@ -1865,7 +1865,7 @@ Grib2DataProbe (usr, numPnts, pnts, labels, pntFiles);
 /* Want to join together relevant parts of:
 probe.c :: int GRIB2Probe (userType * usr, IS_dataType * is, grib_MetaData * meta)
 and
-cube.c :: int Grib2DataProbe (userType * usr)
+genprobe.c :: int Grib2DataProbe (userType * usr)
 */
 
 /*****************************************************************************
@@ -2195,11 +2195,11 @@ int Grib2DataProbe (userType *usr, int numPnts, Point * pnts, char **labels,
             SetMapParam (&map, &gds);
 
             for (k = 0; k < numPnts; k++) {
-               myCll2xy (&map, pnts[i].Y, pnts[i].X, &newX, &newY);
+               myCll2xy (&map, pnts[k].Y, pnts[k].X, &newX, &newY);
 #ifdef DEBUG
 /*
-               printf ("lat %f lon %f -> x %f y %f \n", pnts[i].Y,
-                       pnts[i].X, newX, newY);
+               printf ("Testing: lat %f lon %f -> x %f y %f \n", pnts[k].Y,
+                       pnts[k].X, newX, newY);
 */
 #endif
                /* Find the nearest grid cell. */
@@ -2421,7 +2421,6 @@ int Grib2DataProbe (userType *usr, int numPnts, Point * pnts, char **labels,
 int ProbeCmd (sChar f_Command, userType *usr)
 {
    char *msg;           /* Used to print the error stack */
-
    size_t numPnts = 0;  /* How many points in pnts */
    Point *pnts = NULL;  /* Array of points we are interested in. */
    char **labels = NULL; /* Array of labels for the points. */
@@ -2483,7 +2482,7 @@ int ProbeCmd (sChar f_Command, userType *usr)
    if ((usr->f_XML != 0) || (usr->f_Graph != 0) || (usr->f_MOTD != 0)) {
 
       /* Find out the Major sectors for all the points? */
-      /* Probe geodata for all the points, and get TZ and Daylight If geoData 
+      /* Probe geodata for all the points, and get TZ and Daylight If geoData
        * = NULL, or can't find it, TZ = 0, dayLight = 0 */
       pntInfo = (PntSectInfo *) malloc (numPnts * sizeof (PntSectInfo));
       numSector = 0;
@@ -2491,7 +2490,7 @@ int ProbeCmd (sChar f_Command, userType *usr)
       GetSectorList (usr->sectFile, numPnts, pnts, usr->f_pntType,
                      usr->geoDataDir, pntInfo, &numSector, &sector);
 
-      /* Create File names by walking through inNames for dir types. If it is 
+      /* Create File names by walking through inNames for dir types. If it is
        * a file then keep going.  If it is a dir, tack on all relevant
        * sectors, and files that match the ndfdVars + the filter */
       if (usr->gribFilter == NULL) {
