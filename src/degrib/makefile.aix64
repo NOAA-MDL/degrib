@@ -36,7 +36,7 @@ STD_FLAGS = -O -qchars=signed -qmaxmem=8192
 ############################
 # Link Flags
 ############################
-LD_FLAGS =
+LD_FLAGS = -bmaxdata:0x30000000
 
 ############################
 # XML Dependence
