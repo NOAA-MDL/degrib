@@ -27,6 +27,7 @@ STRIP = strip
 # Can't use -ansi because of we may need stdout to be binary.
 #STD_FLAGS = -O3 -Wall -mno-cygwin
 STD_FLAGS = -O3 -Wall -pedantic -ansi -mno-cygwin
+DWML_FLAGS = -O3 -Wall -pedantic -std=c99 -mno-cygwin
 
 ############################
 # Link Flags
@@ -104,6 +105,7 @@ TK_DLL = tkdegrib.dll
 
 CFLAGS = $(STD_FLAGS) $(STD_DEF) $(STD_INC)
 GUIFLAGS = $(STD_FLAGS) $(STD_DEF) $(GUI_INC)
+DWMLFLAGS = $(DWML_FLAGS) $(STD_DEF) $(STD_INC)
 STUBFLAGS = $(STD_FLAGS) -shared $(STUB_DEF) $(GUI_INC)
 
 ############################
@@ -288,7 +290,7 @@ clean:
 ../dwmllib/libdwml.a:
 	@echo "-----------------------------"
 	@echo "Attempting to compile dwmllib..."
-	(cd ../dwmllib && export CC='$(CC)' && export CFLAGS='$(CFLAGS)' && make -f makefile)
+	(cd ../dwmllib && export CC='$(CC)' && export CFLAGS='$(DWMLFLAGS)' && make -f makefile)
 	@echo "Finished with dwmllib..."
 	@echo "-----------------------------"
 

@@ -26,6 +26,7 @@ TCL_VERSION = 8.0
 ############################
 CC = gcc
 STD_FLAGS = -O3 -Wall -pedantic -ansi
+DWML_FLAGS = -O3 -Wall -pedantic -c99
 
 ############################
 # Link Flags
@@ -88,6 +89,7 @@ TK_NAME = tkdegrib
 
 CFLAGS = $(STD_FLAGS) $(STD_DEF) $(STD_INC)
 GUIFLAGS = $(STD_FLAGS) $(STD_DEF) $(GUI_INC)
+DWMLFLAGS = $(DWML_FLAGS) $(STD_DEF) $(STD_INC)
 
 ############################
 # FILES
@@ -257,7 +259,7 @@ clean:
 ../dwmllib/libdwml.a:
 	@echo "-----------------------------"
 	@echo "Attempting to compile dwmllib..."
-	(cd ../dwmllib && export CC='$(CC)' && export CFLAGS='$(CFLAGS)' && make -f makefile)
+	(cd ../dwmllib && export CC='$(CC)' && export CFLAGS='$(DWML_FLAGS)' && make -f makefile)
 	@echo "Finished with dwmllib..."
 	@echo "-----------------------------"
 
