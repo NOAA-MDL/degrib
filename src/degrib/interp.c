@@ -156,14 +156,17 @@ double BiLinearBorder (const double *gribData, myMaparam *map, double newX,
    if ((d11 != missPri) && (d12 != missPri) &&
        (d21 != missPri) && (d22 != missPri)) {
       /* Note the use of fabs() and Dx and their implications for the sign. */
+      /* Corrected 1/24/2007 due to email from jeff.sharkey */
+      /* Was (d11 - d12) and (d21 - d22), but d12 is x1,y2 and d21 is x2,y1.
+       * d_temp1 is holding y1 constant so should be dealing with d?1 */
       if (fabs (newX - x1) <= map->Dx) {
-         d_temp1 = d11 - fabs (newX - x1) * (d11 - d12) / map->Dx;
-         d_temp2 = d21 - fabs (newX - x1) * (d21 - d22) / map->Dx;
+         d_temp1 = d11 - fabs (newX - x1) * (d11 - d21) / map->Dx;
+         d_temp2 = d12 - fabs (newX - x1) * (d12 - d22) / map->Dx;
          return (float) (d_temp1 + (newY - y1) *
                          (d_temp1 - d_temp2) / (y1 - y2));
       } else {
-         d_temp1 = d11 - fabs (newX - x2) * (d11 - d12) / map->Dx;
-         d_temp2 = d21 - fabs (newX - x2) * (d21 - d22) / map->Dx;
+         d_temp1 = d11 - fabs (newX - x2) * (d11 - d21) / map->Dx;
+         d_temp2 = d12 - fabs (newX - x2) * (d12 - d22) / map->Dx;
          return (float) (d_temp1 + (newY - y1) *
                          (d_temp1 - d_temp2) / (y1 - y2));
       }
@@ -301,8 +304,11 @@ double BiLinearCompute (double *grib_Data, myMaparam *map, double lat,
    /* Do Bi-linear interpolation to get value. */
    if ((d11 != missPri) && (d12 != missPri) &&
        (d21 != missPri) && (d22 != missPri)) {
-      d_temp1 = d11 + (newX - x1) * (d11 - d12) / (x1 - x2);
-      d_temp2 = d21 + (newX - x1) * (d21 - d22) / (x1 - x2);
+      /* Corrected 1/24/2007 due to email from jeff.sharkey */
+      /* Was (d11 - d12) and (d21 - d22), but d12 is x1,y2 and d21 is x2,y1.
+       * d_temp1 is holding y1 constant so should be dealing with d?1 */
+      d_temp1 = d11 + (newX - x1) * (d11 - d21) / (x1 - x2);
+      d_temp2 = d12 + (newX - x1) * (d12 - d22) / (x1 - x2);
       return (float) (d_temp1 + (newY - y1) *
                       (d_temp1 - d_temp2) / (y1 - y2));
    } else {

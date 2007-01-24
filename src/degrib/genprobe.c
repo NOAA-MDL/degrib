@@ -742,8 +742,11 @@ static void getValAtPnt (sInt4 gribDataLen, const double *gribData,
    }
 
    /* Do Bi-linear interpolation to get value. */
-   d_temp1 = d11 + (newX - x1) * (d11 - d12) / (x1 - x2);
-   d_temp2 = d21 + (newX - x1) * (d21 - d22) / (x1 - x2);
+   /* Corrected 1/24/2007 due to email from jeff.sharkey */
+   /* Was (d11 - d12) and (d21 - d22), but d12 is x1,y2 and d21 is x2,y1.
+    * d_temp1 is holding y1 constant so should be dealing with d?1 */
+   d_temp1 = d11 + (newX - x1) * (d11 - d21) / (x1 - x2);
+   d_temp2 = d12 + (newX - x1) * (d12 - d22) / (x1 - x2);
    *ans = (d_temp1 + (newY - y1) * (d_temp1 - d_temp2) / (y1 - y2));
 }
 #endif
@@ -910,8 +913,11 @@ static void getCubeValAtPnt (FILE *data, sInt4 dataOffset, uChar scan,
    }
 
    /* Do Bi-linear interpolation to get value. */
-   d_temp1 = d11 + (pntX - x1) * (d11 - d12) / (x1 - x2);
-   d_temp2 = d21 + (pntX - x1) * (d21 - d22) / (x1 - x2);
+   /* Corrected 1/24/2007 due to email from jeff.sharkey */
+   /* Was (d11 - d12) and (d21 - d22), but d12 is x1,y2 and d21 is x2,y1.
+    * d_temp1 is holding y1 constant so should be dealing with d?1 */
+   d_temp1 = d11 + (pntX - x1) * (d11 - d21) / (x1 - x2);
+   d_temp2 = d12 + (pntX - x1) * (d12 - d22) / (x1 - x2);
    *ans = (d_temp1 + (pntY - y1) * (d_temp1 - d_temp2) / (y1 - y2));
 }
 
