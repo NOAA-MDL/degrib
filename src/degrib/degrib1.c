@@ -1219,6 +1219,7 @@ static int ReadGrib1Sect3 (uChar *bms, uInt4 gribLen, uInt4 *curLoc,
    return 0;
 }
 
+#ifdef DEBUG
 static int UnpackCmplx (uChar *bds, uInt4 gribLen, uInt4 *curLoc,
                         short int DSF, double *data, grib_MetaData *meta,
                         char f_bms, uChar *bitmap, double unitM,
@@ -1313,8 +1314,8 @@ static int UnpackCmplx (uChar *bds, uInt4 gribLen, uInt4 *curLoc,
    errSprintf ("Don't know how to handle Complex GRIB1 packing yet.\n");
    free (width);
    return -2;
-
 }
+#endif
 
 /*****************************************************************************
  * ReadGrib1Sect4() --
