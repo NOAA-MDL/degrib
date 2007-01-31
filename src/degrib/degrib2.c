@@ -168,20 +168,28 @@ int ReadSECT0 (FILE *fp, char **buff, uInt4 *buffLen, sInt4 limit,
          curLen += stillNeed;
          if ((limit >= 0) && (curLen > (size_t) limit)) {
             errSprintf ("ERROR: Couldn't find type in %ld bytes\n", limit);
+            *buffLen = curLen - stillNeed;
             return -1;
          }
          if (*buffLen < curLen) {
-            *buffLen = curLen;
+            myAssert (200 > stillNeed);
+            *buffLen = *buffLen + 200;
+            /* *buffLen = curLen; */
             *buff = (char *) realloc ((void *) *buff,
                                       *buffLen * sizeof (char));
          }
          if (fread ((*buff) + (curLen - stillNeed), sizeof (char), stillNeed,
                     fp) != stillNeed) {
             errSprintf ("ERROR: Ran out of file reading SECT0\n");
+            *buffLen = curLen;
             return -1;
          }
       }
    }
+   /* Following is needed because we are increasing buffLen at a rate of
+    * 200 (to save reallocs), so it may not actually line up with the length
+    * of buffer. curLen should always be the length of buffer. */
+   *buffLen = curLen;
 
    /* curLen and (*buff) hold 8 bytes of section 0. */
    curLen -= 8;
