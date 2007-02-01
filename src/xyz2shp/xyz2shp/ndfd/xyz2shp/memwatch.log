@@ -1,0 +1,34 @@
+
+============= MEMWATCH 2.71 Copyright (C) 1992-1999 Johan Lindh =============
+
+Started at Wed Jan 05 12:19:29 2005
+
+Modes: __STDC__ 32-bit mwDWORD==(unsigned long)
+mwROUNDALLOC==4 sizeof(mwData)==32 mwDataSize==32
+
+
+Stopped at Wed Jan 05 12:19:29 2005
+
+
+Memory usage statistics (global):
+ N)umber of allocations made: 3048
+ L)argest memory usage      : 14373
+ T)otal of all alloc() calls: 189848
+ U)nfreed bytes totals      : 0
+
+============= MEMWATCH 2.71 Copyright (C) 1992-1999 Johan Lindh =============
+
+Started at Wed Jan 05 12:28:24 2005
+
+Modes: __STDC__ 32-bit mwDWORD==(unsigned long)
+mwROUNDALLOC==4 sizeof(mwData)==32 mwDataSize==32
+
+
+Stopped at Wed Jan 05 12:28:24 2005
+
+
+Memory usage statistics (global):
+ N)umber of allocations made: 3048
+ L)argest memory usage      : 14373
+ T)otal of all alloc() calls: 189848
+ U)nfreed bytes totals      : 0
