@@ -67,6 +67,20 @@ static const char *NdfdDefSect[] = {
 
 static size_t NumNdfdDefSect = sizeof (NdfdDefGds) / sizeof (NdfdDefGds[0]);
 
+
+int SectorFindGDS (gdsType *gds)
+{
+   size_t i;            /* loop counter. */
+
+   for (i = 0; i < NumNdfdDefSect; i++) {
+      if (memcmp ((void *) &(*gds), (void *) &(NdfdDefGds[i]),
+                  sizeof (gdsType)) == 0) {
+         return i;
+      }
+   }
+   return -1;
+}
+
 /*****************************************************************************
  * FillGDSBuffer() --
  *

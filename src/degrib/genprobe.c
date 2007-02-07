@@ -52,7 +52,7 @@ static const genElemDescript NdfdElements[] = {
    {NDFD_WH,2, 8,MISSING_2,0, 0,10,0,5,0, 1,0.0,0.0 },
    {NDFD_AT,2, 8,MISSING_2,0, 0,0,0,193,0, 1,0.0,0.0 },
    {NDFD_RH,2, 8,MISSING_2,0, 0,0,1,1,0, 1,0.0,0.0 },
-/*
+#ifndef UNDEF_NDFD_WG
    {NDFD_WG,2, 8,MISSING_2,0, 0,0,2,22,0, 1,0.0,0.0 },
    {NDFD_INC34,2, 8,MISSING_2,0, 9,0,2,1,6, 103,10.0,0.0 },
    {NDFD_INC50,2, 8,MISSING_2,0, 9,0,2,1,6, 103,10.0,0.0 },
@@ -60,7 +60,7 @@ static const genElemDescript NdfdElements[] = {
    {NDFD_CUM34,2, 8,MISSING_2,0, 9,0,2,1,6, 103,10.0,0.0 },
    {NDFD_CUM50,2, 8,MISSING_2,0, 9,0,2,1,6, 103,10.0,0.0 },
    {NDFD_CUM64,2, 8,MISSING_2,0, 9,0,2,1,6, 103,10.0,0.0 },
-*/
+#endif
    {NDFD_UNDEF,2, MISSING_2,MISSING_2,MISSING_1,
                   MISSING_2,MISSING_1,MISSING_1,MISSING_1,0,
                   MISSING_1,0.0,0.0 },
@@ -99,7 +99,7 @@ static const uChar NdfdElementsLen = (sizeof (NdfdElements) /
  *          NDFD_AT, NDFD_RH, NDFD_UNDEF, NDFD_MATCHALL };
  *****************************************************************************
  */
-/*
+#ifndef UNDEF_NDFD_WG
 static char *NDFD_Type[] = { "maxt", "mint", "pop12", "t", "winddir",
    "windspd", "td", "sky", "qpf", "snowamt", "wx", "waveheight",
    "apparentt", "rh", "windgust", "probwindspd34i", "probwindspd50c",
@@ -115,7 +115,7 @@ static char *NDFD_File2[] = { "mx", "mn", "po", "tt", "wd",
    "ws", "dp", "cl", "qp", "sn", "wx", "wh", "at", "rh", "wg", "i3",
    "i5", "i6", "c3", "c5", "c6", NULL
 };
-*/
+#else
 static char *NDFD_Type[] = { "maxt", "mint", "pop12", "t", "winddir",
    "windspd", "td", "sky", "qpf", "snowamt", "wx", "waveheight",
    "apparentt", "rh", NULL
@@ -126,6 +126,7 @@ static char *NDFD_File[] = { "maxt", "mint", "pop12", "temp", "wdir",
 static char *NDFD_File2[] = { "mx", "mn", "po", "tt", "wd",
    "ws", "dp", "cl", "qp", "sn", "wx", "wh", "at", "rh", NULL
 };
+#endif
 
 uChar genNdfdVar_Lookup (char *str, char f_toLower, char f_ndfdConven)
 {
@@ -1263,6 +1264,7 @@ static int genProbeGrib (FILE *fp, size_t numPnts, const Point * pnts,
    size_t i;            /* Loop counter while searching for a matching elem */
    double validTime;    /* The current grid's valid time. */
    myMaparam map;       /* The current grid's map parameter. */
+   char f_sector;       /* Enumerated Sector associated with this file */
 
    /* getValAtPnt does not currently allow f_pntType == 2 */
    myAssert (f_pntType != 2);
@@ -1342,6 +1344,10 @@ static int genProbeGrib (FILE *fp, size_t numPnts, const Point * pnts,
          return -2;
       }
       SetMapParam (&map, &(meta.gds));
+      f_sector = SectorFindGDS (&(meta.gds));
+      if (f_sector == -1) {
+         f_sector = NDFD_OCONUS_UNDEF;
+      }
 
       /* Have determined that this is a good match, allocate memory */
       *numMatch = *numMatch + 1;
@@ -1370,6 +1376,7 @@ static int genProbeGrib (FILE *fp, size_t numPnts, const Point * pnts,
          curMatch->refTime = meta.pdsTdlp.refTime;
       }
       curMatch->validTime = validTime;
+      curMatch->f_sector = f_sector;
       curMatch->unit = (char *) malloc (strlen (meta.unitName) + 1);
       strcpy (curMatch->unit, meta.unitName);
 
@@ -1486,6 +1493,8 @@ static int genProbeCube (const char *filename, size_t numPnts,
    char *dataName = NULL; /* The name of the current opened data file. */
    char *lastSlash;     /* A pointer to last slash in the index file. */
    FILE *data = NULL;   /* A pointer to the data file. */
+   char f_sector = NDFD_OCONUS_UNDEF; /* Enumerated Sector associated with
+                         * this file */
 
    if (ReadFLX (filename, &flxArray, &flxArrayLen) != 0) {
       errSprintf ("Problems Reading %s\n", filename);
@@ -1562,6 +1571,10 @@ static int genProbeCube (const char *filename, size_t numPnts,
                goto error;
             }
             SetMapParam (&map, &gds);
+            f_sector = SectorFindGDS (&gds);
+            if (f_sector == -1) {
+               f_sector = NDFD_OCONUS_UNDEF;
+            }
 
             /* Get points on the grid. */
             myAssert ((f_pntType == 0) || (f_pntType == 1));
@@ -1608,6 +1621,7 @@ static int genProbeCube (const char *filename, size_t numPnts,
          /* Set other meta info about the match. */
          curMatch->refTime = refTime;
          curMatch->validTime = validTime;
+         curMatch->f_sector = f_sector;
          curMatch->unit = (char *) malloc (strlen (unit) + 1);
          strcpy (curMatch->unit, unit);
 
@@ -1776,6 +1790,9 @@ int genProbe (size_t numPnts, Point * pnts, sChar f_pntType,
    expandInName (numInFiles, inFiles, f_inTypes, gribFilter, numSector,
                  sector, f_ndfdConven, numElem, elem, &numOutNames,
                  &outNames);
+   for (i = 0; i < numOutNames; i++) {
+      printf ("%s\n", inFiles[i]);
+   }
 
    for (i = 0; i < numOutNames; i++) {
 #ifndef DP_ONLY
@@ -2270,8 +2287,10 @@ int Grib2DataProbe (userType *usr, int numPnts, Point * pnts, char **labels,
                              sizeof (float));
                }
 #ifdef DEBUG
+/*
                printf ("offset = %ld, gds.Nx = %ld, CurX,Y = %ld %ld\n",
                        offset, gds.Nx, grid_X[k], grid_Y[k]);
+*/
 #endif
                fseek (data, offset, SEEK_SET);
                if (endian) {

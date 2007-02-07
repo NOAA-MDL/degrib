@@ -3,12 +3,16 @@
 
 #include "type.h"
 #include "genprobe.h"
+#include "meta.h"
 
 typedef struct {
    int index;
    sChar timeZone;   /* hours to add to local time to get UTC */
    sChar f_dayLight; /* daylight flag (pnt observes daylight savings time) */
 } PntSectInfo;
+
+
+int SectorFindGDS (gdsType *gds);
 
 int isPntInASector (Point pnt);
 
@@ -29,4 +33,5 @@ void expandInName (size_t numInNames, char **inNames, char *f_inTypes,
                    char *filter, size_t numSect, char **sect,
                    sChar f_ndfdConven, size_t numElem, genElemDescript * elem,
                    size_t *NumOutNames, char ***OutNames);
+
 #endif

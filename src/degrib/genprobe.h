@@ -66,6 +66,7 @@ typedef struct {
    char *file that matched it (to determine sector?)
    char *gds info... enumerated NDFD gds. to determine sector?
 */
+   char f_sector;      /* Enumerated sector that this match was in */
    double refTime;
    double validTime;
 } genMatchType;
