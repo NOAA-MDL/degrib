@@ -533,6 +533,50 @@ static int genElemMatchMeta (const genElemDescript * elem,
 }
 #endif
 
+#ifndef DP_ONLY
+uChar genNdfdEnum_fromMeta (const grib_MetaData *meta) {
+   uShort2 i;           /* Used to help find the ndfdEnum value. */
+   sInt4 lenTime;
+
+   if (meta->GribVersion != 2)
+      return NDFD_UNDEF;
+
+   if (((meta->pds2.sect4.templat == 8) ||
+        (meta->pds2.sect4.templat == 9)) &&
+       (meta->pds2.sect4.numInterval == 1)) {
+      lenTime = meta->pds2.sect4.Interval[0].lenTime;
+   } else {
+      lenTime = 0;
+   }
+
+   /* Determine the ndfdEnum for this element. Note, ndfdEnum is already
+    * initialized to NDFD_UNDEF. */
+   for (i = 0; i < NdfdElementsLen; i++) {
+      if ((NdfdElements[i].version == meta->GribVersion) &&
+          (NdfdElements[i].center == meta->center) &&
+          (NdfdElements[i].subcenter == meta->subcenter) &&
+          (NdfdElements[i].genID == meta->pds2.sect4.genID) &&
+          (NdfdElements[i].prodType == meta->pds2.prodType) &&
+          (NdfdElements[i].templat == meta->pds2.sect4.templat) &&
+          (NdfdElements[i].cat == meta->pds2.sect4.cat) &&
+          (NdfdElements[i].subcat == meta->pds2.sect4.subcat) &&
+          (NdfdElements[i].lenTime == lenTime) &&
+          (NdfdElements[i].surfType == meta->pds2.sect4.fstSurfType) &&
+          (NdfdElements[i].value == meta->pds2.sect4.fstSurfValue) &&
+          (NdfdElements[i].sndValue == meta->pds2.sect4.sndSurfValue)) {
+         return NdfdElements[i].ndfdEnum;
+      }
+   }
+#ifdef DEBUG
+   printf ("%d %d %d %d %d %d %d %d %ld %d %f %f\n", meta->GribVersion,
+           meta->center, meta->subcenter, meta->pds2.sect4.genID, meta->pds2.prodType,
+           meta->pds2.sect4.templat, meta->pds2.sect4.cat, meta->pds2.sect4.subcat, lenTime,
+           meta->pds2.sect4.fstSurfType, meta->pds2.sect4.fstSurfValue, meta->pds2.sect4.sndSurfValue);
+#endif
+   return NDFD_UNDEF;
+}
+#endif
+
 /*****************************************************************************
  * setGenElem() -- Arthur Taylor / MDL
  *
@@ -554,12 +598,10 @@ static int genElemMatchMeta (const genElemDescript * elem,
 #ifndef DP_ONLY
 static void setGenElem (genElemDescript * elem, const grib_MetaData *meta)
 {
-   uShort2 i;           /* Used to help find the ndfdEnum value. */
-
    elem->center = meta->center;
    elem->subcenter = meta->subcenter;
    elem->version = meta->GribVersion;
-   elem->ndfdEnum = NDFD_UNDEF;
+   elem->ndfdEnum = genNdfdEnum_fromMeta (meta);
    /* Those are all the current variables to set for non-GRIB2 data. */
    if (meta->GribVersion != 2)
       return;
@@ -579,34 +621,6 @@ static void setGenElem (genElemDescript * elem, const grib_MetaData *meta)
    elem->surfType = meta->pds2.sect4.fstSurfType;
    elem->value = meta->pds2.sect4.fstSurfValue;
    elem->sndValue = meta->pds2.sect4.sndSurfValue;
-
-   /* Determine the ndfdEnum for this element. Note, ndfdEnum is already
-    * initialized to NDFD_UNDEF. */
-   for (i = 0; i < NdfdElementsLen; i++) {
-      if ((NdfdElements[i].version == elem->version) &&
-          (NdfdElements[i].center == elem->center) &&
-          (NdfdElements[i].subcenter == elem->subcenter) &&
-          (NdfdElements[i].genID == elem->genID) &&
-          (NdfdElements[i].prodType == elem->prodType) &&
-          (NdfdElements[i].templat == elem->templat) &&
-          (NdfdElements[i].cat == elem->cat) &&
-          (NdfdElements[i].subcat == elem->subcat) &&
-          (NdfdElements[i].lenTime == elem->lenTime) &&
-          (NdfdElements[i].surfType == elem->surfType) &&
-          (NdfdElements[i].value == elem->value) &&
-          (NdfdElements[i].sndValue == elem->sndValue)) {
-         elem->ndfdEnum = NdfdElements[i].ndfdEnum;
-         break;
-      }
-   }
-#ifdef DEBUG
-   if (i == NdfdElementsLen) {
-      printf ("%d %d %d %d %d %d %d %d %ld %d %f %f\n", elem->version,
-              elem->center, elem->subcenter, elem->genID, elem->prodType,
-              elem->templat, elem->cat, elem->subcat, elem->lenTime,
-              elem->surfType, elem->value, elem->sndValue);
-   }
-#endif
 }
 #endif
 
@@ -1263,8 +1277,13 @@ static int genProbeGrib (FILE *fp, size_t numPnts, const Point * pnts,
    genMatchType *curMatch; /* The current match */
    size_t i;            /* Loop counter while searching for a matching elem */
    double validTime;    /* The current grid's valid time. */
+   double refTime;      /* The current grid's ref time. */
    myMaparam map;       /* The current grid's map parameter. */
    char f_sector;       /* Enumerated Sector associated with this file */
+   int k;               /* Loop counter. */
+   char f_interest;     /* used to help determine if we've already found
+                         * this match so we don't need to do it again. */
+   int elemEnum;        /* The NDFD element enumeration for the read grid */
 
    /* getValAtPnt does not currently allow f_pntType == 2 */
    myAssert (f_pntType != 2);
@@ -1306,14 +1325,18 @@ static int genProbeGrib (FILE *fp, size_t numPnts, const Point * pnts,
       /* Check if we're interested in this data based on validTime. */
       if (meta.GribVersion == 2) {
          validTime = meta.pds2.sect4.validTime;
+         refTime = meta.pds2.refTime;
       } else if (meta.GribVersion == 1) {
          validTime = meta.pds1.validTime;
+         refTime = meta.pds1.refTime;
       } else if (meta.GribVersion == -1) {
          validTime = meta.pdsTdlp.refTime + meta.pdsTdlp.project;
+         refTime = meta.pdsTdlp.refTime;
       } else {
          MetaFree (&meta);
          continue;
       }
+
       if ((f_valTime & 1) && (validTime < startTime)) {
          MetaFree (&meta);
          continue;
@@ -1333,6 +1356,7 @@ static int genProbeGrib (FILE *fp, size_t numPnts, const Point * pnts,
          MetaFree (&meta);
          continue;
       }
+      elemEnum = genNdfdEnum_fromMeta (&meta);
 
       /* Check that gds is valid before setting up map projection. */
       if ((GDSValid (&(meta.gds)) != 0) ||
@@ -1349,6 +1373,24 @@ static int genProbeGrib (FILE *fp, size_t numPnts, const Point * pnts,
          f_sector = NDFD_OCONUS_UNDEF;
       }
 
+      /* Check if this f_sector, refTime, validTime, element has already
+       * been checked. */
+      f_interest = 1;
+      if (elemEnum != NDFD_UNDEF) {
+         for (k = 0; k < *numMatch; k++) {
+            if (((*match)[k].refTime == refTime) &&
+                ((*match)[k].validTime == validTime) &&
+                ((*match)[k].f_sector == f_sector) &&
+                ((*match)[k].elem.ndfdEnum == elemEnum)) {
+               f_interest = 0;
+               break;
+            }
+         }
+      }
+      if (f_interest == 0) {
+         MetaFree (&meta);
+         continue;
+      }
       /* Have determined that this is a good match, allocate memory */
       *numMatch = *numMatch + 1;
       *match =
@@ -1368,13 +1410,7 @@ static int genProbeGrib (FILE *fp, size_t numPnts, const Point * pnts,
 #endif
 
       /* Set other meta info about the match. */
-      if (meta.GribVersion == 2) {
-         curMatch->refTime = meta.pds2.refTime;
-      } else if (meta.GribVersion == 1) {
-         curMatch->refTime = meta.pds1.refTime;
-      } else if (meta.GribVersion == -1) {
-         curMatch->refTime = meta.pdsTdlp.refTime;
-      }
+      curMatch->refTime = refTime;
       curMatch->validTime = validTime;
       curMatch->f_sector = f_sector;
       curMatch->unit = (char *) malloc (strlen (meta.unitName) + 1);
@@ -1495,6 +1531,8 @@ static int genProbeCube (const char *filename, size_t numPnts,
    FILE *data = NULL;   /* A pointer to the data file. */
    char f_sector = NDFD_OCONUS_UNDEF; /* Enumerated Sector associated with
                          * this file */
+   char f_interest;     /* used to help determine if we've already found
+                         * this match so we don't need to do it again. */
 
    if (ReadFLX (filename, &flxArray, &flxArrayLen) != 0) {
       errSprintf ("Problems Reading %s\n", filename);
@@ -1584,6 +1622,32 @@ static int genProbeCube (const char *filename, size_t numPnts,
                             &(gridPnts[ii].Y));
                }
             }
+         }
+
+         /* Check if this f_sector, refTime, validTime, element has already
+          * been checked. */
+         f_interest = 1;
+         if (elemEnum != NDFD_UNDEF) {
+            for (k = 0; k < *numMatch; k++) {
+               if (((*match)[k].refTime == refTime) &&
+                   ((*match)[k].validTime == validTime) &&
+                   ((*match)[k].f_sector == f_sector) &&
+                   ((*match)[k].elem.ndfdEnum == elemEnum)) {
+                  f_interest = 0;
+                  break;
+               }
+            }
+         }
+         if (f_interest == 0) {
+            if (numTable != 0) {
+               for (k = 0; k < numTable; k++) {
+                  free (table[k]);
+               }
+               free (table);
+               numTable = 0;
+               table = NULL;
+            }
+            continue;
          }
 
          if (strcmp (curFile, dataFile) != 0) {
@@ -1818,9 +1882,11 @@ int genProbe (size_t numPnts, Point * pnts, sChar f_pntType,
                     &outNames);
    }
 
+#ifdef DEBUG
    for (i = 0; i < numOutNames; i++) {
       printf ("%s\n", outNames[i]);
    }
+#endif
 
    for (i = 0; i < numOutNames; i++) {
 #ifndef DP_ONLY
@@ -1871,12 +1937,14 @@ int genProbe (size_t numPnts, Point * pnts, sChar f_pntType,
       }
 #endif
    }
+
 #ifdef DEBUG
 /*
-         for (i=0; i < *numMatch; i++) {
-            printf ("%d : %d : refTime %f valTime %f\n", i, (*match)[i].elem.ndfdEnum,
-                    (*match)[i].refTime, (*match)[i].validTime);
-         }
+   for (i=0; i < *numMatch; i++) {
+      printf ("%d : elem %d : sector %d refTime %f valTime %f\n", i,
+              (*match)[i].elem.ndfdEnum, (*match)[i].f_sector,
+              (*match)[i].refTime, (*match)[i].validTime);
+   }
 */
 #endif
 
