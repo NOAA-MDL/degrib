@@ -1193,19 +1193,37 @@ NDFD_AbrevOverideTable NDFD_Overide[] = {
 };
 
 GRIB2LocalTable NDFD_LclTable[] = {
-   /* 0 */ {0, 1, 192, "Wx", "Weather string", "-", UC_NONE},
-   /* 1 */ {0, 0, 193, "ApparentT", "Apparent Temperature", "K", UC_K2F},
-   /* 2 */ {0, 14, 192, "O3MR", "Ozone Mixing Ratio", "kg/kg", UC_NONE},
-   /* 3 */ {0, 14, 193, "OZCON", "Ozone Concentration", "PPB", UC_NONE},
+   /* 0 */ {0, 0, 193, "ApparentT", "Apparent Temperature", "K", UC_K2F},
+   /* 1 */ {0, 1, 192, "Wx", "Weather string", "-", UC_NONE},
    /* grandfather'ed in a NDFD choice for POP. */
-   /* 4 */ {0, 10, 8, "PoP12", "Prob of 0.01 In. of Precip", "%", UC_NONE},
+   /* 2 */ {0, 10, 8, "PoP12", "Prob of 0.01 In. of Precip", "%", UC_NONE},
            {0, 13, 194, "smokes", "Surface level smoke from fires",
             "log10(µg/m^3)", UC_LOG10},
            {0, 13, 195, "smokec", "Average vertical column smoke from fires",
             "log10(µg/m^3)", UC_LOG10},
+   /* 3 */ {0, 14, 192, "O3MR", "Ozone Mixing Ratio", "kg/kg", UC_NONE},
+   /* 4 */ {0, 14, 193, "OZCON", "Ozone Concentration", "PPB", UC_NONE},
+   /* Added 1/23/2007 in preparation for SPC NDFD Grids */
+           {0, 19, 194, "ConvOutlook", "Convective Hazard Outlook", "4=slight, 6=moderate, 8=high", UC_NONE},
+           {0, 19, 197, "TornadoProb", "Tornado probability", "%", UC_NONE},
+           {0, 19, 198, "HailProb", "Hail probability", "%", UC_NONE},
+           {0, 19, 199, "WindProb", "Damaging thunderstorm wind probability", "%", UC_NONE},
+           {0, 19, 200, "SigTornProb", "Extreme tornado probability", "%", UC_NONE},
+           {0, 19, 201, "SigHailProb", "Extreme hail probability", "%", UC_NONE},
+           {0, 19, 202, "SigWindProb", "Extreme thunderstorm wind probability", "%", UC_NONE},
+           {0, 19, 203, "TotalProbOutlook", "Total probability of Severe Thunderstorms", "%", UC_NONE},
+/*
+           {0, 19, 197, "Tornado", "Tornado", "", UC_NONE},
+           {0, 19, 198, "Hail", "Hail", "", UC_NONE},
+           {0, 19, 199, "Wind", "Damaging thunderstorm wind", "", UC_NONE},
+           {0, 19, 200, "SigTorn", "Extreme tornado", "", UC_NONE},
+           {0, 19, 201, "SigHail", "Extreme hail", "", UC_NONE},
+           {0, 19, 202, "SigWind", "Extreme thunderstorm wind", "", UC_NONE},
+           {0, 19, 203, "TotalOutlook", "Severe Thunderstorms", "%", UC_NONE},
+*/
    /* Arthur Added this to both NDFD and NCEP local tables. (5/1/2006) */
            {10, 3, 192, "Surge", "Hurricane Storm Surge", "m", UC_M2Feet},
-           {10, 3, 193, "ETSurge", "Extra Tropical Storm Surge", "m", UC_M2Feet},
+           {10, 3, 193, "ETSurge", "Extra Tropical Storm Surge", "m", UC_M2Feet}
 };
 
 GRIB2LocalTable HPC_LclTable[] = {
@@ -1517,7 +1535,7 @@ static void ElemNameProb (uShort2 center, uShort2 subcenter, int prodType,
          *convert = UC_NONE;
          return;
       }
-      /* 
+      /*
        * Deal with NDFD handling of Prob. Wind speeds.
        * There are different solutions for naming the Prob. Wind fields
        * AAT(Mine): ProbSurge5c
@@ -1542,7 +1560,7 @@ static void ElemNameProb (uShort2 center, uShort2 subcenter, int prodType,
       }
    }
    if (f_isNdfd) {
-      /* 
+      /*
        * Deal with NDFD handling of Prob. Wind speeds.
        * There are different solutions for naming the Prob. Wind fields
        * Tim Boyer: TCWindSpdIncr34 TCWindSpdIncr50 TCWindSpdIncr64
@@ -1616,6 +1634,9 @@ static void ElemNameProb (uShort2 center, uShort2 subcenter, int prodType,
       for (i = 0; i < tableLen; i++) {
          if ((prodType == local[i].prodType) && (cat == local[i].cat) &&
              (subcat == local[i].subcat)) {
+
+            /* Ignore adding Prob prefix and "Probability of" to NDFD SPC prob
+             * products. */
             if (lenTime > 0) {
                mallocSprintf (name, "Prob%s%02d", local[i].name, lenTime);
                mallocSprintf (comment, "%02d hr Prob of %s ", lenTime,
@@ -1788,9 +1809,7 @@ static void ElemNameNorm (uShort2 center, uShort2 subcenter, int prodType,
                              sizeof (NDFD_AbrevOverideTable)); i++) {
                if (strcmp (NDFD_Overide[i].GRIB2name, table[subcat].name) ==
                    0) {
-                  *name =
-                        (char *) malloc (strlen (NDFD_Overide[i].NDFDname) +
-                                         1);
+                  *name = (char *) malloc (strlen (NDFD_Overide[i].NDFDname) + 1);
                   strcpy (*name, NDFD_Overide[i].NDFDname);
                   mallocSprintf (comment, "%s [%s]", table[subcat].comment,
                                  table[subcat].unit);
@@ -1800,7 +1819,7 @@ static void ElemNameNorm (uShort2 center, uShort2 subcenter, int prodType,
                }
             }
          }
-         /* Allow hydrologic PoP, thunderstorm probability (TSTM), or APCP to 
+         /* Allow hydrologic PoP, thunderstorm probability (TSTM), or APCP to
           * have lenTime labels. */
          f_accum = (((prodType == 1) && (cat == 1) && (subcat == 2)) ||
                     ((prodType == 0) && (cat == 19) && (subcat == 2)) ||
@@ -1865,15 +1884,23 @@ void ParseElemName (uShort2 center, uShort2 subcenter, int prodType,
                     char **comment, char **unit, int *convert,
                     sChar percentile)
 {
+   char f_isNdfd = IsData_NDFD (center, subcenter);
    myAssert (*name == NULL);
    myAssert (*comment == NULL);
    myAssert (*unit == NULL);
 
    /* Check if this is Probability data */
    if ((templat == GS4_PROBABIL_TIME) || (templat == GS4_PROBABIL_PNT)) {
-      ElemNameProb (center, subcenter, prodType, templat, cat, subcat,
-                    lenTime, timeIncrType, genID, probType, lowerProb,
-                    upperProb, name, comment, unit, convert);
+      if (f_isNdfd && (prodType == 0) && (cat == 19)) {
+         /* don't use ElemNameProb. */
+         ElemNameNorm (center, subcenter, prodType, templat, cat, subcat,
+                       lenTime, timeIncrType, genID, probType, lowerProb,
+                       upperProb, name, comment, unit, convert);
+      } else {
+         ElemNameProb (center, subcenter, prodType, templat, cat, subcat,
+                       lenTime, timeIncrType, genID, probType, lowerProb,
+                       upperProb, name, comment, unit, convert);
+      }
    } else if (templat == GS4_PERCENTILE) {
       ElemNamePerc (center, subcenter, prodType, templat, cat, subcat,
                     lenTime, percentile, name, comment, unit, convert);
