@@ -623,6 +623,7 @@ void expandInName (size_t numInNames, char **inNames, char *f_inTypes,
             } else if (f_usedRoot) {
                /* We've already included the root directory, so don't include
                 * it a second time. */
+               free (rootname);
                continue;
             } else {
                f_usedRoot = 1;
