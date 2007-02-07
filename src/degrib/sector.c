@@ -600,6 +600,7 @@ void expandInName (size_t numInNames, char **inNames, char *f_inTypes,
    const char *ptr;
    char *buffer;
    size_t lenInName;
+   char f_usedRoot; /* True if we've included looking in the root directory */
 
    numAns = numInNames;
    ans = (char **) malloc (numAns * sizeof (char *));
@@ -610,6 +611,7 @@ void expandInName (size_t numInNames, char **inNames, char *f_inTypes,
       /* If it is a directory, Glob it, and free it */
       if (f_inTypes[i] == MYSTAT_ISDIR) {
          lenInName = strlen (inNames[i]);
+         f_usedRoot = 0;
          for (j = 0; j < numSect; j++) {
             /* Check if "root/sector is a directory */
             rootname = (char *) malloc (lenInName + strlen (sect[j]) + 2);
@@ -618,7 +620,12 @@ void expandInName (size_t numInNames, char **inNames, char *f_inTypes,
                if ((perm & 4) == 0) {
                   rootname[lenInName] = '\0';
                }
+            } else if (f_usedRoot) {
+               /* We've already included the root directory, so don't include
+                * it a second time. */
+               continue;
             } else {
+               f_usedRoot = 1;
                rootname[lenInName] = '\0';
             }
             /* Create file name, and check if it exists. */
