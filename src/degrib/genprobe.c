@@ -1760,6 +1760,9 @@ int genProbe (size_t numPnts, Point * pnts, sChar f_pntType,
 #endif
    size_t numOutNames;
    char **outNames;
+   char f_conus;  /* whether conus was seen in sector list. */
+   char f_nhemi;  /* whether nhemi was seen in sector list. */
+   char **sect2;   /* used to temporarily expand sector list. */
 
    myAssert (*numMatch == 0);
    myAssert (*match == NULL);
@@ -1786,12 +1789,37 @@ int genProbe (size_t numPnts, Point * pnts, sChar f_pntType,
 
    myAssert (numElem != 0);
 
-   /* Expand the input files... */
-   expandInName (numInFiles, inFiles, f_inTypes, gribFilter, numSector,
-                 sector, f_ndfdConven, numElem, elem, &numOutNames,
-                 &outNames);
+   f_conus = 0;
+   f_nhemi = 0;
+   for (i = 0; i < numSector; i++) {
+      if (strcmp (sector[i], "conus") == 0) {
+         f_conus = 1;
+      } else if (strcmp (sector[i], "nhemi") == 0) {
+         f_nhemi = 1;
+      }
+   }
+   if (f_conus && (!f_nhemi)) {
+      sect2 = (char **) malloc ((numSector + 1) * sizeof (char *));
+      for (i = 0; i < numSector; i++) {
+         sect2[i] = sector[i];
+      }
+      sect2[numSector] = (char *) malloc (6 * sizeof (char *));
+      strcpy (sect2[numSector], "nhemi");
+      /* Expand the input files... */
+      expandInName (numInFiles, inFiles, f_inTypes, gribFilter, numSector + 1,
+                    sect2, f_ndfdConven, numElem, elem, &numOutNames,
+                    &outNames);
+      free (sect2[numSector]);
+      free (sect2);
+   } else {
+      /* Expand the input files... */
+      expandInName (numInFiles, inFiles, f_inTypes, gribFilter, numSector,
+                    sector, f_ndfdConven, numElem, elem, &numOutNames,
+                    &outNames);
+   }
+
    for (i = 0; i < numOutNames; i++) {
-      printf ("%s\n", inFiles[i]);
+      printf ("%s\n", outNames[i]);
    }
 
    for (i = 0; i < numOutNames; i++) {
@@ -2220,17 +2248,22 @@ int Grib2DataProbe (userType *usr, int numPnts, Point * pnts, char **labels,
 */
 #endif
                /* Find the nearest grid cell. */
+               /* Modified so that points falling off the grid are missing */
                if (newX < 1) {
-                  grid_X[k] = 1;
+/*                  grid_X[k] = 1; */
+                  grid_X[k] = -1;
                } else if ((newX + .5) > gds.Nx) {
-                  grid_X[k] = gds.Nx;
+/*                  grid_X[k] = gds.Nx;*/
+                  grid_X[k] = -1;
                } else {
                   grid_X[k] = (sInt4) (newX + .5);
                }
                if (newY < 1) {
-                  grid_Y[k] = 1;
+/*                  grid_Y[k] = 1; */
+                  grid_Y[k] = -1;
                } else if ((newY + .5) > gds.Ny) {
-                  grid_Y[k] = gds.Ny;
+/*                  grid_Y[k] = gds.Ny;*/
+                  grid_Y[k] = -1;
                } else {
                   grid_Y[k] = (sInt4) (newY + .5);
                }
@@ -2278,13 +2311,24 @@ int Grib2DataProbe (userType *usr, int numPnts, Point * pnts, char **labels,
             for (k = 0; k < numPnts; k++) {
                offset = dataOffset;
                myAssert (sizeof (float) == 4);
-               if (scan == 0) {
-                  offset += (((grid_X[k] - 1) +
-                              ((gds.Ny - 1) - (grid_Y[k] - 1)) * gds.Nx) *
-                             sizeof (float));
+               if ((grid_X[k] != -1) && (grid_Y[k] != -1)) {
+                  if (scan == 0) {
+                     offset += (((grid_X[k] - 1) +
+                                 ((gds.Ny - 1) - (grid_Y[k] - 1)) * gds.Nx) *
+                                sizeof (float));
+                  } else {
+                     offset += (((grid_X[k] - 1) + (grid_Y[k] - 1) * gds.Nx) *
+                                sizeof (float));
+                  }
+                  fseek (data, offset, SEEK_SET);
+                  if (endian) {
+                     FREAD_BIG (&value, sizeof (float), 1, data);
+                  } else {
+                     FREAD_LIT (&value, sizeof (float), 1, data);
+                  }
                } else {
-                  offset += (((grid_X[k] - 1) + (grid_Y[k] - 1) * gds.Nx) *
-                             sizeof (float));
+                  offset = -1;
+                  value = 9999;
                }
 #ifdef DEBUG
 /*
@@ -2292,14 +2336,12 @@ int Grib2DataProbe (userType *usr, int numPnts, Point * pnts, char **labels,
                        offset, gds.Nx, grid_X[k], grid_Y[k]);
 */
 #endif
-               fseek (data, offset, SEEK_SET);
-               if (endian) {
-                  FREAD_BIG (&value, sizeof (float), 1, data);
-               } else {
-                  FREAD_LIT (&value, sizeof (float), 1, data);
-               }
                if (numTable != 0) {
-                  tableIndex = (int) value;
+                  if (offset == -1) {
+                     tableIndex = -1;
+                  } else {
+                     tableIndex = (int) value;
+                  }
                   if ((tableIndex >= 0) && (tableIndex < numTable)) {
                      if (usr->f_WxParse == 0) {
                         printf ("%s", table[tableIndex]);
@@ -2346,22 +2388,31 @@ int Grib2DataProbe (userType *usr, int numPnts, Point * pnts, char **labels,
                printf ("%s%s%s%s", refBuff, usr->separator, validBuff,
                        usr->separator);
                offset = dataOffset;
-               if (scan == 0) {
-                  offset += (((grid_X[k] - 1) +
-                              ((gds.Ny - 1) - (grid_Y[k] - 1)) * gds.Nx) *
-                             sizeof (float));
+               if ((grid_X[k] != -1) && (grid_Y[k] != -1)) {
+                  if (scan == 0) {
+                     offset += (((grid_X[k] - 1) +
+                                 ((gds.Ny - 1) - (grid_Y[k] - 1)) * gds.Nx) *
+                                sizeof (float));
+                  } else {
+                     offset += (((grid_X[k] - 1) + (grid_Y[k] - 1) * gds.Nx) *
+                                sizeof (float));
+                  }
+                  fseek (data, offset, SEEK_SET);
+                  if (endian) {
+                     FREAD_BIG (&value, sizeof (float), 1, data);
+                  } else {
+                     FREAD_LIT (&value, sizeof (float), 1, data);
+                  }
                } else {
-                  offset += (((grid_X[k] - 1) + (grid_Y[k] - 1) * gds.Nx) *
-                             sizeof (float));
-               }
-               fseek (data, offset, SEEK_SET);
-               if (endian) {
-                  FREAD_BIG (&value, sizeof (float), 1, data);
-               } else {
-                  FREAD_LIT (&value, sizeof (float), 1, data);
+                  offset = -1;
+                  value = 9999;
                }
                if (numTable != 0) {
-                  tableIndex = (int) value;
+                  if (offset == -1) {
+                     tableIndex = -1;
+                  } else {
+                     tableIndex = (int) value;
+                  }
                   if ((tableIndex >= 0) && (tableIndex < numTable)) {
                      if (usr->f_WxParse == 0) {
                         printf ("%s", table[tableIndex]);
