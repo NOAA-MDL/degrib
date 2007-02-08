@@ -73,10 +73,72 @@ int SectorFindGDS (gdsType *gds)
    size_t i;            /* loop counter. */
 
    for (i = 0; i < NumNdfdDefSect; i++) {
+      if (gds->numPts != NdfdDefGds[i].numPts)
+         continue;
+      if (gds->projType != NdfdDefGds[i].projType)
+         continue;
+      if (gds->f_sphere != NdfdDefGds[i].f_sphere)
+         continue;
+      if (gds->majEarth != NdfdDefGds[i].majEarth)
+         continue;
+      if (gds->minEarth != NdfdDefGds[i].minEarth)
+         continue;
+      if (gds->minEarth != NdfdDefGds[i].minEarth)
+         continue;
+      if (gds->Nx != NdfdDefGds[i].Nx)
+         continue;
+      if (gds->Ny != NdfdDefGds[i].Ny)
+         continue;
+      if (gds->lat1 != NdfdDefGds[i].lat1)
+         continue;
+      if (gds->lon1 != NdfdDefGds[i].lon1)
+         continue;
+      if (gds->orientLon != NdfdDefGds[i].orientLon)
+         continue;
+      if (gds->Dx != NdfdDefGds[i].Dx)
+         continue;
+      if (gds->Dy != NdfdDefGds[i].Dy)
+         continue;
+      if (gds->meshLat != NdfdDefGds[i].meshLat)
+         continue;
+      if (gds->resFlag != NdfdDefGds[i].resFlag)
+         continue;
+      if (gds->center != NdfdDefGds[i].center)
+         continue;
+      if (gds->scan != NdfdDefGds[i].scan)
+         continue;
+      if (gds->lat2 != NdfdDefGds[i].lat2)
+         continue;
+      if (gds->lon2 != NdfdDefGds[i].lon2)
+         continue;
+      if (gds->scaleLat1 != NdfdDefGds[i].scaleLat1)
+         continue;
+      if (gds->scaleLat2 != NdfdDefGds[i].scaleLat2)
+         continue;
+      if (gds->southLat != NdfdDefGds[i].southLat)
+         continue;
+      if (gds->southLon != NdfdDefGds[i].southLon)
+         continue;
+      if (gds->poleLat != NdfdDefGds[i].poleLat)
+         continue;
+      if (gds->poleLon != NdfdDefGds[i].poleLon)
+         continue;
+      if (gds->stretchFactor != NdfdDefGds[i].stretchFactor)
+         continue;
+      if (gds->f_typeLatLon != NdfdDefGds[i].f_typeLatLon)
+         continue;
+/* AngleRotate is not stored in the data cube. */
+/*
+      if (gds->angleRotate != NdfdDefGds[i].angleRotate)
+         continue;
+*/
+      return i;
+/*
       if (memcmp ((void *) &(*gds), (void *) &(NdfdDefGds[i]),
                   sizeof (gdsType)) == 0) {
          return i;
       }
+*/
    }
    return -1;
 }

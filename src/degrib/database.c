@@ -285,6 +285,7 @@ void ReadGDSBuffer (char *ptr, gdsType *gds)
    MEMCPY_LIT (&(gds->southLat), ptr, sizeof (double));
    ptr += 8;
    MEMCPY_LIT (&(gds->southLon), ptr, sizeof (double));
+   gds->angleRotate = 0;
 }
 
 /*****************************************************************************

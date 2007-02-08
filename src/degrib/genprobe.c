@@ -1883,9 +1883,11 @@ int genProbe (size_t numPnts, Point * pnts, sChar f_pntType,
    }
 
 #ifdef DEBUG
+/*
    for (i = 0; i < numOutNames; i++) {
       printf ("%s\n", outNames[i]);
    }
+*/
 #endif
 
    for (i = 0; i < numOutNames; i++) {
