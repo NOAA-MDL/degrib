@@ -79,54 +79,64 @@ int SectorFindGDS (gdsType *gds)
          continue;
       if (gds->f_sphere != NdfdDefGds[i].f_sphere)
          continue;
-      if (gds->majEarth != NdfdDefGds[i].majEarth)
+
+      if (fabs (gds->majEarth - NdfdDefGds[i].majEarth) > 0.000001)
          continue;
-      if (gds->minEarth != NdfdDefGds[i].minEarth)
+      if (fabs (gds->minEarth - NdfdDefGds[i].minEarth) > 0.000001)
          continue;
-      if (gds->minEarth != NdfdDefGds[i].minEarth)
-         continue;
+
       if (gds->Nx != NdfdDefGds[i].Nx)
          continue;
       if (gds->Ny != NdfdDefGds[i].Ny)
          continue;
-      if (gds->lat1 != NdfdDefGds[i].lat1)
+
+      /* Guam uncertainty in the lat1 is high.  Trust only 5 decimals */
+      if (fabs (gds->lat1 - NdfdDefGds[i].lat1) > 0.00001)
          continue;
-      if (gds->lon1 != NdfdDefGds[i].lon1)
+      if (fabs (gds->lon1 - NdfdDefGds[i].lon1) > 0.000001)
          continue;
-      if (gds->orientLon != NdfdDefGds[i].orientLon)
+      if (fabs (gds->orientLon - NdfdDefGds[i].orientLon) > 0.000001)
          continue;
-      if (gds->Dx != NdfdDefGds[i].Dx)
+
+      /* Alaska uncertainty in the DX is high.  Trust only 0 decimals */
+      /* This is because of the 9/22/2006 correction from DX = 5953.000
+       * to 5953.125 */
+      if (fabs (gds->Dx - NdfdDefGds[i].Dx) > 1)
          continue;
-      if (gds->Dy != NdfdDefGds[i].Dy)
+      if (fabs (gds->Dy - NdfdDefGds[i].Dy) > 1)
          continue;
-      if (gds->meshLat != NdfdDefGds[i].meshLat)
+      if (fabs (gds->meshLat - NdfdDefGds[i].meshLat) > 0.000001)
          continue;
+
       if (gds->resFlag != NdfdDefGds[i].resFlag)
          continue;
       if (gds->center != NdfdDefGds[i].center)
          continue;
       if (gds->scan != NdfdDefGds[i].scan)
          continue;
-      if (gds->lat2 != NdfdDefGds[i].lat2)
+
+      if (fabs (gds->lat2 - NdfdDefGds[i].lat2) > 0.000001)
          continue;
-      if (gds->lon2 != NdfdDefGds[i].lon2)
+      if (fabs (gds->lon2 - NdfdDefGds[i].lon2) > 0.000001)
          continue;
-      if (gds->scaleLat1 != NdfdDefGds[i].scaleLat1)
+      if (fabs (gds->scaleLat1 - NdfdDefGds[i].scaleLat1) > 0.000001)
          continue;
-      if (gds->scaleLat2 != NdfdDefGds[i].scaleLat2)
+      if (fabs (gds->scaleLat2 - NdfdDefGds[i].scaleLat2) > 0.000001)
          continue;
-      if (gds->southLat != NdfdDefGds[i].southLat)
+      if (fabs (gds->southLat - NdfdDefGds[i].southLat) > 0.000001)
          continue;
-      if (gds->southLon != NdfdDefGds[i].southLon)
+      if (fabs (gds->southLon - NdfdDefGds[i].southLon) > 0.000001)
          continue;
-      if (gds->poleLat != NdfdDefGds[i].poleLat)
+      if (fabs (gds->poleLat - NdfdDefGds[i].poleLat) > 0.000001)
          continue;
-      if (gds->poleLon != NdfdDefGds[i].poleLon)
+      if (fabs (gds->poleLon - NdfdDefGds[i].poleLon) > 0.000001)
          continue;
-      if (gds->stretchFactor != NdfdDefGds[i].stretchFactor)
+      if (fabs (gds->stretchFactor - NdfdDefGds[i].stretchFactor) > 0.000001)
          continue;
+
       if (gds->f_typeLatLon != NdfdDefGds[i].f_typeLatLon)
          continue;
+
 /* AngleRotate is not stored in the data cube. */
 /*
       if (gds->angleRotate != NdfdDefGds[i].angleRotate)
@@ -420,11 +430,12 @@ int WhichSector (char *sectFile, Point pnt, sChar f_cells)
 
 /* f_first is first time through loop, so init "index" */
 static int FillOutInfo (const gdsType *gds, const char *sectName,
-                        sChar f_first, size_t numPnts, Point * pnts,
-                        sChar f_cells, const char *geoDataDir,
+                        sChar f_first, sChar f_sector, size_t numPnts,
+                        Point * pnts, sChar f_cells, const char *geoDataDir,
                         PntSectInfo * pntInfo, size_t *NumSect, char ***Sect)
 {
-   size_t j;            /* loop counter. */
+   int j;            /* loop counter. */
+   int k;
    myMaparam map;       /* The map projection to use with this sector. */
    sChar f_foundOne;
    size_t curSect = 0;
@@ -446,12 +457,17 @@ static int FillOutInfo (const gdsType *gds, const char *sectName,
    }
 
    for (j = 0; j < numPnts; j++) {
-      /* Check if we've already found this point, or init it to -1 if this is 
+      /* Check if we've already found this point, or init it to -1 if this is
        * the first sector we've looked at. */
       if (f_first) {
-         pntInfo[j].index = -1;
+         pntInfo[j].numSector = 0;
+         for (k = 0; k < NDFD_OCONUS_UNDEF; k++) {
+            pntInfo[j].f_sector[k] = NDFD_OCONUS_UNDEF;
+         }
+/*
       } else if (pntInfo[j].index != -1) {
          continue;
+*/
       }
       if (f_cells != 1) {
          myCll2xy (&map, pnts[j].Y, pnts[j].X, &x, &y);
@@ -465,72 +481,80 @@ static int FillOutInfo (const gdsType *gds, const char *sectName,
       }
       if ((x1 >= 1) && (x1 <= (sInt4) gds->Nx) && (y1 >= 1)
           && (y1 <= (sInt4) gds->Ny)) {
-         /* Check if we'd found any point in this sector before */
-         if (!f_foundOne) {
-            curSect = *NumSect;
-            *NumSect = *NumSect + 1;
-            *Sect = (char **) realloc (*Sect, *NumSect * sizeof (char *));
-            (*Sect)[curSect] = (char *) malloc (strlen (sectName) + 1);
-            strcpy ((*Sect)[curSect], sectName);
-            if (geoDataDir != NULL) {
-               fileName =
-                     (char *) malloc (strlen (geoDataDir) + 1 +
-                                      strlen (sectName)
-                                      + strlen ("timezone.flt") + 1);
-               sprintf (fileName, "%s/%stimezone.flt", geoDataDir, sectName);
+         pntInfo[j].f_sector[pntInfo[j].numSector] = f_sector;
+         pntInfo[j].numSector++;
+         /* The following if test forces a point to only count (when
+          * considering the Sector list) in the first sector it is found in.
+          * A point could fall in conus,nhemi,alaska, but we only want to add
+          * conus to the list.
+          * This protects against conus/alaska confusion.
+          * For conus/nhemi, before we expand the file list, we
+          * automatically add nhemi if conus is there, and nhemi is not
+          * so it is handled there. */
+         if (pntInfo[j].numSector == 1) {
+            /* Check if we'd found any point in this sector before */
+            if (!f_foundOne) {
+               curSect = *NumSect;
+               *NumSect = *NumSect + 1;
+               *Sect = (char **) realloc (*Sect, *NumSect * sizeof (char *));
+               (*Sect)[curSect] = (char *) malloc (strlen (sectName) + 1);
+               strcpy ((*Sect)[curSect], sectName);
+               if (geoDataDir != NULL) {
+                  fileName =
+                        (char *) malloc (strlen (geoDataDir) + 1 +
+                                         strlen (sectName)
+                                         + strlen ("timezone.flt") + 1);
+                  sprintf (fileName, "%s/%stimezone.flt", geoDataDir, sectName);
                /* Use myStat to check size / exists / file / perms */
-               if (MYSTAT_ISFILE == myStat (fileName, &perm, &size, NULL)) {
-                  if ((size == (sInt4) (gds->Nx * gds->Ny * 4)) && (perm & 4)) {
-                     tzFP = fopen (fileName, "rb");
-                  } else {
-                     free (fileName);
-                     errSprintf ("timezone file '%s' is wrong size or "
-                                 "unreadable\n", fileName);
-                     return -4;
+                  if (MYSTAT_ISFILE == myStat (fileName, &perm, &size, NULL)) {
+                     if ((size == (sInt4) (gds->Nx * gds->Ny * 4)) && (perm & 4)) {
+                        tzFP = fopen (fileName, "rb");
+                     } else {
+                        free (fileName);
+                        errSprintf ("timezone file '%s' is wrong size or "
+                                    "unreadable\n", fileName);
+                        return -4;
+                     }
                   }
-               }
-               sprintf (fileName, "%s/%sdaylight.flt", geoDataDir, sectName);
+                  sprintf (fileName, "%s/%sdaylight.flt", geoDataDir, sectName);
                /* Use myStat to check size / exists / file / perms */
-               if (MYSTAT_ISFILE == myStat (fileName, &perm, &size, NULL)) {
-                  if ((size == (sInt4) (gds->Nx * gds->Ny * 4)) && (perm & 4)) {
-                     dayFP = fopen (fileName, "rb");
-                  } else {
-                     free (fileName);
-                     fclose (tzFP);
-                     errSprintf ("daylight file '%s' is wrong size or "
-                                 "unreadable\n", fileName);
-                     return -4;
+                  if (MYSTAT_ISFILE == myStat (fileName, &perm, &size, NULL)) {
+                     if ((size == (sInt4) (gds->Nx * gds->Ny * 4)) && (perm & 4)) {
+                        dayFP = fopen (fileName, "rb");
+                     } else {
+                        free (fileName);
+                        fclose (tzFP);
+                        errSprintf ("daylight file '%s' is wrong size or "
+                                    "unreadable\n", fileName);
+                        return -4;
+                     }
                   }
+                  free (fileName);
                }
-               free (fileName);
+               f_foundOne = 1;
             }
-         }
-         pntInfo[j].index = curSect;
-/*
-         if (geoDataDir != NULL) {
-*/
-         if ((dayFP != NULL) && (tzFP != NULL)) {
+            if ((dayFP != NULL) && (tzFP != NULL)) {
             /* GRIB2BIT_2 is because flt is stored in that scan mode */
             /* XY2ScanIndex (&offset, x1, y1, GRIB2BIT_2, gds->Nx, gds->Ny); */
-            offset = (x1 - 1) + (y1 - 1) * gds->Nx;
+               offset = (x1 - 1) + (y1 - 1) * gds->Nx;
 
             /* because we're dealing in bytes, we need to multiply the row
              * that we got out of ScanIndex by 4 */
-            offset = offset * sizeof (float);
+               offset = offset * sizeof (float);
 
-            fseek (tzFP, offset, SEEK_SET);
-            FREAD_LIT (&value, sizeof (float), 1, tzFP);
+               fseek (tzFP, offset, SEEK_SET);
+               FREAD_LIT (&value, sizeof (float), 1, tzFP);
             /* timezone contains # hours to add to UTC to get local time.  */
             /* pntInfo contains # hours to add to local time to get UTC. */
-            pntInfo[j].timeZone = (sChar) (-1 * value);
-            fseek (dayFP, offset, SEEK_SET);
-            FREAD_LIT (&value, sizeof (float), 1, dayFP);
-            pntInfo[j].f_dayLight = (sChar) (value);
-         } else {
-            pntInfo[j].timeZone = 0;
-            pntInfo[j].f_dayLight = 0;
+               pntInfo[j].timeZone = (sChar) (-1 * value);
+               fseek (dayFP, offset, SEEK_SET);
+               FREAD_LIT (&value, sizeof (float), 1, dayFP);
+               pntInfo[j].f_dayLight = (sChar) (value);
+            } else {
+               pntInfo[j].timeZone = 0;
+               pntInfo[j].f_dayLight = 0;
+            }
          }
-         f_foundOne = 1;
       }
    }
    if (dayFP != NULL)
@@ -553,6 +577,7 @@ int GetSectorList (char *sectFile, size_t numPnts, Point * pnts,
    gdsType gds;         /* The grid definition section for this sector. */
    int err;             /* The value of our error. */
    int lineCnt;
+   sChar f_sector;
 
    myAssert (*NumSect == 0);
    myAssert (*Sect == NULL);
@@ -571,7 +596,7 @@ int GetSectorList (char *sectFile, size_t numPnts, Point * pnts,
             return -3;
          }
 #endif
-         if (FillOutInfo (&(NdfdDefGds[i]), NdfdDefSect[i], (i == 0),
+         if (FillOutInfo (&(NdfdDefGds[i]), NdfdDefSect[i], (i == 0), i,
                           numPnts, pnts, f_cells, geoDataDir, pntInfo,
                           NumSect, Sect) != 0) {
             return -4;
@@ -609,7 +634,11 @@ int GetSectorList (char *sectFile, size_t numPnts, Point * pnts,
          goto error;
       }
 
-      if (FillOutInfo (&gds, list[0], (lineCnt == 1), numPnts,
+      f_sector = SectorFindGDS (&gds);
+      if (f_sector == -1) {
+         f_sector = NDFD_OCONUS_UNDEF;
+      }
+      if (FillOutInfo (&gds, list[0], (lineCnt == 1), f_sector, numPnts,
                        pnts, f_cells, geoDataDir, pntInfo, NumSect,
                        Sect) != 0) {
          err = -4;

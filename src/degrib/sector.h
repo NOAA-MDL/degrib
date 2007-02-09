@@ -6,11 +6,13 @@
 #include "meta.h"
 
 typedef struct {
-   int index;
+/*   int index;*/  /* was an index into which sector this was.*/
    sChar timeZone;   /* hours to add to local time to get UTC */
    sChar f_dayLight; /* daylight flag (pnt observes daylight savings time) */
+   sChar f_sector[NDFD_OCONUS_UNDEF]; /* Array of oconus sectors that the
+                      * point falls in.  Initialized to values of UNDEF */
+   sChar numSector;  /* number of sectors point falls in */
 } PntSectInfo;
-
 
 int SectorFindGDS (gdsType *gds);
 
