@@ -411,6 +411,8 @@ static int GRIB2Inventory2to7 (sChar sectNum, FILE *fp, sInt4 gribLen,
    uChar cat;           /* General category of Meteo Product. */
    unsigned short int templat; /* The section 4 template number. */
    uChar subcat;        /* Specific subcategory of Product. */
+   uChar genProcess;    /* What type of generate process (Analysis,
+                           Forecast, Probability Forecast, etc). */
    uChar fstSurfType;   /* Type of the first fixed surface. */
    double fstSurfValue; /* Value of first fixed surface. */
    sInt4 value;         /* The scaled value from GRIB2 file. */
@@ -478,6 +480,7 @@ enum { GS4_ANALYSIS, GS4_ENSEMBLE, GS4_DERIVED, GS4_PROBABIL_PNT = 5,
    }
    cat = (*buffer)[10 - 5];
    subcat = (*buffer)[11 - 5];
+   genProcess = (*buffer)[12 - 5];
    genID = 0;
    probType = 0;
    lowerProb = 0;
@@ -651,7 +654,7 @@ enum { GS4_ANALYSIS, GS4_ENSEMBLE, GS4_DERIVED, GS4_PROBABIL_PNT = 5,
    ParseElemName (center, subcenter, prodType, templat, cat, subcat,
                   lenTime, timeIncrType, genID, probType, lowerProb,
                   upperProb, &(inv->element), &(inv->comment),
-                  &(inv->unitName), &convert, percentile);
+                  &(inv->unitName), &convert, percentile, genProcess);
 /*
    if (strcmp (element, "") == 0) {
       mallocSprintf (&(inv->element), "unknown");

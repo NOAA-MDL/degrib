@@ -1523,14 +1523,14 @@ static void ElemNameProb (uShort2 center, uShort2 subcenter, int prodType,
          if (lenTime > 0) {
             mallocSprintf (name, "PoP%02d", lenTime);
             mallocSprintf (comment, "%02d hr Prob of Precip > 0.01 "
-                           "In. [%%]", lenTime);
+                           "In.", lenTime);
          } else {
             *name = (char *) malloc (strlen ("PoP") + 1);
             strcpy (*name, "PoP");
             *comment =
-                  (char *) malloc (strlen ("Prob of Precip > 0.01 In. [%]") +
+                  (char *) malloc (strlen ("Prob of Precip > 0.01 In.") +
                                    1);
-            strcpy (*comment, "Prob of Precip > 0.01 In. [%]");
+            strcpy (*comment, "Prob of Precip > 0.01 In.");
          }
          *convert = UC_NONE;
          return;
@@ -1554,7 +1554,7 @@ static void ElemNameProb (uShort2 center, uShort2 subcenter, int prodType,
                            (int) ((upperProb / 0.3048) + .5));
          }
          mallocSprintf (comment, "%02d hr Prob of Hurricane Storm Surge > %g "
-                        "m [%%]", lenTime, upperProb);
+                        "m", lenTime, upperProb);
          *convert = UC_NONE;
          return;
       }
@@ -1583,7 +1583,7 @@ static void ElemNameProb (uShort2 center, uShort2 subcenter, int prodType,
             mallocSprintf (name, "ProbWindSpd%02dc",
                            (int) ((upperProb * 3600. / 1852.) + .5));
          }
-         mallocSprintf (comment, "%02d hr Prob of Wind speed > %g m/s [%%]",
+         mallocSprintf (comment, "%02d hr Prob of Wind speed > %g m/s",
                         lenTime, upperProb);
          *convert = UC_NONE;
          return;
@@ -1606,22 +1606,22 @@ static void ElemNameProb (uShort2 center, uShort2 subcenter, int prodType,
             mallocSprintf (comment, "Prob of %s ", table[subcat].comment);
          }
          if (probType == 0) {
-            reallocSprintf (comment, "< %g %s [%%]", lowerProb,
+            reallocSprintf (comment, "< %g %s", lowerProb,
                             table[subcat].unit);
          } else if (probType == 1) {
-            reallocSprintf (comment, "> %g %s [%%]", upperProb,
+            reallocSprintf (comment, "> %g %s", upperProb,
                             table[subcat].unit);
          } else if (probType == 2) {
-            reallocSprintf (comment, ">= %g, < %g %s [%%]", lowerProb,
+            reallocSprintf (comment, ">= %g, < %g %s", lowerProb,
                             upperProb, table[subcat].unit);
          } else if (probType == 3) {
-            reallocSprintf (comment, "> %g %s [%%]", lowerProb,
+            reallocSprintf (comment, "> %g %s", lowerProb,
                             table[subcat].unit);
          } else if (probType == 4) {
-            reallocSprintf (comment, "< %g %s [%%]", upperProb,
+            reallocSprintf (comment, "< %g %s", upperProb,
                             table[subcat].unit);
          } else {
-            reallocSprintf (comment, "%s [%%]", table[subcat].unit);
+            reallocSprintf (comment, "%s", table[subcat].unit);
          }
          *convert = UC_NONE;
          return;
@@ -1646,22 +1646,22 @@ static void ElemNameProb (uShort2 center, uShort2 subcenter, int prodType,
                mallocSprintf (comment, "Prob of %s ", local[i].comment);
             }
             if (probType == 0) {
-               reallocSprintf (comment, "< %g %s [%%]", lowerProb,
+               reallocSprintf (comment, "< %g %s", lowerProb,
                                local[i].unit);
             } else if (probType == 1) {
-               reallocSprintf (comment, "> %g %s [%%]", upperProb,
+               reallocSprintf (comment, "> %g %s", upperProb,
                                local[i].unit);
             } else if (probType == 2) {
-               reallocSprintf (comment, ">= %g, < %g %s [%%]", lowerProb,
+               reallocSprintf (comment, ">= %g, < %g %s", lowerProb,
                                upperProb, local[i].unit);
             } else if (probType == 3) {
-               reallocSprintf (comment, "> %g %s [%%]", lowerProb,
+               reallocSprintf (comment, "> %g %s", lowerProb,
                                local[i].unit);
             } else if (probType == 4) {
-               reallocSprintf (comment, "< %g %s [%%]", upperProb,
+               reallocSprintf (comment, "< %g %s", upperProb,
                                local[i].unit);
             } else {
-               reallocSprintf (comment, "%s [%%]", local[i].unit);
+               reallocSprintf (comment, "%s", local[i].unit);
             }
             *convert = UC_NONE;
             return;
@@ -1671,7 +1671,7 @@ static void ElemNameProb (uShort2 center, uShort2 subcenter, int prodType,
 
    *name = (char *) malloc (strlen ("ProbUnknown") + 1);
    strcpy (*name, "ProbUnknown");
-   mallocSprintf (comment, "Prob of (prodType %d, cat %d, subcat %d) [-]",
+   mallocSprintf (comment, "Prob of (prodType %d, cat %d, subcat %d)",
                   prodType, cat, subcat);
    *convert = UC_NONE;
    return;
@@ -1702,13 +1702,12 @@ static void ElemNamePerc (uShort2 center, uShort2 subcenter, int prodType,
                   mallocSprintf (name, "%s%02d", NDFD_Overide[i].NDFDname,
                                  percentile);
                   if (lenTime > 0) {
-                     mallocSprintf (comment, "%02d hr %s Percentile(%d) [%s]",
+                     mallocSprintf (comment, "%02d hr %s Percentile(%d)",
                                     lenTime, table[subcat].comment,
-                                    percentile, table[subcat].unit);
+                                    percentile);
                   } else {
-                     mallocSprintf (comment, "%s Percentile(%d) [%s]",
-                                    table[subcat].comment, percentile,
-                                    table[subcat].unit);
+                     mallocSprintf (comment, "%s Percentile(%d)",
+                                    table[subcat].comment, percentile);
                   }
                   mallocSprintf (unit, "[%s]", table[subcat].unit);
                   *convert = table[subcat].convert;
@@ -1718,13 +1717,11 @@ static void ElemNamePerc (uShort2 center, uShort2 subcenter, int prodType,
          }
          mallocSprintf (name, "%s%02d", table[subcat].name, percentile);
          if (lenTime > 0) {
-            mallocSprintf (comment, "%02d hr %s Percentile(%d) [%s]",
-                           lenTime, table[subcat].comment, percentile,
-                           table[subcat].unit);
+            mallocSprintf (comment, "%02d hr %s Percentile(%d)",
+                           lenTime, table[subcat].comment, percentile);
          } else {
-            mallocSprintf (comment, "%s Percentile(%d) [%s]",
-                           table[subcat].comment, percentile,
-                           table[subcat].unit);
+            mallocSprintf (comment, "%s Percentile(%d)",
+                           table[subcat].comment, percentile);
          }
          mallocSprintf (unit, "[%s]", table[subcat].unit);
          *convert = table[subcat].convert;
@@ -1740,12 +1737,11 @@ static void ElemNamePerc (uShort2 center, uShort2 subcenter, int prodType,
              (subcat == local[i].subcat)) {
             mallocSprintf (name, "%s%02d", local[i].name, percentile);
             if (lenTime > 0) {
-               mallocSprintf (comment, "%02d hr %s Percentile(%d) [%s]",
-                              lenTime, local[i].comment, percentile,
-                              local[i].unit);
+               mallocSprintf (comment, "%02d hr %s Percentile(%d)",
+                              lenTime, local[i].comment, percentile);
             } else {
-               mallocSprintf (comment, "%s Percentile(%d) [%s]",
-                              local[i].comment, percentile, local[i].unit);
+               mallocSprintf (comment, "%s Percentile(%d)",
+                              local[i].comment, percentile);
             }
             mallocSprintf (unit, "[%s]", local[i].unit);
             *convert = local[i].convert;
@@ -1756,7 +1752,7 @@ static void ElemNamePerc (uShort2 center, uShort2 subcenter, int prodType,
 
    *name = (char *) malloc (strlen ("unknown") + 1);
    strcpy (*name, "unknown");
-   mallocSprintf (comment, "(prodType %d, cat %d, subcat %d) [-]", prodType,
+   mallocSprintf (comment, "(prodType %d, cat %d, subcat %d)", prodType,
                   cat, subcat);
    *unit = (char *) malloc (strlen ("[-]") + 1);
    strcpy (*unit, "[-]");
@@ -1782,15 +1778,13 @@ static void ElemNameNorm (uShort2 center, uShort2 subcenter, int prodType,
    if ((prodType == 0) && (templat == 8) && (cat == 14) && (subcat == 193)) {
       if (lenTime > 0) {
          mallocSprintf (name, "Ozone%02d", lenTime);
-         mallocSprintf (comment, "%d hr Average Ozone Concentration "
-                        "[PPB]", lenTime);
+         mallocSprintf (comment, "%d hr Average Ozone Concentration", lenTime);
       } else {
          *name = (char *) malloc (strlen ("AVGOZCON") + 1);
          strcpy (*name, "AVGOZCON");
-         *comment =
-               (char *) malloc (strlen ("Average Ozone Concentration [PPB]") +
-                                1);
-         strcpy (*comment, "Average Ozone Concentration [PPB]");
+         *comment = (char *) malloc (strlen ("Average Ozone Concentration") +
+                                     1);
+         strcpy (*comment, "Average Ozone Concentration");
       }
       *unit = (char *) malloc (strlen ("[PPB]") + 1);
       strcpy (*unit, "[PPB]");
@@ -1811,8 +1805,8 @@ static void ElemNameNorm (uShort2 center, uShort2 subcenter, int prodType,
                    0) {
                   *name = (char *) malloc (strlen (NDFD_Overide[i].NDFDname) + 1);
                   strcpy (*name, NDFD_Overide[i].NDFDname);
-                  mallocSprintf (comment, "%s [%s]", table[subcat].comment,
-                                 table[subcat].unit);
+                  *comment = (char *) malloc (strlen (table[subcat].comment) + 1);
+                  strcpy (*comment, table[subcat].comment);
                   mallocSprintf (unit, "[%s]", table[subcat].unit);
                   *convert = table[subcat].convert;
                   return;
@@ -1827,13 +1821,13 @@ static void ElemNameNorm (uShort2 center, uShort2 subcenter, int prodType,
                     ((prodType == 0) && (cat == 19) && (subcat == 203)));
          if (f_accum && (lenTime > 0)) {
             mallocSprintf (name, "%s%02d", table[subcat].name, lenTime);
-            mallocSprintf (comment, "%02d hr %s [%s]", lenTime,
-                           table[subcat].comment, table[subcat].unit);
+            mallocSprintf (comment, "%02d hr %s", lenTime,
+                           table[subcat].comment);
          } else {
             *name = (char *) malloc (strlen (table[subcat].name) + 1);
             strcpy (*name, table[subcat].name);
-            mallocSprintf (comment, "%s [%s]", table[subcat].comment,
-                           table[subcat].unit);
+            *comment = (char *) malloc (strlen (table[subcat].comment) + 1);
+            strcpy (*comment, table[subcat].comment);
          }
          mallocSprintf (unit, "[%s]", table[subcat].unit);
          *convert = table[subcat].convert;
@@ -1847,18 +1841,18 @@ static void ElemNameNorm (uShort2 center, uShort2 subcenter, int prodType,
       for (i = 0; i < tableLen; i++) {
          if ((prodType == local[i].prodType) && (cat == local[i].cat) &&
              (subcat == local[i].subcat)) {
-            /* Allow specific products with non-zero lenTime to reflect that. 
+            /* Allow specific products with non-zero lenTime to reflect that.
              */
             f_accum = 0;
             if (f_accum && (lenTime > 0)) {
                mallocSprintf (name, "%s%02d", local[i].name, lenTime);
-               mallocSprintf (comment, "%02d hr %s [%s]", lenTime,
-                              local[i].comment, local[i].unit);
+               mallocSprintf (comment, "%02d hr %s", lenTime,
+                              local[i].comment);
             } else {
                *name = (char *) malloc (strlen (local[i].name) + 1);
                strcpy (*name, local[i].name);
-               mallocSprintf (comment, "%s [%s]", local[i].comment,
-                              local[i].unit);
+               *comment = (char *) malloc (strlen (local[i].comment) + 1);
+               strcpy (*comment, local[i].comment);
             }
             mallocSprintf (unit, "[%s]", local[i].unit);
             *convert = local[i].convert;
@@ -1869,7 +1863,7 @@ static void ElemNameNorm (uShort2 center, uShort2 subcenter, int prodType,
 
    *name = (char *) malloc (strlen ("unknown") + 1);
    strcpy (*name, "unknown");
-   mallocSprintf (comment, "(prodType %d, cat %d, subcat %d) [-]", prodType,
+   mallocSprintf (comment, "(prodType %d, cat %d, subcat %d)", prodType,
                   cat, subcat);
    *unit = (char *) malloc (strlen ("[-]") + 1);
    strcpy (*unit, "[-]");
@@ -1882,7 +1876,7 @@ void ParseElemName (uShort2 center, uShort2 subcenter, int prodType,
                     uChar timeIncrType, uChar genID, uChar probType,
                     double lowerProb, double upperProb, char **name,
                     char **comment, char **unit, int *convert,
-                    sChar percentile)
+                    sChar percentile, uChar genProcess)
 {
    char f_isNdfd = IsData_NDFD (center, subcenter);
    myAssert (*name == NULL);
@@ -1908,6 +1902,13 @@ void ParseElemName (uShort2 center, uShort2 subcenter, int prodType,
       ElemNameNorm (center, subcenter, prodType, templat, cat, subcat,
                     lenTime, timeIncrType, genID, probType, lowerProb,
                     upperProb, name, comment, unit, convert);
+   }
+   if ((genProcess == 6) || (genProcess == 7)) {
+      *convert = UC_NONE;
+      reallocSprintf (name, "ERR");
+      reallocSprintf (comment, " error %s", *unit);
+   } else {
+      reallocSprintf (comment, " %s", *unit);
    }
 }
 

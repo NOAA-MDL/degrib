@@ -16,7 +16,7 @@ void ParseElemName (unsigned short int center, unsigned short int subcenter,
                     sInt4 lenTime, uChar timeIncrType, uChar genID,
                     uChar probType, double lowerProb, double upperProb,
                     char **name, char **comment, char **unit, int *convert,
-                    sChar percentile);
+                    sChar percentile, uChar genProcess);
 
 int ComputeUnit (int convert, char * origName, sChar f_unit, double *unitM,
                  double *unitB, char *name);

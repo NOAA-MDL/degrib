@@ -1795,14 +1795,14 @@ int MetaParse (grib_MetaData *meta, sInt4 *is0, sInt4 ns0,
                      meta->pds2.sect4.genID, probType, lowerProb,
                      upperProb, &(meta->element), &(meta->comment),
                      &(meta->unitName), &(meta->convert),
-                     meta->pds2.sect4.percentile);
+                     meta->pds2.sect4.percentile, meta->pds2.sect4.genProcess);
    } else {
       ParseElemName (meta->center, meta->subcenter,
                      meta->pds2.prodType, meta->pds2.sect4.templat,
                      meta->pds2.sect4.cat, meta->pds2.sect4.subcat, 0, 255,
                      meta->pds2.sect4.genID, probType, lowerProb, upperProb,
                      &(meta->element), &(meta->comment), &(meta->unitName),
-                     &(meta->convert), meta->pds2.sect4.percentile);
+                     &(meta->convert), meta->pds2.sect4.percentile, meta->pds2.sect4.genProcess);
    }
 #ifdef DEBUG
 /*
