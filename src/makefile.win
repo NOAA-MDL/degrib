@@ -122,7 +122,7 @@ config.status:
 	@echo "-----------------------------"
 	@echo "Attempting to configure netcdf..."
 	@echo "-----------------------------"
-	(cd ./netcdf && CXX="" FC="" F90="" ./configure)
+	(cd ./netcdf && CC="gcc" CXX="" FC="" F90="" ./configure)
 	@echo "Finished with netcdf..."
 	@echo "-----------------------------"
 	@echo ""
