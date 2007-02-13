@@ -465,6 +465,9 @@ static int FillOutInfo (const gdsType *gds, const char *sectName,
             pntInfo[j].f_sector[k] = NDFD_OCONUS_UNDEF;
          }
 /*
+      Don't need this continue here since we want to check all point in
+      all sectors to complete the pntInfo structure. 
+      } else if (pntInfo[j].numSector > 1) {
       } else if (pntInfo[j].index != -1) {
          continue;
 */
@@ -486,7 +489,7 @@ static int FillOutInfo (const gdsType *gds, const char *sectName,
          /* The following if test forces a point to only count (when
           * considering the Sector list) in the first sector it is found in.
           * A point could fall in conus,nhemi,alaska, but we only want to add
-          * conus to the list.
+          * conus (the first one) to the list.
           * This protects against conus/alaska confusion.
           * For conus/nhemi, before we expand the file list, we
           * automatically add nhemi if conus is there, and nhemi is not

@@ -2630,6 +2630,21 @@ int ProbeCmd (sChar f_Command, userType *usr)
       GetSectorList (usr->sectFile, numPnts, pnts, usr->f_pntType,
                      usr->geoDataDir, pntInfo, &numSector, &sector);
 
+/*    Following is used for debugging point/sector info. */
+/*
+#ifdef DEBUG
+      if (1==1) {
+         int i, j;
+         for (i=0; i < numPnts; i++) {
+            printf ("%d %d\n", i, pntInfo[i].numSector);
+            for (j = 0; j < pntInfo[i].numSector; j++) {
+               printf ("sector[%d] %d\n", j, pntInfo[i].f_sector[j]);
+            }
+         }
+      }
+#endif
+*/
+
       /* Create File names by walking through inNames for dir types. If it is
        * a file then keep going.  If it is a dir, tack on all relevant
        * sectors, and files that match the ndfdVars + the filter */
