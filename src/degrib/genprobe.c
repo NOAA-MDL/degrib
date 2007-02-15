@@ -1826,7 +1826,8 @@ int genProbe (size_t numPnts, Point * pnts, sChar f_pntType,
    char **outNames;
    char f_conus;  /* whether conus was seen in sector list. */
    char f_nhemi;  /* whether nhemi was seen in sector list. */
-   char **sect2;   /* used to temporarily expand sector list. */
+   char f_pr;     /* whether pr was seen in sector list. */
+   char **sect2;  /* used to temporarily expand sector list. */
 
    myAssert (*numMatch == 0);
    myAssert (*match == NULL);
@@ -1855,14 +1856,17 @@ int genProbe (size_t numPnts, Point * pnts, sChar f_pntType,
 
    f_conus = 0;
    f_nhemi = 0;
+   f_pr = 0;
    for (i = 0; i < numSector; i++) {
       if (strcmp (sector[i], "conus") == 0) {
          f_conus = 1;
       } else if (strcmp (sector[i], "nhemi") == 0) {
          f_nhemi = 1;
+      } else if (strcmp (sector[i], "puertori") == 0) {
+         f_pr = 1;
       }
    }
-   if (f_conus && (!f_nhemi)) {
+   if (!f_nhemi && (f_conus || f_pr)) {
       sect2 = (char **) malloc ((numSector + 1) * sizeof (char *));
       for (i = 0; i < numSector; i++) {
          sect2[i] = sector[i];
