@@ -35,22 +35,24 @@
 -cp31    // Put comments after #if in column 31.
 -ts2     // Set tab size to 2 if exceed cd31 (Based on Ex 5.2)
 
-// own rules..
+// own rules (conflicting) (keep)
 -c25     // Put comments to the right of code in column 25
 -cd25    // Put comments to the right of declarations in column 25
 -ts1     // Set tab size to 1 so if cd25 is over filled it only adds 1.
--cs      // Put space after cast.
--pcs     // Put space after function in function calls(over ride -npcs)
--bs      // Put a space between sizeof and its argument.
--l78     // line length max 80 (Rule 2.1)
--lc78    // line length for comment lines max 80 (Rule 2.1)
+
+// own rules (conflicting)
+//-cs      // Put space after cast.
+//-pcs     // Put space after function in function calls(over ride -npcs)
+//-bs      // Put a space between sizeof and its argument.
+//-l78     // line length max 80 (Rule 2.1)
+//-lc78    // line length for comment lines max 80 (Rule 2.1)
 
 // own rules (conflicting) (keep)
 -br      // (KR) braces on same line as if (override -bl)
 -brs     // (KR) braces on struct line (override -bls)
 -ce      // (KR) Cuddle { and else (override -nce)
 
-// Application Specific
+// Recognized types.
 -T sChar
 -T sShort2
 -T sInt4
@@ -60,6 +62,7 @@
 -T size_t
 -T FILE
 
+// Recognized types... Application Specific.
 -T chainType
 -T polyType
 -T gridAttribType
