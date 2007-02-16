@@ -405,6 +405,7 @@ A:degrib/history.txt
 A:degrib/version.txt
 A:degrib/docs/readme.txt
 A:degrib/docs/degrib.txt
+A:degrib/docs/drawshp.txt
 A:degrib/docs/tkdegrib.txt
 A:degrib/docs/arcview_legends_tutorial.pdf
 A:degrib/docs/specs/*.pdf

@@ -1,0 +1,316 @@
+NAME
+   drawshp - Draw a set of shapefiles to a .png file.  Initial use was to
+      generate a whole bunch of maps in a similar manner to ArcGIS, but
+      completely automated.
+
+SYNOPSIS
+   drawshp [control file (usually with a .ini extension)]
+
+DESCRIPTION
+   Reads the .ini file and follows the instructions contained withing.  The
+      specifications for the control file follow:
+
+"INI" FILE SPECIFICATIONS
+
+GENERAL
+   The .ini control file is divided into several sections to define various
+      options.  They are:
+      1) [Zoom]
+      2) [Projection]
+      3) [AllLayer]
+      4) [Layer][#]
+      5) [AllOutput]
+      6) [Output][#]
+   I'm not sure which ones are required, but I would recommend having all
+      of them.  Also, a # at the beginning of a line comments out that line.
+
+[Zoom] section:
+   Options:
+      lat1=(double (degrees))
+         Defines the lower left corner's latitude.
+
+      lon1=(double (degrees))
+         Defines the lower left corner's longitude. (negative west)
+
+      lat2=(double (degrees))
+         Defines the upper right corner's latitude.
+
+      lon2=(double (degrees))
+         Defines the upper right corner's longitude. (negative west)
+
+[Projection] section:
+   Options:
+      projType=(integer)
+         Defines the projection type.  Used the GRIB2 numbering scheme, of
+            30 -> lambert conformal.  This variable is currently ignored,
+            although typically projType = 30.
+
+      majEarth=(double (km))
+         semi-major axis (Radius) of the earth (in km).
+
+      minEarth=(double (km))
+         semi-major axis (Radius) of the earth (in km).
+             Note: projection software currently needs spherical earths so
+             minEarth should = majEarth.
+
+      lat1=(double (degrees))
+         1,1 grid cell is mapped to this latitude.
+
+      lon1=(double (degrees))
+         1,1 grid cell is mapped to this longitude. (negative west).
+
+      mesh=(double (km))
+         Mesh size (in km).
+
+      orientLon=(double (degrees))
+         Longitude where up is north (negative west).  By this I mean on
+            lambert conformal maps the longitudes curve in various ways.
+            Still there will be one longitude which does not curve, but goes
+            straight up.
+
+      meshLat=(double (degrees))
+         Latitude where the mesh size is true.
+
+      scaleLat1=(double (degrees))
+         Used to compute the tangent latitude of conic projection.
+
+      scaleLat2=(double (degrees))
+         Used to compute the tangent latitude of conic projection.
+            Note 1: scaleLat1, and 2 are used to declare that we want the best
+               (and same) scaling at these 2 latitudes.  This information is
+               used to compute a tangent latitude typically between the 2
+               scale latitudes, but definitely NOT the mid-point of them,
+               where the projection is tangent to the earth.
+            Note 2: Setting them equal turns them into the tangent latitude.
+
+[AllLayer] section: (mostly optional).
+   Options:
+      Background=[(int (red 0..255)),(int (green 0..255)),(int (blue 0..255))]
+         Defines a bottom layer color for all the images that are generated.
+         It is optional.
+
+      numLayer=(integer)
+         This is an optional way of declaring how many layers to expect.  The
+         program will make room for this many, but will expand if more are
+         found.  Could be more efficient to use this option, but it is
+         difficult to maintain during development.
+
+[Layer][#] section: (# >= 1)
+   General comments:
+      This is the skeleton of the program.  To have multiple layers we simply
+      change the # that is associated with the section.  Using the same # will
+      cause one to redefine a layer multiple times with unknown results.
+      Note: The # should start with 1.
+
+   Options:
+      Filename=(string)
+         What .shp/.shx/.dbf file (or .png file for some layers) to use with
+         this layer.
+
+      ShpType=(string)
+         This is what type of shapes that are stored in the File.  Currently
+         the program allows: Invalid, Polygon, Point, or Void types.  For
+         .png files this would be Void.  To find out what type of shapes you
+         have in the .shp file, currently one can guess or use ArcView.
+
+      Type=(string)
+         This defines what type of Layer one has.  Currently the program has:
+         "Invalid", "Single Symbol", "Graduated", "Text", "DB2", or "Png".
+
+         Single Symbol: allows one to draw the shape file with 1 symbol.
+            One can use "MatchField" and "MatchValues" to limit the objects
+            that are drawn.
+         Graduated: allows one to draw the shape file with several symbols.
+            One needs to provide the "field" that the symbol ranges apply to.
+            One can use "MatchField" and "MatchValues" to limit the objects
+            that are drawn.
+         Text: allows one to put text on the image at a particular pixel
+            location.
+         DB2: Allows one to declare a field, a MatchField and MatchValues.
+            The program looks in the specified .dbf for elements in the
+            MatchField that match the MatchValues, and returns the
+            corresponding numbers from field.  The matchValues and returned
+            values from field are then printed in a text window on the image.
+         Png: Allows one to put another png image on the first image.
+
+      Symbol=["outline" color]["foreground" color][symbol][min value]\
+           [max value][# of decimal]
+         Not all of this needs to be provided for each symbol.
+         The colors are defined by 3 integers with comma seperators which
+            range from 0..256 and define the red, green, blue values of the
+            color.  A -1,-1,-1 signifies a null color.  The program only pays
+            attention to null colors when dealing with filling a polygon
+            shape.
+         The "symbol" can either be an ascii string (or single character)
+            or the special word of "dot", "pixel" or "value".  "dot" will put
+            a small square / circle at that location.  "pixel" will simply
+            change that location's pixel, while "value" will put the actual
+            number at that location.
+         Min Value is the minimum value that gets this symbol (inclusive)
+         Max Value is the maximum value that gets this symbol (inclusive)
+         # of decimal is how many decimals to round to when using value.
+
+      Field=(string)
+         The field in the .dbf file to get data from (either for "Graduated"
+            type or "DB2" type.
+
+      MatchField=(string)
+         The field in the .dbf file to match values with.  This is used as a
+            filter of drawn values, or in the case of "DB2" textual results.
+
+      MatchValue=(string)
+         values in the MatchField that we want.
+
+      Legend=["outline color]["foreground" color][x loc][y loc][# of decimal]
+         Note: Not all of this needs to be provided for every legend.  The
+            program takes this info and the symbols that were already
+            provided, combines them and attempts to draw something reasonable
+         The colors are defined by 3 integers with comma seperators which
+            range from 0..256 and define the red, green, blue values of the
+            color.
+         The x loc, and y loc are pixel locations of where the legend should
+            be placed.
+         The # of decimal, is how many decimals to use in the legend.
+
+      Title=[text]["outline color]["foreground" color][x loc][y loc]
+         The program tries to put the text in a box that has the specified
+         foreground color and outline color, located with the upper left
+         corner at x-loc, y-loc.
+
+[AllOutput] section:
+   Options:
+      X_Size=(integer)
+         Defines how many pixels wide to make the image.
+
+      Y_Size=(integer)
+         Defines how many pixels tall to make the image.
+
+      numOutput=(integer)
+         This is an optional way of declaring how many output sections to
+         expect.  The program will make room for this many, but will expand
+         if more are found.  Could be more efficient to use this option, but
+         it is difficult to maintain during development.
+
+      Layer=[layer #][layer #]...
+         All output images will have these layers drawn in this order before
+         any specific layers specified in the particular output section.
+
+[Output][#] section: (# >= 1)
+   General comments:
+      This is the muscle of the program.  To have multiple outputs we simply
+      change the # that is associated with the section.  Using the same # will
+      cause one to redefine an output multiple times with unknown results.
+      Note: The # should start with 1.
+
+   Options:
+      filename=(string)
+         Name of file to save the image to.
+
+      Layer=[layer #][layer #]...
+         After drawing the "All output" layers, the program draws these layers
+         in this particular order to the image and then saves the image.
+
+EXAMPLES
+
+[Zoom]
+# Example of a comment.
+  lat1=24.000000
+  lon1=-121.000000
+# Note: Initial spacing does not matter.
+lat2=44.000000
+lon2=-67.000000
+
+[Projection]
+projType=30
+majEarth=6367.470000
+minEarth=6367.470000
+lat1=20.192000
+lon1=-121.554000
+mesh=5.079406
+orientLon=-95.000000
+meshLat=25.000000
+scaleLat1=25.000000
+scaleLat2=25.000000
+
+[AllLayer]
+Background=[0,128,255]
+
+[Layer][1]
+# Example of a "Single Symbol"
+Filename=./esri/province.shp
+ShpType=Polygon
+Type=Single Symbol
+Symbol=[0,0,0][205,183,158][*]
+
+[Layer][2]
+# Example of a "Single Symbol" with a MatchField
+Filename=./esri/wfo2.shp
+ShpType=Polygon
+Type=Single Symbol
+Symbol=[255,255,255][0,0,0][*][][]
+MatchField=RGN
+MatchValue=CC
+
+[Layer][3]
+# Example of a "Graduated"
+Filename=../data/week1/esri/pntver00mn.shp
+ShpType=Point
+Type=Graduated
+Symbol=[255,255,255][0,220,100][value][0][3][0]
+Symbol=[255,255,255][0,255,255][value][3][5][0]
+Symbol=[255,255,255][0,0,255][value][5][7][0]
+Symbol=[255,255,255][255,128,0][value][7][10][0]
+Symbol=[255,255,255][255,0,0][value][10][15][0]
+Symbol=[255,255,255][255,0,255][value][15][100][0]
+Field=MNMAEND012
+Title=[Min Temp, MAE (F), NDFD vs Pnt Obs, 12(00Z)][0,0,0][255,255,255][135][562]
+Legend=[0,0,0][255,255,255][10][510][0]
+
+[Layer][4]
+# Example of a "Text"
+Filename=null
+ShpType=Void
+Type=Text
+Title=[Forecasts from June 16, 2003 to June 22, 2003][0,0,0][255,255,255][135][582]
+
+[Layer][5]
+# Example of a "DB2"
+Filename=../data/week1/esri/pntver00mn_2.dbf
+ShpType=Void
+Type=DB2
+Field=MNMAEND012
+MatchField=LABEL
+MatchValue=OVERALL
+MatchValue=CENTRAL
+MatchValue=EASTERN
+MatchValue=SOUTHERN
+MatchValue=WESTERN
+Legend=[255,255,255][0,0,0][550][525][2]
+
+[Layer][6]
+#Example of a "Png"
+Filename=noaaball.png
+ShpType=Void
+Type=Png
+Title=[null][0,0,0][255,255,255][585][0]
+
+[AllOutput]
+X_Size=670
+Y_Size=600
+Layer=[5][1][2][3][8]
+
+[Output][1]
+filename=../web/week1/maps/cent_Min_MAE_NDFD_012.png
+Layer=[9][10][4][6][7]
+
+AUTHOR
+       Arthur Taylor (RSIS/MDL/NWS/NOAA)
+
+REPORTING BUGS
+       Report bugs to arthur.taylor@noaa.gov
+
+COPYRIGHT
+       Created 2003... This is given out in hopes that it proves useful.
+       There is NO Warranty: not even for MERCHANTABILITY or FITNESS FOR A
+       PARTICULAR PURPOSE.
+
