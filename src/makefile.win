@@ -44,7 +44,8 @@ all: config zlib libpng emapf
 	@echo "-----------------------------"
 	@echo "Attempting to compile libxml..."
 	@echo "-----------------------------"
-	(cd ./libxml && make libxml2.la)
+#	(cd ./libxml && make libxml2.la)
+	(cd ./libxml && make)
 	@echo "Finished with libxml..."
 	@echo "-----------------------------"
 	@echo ""
@@ -163,13 +164,13 @@ clean: config.status
 	(cd ./emapf-c && rm -f *.o *.a config.log config.status Makefile)
 	(cd ./degrib && rm -f *.o degrib degrib.exe tcldegrib tcldegrib.exe tkdegrib tkdegrib.exe clock clock.exe degrib_DP degrib_DP.exe drawshp drawshp.exe)
 	(cd ./dwmllib && rm -f *.a)
-	rm -f config.status
 	(cd ./zlib && rm -f Makefile)
-	(cd ./jpeg2000 && make distclean)
 	(cd ./netcdf && make distclean)
 	(cd ./netcdf && rm -f macros.make)
 	(cd ./netcdf/ncdump && rm -f ncdump.exe)
 	(cd ./netcdf/ncgen && rm -f ncgen.exe)
 	(cd ./libxml && make distclean)
 	(cd ./gd && make -f ./scripts/makefile.win clean)
+	(cd ./jpeg2000 && make distclean)
+	rm -f config.status
 
