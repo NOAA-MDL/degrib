@@ -218,7 +218,11 @@ ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/acaux/mkinstalldirs
 CONFIG_HEADER = \
 	$(top_builddir)/src/libjasper/include/jasper/jas_config.h
-CONFIG_CLEAN_FILES = jasper.spec
+CONFIG_CLEAN_FILES = src/appl/Makefile src/libjasper/bmp/Makefile \
+	src/libjasper/jp2/Makefile src/libjasper/jpg/Makefile \
+	src/libjasper/mif/Makefile src/libjasper/pgx/Makefile \
+	src/libjasper/pnm/Makefile src/libjasper/ras/Makefile \
+	src/msvc/Makefile jasper.spec
 DIST_SOURCES =
 
 RECURSIVE_TARGETS = info-recursive dvi-recursive install-info-recursive \
@@ -250,6 +254,24 @@ $(srcdir)/configure:  $(srcdir)/configure.ac $(ACLOCAL_M4) $(CONFIGURE_DEPENDENC
 
 $(ACLOCAL_M4):  configure.ac 
 	cd $(srcdir) && $(ACLOCAL) $(ACLOCAL_AMFLAGS)
+src/appl/Makefile: $(top_builddir)/config.status $(top_srcdir)/src/appl/Makefile.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+src/libjasper/bmp/Makefile: $(top_builddir)/config.status $(top_srcdir)/src/libjasper/bmp/Makefile.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+src/libjasper/jp2/Makefile: $(top_builddir)/config.status $(top_srcdir)/src/libjasper/jp2/Makefile.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+src/libjasper/jpg/Makefile: $(top_builddir)/config.status $(top_srcdir)/src/libjasper/jpg/Makefile.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+src/libjasper/mif/Makefile: $(top_builddir)/config.status $(top_srcdir)/src/libjasper/mif/Makefile.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+src/libjasper/pgx/Makefile: $(top_builddir)/config.status $(top_srcdir)/src/libjasper/pgx/Makefile.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+src/libjasper/pnm/Makefile: $(top_builddir)/config.status $(top_srcdir)/src/libjasper/pnm/Makefile.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+src/libjasper/ras/Makefile: $(top_builddir)/config.status $(top_srcdir)/src/libjasper/ras/Makefile.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+src/msvc/Makefile: $(top_builddir)/config.status $(top_srcdir)/src/msvc/Makefile.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
 jasper.spec: $(top_builddir)/config.status jasper.spec.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 
@@ -374,7 +396,7 @@ distcleancheck_listfiles = find . -type f -print
 distdir: $(DISTFILES)
 	$(am__remove_distdir)
 	mkdir $(distdir)
-	$(mkinstalldirs) $(distdir)/. $(distdir)/acaux
+	$(mkinstalldirs) $(distdir)/. $(distdir)/acaux $(distdir)/src/appl $(distdir)/src/libjasper/bmp $(distdir)/src/libjasper/jp2 $(distdir)/src/libjasper/jpg $(distdir)/src/libjasper/mif $(distdir)/src/libjasper/pgx $(distdir)/src/libjasper/pnm $(distdir)/src/libjasper/ras $(distdir)/src/msvc
 	@list='$(DISTFILES)'; for file in $$list; do \
 	  if test -f $$file || test -d $$file; then d=.; else d=$(srcdir); fi; \
 	  dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \
