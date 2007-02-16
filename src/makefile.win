@@ -168,8 +168,8 @@ clean: config.status
 	(cd ./netcdf && rm -f macros.make)
 	(cd ./netcdf/ncdump && rm -f ncdump.exe)
 	(cd ./netcdf/ncgen && rm -f ncgen.exe)
-	(cd ./libxml && make distclean)
 	(cd ./gd && make -f ./scripts/makefile.win clean)
+	(cd ./libxml && make distclean)
 	(cd ./jpeg2000 && make distclean)
 	rm -f config.status
 
