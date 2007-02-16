@@ -159,7 +159,7 @@ distclean: clean
 clean: config.status
 	(cd ./zlib && rm -f *.a *.o *~ example example.exe minigzip minigzip.exe foo.gz so_locations _match.s maketree)
 	(cd ./libpng && rm -f *.a *.pic.o *.o pngtest-stat.exe pngtest.exe pngout.png libpng.def libpng-config libpng.pc pngtesti.exe)
-	(cd ./grib2lib && rm -f *.a)
+	(cd ./grib2lib && rm -f *.a config.h)
 	(cd ./emapf-c && rm -f *.o *.a config.log config.status Makefile)
 	(cd ./degrib && rm -f *.o degrib degrib.exe tcldegrib tcldegrib.exe tkdegrib tkdegrib.exe clock clock.exe degrib_DP degrib_DP.exe drawshp drawshp.exe)
 	(cd ./dwmllib && rm -f *.a)
@@ -169,7 +169,26 @@ clean: config.status
 	(cd ./netcdf/ncdump && rm -f ncdump.exe)
 	(cd ./netcdf/ncgen && rm -f ncgen.exe)
 	(cd ./gd && make -f ./scripts/makefile.win clean)
-	(cd ./libxml && make distclean)
-	(cd ./jpeg2000 && make distclean)
+# jpeg2000 make distclean doesn't seem to work on mingw properly.
+#	(cd ./jpeg2000 && make distclean)
+	(cd ./jpeg2000/ && rm -f config.log config.status libtool jasper.spec Makefile)
+	(cd ./jpeg2000/src/ && rm -f Makefile)
+	(cd ./jpeg2000/src/libjasper/ && rm -rf *.o *.lo *.la .deps .libs Makefile)
+	(cd ./jpeg2000/src/libjasper/base && rm -rf *.o *.lo *.la .libs .deps Makefile)
+	(cd ./jpeg2000/src/libjasper/jpc && rm -rf *.o *.lo *.la .libs .deps Makefile)
+	(cd ./jpeg2000/src/libjasper/include && rm -f Makefile)
+	(cd ./jpeg2000/src/libjasper/include/jasper && rm -f Makefile stamp-h1 jas_config.h)
+# libxml make distclean doesn't seem to work on mingw properly.
+#	(cd ./libxml && make distclean)
+	(cd ./libxml && rm -rf *.o *.lo *.pc config.status xml2-config .deps Makefile libtool config.log *.la .libs stamp-h1 libxml2.spec)
+	(cd ./libxml/xstc && rm -f Makefile)
+	(cd ./libxml/python && rm -rf setup.py Makefile .deps)
+	(cd ./libxml/python/tests && rm -f Makefile)
+	(cd ./libxml/example && rm -rf .deps Makefile)
+	(cd ./libxml/doc && rm -f Makefile)
+	(cd ./libxml/doc/devhelp && rm -f Makefile)
+	(cd ./libxml/doc/examples && rm -rf .deps Makefile)
+	(cd ./libxml/include && rm -f Makefile)
+	(cd ./libxml/include/libxml && rm -f Makefile)
 	rm -f config.status
 
