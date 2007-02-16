@@ -34,12 +34,12 @@
 #include "solar.h"
 
 /* Set all choices for the period names for those elements needing them in the 
- * time layouts. 
+ * time layouts.
  */
 
 enum
 { earlyMorning, morning12, afternoon12, earlyMorningMaxT, earlyMorningMinT,
-   morning24, afternoon24, MAX_PERIODS
+  morning24, afternoon24, MAX_PERIODS
 };
 
 typedef struct                /* Denotes structure of the time layouts. */
@@ -56,37 +56,1060 @@ typedef struct                /* Denotes structure of icon info. */
    sChar valueType;
 } icon_def;
 
-typedef struct                /* Sky cover info used in derivation of icons
-                               * and weather. */
+typedef struct                /* Denotes structure of elements' Sky cover, 
+                               * temperature, Wind Speed, and Pop info
+			       * used in derivation of icons and weather. 
+			       */
 {
    double validTime;
    int data;
    sChar valueType;
-} sky_def;
+} elem_def;
 
-typedef struct                /* Wind Speed info used in derivation of icons
-                               * & weather. */
-{
-   double validTime;
-   int data;
-   sChar valueType;
-} WS;
-
-typedef struct                /* Hourly Temp info used in derivation of icons 
-                               * & weather. */
-{
-   double validTime;
-   int data;
-   sChar valueType;
-} TEMP;
-
-typedef struct                /* Weather info used in derivation of icons and 
-                               * weather. */
+typedef struct                /* Denotes structure of Weather info used in
+                               * derivation of icons and weather. 
+                               */
 {
    double validTime;
    char str[600];
    sChar valueType;
 } WX;
+
+typedef struct                /* Structure with info on the number of rows 
+                               * skipped due to a startTime and/or endTime 
+                               * effectively shortening the time data was
+			       * retrieved for from NDFD. 
+			       */
+{
+   int total;
+   int skipBeg;
+   int skipEnd;
+   double firstUserTime; /* First time of an element interested in. */
+   double lastUserTime;  /* Last time of an element interested in. */
+} numRowsInfo;
+
+/*****************************************************************************
+ * formatValidTime() -- 
+ *
+ * Paul Hershberg / MDL
+ *
+ * PURPOSE
+ *  Transform double validTime to character string in form 
+ *  (2006-04-13T:00:00:00-00:00), which is the standard form in the formatted
+ *  XML.
+ *   
+ * ARGUMENTS
+ *        validTime = Incoming double validTime to be converted. (Input)
+ *         timeBuff = Returned time counterpart in character form
+ *                    (2006-04-13T:00:00:00-00:00). (Input/Output)
+ *    size_timeBuff = Max size of "timeBuff". (Input)
+ *                    (Input) 
+ *    pntZoneOffset = Number of hours to add tocurrent time to get GMT time. 
+ *                    (Input)
+ *       f_dayCheck = Flag determining if current point observes Daylight 
+ *                    Savings Time. (Input) 
+ *        
+ * FILES/DATABASES: None
+ *                
+ * RETURNS: int (0 or -1)
+ *
+ *  2/2006 Paul Hershberg (MDL): Created.
+ *
+ * NOTES:
+ *****************************************************************************
+ */
+
+static int formatValidTime(double validTime, char *timeBuff,
+                           int size_timeBuff, sChar pntZoneOffSet,
+                           sChar f_dayCheck)
+{
+
+   char zone[7];
+   double localTime;          /* validTime with the time zone difference
+                               * taken into account. */
+
+   localTime = validTime - (pntZoneOffSet * 3600);
+
+   /* localTime is now in point's local standard time */
+
+   if (f_dayCheck)
+   {
+      /* Note: a zero is passed to DaylightSavings so it converts from local
+       * to local standard time. */
+
+      if (Clock_IsDaylightSaving2(localTime, 0) == 1)
+      {
+         localTime += 3600;
+         pntZoneOffSet--;
+      }
+   }
+
+   /* Sort by valid time. */
+
+   myAssert(size_timeBuff > 25);
+   if (size_timeBuff <= 25)
+      return -1;
+
+   /* The '0, 0' is passed in because we already converted to local standard
+    * time. */
+
+   Clock_Print2(timeBuff, size_timeBuff, localTime, "%Y-%m-%dT%H:%M:%S", 0, 0);
+
+   /* Change definition of pntZoneOffSet */
+   pntZoneOffSet = -1 * pntZoneOffSet;
+   if (pntZoneOffSet < 0)
+      sprintf(zone, "-%02d:00", -1 * pntZoneOffSet);
+   else
+      sprintf(zone, "+%02d:00", pntZoneOffSet);
+   strcat(timeBuff, zone);
+   return 0;
+}
+
+/*****************************************************************************
+ * getFirstSecondValidTimes() -- 
+ *
+ * Paul Hershberg / MDL
+ *
+ * PURPOSE
+ *   Routine finds the first validTime and second validTime (if exists) we're
+ *   interested in, for an element. 
+ *   
+ * ARGUMENTS
+ *  *firstValidTime = Returned first validTime of element. (Output)
+ * *secondValidtime = Returned second validTime of element. (Output)
+ *            match = Pointer to the structure of element matches returned from
+ *                    grid probe. (Input)
+ *         numMatch = The number of matches from degrib. (Input)
+ *    parameterName = Number denoting the NDFD element currently processed. 
+ *                    (Input) 
+ *          numRows = Number of all data rows (values) for an element. (Input)
+ * numRowsSkippedBeg = Number of rows skipped at beginning of time duration if
+ *                     user shortened time interval data was chosen for. 
+ *                     (Input)
+ * numRowsSkippedEnd = Number of rows skipped at end of time duration if user
+ *                     shortened time interval data was chosen for. (Input)
+ *        
+ * FILES/DATABASES: None
+ *                
+ * RETURNS: void
+ *
+ *  11/2006 Paul Hershberg (MDL): Created.
+ *
+ * NOTES:
+ *****************************************************************************
+ */
+static void getFirstSecondValidTimes(double *firstValidTime, 
+		                     double *secondValidTime, genMatchType *match, 
+				     size_t numMatch, uChar parameterName, 
+				     int numRows, int numRowsSkippedBeg, 
+				     int numRowsSkippedEnd)
+{
+   int i; /* Counter thru match structure. */
+   int elemCount = 0; /* Counter tracking different elements thru match 
+                       * structure. */
+   
+   for (i = 1; i < numMatch; i++)
+   {
+      if (match[i - 1].elem.ndfdEnum == parameterName)
+      {
+	 if (numRows-numRowsSkippedBeg-numRowsSkippedEnd != 1)
+         {
+            elemCount ++;
+            if (match[i].elem.ndfdEnum != match[i - 1].elem.ndfdEnum)
+            {
+               *firstValidTime = match[(i-elemCount)+numRowsSkippedBeg].validTime;
+               *secondValidTime = match[(i - (elemCount - 1))+numRowsSkippedBeg].validTime;
+               break;
+            }
+         }
+         else if (numRows-numRowsSkippedBeg-numRowsSkippedEnd == 1)
+         {
+            *firstValidTime = match[(i - 1) - elemCount].validTime;
+            break;
+         }
+
+         if ((i == numMatch - 1) && (match[i - 1].elem.ndfdEnum == parameterName))
+         {
+            *firstValidTime = match[i - elemCount].validTime;
+            *secondValidTime = match[i - (elemCount - 1)].validTime;
+         }
+      }
+   }
+
+   return;
+}
+
+/******************************************************************************
+ * getUserTimes() --
+ *
+ * Paul Hershberg / MDL
+ *
+ * PURPOSE
+ *   Routine finds start of the User time interval the summarization is done for, 
+ *   modified to fit the first day's forecast period. If there is a startTime
+ *   on a day in the future other than the current day, we use the 06th hour. If 
+ *   there is no startTime entered, the start of the next closest forecast period
+ *   is chosen (06th or 18th hr). Routine then finds the end of the user time interval
+ *   the summarization is done for, modified to fit the last day's forecast period 
+ *   (18 hr). Routine is only accessed if product type is one of the summarizations 
+ *   (f_XML = 3 or f_XML = 4).
+ *    
+ * ARGUMENTS
+ *     timeUserStart = The beginning of the first forecast period (06 hr
+ *                     or 18hr) based on the startTime argument. (Output)
+ *       timeUserEnd = The end of the last forecast period (18 hr) based 
+ *                     on the startTime & numDays arguments. (Output)
+ *    f_POPUserStart = Flag used to denote if the first forecast period occurs
+ *                     on the next day. Only used if 24 hr summarization 
+ *                     (f_XML = 4). (Output)
+ *           numDays = The number of days the validTimes for all the data rows 
+ *                     (values) consist of. (Input)
+ *         startDate = Point specific user supplied Date that the startTime 
+ *                     falls in. It is the form (i.e. 2006-04-15). (Input) 
+ *             f_XML = Flag for 1 of the 4 DWML products:
+ *                     1 = DWMLgen's "time-series" product. 
+ *                     2 = DWMLgen's "glance" product.
+ *                     3 = DWMLgenByDay's "12 hourly" format product.
+ *                     4 = DWMLgenByDay's "24 hourly" format product. (Input)
+ *         startTime = Incoming argument set by user as a double in seconds 
+ *                     since 1970 denoting the starting time data was retrieved
+ *                     for from NDFD. (Input)
+ * firstValidTimeMatch = The very first validTime for all matches reuturned
+ *                       from the gird probe. (Input) 
+ *  firstValidTime_pop = The very first validTime for POP12hr returned from the
+ *                       grid probe. (Input) 
+ *    *f_6CycleFirst = Denotes if first forecast cycle relative to current time 
+ *                     is the 06 or 18 forecast cycle. (Output)
+ *                TZ = # of hours to add to current time to get GMT time.
+ *                     (Input) 
+ *      f_observeDST = Flag determining if current point observes Daylight 
+ *                     Savings Time. (Input)  
+ *               
+ * FILES/DATABASES: None
+ *
+ * RETURNS: void
+ *
+ * HISTORY
+ *   10/2006  Paul Hershberg (MDL): Created
+ *
+ * NOTES
+ ******************************************************************************
+ */
+static void getUserTimes(double **timeUserStart, double **timeUserEnd, 
+                         int *f_POPUserStart, char *startDate, sChar TZ, 
+                         double startTime, sChar f_observeDST, int numDays, 
+                         double firstValidTime_pop, int **f_6CycleFirst, 
+                         sChar f_XML, double firstValidTimeMatch)
+{
+   sChar DST; /* Temporary storage for time zone offset if daylight savings is
+                 effect. */
+   char hourMinSecTZ[16]; /* String component holding "T06:00:00-00:00" part of 
+                             time string. */
+   int oneDay = (24 * 60 * 60); /* # seconds in 24 hours. */
+   int realEndOfDay = 0; /* The end of the first day's forecast period (18 hr)
+			    based on the the startTime argument. */
+   char userStart_year[6]; /* Year of startDate, which is based off of incoming
+			      argument startTime. */
+   char userStart_month[4]; /* Month of startDate, which is based off of incoming
+			       argument startTime. */
+   char userStart_day[3]; /* Day of startDate, which is based off of incoming
+			     argument startTime. */
+   char firstMatch_year[6]; /* Year based off of the very first match in the 
+                               match structure. */
+   char firstMatch_month[4]; /* Month based off of the very first match in the
+                                match structure. */
+   char firstMatch_day[3]; /* Day based off of the very first match in the match
+                              structure. */
+   char firstPOP_year[6]; /* Year based off of the first POP12hr match in the 
+                             match structure. */
+   char firstPOP_month[4]; /* Month based off of the first POP12hr match in the
+                              match structure. */
+   char firstPOP_day[3]; /* Day based off of the first POP12hr match in the 
+                            match structure. */
+   char POPstr[30];       /* Returned character string holding first valid 
+			     time for POP12hr. */
+   char POPstrLess1Day[30]; /* Returned character string holding the time that
+                               is one day prior to date of first valid POP12hr
+                               time. Used when there is no startTime entered, 
+                               the summarization is 12 hourly, and the next
+                               closest forecast cycle (summaraization period) is
+                               18th hour. */
+   char firstMatchStr[30]; /* Returned character string holding first valid 
+			      match for any element in the match structure. 
+                              Used  */
+   char startDateAddDayStr[30]; /* Returned character string holding a valid
+                                   time with startDate of very first match
+                                   + 1 day. Used if there is no startTime 
+                                   entered as an argument and summarization is
+                                   24 hours. */
+   char temp[3];            /* Temporary string buffer. */
+   int beginningHour;       /* Beginning hour of a validTime processed. */ 
+   char base06UserTime[30]; /* Year, Month, and Day part of a 06hr time 
+                               string. */
+   char base18UserTime[30]; /* Year, Month, and Day part of a 18hr time 
+                               string. */
+   char firstMatchStartDate[30]; /* Year, Month, and Day of first match in match
+                                  * structure. */
+   char firstPOPStartDate[30]; /* Year, Month, and Day of first POP12hr match in 
+                                * match structure. */
+   double startUserTime_doub = 0.0; /* Double time (what we're after in this
+                                       routine) representing the start of the 
+                                       next summarization period (forecast
+                                       cycle).  */
+   double endUserTime_doub = 0.0; /* Double time (what we're after in this
+                                     routine) representing the end of the 
+                                     last summarization period forecast 
+                                     cycle).*/
+   char startDateBuff[30];    /* Temporary string. */
+
+   /* For DWMLgenByDay products, parse user supplied start time, if supplied. */
+
+   /* Choose the default reference time to be the 06th hour on the current date
+    * denoted by current startDate. We will alter this if necessary.
+    */     
+   userStart_year[0] = startDate[0];
+   userStart_year[1] = startDate[1];
+   userStart_year[2] = startDate[2];
+   userStart_year[3] = startDate[3];
+   userStart_year[4] = '-';
+   userStart_year[5] = '\0';
+
+   userStart_month[0] = startDate[5];
+   userStart_month[1] = startDate[6];
+   userStart_month[2] = '-';
+   userStart_month[3] = '\0';
+
+   userStart_day[0] = startDate[8];
+   userStart_day[1] = startDate[9];
+   userStart_day[2] = '\0';
+      
+   strcpy(base06UserTime, userStart_year);
+   strcat(base06UserTime, userStart_month);
+   strcat(base06UserTime, userStart_day);
+
+   if (TZ < 0)
+      sprintf(hourMinSecTZ, "T06:00:00+%02d:00", -1 * TZ);
+   else
+      sprintf(hourMinSecTZ, "T06:00:00-%02d:00", TZ); 
+     
+   strcat(base06UserTime, hourMinSecTZ);          
+   Clock_Scan(&startUserTime_doub, base06UserTime, 0);
+     
+   /* Before continuing, see if this point observes day light savings time, 
+    * and if it is currently in effect. 
+    */ 
+   if (f_observeDST)
+   {
+      if (Clock_IsDaylightSaving2(startUserTime_doub, 0) == 1)
+      {
+         DST = TZ - 1;
+        if (DST < 0)
+            sprintf(hourMinSecTZ, "T06:00:00+%02d:00", -1 * DST);
+        else
+            sprintf(hourMinSecTZ, "T06:00:00-%02d:00", DST);
+   
+         strcat(base06UserTime, hourMinSecTZ);
+         Clock_Scan(&startUserTime_doub, base06UserTime, 1);
+      }            	 
+   }
+
+   /* Get the 18th hour on this date in order to find the endTime. */
+   strcpy(base18UserTime, userStart_year);
+   strcat(base18UserTime, userStart_month);
+   strcat(base18UserTime, userStart_day);
+
+   if (TZ < 0)
+      sprintf(hourMinSecTZ, "T18:00:00+%02d:00", -1 * TZ);
+   else
+      sprintf(hourMinSecTZ, "T18:00:00-%02d:00", TZ); 
+     
+   strcat(base18UserTime, hourMinSecTZ);
+   Clock_Scan(&endUserTime_doub, base18UserTime, 0);
+     
+   /* Before continuing, see if this point observes day light savings time, 
+    * and if it is currently in effect. 
+    */ 
+   if (f_observeDST)
+   {
+      if (Clock_IsDaylightSaving2(endUserTime_doub, 0) == 1)
+      {
+         DST = TZ - 1;
+         if (DST < 0)
+            sprintf(hourMinSecTZ, "T18:00:00+%02d:00", -1 * DST);
+         else
+            sprintf(hourMinSecTZ, "T18:00:00-%02d:00", DST);
+   
+         strcat(base18UserTime, hourMinSecTZ);
+         Clock_Scan(&endUserTime_doub, base18UserTime, 1);
+      }            	 
+   }
+  
+   /* Now determine the next forecast period (06 or 18 hr) using the first
+    * valid Time for the POP12hr element. Only do this if there was no startTime
+    * given on the command line argument. If there is a startTime, always begin
+    * the next closest forecast period to begin on the 06th hour of the date
+    * denoted on startDate. Also, if the summarization is 24 hourly, the base 
+    * time will be the 06th hour of the next 24 hourly forecast.
+    */
+   formatValidTime(firstValidTime_pop, POPstr, 30, TZ, f_observeDST);
+   temp[0] = POPstr[11];
+   temp[1] = POPstr[12];
+   temp[2] = '\0';
+   beginningHour = atoi(temp) - 12;
+//   printf ("beginningHour = %d\n",beginningHour);
+
+   /* This is statement checks if the next summarization period begins on the
+    * 18th hour. This can only occur if the summarization is 12 hourly and
+    * there is no startTime entered.
+    */
+   if (beginningHour < 0 && startTime == 0.0 && f_XML == 3)
+   {
+      **f_6CycleFirst = 0;
+//      printf ("**f_6CycleFirst = %d\n",**f_6CycleFirst);
+      formatValidTime(firstValidTime_pop - oneDay, POPstrLess1Day, 30, TZ, f_observeDST);
+//      printf ("POPstrLess1Day check = %s\n",POPstrLess1Day);
+      userStart_year[0] = POPstrLess1Day[0];
+      userStart_year[1] = POPstrLess1Day[1];
+      userStart_year[2] = POPstrLess1Day[2];
+      userStart_year[3] = POPstrLess1Day[3];
+      userStart_year[4] = '-';
+      userStart_year[5] = '\0';
+
+      userStart_month[0] = POPstrLess1Day[5];
+      userStart_month[1] = POPstrLess1Day[6];
+      userStart_month[2] = '-';
+      userStart_month[3] = '\0';
+
+      userStart_day[0] = POPstrLess1Day[8];
+      userStart_day[1] = POPstrLess1Day[9];
+      userStart_day[2] = '\0';
+
+      strcpy(base18UserTime, userStart_year);
+      strcat(base18UserTime, userStart_month);
+      strcat(base18UserTime, userStart_day);
+
+      if (TZ < 0)
+         sprintf(hourMinSecTZ, "T18:00:00+%02d:00", -1 * TZ);
+      else
+         sprintf(hourMinSecTZ, "T18:00:00-%02d:00", TZ);
+
+      strcat(base18UserTime, hourMinSecTZ);
+//      printf ("base18UserTime in GUAM check = %s\n", base18UserTime);
+      Clock_Scan(&startUserTime_doub, base18UserTime, 0);
+
+      /* Before continuing, see if this point observes day light savings time,
+       * and if it is currently in effect.
+       */
+      if (f_observeDST)
+      {
+         if (Clock_IsDaylightSaving2(startUserTime_doub, 0) == 1)
+         {
+            DST = TZ - 1;
+            if (DST < 0)
+	       sprintf(hourMinSecTZ, "T18:00:00+%02d:00", -1 * DST);
+	    else
+               sprintf(hourMinSecTZ, "T18:00:00-%02d:00", DST);
+
+            strcat(base18UserTime, hourMinSecTZ);
+            Clock_Scan(&startUserTime_doub, base18UserTime, 1);
+	 }
+      }
+   }
+
+   /* Check to see if first summarization for this 24 hourly case begins on the
+    * current day, or begins on the next day.
+    */
+   else if (startTime == 0.0 && f_XML == 4)
+   {
+      formatValidTime(firstValidTimeMatch, firstMatchStr, 30, TZ, f_observeDST);
+
+      firstMatch_year[0] = firstMatchStr[0];
+      firstMatch_year[1] = firstMatchStr[1];
+      firstMatch_year[2] = firstMatchStr[2];
+      firstMatch_year[3] = firstMatchStr[3];
+      firstMatch_year[4] = '-';
+      firstMatch_year[5] = '\0';
+
+      firstMatch_month[0] = firstMatchStr[5];
+      firstMatch_month[1] = firstMatchStr[6];
+      firstMatch_month[2] = '-';
+      firstMatch_month[3] = '\0';
+
+      firstMatch_day[0] = firstMatchStr[8];
+      firstMatch_day[1] = firstMatchStr[9];
+      firstMatch_day[2] = '\0';
+
+      strcpy(firstMatchStartDate, firstMatch_year);
+      strcat(firstMatchStartDate, firstMatch_month);
+      strcat(firstMatchStartDate, firstMatch_day);
+
+      formatValidTime(firstValidTime_pop, POPstr, 30, TZ, f_observeDST);
+
+      firstPOP_year[0] = POPstr[0];
+      firstPOP_year[1] = POPstr[1];
+      firstPOP_year[2] = POPstr[2];
+      firstPOP_year[3] = POPstr[3];
+      firstPOP_year[4] = '-';
+      firstPOP_year[5] = '\0';
+
+      firstPOP_month[0] = POPstr[5];
+      firstPOP_month[1] = POPstr[6];
+      firstPOP_month[2] = '-';
+      firstPOP_month[3] = '\0';
+
+      firstPOP_day[0] = POPstr[8];
+      firstPOP_day[1] = POPstr[9];
+      firstPOP_day[2] = '\0';
+
+      strcpy(firstPOPStartDate, firstPOP_year);
+      strcat(firstPOPStartDate, firstPOP_month);
+      strcat(firstPOPStartDate, firstPOP_day);
+
+      /* See if the startDates are different between the very first match in
+       * match structure and the first POP12hr match. If so, the first 24 hr
+       * forecast period will begin on the next day (from current day).
+       * Use f_POPUserStart flag to denote this.
+       */
+      if (strcmp(firstPOPStartDate, firstMatchStartDate) != 0)
+      {
+         *f_POPUserStart = 1;
+         formatValidTime(firstValidTimeMatch + oneDay, startDateAddDayStr, 30, TZ, f_observeDST);
+
+         userStart_year[0] = startDateAddDayStr[0];
+         userStart_year[1] = startDateAddDayStr[1];
+         userStart_year[2] = startDateAddDayStr[2];
+         userStart_year[3] = startDateAddDayStr[3];
+         userStart_year[4] = '-';
+         userStart_year[5] = '\0';
+
+         userStart_month[0] = startDateAddDayStr[5];
+         userStart_month[1] = startDateAddDayStr[6];
+         userStart_month[2] = '-';
+         userStart_month[3] = '\0';
+
+         userStart_day[0] = startDateAddDayStr[8];
+         userStart_day[1] = startDateAddDayStr[9];
+         userStart_day[2] = '\0';
+
+         strcpy(base06UserTime, userStart_year);
+         strcat(base06UserTime, userStart_month);
+         strcat(base06UserTime, userStart_day);
+
+         if (TZ < 0)
+            sprintf(hourMinSecTZ, "T06:00:00+%02d:00", -1 * TZ);
+         else
+            sprintf(hourMinSecTZ, "T06:00:00-%02d:00", TZ);
+
+         strcat(base06UserTime, hourMinSecTZ);
+         Clock_Scan(&startUserTime_doub, base06UserTime, 0);
+
+         /* Before continuing, see if this point observes day light savings time,
+          * and if it is currently in effect.
+          */
+         if (f_observeDST)
+         {
+            if (Clock_IsDaylightSaving2(startUserTime_doub, 0) == 1)
+            {
+               DST = TZ - 1;
+               if (DST < 0)
+                  sprintf(hourMinSecTZ, "T06:00:00+%02d:00", -1 * DST);
+	       else
+                  sprintf(hourMinSecTZ, "T06:00:00-%02d:00", DST);
+
+               strcat(base06UserTime, hourMinSecTZ);
+               Clock_Scan(&startUserTime_doub, base06UserTime, 1);
+	    }
+         }
+
+         /* Get the 18th hour on this date in order to find the endTime. */
+         strcpy(base18UserTime, userStart_year);
+         strcat(base18UserTime, userStart_month);
+         strcat(base18UserTime, userStart_day);
+
+         if (TZ < 0)
+            sprintf(hourMinSecTZ, "T18:00:00+%02d:00", -1 * TZ);
+         else
+            sprintf(hourMinSecTZ, "T18:00:00-%02d:00", TZ);
+
+         strcat(base18UserTime, hourMinSecTZ);
+         Clock_Scan(&endUserTime_doub, base18UserTime, 0);
+
+         /* Before continuing, see if this point observes day light savings time,
+          * and if it is currently in effect.
+          */
+         if (f_observeDST)
+         {
+            if (Clock_IsDaylightSaving2(endUserTime_doub, 0) == 1)
+            {
+               DST = TZ - 1;
+               if (DST < 0)
+                  sprintf(hourMinSecTZ, "T18:00:00+%02d:00", -1 * DST);
+	       else
+                  sprintf(hourMinSecTZ, "T18:00:00-%02d:00", DST);
+
+               strcat(base18UserTime, hourMinSecTZ);
+               Clock_Scan(&endUserTime_doub, base18UserTime, 1);
+	    }
+         }
+      }
+   }
+//    printf ("base06UserTime = %s\n",base06UserTime);
+//   printf ("TZ = %d\n",TZ);
+
+   formatValidTime (startUserTime_doub, startDateBuff, 30,
+                    TZ, f_observeDST);
+//   printf ("startUserTime CHECK for 06 or 18 hour = %s\n",startDateBuff);
+   formatValidTime (endUserTime_doub, startDateBuff, 30,
+                    TZ, f_observeDST);
+//   printf ("endUserTime CHECK for 18 hour = %s\n",startDateBuff);
+
+   /* Assign Beginning Time. */
+   **timeUserStart = startUserTime_doub;
+//   printf ("**timeUserStart 1 = %f\n",**timeUserStart);
+//   printf ("*f_POPUserStart = %d\n",*f_POPUserStart);
+
+   /* Now for End Time. */
+   realEndOfDay = endUserTime_doub;
+   **timeUserEnd = realEndOfDay + (24 * 3600 * numDays);
+//   **timeUserEnd = realEndOfDay + (24 * 3600 * (numDays - 1));
+
+   return;
+}
+
+/******************************************************************************
+ * getStartDates() --
+ *
+ * Paul Hershberg / MDL
+ *
+ * PURPOSE
+ *   Routine finds the char startDate (in form "2006-14-29") by using the given
+ *   double startTime (if entered as a command line argument) or the time of the
+ *   first valid Data.
+ *   
+ * ARGUMENTS
+ *         startDate = Point specific user supplied start Date that the 
+ *                     startTime falls in (first Valid Match time if startTime
+ *                     was not entered). It is the form (i.e. 2006-04-15).
+ *                     (Output)
+ *             f_XML = Flag for 1 of the 4 DWML products:
+ *                     1 = DWMLgen's "time-series" product. 
+ *                     2 = DWMLgen's "glance" product.
+ *                     3 = DWMLgenByDay's "12 hourly" format product.
+ *                     4 = DWMLgenByDay's "24 hourly" format product. (Input)
+ *         startTime = Incoming argument set by user as a double in seconds 
+ *                     since 1970 denoting the start time data is to be
+ *                     retrieved for (set to 0.0 if not supplied). (Input)
+ * firstValidTimeMatch = The very first validTime for all matches returned 
+ *                       from the grid probe. (Input) 
+ * firstValidTime_maxt = Valid time of first MaxT returned from the grid probe.
+                         (Input) 
+ *            TZoffset = # of hours to add to current time to get GMT time.
+ *                       (Input) 
+ *        f_observeDST = Flag determining if current point observes Daylight 
+ *                       Savings Time. (Input)
+ *               point = Current point being processed. (Input)
+ *               
+ * FILES/DATABASES: None
+ *
+ * RETURNS: void (char ** startDate is variable altered)
+ *
+ * HISTORY
+ *   10/2006  Paul Hershberg (MDL): Created
+ *
+ * NOTES
+ ******************************************************************************
+ */
+static void getStartDates(char **startDate, uChar f_XML, double startTime, 
+		          double firstValidTimeMatch, 
+			  double firstValidTime_maxt, sChar TZoffset, 
+			  sChar f_observeDST, int point)
+{
+   char *pstr;                /* Temporary pointer character string. */
+   char startDateBuff[30];    /* Returned temporary string. */
+   char startDateHr[3];       /* Hour of the first match in the match 
+				 structure. */
+
+   /* If product is of type DWMLgenByDay. */  
+   if (f_XML == 3 || f_XML == 4)
+   {
+      /* If the startTime argument was not entered as command line argument. */ 
+      if (startTime == 0.0)
+      {
+         formatValidTime(firstValidTimeMatch, startDateBuff, 30,
+                         TZoffset, f_observeDST);
+	    
+         startDateHr[0] = startDateBuff[11];
+         startDateHr[1] = startDateBuff[12];
+         startDateHr[2] = '\0';
+//	 printf ("startDateHour = %s\n",startDateHr);
+//	 printf ("TZoffset = %d\n",TZoffset);
+
+         pstr = strchr(startDateBuff, 'T');
+         startDate[point] = (char *)calloc((pstr - startDateBuff) + 1,
+                                            sizeof(char));
+         strncpy(startDate[point], startDateBuff, pstr - startDateBuff);
+      }
+      else if (startTime != 0.0)
+      {
+         /* If startTime was entered as an argument... since startTime was
+	  * already altered before going into the grid probe, simply use it.
+	  * Note, simply send in zero's for the TZoffset and f_observeDST
+  	  * variables, as we are strictly dealing with GMT time.
+	  */
+//	 printf ("startTime in getStartDates routine = %f\n",startTime);
+         formatValidTime(startTime, startDateBuff, 30, 0, 0);
+//	 printf ("startDateBuff = %s\n",startDateBuff);
+
+         pstr = strchr(startDateBuff, 'T');
+         startDate[point] = (char *)calloc((pstr - startDateBuff) + 1,
+                                            sizeof(char));
+         strncpy(startDate[point], startDateBuff, pstr - startDateBuff);
+      }
+   }
+   else if (f_XML == 1 || f_XML == 2)
+   {
+      /* If the products of type DWMLgen, simply set startDate[j]
+       * to = NULL.
+       */
+      startDate[point] = (char *)calloc(1, sizeof(char));
+      startDate[point][0] = '\0';
+   }
+
+   return;
+}
+
+/******************************************************************************
+ * dayStartTime() --
+ *
+ * Paul Hershberg / MDL
+ *
+ * PURPOSE
+ *   Routine assigns startTime to begin 1 hour before the start of the first 
+ *   forecast period (6th hour) on the day containing the incoming startTime 
+ *   (i.e., 2006-14-29T05:00:00), given any time in that day (i.e., 
+ *   2006-14-29T19:00:00).
+ *   
+ * ARGUMENTS
+ *        *startTime = Double in seconds since 1970. (Input) (Output)
+ *   currentDoubTime = Double in seconds since 1970 representing the current 
+ *                     time. (Input) 
+ * 
+ * FILES/DATABASES: None
+ *
+ * RETURNS: double startTime
+ *
+ * HISTORY
+ *   10/2006  Paul Hershberg (MDL): Created
+ *
+ * NOTES
+ ******************************************************************************
+ */
+double dayStartTime(double *startTime, double currentDoubTime)    
+{
+   char startTimeBuff[30]; /* Command line argument "startTime" in char format
+                            * "2006-14-29T00:00:00-00:00". */
+   char startHour[3];     /* Hour of the incoming startTime command line 
+			     argument. For DWMLgenByDay products. */
+   double dummyTime;      /* Placeholder for startTime. */
+
+   /* First, check to see if startTime entered on the command line occurs
+    * before current system time. Also, check to see if the startTime 
+    * entered is after the number of days NDFD stores data. If so, treat either 
+    * case as though no startTime argument was entered. Probe then grabs all 
+    * data available. 
+    */
+   dummyTime = *startTime;	 
+   Clock_Print(startTimeBuff, 30, dummyTime, "%Y-%m-%dT%H:%M:%S", 0);
+
+   /* Make sure to take care of +24hr (T24:00:00) --> next day case. */
+   printf ("startTimeBuff (startTime)in dayStartTime = %s\n",startTimeBuff);
+   startHour[0] = startTimeBuff[11];
+   startHour[1] = startTimeBuff[12];
+   startHour[2] = '\0'; 
+   printf ("startHour = %s\n",startHour);
+   printf ("(atoi(startHour) *3600 = %d\n",atoi(startHour) * 3600);
+
+   /* Adjust startTime to begin 1 hr (hour 5) before the beginning of the next
+    * forecast period (6th hour) on startDate.
+    */
+//   *startTime = *startTime - (atoi(startHour) * 3600) + (5 * 3600);
+   printf ("startTime at end of dayStartTime = %f\n",*startTime);
+
+   return *startTime;
+}
+
+/******************************************************************************
+ * dayEndTime() --
+ *
+ * Paul Hershberg / MDL
+ *
+ * PURPOSE
+ *   Routine sets the new End Time to equal 12 hours after the end of the day 
+ *   the incoming EndTime argument falls in. It doesn't hurt to grab a little
+ *   more data than is necessary.
+ *   
+ * ARGUMENTS
+ *          *endTime = Double in seconds since 1970. (Input) (Output)
+ *   currentDoubTime = Double in seconds since 1970 representing the current 
+ *                     time. (Input) 
+ * 
+ * FILES/DATABASES: None
+ *
+ * RETURNS: double endTime
+ *
+ * HISTORY
+ *   10/2006  Paul Hershberg (MDL): Created
+ *
+ * NOTES
+ ******************************************************************************
+ */
+double dayEndTime(double *endTime, double currentDoubTime)    
+{
+   char endTimeBuff[30]; /* Command line argument "endTime" in char format
+                          * "2006-14-29T00:00:00-00:00". */
+   char endHour[3];      /* Hour of the incoming endTime command line 
+			  * argument. For DWMLgenByDay products. */
+   double dummyTime;    /* Temporary holder of endTime. */
+   int addSecs;         /* Number of seconds to add to endTime command line
+			 * argument. */
+
+   dummyTime = *endTime;	 
+   Clock_Print(endTimeBuff, 30, dummyTime, "%Y-%m-%dT%H:%M:%S", 0);
+   printf ("endTimeBuff (endTime) in dayEndTime = %s\n",endTimeBuff); 
+   endHour[0] = endTimeBuff[11];
+   endHour[1] = endTimeBuff[12];
+   endHour[2] = '\0'; 
+   
+   /* Adjust endTime to end at the end of the day (24th hr) on the date of 
+    * endTime. Add 12 hours as an additional buffer around the data. It doesn't 
+    * matter if we grab a little too much data.
+    */
+   addSecs = (24 - atoi(endHour)) * 3600;
+//   *endTime = *endTime + addSecs + (12*3600);
+
+   printf ("Additional hours = %d\n",addSecs /3600);
+   printf ("endTime at end of dayEndTime = %f\n",*endTime);
+
+   return *endTime;
+}
+
+/******************************************************************************
+ * roundPopNearestTen() --
+ *
+ * Paul Hershberg / MDL
+ *
+ * PURPOSE
+ *   This routine rounds POP12hr integers to a nearest value of 10 (i.e. 17 
+ *   rounded to nearest 10 = 20).
+ *   
+ * ARGUMENTS
+ *   num = POP12hr Integer between 0 and 100 to be rounded to the nearest 10. 
+ *         (Input / Ouput).
+ *
+ * FILES/DATABASES: None
+ *
+ * RETURNS: int num
+ *
+ * HISTORY
+ *   9/2006  Paul Hershberg (MDL): Created
+ *
+ * NOTES
+ ******************************************************************************
+ */
+int roundPopNearestTen(int num) 
+{
+   
+   if (num < 10)
+   {
+      if (num >= (10 / 2))
+         return 10;
+      else
+	 return 0;
+   }
+   else
+      return (num % 10 >= (10 / 2) 
+              ? (floor(num / 10) * 10) + 10
+	      : floor(num / 10) * 10);
+}
+	
+/******************************************************************************
+ * determineIconUsingPop() --
+ *
+ * Paul Hershberg / MDL
+ *
+ * PURPOSE
+ *   This routine creates an icon name based on using a user provided
+ *   POP value. 
+ *   
+ * ARGUMENTS
+ *                numActualRowsPOP = The number of data rows for POP12hr to process  
+ *                             for this point. (Input)
+ *                 numRowsWX = The number of data rows for weather to process  
+ *                             and format for this point. (Input)
+ *                   popInfo = Structure holding 12 hourly POP data and 
+ *                             time info from the match structure. Used in 
+ *                             derivation of icons. (Input)
+ *         POP12SpreadToPOP3 = Array containing the PoP12 values spread over 
+ *                             all the weather times. (Output)
+ *                    wxInfo = Weather data taken from the match structure. 
+ *                             (Input)
+ *                                         
+ * FILES/DATABASES: None
+ *
+ * RETURNS: void
+ *
+ * HISTORY
+ *   9/2006  Paul Hershberg (MDL): Created
+ *
+ * NOTES
+ ******************************************************************************
+ */
+static void determineIconUsingPop(char *iconString, char *wxStrSection, 
+		                  char *jpgStrSection, int POP12ValToPOP3, 
+				  char *baseURL) 
+{
+   /* First, round the POP12hr integer value to the nearest 10. */
+   if (POP12ValToPOP3 >= 0)
+      POP12ValToPOP3 = roundPopNearestTen(POP12ValToPOP3);
+   
+   if (POP12ValToPOP3 >= 10 && POP12ValToPOP3 <= 100)
+      sprintf(iconString, "%s%s%d%s", baseURL, wxStrSection, 
+	      POP12ValToPOP3, jpgStrSection);
+   else
+      sprintf(iconString, "%s%s%s", baseURL, wxStrSection, 
+	      jpgStrSection);
+
+   return;
+}
+
+/******************************************************************************
+ * spreadPOPsToWxTimes() --
+ *
+ * Paul Hershberg / MDL
+ *
+ * PURPOSE
+ *   Copies POP12 values to an array with elements corresponding to weather 
+ *   times. Specifically, this routine populates an array with POP12 values.
+ *   The array has elements valid at times corresponding to the weather times.  
+ *   This allows the user to increment through the weather values and 
+ *   now what the POP12 value is for the 12 hour period containing a
+ *   particular weather value which occur every 3 or 6 hours. 
+ * 
+ * ARGUMENTS
+ *                numRowsPOP = The number of data rows for POP12hr to process  
+ *                             for this point. (Input)
+ *                 numRowsWX = The number of data rows for weather to process  
+ *                             and format for this point. (Input)
+ *                   popInfo = Structure holding 12 hourly POP data and 
+ *                             time info from the match structure. Used in 
+ *                             derivation of icons. (Input)
+ *         POP12SpreadToPOP3 = Array containing the PoP12 values spread over 
+ *                             all the weather times. (Output)
+ *                    wxInfo = Weather data taken from the match structure. 
+ *                             (Input)
+ *                                         
+ * FILES/DATABASES: None
+ *
+ * RETURNS: void
+ *
+ * HISTORY
+ *   9/2006  Paul Hershberg (MDL): Created
+ *
+ * NOTES
+ ******************************************************************************
+ */
+static void spreadPOPsToWxTimes(int *POP12SpreadToPOP3, WX *wxInfo, 
+		                int numRowsWX, elem_def *popInfo, 
+				int numRowsPOP) 
+{
+	
+   int numSec12Hours = 43200; /* Num seconds in 12 hours. */
+   int weatherStartIndex = 0; /* Index indicating which weather row is
+                               * first convered by a POP12 value.
+                               */
+   int weatherEndIndex;  /* Index denoting which weather row from the end of 
+                          * the array is first convered by a POP12 value.
+			  */
+   int foundGoodPopRow = 0; /* Denotes wether a Pop row was found with a valid
+			     * time that contained a weather valid time.
+			     */
+   int popStartIndex = 0; /* Index indicating which POP12 value first covers a
+                           * weather value's valid time.
+                           */
+   int popIndex; /* Index thru POP12 element. */
+   int popRow; /* Index denoting which row of POP12 array is being processed. */
+   int wxRow; /* Index denoting which row of weather array is being processed. */
+   int row; /* Index denoting row processed. */
+	   
+   /*  Loop over all weather valid times and find the first one that is 
+    *  contained in the first POP12 valid time.
+    */  
+   for (popRow = 0; popRow < numRowsPOP; popRow++)
+   {
+      for (wxRow = 0; wxRow < numRowsWX; wxRow++)
+      {
+	 if ((wxInfo[wxRow].validTime >= 
+             (popInfo[popRow].validTime - numSec12Hours)) &&
+	     (wxInfo[wxRow].validTime <= popInfo[popRow].validTime))
+         {
+	    weatherStartIndex = wxRow;
+	    foundGoodPopRow = 1;
+	    break;
+	 }
+      }
+
+      /*  If we found a PoP whose valid time contains one of the weather valid 
+       *  times, then we indicate which PoP row it was in and exit the search 
+       *  loop. Otherwise, we go to the next PoP valid time and keep looking.
+       */
+      if (foundGoodPopRow)
+      {
+         popStartIndex = popRow;
+	 break; 
+      }
+   }
+   
+   /*  Loop over all weather valid times, starting from the end and find the 
+    *  first one that is contained in the last POP12 valid time.
+    */
+   weatherEndIndex = numRowsWX-1;
+   for (row = numRowsWX-1; row > 0; row--)
+   {
+      if (wxInfo[row].validTime <= popInfo[numRowsPOP-1].validTime)
+      {
+         weatherEndIndex = row;
+         break;
+      }
+   } 
+      
+   /*  If by some chance one or more of the weather valid times are not during
+    *  a POP12 valid time then set the POP12SpreadToPOP3 value to -1.
+    */
+   if (weatherStartIndex > 1)
+      for (row = 0; row < weatherStartIndex; row++)
+         POP12SpreadToPOP3[row] = -1;
+
+   if (weatherEndIndex < numRowsWX-1)
+      for (row = numRowsWX-1; row > weatherEndIndex; row--)
+         POP12SpreadToPOP3[row] = -1;
+
+   /*  Loop over all the weather valid times and find the POP12 value valid 
+    *  that corresponds to that valid time (POP12 --> POP3 or POP6).
+    */
+   popIndex = popStartIndex;
+   for (row = weatherStartIndex; row <= weatherEndIndex; row++)
+   {
+      if (wxInfo[row].validTime <= popInfo[popIndex].validTime)
+         POP12SpreadToPOP3[row] = popInfo[popIndex].data;
+      else
+      {
+         POP12SpreadToPOP3[row] = popInfo[popIndex+1].data;
+	 popIndex++;
+      }
+   }
+   
+   return;
+}
 
 /*****************************************************************************
  * windExtremePhrase() -- 
@@ -99,6 +1122,7 @@ typedef struct                /* Weather info used in derivation of icons and
  *   algorithm developed by Mark Mitchell for use in the forecast
  *   at a glance product on the NWS web site.
  *
+   for (popRow = 0; popRow < numRowsPOP; popRow++)
  * ARGUMENTS
  *         dayIndex = Indicates which day is being processed. (Input)
  *             phrase = Array containing the short current conditions phrase 
@@ -484,7 +1508,7 @@ static void skyPhrase(int *maxSkyCover, int *minSkyCover, int *averageSkyCover,
       else if ((averageSkyCover[dayIndex] < 70) && f_isDayTime)     
       {
           sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "sct.jpg");        
-      strcpy (phrase[dayIndex], "Partly Cloudy");
+          strcpy (phrase[dayIndex], "Partly Cloudy");
       }
       else if ((averageSkyCover[dayIndex] < 70) && f_isNightTime)     
       {
@@ -903,7 +1927,11 @@ static void skyPhrase(int *maxSkyCover, int *minSkyCover, int *averageSkyCover,
  *                
  * RETURNS: void
  *
+ *  HISTORY:
  *  6/2006 Paul Hershberg (MDL): Created.
+ *  9/2006 Paul Hershberg (MDL): Added functionality to add Pops to the icons
+ *                               (i.e., ra.jpg --> ra50.jpg)
+ *  
  *
  * NOTES:
  *****************************************************************************
@@ -911,7 +1939,7 @@ static void skyPhrase(int *maxSkyCover, int *minSkyCover, int *averageSkyCover,
 static void generatePhraseAndIcons (int dayIndex, char *frequency, 
 		                    int timeLayoutHour, char *dominantWeather[4],
 				    char *baseURL, int *maxDailyPop, 
-				    int *averageSkyCover, int *maxSkyCover, 
+				    int *averageSkyCover, int *maxSkyCover,
 				    int *minSkyCover, int *maxSkyNum, 
 				    int *minSkyNum, int *periodMaxTemp, 
 				    double springDoubleDate, 
@@ -933,15 +1961,18 @@ static void generatePhraseAndIcons (int dayIndex, char *frequency,
 			       formatted. */
     int f_isDayTime = 0; /* Flag denoting if period is in day time. */
     int f_isNightTime = 0; /* Flag denoting if period is in day time. */
-
+    int i;
    /* If we have two 12-hour periods, we need to deterine which periods 
     * correspond to the day and which correspond to night time.  Then we use 
     * the correct icon.
     */
+//   for (i=0;i<4;i++)
+//      printf ("dominantWeather[%d] = %s\n",i,dominantWeather[i]);
+//   printf ("maxDailyPop[%d] = %d\n",dayIndex,maxDailyPop[dayIndex]);
    if (strcmp(frequency, "12 hourly") == 0)
    {
-      /* If we have two 12-hour periods lets make one of them correspond to 
-       * night and we will display night icons. 
+      /* If we have two 12-hour periods lets make one of them correspond to
+       * night and we will display night icons.
        */
       if (timeLayoutHour == 6)
       {
@@ -986,12 +2017,12 @@ static void generatePhraseAndIcons (int dayIndex, char *frequency,
    /* Check for the differnt types of weather, and generate the corresponfing
     * icon links and weather phrases. 
     */
-   
-   /* Check for FOG. */   
+//   printf ("here in genPhraseIcon 1\n");
+   /* Check for FOG. */
    if (strcmp(dominantWeather[2], "F") == 0)
    {
-      if (f_isDayTime) 
-         sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "fg.jpg"); 
+      if (f_isDayTime)
+         sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "fg.jpg");
       else if (f_isNightTime) 
          sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "nfg.jpg"); 
       
@@ -1013,11 +2044,14 @@ static void generatePhraseAndIcons (int dayIndex, char *frequency,
       /* If weather type was found, then PoP threshold is not an issue. */
       *f_popIsNotAnIssue = 1;
    }      
+//   printf ("here in genPhraseIcon 2\n"); 
 
    /* Check for BLOWING SNOW. */   
    if (strcmp(dominantWeather[2], "BS") == 0)
    {
       /* Snow Words. */
+      determineIconUsingPop(iconInfo[dayIndex].str, "blizzard", ".jpg", 
+			    maxDailyPop[dayIndex], baseURL);
       sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "blizzard.jpg");      
       strcpy (phrase[dayIndex], "Blowing Snow");
       
@@ -1055,6 +2089,7 @@ static void generatePhraseAndIcons (int dayIndex, char *frequency,
       /* If weather type was found, then PoP threshold is not an issue. */
       *f_popIsNotAnIssue = 1;      
    } 
+//   printf ("here in genPhraseIcon 3\n"); 
 
    /* Check for HAZE. */   
    if (strcmp(dominantWeather[2], "H") == 0)
@@ -1074,6 +2109,7 @@ static void generatePhraseAndIcons (int dayIndex, char *frequency,
       /* If weather type was found, then PoP threshold is not an issue. */
       *f_popIsNotAnIssue = 1;      
    } 
+//   printf ("here in genPhraseIcon 4\n"); 
 
    /* Check for ICE CRYSTALS. */   
    if (strcmp(dominantWeather[2], "IC") == 0)
@@ -1115,6 +2151,7 @@ static void generatePhraseAndIcons (int dayIndex, char *frequency,
       /* If weather type was found, then PoP threshold is not an issue. */
       *f_popIsNotAnIssue = 1;      
    } 
+//   printf ("here in genPhraseIcon 5\n"); 
 
    /* Check for FREEZING FOG. */   
    if (strcmp(dominantWeather[2], "ZF") == 0)
@@ -1149,6 +2186,7 @@ static void generatePhraseAndIcons (int dayIndex, char *frequency,
       /* If weather type was found, then PoP threshold is not an issue. */
       *f_popIsNotAnIssue = 1;      
    } 
+//   printf ("here in genPhraseIcon 6\n"); 
 
    /* Check for SMOKE. */   
    if (strcmp(dominantWeather[2], "K") == 0)
@@ -1202,40 +2240,50 @@ static void generatePhraseAndIcons (int dayIndex, char *frequency,
       /* If weather type was found, then PoP threshold is not an issue. */
       *f_popIsNotAnIssue = 1;      
    } 
+//   printf ("here in genPhraseIcon 7\n"); 
 
    /* Check for SLEET. */   
    if (strcmp(dominantWeather[2], "IP") == 0 && maxDailyPop[dayIndex] >= 
        lowPopThreshold)
    {
+//      printf ("here in genPhraseIcon 8\n");
+      determineIconUsingPop(iconInfo[dayIndex].str, "ip", ".jpg",
+			    maxDailyPop[dayIndex], baseURL);
       strcpy (phrase[dayIndex], "Sleet");
-      sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "ip.jpg"); 
- 
+
       /* This type has an icon. */
       f_noIcon = 0;
       
       /* If weather type was found, then PoP threshold is not an issue. */
       *f_popIsNotAnIssue = 1;      
    }
-   
+
    /* Check for RAIN SHOWERS. */   
    else if (strcmp(dominantWeather[2], "RW") == 0 && maxDailyPop[dayIndex] >= 
        lowPopThreshold)
    {
       if (f_isDayTime)
       {
+//         printf ("here in genPhraseIcon 9\n"); 
          if (averageSkyCover[dayIndex] > 60)
-            sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "hi_shwrs.jpg");
+            determineIconUsingPop(iconInfo[dayIndex].str, "hi_shwrs", ".jpg", 
+			          maxDailyPop[dayIndex], baseURL);
 	 else
-            sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "shra.jpg");
+            determineIconUsingPop(iconInfo[dayIndex].str, "shra", ".jpg", 
+			          maxDailyPop[dayIndex], baseURL);
       }
       else if (f_isNightTime)
       {
+//         printf ("here in genPhraseIcon 10\n"); 
          if (averageSkyCover[dayIndex] > 60)
-            sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "hi_nshwrs.jpg");
+            determineIconUsingPop(iconInfo[dayIndex].str, "hi_nshwrs", ".jpg", 
+			          maxDailyPop[dayIndex], baseURL);
 	 else
-            sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "nra.jpg");
+            determineIconUsingPop(iconInfo[dayIndex].str, "nra", ".jpg", 
+			          maxDailyPop[dayIndex], baseURL);
       }
 
+//      printf ("here in genPhraseIcon 11\n"); 
       if (strcmp(dominantWeather[0], "Chc") == 0 || strcmp(dominantWeather[0], "SChc") == 0)
          strcpy (phrase[dayIndex], "Chance Rain Showers");
       else if (strcmp(dominantWeather[0], "Lkly") == 0)
@@ -1248,16 +2296,21 @@ static void generatePhraseAndIcons (int dayIndex, char *frequency,
       
       /* If weather type was found, then PoP threshold is not an issue. */
       *f_popIsNotAnIssue = 1; 
+//      printf ("here in genPhraseIcon 12\n"); 
    }
-   
+
    /* Check for RAIN. */   
    else if (strcmp(dominantWeather[2], "R") == 0 && maxDailyPop[dayIndex] >= 
        lowPopThreshold)
    {
+
+//      printf ("here in genPhraseIcon 13\n"); 
       if (f_isDayTime)
-         sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "ra.jpg");
+         determineIconUsingPop(iconInfo[dayIndex].str, "ra", ".jpg", 
+			       maxDailyPop[dayIndex], baseURL);
       else if (f_isNightTime)
-         sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "nra.jpg");
+         determineIconUsingPop(iconInfo[dayIndex].str, "nra", ".jpg", 
+			       maxDailyPop[dayIndex], baseURL);
 
       if (strcmp(dominantWeather[0], "Chc") == 0 || strcmp(dominantWeather[0], "SChc") == 0)
          strcpy (phrase[dayIndex], "Chance Rain");
@@ -1266,11 +2319,12 @@ static void generatePhraseAndIcons (int dayIndex, char *frequency,
       else
          strcpy (phrase[dayIndex], "Rain");
 
-      if (strcmp(dominantWeather[4], "HvyRn") == 0)
+      if (strcmp(dominantWeather[3], "HvyRn") == 0)
          strcpy (phrase[dayIndex], "Heavy Rain");	
       
       /* This type has an icon. */
       f_noIcon = 0;
+//      printf ("here in genPhraseIcon 14\n"); 
       
       /* If weather type was found, then PoP threshold is not an issue. */
       *f_popIsNotAnIssue = 1; 
@@ -1281,9 +2335,11 @@ static void generatePhraseAndIcons (int dayIndex, char *frequency,
        lowPopThreshold)
    {
       if (f_isDayTime)
-         sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "drizzle.jpg");
+         determineIconUsingPop(iconInfo[dayIndex].str, "drizzle", ".jpg", 
+			       maxDailyPop[dayIndex], baseURL);
       else if (f_isNightTime)
-         sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "drizzle.jpg");
+         determineIconUsingPop(iconInfo[dayIndex].str, "drizzle", ".jpg", 
+			       maxDailyPop[dayIndex], baseURL);
 
       if (strcmp(dominantWeather[0], "Chc") == 0 || strcmp(dominantWeather[0], "SChc") == 0)
          strcpy (phrase[dayIndex], "Chance Drizzle");
@@ -1298,7 +2354,7 @@ static void generatePhraseAndIcons (int dayIndex, char *frequency,
       /* If weather type was found, then PoP threshold is not an issue. */
       *f_popIsNotAnIssue = 1; 
    }
-   
+
    /* Check for SNOW SHOWERS. */
    else if ((strcmp(dominantWeather[2], "SW") == 0) && 
             (strcmp(dominantWeather[1], "--") != 0) &&
@@ -1308,16 +2364,20 @@ static void generatePhraseAndIcons (int dayIndex, char *frequency,
       if (f_isDayTime)
       {
          if (averageSkyCover[dayIndex] > 60)
-            sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "sn.jpg");
+            determineIconUsingPop(iconInfo[dayIndex].str, "sn", ".jpg", 
+			          maxDailyPop[dayIndex], baseURL);
 	 else
-            sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "sn.jpg");
+            determineIconUsingPop(iconInfo[dayIndex].str, "sn", ".jpg", 
+			          maxDailyPop[dayIndex], baseURL);
       }
       else if (f_isNightTime)
       {
          if (averageSkyCover[dayIndex] > 60)
-            sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "nsn.jpg");
+            determineIconUsingPop(iconInfo[dayIndex].str, "nsn", ".jpg", 
+			          maxDailyPop[dayIndex], baseURL);
 	 else
-            sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "nsn.jpg");
+            determineIconUsingPop(iconInfo[dayIndex].str, "nsn", ".jpg", 
+			          maxDailyPop[dayIndex], baseURL);
       }
   
       if (strcmp(dominantWeather[0], "Chc") == 0 || strcmp(dominantWeather[0], "SChc") == 0)
@@ -1333,7 +2393,7 @@ static void generatePhraseAndIcons (int dayIndex, char *frequency,
       /* If weather type was found, then PoP threshold is not an issue. */
       *f_popIsNotAnIssue = 1; 
    }
-   
+
    /* Check for FLURRIES. */
    else if ((strcmp(dominantWeather[2], "S") == 0 || 
             strcmp(dominantWeather[2], "SW") == 0) &&
@@ -1341,9 +2401,11 @@ static void generatePhraseAndIcons (int dayIndex, char *frequency,
 	    (maxDailyPop[dayIndex] >= lowPopThreshold))
    {
       if (f_isDayTime)
-         sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "flurries.jpg");      
+         determineIconUsingPop(iconInfo[dayIndex].str, "flurries", ".jpg", 
+			       maxDailyPop[dayIndex], baseURL);
       else if (f_isNightTime)
-         sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "flurries.jpg");       
+         determineIconUsingPop(iconInfo[dayIndex].str, "flurries", ".jpg", 
+			       maxDailyPop[dayIndex], baseURL);
   
       if (strcmp(dominantWeather[0], "Chc") == 0 || strcmp(dominantWeather[0], "SChc") == 0)
          strcpy (phrase[dayIndex], "Chance Flurries");
@@ -1358,15 +2420,17 @@ static void generatePhraseAndIcons (int dayIndex, char *frequency,
       /* If weather type was found, then PoP threshold is not an issue. */
       *f_popIsNotAnIssue = 1; 
    }
-   
+
    /* Check for SNOW. */
    else if (strcmp(dominantWeather[2], "S") == 0 &&
 	    maxDailyPop[dayIndex] >= lowPopThreshold)
    {
       if (f_isDayTime)
-         sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "sn.jpg");      
+         determineIconUsingPop(iconInfo[dayIndex].str, "sn", ".jpg", 
+			       maxDailyPop[dayIndex], baseURL);
       else if (f_isNightTime)
-         sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "nsn.jpg");  	   
+         determineIconUsingPop(iconInfo[dayIndex].str, "nsn", ".jpg", 
+			       maxDailyPop[dayIndex], baseURL);
   
       if (strcmp(dominantWeather[0], "Chc") == 0 || strcmp(dominantWeather[0], "SChc") == 0)
          strcpy (phrase[dayIndex], "Chance Snow");
@@ -1381,15 +2445,17 @@ static void generatePhraseAndIcons (int dayIndex, char *frequency,
       /* If weather type was found, then PoP threshold is not an issue. */
       *f_popIsNotAnIssue = 1; 
    }  
-   
+//        printf ("here in genPhraseIcon 10\n");  
    /* Check for a mixture of RAIN and SNOW. */
    if ((f_isRain || f_isRainShowers) && (f_isSnow || f_isSnowShowers) && 
        (maxDailyPop[dayIndex] >= lowPopThreshold))
    {
       if (f_isDayTime)
-         sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "rasn.jpg");      
+         determineIconUsingPop(iconInfo[dayIndex].str, "rasn", ".jpg", 
+			       maxDailyPop[dayIndex], baseURL);
       else if (f_isNightTime)
-         sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "nrasn.jpg");  
+         determineIconUsingPop(iconInfo[dayIndex].str, "nrasn", ".jpg", 
+			       maxDailyPop[dayIndex], baseURL);
   
       if (strcmp(dominantWeather[0], "Chc") == 0 || strcmp(dominantWeather[0], "SChc") == 0)
          strcpy (phrase[dayIndex], "Chance Rain/Snow");
@@ -1404,12 +2470,13 @@ static void generatePhraseAndIcons (int dayIndex, char *frequency,
       /* If weather type was found, then PoP threshold is not an issue. */
       *f_popIsNotAnIssue = 1; 
    }
-
+//      printf ("here in genPhraseIcon 11\n"); 
    /* Check for FREEZING RAIN. */
    if (strcmp(dominantWeather[2], "ZR") == 0 &&
       maxDailyPop[dayIndex] >= lowPopThreshold)
    {
-      sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "freezingrain.jpg"); 
+      determineIconUsingPop(iconInfo[dayIndex].str, "freezingrain", ".jpg", 
+			    maxDailyPop[dayIndex], baseURL);
   
       if (strcmp(dominantWeather[0], "Chc") == 0 || strcmp(dominantWeather[0], "SChc") == 0)
          strcpy (phrase[dayIndex], "Chance Freezing Rain");
@@ -1429,7 +2496,8 @@ static void generatePhraseAndIcons (int dayIndex, char *frequency,
    else if (strcmp(dominantWeather[2], "ZL") == 0 &&
       maxDailyPop[dayIndex] >= lowPopThreshold)
    {
-      sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "fdrizzle.jpg"); 
+      determineIconUsingPop(iconInfo[dayIndex].str, "fdrizzle", ".jpg", 
+			    maxDailyPop[dayIndex], baseURL);
   
       if (strcmp(dominantWeather[0], "Chc") == 0 || strcmp(dominantWeather[0], "SChc") == 0)
          strcpy (phrase[dayIndex], "Chance Freezing Drizzle");
@@ -1450,7 +2518,8 @@ static void generatePhraseAndIcons (int dayIndex, char *frequency,
       (f_isSnow || f_isSnowShowers) && 
       (maxDailyPop[dayIndex] >=lowPopThreshold))
    {
-      sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "mix.jpg"); 
+      determineIconUsingPop(iconInfo[dayIndex].str, "mix", ".jpg", 
+			    maxDailyPop[dayIndex], baseURL);
       strcpy (phrase[dayIndex], "Wintry Mix");
 
       /* This type has an icon. */
@@ -1465,7 +2534,8 @@ static void generatePhraseAndIcons (int dayIndex, char *frequency,
            (f_isFreezingDrizzle || f_isFreezingRain) && 
 	   (maxDailyPop[dayIndex] >= lowPopThreshold))
    {
-      sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "fzra.jpg"); 
+      determineIconUsingPop(iconInfo[dayIndex].str, "fzra", ".jpg", 
+			    maxDailyPop[dayIndex], baseURL);
   
       if (strcmp(dominantWeather[0], "Chc") == 0 || strcmp(dominantWeather[0], "SChc") == 0)
          strcpy (phrase[dayIndex], "Chance Rain/Freezing Rain");
@@ -1485,7 +2555,8 @@ static void generatePhraseAndIcons (int dayIndex, char *frequency,
    else if ((f_isIcePellets) && (f_isFreezingDrizzle || f_isFreezingRain) &&
             (maxDailyPop[dayIndex] >= lowPopThreshold))
    {
-      sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "mix.jpg"); 
+      determineIconUsingPop(iconInfo[dayIndex].str, "mix", ".jpg", 
+			    maxDailyPop[dayIndex], baseURL);
       strcpy (phrase[dayIndex], "Wintry Mix");
 
       /* This type has an icon. */
@@ -1500,9 +2571,11 @@ static void generatePhraseAndIcons (int dayIndex, char *frequency,
 	   (maxDailyPop[dayIndex] >= lowPopThreshold))
    {
       if (f_isDayTime)
-         sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "raip.jpg");      
+         determineIconUsingPop(iconInfo[dayIndex].str, "raip", ".jpg", 
+			       maxDailyPop[dayIndex], baseURL);
       else if (f_isNightTime)
-         sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "nraip.jpg");  
+         determineIconUsingPop(iconInfo[dayIndex].str, "nraip", ".jpg", 
+			       maxDailyPop[dayIndex], baseURL);
   
       if (strcmp(dominantWeather[0], "Chc") == 0 || strcmp(dominantWeather[0], "SChc") == 0)
          strcpy (phrase[dayIndex], "Chance Rain/Sleet");
@@ -1522,7 +2595,8 @@ static void generatePhraseAndIcons (int dayIndex, char *frequency,
    else if ((f_isIcePellets) && (f_isSnow || f_isSnowShowers) && 
 	   (maxDailyPop[dayIndex] >= lowPopThreshold))
    {
-      sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "ip.jpg"); 
+      determineIconUsingPop(iconInfo[dayIndex].str, "ip", ".jpg", 
+			    maxDailyPop[dayIndex], baseURL);
       strcpy (phrase[dayIndex], "Snow/Sleet");
 
       /* This type has an icon. */
@@ -1539,16 +2613,20 @@ static void generatePhraseAndIcons (int dayIndex, char *frequency,
       if (f_isDayTime)
       {
          if (averageSkyCover[dayIndex] > 60)
-            sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "tsra.jpg");
+            determineIconUsingPop(iconInfo[dayIndex].str, "tsra", ".jpg", 
+			          maxDailyPop[dayIndex], baseURL);
          else
-            sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "scttsra.jpg"); 
+            determineIconUsingPop(iconInfo[dayIndex].str, "scttsra", ".jpg", 
+			          maxDailyPop[dayIndex], baseURL);
       }	      	 
       else if (f_isNightTime)
       {
          if (averageSkyCover[dayIndex] > 60)
-            sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "ntsra.jpg");
+            determineIconUsingPop(iconInfo[dayIndex].str, "ntsra", ".jpg", 
+			          maxDailyPop[dayIndex], baseURL);
          else
-            sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "nscttsra.jpg"); 
+            determineIconUsingPop(iconInfo[dayIndex].str, "nscttsra", ".jpg", 
+			          maxDailyPop[dayIndex], baseURL);
       }	      	 
 
       if (strcmp(dominantWeather[0], "Chc") == 0 || strcmp(dominantWeather[0], "SChc") == 0)
@@ -1558,9 +2636,9 @@ static void generatePhraseAndIcons (int dayIndex, char *frequency,
       else
          strcpy (phrase[dayIndex], "Thunderstorms");
 			 
-      if ((strcmp(dominantWeather[4], "DmgW") == 0) || 
-         (strcmp(dominantWeather[4], "LgA") == 0) ||
-         (strcmp(dominantWeather[4], "TOR") == 0)) 
+      if ((strcmp(dominantWeather[3], "DmgW") == 0) || 
+         (strcmp(dominantWeather[3], "LgA") == 0) ||
+         (strcmp(dominantWeather[3], "TOR") == 0)) 
          strcpy (phrase[dayIndex], "Severe Tstms");     
       
       /* This type has an icon. */
@@ -2040,11 +3118,11 @@ static int determinePeriodLength(double startTime, double endTime,
                                * validTimes. */
 
    /* If there is just one row of data, guess the period length. */
-   if (numRows == 1)
+   if (numRows == 1 || endTime == 0.0)
    {
       if (parameterName == NDFD_MAX || parameterName == NDFD_MIN)
          period = 24;
-      else if (parameterName == NDFD_POP)
+      else if (parameterName == NDFD_POP || parameterName == NDFD_WH)
          period = 12;
       else if (parameterName == NDFD_QPF || parameterName == NDFD_SNOW)
          period = 6;
@@ -2057,83 +3135,6 @@ static int determinePeriodLength(double startTime, double endTime,
    period = (endTime - startTime) / 3600;
 
    return period;
-}
-
-/*****************************************************************************
- * formatValidTime() -- 
- *
- * Paul Hershberg / MDL
- *
- * PURPOSE
- *  Transform double validTime to character string in form 
- *  (2006-04-13T:00:00:00-00:00), which is the standard form in the formatted
- *  XML.
- *   
- * ARGUMENTS
- *        validTime = Incoming double validTime to be converted. (Input)
- *         timeBuff = Returned time counterpart in character form
- *                    (2006-04-13T:00:00:00-00:00). (Input/Output)
- *    size_timeBuff = Max size of "timeBuff". (Input)
- *                    (Input) 
- *    pntZoneOffset = Number of hours to add tocurrent time to get GMT time. 
- *                    (Input)
- *       f_dayCheck = Flag determining if current point observes Daylight 
- *                    Savings Time. (Input) 
- *        
- * FILES/DATABASES: None
- *                
- * RETURNS: int (0 or -1)
- *
- *  2/2006 Paul Hershberg (MDL): Created.
- *
- * NOTES:
- *****************************************************************************
- */
-
-static int formatValidTime(double validTime, char *timeBuff,
-                           int size_timeBuff, sChar pntZoneOffSet,
-                           sChar f_dayCheck)
-{
-
-   char zone[7];
-   double localTime;          /* validTime with the time zone difference
-                               * taken into account. */
-
-   localTime = validTime - (pntZoneOffSet * 3600);
-
-   /* localTime is now in point's local standard time */
-
-   if (f_dayCheck)
-   {
-      /* Note: a zero is passed to DaylightSavings so it converts from local
-       * to local standard time. */
-
-      if (Clock_IsDaylightSaving2(localTime, 0) == 1)
-      {
-         localTime += 3600;
-         pntZoneOffSet--;
-      }
-   }
-
-   /* Sort by valid time. */
-
-   myAssert(size_timeBuff > 25);
-   if (size_timeBuff <= 25)
-      return -1;
-
-   /* The '0, 0' is passed in because we already converted to local standard
-    * time. */
-
-   Clock_Print2(timeBuff, size_timeBuff, localTime, "%Y-%m-%dT%H:%M:%S", 0, 0);
-
-   /* Change definition of pntZoneOffSet */
-   pntZoneOffSet = -1 * pntZoneOffSet;
-   if (pntZoneOffSet < 0)
-      sprintf(zone, "-%02d:00", -1 * pntZoneOffSet);
-   else
-      sprintf(zone, "+%02d:00", pntZoneOffSet);
-   strcat(timeBuff, zone);
-   return 0;
 }
 
 /*****************************************************************************
@@ -2166,10 +3167,6 @@ static int formatValidTime(double validTime, char *timeBuff,
  *         numMatch = The number of matches from degrib. (Input)
  *      useEndTimes = Flag denoting if element uses end times in the output XML 
  *                    (Input)
- *   numRowsSkipped = The number of rows skipped when a startTime is chosen on
- *                    the command line argument and a row of data falls between 
- *                    this time and the time of the first forecast period. 
- *                    (Output)
  *  
  * FILES/DATABASES: None
  *                
@@ -2181,14 +3178,14 @@ static int formatValidTime(double validTime, char *timeBuff,
  *****************************************************************************
  */
 
-static void computeStartEndTimes(uChar parameterName, uChar numRows,
+static void computeStartEndTimes(uChar parameterName, uChar numFmtdRows,
                                  int periodLength, sChar TZoffset,
                                  sChar f_observeDST, genMatchType * match,
                                  size_t numMatch, uChar useEndTimes,
                                  char **startTimes, char **endTimes, 
 				 char *frequency, uChar f_XML, 
 				 double startTime_cml, double currentDoubTime,
-				 int *numPopRowsSkippedBeginning)
+				 numRowsInfo numRows)
 {
 
    int i;
@@ -2217,15 +3214,17 @@ static void computeStartEndTimes(uChar parameterName, uChar numRows,
           * But, in reality the max and min temp only apply to a 12/13 hour
           * period. So we have to reset the start time.  Additionally, max.
           * is valid for a 0700 - 1900 and min on for a 1900 - 0800 local
-          * standard time period. */
-
+          * standard time period. 
+	  */
          case NDFD_MAX:
 
             /* Loop over matches of the data. */
             priorElemCount = 0;
             for (i = 0; i < numMatch; i++)
             {
-               if (match[i].elem.ndfdEnum == parameterName)
+               if (match[i].elem.ndfdEnum == parameterName && 
+	           match[i].validTime >= numRows.firstUserTime &&
+		   match[i].validTime <= numRows.lastUserTime)
                {
                   formatValidTime(match[i].validTime, str1, 30, TZoffset,
                                   f_observeDST);
@@ -2235,16 +3234,15 @@ static void computeStartEndTimes(uChar parameterName, uChar numRows,
 
                   /* For daylight saving time points we need to adjust local
                    * time to standard time. */
-
                   if (f_observeDST)
                   {
                      /* See if it is currently Daylight Savings Time */
                      if (Clock_IsDaylightSaving2(match[i].validTime, TZoffset)
                          == 1)
                      {
-                        /* To accommodate daylight saving time move time 
-			 * forward.
-			 */
+                       /* To accommodate daylight saving time move time 
+		        * forward.
+		        */
                        if (useEndTimes)
                        {
                           pstr = strstr(str1, "T");
@@ -2301,7 +3299,9 @@ static void computeStartEndTimes(uChar parameterName, uChar numRows,
             priorElemCount = 0;
             for (i = 0; i < numMatch; i++)
             {
-               if (match[i].elem.ndfdEnum == parameterName)
+               if (match[i].elem.ndfdEnum == parameterName &&
+	           match[i].validTime >= numRows.firstUserTime &&
+		   match[i].validTime <= numRows.lastUserTime)
                {
                   formatValidTime(match[i].validTime, str1, 30, TZoffset,
                                   f_observeDST);
@@ -2400,7 +3400,9 @@ static void computeStartEndTimes(uChar parameterName, uChar numRows,
             priorElemCount = 0;
             for (i = 0; i < numMatch; i++)
             {
-               if (match[i].elem.ndfdEnum == parameterName)
+               if (match[i].elem.ndfdEnum == parameterName && 
+	           match[i].validTime >= numRows.firstUserTime &&
+		   match[i].validTime <= numRows.lastUserTime)
                {
                   formatValidTime(match[i].validTime, str1, 30, TZoffset,
                                   f_observeDST);
@@ -2459,7 +3461,9 @@ static void computeStartEndTimes(uChar parameterName, uChar numRows,
             priorElemCount = 0;
             for (i = 0; i < numMatch; i++)
             {
-               if (match[i].elem.ndfdEnum == parameterName)
+               if (match[i].elem.ndfdEnum == parameterName && 
+	           match[i].validTime >= numRows.firstUserTime &&
+		   match[i].validTime <= numRows.lastUserTime)
                {
 
                   str1[0] = '\0';
@@ -2499,9 +3503,11 @@ static void computeStartEndTimes(uChar parameterName, uChar numRows,
                priorElemCount = 0;
                for (i = 0; i < numMatch; i++)
                {
-                  if (match[i].elem.ndfdEnum == parameterName)
+                  if (match[i].elem.ndfdEnum == parameterName &&
+	              match[i].validTime >= numRows.firstUserTime &&
+		      match[i].validTime <= numRows.lastUserTime)
                   {
-		     timeCounter ++;
+		     timeCounter++;
 		     
 		     /* Build the startTimes. They occur on the current day. */
      		     formatValidTime(match[i].validTime, str1, 30, TZoffset,
@@ -2528,9 +3534,9 @@ static void computeStartEndTimes(uChar parameterName, uChar numRows,
 	       
 	       /* Check to see if there is less data than the number of rows
 		* to be formatted. If so, we need to fabricate those times. */
-               if (timeCounter+1 < numRows)
+               if (timeCounter+1 < numFmtdRows)
 	       {
-	          for (i = timeCounter+1; i < numRows; i++)
+	          for (i = timeCounter+1; i < numFmtdRows; i++)
 	          {
 		     Clock_Scan(&Time_doub, startTimes[i-1], 0);
      		     formatValidTime(Time_doub + oneDay, str1, 30, TZoffset,
@@ -2557,7 +3563,9 @@ static void computeStartEndTimes(uChar parameterName, uChar numRows,
                priorElemCount = 0;
                for (i = 0; i < numMatch; i++)
                {
-                  if (match[i].elem.ndfdEnum == parameterName)
+                  if (match[i].elem.ndfdEnum == parameterName &&
+	              match[i].validTime >= numRows.firstUserTime &&
+		      match[i].validTime <= numRows.lastUserTime)
                   {
 		     timeCounter++;
 		     
@@ -2566,13 +3574,13 @@ static void computeStartEndTimes(uChar parameterName, uChar numRows,
 		     {
                         formatValidTime(match[i].validTime, str1, 30, TZoffset,
                                         f_observeDST);
-			
+
                         endTimes[i - priorElemCount] = malloc(strlen(str1) + 1);
                         pstr = strstr(str1, "T");
                         strncpy(pstr, "T06", 3);
                         strcpy(endTimes[i - priorElemCount], str1);
 		     }
-               
+
 		     /* Build the startTimes. They occur on the previous day. */
                      formatValidTime(match[i].validTime - oneDay, str1, 30, TZoffset,
                                      f_observeDST);
@@ -2584,30 +3592,30 @@ static void computeStartEndTimes(uChar parameterName, uChar numRows,
 		  else
                      priorElemCount++;
 	       }
-	       
+
 	       /* Check to see if there is less data than the number of rows
 		* to be formatted. If so, we need to fabricate those times. */
-               if (timeCounter+1 < numRows)
+               if (timeCounter+1 < numFmtdRows)
 	       {
-	          for (i = timeCounter+1; i < numRows; i++)
+	          for (i = timeCounter+1; i < numFmtdRows; i++)
 	          {
 		     Clock_Scan(&Time_doub, startTimes[i-1], 0);
      		     formatValidTime(Time_doub + oneDay, str1, 30, TZoffset,
                                      f_observeDST);
                      startTimes[i] = malloc(strlen(str1) + 1);
                      strcpy(startTimes[i], str1);
-		     
+
                      if (useEndTimes)
 		     {
 		        Clock_Scan(&Time_doub, endTimes[i-1], 0);
-     		        formatValidTime(Time_doub + oneDay, str1, 30, 
+     		        formatValidTime(Time_doub + oneDay, str1, 30,
 					TZoffset, f_observeDST);
                         endTimes[i] = malloc(strlen(str1) + 1);
                         strcpy(endTimes[i], str1);
 	             }
 		  }
 	       }
-	 	       
+
 	       break;
 	 }
       }
@@ -2615,34 +3623,33 @@ static void computeStartEndTimes(uChar parameterName, uChar numRows,
       {
 
         /* PoP will always be summarized from 0800 to 2000 and 2000 to 0800
-	 * (both DWMLgenByDay products; f_XML = 3 or f_XML = 4). If the user 
+	 * (both DWMLgenByDay products; f_XML = 3 or f_XML = 4). If the user
 	 * selects "12 hourly" (f_XML = 3), the other data will be summarized
 	 * into these two time periods as well. Max and min temperature will
 	 * be placed into the day and night periods respectively. Weather and
-	 * Icons will share the start and end times as Pop. (Note, if the 
-	 * product is of type f_XML = 4, the only product with 12 hourly 
-	 * summarizations will be the Pop element.) 
+	 * Icons will share the same start and end times as Pop. (Note, if the
+	 * product is of type f_XML = 4, the only product with 12 hourly
+	 * summarizations will be the Pop element.)
 	 */
 	 switch (parameterName)
          {
-            
 	    case NDFD_POP:
-		    
-	       deltaSeconds = ((periodLength / 4) * 3600);	  
+
+	       deltaSeconds = ((periodLength / 4) * 3600);
                /* Loop over matches of the data. */
                priorElemCount = 0;
                for (i = 0; i < numMatch; i++)
                {
-                  if (match[i].elem.ndfdEnum == parameterName)
+                  if (match[i].elem.ndfdEnum == parameterName &&
+	              match[i].validTime >= numRows.firstUserTime &&
+		      match[i].validTime <= numRows.lastUserTime)
                   {
-		     if (match[i].validTime - currentDoubTime < deltaSeconds)
-		        numPopRowsSkippedBeginning++;
 		     timeCounter++;
-		     
-                     /* For the NDFD, the valid time is at the end of the valid 
-                      * period. So end time equals the "valid time". But 
-		      * adjustments need to be made to the hour before the 
-		      * assignment of the endTimes. 
+
+                     /* For the NDFD, the valid time is at the end of the valid
+                      * period. So end time equals the "valid time". But
+		      * adjustments need to be made to the hour before the
+		      * assignment of the endTimes.
 		      */
                      formatValidTime(match[i].validTime, str1, 30, TZoffset,
                                      f_observeDST);
@@ -2650,15 +3657,17 @@ static void computeStartEndTimes(uChar parameterName, uChar numRows,
                      temp[1] = str1[12];
                      temp[2] = '\0';
                      beginningHour = atoi(temp);
+//		     printf ("beginningHour for POP check = %d\n",beginningHour);
                      beginningHour -= periodLength;
-		     
+//		     printf ("beginningHour for POP check after subtracting period = %d\n",beginningHour);
+
                      /* If the hour is negative, the endTime uses the current
 		      * day, but the starTime uses the previous day so
-                      * determine what the new date and time are for 
+                      * determine what the new date and time are for
 		      * assignment of the startTime.
 		      */
                      if (beginningHour < 0)
-		     { 
+		     {
                         beginningHour = 18;
 	                if (useEndTimes)
 		        {
@@ -2689,56 +3698,58 @@ static void computeStartEndTimes(uChar parameterName, uChar numRows,
                      pstr = strstr(str1, "T");
                      strncpy(pstr, temp2, 3);
                      strcpy(startTimes[i - priorElemCount], str1);
-		  }   
-		  else   
+//		     printf ("POP startTime check = %s\n",startTimes[i - priorElemCount]);
+		  }
+		  else
 		     priorElemCount++;
 	       }
 
 	       /* Check to see if there is less data than the number of rows
 		* to be formatted. If so, we need to fabricate those times. */
-               if (timeCounter+1 < numRows)
+               if (timeCounter+1 < numFmtdRows)
 	       {
-	          for (i = timeCounter+1; i < numRows; i++)
+	          for (i = timeCounter+1; i < numFmtdRows; i++)
 	          {
 		     Clock_Scan(&Time_doub, startTimes[i-1], 0);
      		     formatValidTime(Time_doub + (oneDay/2), str1, 30, TZoffset,
                                      f_observeDST);
                      startTimes[i] = malloc(strlen(str1) + 1);
                      strcpy(startTimes[i], str1);
-		     
+
                      if (useEndTimes)
 		     {
 		        Clock_Scan(&Time_doub, endTimes[i-1], 0);
-     		        formatValidTime(Time_doub + (oneDay/2), str1, 30, 
+     		        formatValidTime(Time_doub + (oneDay/2), str1, 30,
 					TZoffset, f_observeDST);
                         endTimes[i] = malloc(strlen(str1) + 1);
                         strcpy(endTimes[i], str1);
 	             }
 		  }
 	       }
-	 
+
 	       break;
 
 	    case NDFD_MAX:
-	       
+
                /* Loop over matches of the data. */
                priorElemCount = 0;
                for (i = 0; i < numMatch; i++)
                {
-                  if (match[i].elem.ndfdEnum == parameterName)
+                  if (match[i].elem.ndfdEnum == parameterName &&
+	              match[i].validTime >= numRows.firstUserTime &&
+		      match[i].validTime <= numRows.lastUserTime)
                   {
 	             timeCounter++;
-
 		     formatValidTime(match[i].validTime, str1, 30, TZoffset,
                                      f_observeDST);
-		     
+
 		     /* Build StartTime. */
 		     startTimes[i - priorElemCount] = malloc(strlen(str1) + 1);
                      pstr = strstr(str1, "T");
                      strncpy(pstr, "T06", 3);
                      strcpy(startTimes[i - priorElemCount], str1);
-                     
-		     /* Build EndTime. */		     
+
+		     /* Build EndTime. */
 	             if (useEndTimes)
 		     {
 		        endTimes[i - priorElemCount] = malloc(strlen(str1) + 1);
@@ -2753,27 +3764,27 @@ static void computeStartEndTimes(uChar parameterName, uChar numRows,
 
 	       /* Check to see if there is less data than the number of rows
 		* to be formatted. If so, we need to fabricate those times. */
-               if (timeCounter+1 < numRows)
+               if (timeCounter+1 < numFmtdRows)
 	       {
-	          for (i = timeCounter+1; i < numRows; i++)
+	          for (i = timeCounter+1; i < numFmtdRows; i++)
 	          {
 		     Clock_Scan(&Time_doub, startTimes[i-1], 0);
      		     formatValidTime(Time_doub + oneDay, str1, 30, TZoffset,
                                      f_observeDST);
                      startTimes[i] = malloc(strlen(str1) + 1);
                      strcpy(startTimes[i], str1);
-		     
+
                      if (useEndTimes)
 		     {
 		        Clock_Scan(&Time_doub, endTimes[i-1], 0);
-     		        formatValidTime(Time_doub + oneDay, str1, 30, 
+     		        formatValidTime(Time_doub + oneDay, str1, 30,
 					TZoffset, f_observeDST);
                         endTimes[i] = malloc(strlen(str1) + 1);
                         strcpy(endTimes[i], str1);
 	             }
 		  }
 	       }
-	       
+
 	       break;
 
 	    case NDFD_MIN:
@@ -2782,14 +3793,17 @@ static void computeStartEndTimes(uChar parameterName, uChar numRows,
                priorElemCount = 0;
                for (i = 0; i < numMatch; i++)
                {
-                  if (match[i].elem.ndfdEnum == parameterName)
+                  if (match[i].elem.ndfdEnum == parameterName &&
+	              match[i].validTime >= numRows.firstUserTime &&
+		      match[i].validTime <= numRows.lastUserTime)
                   {
 	             timeCounter++;
-
 		     formatValidTime(match[i].validTime, str1, 30, TZoffset,
                                      f_observeDST);
-		     
-		     /* Build EndTime. */		     
+//		     printf ("match[%d].validTime = %f\n",i,match[i].validTime);
+//		     printf ("Testing the string in NDFD_MIN case = %s\n",str1);
+
+		     /* Build EndTime. */
 	             if (useEndTimes)
 		     {
 		        endTimes[i - priorElemCount] = malloc(strlen(str1) + 1);
@@ -2797,9 +3811,9 @@ static void computeStartEndTimes(uChar parameterName, uChar numRows,
                         strncpy(pstr, "T06", 3);
                         strcpy(endTimes[i - priorElemCount], str1);
                      }
-		     
-		     /* Build StartTime which will be in the previous day. */	
-                     formatValidTime(match[i].validTime - oneDay, str1, 30, 
+
+		     /* Build StartTime which will be in the previous day. */
+                     formatValidTime(match[i].validTime - oneDay, str1, 30,
 				     TZoffset, f_observeDST);
 		     startTimes[i - priorElemCount] = malloc(strlen(str1) + 1);
                      pstr = strstr(str1, "T");
@@ -2812,20 +3826,20 @@ static void computeStartEndTimes(uChar parameterName, uChar numRows,
 
 	       /* Check to see if there is less data than the number of rows
 		* to be formatted. If so, we need to fabricate those times. */
-               if (timeCounter+1 < numRows)
+               if (timeCounter+1 < numFmtdRows)
 	       {
-	          for (i = timeCounter+1; i < numRows; i++)
+	          for (i = timeCounter+1; i < numFmtdRows; i++)
 	          {
 		     Clock_Scan(&Time_doub, startTimes[i-1], 0);
      		     formatValidTime(Time_doub + oneDay, str1, 30, TZoffset,
                                      f_observeDST);
                      startTimes[i] = malloc(strlen(str1) + 1);
                      strcpy(startTimes[i], str1);
-		     
+
                      if (useEndTimes)
 		     {
 		        Clock_Scan(&Time_doub, endTimes[i-1], 0);
-     		        formatValidTime(Time_doub + oneDay, str1, 30, 
+     		        formatValidTime(Time_doub + oneDay, str1, 30,
 					TZoffset, f_observeDST);
                         endTimes[i] = malloc(strlen(str1) + 1);
                         strcpy(endTimes[i], str1);
@@ -2834,7 +3848,7 @@ static void computeStartEndTimes(uChar parameterName, uChar numRows,
 	       }
 
 	       break;
-	       
+
 	 } /* Close the switch check. */
       } /* Close the if-else "frequency ==" check. */
    } /* Close the "if f_XML ==" check. */
@@ -2870,7 +3884,8 @@ static void computeStartEndTimes(uChar parameterName, uChar numRows,
  */
 
 static void getColdSeasonTimes(genMatchType *match, size_t numMatch, 
-		               sChar TZoffset, double **springDoubleDate,
+		               numRowsInfo numRowsWS, sChar TZoffset, 
+			       double **springDoubleDate, 
 			       double **fallDoubleDate)
 
 {
@@ -2893,7 +3908,9 @@ static void getColdSeasonTimes(genMatchType *match, size_t numMatch,
 	
    for (i = 0; i < numMatch; i++)
    {
-      if (match[i].elem.ndfdEnum == NDFD_WS)
+      if (match[i].elem.ndfdEnum == NDFD_WS && 
+	  match[i].validTime >= numRowsWS.firstUserTime &&
+          match[i].validTime <= numRowsWS.lastUserTime)
       {
          formatValidTime(match[i].validTime, str1, 30, 0, 0);         
          break; 
@@ -2914,7 +3931,7 @@ static void getColdSeasonTimes(genMatchType *match, size_t numMatch,
    
    /* Craft the hour, minute, second, and Time zone offset. */
    if (TZoffset < 0)
-      sprintf (time_adj, "T01:01:01%02d:00", TZoffset);
+      sprintf (time_adj, "T01:01:01+%02d:00", -1 * TZoffset);
    else
       sprintf (time_adj, "T01:01:01-%02d:00", TZoffset);
 
@@ -2948,7 +3965,7 @@ static void getColdSeasonTimes(genMatchType *match, size_t numMatch,
    Clock_Scan(*fallDoubleDate, fallDate, 1);
 
    return;
-} 
+}
 
 /*****************************************************************************
  * prepareWeatherValuesByDay() -- 
@@ -2967,8 +3984,7 @@ static void getColdSeasonTimes(genMatchType *match, size_t numMatch,
  *               DWMLgen products, and to "12 hourly" or "24 hourly" for the 
  *               DWMLgenByDay products. (Input) 
  *     numDays = The number of days the validTimes for all the data rows 
- *               (values) consist of. Used for the DWMLgenByDay products 
- *               only. (Input)
+ *               (values) consist of. (Input)
  *    numMatch = The number of matches from degrib. (Input)
  *  numRowsSKY = The number of data rows for sky cover. These data are used to
  *               derive icons, if icons are to be formatted. (Input)
@@ -2993,7 +4009,8 @@ static void getColdSeasonTimes(genMatchType *match, size_t numMatch,
  * periodMaxTemp = For each forecast period, the "max" temperature occuring in
  *                 the period, based off of the MaxT and MinT elements. If night, 
  *                 the period could have a "max" MinT. (Output)
- * periodStartTimes = The startTimes of each of the forecast periods. (Output)                    * periodEndTimes =   The endTimes of each of the forecast periods. (Output)            
+ * periodStartTimes = The startTimes of each of the forecast periods. (Output)
+ * periodEndTimes =   The endTimes of each of the forecast periods. (Output)            
  * springDoubleDate = The end date of next cold season expressed in double form.
  *                    (Output)
  * fallDoubleDate = The start date of next cold season expressed in double form. 
@@ -3014,10 +4031,11 @@ static void getColdSeasonTimes(genMatchType *match, size_t numMatch,
 static void prepareWeatherValuesByDay (genMatchType *match, size_t numMatch, 
 		                       sChar TZoffset, sChar f_observeDST, 
 				       char *frequency, int numDays, 
-				       int numOutputLines, uChar numRowsMIN, 
-				       uChar numRowsMAX, uChar f_XML, 
-				       uChar numRowsPOP, uChar numRowsWX, 
-				       size_t pnt, int f_useMinTempTimes, 
+				       int numOutputLines, numRowsInfo numRowsWS, 
+				       numRowsInfo numRowsMIN, numRowsInfo numRowsMAX, 
+				       uChar f_XML, numRowsInfo numRowsPOP, 
+				       numRowsInfo numRowsWX, size_t pnt, 
+				       int f_useMinTempTimes, 
 				       double startTime_cml,
 				       double *weatherDataTimes,
 				       int *periodMaxTemp, 
@@ -3025,7 +4043,7 @@ static void prepareWeatherValuesByDay (genMatchType *match, size_t numMatch,
 				       double *periodEndTimes,
 				       double *springDoubleDate, 
                                        double *fallDoubleDate, 
-				       int *timeLayoutHour)
+				       int *timeLayoutHour, int f_6CycleFirst)
 {
 	
    int i;                     /* Index through the match structure. */
@@ -3034,7 +4052,6 @@ static void prepareWeatherValuesByDay (genMatchType *match, size_t numMatch,
    int priorElemCount = 0;        /* Counter used to find elements' location in
                                    * match. */
    int period = 0; /* Length between an elements successive validTimes. */
-   int numPopRowsSkippedBeginning = 0;   
    double currentDoubTime;
    char **startTimesMinTemp = NULL; /* Array holding startTimes for MinT. */ 
    char **endTimesMinTemp = NULL;    /* 7-13T18:00:00-06:00 mx:9Array holding the end Times for MinT. */
@@ -3049,14 +4066,24 @@ static void prepareWeatherValuesByDay (genMatchType *match, size_t numMatch,
    char WXtimeStr[30]; /* Temporary string holding formatted time
                         * value of weather. */
    char layoutHour[3]; /* Used to retrieve the timeLayoutHour. */
-
+   int numActualRowsMAX;
+   int numActualRowsMIN;
+   int numActualRowsPOP;
+   int numActualRowsWX;
+   
+   /* Initialize a few things. */
+   numActualRowsMIN = numRowsMIN.total-numRowsMIN.skipBeg-numRowsMIN.skipEnd;   
+   numActualRowsMAX = numRowsMAX.total-numRowsMAX.skipBeg-numRowsMAX.skipEnd;   
+   numActualRowsPOP = numRowsPOP.total-numRowsPOP.skipBeg-numRowsPOP.skipEnd; 
+   numActualRowsWX = numRowsWX.total-numRowsWX.skipBeg-numRowsWX.skipEnd; 
+   
    /* Get the current time in seconds. */
    currentDoubTime = Clock_Seconds();
    
    /* Based on the current month, we need to know the start and end of the cold
     * season (i.e. October 2004 - April 2005). Retrieve this info in double form.
     */
-   getColdSeasonTimes (match, numMatch, TZoffset, &springDoubleDate, 
+   getColdSeasonTimes (match, numMatch, numRowsWS, TZoffset, &springDoubleDate, 
 		       &fallDoubleDate);
 
    /* Create arrays holding each period's MaxT value (this value could be 
@@ -3068,7 +4095,9 @@ static void prepareWeatherValuesByDay (genMatchType *match, size_t numMatch,
       /* Get the MaxT values. */
       for (i = 0; i < numMatch; i++)
       {
-         if (match[i].elem.ndfdEnum == NDFD_MAX)
+         if (match[i].elem.ndfdEnum == NDFD_MAX && 
+	     match[i].validTime >= numRowsMAX.firstUserTime &&
+             match[i].validTime <= numRowsMAX.lastUserTime)
          { 
             if (i < numDays)
             {
@@ -3083,16 +4112,16 @@ static void prepareWeatherValuesByDay (genMatchType *match, size_t numMatch,
                               * times. 
                               */
       {
-         startTimesMinTemp = (char **) malloc(numRowsMIN * sizeof(char *));
-         endTimesMinTemp   = (char **) malloc(numRowsMIN * sizeof(char *));
-         computeStartEndTimes (NDFD_MIN, numRowsMIN, 24, TZoffset, f_observeDST,
-		               match, numMatch, 1, startTimesMinTemp, 
-			       endTimesMinTemp, frequency, f_XML,
-			       startTime_cml, currentDoubTime, 
-			       &numPopRowsSkippedBeginning);
+         startTimesMinTemp = (char **) malloc(numActualRowsMIN * sizeof(char *));
+         endTimesMinTemp   = (char **) malloc(numActualRowsMIN * sizeof(char *));
+         computeStartEndTimes (NDFD_MIN, numActualRowsMIN, 24, TZoffset, 
+			       f_observeDST, match, numMatch, 1, 
+			       startTimesMinTemp, endTimesMinTemp, frequency, 
+			       f_XML, startTime_cml, currentDoubTime, 
+			       numRowsMIN);
 	 
-	 if (numRowsMIN < numDays)
-            limit = numRowsMIN;
+	 if (numActualRowsMIN < numDays)
+            limit = numActualRowsMIN;
          else
             limit = numDays;
 	 
@@ -3101,71 +4130,104 @@ static void prepareWeatherValuesByDay (genMatchType *match, size_t numMatch,
             Clock_Scan (&periodStartTimes[i], startTimesMinTemp[i], 1);
 	    Clock_Scan (&periodEndTimes[i], endTimesMinTemp[i], 1);
          }
-	 
+
+         /* See if there is an extra day tacked on the end weather can fall into,
+            even if there are less MaxT or MinT "days".
+          */
+         if (numActualRowsMIN < numDays)
+         {
+            for (i = numActualRowsMIN; i < numDays; i++)
+            {
+               Clock_Scan(&periodStartTimes[i], startTimesMinTemp[i-1], 1);
+               periodStartTimes[i] = periodStartTimes[i] + (24 * 3600);              
+               Clock_Scan(&periodEndTimes[i], endTimesMinTemp[i-1], 1);
+               periodEndTimes[i] = periodEndTimes[i] + (24 * 3600);
+            }
+         }
       }
       else /* Use the MaxT's start and end times as period times. */
       {
-         startTimesMaxTemp = (char **) malloc(numRowsMAX * sizeof(char *));
-         endTimesMaxTemp   = (char **) malloc(numRowsMAX * sizeof(char *));
-         computeStartEndTimes (NDFD_MAX, numRowsMAX, 24, TZoffset, f_observeDST,
+         startTimesMaxTemp = (char **) malloc(numActualRowsMAX * sizeof(char *));
+         endTimesMaxTemp   = (char **) malloc(numActualRowsMAX * sizeof(char *));
+         computeStartEndTimes (NDFD_MAX, numActualRowsMAX, 24, TZoffset, f_observeDST,
 		               match, numMatch, 1, startTimesMaxTemp, 
 			       endTimesMaxTemp, frequency, f_XML, 
-			       startTime_cml, currentDoubTime, 
-			       &numPopRowsSkippedBeginning);
+			       startTime_cml, currentDoubTime, numRowsMAX);
 		 
-	 if (numRowsMAX < numDays)
-            limit = numRowsMAX;
+	 if (numActualRowsMAX < numDays)
+            limit = numActualRowsMAX;
          else
             limit = numDays;
 	 
 	 for (i = 0; i < limit; i++)
          {
+//            printf ("i first = %d\n",i);
             Clock_Scan (&periodStartTimes[i], startTimesMaxTemp[i], 1);
 	    Clock_Scan (&periodEndTimes[i], endTimesMaxTemp[i], 1);
          }
+//          printf ("i check= %d\n",i);
+         /* See if there is an extra day tacked on the end weather can fall into,
+            even if there are less MaxT or MinT "days".
+          */
+         if (numActualRowsMAX < numDays)
+         {
+//            printf ("numActualRowsMAX = %d\n",numActualRowsMAX);
+//            printf ("numDays = %d\n",numDays);
+//            printf ("i = %d\n",i);
+            for (i = numActualRowsMAX; i < numDays; i++)
+            {
+//               printf ("startTimesMaxTemp[%d] = %s\n",i,startTimesMaxTemp[i-1]);
+               Clock_Scan(&periodStartTimes[i], startTimesMaxTemp[i-1], 1);
+               periodStartTimes[i] = periodStartTimes[i] + (24 * 3600);
+               Clock_Scan(&periodEndTimes[i], endTimesMaxTemp[i-1], 1);
+               periodEndTimes[i] = periodEndTimes[i] + (24 * 3600);
+            }
+         }
+
       }
    }
    else if (strcmp (frequency, "12 hourly") == 0)
-   { 
-	   
+   {
+
    /* We need to know which temperature to start with (max or min)
     * If the end day of the max is different from the min, then start with the max
     * otherwise start with the min since the max is for tomorrow.
     */
-      startTimesMaxTemp = (char **) malloc(numRowsMAX * sizeof(char *));
-      endTimesMaxTemp = (char **) malloc(numRowsMAX * sizeof(char *));
-      computeStartEndTimes (NDFD_MAX, numRowsMAX, 24, TZoffset, f_observeDST,
-		            match, numMatch, 1, startTimesMaxTemp, 
-			    endTimesMaxTemp, frequency, f_XML, 
-			    startTime_cml, currentDoubTime, 
-			    &numPopRowsSkippedBeginning);
-	   	   
+      startTimesMaxTemp = (char **) malloc(numActualRowsMAX * sizeof(char *));
+      endTimesMaxTemp = (char **) malloc(numActualRowsMAX * sizeof(char *));
+      computeStartEndTimes (NDFD_MAX, numActualRowsMAX, 24, TZoffset, f_observeDST,
+		            match, numMatch, 1, startTimesMaxTemp,
+			    endTimesMaxTemp, frequency, f_XML,
+			    startTime_cml, currentDoubTime, numRowsMAX);
+
       maxTempDay[0] = endTimesMaxTemp[0][8];
       maxTempDay[1] = endTimesMaxTemp[0][9];
       maxTempDay[2] = '\0';
-      
-      startTimesMinTemp = (char **) malloc(numRowsMIN * sizeof(char *));
-      endTimesMinTemp = (char **) malloc(numRowsMIN * sizeof(char *));
-      computeStartEndTimes (NDFD_MIN, numRowsMIN, 24, TZoffset, f_observeDST,
-		            match, numMatch, 1, startTimesMinTemp, 
+
+      startTimesMinTemp = (char **) malloc(numActualRowsMIN * sizeof(char *));
+      endTimesMinTemp = (char **) malloc(numActualRowsMIN * sizeof(char *));
+      computeStartEndTimes (NDFD_MIN, numActualRowsMIN, 24, TZoffset, f_observeDST,
+		            match, numMatch, 1, startTimesMinTemp,
 			    endTimesMinTemp, frequency, f_XML,
-			    startTime_cml, currentDoubTime, 
-			    &numPopRowsSkippedBeginning);
-	   	   
+			    startTime_cml, currentDoubTime, numRowsMIN);
+
       minTempDay[0] = endTimesMinTemp[0][8];
       minTempDay[1] = endTimesMinTemp[0][9];
       minTempDay[2] = '\0';
-      
+
       if (strcmp (maxTempDay, minTempDay) == 0)
       {
-	      
+
          /* Start with Min Temps, skipping periods since MinT's occur every
 	  * 24 hours but need to be placed in appropriate, alternating
-	  * periods. */ 
+	  * periods.
+	  */
 	 priorElemCount = 0;
          for (i = 0, j = 0; i < numMatch; i++, j=j+2)
          {
-            if (match[i].elem.ndfdEnum == NDFD_MIN)
+            if (match[i].elem.ndfdEnum == NDFD_MIN &&
+	        match[i].validTime >= numRowsMIN.firstUserTime &&
+	        match[i].validTime <= numRowsMIN.lastUserTime)
             { 
                if (i-priorElemCount < numDays)
                {
@@ -3181,7 +4243,9 @@ static void prepareWeatherValuesByDay (genMatchType *match, size_t numMatch,
          /* Alternate with the Max Temps. */
          for (i = 0, j = 1; i < numMatch; i++, j=j+2)
          {
-            if (match[i].elem.ndfdEnum == NDFD_MAX)
+            if (match[i].elem.ndfdEnum == NDFD_MAX && 
+	        match[i].validTime >= numRowsMAX.firstUserTime &&
+	        match[i].validTime <= numRowsMAX.lastUserTime)
             { 
                if (i < numDays)
 	       {
@@ -3196,7 +4260,9 @@ static void prepareWeatherValuesByDay (genMatchType *match, size_t numMatch,
       {	      
          for (i = 0, j = 0; i < numMatch; i++, j=j+2)
          {
- 	    if (match[i].elem.ndfdEnum == NDFD_MAX)
+ 	    if (match[i].elem.ndfdEnum == NDFD_MAX && 
+	        match[i].validTime >= numRowsMAX.firstUserTime &&
+	        match[i].validTime <= numRowsMAX.lastUserTime)
             { 
                if (i < numDays)
 	       {
@@ -3210,7 +4276,9 @@ static void prepareWeatherValuesByDay (genMatchType *match, size_t numMatch,
 	 priorElemCount = 0;
          for (i = 0, j = 1; i < numMatch; i++, j=j+2)
          {
- 	    if (match[i].elem.ndfdEnum == NDFD_MIN)
+ 	    if (match[i].elem.ndfdEnum == NDFD_MIN && 
+	        match[i].validTime >= numRowsMIN.firstUserTime &&
+	        match[i].validTime <= numRowsMIN.lastUserTime)
             { 
                if (i-priorElemCount < numDays)
 	       {
@@ -3222,18 +4290,16 @@ static void prepareWeatherValuesByDay (genMatchType *match, size_t numMatch,
 	    else
 	       priorElemCount++;
          }
-
       }
       
       /* Now, get the start and end Times for these periods. Since the periods
        * are 12 hours long now, use POP12hr element's times for period times. */
-      startTimesPop = (char **) malloc(numRowsPOP * sizeof(char *));
-      endTimesPop   = (char **) malloc(numRowsPOP * sizeof(char *));
-      computeStartEndTimes (NDFD_POP, numRowsPOP, 12, TZoffset, f_observeDST,
-                            match, numMatch, 1, startTimesPop, 
-			    endTimesPop, frequency, f_XML,
-			    startTime_cml, currentDoubTime, 
-			    &numPopRowsSkippedBeginning);
+      startTimesPop = (char **) malloc(numActualRowsPOP * sizeof(char *));
+      endTimesPop   = (char **) malloc(numActualRowsPOP * sizeof(char *));
+      computeStartEndTimes (NDFD_POP, numActualRowsPOP, 12, TZoffset, 
+		            f_observeDST, match, numMatch, 1, startTimesPop, 
+			    endTimesPop, frequency, f_XML, startTime_cml, 
+			    currentDoubTime, numRowsPOP);
 
       /* We need the unchanging time period's hour for use in the
        * generatePhraseAndIcons routine. Grab it here. 
@@ -3243,15 +4309,34 @@ static void prepareWeatherValuesByDay (genMatchType *match, size_t numMatch,
       layoutHour[2] = '\0';
       *timeLayoutHour = atoi(layoutHour);
 
-      if (numRowsPOP < numDays*2)
-         limit = numRowsPOP;
+      if (numActualRowsPOP < numDays*2)
+         limit = numActualRowsPOP;
       else
          limit = numDays*2;
 	 
       for (i = 0; i < limit; i++)
       {
+//         printf ("i first in POP loop = %d\n",i);
 	 Clock_Scan (&periodStartTimes[i], startTimesPop[i], 1);
  	 Clock_Scan (&periodEndTimes[i], endTimesPop[i], 1);
+      }
+//          printf ("i check after POP = %d\n",i);
+//          printf ("numActualRowsPOP = %d\n",numActualRowsPOP);
+//          printf ("numDays = %d\n",numDays);
+
+      /* Is there an extra period or two tacked on the end weather can fall into, even
+       * if there are less POP12hr periods.
+       */
+      if (numActualRowsPOP < numDays*2)
+      {
+         for (i = numActualRowsPOP; i < numDays*2; i++)
+         {
+//           printf ("i check in second POP loop = %d\n",i);
+            Clock_Scan(&periodStartTimes[i], startTimesPop[i-1], 1);
+            periodStartTimes[i] = periodStartTimes[i] + (12 * 3600);
+            Clock_Scan(&periodEndTimes[i], endTimesPop[i-1], 1);
+            periodEndTimes[i] = periodEndTimes[i] + (12 * 3600);
+         }
       }
    }
 
@@ -3261,31 +4346,35 @@ static void prepareWeatherValuesByDay (genMatchType *match, size_t numMatch,
    priorElemCount = 0;
    for (i = 0; i < numMatch; i++)
    {
-      if (match[i].elem.ndfdEnum == NDFD_WX)
+      if (match[i].elem.ndfdEnum == NDFD_WX &&
+	  match[i].validTime >= numRowsWX.firstUserTime &&
+	  match[i].validTime <= numRowsWX.lastUserTime)
       {
          weatherDataTimes[i-priorElemCount] = 0.0;
 	 WXtimeStr[0] = '\0';
-	 
+
          formatValidTime(match[i].validTime, WXtimeStr, 30, TZoffset,
                          f_observeDST);
          Clock_Scan (&weatherDataTimes[i-priorElemCount], WXtimeStr, 1);
-	 
+
          /* Now we have to account for data that is just in the time
           * period i.e. if data is valid from 4PM - 7PM and time period is
           * from 6AM - 6PM. We shift data by one half the data's period in
           * seconds. */
-
-            if (i - priorElemCount < 1)
+         if ((f_6CycleFirst) || (!f_6CycleFirst && startTime_cml != 0.0))
+         {
+  	    if (i - priorElemCount < 1)
                period = determinePeriodLength(match[i].validTime,
-                                              match[i + 1].validTime, numRowsWX,
-                                              NDFD_WX);
+                                              match[i + 1].validTime, 
+					      numActualRowsWX, NDFD_WX);
             else
                period = determinePeriodLength(match[i - 1].validTime,
                                               match[i].validTime,
-                                              numRowsWX, NDFD_WX);
+                                              numActualRowsWX, NDFD_WX);
             weatherDataTimes[i-priorElemCount] = 
 		      weatherDataTimes[i-priorElemCount]
 		      - (((double)period * 0.5) * 3600);
+	 }
       }   
       else
          priorElemCount++;
@@ -3294,7 +4383,7 @@ static void prepareWeatherValuesByDay (genMatchType *match, size_t numMatch,
    /* Free Max Temp Time arrays. */
    if (strcmp (frequency, "12 hourly") == 0 || !f_useMinTempTimes)
    {
-      for (i = 0; i < numRowsMAX; i++)
+      for (i = 0; i < numActualRowsMAX; i++)
       {
          free (startTimesMaxTemp[i]);
          free (endTimesMaxTemp[i]);
@@ -3306,7 +4395,7 @@ static void prepareWeatherValuesByDay (genMatchType *match, size_t numMatch,
    /* Free Min Temp Time arrays. */   
    if (strcmp (frequency, "12 hourly") == 0 || f_useMinTempTimes)
    {
-      for (i = 0; i < numRowsMIN; i++)
+      for (i = 0; i < numActualRowsMIN; i++)
       {
          free (startTimesMinTemp[i]);
          free (endTimesMinTemp[i]);
@@ -3318,7 +4407,7 @@ static void prepareWeatherValuesByDay (genMatchType *match, size_t numMatch,
    /* Free Pop Time arrays (only used for 12 hourly product). */
    if (strcmp (frequency, "12 hourly") == 0)   
    {
-      for (i = 0; i < numRowsPOP; i++)
+      for (i = 0; i < numActualRowsPOP; i++)
       {
          free (startTimesPop[i]);
          free (endTimesPop[i]);
@@ -3389,9 +4478,9 @@ static void prepareWeatherValuesByDay (genMatchType *match, size_t numMatch,
  ******************************************************************************
  */
 static void determineNonWeatherIcons
-      (int windTimeEqualsWeatherTime, int itIsNightTime, WS *wsInfo,
+      (int windTimeEqualsWeatherTime, int itIsNightTime, elem_def *wsInfo,
        int wsIndex, char *baseURL, int numRowsWS, icon_def *iconInfo,
-       int wxIndex, int numRowsTEMP, TEMP *tempInfo, int hourlyTempIndex,
+       int wxIndex, int numRowsTEMP, elem_def *tempInfo, int hourlyTempIndex,
        int hourlyTempTimeEqualsWeatherTime)
 {
 
@@ -3464,7 +4553,6 @@ static void determineNonWeatherIcons
        * interval.  So, we use the previous temperature value for the
        * conditions icon until weather and temperature have the same time.
        * This should happen every other weather value. */
-
       if (itIsNightTime != 1 && hourlyTempIndex > 0)
       {
          if (tempInfo[hourlyTempIndex - 1].data > hotTemperature)
@@ -3523,7 +4611,7 @@ static void determineNonWeatherIcons
  */
 static void determineSkyIcons(int skyCoverTimeEqualsWeatherTime,
                               int itIsNightTime, int skyIndex, int wxIndex,
-                              sky_def *skyInfo, icon_def *iconInfo,
+                              elem_def *skyInfo, icon_def *iconInfo,
                               char *baseURL, int numRowsSKY)
 {
 
@@ -3646,6 +4734,10 @@ static void determineSkyIcons(int skyCoverTimeEqualsWeatherTime,
  *                             and format for this point. (Input)
  *                numRowsSKY = The number of data rows for sky cover to process  
  *                             and format for this point. (Input)
+ *                numRowsPOP = The number of data rows for POP12hr to process  
+ *                             for this point. (Input)
+ *                 numRowsWX = The number of data rows for weather to process  
+ *                             and format for this point. (Input)
  *                  iconInfo = Structure holding derived Icon links and time 
  *                             info. (Output)
  *                   wxIndex = The counter for weather and icons since it 
@@ -3654,6 +4746,9 @@ static void determineSkyIcons(int skyCoverTimeEqualsWeatherTime,
  *                             our intervals for weather). (Input)
  *               numRowsTEMP = The number of data rows for hourly temperature to 
  *                             process and format for this point. (Input)
+ *                   popInfo = Structure holding 12 hourly POP data and 
+ *                             time info from the match structure. Used in 
+ *                             derivation of icons. (Input)
  *                  tempInfo = Structure holding hourly temperature data and 
  *                             time info from the match structure. Used in 
  *                             derivation of icons & weather. (Input)
@@ -3672,31 +4767,34 @@ static void determineSkyIcons(int skyCoverTimeEqualsWeatherTime,
  *                             data. A pointer to a character array. (Input)
  * skyCoverTimeEqualsWeatherTime = Flag indicating if the weather and sky cover
  *                                 times are the same. 0 = no, 1 = yes. (Input)
-                
- *                             
+ *            POP12ValToPOP3 = Current value of the PoP12 covering the current
+ *                             weather times. (Input)
  *
  * FILES/DATABASES: None
  *
  * RETURNS: void
  *
- * HISTORY
+ * HISTORY:
  *   3/2006 Paul Hershberg (MDL): Created
+ *   9/2006 Paul Hershberg (MDL): Added functionality to add Pops to the icons
+ *                                (i.e., ra.jpg --> ra50.jpg)
  *
- * NOTES
+ * NOTES:
  ******************************************************************************
  */
 static void determineWeatherIcons(icon_def *iconInfo, int numGroups,
                                   char **wxType,
                                   int skyCoverTimeEqualsWeatherTime,
-                                  int itIsNightTime, sky_def *skyInfo,
+                                  int itIsNightTime, elem_def *skyInfo,
                                   char *baseURL, int numRowsSKY, int skyIndex,
                                   int wxIndex, int windTimeEqualsWeatherTime,
-                                  WS *wsInfo, int wsIndex, int numRowsWS,
+                                  elem_def *wsInfo, int wsIndex, int numRowsWS,
                                   int numRowsTEMP, int hourlyTempIndex,
                                   int hourlyTempTimeEqualsWeatherTime,
-                                  TEMP *tempInfo)
+                                  elem_def *tempInfo, int POP12ValToPOP3) 
 {
-   /* Initalize flags to '0' so we can selectively turn them on if the
+   	
+   /* Initialize flags to '0' so we can selectively turn them on if the
     * conditions are occuring. */
 
    int f_isFog = 0;
@@ -3720,7 +4818,6 @@ static void determineWeatherIcons(icon_def *iconInfo, int numGroups,
    int groupIndex;
 
    /* Determine what types we are dealing with in this time period. */
-
    for (groupIndex = 0; groupIndex < numGroups + 1; groupIndex++)
    {
       if (strcmp(wxType[groupIndex], "F") == 0)
@@ -3740,7 +4837,7 @@ static void determineWeatherIcons(icon_def *iconInfo, int numGroups,
       else if (strcmp(wxType[groupIndex], "RW") == 0)
          f_isRainShowers = 1;
       else if (strcmp(wxType[groupIndex], "IP") == 0)
-         f_isIcePellets = 1;
+     	 f_isIcePellets = 1;
       else if (strcmp(wxType[groupIndex], "S") == 0)
          f_isSnow = 1;
       else if (strcmp(wxType[groupIndex], "SW") == 0)
@@ -3773,19 +4870,17 @@ static void determineWeatherIcons(icon_def *iconInfo, int numGroups,
 
    /* Now that we have one or more members of the group processed lets either 
     * create a nonWeather icon if no weather icon is possible or create the
-    * appropriate weather icon. */
-
+    * appropriate weather icon. 
+    */
    if (f_noIcon)
    {
-
       /* Determine the conditions icon based on sky cover. */
-
       determineSkyIcons(skyCoverTimeEqualsWeatherTime, itIsNightTime, skyIndex,
                         wxIndex, skyInfo, &(iconInfo[0]), baseURL, numRowsSKY);
 
       /* Determine the conditions icon based on things like extreme
-       * temperatures and strong winds. */
-
+       * temperatures and strong winds. 
+       */
       determineNonWeatherIcons(windTimeEqualsWeatherTime, itIsNightTime,
                                wsInfo, wsIndex, baseURL, numRowsWS,
                                &(iconInfo[0]), wxIndex, numRowsTEMP, tempInfo,
@@ -3797,10 +4892,9 @@ static void determineWeatherIcons(icon_def *iconInfo, int numGroups,
 
    {
       /* We check for the presence of each weather type noting that order is
-       * important -- first things are less important. */
-
+       * important -- first things are less important. 
+       */
       if (itIsNightTime)
-
       {
          if (f_isFog || f_isFreezingFog || f_isIceFog)
             sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "nfg.jpg");
@@ -3813,59 +4907,73 @@ static void determineWeatherIcons(icon_def *iconInfo, int numGroups,
          if (f_isBlowingSnow || f_isBlowingSand)
             sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "blizzard.jpg");
          if (f_isDrizzle || f_isRain)
-            sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "nra.jpg");
+            determineIconUsingPop(iconInfo[wxIndex].str, "nra", ".jpg", 
+			          POP12ValToPOP3, baseURL);
 
          /* The rain showers icon has a dependancy on sky cover. So, we need
           * to know if there is a corresponding sky cover. value at this
-          * time. */
-
+          * time. 
+	  */
          if (f_isRainShowers && skyCoverTimeEqualsWeatherTime)
          {
             if (skyInfo[skyIndex].data > 60)
-               sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "nra.jpg");
+	       determineIconUsingPop(iconInfo[wxIndex].str, "nra", ".jpg", 
+			             POP12ValToPOP3, baseURL);       
             else
-               sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "hi_nshwrs.jpg");
+	       determineIconUsingPop(iconInfo[wxIndex].str, "hi_nshwrs", ".jpg", 
+			             POP12ValToPOP3, baseURL);  		    
          }
 
          /* This is the case where there is no sky cover at this time. So, we 
-          * use the previous sky cover which is 3 hours earlier. */
-
+          * use the previous sky cover which is 3 hours earlier. 
+	  */
          if (f_isRainShowers && skyCoverTimeEqualsWeatherTime != 1 &&
              skyIndex > 0)
          {
             if (skyInfo[skyIndex - 1].data > 60)
-               sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "nra.jpg");
+       	       determineIconUsingPop(iconInfo[wxIndex].str, "nra", ".jpg",
+			             POP12ValToPOP3, baseURL);  
             else
-               sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "hi_nshwrs.jpg");
+               determineIconUsingPop(iconInfo[wxIndex].str, "hi_nshwrs", ".jpg", 
+			             POP12ValToPOP3, baseURL);  
          }
 
          if (f_isIcePellets)
-            sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "ip.jpg");
+            determineIconUsingPop(iconInfo[wxIndex].str, "ip", ".jpg", 
+			          POP12ValToPOP3, baseURL);  
          if (f_isFreezingDrizzle || f_isFreezingRain)
-            sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "fzra.jpg");
+            determineIconUsingPop(iconInfo[wxIndex].str, "fzra", ".jpg", 
+			          POP12ValToPOP3, baseURL);  
          if (f_isSnow || f_isSnowShowers)
-            sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "nsn.jpg");
+            determineIconUsingPop(iconInfo[wxIndex].str, "nsn", ".jpg", 
+			          POP12ValToPOP3, baseURL);
          if ((f_isRain || f_isRainShowers || f_isDrizzle) &&
              (f_isSnow || f_isSnowShowers))
-            sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "nrasn.jpg");
+            determineIconUsingPop(iconInfo[wxIndex].str, "nrasn", ".jpg", 
+			          POP12ValToPOP3, baseURL);
          if ((f_isFreezingRain || f_isFreezingDrizzle) &&
              (f_isSnow || f_isSnowShowers || f_isIcePellets))
-            sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "mix.jpg");
+            determineIconUsingPop(iconInfo[wxIndex].str, "mix", ".jpg", 
+			          POP12ValToPOP3, baseURL);
          if ((f_isRain || f_isRainShowers || f_isDrizzle) && f_isIcePellets)
-            sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "nraip.jpg");
+            determineIconUsingPop(iconInfo[wxIndex].str, "nraip", ".jpg", 
+			          POP12ValToPOP3, baseURL);
          if ((f_isSnow || f_isSnowShowers) && f_isIcePellets)
-            sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "ip.jpg");
+            determineIconUsingPop(iconInfo[wxIndex].str, "ip", ".jpg", 
+			          POP12ValToPOP3, baseURL);
 
          /* The thunderstorm icon has a dependancy on sky cover. So, we need
           * to know if there is a corresponding sky cover. value at this
-          * time. */
-
+          * time. 
+	  */
          if (f_isThunderstorm && skyCoverTimeEqualsWeatherTime)
          {
             if (skyInfo[skyIndex].data > 60)
-               sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "ntsra.jpg");
+               determineIconUsingPop(iconInfo[wxIndex].str, "ntsra", ".jpg", 
+			             POP12ValToPOP3, baseURL);
             else
-               sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "nscttsra.jpg");
+               determineIconUsingPop(iconInfo[wxIndex].str, "nscttsra", ".jpg", 
+			             POP12ValToPOP3, baseURL);
          }
 
          /* This is the case where there is no sky cover at this time. So, we 
@@ -3875,14 +4983,15 @@ static void determineWeatherIcons(icon_def *iconInfo, int numGroups,
              skyIndex > 0)
          {
             if (skyInfo[skyIndex - 1].data > 60)
-               sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "ntsra.jpg");
+               determineIconUsingPop(iconInfo[wxIndex].str, "ntsra", ".jpg", 
+			             POP12ValToPOP3, baseURL);
             else
-               sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "nscttsra.jpg");
+               determineIconUsingPop(iconInfo[wxIndex].str, "nscttsra", ".jpg", 
+			             POP12ValToPOP3, baseURL);
          }
       }
 
-      else
-         /* It is day time. */
+      else /* It is day time. */
       {
          if (f_isFog || f_isFreezingFog || f_isIceFog)
             sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "fg.jpg");
@@ -3895,59 +5004,73 @@ static void determineWeatherIcons(icon_def *iconInfo, int numGroups,
          if (f_isBlowingSnow || f_isBlowingSand)
             sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "blizzard.jpg");
          if (f_isDrizzle || f_isRain)
-            sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "ra.jpg");
+            determineIconUsingPop(iconInfo[wxIndex].str, "ra", ".jpg", 
+			          POP12ValToPOP3, baseURL);
 
          /* The rain showers icon has a dependancy on sky cover. So, we need
           * to know if there is a corresponding sky cover. value at this
-          * time. */
-
+          * time. 
+	  */
          if (f_isRainShowers && skyCoverTimeEqualsWeatherTime)
          {
             if (skyInfo[skyIndex].data > 60)
-               sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "shra.jpg");
+               determineIconUsingPop(iconInfo[wxIndex].str, "shra", ".jpg", 
+			             POP12ValToPOP3, baseURL);
             else
-               sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "hi_shwrs.jpg");
+               determineIconUsingPop(iconInfo[wxIndex].str, "hi_shwrs", ".jpg", 
+			             POP12ValToPOP3, baseURL);
          }
 
          /* This is the case where there is no sky cover at this time. So, we 
-          * use the previous sky cover which is 3 hours earlier. */
-
+          * use the previous sky cover which is 3 hours earlier. 
+	  */
          if (f_isRainShowers && skyCoverTimeEqualsWeatherTime != 1 &&
              skyIndex > 0)
          {
             if (skyInfo[skyIndex - 1].data > 60)
-               sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "ra.jpg");
+               determineIconUsingPop(iconInfo[wxIndex].str, "ra", ".jpg", 
+			             POP12ValToPOP3, baseURL);
             else
-               sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "hi_shwrs.jpg");
+               determineIconUsingPop(iconInfo[wxIndex].str, "hi_shwrs", ".jpg", 
+			             POP12ValToPOP3, baseURL);
          }
 
          if (f_isIcePellets)
-            sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "ip.jpg");
+            determineIconUsingPop(iconInfo[wxIndex].str, "ip", ".jpg", 
+			          POP12ValToPOP3, baseURL);
          if (f_isFreezingDrizzle || f_isFreezingRain)
-            sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "fzra.jpg");
+            determineIconUsingPop(iconInfo[wxIndex].str, "fzra", ".jpg", 
+			          POP12ValToPOP3, baseURL);
          if (f_isSnow || f_isSnowShowers)
-            sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "sn.jpg");
+            determineIconUsingPop(iconInfo[wxIndex].str, "sn", ".jpg", 
+			          POP12ValToPOP3, baseURL);
          if ((f_isRain || f_isRainShowers || f_isDrizzle) &&
              (f_isSnow || f_isSnowShowers))
-            sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "rasn.jpg");
+            determineIconUsingPop(iconInfo[wxIndex].str, "rasn", ".jpg", 
+			          POP12ValToPOP3, baseURL);
          if ((f_isFreezingRain || f_isFreezingDrizzle) &&
              (f_isSnow || f_isSnowShowers || f_isIcePellets))
-            sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "mix.jpg");
+            determineIconUsingPop(iconInfo[wxIndex].str, "mix", ".jpg", 
+			          POP12ValToPOP3, baseURL);
          if ((f_isRain || f_isRainShowers || f_isDrizzle) && f_isIcePellets)
-            sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "raip.jpg");
+            determineIconUsingPop(iconInfo[wxIndex].str, "raip", ".jpg", 
+			          POP12ValToPOP3, baseURL);
          if ((f_isSnow || f_isSnowShowers) && f_isIcePellets)
-            sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "ip.jpg");
+            determineIconUsingPop(iconInfo[wxIndex].str, "ip", ".jpg", 
+			          POP12ValToPOP3, baseURL);
 
          /* The thunderstorm icon has a dependancy on sky cover. So, we need
           * to know if there is a corresponding sky cover. value at this
-          * time. */
-
+          * time. 
+	  */
          if (f_isThunderstorm && skyCoverTimeEqualsWeatherTime)
          {
             if (skyInfo[skyIndex].data > 60)
-               sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "tsra.jpg");
+               determineIconUsingPop(iconInfo[wxIndex].str, "tsra", ".jpg", 
+			             POP12ValToPOP3, baseURL);
             else
-               sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "scttsra.jpg");
+               determineIconUsingPop(iconInfo[wxIndex].str, "scttsra", ".jpg", 
+			             POP12ValToPOP3, baseURL);
          }
 
          /* This is the case where there is no sky cover at this time. So, we 
@@ -3957,13 +5080,16 @@ static void determineWeatherIcons(icon_def *iconInfo, int numGroups,
              skyIndex > 0)
          {
             if (skyInfo[skyIndex - 1].data > 60)
-               sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "tsra.jpg");
+               determineIconUsingPop(iconInfo[wxIndex].str, "tsra", ".jpg", 
+			             POP12ValToPOP3, baseURL);
             else
-               sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "scttsra.jpg");
+               determineIconUsingPop(iconInfo[wxIndex].str, "scttsra", ".jpg", 
+			             POP12ValToPOP3, baseURL);
          }
-      }                       /* End of night vs day check. */
-   }                          /* End of icon vs no icon possible check. */
+      } /* End of night vs day check. */
 
+   } /* End of icon vs no icon possible check. */
+   
    return;
 }
 
@@ -4269,7 +5395,7 @@ static void getTranslatedType(char *uglyStr, char *transStr)
  * PURPOSE  
  *   Get the English translations for the NDFD weather intensity part of the 
  *   "ugly string". 
- *      
+ *
  * ARGUMENTS
  *  uglyStr = Incoming string with the NDFD weather intensity. (Input)
  * transStr = Outgoing string with the translated intensity. (Output)
@@ -4621,7 +5747,7 @@ static void genIconLinks(icon_def *iconInfo, uChar numRows,
 }
 
 /*****************************************************************************
- * genWeatherValuesByDay() -- 
+ * genWeatherValuesByDay() --
  *
  * Paul Hershberg / MDL
  *
@@ -4637,7 +5763,7 @@ static void genIconLinks(icon_def *iconInfo, uChar numRows,
  *       match = Pointer to the array of element matches from degrib. (Input) 
  *        f_wx = Flag denoting if there is weather data to either format or use
  *               to derive icons. A value = 1 means to format Weather. A value
- *               = 3 means only Icons is to be formatted, but Icons are using 
+ *               = 3 means only Icons is to be formatted, but Icons are using
  *               the time layout for Weather. (Input)
  *    numMatch = The number of matches from degrib. (Input)
  *  numRowsSKY = The number of data rows for sky cover. These data are used to
@@ -4713,20 +5839,19 @@ static void genIconLinks(icon_def *iconInfo, uChar numRows,
 
 static void genWeatherValuesByDay(size_t pnt, char *layoutKey, 
 		             genMatchType *match, size_t numMatch,
-                             uChar f_wx, uChar numRowsWS,
-                             uChar numRowsSKY, uChar numRowsPOP,
-			     uChar numRowsMAX, uChar numRowsMIN, 
-                             uChar numRowsTEMP, uChar numRowsWX,
-                             xmlNodePtr parameters, double lat, double lon, 
-			     int numDays, sChar TZoffset, sChar f_observeDST,
-			     char *frequency, int f_useMinTempTimes, uChar f_XML,
+                             uChar f_wx, numRowsInfo numRowsWS, 
+			     numRowsInfo numRowsPOP, numRowsInfo numRowsMAX, 
+			     numRowsInfo numRowsMIN, numRowsInfo numRowsWX,
+			     xmlNodePtr parameters, int numDays, sChar TZoffset,
+			     sChar f_observeDST, char *frequency,
+			     int f_useMinTempTimes, uChar f_XML,
 			     int numOutputLines, int *maxDailyPop, 
 			     int *averageSkyCover, int *maxSkyCover, 
 			     int *minSkyCover, int *maxSkyNum, int *minSkyNum, 
 			     int *startPositions, int *endPositions, 
 			     int *maxWindSpeed, int *maxWindDirection, 
 			     int integerTime, int integerStartUserTime, 
-			     double startTime_cml)
+			     double startTime_cml, int f_6CycleFirst)
 {
    double springDoubleDate = 0.0; /* The end date of next cold season expressed
                                      in double form. */
@@ -4734,7 +5859,7 @@ static void genWeatherValuesByDay(size_t pnt, char *layoutKey,
                                    in double form. */
    double *weatherDataTimes = NULL; /* Array holding double startTimes for Wx. */ 
    int *periodMaxTemp = NULL; /* Array holding maximum temp values for 
-			         designated forecast periods. */ 
+			         designated forecast periods. */
    double *periodStartTimes = NULL; /* Array holding start Times for designated
 				       forecast periods. */
    double *periodEndTimes = NULL; /* Array holding end Times for designated
@@ -4757,16 +5882,16 @@ static void genWeatherValuesByDay(size_t pnt, char *layoutKey,
    int fogCount = 0;
    int percentTimeWithFog = 0;
    
-   /* Initialize number of rows of data processed for a given day. */
+   /* Initialize # of rows of data processed for a given day. */
    int numDataRows = 0; 
-   
-   char *dominantWeather[4]; /* This array stores the weather type, intensity, 
-			      * coverage, and qualifier for each day that is 
-			      * considered the dominant one. This is the 
-			      * summarized weather for the 24/12 hour period.
+   char *dominantWeather[4]; /* This array stores the weather type [0], 
+                              * intensity [1], coverage [2], and qualifier [3],
+                              * for each day that is considered the dominant 
+                              * one. This is the summarized weather for the 
+                              * 24/12 hour period.
 			      */
    char *tempDom[4]; /* Holds the latest weather information which is then 
-		      * compared to the dominantWeather array to see if a new 
+		      * compared to the dominantWeather array to see if a new
 		      * dominant weather condition has been found.
 		      */
    char *dominantRowsWeather[4][5]; /* Array containing the other 3 weather 
@@ -4787,6 +5912,14 @@ static void genWeatherValuesByDay(size_t pnt, char *layoutKey,
                                * and '<'. */
    int i;                     /* Index through the match structure. */
    int j;
+   int wqIndex = 0;           /* Counter for wx hazards/qualifiers. */
+   int indexOfindexes[5];     /* An array holding the # of hazards/qualifiers
+			       * found in each wx grp. */
+   char *addrtempstore;       /* Address of the tempstore variable holding each
+			       * qualifier.
+			       */
+   char tempstore[200];       /* A temporary storage area. CMc added 7/5/06. */
+   char *token;
    char *pstr1 = NULL;        /* Pointer to "ugly string" delimited by '^' to
 				 separate the first weather group per 1 row of
 				 weather data. */
@@ -4800,7 +5933,11 @@ static void genWeatherValuesByDay(size_t pnt, char *layoutKey,
    char **wxCoverage = NULL;  /* An individual weather groups coverage. */
    char **wxIntensity = NULL; /* An individual weather groups intensity. */
    char **wxType = NULL;      /* An individual weather groups type. */
-   char **wxQualifier = NULL; /* An individual weather groups qualifier. */
+   char ***wxQualifier = NULL; /* An individual weather groups qualifiers.
+				* Char array holding up to 5 weather qualifiers 
+			        * for up to 5 wx groups. */
+   char **Qualifier = NULL;   /* After the multiple qualifiers are concatenated, 
+			         this array holds them.*/
    int numValues;             /* An index into each weatherGroups fields (=
                                * 5). */
    int groupIndex;            /* An index into the weatherGroups array. */
@@ -4813,12 +5950,12 @@ static void genWeatherValuesByDay(size_t pnt, char *layoutKey,
    xmlNodePtr weather_conditions = NULL;  /* Xml Node Pointer for node
                                            * "weather-conditions". */   
    icon_def *iconInfo = NULL; /* Array holding the icon information. */
-   char **phrase; /* Array holding the weather phrase per period. */
+   char **phrase; /* Array holding the weather phrase per summarization period. */
    int f_popIsNotAnIssue; /* Flag denoting if PoP is very low, we won't format 
 			     the weather values that might be present. */
    int timeLayoutHour = 0; /* The time period's hour for the 12 hourly product.
 			      Used to determine if it is night or day in the 
-			      generatePhraseAndIcons routine (should = 6 or 
+			      generatePhraseAndIcons routine (should = 6 or
 			      18). */
    char transCoverageStr[100];  /* String holding english translation of
                                  * weather coverage. */
@@ -4826,17 +5963,26 @@ static void genWeatherValuesByDay(size_t pnt, char *layoutKey,
                                * weather coverage. */
    char transIntensityStr[100]; /* String holding english translation of
                                  * weather intensity. */
-   char transQualifierStr[100]; /* String holding english translation of
+   char transQualifierStr[200]; /* String holding english translation of
                                  * weather qualifiers. */
-
+   int numActualRowsMAX;
+   int numActualRowsMIN;
+   int numActualRowsWX;
+   int numActualRowsPOP;
+   
    /* Initialize the location where the weather icons are found. */
-
-   char baseURL[] = "http://www.nws.noaa.gov/weather/images/fcicons/";  
-   
+   char baseURL[] = "http://www.nws.noaa.gov/weather/images/fcicons/";
+  
    /************************************************************************/
-   
-   /* Firsty, format the weather and display name elements. */
-
+   /* Initialize the actual number of rows we are working with for the 5
+    * elements of interest. 
+    */
+   numActualRowsMAX = numRowsMAX.total-numRowsMAX.skipBeg-numRowsMAX.skipEnd;
+   numActualRowsMIN = numRowsMIN.total-numRowsMIN.skipBeg-numRowsMIN.skipEnd;
+   numActualRowsWX = numRowsWX.total-numRowsWX.skipBeg-numRowsWX.skipEnd;
+   numActualRowsPOP = numRowsPOP.total-numRowsPOP.skipBeg-numRowsPOP.skipEnd;
+ 
+   /* Firstly, format the weather and display name elements. */
    weather = xmlNewChild(parameters, NULL, BAD_CAST "weather", NULL);
    xmlNewProp(weather, BAD_CAST "time-layout", BAD_CAST layoutKey);
 
@@ -4846,58 +5992,69 @@ static void genWeatherValuesByDay(size_t pnt, char *layoutKey,
    /* Create an array of structures holding the weather element's
     * data info and time info from the match structure. 
     */
-      wxInfo = malloc(numRowsWX * sizeof(WX));
+   wxInfo = malloc(numActualRowsWX * sizeof(WX));
 
-      /* Fill Weather Array. */
-
-      priorElemCount = 0;
-      for (i = 0; i < numMatch; i++)
+   /* Fill Weather Array. */
+   priorElemCount = 0;
+   for (i = 0; i < numMatch; i++)
+   {
+      if (match[i].elem.ndfdEnum == NDFD_WX && 
+	  match[i].validTime >= numRowsWX.firstUserTime &&
+	  match[i].validTime <= numRowsWX.lastUserTime)
       {
-         if (match[i].elem.ndfdEnum == NDFD_WX)
+         wxInfo[i - priorElemCount].validTime = match[i].validTime;
+         if (match[i].value[pnt].valueType != 0 &&
+             match[i].value[pnt].valueType != 2)
          {
-            wxInfo[i - priorElemCount].validTime = match[i].validTime;
-            if (match[i].value[pnt].valueType != 0 &&
-                match[i].value[pnt].valueType != 2)
-            {
-               strcpy(wxInfo[i - priorElemCount].str, match[i].value[pnt].str);
-            }
-            wxInfo[i - priorElemCount].valueType =
-                  match[i].value[pnt].valueType;
+            strcpy(wxInfo[i - priorElemCount].str, match[i].value[pnt].str);
          }
-         else
-            priorElemCount ++;
+         wxInfo[i - priorElemCount].valueType =
+               match[i].value[pnt].valueType;
       }
+      else
+         priorElemCount ++;
+   }
       
    /* Prepare to retrieve the weather Data times, the forecast period times, 
     * and the max temperatures in each period. 
     */      
+//   printf ("numOutputLines = %d\n",numOutputLines);
    periodStartTimes = (double *) malloc((numOutputLines) * sizeof(double));
    periodEndTimes = (double *) malloc((numOutputLines) * sizeof(double));
    periodMaxTemp = (int *) malloc((numOutputLines) * sizeof(int));
-   
+
    for (i = 0; i < numOutputLines; i++)
-   { 
+   {
       periodStartTimes[i] = 9999999999999999999999.0;
       periodEndTimes[i]   = -999.0;
       periodMaxTemp[i]    = 999;
    }
-     
-   weatherDataTimes = (double *) malloc(numRowsWX * sizeof(double));
-   
-   prepareWeatherValuesByDay (match, numMatch, TZoffset, f_observeDST, 
+
+   weatherDataTimes = (double *) malloc(numActualRowsWX * sizeof(double));
+   prepareWeatherValuesByDay (match, numMatch, TZoffset, f_observeDST,
 		              frequency, numDays, numOutputLines,
-			      numRowsMIN, numRowsMAX, f_XML,
-			      numRowsPOP, numRowsWX, pnt, 
-			      f_useMinTempTimes, startTime_cml, 
-			      weatherDataTimes, periodMaxTemp, 
+			      numRowsWS, numRowsMIN, numRowsMAX, f_XML,
+			      numRowsPOP, numRowsWX, pnt, f_useMinTempTimes,
+			      startTime_cml, weatherDataTimes, periodMaxTemp,
 			      periodStartTimes, periodEndTimes,
 			      &springDoubleDate, &fallDoubleDate, 
-			      &timeLayoutHour);
-  
+			      &timeLayoutHour, f_6CycleFirst);
+  for (i=0;i<numOutputLines;i++)
+  {
+//     printf ("periodMaxTemp[%d] = %d\n",i, periodMaxTemp[i]);
+//     printf ("periodStartTimes[%d] = %f\n",i, periodStartTimes[i]);
+//     printf ("periodEndTimes[%d] = %f\n",i, periodEndTimes[i]);
+//     printf ("weatherDataTimes[%d] = %f\n",i, weatherDataTimes[i]);
+   }
+  for (i=0;i<numActualRowsWX;i++)
+  {
+//     printf ("weatherDataTimes[%d] = %f\n",i, weatherDataTimes[i]);
+  }
+
    /* This is a big loop to format each days weather. First, make appropriate
     * allocations. */
    iconInfo = (icon_def *) malloc(numOutputLines * sizeof(icon_def));
-   phrase = (char **) malloc(numOutputLines * sizeof(char *));	
+   phrase = (char **) malloc(numOutputLines * sizeof(char *));
    isDataAvailable = (int *) malloc(numOutputLines * sizeof(int));
 
    /* Allocate the individual elements of the weather phrase. */
@@ -4905,15 +6062,18 @@ static void genWeatherValuesByDay(size_t pnt, char *layoutKey,
       phrase[i] = (char *) malloc(50 * sizeof(char));
 
    /* See if there are any periods skipped at the beginning of data
-    * due to a starTime in the middle of a forecast period. */
+    * due to a starTime in the middle of a forecast period.
+    */
+
 /*   for (dayIndex = 0, dayIndex < 2, dayIndex++)
    {
-      if (periodStartTimes[dayIndex] == 9999999999999999999999.0 && 
+      if (periodStartTimes[dayIndex] == 9999999999999999999999.0 &&
           periodEndTimes[dayIndex] == -999.0)
           numRowsSkipped++;
    }
 */
-   /* A big loop to format each days weather. */
+
+   /* A big loop to format each summarization periods weather. */
    for (dayIndex = 0; dayIndex < numOutputLines; dayIndex++)
    {
     
@@ -4962,7 +6122,7 @@ static void genWeatherValuesByDay(size_t pnt, char *layoutKey,
       /* Loop over all of weather's valid times and process any weather groups
        * (up to 5 can exist). 
        */
-      for (wxIndex = 0; wxIndex < numRowsWX; wxIndex++)
+      for (wxIndex = 0; wxIndex < numActualRowsWX; wxIndex++)
       {
          memset(WxValues, '\0', 5 * 50);
          memset(WxGroups, '\0', 5 * 100);
@@ -5069,11 +6229,6 @@ static void genWeatherValuesByDay(size_t pnt, char *layoutKey,
                      WxGroups[numGroups][j - 1] = '\0';
                }
 
-               /* If there is more than one group we connect them with an "and". 
-                */
-               if (numGroups > 0)
-                  strcpy(additive_value, "and");
-
                /* Initialize the temporary dominance array to lowest possible 
 	        * values. This array tracks which of the possible 5 groups per one
 	        * row of data (one weather ugly string) is the dominant one. */
@@ -5083,18 +6238,29 @@ static void genWeatherValuesByDay(size_t pnt, char *layoutKey,
                   strcpy (tempDom[j], "none");
                }
 	    
-               /* Loop over each group again and process its weather information (i.e.
+               /* For each group, process its weather information (i.e.
 	        * coverage, intensity, type, and qualifier (visibility is not processed
 	        * for the DWMLgenByDay products) all which are denoted by a ":". 
 	        */
                wxCoverage = (char **)calloc(numGroups + 1, sizeof(char *));
                wxIntensity = (char **)calloc(numGroups + 1, sizeof(char *));
 	       wxType = (char **)calloc(numGroups + 1, sizeof(char *));
-               wxQualifier = (char **)calloc(numGroups + 1, sizeof(char *));
-	    
+	       Qualifier = (char **)calloc(numGroups + 1, sizeof(char *));
+               wxQualifier = (char ***)calloc(numGroups + 1, sizeof(char **));
+	       
+	       /* Loop over each group. */
                for (groupIndex = 0; groupIndex < numGroups + 1; groupIndex++)
                {
                   numValues = 0;
+		  
+	          /* Initialize the 5 wxQualifier possibilities to "none". */
+	          wxQualifier[groupIndex] = (char **) malloc (5 * sizeof(char *));
+		  for (wqIndex = 0; wqIndex < 5; wqIndex++)
+	          {
+		     wxQualifier[groupIndex][wqIndex] = (char *) malloc 
+			        ((strlen("none")+1) * sizeof(char));
+	             strcpy(wxQualifier[groupIndex][wqIndex], "none");
+	          }
 
                   /* Create the associative array holding the weather info
                    * fields. */
@@ -5110,7 +6276,6 @@ static void genWeatherValuesByDay(size_t pnt, char *layoutKey,
                         WxValues[valueIndex][i] = '\0';
                         break;
                      }
-
                   }
 
                   /* Get the total number of WxValues (should be 5). */
@@ -5188,7 +6353,7 @@ static void genWeatherValuesByDay(size_t pnt, char *layoutKey,
                      }
 
                      /* Weather Intensity */
-                        if (WxValues[2][1] == 'N' && WxValues[2][2] == 'o')
+                     if (WxValues[2][1] == 'N' && WxValues[2][2] == 'o')
                      {
                         wxIntensity[groupIndex] = (char *) malloc((strlen("none") + 1) *  sizeof(char));
                         strcpy(wxIntensity[groupIndex], "none");
@@ -5203,30 +6368,86 @@ static void genWeatherValuesByDay(size_t pnt, char *layoutKey,
                      /* Note, we are not processing the visibility WxValue field, 
 	      	      * which is denoted by WxValues[3] element, for the DWMLgenByDay
 	   	      * products.
-	         	   */
+	              */
 	       
-                     /* Weather Qualifier */
-                     if (WxValues[4][1] == 'N' && WxValues[4][2] == 'o')
-                     {
-                        wxQualifier[groupIndex] = (char *) malloc((strlen("none") + 1) *  sizeof(char));
-                        strcpy(wxQualifier[groupIndex], "none");
-                     }
-                     else if (WxValues[4][0] == '\0') /* Check for NULL since
-			   			       * qualifers do not have to 
-						       * exist. 
-						       */
-                     {
-                        wxQualifier[groupIndex] = (char *) malloc((strlen("none") + 1) *  sizeof(char));
-                        strcpy(wxQualifier[groupIndex], "none");
-                     }
-                     else
-                     {
+                     /* Weather Qualifier(s) */
+	       
+		     /* Declare array of the # of qualifiers associated with each 
+		      * wx group. 
+		      */
+                     wqIndex = indexOfindexes[groupIndex] = 0;
+		     
+                     /* If they exist, move any weather hazards/qualifiers codes 
+	   	      * into the wxQualifier array for later translation. 
+		      */
+                     if ((WxValues[4][0] != '\0') && 
+	                 (WxValues[4][1] != 'N' && WxValues[4][2] != 'o'))
+		     {
                         strTrim(WxValues[4]);
-                        wxQualifier[groupIndex] = (char *) malloc((strlen(WxValues[4]) + 1) *  sizeof(char));
-                        strcpy(wxQualifier[groupIndex], WxValues[4]);
+                        strcpy(tempstore, WxValues[4]);
+
+                        token = strtok( tempstore, " ," );
+
+                        if( token != NULL ) 
+		        {
+                           wxQualifier[groupIndex][wqIndex] = (char *) realloc
+	                      (wxQualifier[groupIndex][wqIndex], 
+			      (strlen(token) + 1) * sizeof(char));
+                           strcpy(wxQualifier[groupIndex][wqIndex], token);
+                       
+                           while (token != NULL) /* Check for up to 5 qualifiers. */
+		           {
+                              token = strtok( NULL, " ," );
+
+                              if(token != NULL) 
+		              {
+                                 wqIndex++; 
+                                 indexOfindexes[groupIndex] = wqIndex;
+			         wxQualifier[groupIndex][wqIndex] = (char *) realloc
+	                            (wxQualifier[groupIndex][wqIndex], 
+			            (strlen(token) + 1) * sizeof(char));
+                                 strcpy(wxQualifier[groupIndex][wqIndex], token);
+                              }
+                           }
+                        }
                      }
-	          }
-	       
+
+		     /* Combine any multiple qualifiers into one statement and place
+		      * in transQualifierStr. First, initialize variables in 
+		      * preparation for translating these hazards/qualifiers.  
+		      */
+                     memset(tempstore,' ',sizeof(tempstore));  /* Set all characters of tempstore to blanks */
+                     memset(tempstore+199,'\0',1);             /* Set the last character of tempstore to a NULL */
+
+                     addrtempstore = &tempstore[0];            /* Save the starting address of the tempstore array */
+                     
+                     /* Translate the hazards/qualifiers for the current wx group into a single translated string  */
+                     for (wqIndex = 0; wqIndex <= indexOfindexes[groupIndex]; wqIndex++) 
+	             {
+                        getTranslatedQualifier(wxQualifier[groupIndex][wqIndex],
+                                               transQualifierStr);
+                        if (wqIndex == 0) 
+                           strcpy (tempstore, transQualifierStr);
+
+                        if(wqIndex != 0 && wqIndex <= indexOfindexes[groupIndex]) 
+	                {
+                           addrtempstore = &tempstore[0]+strlen(tempstore);
+                           strncat(addrtempstore,",",1);
+                           addrtempstore += 1;
+                           strcat(addrtempstore,transQualifierStr);
+                        }
+                     }
+
+                     /* Copy complete translated hazards string to transQualifierStr,
+		      * which is group dependent, and Qualifier[groupIndex],which 
+		      * is not. 
+		      */
+                     strcpy (transQualifierStr, tempstore);
+		     Qualifier[groupIndex] = (char *) malloc 
+			        ((strlen(tempstore)+1) * sizeof(char));
+                     strcpy (Qualifier[groupIndex], tempstore); 
+		  }
+
                   /* Re-initialize the WxValues array for next group iteration. */
                   memset(WxValues, '\0', 5 * 50);
 
@@ -5246,8 +6467,8 @@ static void genWeatherValuesByDay(size_t pnt, char *layoutKey,
 		     strcpy (tempDom[2], wxType[groupIndex]);
 
                      /* Copy over the 'qualifier' to the temporary array. */
-                     tempDom[3] = (char *) realloc(tempDom[3], (strlen(wxQualifier[groupIndex]) + 1) *  sizeof(char));
-		     strcpy (tempDom[3], wxQualifier[groupIndex]);
+                     tempDom[3] = (char *) realloc(tempDom[3], (strlen(transQualifierStr) + 1) *  sizeof(char));
+		     strcpy (tempDom[3], transQualifierStr);
 	          }
 	          else if (strcmp(wxCoverage[groupIndex], tempDom[0]) == 0)   
 	          {		       
@@ -5267,8 +6488,8 @@ static void genWeatherValuesByDay(size_t pnt, char *layoutKey,
 		        strcpy (tempDom[2], wxType[groupIndex]);
 
                         /* Copy over the 'qualifier' to the temporary array. */
-                        tempDom[3] = (char *) realloc(tempDom[3], (strlen(wxQualifier[groupIndex]) + 1) *  sizeof(char));
-	   	        strcpy (tempDom[3], wxQualifier[groupIndex]);
+                        tempDom[3] = (char *) realloc(tempDom[3], (strlen(transQualifierStr) + 1) *  sizeof(char));
+	   	        strcpy (tempDom[3], transQualifierStr);
 		     }
 		     else if (strcmp(wxIntensity[groupIndex], tempDom[1]) == 0)
 	             {		       
@@ -5288,8 +6509,8 @@ static void genWeatherValuesByDay(size_t pnt, char *layoutKey,
 		           strcpy (tempDom[2], wxType[groupIndex]);
 
                            /* Copy over the 'qualifier' to the temporary array. */
-                           tempDom[3] = (char *) realloc(tempDom[3], (strlen(wxQualifier[groupIndex]) + 1) *  sizeof(char));
-		           strcpy (tempDom[3], wxQualifier[groupIndex]);
+                           tempDom[3] = (char *) realloc(tempDom[3], (strlen(transQualifierStr) + 1) *  sizeof(char));
+		           strcpy (tempDom[3], transQualifierStr);
 		        }
 	   	     }
 	          }
@@ -5332,23 +6553,27 @@ static void genWeatherValuesByDay(size_t pnt, char *layoutKey,
 		     /* Copy over the 'coverage'. */     
 		     dominantRowsWeather[0][groupIndex] = (char *)
 			     realloc(dominantRowsWeather[0][groupIndex], (strlen(wxCoverage[groupIndex]) + 1) *  sizeof(char));     
+
 	   	     strcpy (dominantRowsWeather[0][groupIndex], 
 		             wxCoverage[groupIndex]);
+		     
 		     /* Copy over the 'intensity'. */     
 		     dominantRowsWeather[1][groupIndex] = (char *)
 			     realloc(dominantRowsWeather[1][groupIndex], (strlen(wxIntensity[groupIndex]) + 1) *  sizeof(char));     
 		     strcpy (dominantRowsWeather[1][groupIndex], 
 		             wxIntensity[groupIndex]);
+		     
 	   	     /* Copy over the 'type'. */     
 	             dominantRowsWeather[2][groupIndex] = (char *)
 			     realloc(dominantRowsWeather[2][groupIndex], (strlen(wxType[groupIndex]) + 1) *  sizeof(char));     
 	             strcpy (dominantRowsWeather[2][groupIndex], 
 		             wxType[groupIndex]);
+		     
 	             /* Copy over the 'qualifier'. */     
 		     dominantRowsWeather[3][groupIndex] = (char *)
-			  realloc(dominantRowsWeather[3][groupIndex], (strlen(wxQualifier[groupIndex]) + 1) *  sizeof(char));     
+			  realloc(dominantRowsWeather[3][groupIndex], (strlen(Qualifier[groupIndex]) + 1) *  sizeof(char));     
 		     strcpy (dominantRowsWeather[3][groupIndex], 
-		          wxQualifier[groupIndex]);
+		          Qualifier[groupIndex]);
 	          }
 	        
 	          numDominantTypes = numGroups;
@@ -5365,6 +6590,7 @@ static void genWeatherValuesByDay(size_t pnt, char *layoutKey,
                      dominantWeather[1] = (char *) realloc(dominantWeather[1], (strlen(tempDom[1]) + 1) *  sizeof(char));
 	             strcpy (dominantWeather[1], tempDom[1]);
 
+
                      /* Copy over the 'type' to the dominant weather array. */
                      dominantWeather[2] = (char *) realloc(dominantWeather[2], (strlen(tempDom[2]) + 1) *  sizeof(char));
 	             strcpy (dominantWeather[2], tempDom[2]);
@@ -5375,7 +6601,7 @@ static void genWeatherValuesByDay(size_t pnt, char *layoutKey,
 	       
                      for (groupIndex = 0; groupIndex < numGroups + 1; groupIndex++)
 	             {
-                        /* Save the contents of this row so if it turns out to be the
+                       /* Save the contents of this row so if it turns out to be the
                          * the dominate row, we will know what all the weather was,
                          * not just the row's dominant member.
 		         */
@@ -5397,9 +6623,9 @@ static void genWeatherValuesByDay(size_t pnt, char *layoutKey,
 		               wxType[groupIndex]);
 		        /* Copy over the 'qualifier'. */     
 		        dominantRowsWeather[3][groupIndex] = (char *)
-		 	        realloc(dominantRowsWeather[3][groupIndex], (strlen(wxQualifier[groupIndex]) + 1) *  sizeof(char));     
+		 	        realloc(dominantRowsWeather[3][groupIndex], (strlen(Qualifier[groupIndex]) + 1) *  sizeof(char));     
 		        strcpy (dominantRowsWeather[3][groupIndex], 
-		                wxQualifier[groupIndex]);
+		                Qualifier[groupIndex]);
 	             }
 	       
 	             numDominantTypes = numGroups;  
@@ -5427,7 +6653,7 @@ static void genWeatherValuesByDay(size_t pnt, char *layoutKey,
 	       
                         for (groupIndex = 0; groupIndex < numGroups + 1; groupIndex++)
 	                {
-                           /* Save the contents of this row so if it turns out to be the
+                          /* Save the contents of this row so if it turns out to be the
                             * the dominate row, we will know what all the weather was,
                             * not just the row's dominant member.
 		            */
@@ -5449,9 +6675,9 @@ static void genWeatherValuesByDay(size_t pnt, char *layoutKey,
 		                   wxType[groupIndex]);
 		           /* Copy over the 'qualifier'. */     
 		           dominantRowsWeather[3][groupIndex] = (char *)
-			           realloc(dominantRowsWeather[3][groupIndex], (strlen(wxQualifier[groupIndex]) + 1) *  sizeof(char));     
+			           realloc(dominantRowsWeather[3][groupIndex], (strlen(Qualifier[groupIndex]) + 1) *  sizeof(char));     
 		           strcpy (dominantRowsWeather[3][groupIndex], 
-		                   wxQualifier[groupIndex]);
+		                   Qualifier[groupIndex]);
 	                }
 	       
 	                numDominantTypes = numGroups;
@@ -5482,13 +6708,13 @@ static void genWeatherValuesByDay(size_t pnt, char *layoutKey,
                            /* Copy over the 'qualifier' to the dominant weather array. */
                            dominantWeather[3] = (char *) realloc(dominantWeather[3], (strlen(tempDom[3]) + 1) *  sizeof(char));
 	                   strcpy (dominantWeather[3], tempDom[3]);
-	       
+			   
                            for (groupIndex = 0; groupIndex < numGroups + 1; groupIndex++)
 	                   {
-                              /* Save the contents of this row so if it turns out to be the
-                               * the dominate row, we will know what all the weather was,
-                               * not just the row's dominant member.
-		               */
+                            /* Save the contents of this row so if it turns out to be the
+                             * the dominate row, we will know what all the weather was,
+                             * not just the row's dominant member.
+		             */
 		   
 		              /* Copy over the 'coverage'. */     
 		              dominantRowsWeather[0][groupIndex] = (char *)
@@ -5507,13 +6733,11 @@ static void genWeatherValuesByDay(size_t pnt, char *layoutKey,
 		                      wxType[groupIndex]);
 		              /* Copy over the 'qualifier'. */     
 		              dominantRowsWeather[3][groupIndex] = (char *)
-			              realloc(dominantRowsWeather[3][groupIndex], (strlen(wxQualifier[groupIndex]) + 1) *  sizeof(char));     
+			              realloc(dominantRowsWeather[3][groupIndex], (strlen(Qualifier[groupIndex]) + 1) *  sizeof(char));     
 		              strcpy (dominantRowsWeather[3][groupIndex], 
-		                      wxQualifier[groupIndex]);
-	                   }
-	       
+		                      Qualifier[groupIndex]);
+                           }
 	                   numDominantTypes = numGroups;
-
                         }
 		     }
 	          }
@@ -5531,13 +6755,19 @@ static void genWeatherValuesByDay(size_t pnt, char *layoutKey,
                   free(wxCoverage[groupIndex]);
                   free(wxType[groupIndex]);
                   free(wxIntensity[groupIndex]);
-                  free(wxQualifier[groupIndex]);
+		  free(Qualifier[groupIndex]);
+		  
+	          for (wqIndex = 0; wqIndex < 5; wqIndex++)
+                     free(wxQualifier[groupIndex][wqIndex]);
+	       
+                  free (wxQualifier[groupIndex]);	
                }
 
                free(wxCoverage);
                free(wxType);
                free(wxIntensity);
                free(wxQualifier);
+               free(Qualifier);	       
 	    	    
                /* Re-initialize the WxGroups arrays. */
                memset(WxGroups, '\0', 5 * 100);	 
@@ -5547,8 +6777,10 @@ static void genWeatherValuesByDay(size_t pnt, char *layoutKey,
 
          } /* End of "if weather row is missing" check. */
 	 
-      } /* End of for loop over all rows of weather data and checking if in period. */
-      
+      } /* End of for loop over all rows of weather data and checking if in 
+	 * summarization period. 
+	 */
+     
       /* Now we need to look for the occurrance of multiple weather types for
        * this time period.
        */
@@ -5582,6 +6814,7 @@ static void genWeatherValuesByDay(size_t pnt, char *layoutKey,
        */
       weather_conditions = xmlNewChild(weather, NULL, BAD_CAST
                                        "weather-conditions", NULL);
+//   printf ("ARE WE HERE IN GENWEA 12\n"); 
 	 
       /* Did we find data for this day?, prepare to format the XML. */
       if (isDataAvailable[dayIndex])
@@ -5599,6 +6832,8 @@ static void genWeatherValuesByDay(size_t pnt, char *layoutKey,
 	  * current period. 
 	  */
 	 f_popIsNotAnIssue = 0;
+//   printf ("ARE WE HERE IN GENWEA 13\n"); 
+
  	 generatePhraseAndIcons(dayIndex, frequency, timeLayoutHour, 
 			        dominantWeather, baseURL, maxDailyPop, 
 				averageSkyCover, maxSkyCover, minSkyCover, 
@@ -5611,6 +6846,7 @@ static void genWeatherValuesByDay(size_t pnt, char *layoutKey,
 				f_isSnowShowers, f_isFreezingDrizzle, 
 				f_isFreezingRain, iconInfo, phrase, 
 				&f_popIsNotAnIssue);
+//   printf ("ARE WE HERE IN GENWEA 1000\n"); 
 
 	 /* Need to get weather phrase by this point. We will insert the 
 	  * weather phrase as "weather-summary", an attribute of the 
@@ -5620,10 +6856,11 @@ static void genWeatherValuesByDay(size_t pnt, char *layoutKey,
 	            phrase[dayIndex]);
 	 if (strcmp(dominantWeather[0], "none") != 0 && f_popIsNotAnIssue)
          {
-            /* Format XML. */
+            /* Format the XML. */
 		    	 
             /* Loop over each group and format the <value> element and each of it's 
-	     * four attributes (coverage, type, intensity, and qualifier. */
+	     * four attributes (coverage, type, intensity, and qualifier(s). 
+	     */
             for (i = 0; i < numDominantTypes + 1; i++)
 	    {
                value = xmlNewChild(weather_conditions, NULL, BAD_CAST
@@ -5632,27 +6869,53 @@ static void genWeatherValuesByDay(size_t pnt, char *layoutKey,
 			             transCoverageStr);
                getTranslatedType(dominantRowsWeather[2][i], transTypeStr);
                getTranslatedIntensity(dominantRowsWeather[1][i], transIntensityStr);
-               getTranslatedQualifier(dominantRowsWeather[3][i], transQualifierStr);
 
                xmlNewProp(value, BAD_CAST "coverage", BAD_CAST
                           transCoverageStr);
                xmlNewProp(value, BAD_CAST "intensity", BAD_CAST
                           transIntensityStr);
 
-               if (i > 0) /* Groups other than first require
-                           * additive attribute. 
+               if (i > 0) /* Groups other than first require additive attribute.
+                           * Check if this attribute is "or" or "and".
 			   */
 	       {
-	          if (strcmp(transQualifierStr, "or") == 0)
-                      strcpy(additive_value, "or");
-                      xmlNewProp(value, BAD_CAST "additive", BAD_CAST
-                                 additive_value);
+	          strcpy(additive_value, "and");
+		  
+		  strcpy (tempstore, dominantRowsWeather[3][i]);
+		  token = strtok(tempstore, " ,");
+		  if (token != NULL)
+	          {
+	             if (strcmp(token, "or") == 0)
+		        strcpy(additive_value, "or");
+	             else
+		     {
+		        while (token != NULL)
+		        {
+		           token = strtok (NULL, " ,");
+			   
+			   if (token != NULL)
+		           {
+	                      if (strcmp(token, "or") == 0)
+		              {		   
+		                 strcpy(additive_value, "or");
+			         break;
+			      }
+			   }
+			}
+	             }
+		  }
+		              
+                  xmlNewProp(value, BAD_CAST "additive", BAD_CAST
+                             additive_value);
+
+                  memset(tempstore,' ',sizeof(tempstore));  /* Set all characters of tempstore to blanks */
+                  memset(tempstore+199,'\0',1);             /* Set the last character of tempstore to a NULL */
 	       }
 
                xmlNewProp(value, BAD_CAST "weather-type", BAD_CAST
                           transTypeStr);
                xmlNewProp(value, BAD_CAST "qualifier", BAD_CAST
-                          transQualifierStr);
+                          dominantRowsWeather[3][i]);
 
 	    }
 	 }
@@ -5666,12 +6929,13 @@ static void genWeatherValuesByDay(size_t pnt, char *layoutKey,
       for (i = 0; i < 4; i++) 
       {
 	 free (dominantWeather[i]);
+
          for (j = 0; j < 5; j++) /* Up to 5 weather groups per 1 wx string. */
 	    free (dominantRowsWeather[i][j]);
       }   
       
-   } /* End of all days containing all number of formatted lines and all 
-      * periods. 
+   } /* End of dayIndex loop (the loop containing all data for one such
+      * summarization (12 or 24 hour) period. 
       */ 
 
    /* Having saved the appropriate weather icons paths and files names in the
@@ -5691,9 +6955,11 @@ static void genWeatherValuesByDay(size_t pnt, char *layoutKey,
    free(periodStartTimes);
    free(periodEndTimes);
    free(weatherDataTimes);
+//   printf ("ARE WE HERE IN GENWEA 15\n"); 
 
    return;
-} 
+   
+}
 
 /*****************************************************************************
  * genWeatherValues() -- 
@@ -5711,6 +6977,7 @@ static void genWeatherValuesByDay(size_t pnt, char *layoutKey,
  *               times (ex. k-p3h-n42-1). (Input)
  *       match = Pointer to the array of element matches from degrib. (Input) 
  *        f_wx = Flag denoting if there is weather data to either format or use
+                                                                        1527,2        21%
  *               to derive icons. A value = 1 means to format Weather. A value
  *               = 3 means only Icons is to be formatted, but Icons are using 
  *               the time layout for Weather. (Input)
@@ -5734,24 +7001,30 @@ static void genWeatherValuesByDay(size_t pnt, char *layoutKey,
  * RETURNS: void
  *
  *  3/2006 Paul Hershberg (MDL): Created.
+ *  7/5/2006 Carl McCalla (MDL): Modified to handle up to five comma delimited 
+ *                               hazards/qualifier strings
  *
  * NOTES:
  *****************************************************************************
  */
 
-static void genWeatherValues(size_t pnt, char *layoutKey, genMatchType * match,
+static void genWeatherValues(size_t pnt, char *layoutKey, genMatchType *match,
                              size_t numMatch, uChar f_wx, int f_icon,
-                             uChar numRowsWS, uChar numRowsSKY,
-                             uChar numRowsTEMP, uChar numRowsWX,
-                             xmlNodePtr parameters, double lat, double lon)
+                             numRowsInfo numRowsWS, numRowsInfo numRowsSKY,
+                             numRowsInfo numRowsTEMP, numRowsInfo numRowsWX, 
+			     numRowsInfo numRowsPOP, xmlNodePtr parameters, 
+			     double lat, double lon)
 {
-
    int i;
    int priorElemCount;        /* Counter used to find elements' location in
                                * match. */
    int itIsNightTime = 0;     /* Denotes wether time is night or day. */
    int wxIndex = 0;           /* Counter for weather. */
    int wsIndex = 0;           /* Counter for wind speed. */
+   int wqIndex = 0;           /* Counter for wx hazards/qualifiers.  
+                               * CMc added on 7/5/06 */
+   int indexOfindexes[5];     /* An array holding the # of hazards/qualifiers
+			       * found in each wx grp. CMc added on 7/5/06 */
    int skyIndex = 0;          /* Counter for sky cover. */
    int hourlyTempIndex = 0;   /* Counter for hourly temperatures. */
    int foundWeatherValue;     /* Denotes if weather is occuring during a
@@ -5773,6 +7046,17 @@ static void genWeatherValues(size_t pnt, char *layoutKey, genMatchType * match,
                                              * value to use to derive icons. */
    int valueIsMissing = 0;    /* Denotes if current weather is missing value. 
                                */
+   int **anyOrs;              /* Denotes with a "1" if a certain group has any
+			       * qualifiers that are = to "OR" in order to place
+			       * "or" as the additive_value connecting more than
+			       * one weather group.
+			       */
+   int *POP12SpreadToPOP3 = NULL; /* Array containing the PoP12 values spread 
+				   * over all the weather times.
+				   */
+   char *addrtempstore;       /* Address of the tempstore variable holding each
+			       * qualifier.
+			       */
    char *pstr = NULL;         /* Pointer to "ugly string" delimited by '>'
                                * and '^'. */
    char *pstr1 = NULL;        /* Pointer to "ugly string" delimited by '^'. */
@@ -5786,10 +7070,14 @@ static void genWeatherValues(size_t pnt, char *layoutKey, genMatchType * match,
    char **wxType = NULL;      /* An individual weather groups type. */
    char **wxIntensity = NULL; /* An individual weather groups intensity. */
    char **wxVisibility = NULL;  /* An individual weather groups visibility. */
-   char **wxQualifier = NULL; /* An individual weather groups qualifier. */
+   char tempstore[200];       /* A temporary storage area. CMc added 7/5/06. */
+   char *token;               /* Holds each comma delimited wx qualifier. */
+   char ***wxQualifier = NULL;/* Char array holding up to 5 weather qualifiers 
+			       * for up to 5 wx groups. */ 
+                              /*  CMc added on 7/14/06  */
    char additive_value[10];   /* String placed in the second and subsequant
-                               * weather group to indicate how the data is
-                               * combined.  */
+                               * weather groups to indicate how the data is
+                               * combined ("and" or "or"). */
    char transCoverageStr[100];  /* String holding english translation of
                                  * weather coverage. */
    char transTypeStr[100];    /* String holding english translation of
@@ -5798,50 +7086,58 @@ static void genWeatherValues(size_t pnt, char *layoutKey, genMatchType * match,
                                  * weather intensity. */
    char transVisibilityStr[100];  /* String holding english translation of
                                    * weather visibility. */
-   char transQualifierStr[100]; /* String holding english translation of
+   char transQualifierStr[200]; /* String holding english translation of
                                  * weather qualifiers. */
    xmlNodePtr weather = NULL; /* Xml Node Pointer for node "weather". */
    xmlNodePtr value = NULL;   /* Xml Node Pointer for node "value". */
    xmlNodePtr visibility = NULL;  /* Xml Node Pointer for node "visibility". */
    xmlNodePtr weather_conditions = NULL;  /* Xml Node Pointer for node
                                            * "weather-conditions". */
-
    WX *wxInfo = NULL;         /* Weather data taken from the match array. */
-   WS *wsInfo = NULL;         /* Wind Speed data taken from the match array. */
-   sky_def *skyInfo = NULL;   /* Sky coverage data taken from the match
+   elem_def *wsInfo = NULL;   /* Wind Speed data taken from the match array. */
+   elem_def *skyInfo = NULL;   /* Sky coverage data taken from the match
                                * array. */
-   TEMP *tempInfo = NULL;     /* Hourly Temp data taken from the match array. 
-                               */
+   elem_def *tempInfo = NULL; /* Hourly Temp data taken from the match array. */ 
+   elem_def *popInfo = NULL;  /* Pop12hr data takej from the match array. */ 
    icon_def *iconInfo = NULL; /* Array holding the icon information. */
 
 /* Initialize the location where the weather icons are found. */
-
    char baseURL[] = "http://www.nws.noaa.gov/weather/images/fcicons/";
 
-/*  Determine if we need to format XML for weather data. */
+   /* Initialize a few things. */
+   int numActualRowsSKY;   
+   int numActualRowsTEMP; 
+   int numActualRowsPOP; 
+   int numActualRowsWX; 
+   int numActualRowsWS; 
 
+/************************************************************************/
+   
+   /* Initialize the actual number of rows we are working with for the 5
+    * elements of interest. 
+    */
+   numActualRowsWS = numRowsWS.total-numRowsWS.skipBeg-numRowsWS.skipEnd;
+   numActualRowsSKY = numRowsSKY.total-numRowsSKY.skipBeg-numRowsSKY.skipEnd;
+   numActualRowsTEMP = numRowsTEMP.total-numRowsTEMP.skipBeg-numRowsTEMP.skipEnd;
+   numActualRowsWX = numRowsWX.total-numRowsWX.skipBeg-numRowsWX.skipEnd;
+   numActualRowsPOP = numRowsPOP.total-numRowsPOP.skipBeg-numRowsPOP.skipEnd;
+   
+/*  Determine if we need to format XML for weather data. */
    if (f_wx == 1 || f_icon)
    {
-
       /* Firstly, create arrays of structures holding applicable elements'
        * data info and time info from the match structure.  If icons are to
        * be formatted, then wind speed, sky cover, and temperatures must be
        * allocated here as they are used to derive icons. */
-
-      wxInfo = malloc(numRowsWX * sizeof(WX));
-      if (f_icon)
-      {
-         wsInfo = malloc(numRowsWS * sizeof(WS));
-         skyInfo = malloc(numRowsSKY * sizeof(sky_def));
-         tempInfo = malloc(numRowsTEMP * sizeof(TEMP));
-      }
-
+      wxInfo = malloc(numActualRowsWX * sizeof(WX));
+      
       /* Fill Weather Array. */
-
       priorElemCount = 0;
       for (i = 0; i < numMatch; i++)
-      {
-         if (match[i].elem.ndfdEnum == NDFD_WX)
+      { 
+         if (match[i].elem.ndfdEnum == NDFD_WX && 
+	     match[i].validTime >= numRowsWX.firstUserTime &&
+	     match[i].validTime <= numRowsWX.lastUserTime)
          {
             wxInfo[i - priorElemCount].validTime = match[i].validTime;
             if (match[i].value[pnt].valueType != 0 &&
@@ -5856,15 +7152,25 @@ static void genWeatherValues(size_t pnt, char *layoutKey, genMatchType * match,
             priorElemCount += 1;
       }
 
-      if (f_icon)             /* Then Wind Speed, Sky Cover, and Temperature
-                               * arrays are * needed. */
+      if (f_icon) /* Then Wind Speed, Sky Cover, Temperature and POP arrays are 
+		   * needed.  Also, set allocate room for the Icon Information, 
+		   * and set up the Pop 12 values that cover each Weather time.
+		   */
       {
+         wsInfo = malloc(numActualRowsWS * sizeof(elem_def));
+         skyInfo = malloc(numActualRowsSKY * sizeof(elem_def));
+	 popInfo = malloc(numActualRowsPOP * sizeof(elem_def));
+         tempInfo = malloc(numActualRowsTEMP * sizeof(elem_def));
+         iconInfo = malloc(numActualRowsWX * sizeof(icon_def));
+	 POP12SpreadToPOP3 = (int *) malloc((numActualRowsWX) * sizeof(int));
+	 
          /* Fill Wind Speed Array. */
-
          priorElemCount = 0;
          for (i = 0; i < numMatch; i++)
          {
-            if (match[i].elem.ndfdEnum == NDFD_WS)
+            if (match[i].elem.ndfdEnum == NDFD_WS && 
+	        match[i].validTime >= numRowsWS.firstUserTime &&
+	        match[i].validTime <= numRowsWS.lastUserTime)
             {
                wsInfo[i - priorElemCount].validTime = match[i].validTime;
                wsInfo[i - priorElemCount].data =
@@ -5877,11 +7183,12 @@ static void genWeatherValues(size_t pnt, char *layoutKey, genMatchType * match,
          }
 
          /* Fill Sky Cover Array. */
-
          priorElemCount = 0;
          for (i = 0; i < numMatch; i++)
          {
-            if (match[i].elem.ndfdEnum == NDFD_SKY)
+            if (match[i].elem.ndfdEnum == NDFD_SKY && 
+	        match[i].validTime >= numRowsSKY.firstUserTime &&
+	        match[i].validTime <= numRowsSKY.lastUserTime)
             {
                skyInfo[i - priorElemCount].validTime = match[i].validTime;
                skyInfo[i - priorElemCount].data =
@@ -5894,12 +7201,12 @@ static void genWeatherValues(size_t pnt, char *layoutKey, genMatchType * match,
          }
 
          /* Fill Temperature Array. */
-
          priorElemCount = 0;
          for (i = 0; i < numMatch; i++)
          {
-
-            if (match[i].elem.ndfdEnum == NDFD_TEMP)
+            if (match[i].elem.ndfdEnum == NDFD_TEMP && 
+	        match[i].validTime >= numRowsTEMP.firstUserTime &&
+	        match[i].validTime <= numRowsTEMP.lastUserTime)
             {
                tempInfo[i - priorElemCount].validTime = match[i].validTime;
                tempInfo[i - priorElemCount].data =
@@ -5910,32 +7217,47 @@ static void genWeatherValues(size_t pnt, char *layoutKey, genMatchType * match,
             else
                priorElemCount += 1;
          }
+
+         /* Fill Pop12hr Array. */
+         priorElemCount = 0;
+         for (i = 0; i < numMatch; i++)
+         {
+            if (match[i].elem.ndfdEnum == NDFD_POP && 
+	        match[i].validTime >= numRowsPOP.firstUserTime &&
+	        match[i].validTime <= numRowsPOP.lastUserTime)
+            {
+               popInfo[i - priorElemCount].validTime = match[i].validTime;
+               popInfo[i - priorElemCount].data =
+                       (int)myRound(match[i].value[pnt].data, 0);
+	       popInfo[i - priorElemCount].valueType =
+                       match[i].value[pnt].valueType;
+            }
+            else
+               priorElemCount += 1;
+         }
+
+	 /* Get array holding POP12 values concurrent with weather times. */ 
+         spreadPOPsToWxTimes(POP12SpreadToPOP3, wxInfo, numActualRowsWX, popInfo, 
+		             numActualRowsPOP);
       }
-
-      if (f_wx == 1)
+      
+      if (f_wx == 1) /* Format the weather and display name elements. */
       {
-         /* Format the weather and display name elements. */
-
          weather = xmlNewChild(parameters, NULL, BAD_CAST "weather", NULL);
          xmlNewProp(weather, BAD_CAST "time-layout", BAD_CAST layoutKey);
 
          /* Format the display name. */
-
          xmlNewChild(weather, NULL, BAD_CAST "name", BAD_CAST
                      "Weather Type, Coverage, and Intensity");
       }
 
-      if (f_icon)
-         iconInfo = malloc(numRowsWX * sizeof(icon_def));
-
       /* Loop over just the Wx data values now and format them. */
-
-      for (wxIndex = 0; wxIndex < numRowsWX; wxIndex++)
+      for (wxIndex = 0; wxIndex < numActualRowsWX; wxIndex++)
       {
-         /* Reset a few things */
-	 skyCoverTimeEqualsWeatherTime = 0;
-	 windTimeEqualsWeatherTime = 0;
-	 hourlyTempTimeEqualsWeatherTime = 0;
+         /* Initialize/Reset a few things. */
+         skyCoverTimeEqualsWeatherTime = 0;
+         windTimeEqualsWeatherTime = 0;
+         hourlyTempTimeEqualsWeatherTime = 0;
          memset(WxValues, '\0', 5 * 50);
          memset(WxGroups, '\0', 10 * 100);
          numGroups = 0;
@@ -5963,12 +7285,11 @@ static void genWeatherValues(size_t pnt, char *layoutKey, genMatchType * match,
             while (pstr != NULL)
             {
                wxInfo[wxIndex].str[pstr - wxInfo[wxIndex].str] = ' ';
-               pstr = strchr(pstr + 1, '>');
+               pstr = strchr(pstr + 1, '>'); 
             }
 
             /* Now put the weather groupings into an array using the ^ as the 
              * delimiter. Fill the first array elements before the others. */
-
             pstr = wxInfo[wxIndex].str;
             groupIndex = 0;
             for (i = 0; pstr[i]; i++)
@@ -5983,8 +7304,8 @@ static void genWeatherValues(size_t pnt, char *layoutKey, genMatchType * match,
             }
 
             /* Get the total number of WxGroups for this one row of weather
-             * data. */
-
+             * data. 
+	     */
             pstr1 = strchr(wxInfo[wxIndex].str, '^');
             while (pstr1 != NULL)
             {
@@ -5993,7 +7314,6 @@ static void genWeatherValues(size_t pnt, char *layoutKey, genMatchType * match,
             }
 
             /* Continue filling the array of WxGroups. */
-
             pstr = strchr(wxInfo[wxIndex].str, '^');
             pstr2 = strchr(wxInfo[wxIndex].str, '^');
 
@@ -6032,12 +7352,6 @@ static void genWeatherValues(size_t pnt, char *layoutKey, genMatchType * match,
                   WxGroups[numGroups][i - 1] = '\0';
             }
 
-            /* If there is more than one group we connect them with an "and". 
-             */
-
-            if (numGroups > 0)
-               strcpy(additive_value, "and");
-
             foundWeatherValue = 0;
 
             /* Determine if the sky cover, temperatures, and wind have the
@@ -6055,22 +7369,43 @@ static void genWeatherValues(size_t pnt, char *layoutKey, genMatchType * match,
                   hourlyTempTimeEqualsWeatherTime = 1;
             }
 
-            /* Loop over each group and process its weather information (i.e.
-             * type, coverage intensity, visibility, and qualifier, all which
-             * are denoted by a ":". */
-
+            /* For each group, process its weather information (i.e.
+             * type, coverage intensity, visibility, and qualifier(s), 
+	     * all which are denoted by a ":". 
+	     */
             wxCoverage = (char **)calloc(numGroups + 1, sizeof(char *));
             wxType = (char **)calloc(numGroups + 1, sizeof(char *));
             wxIntensity = (char **)calloc(numGroups + 1, sizeof(char *));
             wxVisibility = (char **)calloc(numGroups + 1, sizeof(char *));
-            wxQualifier = (char **)calloc(numGroups + 1, sizeof(char *));
-
+            wxQualifier = (char ***)calloc(numGroups + 1, sizeof(char **));
+            anyOrs = (int **)calloc(numGroups + 1, sizeof(int *));
+	    
+            /* Loop over each group. */
             for (groupIndex = 0; groupIndex < numGroups + 1; groupIndex++)
             {
+	       /* Initialize the number of weather values (coverage, type,
+		* intensity, visibility, qualifier(s)) per group. 
+		*/
                numValues = 0;
+	       
+	       /* Initialize the 5 wxQualifier possibilities to "none".
+		* Initialize array elements denoting if a qualifier = "OR" 
+		* to 0. 
+		*/
+	       wxQualifier[groupIndex] = (char **) malloc (5 * sizeof(char *));
+	       anyOrs[groupIndex] = (int *) malloc (5 * sizeof(int));
+	       
+	       for (wqIndex = 0; wqIndex < 5; wqIndex++)
+	       {
+		  wxQualifier[groupIndex][wqIndex] = (char *) malloc 
+			     ((strlen("none")+1) * sizeof(char));
+	          strcpy(wxQualifier[groupIndex][wqIndex], "none");
+		  anyOrs[groupIndex][wqIndex] = 0;
+	       }
 
                /* Create the associative array holding the weather info
-                * fields. */
+                * fields. 
+		*/
                pstr = WxGroups[groupIndex];
                valueIndex = 0;
 
@@ -6083,32 +7418,28 @@ static void genWeatherValues(size_t pnt, char *layoutKey, genMatchType * match,
                      WxValues[valueIndex][i] = '\0';
                      break;
                   }
-
                }
 
-               /* Get the total number of WxValues (should be 5, but since we are
-		* not dealing with 'visibility', it will be bumped down to 4). */
+               /* Get the total number of WxValues (should be 5). */
                pstr1 = strchr(WxGroups[groupIndex], ':');
                while (pstr1 != NULL)
                {
-                  numValues += 1;
+                  numValues ++;
                   pstr1 = strchr(pstr1 + 1, ':');
                }
 
                /* Bump this number up by one to account for the Wx Qualifier. 
                 */
-
-               numValues += 1;
+               numValues ++;
 
                /* Continue filling the array of WxValues */
-
                pstr = strchr(WxGroups[groupIndex], ':');
                for (valueIndex = 1; valueIndex < numValues; valueIndex++)
                {
                   for (i = 1; pstr[i]; i++)
                   {
                      if (pstr[i] != ':')
-                     {
+                     { 
                         WxValues[valueIndex][i - 1] = pstr[i];
                      }
 
@@ -6123,7 +7454,6 @@ static void genWeatherValues(size_t pnt, char *layoutKey, genMatchType * match,
                WxValues[4][i - 1] = '\0';
 
                /* Weather Coverage */
-
                if (WxValues[0][1] == 'N' && WxValues[0][2] == 'o')
                {
                   wxCoverage[groupIndex] = malloc(strlen("none") + 1);
@@ -6137,7 +7467,6 @@ static void genWeatherValues(size_t pnt, char *layoutKey, genMatchType * match,
                }
 
                /* Weather Type */
-
                if (WxValues[1][1] == 'N' && WxValues[1][2] == 'o')
                {
                   wxType[groupIndex] = malloc(strlen("none") + 1);
@@ -6151,7 +7480,6 @@ static void genWeatherValues(size_t pnt, char *layoutKey, genMatchType * match,
                }
 
                /* Weather Intensity */
-
                if (WxValues[2][1] == 'N' && WxValues[2][2] == 'o')
                {
                   wxIntensity[groupIndex] = malloc(strlen("none") + 1);
@@ -6166,7 +7494,6 @@ static void genWeatherValues(size_t pnt, char *layoutKey, genMatchType * match,
                }
 
                /* Weather Visibility */
-
                if (WxValues[3][1] == 'N' && WxValues[3][2] == 'o')
                {
                   wxVisibility[groupIndex] = malloc(strlen("none") + 1);
@@ -6179,42 +7506,63 @@ static void genWeatherValues(size_t pnt, char *layoutKey, genMatchType * match,
                   strcpy(wxVisibility[groupIndex], WxValues[3]);
                }
 
-               /* Weather Qualifier */
-
-               if (WxValues[4][1] == 'N' && WxValues[4][2] == 'o')
-               {
-                  wxQualifier[groupIndex] = malloc(strlen("none") + 1);
-                  strcpy(wxQualifier[groupIndex], "none");
-               }
-               else if (WxValues[4][0] == '\0')
-               {
-                  wxQualifier[groupIndex] = malloc(strlen("none") + 1);
-                  strcpy(wxQualifier[groupIndex], "none");
-               }
-               else
-               {
+               /* Weather Qualifier(s) */
+	       
+               /* Array of the # of qualifiers associated with each wx group */
+               wqIndex = indexOfindexes[groupIndex] = 0;
+	       
+               /* If they exist, move any weather hazards/qualifiers codes 
+		* into the wxQualifier array for later translation. 
+		*/
+               if ((WxValues[4][0] != '\0') && 
+	           (WxValues[4][1] != 'N' && WxValues[4][2] != 'o'))
+	       {
                   strTrim(WxValues[4]);
-                  wxQualifier[groupIndex] = malloc(strlen(WxValues[4]) + 1);
-                  strcpy(wxQualifier[groupIndex], WxValues[4]);
+                  strcpy(tempstore, WxValues[4]);
+                  token = strtok( tempstore, " ," );
+		  
+                  if (token != NULL) 
+		  {
+                     wxQualifier[groupIndex][wqIndex] = (char *) realloc
+	                (wxQualifier[groupIndex][wqIndex], 
+			(strlen(token) + 1) * sizeof(char));
+                     strcpy(wxQualifier[groupIndex][wqIndex], token);
+		     if (strcmp (token, "OR") == 0)
+		        anyOrs[groupIndex][wqIndex] = 1;
+                       
+                     while (token != NULL) /* Check for up to 4 more qualifiers. */
+		     {
+                        token = strtok( NULL, " ," );
+
+                        if(token != NULL) 
+		        {
+                           wqIndex++; 
+                           indexOfindexes[groupIndex] = wqIndex;
+			   wxQualifier[groupIndex][wqIndex] = (char *) realloc
+	                      (wxQualifier[groupIndex][wqIndex], 
+			      (strlen(token) + 1) * sizeof(char));
+                           strcpy(wxQualifier[groupIndex][wqIndex], token);
+
+		           if (strcmp (token, "OR") == 0)
+		              anyOrs[groupIndex][wqIndex] = 1;
+                        }
+                     }
+                  }
                }
 
                /* Set the no weather occuring flag. */
-
                if (strcmp(wxType[groupIndex], "none") != 0)
                {
                   foundWeatherValue = 1;
-
                }
 
                /* Re-initialize the WxValues array. */
-
                memset(WxValues, '\0', 5 * 50);
 
-            }                 /* Closing out groupIndex for loop */
+            }  /* Closing out groupIndex for loop */
 
             /* If there is data we format it into a weather conditions
              * element. */
-
             if (foundWeatherValue)
             {
                if (f_wx == 1) /* Format start of weather conditions element,
@@ -6224,7 +7572,6 @@ static void genWeatherValues(size_t pnt, char *layoutKey, genMatchType * match,
                                                    "weather-conditions", NULL);
 
                   /* Loop over each group and format value element. */
-
                   for (groupIndex = 0; groupIndex < numGroups + 1; groupIndex++)
                   {
                      value = xmlNewChild(weather_conditions, NULL, BAD_CAST
@@ -6236,9 +7583,38 @@ static void genWeatherValues(size_t pnt, char *layoutKey, genMatchType * match,
                                             transIntensityStr);
                      getTranslatedVisibility(wxVisibility[groupIndex],
                                              transVisibilityStr);
-                     getTranslatedQualifier(wxQualifier[groupIndex],
-                                            transQualifierStr);
 
+                     /* Initialize variables in preparation for translating the hazards/qualifiers  */
+                     memset(tempstore,' ',sizeof(tempstore));  /* Set all characters of tempstore to blanks */
+                     memset(tempstore+199,'\0',1);              /* Set the last character of tempstore to a NULL */
+
+                     addrtempstore = &tempstore[0];            /* Save the starting address of the tempstore array */
+                     
+                     /* Translate the hazards/qualifiers for the current wx group into a single translated string  */
+                     for (wqIndex = 0; wqIndex <= indexOfindexes[groupIndex]; wqIndex++) 
+		     {
+                        getTranslatedQualifier(wxQualifier[groupIndex][wqIndex],
+                                               transQualifierStr);
+                        if (wqIndex == 0) 
+                           strcpy (tempstore, transQualifierStr);
+
+                        if (wqIndex != 0 && wqIndex <= indexOfindexes[groupIndex]) 
+			{
+                           addrtempstore = &tempstore[0]+strlen(tempstore);
+                           strncat(addrtempstore,",",1);
+                           addrtempstore += 1;
+                           strcat(addrtempstore,transQualifierStr);
+                        }
+                     }
+
+                     /* Copy complete translated hazards string to 
+		      * transQualifierStr.
+		      */
+                     strcpy (transQualifierStr, tempstore); 
+		     
+                     /* Format the coverage, intensity, qualifier(s), 
+		      * visibility, and  intensity. 
+		      */
                      xmlNewProp(value, BAD_CAST "coverage", BAD_CAST
                                 transCoverageStr);
                      xmlNewProp(value, BAD_CAST "intensity", BAD_CAST
@@ -6247,8 +7623,13 @@ static void genWeatherValues(size_t pnt, char *layoutKey, genMatchType * match,
                      if (groupIndex > 0)  /* Groups other than first require
                                            * additive attribute. */
                      {
-                        if (strcmp(transQualifierStr, "or") == 0)
-                           strcpy(additive_value, "or");
+	                strcpy(additive_value, "and");
+     	                for (wqIndex = 0; wqIndex < 5; wqIndex++)
+			{
+			   if (anyOrs[groupIndex][wqIndex] == 1)
+                              strcpy(additive_value, "or");
+			}
+			
                         xmlNewProp(value, BAD_CAST "additive", BAD_CAST
                                    additive_value);
                      }
@@ -6261,7 +7642,6 @@ static void genWeatherValues(size_t pnt, char *layoutKey, genMatchType * match,
                      /* Format visibility as a seperate element (not an
                       * attribute). If no visibility restriction, format a
                       * nil attribute. */
-
                      if (strcmp(wxVisibility[groupIndex], "none") == 0 ||
                          wxVisibility[groupIndex] == NULL)
                      {
@@ -6282,37 +7662,37 @@ static void genWeatherValues(size_t pnt, char *layoutKey, genMatchType * match,
                }
 
                /* Create and then save the weather icon based on forecast
-                * weather types. */
-
+                * weather types. 
+		*/
                if (f_icon)
                {
                   determineWeatherIcons(iconInfo, numGroups, wxType,
                                         skyCoverTimeEqualsWeatherTime,
                                         itIsNightTime, skyInfo, baseURL,
-                                        numRowsSKY, skyIndex, wxIndex,
-                                        windTimeEqualsWeatherTime, wsInfo,
-                                        wsIndex, numRowsWS, numRowsTEMP,
+                                        numActualRowsSKY, skyIndex, wxIndex, 
+					windTimeEqualsWeatherTime, wsInfo,
+                                        wsIndex, numActualRowsWS, numActualRowsTEMP,
                                         hourlyTempIndex,
                                         hourlyTempTimeEqualsWeatherTime,
-                                        tempInfo);
+                                        tempInfo, POP12SpreadToPOP3[wxIndex]);
 
                   /* Update the indexes. */
-
-                  if (skyCoverTimeEqualsWeatherTime && skyIndex < numRowsSKY)
+                  if (skyCoverTimeEqualsWeatherTime && skyIndex < numActualRowsSKY)
                      skyIndex += 1;
 
-                  if (windTimeEqualsWeatherTime && wsIndex < numRowsWS)
+                  if (windTimeEqualsWeatherTime && wsIndex < numActualRowsWS)
                      wsIndex += 1;
 
                   if (hourlyTempTimeEqualsWeatherTime && hourlyTempIndex <
-                      numRowsTEMP)
+                      numActualRowsTEMP)
                      hourlyTempIndex += 1;
                }
             }
 
             else
                /* No weather occurring, so format empty weather conditions
-                * element. */
+                * element. 
+		*/
             {
                if (f_wx == 1)
                   weather_conditions = xmlNewChild(weather, NULL, BAD_CAST
@@ -6321,39 +7701,33 @@ static void genWeatherValues(size_t pnt, char *layoutKey, genMatchType * match,
                if (f_icon)
                {
                   /* Determine the conditions icon based on sky cover. */
-
                   determineSkyIcons(skyCoverTimeEqualsWeatherTime,
                                     itIsNightTime, skyIndex, wxIndex, skyInfo,
-                                    iconInfo, baseURL, numRowsSKY);
+                                    iconInfo, baseURL, numActualRowsSKY);
 
                   /* Determine the conditions icon based on things like
                    * extreme temperatures and strong winds. */
-
                   determineNonWeatherIcons(windTimeEqualsWeatherTime,
                                            itIsNightTime, wsInfo, wsIndex,
-                                           baseURL, numRowsWS, iconInfo,
-                                           wxIndex, numRowsTEMP, tempInfo,
+                                           baseURL, numActualRowsWS, iconInfo,
+                                           wxIndex, numActualRowsTEMP, tempInfo,
                                            hourlyTempIndex,
                                            hourlyTempTimeEqualsWeatherTime);
 
                   /* Update the indexes. */
-
-                  if (skyCoverTimeEqualsWeatherTime && skyIndex < numRowsSKY)
+                  if (skyCoverTimeEqualsWeatherTime && skyIndex < numActualRowsSKY)
                      skyIndex += 1;
 
-                  if (windTimeEqualsWeatherTime && wsIndex < numRowsWS)
+                  if (windTimeEqualsWeatherTime && wsIndex < numActualRowsWS)
                      wsIndex += 1;
 
                   if (hourlyTempTimeEqualsWeatherTime && hourlyTempIndex <
-                      numRowsTEMP)
+                      numActualRowsTEMP)
                      hourlyTempIndex += 1;
-
                }
-
             }
 
             /* Re-initialize the WxGroups array and the 5 weather fields. */
-
             memset(WxGroups, '\0', 10 * 100);
 
             for (groupIndex = 0; groupIndex < numGroups + 1; groupIndex++)
@@ -6362,22 +7736,29 @@ static void genWeatherValues(size_t pnt, char *layoutKey, genMatchType * match,
                free(wxType[groupIndex]);
                free(wxIntensity[groupIndex]);
                free(wxVisibility[groupIndex]);
-               free(wxQualifier[groupIndex]);
-            }
-
+	       
+            /* CMc added the next 4 lines (7/14/06) to free the space
+	     * allocated for the wxQualifier array. 
+	     */  
+	       for (wqIndex = 0; wqIndex < 5; wqIndex++)
+                  free(wxQualifier[groupIndex][wqIndex]);
+	       
+	       free(anyOrs[groupIndex]);
+               free (wxQualifier[groupIndex]);	       
+	    }
+	    
             free(wxCoverage);
             free(wxType);
             free(wxIntensity);
             free(wxVisibility);
             free(wxQualifier);
+	    free(anyOrs);
 
          }
 
-         else
-            /* Weather is Missing, so format the nil attribute. */
+         else /* Weather is Missing, so format the nil attribute. */
          {
             /* Format start of weather conditions element, if applicable. */
-
             if (f_wx == 1)
             {
                weather_conditions = xmlNewChild(weather, NULL, BAD_CAST
@@ -6392,34 +7773,34 @@ static void genWeatherValues(size_t pnt, char *layoutKey, genMatchType * match,
                strcpy(iconInfo[wxIndex].str, "none");
 
                /* Update indexes. */
-
-               if (skyCoverTimeEqualsWeatherTime && skyIndex < numRowsSKY)
+               if (skyCoverTimeEqualsWeatherTime && skyIndex < numActualRowsSKY)
                   skyIndex += 1;
 
-               if (windTimeEqualsWeatherTime && wsIndex < numRowsWS)
+               if (windTimeEqualsWeatherTime && wsIndex < numActualRowsWS)
                   wsIndex += 1;
 
                if (hourlyTempTimeEqualsWeatherTime && hourlyTempIndex <
-                   numRowsTEMP)
+                   numActualRowsTEMP)
                   hourlyTempIndex += 1;
             }
          }
-      }                       /* End of formatting weather-conditions
-                               * element. */
+      } /* End of formatting weather-conditions element. */
 
       /* Only incorporate weather if it is needed.  This could be just a
        * weather conditions icon scenario, which is possible in the DWMLgen
        * "time-series" product if user only selects "Weather Conditions
-       * Icons". Of course, these icons are based on Weather, it's just that
-       * the weather is not formatted to output in this instance. Weather
-       * comes before conditions based on sequence in schema. */
+       * Icons" to format. Of course, these icons are based on Weather, it's
+       * just that the weather is not formatted to output in this instance.
+       * Weather comes before conditions based on sequence in schema. 
+       */
 
       /* Having saved the appropriate weather icons paths and files names in
-       * the array iconLinks, format the XML to hold the links. */
+       * the array iconLinks, format the XML to hold the links. 
+       */
 
       if (f_icon)
       {
-         genIconLinks(iconInfo, numRowsWX, layoutKey, parameters);
+         genIconLinks(iconInfo, numActualRowsWX, layoutKey, parameters);
          free(iconInfo);
       }
 
@@ -6430,6 +7811,8 @@ static void genWeatherValues(size_t pnt, char *layoutKey, genMatchType * match,
          free(wsInfo);
          free(skyInfo);
          free(tempInfo);
+	 free(popInfo);
+	 free(POP12SpreadToPOP3);
       }
 
    }
@@ -6486,11 +7869,11 @@ static void genWeatherValues(size_t pnt, char *layoutKey, genMatchType * match,
 static void genMaxTempValues(size_t pnt, char *layoutKey, genMatchType * match,
                              size_t numMatch, xmlNodePtr parameters,
                              int *f_formatNIL, uChar f_XML, 
-			     double startTime_cml, uChar numRows, 
+			     double startTime_cml, numRowsInfo numRows, 
 			     int numFmtdRows)
 {
 
-   int i;                      /* Element counter thru match structure. */
+   int i;                     /* Element counter thru match structure. */
    int numNils = 0;           /* Denotes diff between number of data rows and 
 				 the number that need to be formatted for the 
 				 DWMLgenByDay products. */
@@ -6505,14 +7888,12 @@ static void genMaxTempValues(size_t pnt, char *layoutKey, genMatchType * match,
                                * data. */
 
    /* Format the <temperature> element. */
-
    temperature = xmlNewChild(parameters, NULL, BAD_CAST "temperature", NULL);
    xmlNewProp(temperature, BAD_CAST "type", BAD_CAST "maximum");
    xmlNewProp(temperature, BAD_CAST "units", BAD_CAST "Fahrenheit");
    xmlNewProp(temperature, BAD_CAST "time-layout", BAD_CAST layoutKey);
 
    /* Format the display name. */
-
    xmlNewChild(temperature, NULL, BAD_CAST "name", BAD_CAST
                "Daily Maximum Temperature");
 
@@ -6520,11 +7901,10 @@ static void genMaxTempValues(size_t pnt, char *layoutKey, genMatchType * match,
     * number of rows we are ultimately formatting.
     */
    if (f_XML == 1 || f_XML == 2)
-      numFmtdRows = numRows;
+      numFmtdRows = numRows.total-numRows.skipBeg-numRows.skipEnd;
 
    /* Format the first Max Temp Day as "nil = true" if f_formatNIL = 1
     * (applicable for DWMLgenByDay product's "24 hourly" format). */
-
    if (f_XML == 4 && *f_formatNIL)
    {
       value = xmlNewChild(temperature, NULL, BAD_CAST "value", NULL);
@@ -6534,20 +7914,20 @@ static void genMaxTempValues(size_t pnt, char *layoutKey, genMatchType * match,
    }
 
    /* Loop over all the data values and format them. */
-
    for (i = firstNIL; i < numMatch; i++)
    {
-      if (match[i].elem.ndfdEnum == NDFD_MAX)
+      if (match[i].elem.ndfdEnum == NDFD_MAX && 
+	  match[i].validTime >= numRows.firstUserTime &&
+          match[i].validTime <= numRows.lastUserTime)
       {
          if (i < numFmtdRows) /* Accounts for DWMLgenByDay. */
          {
-            if (f_XML == 3 || f_XML == 4)  /* DWMLgenByDay products. */
+            if (f_XML == 3 || f_XML == 4) /* DWMLgenByDay products. */
             {
-               if (i < numRows)
+               if (i < numRows.total-numRows.skipBeg-numRows.skipEnd)
                {
 
-                  /* If the data is missing so indicate in the XML (nil=true). */
-   
+                  /* If the data is missing so indicate in the XML (nil=true). */   
                   if (match[i].value[pnt].valueType == 2)
                   {
                      value = xmlNewChild(temperature, NULL, BAD_CAST "value",
@@ -6566,7 +7946,6 @@ static void genMaxTempValues(size_t pnt, char *layoutKey, genMatchType * match,
             else if (f_XML == 1 || f_XML == 2) /* DWMLgen products. */
             {
                /* If the data is missing, so indicate in the XML (nil=true). */
-
                if (match[i].value[pnt].valueType == 2)
                {
                   value = xmlNewChild(temperature, NULL, BAD_CAST "value", NULL);
@@ -6593,10 +7972,10 @@ static void genMaxTempValues(size_t pnt, char *layoutKey, genMatchType * match,
    if (f_XML == 3 || f_XML == 4)  /* DWMLgenByDay products. */
    {
       /* Tally up the number of iterations that occurred thru the match 
-       * structure and compare to the number of actual data rows to see if there
-       * is a difference.
+       * structure and compare to the number of actual data rows that need to be
+       * formatted to see if there is a difference.
        */
-      numNils = numFmtdRows - numRows;
+      numNils = numFmtdRows - (numRows.total-numRows.skipBeg-numRows.skipEnd);
       if (numNils > 0)
       {
          for (i = 0; i < numNils; i++)
@@ -6633,7 +8012,7 @@ static void genMaxTempValues(size_t pnt, char *layoutKey, genMatchType * match,
  *                (Input) 
  *      numRows = Number of rows NDFD data exists for for MinT element. (Input)
  *   currentDay = Current day's 2 digit date. (Input)
- *  currentHour = Current hour =in 2 digit form. (Input)
+ *  currentHour = Current hour = in 2 digit form. (Input)
  *     TZoffset = Number of hours to add to current time to get GMT time. 
  *                (Input)
  * f_observeDST = Flag determining if current point observes Daylight Savings 
@@ -6655,8 +8034,9 @@ static void genMaxTempValues(size_t pnt, char *layoutKey, genMatchType * match,
  */
 static void genMinTempValues(size_t pnt, char *layoutKey, genMatchType * match,
                              size_t numMatch, xmlNodePtr parameters,
-                             uChar f_XML, double startTime_cml, uChar numRows, 
-			     char *currentDay, char *currentHour, sChar TZoffset,
+                             uChar f_XML, double startTime_cml, 
+			     numRowsInfo numRows, char *currentDay, 
+			     char *currentHour, sChar TZoffset,
                              sChar f_observeDST, int numFmtdRows)
 {
 
@@ -6679,6 +8059,8 @@ static void genMinTempValues(size_t pnt, char *layoutKey, genMatchType * match,
                                * value. */
    char MinTDay[3];           /* Date (day) of the first Min Temp Data value. 
                                */
+   char startTimeDay[3];      /* Date (day) of the startTime_cml argument, in 
+				 local time. */
 
    /* Format the <temperature> element. */
 
@@ -6693,18 +8075,19 @@ static void genMinTempValues(size_t pnt, char *layoutKey, genMatchType * match,
    
    /* If DWMLgen product, set numFmtdRows = to numRows since there is no set
     * number of rows we are ultimately formatting. IF DWMLgenByDay product, 
-    * check to see if the number of data rows is less than the number of rows
-    * to be formatted. If so, set numRows = numFmtdRows (will result in a "nil"
-    * being formatted).
+    * check to see if the number of data rows in match structure is less than 
+    * the number of rows to be formatted. If so, set numRows = numFmtdRows 
+    * (will result in a "nil" being formatted).
     */
    if (f_XML == 1 || f_XML == 2)
-      numFmtdRows = numRows;
+      numFmtdRows = numRows.total-numRows.skipBeg-numRows.skipEnd;
 
    /* Loop over all the data values and format them. */
-
    for (i = 0; i < numMatch; i++)
    {
-      if (match[i].elem.ndfdEnum == NDFD_MIN)
+      if (match[i].elem.ndfdEnum == NDFD_MIN && 
+	  match[i].validTime >= numRows.firstUserTime &&
+	  match[i].validTime <= numRows.lastUserTime)
       {
          if (i - priorElemCount < numFmtdRows) /* Accounts for DWMLgenByDay. */
          {
@@ -6712,31 +8095,43 @@ static void genMinTempValues(size_t pnt, char *layoutKey, genMatchType * match,
             {
 		 
                /* Early in the morning (midnight - 6AM) the code will want to
-                * include the the overnight min temp in the 6AM to 6PM time
-                * period, the following code causes the program to correctly
-                * skip the first min temp. Only applicable for DWMLgenByDay's
-                * "24 hourly" product. */
-
+                * include the overnight min temp in the 6AM to 6PM time
+                * period. If it is not, the following code causes the program to
+                * correctly skip the first min temp (by adjusting "counter". Only 
+		* applicable for DWMLgenByDay's "24 hourly" product. */
                if (f_XML == 4 && atoi(currentHour) <= 7 && MinTCounter == 0)
                {
                   /* Get the end time of the first min temp's valid time (i.e. 07
-                   * or 19). */
+                   * or 19). "counter" here firstly == 0. */
                   formatValidTime(match[i + counter].validTime, str1, 30, TZoffset,
                                   f_observeDST);
    
                   MinTDay[0] = str1[8];
                   MinTDay[1] = str1[9];
                   MinTDay[2] = '\0';
-
-                  if (atoi(MinTDay) == atoi(currentDay))
-                     counter = 1;
+                 
+		  if (startTime_cml == 0.0)
+		  {
+		     if (atoi(MinTDay) == atoi(currentDay))
+                        counter = 1;
+		  }
+		  else
+                  {
+                     formatValidTime(startTime_cml, str1, 30, TZoffset, 
+				     f_observeDST);
+                     startTimeDay[0] = str1[8];
+                     startTimeDay[1] = str1[9];
+                     startTimeDay[2] = '\0';
+		     
+		     if (atoi(MinTDay) == atoi(startTimeDay))
+		        counter = 1;
+		  }
 
                   MinTCounter++;
                }
 
-               if (i - priorElemCount < numRows)
+               if (i - priorElemCount < numRows.total-numRows.skipBeg-numRows.skipEnd)
                {
-
                   /* If the data is missing, so indicate in the XML (nil=true).
 		   * Also, add a check to make sure the counter does not cause
 		   * a bleed over and pick up the next element in the match
@@ -6763,7 +8158,6 @@ static void genMinTempValues(size_t pnt, char *layoutKey, genMatchType * match,
             else if (f_XML == 1 || f_XML == 2) /* DWMLgen products. */
             {
                /* If the data is missing, so indicate in the XML (nil=true). */
-
                if (match[i].value[pnt].valueType == 2)
                {
                   value = xmlNewChild(temperature, NULL, BAD_CAST "value", NULL);
@@ -6795,7 +8189,7 @@ static void genMinTempValues(size_t pnt, char *layoutKey, genMatchType * match,
        * structure and compare to the number of actual data rows to see if there
        * is a difference.
        */
-      numNils = numFmtdRows - numRows;
+      numNils = numFmtdRows - (numRows.total-numRows.skipBeg-numRows.skipEnd);
       if (numNils > 0)
       {
          for (i = 0; i < numNils; i++)
@@ -6838,7 +8232,8 @@ static void genMinTempValues(size_t pnt, char *layoutKey, genMatchType * match,
  ******************************************************************************
  */
 static void genTempValues(size_t pnt, char *layoutKey, genMatchType * match,
-                          size_t numMatch, xmlNodePtr parameters)
+                          size_t numMatch, xmlNodePtr parameters, 
+			  numRowsInfo numRows)
 {
    int i;
    int roundedTempData;       /* Returned rounded data. */
@@ -6855,17 +8250,16 @@ static void genTempValues(size_t pnt, char *layoutKey, genMatchType * match,
    xmlNewProp(temperature, BAD_CAST "time-layout", BAD_CAST layoutKey);
 
    /* Format the display name. */
-
    xmlNewChild(temperature, NULL, BAD_CAST "name", BAD_CAST "Temperature");
 
    /* Loop over all the data values and format them. */
-
    for (i = 0; i < numMatch; i++)
    {
-      if (match[i].elem.ndfdEnum == NDFD_TEMP)
+      if (match[i].elem.ndfdEnum == NDFD_TEMP && 
+	  match[i].validTime >= numRows.firstUserTime &&
+	  match[i].validTime <= numRows.lastUserTime)
       {
          /* If the data is missing, so indicate in the XML (nil=true). */
-
          if (match[i].value[pnt].valueType == 2)
          {
             value = xmlNewChild(temperature, NULL, BAD_CAST "value", NULL);
@@ -6912,7 +8306,7 @@ static void genTempValues(size_t pnt, char *layoutKey, genMatchType * match,
  */
 static void genDewPointTempValues(size_t pnt, char *layoutKey,
                                   genMatchType * match, size_t numMatch,
-                                  xmlNodePtr parameters)
+                                  xmlNodePtr parameters, numRowsInfo numRows)
 {
    int i;
    int roundedTdData;         /* Returned rounded data. */
@@ -6923,26 +8317,23 @@ static void genDewPointTempValues(size_t pnt, char *layoutKey,
                                * data. */
 
    /* Format the <temperature> element. */
-
    temperature = xmlNewChild(parameters, NULL, BAD_CAST "temperature", NULL);
    xmlNewProp(temperature, BAD_CAST "type", BAD_CAST "dew point");
    xmlNewProp(temperature, BAD_CAST "units", BAD_CAST "Fahrenheit");
    xmlNewProp(temperature, BAD_CAST "time-layout", BAD_CAST layoutKey);
 
    /* Format the display name. */
-
    xmlNewChild(temperature, NULL, BAD_CAST "name", BAD_CAST
                "Dew Point Temperature");
 
    /* Loop over all the data values and format them. */
-
    for (i = 0; i < numMatch; i++)
    {
-      if (match[i].elem.ndfdEnum == NDFD_TD)
+      if (match[i].elem.ndfdEnum == NDFD_TD && 
+	  match[i].validTime >= numRows.firstUserTime &&
+	  match[i].validTime <= numRows.lastUserTime)
       {
-
          /* If the data is missing, so indicate in the XML (nil=true). */
-
          if (match[i].value[pnt].valueType == 2)
          {
             value = xmlNewChild(temperature, NULL, BAD_CAST "value", NULL);
@@ -6988,7 +8379,8 @@ static void genDewPointTempValues(size_t pnt, char *layoutKey,
  ******************************************************************************
  */
 static void genAppTempValues(size_t pnt, char *layoutKey, genMatchType * match,
-                             size_t numMatch, xmlNodePtr parameters)
+                             size_t numMatch, xmlNodePtr parameters, 
+			     numRowsInfo numRows)
 {
    int i;
    int roundedAtData;         /* Returned rounded data. */
@@ -7010,14 +8402,13 @@ static void genAppTempValues(size_t pnt, char *layoutKey, genMatchType * match,
                "Apparent Temperature");
 
    /* Loop over all the data values and format them. */
-
    for (i = 0; i < numMatch; i++)
    {
-      if (match[i].elem.ndfdEnum == NDFD_AT)
+      if (match[i].elem.ndfdEnum == NDFD_AT && 
+	  match[i].validTime >= numRows.firstUserTime &&
+          match[i].validTime <= numRows.lastUserTime)
       {
-
          /* If the data is missing, so indicate in the XML (nil=true). */
-
          if (match[i].value[pnt].valueType == 2)
          {
             value = xmlNewChild(temperature, NULL, BAD_CAST "value", NULL);
@@ -7048,7 +8439,7 @@ static void genAppTempValues(size_t pnt, char *layoutKey, genMatchType * match,
  *               (ex. k-p3h-n42-3). (Input)
  *       match = Pointer to the array of element matches from degrib. (Input) 
  *    numMatch = The number of matches from degrib. (Input)
- *  parameters = An xml Node Pointer denoting the <parameters> node to which 
+ *  parameters = An xml Node Pointer denoting the <parameters> node to which
  *               these values will be attached (child node). (Output)
  *
  * FILES/DATABASES: None
@@ -7062,7 +8453,8 @@ static void genAppTempValues(size_t pnt, char *layoutKey, genMatchType * match,
  ******************************************************************************
  */
 static void genQPFValues(size_t pnt, char *layoutKey, genMatchType * match,
-                         size_t numMatch, xmlNodePtr parameters)
+                         size_t numMatch, xmlNodePtr parameters, 
+			 numRowsInfo numRows)
 {
    int i;
    float roundedQPFData;      /* Returned rounded data. QPF data rounds to 2
@@ -7074,7 +8466,6 @@ static void genQPFValues(size_t pnt, char *layoutKey, genMatchType * match,
                                * data. */
 
    /* Format the <precipitation> element. */
-
    precipitation = xmlNewChild(parameters, NULL, BAD_CAST "precipitation",
                                NULL);
    xmlNewProp(precipitation, BAD_CAST "type", BAD_CAST "liquid");
@@ -7082,19 +8473,17 @@ static void genQPFValues(size_t pnt, char *layoutKey, genMatchType * match,
    xmlNewProp(precipitation, BAD_CAST "time-layout", BAD_CAST layoutKey);
 
    /* Format the display name. */
-
    xmlNewChild(precipitation, NULL, BAD_CAST "name", BAD_CAST
                "Liquid Precipitation Amount");
 
    /* Loop over all the data values and format them. */
-
    for (i = 0; i < numMatch; i++)
    {
-      if (match[i].elem.ndfdEnum == NDFD_QPF)
+      if (match[i].elem.ndfdEnum == NDFD_QPF && 
+	  match[i].validTime >= numRows.firstUserTime &&
+	  match[i].validTime <= numRows.lastUserTime)
       {
-
          /* If the data is missing, so indicate in the XML (nil=true). */
-
          if (match[i].value[pnt].valueType == 2)
          {
             value = xmlNewChild(precipitation, NULL, BAD_CAST "value", NULL);
@@ -7141,7 +8530,8 @@ static void genQPFValues(size_t pnt, char *layoutKey, genMatchType * match,
  ******************************************************************************
  */
 static void genSnowValues(size_t pnt, char *layoutKey, genMatchType * match,
-                          size_t numMatch, xmlNodePtr parameters)
+                          size_t numMatch, xmlNodePtr parameters, 
+			  numRowsInfo numRows)
 {
    int i;
    int roundedSnowData;       /* Returned rounded data. */
@@ -7152,7 +8542,6 @@ static void genSnowValues(size_t pnt, char *layoutKey, genMatchType * match,
                                * data. */
 
    /* Format the <precipitation> element. */
-
    precipitation = xmlNewChild(parameters, NULL, BAD_CAST "precipitation",
                                NULL);
    xmlNewProp(precipitation, BAD_CAST "type", BAD_CAST "snow");
@@ -7160,18 +8549,17 @@ static void genSnowValues(size_t pnt, char *layoutKey, genMatchType * match,
    xmlNewProp(precipitation, BAD_CAST "time-layout", BAD_CAST layoutKey);
 
    /* Format the display name. */
-
    xmlNewChild(precipitation, NULL, BAD_CAST "name", BAD_CAST "Snow Amount");
 
    /* Loop over all the data values and format them. */
-
    for (i = 0; i < numMatch; i++)
    {
-      if (match[i].elem.ndfdEnum == NDFD_SNOW)
+      if (match[i].elem.ndfdEnum == NDFD_SNOW && 
+	  match[i].validTime >= numRows.firstUserTime &&
+	  match[i].validTime <= numRows.lastUserTime)
       {
 
          /* If the data is missing, so indicate in the XML (nil=true). */
-
          if (match[i].value[pnt].valueType == 2)
          {
             value = xmlNewChild(precipitation, NULL, BAD_CAST "value", NULL);
@@ -7195,7 +8583,7 @@ static void genSnowValues(size_t pnt, char *layoutKey, genMatchType * match,
  * Paul Hershberg / MDL
  *
  * PURPOSE
- *  This code performs two functions: 
+ *  This code performs two functions:
  *            1) Formats the Pop12hr element in the "time-series" DWMLgen 
  *               product. 
  *            2) Collects the Max Pop values per day (12 or 24 hr period) for 
@@ -7211,7 +8599,7 @@ static void genSnowValues(size_t pnt, char *layoutKey, genMatchType * match,
  *               these values will be attached (child node). (Output)
  *     numRows = Number of rows data is formatted for in the output XML. Used
  *               in DWMLgenByDay's "12 hourly" and "24 hourly" products. 
- *               "numRows" is determined using numDays and is used as an added 
+ *               "numRows" is determined using numDays and is used as an added
  *               criteria (above and beyond simply having data exist for a 
  *               certain row) in formatting XML for these two products. (Input)
  *       f_XML = Flag denoting type of XML product (1 = DWMLgen's "time-series"
@@ -7237,17 +8625,16 @@ static void genSnowValues(size_t pnt, char *layoutKey, genMatchType * match,
  ******************************************************************************
  */
 static void genPopValues(size_t pnt, char *layoutKey, genMatchType * match,
-                         size_t numMatch, xmlNodePtr parameters, uChar numRows,
-                         uChar f_XML, double startTime_cml, int *maxDailyPop, 
-			 int numDays, double currentDoubTime, char *currentHour, 
-			 int numPopRowsSkippedBeginning)
+                         size_t numMatch, xmlNodePtr parameters, 
+			 numRowsInfo numRows, uChar f_XML, double startTime_cml, 
+			 int *maxDailyPop, int numDays, double currentDoubTime,
+			 char *currentHour)
 {
    int i;
-   int numNils = 0;           /* Denotes diff between number of data rows and 
+   int numNils = 0;           /* Denotes diff between number of data rows and
 				 the number that need to be formatted for the 
 				 DWMLgenByDay products. */
    int numFmtdRows = 0;       /* Number of output lines in DWMLgenByDay products. */
-   int numPopRowsSkippedTemp = 0;
    int dayCount = 0;          /* Used to keep count of which day we are
                                * processing (two PoPs per day). */
    int startOverCount = 0;    /* Subset iteration of just PoPs in the match
@@ -7261,11 +8648,7 @@ static void genPopValues(size_t pnt, char *layoutKey, genMatchType * match,
    int priorElemCount = 0;    /* Used to subtract prior elements when looping 
                                * thru matches. */
 
-   /* Set numFmtdRows from numDays. */
-   numFmtdRows = numDays*2;
-   
    /* Format the <precipitation> element. */
-
    precipitation = xmlNewChild(parameters, NULL, BAD_CAST
                                "probability-of-precipitation", NULL);
    xmlNewProp(precipitation, BAD_CAST "type", BAD_CAST "12 hour");
@@ -7273,102 +8656,94 @@ static void genPopValues(size_t pnt, char *layoutKey, genMatchType * match,
    xmlNewProp(precipitation, BAD_CAST "time-layout", BAD_CAST layoutKey);
 
    /* Format the display name. */
-
    xmlNewChild(precipitation, NULL, BAD_CAST "name", BAD_CAST
                "12 Hourly Probability of Precipitation");
    
-   /* If DWMLgen product, set numFmtdRows = to numRows because we have a set
-    * number of rows we are ultimately formatting.
+   /* If DWMLgen product, set numFmtdRows = to numRows because we don't have 
+    * a set number of rows we are ultimately formatting.
     */
    if (f_XML == 1 || f_XML == 2)
-      numFmtdRows = numRows;
+      numFmtdRows = numRows.total-numRows.skipBeg-numRows.skipEnd;
    else if (f_XML == 3 || f_XML == 4) 
       numFmtdRows = numDays*2;
 
    /* Loop over all the data values and format them. */
-   numPopRowsSkippedTemp = numPopRowsSkippedBeginning;
    for (i = 0; i < numMatch; i++)
    {
-      if (match[i].elem.ndfdEnum == NDFD_POP)
+      if (match[i].elem.ndfdEnum == NDFD_POP && 
+	  match[i].validTime >= numRows.firstUserTime &&
+          match[i].validTime <= numRows.lastUserTime)
       {
          if (i - priorElemCount < numFmtdRows) /* Accounts for DWMLgenByDay. */
          {
-            if (numPopRowsSkippedTemp == 0)
-            {		    
-	       if (f_XML == 3 || f_XML == 4) /* DWMLgenByDay products. */
-               {
-                  startOverCount++;
-
-                  /* If the data is missing, so indicate in the XML (nil=true). */
-
-                  if (match[i].value[pnt].valueType == 2)
-                  {
-                     value = xmlNewChild(precipitation, NULL, BAD_CAST "value",
-                                         NULL);
-                     xmlNewProp(value, BAD_CAST "xsi:nil", BAD_CAST "true");
-                  }
-                  else if (match[i].value[pnt].valueType == 0) /* Good data. */
-                  {
-                     roundedPopData = (int)myRound(match[i].value[pnt].data, 0);
-                     sprintf(strBuff, "%d", roundedPopData);
-                     xmlNewChild(precipitation, NULL, BAD_CAST "value", BAD_CAST
-                                 strBuff);
-                  }
-
-                  /* Make some adjustments for the next loop interation. */
-
-                  if (f_XML == 4 && match[i].value[pnt].valueType == 0)
-                  {
-                     /* For 24hr format, get the max PoP to represent the day. */
-                     if (roundedPopData > maxDailyPop[dayCount] && dayCount <= numDays)
-	             {
-                        maxDailyPop[dayCount] = roundedPopData;
-                     }
-                     /* We change to a new day every other PoP value. */
-                     if (startOverCount % 2 == 0)
-                        dayCount++;
-                  }
-                  else if (f_XML == 3 && match[i].value[pnt].valueType == 0)
-                  {
-                     /* For 12hr format, we use every PoP value. */
-                     if (dayCount <= numDays*2)
-                     {
-                        maxDailyPop[dayCount] = roundedPopData;
-                        dayCount++;
-	             }
-                  }
-               }   
-               else if (f_XML == 1 || f_XML == 2)
-               {
-                  /* If the data is missing, so indicate in the XML (nil=true). */
-
-                  if (match[i].value[pnt].valueType == 2)
-                  {
-                     value = xmlNewChild(precipitation, NULL, BAD_CAST "value", NULL);
-                     xmlNewProp(value, BAD_CAST "xsi:nil", BAD_CAST "true");
-                  }
-                  else if (match[i].value[pnt].valueType == 0)  /* Format good
-                                                                 * data. */
-                  {
-                     roundedPopData = (int)myRound(match[i].value[pnt].data, 0);
-                     sprintf(strBuff, "%d", roundedPopData);
-                     xmlNewChild(precipitation, NULL, BAD_CAST "value", BAD_CAST
-                                 strBuff);
-                  }
-               }
-	    }
-	    else
+	    if (f_XML == 3 || f_XML == 4) /* DWMLgenByDay products. */
             {
-               numPopRowsSkippedTemp--;
-	       continue;
-	    }   
+               startOverCount++;
+
+               /* If the data is missing, so indicate in the XML (nil=true). */
+               if (match[i].value[pnt].valueType == 2)
+               {
+                  value = xmlNewChild(precipitation, NULL, BAD_CAST "value",
+                                      NULL);
+                  xmlNewProp(value, BAD_CAST "xsi:nil", BAD_CAST "true");
+               }
+               else if (match[i].value[pnt].valueType == 0) /* Good data. */
+               {
+                  roundedPopData = (int)myRound(match[i].value[pnt].data, 0);
+                  sprintf(strBuff, "%d", roundedPopData);
+                  xmlNewChild(precipitation, NULL, BAD_CAST "value", BAD_CAST
+                              strBuff);
+               }
+
+               /* Make some adjustments for the next loop interation. */
+               if (f_XML == 4 && match[i].value[pnt].valueType == 0)
+               {
+                  /* For 24hr format, get the max PoP out of the two 12hr pops 
+	           * to represent the day. 
+		   */
+                  if (roundedPopData > maxDailyPop[dayCount] && dayCount <= numDays)
+	          {
+                     maxDailyPop[dayCount] = roundedPopData;
+                  }
+                  /* We change to a new day every other PoP value. */
+//		  printf ("maxDailyPop[%d] = %d\n",dayCount,maxDailyPop[dayCount]);
+                  if (startOverCount % 2 == 0)
+                     dayCount++;
+               }
+               else if (f_XML == 3 && match[i].value[pnt].valueType == 0)
+               {
+                  /* For 12hr format, we use every PoP value. */
+                  if (dayCount <= numDays*2)
+                  {
+                     maxDailyPop[dayCount] = roundedPopData;
+                     dayCount++;
+	          }
+               }
+            }   
+            else if (f_XML == 1 || f_XML == 2)
+            {
+               /* If the data is missing, so indicate in the XML (nil=true). */
+               if (match[i].value[pnt].valueType == 2)
+               {
+                  value = xmlNewChild(precipitation, NULL, BAD_CAST "value", NULL);
+                  xmlNewProp(value, BAD_CAST "xsi:nil", BAD_CAST "true");
+               }
+               else if (match[i].value[pnt].valueType == 0)  /* Format good
+                                                              * data. */
+               {
+                  roundedPopData = (int)myRound(match[i].value[pnt].data, 0);
+                  sprintf(strBuff, "%d", roundedPopData);
+                  xmlNewChild(precipitation, NULL, BAD_CAST "value", BAD_CAST
+                              strBuff);
+               }
+            }
 	 }
       }
       else
          priorElemCount++;
    }
 
-   /* In certain cases for the DWMLgenByDay products, we'll need to account for 
+   /* In certain cases for the DWMLgenByDay products, we'll need to account for
     * times when there may be less data in the match structure than the amount 
     * of data that needs to be formatted. These "extra" spaces will need to be 
     * formatted with a "nil" attribute. 
@@ -7379,7 +8754,8 @@ static void genPopValues(size_t pnt, char *layoutKey, genMatchType * match,
        * structure and compare to the number of actual data rows to see if there
        * is a difference.
        */
-      numNils = numFmtdRows - numRows;
+      numNils = numFmtdRows - (numRows.total-numRows.skipBeg-numRows.skipEnd);
+//      printf ("numNils = %d\n",numNils);
       if (numNils > 0)
       {
          for (i = 0; i < numNils; i++)
@@ -7399,7 +8775,7 @@ static void genPopValues(size_t pnt, char *layoutKey, genMatchType * match,
  * Paul Hershberg / MDL
  *
  * PURPOSE
- *  This code performs two functions: 
+ *  This code performs two functions:
  *            1) Formats the Wind Speed element in the "time-series" DWMLgen 
  *               product. 
  *            2) Collects the Max Wind Speed values per day for icon 
@@ -7436,30 +8812,34 @@ static void genPopValues(size_t pnt, char *layoutKey, genMatchType * match,
  ******************************************************************************
  */
 
-static void genWindSpeedValues(size_t pnt, char *layoutKey,
+static void genWindSpeedValues(double timeUserStart, double timeUserEnd, 
+		               size_t pnt, char *layoutKey,
                                genMatchType * match, size_t numMatch,
                                xmlNodePtr parameters, char *startDate,
                                int *maxWindSpeed, int numOutputLines,
                                int timeInterval, sChar TZoffset,
                                sChar f_observeDST, uChar parameterName,
-                               uChar numRows, uChar f_XML,
-                               double *valTimeForWindDirMatch)
+                               numRowsInfo numRows, uChar f_XML,
+                               double *valTimeForWindDirMatch, 
+			       int f_6CycleFirst, double startTime)
 {
 
    int i;
-   int period; /* Length between an elements successive validTimes. */
+   int period = 0; /* Length between an elements successive validTimes. */
    int forecastPeriod = 0;
    int priorElemCount = 0;
    int currentDay = 0;        /* Subset iteration of just wind Spds in the
                                * match structure. */
-   int integerStartUserTime = 0;
-   sChar DST;
-   char userStart_year[6];
-   char userStart_month[4];
-   char userStart_day[3];
-   char baseUserTime[30];
-   char hourMinSecTZ[16]; /* String component holding "T06:00:00-00:00" part. */
-   double baseUserTime_doub = 0.0;
+//   int integerStartUserTime = 0;
+   double timeUserStartStep = 0;
+//   sChar DST;:340
+   //   
+//   char userStart_year[6];
+//   char userStart_month[4];
+//   char userStart_day[3];
+//   char baseUserTime[30];
+//   char hourMinSecTZ[16]; /* String component holding "T06:00:00-00:00" part. */
+//   double baseUserTime_doub = 0.0;
    double WSdoubleTime = 0.0;
    int WSintegerTime = 0;
    int roundedWindSpeedData;  /* Returned rounded data. */
@@ -7470,9 +8850,14 @@ static void genWindSpeedValues(size_t pnt, char *layoutKey,
                                * data. */
    char WSstr[30];            /* Temporary string holding formatted time
                                * value of wind speed. */
+   
+   /* Set the first iteration to the incoming user supplied startTime if 
+    * product is a summarization.
+    */
+   if (f_XML == 3 || f_XML == 4)
+      timeUserStartStep = timeUserStart;
 
    /* If the product is of type DWMLgen, format the <wind_speed> element. */
-
    if (f_XML == 1 || f_XML == 2)
    {
       wind_speed = xmlNewChild(parameters, NULL, BAD_CAST "wind-speed", NULL);
@@ -7481,12 +8866,9 @@ static void genWindSpeedValues(size_t pnt, char *layoutKey,
       xmlNewProp(wind_speed, BAD_CAST "time-layout", BAD_CAST layoutKey);
 
       /* Format the display name. */
-
       xmlNewChild(wind_speed, NULL, BAD_CAST "name", BAD_CAST "Wind Speed");
    }
-
-   /* If product type is of DWMLgenByDay, parse user supplied start time. */
-
+/*   
    if (f_XML == 3 || f_XML == 4)
    {
       userStart_year[0] = startDate[0];
@@ -7518,9 +8900,9 @@ static void genWindSpeedValues(size_t pnt, char *layoutKey,
 
       Clock_Scan(&baseUserTime_doub, baseUserTime, 0);
       
-      /* Before continuing, see if this point observes day light savings time, 
+      * Before continuing, see if this point observes day light savings time, 
        * and if it is currently in effect. 
-       */ 
+       * 
       if (f_observeDST)
       {
          if (Clock_IsDaylightSaving2(baseUserTime_doub, 0) == 1)
@@ -7534,22 +8916,22 @@ static void genWindSpeedValues(size_t pnt, char *layoutKey,
             Clock_Scan(&baseUserTime_doub, baseUserTime, 1);
 	 }            	 
       }
-
       integerStartUserTime = baseUserTime_doub + (currentDay * timeInterval);
    }
-   
+*/
    /* Loop over all the Wind Speed values. Format them if the product is of
     * type DWMLgen. Collect them in the maxWindSpeed array if the product is
-    * of type DWMLgenByDay. */
-
+    * of type DWMLgenByDay. 
+    * */
    for (i = 0; i < numMatch; i++)
    {
-      if (match[i].elem.ndfdEnum == NDFD_WS)
+      if (match[i].elem.ndfdEnum == NDFD_WS && 
+	  match[i].validTime >= numRows.firstUserTime &&
+          match[i].validTime <= numRows.lastUserTime)
       {
          if (f_XML == 1 || f_XML == 2)  /* DWMLgen products. */
          {
             /* If the data is missing, so indicate in the XML (nil=true). */
-
             if (match[i].value[pnt].valueType == 2)
             {
                value = xmlNewChild(wind_speed, NULL, BAD_CAST "value", NULL);
@@ -7568,7 +8950,7 @@ static void genWindSpeedValues(size_t pnt, char *layoutKey,
 		                            /* We don't format any wind for
                                              * these products, but simply get
                                              * Max values for wind speed and
-                                             * wind dir  per summarization 
+                                             * wind dir per summarization 
 					     * period for use in icon
                                              * determination. */
          {
@@ -7583,7 +8965,6 @@ static void genWindSpeedValues(size_t pnt, char *layoutKey,
 
             formatValidTime(match[i].validTime, WSstr, 30, TZoffset,
                             f_observeDST);
-
             Clock_Scan(&WSdoubleTime, WSstr, 0);
             WSintegerTime = WSdoubleTime;
 
@@ -7592,59 +8973,219 @@ static void genWindSpeedValues(size_t pnt, char *layoutKey,
              * from 6AM - 6PM. We shift data by one half the data's period in
              * seconds. 
 	     */
-            if (i - priorElemCount < 1)
+
+	    if (i - priorElemCount < 1)
                period = determinePeriodLength(match[i].validTime,
-                                              match[i + 1].validTime, numRows,
-                                              parameterName);
+                               match[i + 1].validTime, 
+			       (numRows.total-numRows.skipBeg-numRows.skipEnd),
+                               parameterName);
             else
                period = determinePeriodLength(match[i - 1].validTime,
-                                              match[i].validTime,
-                                              numRows, parameterName);
-            WSintegerTime = WSintegerTime - (((double)period * 0.5) * 3600);
+                               match[i].validTime,
+                               (numRows.total-numRows.skipBeg-numRows.skipEnd),
+			       parameterName);
+            if ((f_6CycleFirst) || (!f_6CycleFirst && startTime != 0.0))
+	       WSintegerTime = WSintegerTime - (((double)period * 0.5) * 3600);
 
             /* Determine if this time is within the current day being
              * processed. */
-            if ((integerStartUserTime <= WSintegerTime) &&
-                (WSintegerTime < (integerStartUserTime + timeInterval)))
+            if ((timeUserStartStep <= WSintegerTime) &&
+                (WSintegerTime < (timeUserStartStep + timeInterval)))
             {
                /* We need the max windspeed for weather phrase/icon
                 * determination later on. Also, collect the valid times in
                 * which the max wind speed values fell.  These will be used
                 * to get the corresponding wind direction values for these
                 * times. */
-
                if (match[i].value[pnt].valueType == 0)
                {
                   roundedWindSpeedData =
                         (int)myRound(match[i].value[pnt].data, 0);
-
+//                  printf ("roundedWindSpeedData for currentDay, %d = %d\n",currentDay,roundedWindSpeedData);
                   if (roundedWindSpeedData > maxWindSpeed[currentDay])
                   {
                      maxWindSpeed[currentDay] = roundedWindSpeedData;
+//                     printf ("maxWindSpeed[%d] = %d\n",currentDay,maxWindSpeed[currentDay]);
                      valTimeForWindDirMatch[currentDay] = match[i].validTime;
+//                     printf ("valTimeForWindDirMatch[%d] = %f\n",currentDay,valTimeForWindDirMatch[currentDay]);
                   }
                }
             }
-            forecastPeriod = ((WSintegerTime - integerStartUserTime) / 3600);
+            forecastPeriod = ((WSintegerTime - timeUserStartStep) / 3600);
 
-            if (f_XML == 3 && forecastPeriod + period >= 12)
+            if (f_XML == 3 && (forecastPeriod + period) >= 12)
             {
                currentDay++;
-               integerStartUserTime = baseUserTime_doub + (currentDay *
-                                                           timeInterval);
+               timeUserStartStep = timeUserStart + (currentDay *
+                                   timeInterval);
                forecastPeriod = 0;
             }
-            else if (f_XML == 4 && forecastPeriod + period >= 24)
+            else if (f_XML == 4 && (forecastPeriod + period) >= 24)
             {
                currentDay++;
-               integerStartUserTime = baseUserTime_doub + (currentDay *
-                                                           timeInterval);
+               timeUserStartStep = timeUserStart + (currentDay * timeInterval);
                forecastPeriod = 0;
             }
          }
       }
       else
          priorElemCount++;
+   }
+   return;
+}
+
+/******************************************************************************
+ * genWindIncCumValues() --
+ *
+ * Paul Hershberg / MDL
+ *
+ * PURPOSE
+ *  This code formats the Wind Speed Incremental and Cumulative Probability 
+ *  Threshold elements in the "time-series" DWMLgen product.
+ *
+ * ARGUMENTS
+ *           pnt = Current Point index. (Input)
+ *     layoutKey = The key linking the Wind Speed Gusts to their valid times 
+ *                 (ex. k-p3h-n42-3). (Input)
+ * parameterName = Number in NDFD_ENUM denoting the NDFD element currently processed. 
+ *                 (Input) 
+ *         match = Pointer to the array of element matches from degrib. (Input) 
+ *      numMatch = The number of matches from degrib. (Input)
+ * windSpeedType = Character string denoting the type of wind speed to be 
+ *                 formatted. (Input)
+ * windSpeedName = Character string denoting the name of the wind speed to be
+ *                 formatted. (Input)
+ *    parameters = An xml Node Pointer denoting the <parameters> node to which 
+ *                 these values will be attached (child node). (Output)
+ *
+ * FILES/DATABASES: None
+ *
+ * RETURNS: void
+ *
+ * HISTORY
+ *   9/2006 Paul Hershberg (MDL): Created
+ *
+ * NOTES
+ ******************************************************************************
+ */
+static void genWindIncCumValues(size_t pnt, char *layoutKey, uChar parameterName,
+		                genMatchType *match, size_t numMatch,
+				char *windSpeedType, char *windSpeedName,
+			       	xmlNodePtr parameters, xmlDocPtr doc, 
+				numRowsInfo numRows)
+{
+   int i;                             /* Index through match structure. */
+   int roundedWindICData;             /* Returned rounded probability data. */
+   xmlNodePtr wind_speed_prob = NULL; /* Xml Node Pointer for <wind_speed_prob>
+                                       * element. */
+   xmlNodePtr value = NULL;           /* Xml Node Pointer for <value> element. */
+   char strBuff[30];                  /* Temporary string buffer holding rounded
+                                       * data. */
+
+   /* Format the <wind_speed_prob> element. */
+   wind_speed_prob = xmlNewChild(parameters, NULL, BAD_CAST "wind-speed", NULL);
+   xmlNewProp(wind_speed_prob, BAD_CAST "type", BAD_CAST windSpeedType);
+   xmlNewProp(wind_speed_prob, BAD_CAST "units", BAD_CAST "percent");
+   xmlNewProp(wind_speed_prob, BAD_CAST "time-layout", BAD_CAST layoutKey);
+
+   /* Format the display name. */
+   xmlNewChild(wind_speed_prob, NULL, BAD_CAST "name", BAD_CAST
+               windSpeedName);
+
+   /* Loop over all the data values and format them. */
+   for (i = 0; i < numMatch; i++)
+   {
+      if (match[i].elem.ndfdEnum == parameterName && 
+	  match[i].validTime >= numRows.firstUserTime &&
+          match[i].validTime <= numRows.lastUserTime)
+      {
+         /* If the data is missing, so indicate in the XML (nil=true). */
+         if (match[i].value[pnt].valueType == 2)
+         {
+            value = xmlNewChild(wind_speed_prob, NULL, BAD_CAST "value", NULL);
+            xmlNewProp(value, BAD_CAST "xsi:nil", BAD_CAST "true");
+         }
+         else if (match[i].value[pnt].valueType == 0) /* Format good data. */
+         {
+            roundedWindICData = (int)myRound(match[i].value[pnt].data, 0);
+            sprintf(strBuff, "%d", roundedWindICData);
+            xmlNewChild(wind_speed_prob, NULL, BAD_CAST "value", BAD_CAST strBuff);
+         }
+      }
+   }
+   return;
+}
+
+/******************************************************************************
+ * genWindSpeedGustValues() --
+ *
+ * Paul Hershberg / MDL
+ *
+ * PURPOSE
+ *  This code formats the Wind Speed Gust element in the "time-series" 
+ *  DWMLgen product.
+ *
+ * ARGUMENTS
+ *         pnt = Current Point index. (Input)
+ *   layoutKey = The key linking the Wind Speed Gusts to their valid times 
+ *               (ex. k-p3h-n42-3). (Input)
+ *       match = Pointer to the array of element matches from degrib. (Input) 
+ *    numMatch = The number of matches from degrib. (Input)
+ *  parameters = An xml Node Pointer denoting the <parameters> node to which 
+ *               these values will be attached (child node). (Output)
+ *
+ * FILES/DATABASES: None
+ *
+ * RETURNS: void
+ *
+ * HISTORY
+ *   9/2006 Paul Hershberg (MDL): Created
+ *
+ * NOTES
+ ******************************************************************************
+ */
+static void genWindSpeedGustValues(size_t pnt, char *layoutKey, 
+		                   genMatchType *match, size_t numMatch, 
+				   xmlNodePtr parameters, numRowsInfo numRows)
+{
+   int i;                        /* Index through match structure. */
+   int roundedWGData;            /* Returned rounded data. */
+   xmlNodePtr wind_speed = NULL; /* Xml Node Pointer for <wind_speed>
+                                  * element. */
+   xmlNodePtr value = NULL;      /* Xml Node Pointer for <value> element. */
+   char strBuff[30];             /* Temporary string buffer holding rounded
+                                  * data. */
+
+   /* Format the <wind_speed> element. */
+   wind_speed = xmlNewChild(parameters, NULL, BAD_CAST "wind-speed", NULL);
+   xmlNewProp(wind_speed, BAD_CAST "type", BAD_CAST "gust");
+   xmlNewProp(wind_speed, BAD_CAST "units", BAD_CAST "knots");
+   xmlNewProp(wind_speed, BAD_CAST "time-layout", BAD_CAST layoutKey);
+
+   /* Format the display name. */
+   xmlNewChild(wind_speed, NULL, BAD_CAST "name", BAD_CAST
+               "Wind Speed Gust");
+
+   /* Loop over all the data values and format them. */
+   for (i = 0; i < numMatch; i++)
+   {
+      if (match[i].elem.ndfdEnum == NDFD_WG && 
+	  match[i].validTime >= numRows.firstUserTime &&
+          match[i].validTime <= numRows.lastUserTime)
+      {
+         /* If the data is missing, so indicate in the XML (nil=true). */
+         if (match[i].value[pnt].valueType == 2)
+         {
+            value = xmlNewChild(wind_speed, NULL, BAD_CAST "value", NULL);
+            xmlNewProp(value, BAD_CAST "xsi:nil", BAD_CAST "true");
+         }
+         else if (match[i].value[pnt].valueType == 0) /* Format good data. */
+         {
+            roundedWGData = (int)myRound(match[i].value[pnt].data, 0);
+            sprintf(strBuff, "%d", roundedWGData);
+            xmlNewChild(wind_speed, NULL, BAD_CAST "value", BAD_CAST strBuff);
+         }
+      }
    }
    return;
 }
@@ -7692,7 +9233,8 @@ static void genWindDirectionValues(size_t pnt, char *layoutKey,
                                    genMatchType * match, size_t numMatch,
                                    xmlNodePtr parameters, int *maxWindDirection,
                                    uChar f_XML, int numOutputLines,
-				   double *valTimeForWindDirMatch)
+				   double *valTimeForWindDirMatch, 
+				   numRowsInfo numRows)
 {
 
    int i;
@@ -7705,6 +9247,12 @@ static void genWindDirectionValues(size_t pnt, char *layoutKey,
    char strBuff[30];          /* Temporary string buffer holding rounded
                                * data. */
 
+   if (f_XML == 3 || f_XML == 4)
+   {
+      if (valTimeForWindDirMatch[0] == -999.0)
+         currentDay = currentDay + 1;
+   }
+      
    /* If the product is of type DWMLgen, format the <wind_direction> element. 
     */
    if (f_XML == 1 || f_XML == 2)
@@ -7725,7 +9273,9 @@ static void genWindDirectionValues(size_t pnt, char *layoutKey,
 
    for (i = 0; i < numMatch; i++)
    {
-      if (match[i].elem.ndfdEnum == NDFD_WD)
+      if (match[i].elem.ndfdEnum == NDFD_WD && 
+	  match[i].validTime >= numRows.firstUserTime &&
+	  match[i].validTime <= numRows.lastUserTime)
       {
          if (f_XML == 1 || f_XML == 2)  /* DWMLgen products. */
          {
@@ -7749,9 +9299,9 @@ static void genWindDirectionValues(size_t pnt, char *layoutKey,
 		                            /* We don't format any wind for
                                              * these products, but simply get
                                              * Max. values for wind speed and
-                                             * the wind dir that occured when
-					     * the max wind speed was, for use 
-					     * in icon determination. */
+                                             * the wind dir that occured
+					     * during the max speed time; for
+					     * use in icon determination. */
          {
             if (valTimeForWindDirMatch[currentDay] == match[i].validTime)
             {
@@ -7828,35 +9378,28 @@ static void genSkyCoverValues(size_t pnt, char *layoutKey, genMatchType * match,
                               int *minSkyCover, int *averageSkyCover,
                               int numOutputLines, int timeInterval,
                               sChar TZoffset, sChar f_observeDST,
-                              uChar parameterName, uChar numRows, uChar f_XML, 
-			      int *maxSkyNum, int *minSkyNum, 
+                              uChar parameterName, numRowsInfo numRows, 
+			      uChar f_XML, int *maxSkyNum, int *minSkyNum, 
 			      int *startPositions, int *endPositions, 
-			      int *integerStartUserTime, int *SKYintegerTime,
-			      char *currentHour)
+			      int *SKYintegerTime, char *currentHour, 
+			      double timeUserStart, int f_6CycleFirst, 
+                              double startTime)
 {
-
    int i;
    int numNils = 0;           /* Denotes diff between number of data rows and 
 				 the number that need to be formatted for the 
 				 DWMLgenByDay products. */
-   int firstTime = 1; /* Boolean indicating that we have found the first data value 
+   int firstTime = 1; /* Flag indicating that we have found the first data value
                        * in the current period. */
-
-   int period;
+   int period = 0;
    int forecastPeriod = 0;
    int priorElemCount = 0;
-   int currentDay = 0;        /* Subset iteration of just wind Spds in the
+   int currentDay = 0;        /* Subset iteration of just Sky Cover in the
                                * match structure. */
-   char userStart_year[6];
-   char userStart_month[4];
-   char userStart_day[3];
-   sChar DST;
-   char baseUserTime[30];
-   char hourMinSecTZ[16]; /* String component holding "T06:00:00-{TZ}:00" part. */
-   double baseUserTime_doub = 0.0;
    double SKYdoubleTime = 0.0;
    double totalSkyCover = 0.0;
    double numSkyCoverValues = 0.0;
+   double timeUserStartStep = 0.0;
    int roundedSkyCoverData;   /* Returned rounded data. */
    xmlNodePtr cloud_amount = NULL;  /* Xml Node Pointer for <cloud-amount>
                                      * element. */
@@ -7865,12 +9408,26 @@ static void genSkyCoverValues(size_t pnt, char *layoutKey, genMatchType * match,
                                * data. */
    char SKYstr[30];           /* Temporary string holding formatted time
                                * value of sky cover. */
+//   char userStart_year[6];
+//   char userStart_month[4];
+//   char userStart_day[3];
+//   sChar DST;
+//   char baseUserTime[30];
+//   char hourMinSecTZ[16]; /* String component holding "T06:00:00-{TZ}:00" part. */
+//   double baseUserTime_doub = 0.0;
+   
+   /* Set the first iteration to the incoming user supplied startTime if 
+    * product is a summarization.
+    */
+   if (f_XML == 3 || f_XML == 4)
+   {
+//      printf ("timeUserStart = %f\n",timeUserStart);
+      timeUserStartStep = timeUserStart;
+   }
 
    /* If the product is of type DWMLgen, format the <cloud_amount> element. */
-
    if (f_XML == 1 || f_XML == 2)
    {
-
       cloud_amount = xmlNewChild(parameters, NULL, BAD_CAST "cloud-amount",
                                  NULL);
       xmlNewProp(cloud_amount, BAD_CAST "type", BAD_CAST "total");
@@ -7878,13 +9435,11 @@ static void genSkyCoverValues(size_t pnt, char *layoutKey, genMatchType * match,
       xmlNewProp(cloud_amount, BAD_CAST "time-layout", BAD_CAST layoutKey);
 
       /* Format the display name. */
-
       xmlNewChild(cloud_amount, NULL, BAD_CAST "name", BAD_CAST
                   "Cloud Cover Amount");
    }
-
-   /* If product type is of DWMLgenByDay, parse user supplied start time. */
-
+/*
+   // If product type is of DWMLgenByDay, parse user supplied start time. 
    if (f_XML == 3 || f_XML == 4)
    {
       userStart_year[0] = startDate[0];
@@ -7916,9 +9471,9 @@ static void genSkyCoverValues(size_t pnt, char *layoutKey, genMatchType * match,
       
       Clock_Scan(&baseUserTime_doub, baseUserTime, 0);
 
-      /* Before continuing, see if this point observes day light savings time, 
+      / Before continuing, see if this point observes day light savings time, 
        * and if it is currently in effect. 
-       */ 
+       * 
       if (f_observeDST)
       {
          if (Clock_IsDaylightSaving2(baseUserTime_doub, 0) == 1)
@@ -7934,11 +9489,10 @@ static void genSkyCoverValues(size_t pnt, char *layoutKey, genMatchType * match,
             Clock_Scan(&baseUserTime_doub, baseUserTime, 1);
 	 }            	 
       }
-
       *integerStartUserTime = baseUserTime_doub + (currentDay * timeInterval);
-      
    }
-
+*/
+   
    /* Loop over all the Sky Cover values. Format them if the product is of
     * type DWMLgen. Collect them in the maxSkyCover, minSkyCover, and
     * averageSkyCover arrays if the product is of type DWMLgenByDay. We also 
@@ -7946,10 +9500,13 @@ static void genSkyCoverValues(size_t pnt, char *layoutKey, genMatchType * match,
     * the periods, and the positions where the max and min sky covers are
     * found in each period.
     */
-
+//   printf ("Checking Sky values, numRows.firstUserTime = %f\n",numRows.firstUserTime);
+//   printf ("Checking Sky values, numRows.lasttUserTime = %f\n",numRows.lastUserTime);
    for (i = 0; i < numMatch; i++)
    {
-      if (match[i].elem.ndfdEnum == NDFD_SKY)
+      if (match[i].elem.ndfdEnum == NDFD_SKY &&
+	  match[i].validTime >= numRows.firstUserTime &&
+	  match[i].validTime <= numRows.lastUserTime)
       {
          if (f_XML == 1 || f_XML == 2)  /* DWMLgen products. */
          {
@@ -7980,40 +9537,43 @@ static void genSkyCoverValues(size_t pnt, char *layoutKey, genMatchType * match,
             /* Loop over each day if the requested format is 24 hourly, or
              * each 12 hour period if the requested format is 12 hourly. We
              * use a time interval in which the number of seconds in either a
-             * 24 or 12 hour period determines the integer start time. */
-
+             * 24 or 12 hour period determines the integer start time. 
+	     */
             *SKYintegerTime = 0;
             SKYstr[0] = '\0';
-
             formatValidTime(match[i].validTime, SKYstr, 30, TZoffset,
                             f_observeDST);
-
+//	    printf ("SKYstr = %s\n",SKYstr);
             Clock_Scan(&SKYdoubleTime, SKYstr, 0);
             *SKYintegerTime = SKYdoubleTime;
 
             /* Now we have to account for data that is just in the time
              * period i.e. if data is valid from 4PM-7PM and time period is
              * from 6AM-6PM. We shift data by one half the data's period in
-             * seconds. */
-
-            if (i - priorElemCount < 1)
+             * seconds. 
+	     */
+	    if (i - priorElemCount < 1)
                period = determinePeriodLength(match[i].validTime,
-                                              match[i + 1].validTime, numRows,
-                                              parameterName);
+                               match[i + 1].validTime, 
+			       (numRows.total-numRows.skipBeg-numRows.skipEnd),
+                               parameterName);
             else
                period = determinePeriodLength(match[i - 1].validTime,
-                                              match[i].validTime,
-                                              numRows, parameterName);
+                               match[i].validTime,
+                               (numRows.total-numRows.skipBeg-numRows.skipEnd), 
+			       parameterName);
 
-            *SKYintegerTime = *SKYintegerTime - (((double)period * 0.5) * 3600);
+            if ((f_6CycleFirst) || (!f_6CycleFirst && startTime != 0.0))
+      	       *SKYintegerTime = *SKYintegerTime - (((double)period * 0.5) * 3600);
 
             /* Determine if this time is within the current day (period) being
-             * processed. */
-
-            if ((*integerStartUserTime <= *SKYintegerTime)
-                && (*SKYintegerTime < *integerStartUserTime + timeInterval))
+             * processed. 
+	     */
+//	    printf ("*SKYintegerTime(%d)-%f = %f\n",*SKYintegerTime,timeUserStartStep,(*SKYintegerTime-timeUserStartStep)/3600);
+            if ((timeUserStartStep <= *SKYintegerTime)
+                && (*SKYintegerTime < timeUserStartStep + timeInterval))
             {
-	       
+//	        printf ("are we here?\n");
                /* We need the max, min, and average sky covers for each
                 * forecast period (12 or 24 hours) for weather phrase/icon
                 * determination later on. 
@@ -8024,7 +9584,6 @@ static void genSkyCoverValues(size_t pnt, char *layoutKey, genMatchType * match,
                         (int)myRound(match[i].value[pnt].data, 0);
 
                   /* Get maxSkyCover values and record it's index. */
-
                   if (roundedSkyCoverData > maxSkyCover[currentDay])
 	          {
                      maxSkyCover[currentDay] = roundedSkyCoverData;
@@ -8032,7 +9591,6 @@ static void genSkyCoverValues(size_t pnt, char *layoutKey, genMatchType * match,
 		  }
 
                   /* Get minSkyCover values and record it's index. */
-
                   if (roundedSkyCoverData < minSkyCover[currentDay])
 	          {
                      minSkyCover[currentDay] = roundedSkyCoverData;
@@ -8055,7 +9613,7 @@ static void genSkyCoverValues(size_t pnt, char *layoutKey, genMatchType * match,
 	       }
             }
 	    
-            forecastPeriod = ((*SKYintegerTime - *integerStartUserTime) / 3600);
+            forecastPeriod = ((*SKYintegerTime - timeUserStartStep) / 3600);
     
             /* Calculate the average sky cover for use in phrase algorithm. First,
              * check to see if we need to jump into the next forecast period. 
@@ -8063,27 +9621,34 @@ static void genSkyCoverValues(size_t pnt, char *layoutKey, genMatchType * match,
             if (f_XML == 3)
             {
 	       if ((forecastPeriod + period >= 12) ||  
-		  (i - priorElemCount == numRows - 1)) /* Accounts for last data row. */
+		  (i - priorElemCount == 
+		  (numRows.total-numRows.skipBeg-numRows.skipEnd) - 1)) 
+		   /* Accounts for last data row. */
                {
                   if (numSkyCoverValues > 0)
                      averageSkyCover[currentDay] = (int)myRound((totalSkyCover / numSkyCoverValues), 0);
 	          else
+	          {
+//	             printf ("ARE WE HERE ASSIGNING AVERAGESKYCOVER[%d] TO ZERO\n",currentDay);
 		     averageSkyCover[currentDay] = 0;
+		  }
 
                   totalSkyCover = 0;
                   numSkyCoverValues = 0;
 	          endPositions[currentDay] = i - priorElemCount;
 	          firstTime = 1;
                   currentDay++;
-                  *integerStartUserTime = baseUserTime_doub + (currentDay *
-                                                              timeInterval);
+                  timeUserStartStep = timeUserStart + (currentDay *
+                                      timeInterval);
                   forecastPeriod = 0;
 	       }
             }
             else if (f_XML == 4)
 	    {
                if ((forecastPeriod + period >= 24) || 
-	          (i - priorElemCount == numRows - 1)) /* Accounts for last data row. */
+	          (i - priorElemCount == 
+		  (numRows.total-numRows.skipBeg-numRows.skipEnd) - 1))
+		  /* Accounts for last data row. */
                {
                   if (numSkyCoverValues > 0)
                      averageSkyCover[currentDay] = (int)myRound((totalSkyCover / numSkyCoverValues), 0);
@@ -8094,9 +9659,10 @@ static void genSkyCoverValues(size_t pnt, char *layoutKey, genMatchType * match,
                   numSkyCoverValues = 0;
 	          endPositions[currentDay] = i - priorElemCount;
 	          firstTime = 1;
+//		  printf ("averageSkyCover[%d] = %d\n",currentDay, averageSkyCover[currentDay]);
                   currentDay++;
-                  *integerStartUserTime = baseUserTime_doub + (currentDay *
-                                                              timeInterval);
+                  timeUserStartStep = timeUserStart + (currentDay *
+                                      timeInterval);
                   forecastPeriod = 0;
 	       }
             }
@@ -8159,7 +9725,7 @@ static void genSkyCoverValues(size_t pnt, char *layoutKey, genMatchType * match,
  */
 static void genRelHumidityValues(size_t pnt, char *layoutKey,
                                  genMatchType * match, size_t numMatch,
-                                 xmlNodePtr parameters)
+                                 xmlNodePtr parameters, numRowsInfo numRows)
 {
    int i;
    int roundedRelHumidityData;  /* Returned rounded data. */
@@ -8183,7 +9749,9 @@ static void genRelHumidityValues(size_t pnt, char *layoutKey,
 
    for (i = 0; i < numMatch; i++)
    {
-      if (match[i].elem.ndfdEnum == NDFD_RH)
+      if (match[i].elem.ndfdEnum == NDFD_RH && 
+	  match[i].validTime >= numRows.firstUserTime &&
+	  match[i].validTime <= numRows.lastUserTime)
       {
 
          /* If the data is missing, so indicate in the XML (nil=true). */
@@ -8234,7 +9802,7 @@ static void genRelHumidityValues(size_t pnt, char *layoutKey,
  */
 static void genWaveHeightValues(size_t pnt, char *layoutKey,
                                 genMatchType * match, size_t numMatch,
-                                xmlNodePtr parameters)
+                                xmlNodePtr parameters, numRowsInfo numRows)
 {
    int i;
    int roundedWaveHeightData; /* Returned rounded data. */
@@ -8263,7 +9831,9 @@ static void genWaveHeightValues(size_t pnt, char *layoutKey,
 
    for (i = 0; i < numMatch; i++)
    {
-      if (match[i].elem.ndfdEnum == NDFD_WH)
+      if (match[i].elem.ndfdEnum == NDFD_WH && 
+	  match[i].validTime >= numRows.firstUserTime &&
+	  match[i].validTime <= numRows.lastUserTime)
       {
 
          /* If the data is missing, so indicate in the XML (nil=true). */
@@ -8343,8 +9913,8 @@ static void checkNeedForPeriodName(int index, uChar * numPeriodNames,
                                        * for each of the different cycles
                                        * (afternoon and morning) and period
                                        * lengths (12 and 24 hours). */
-   int numPeriodsClippedBegin = 0;
-   int numHoursClippedBegin = 0;
+   double numPeriodsClippedBegin = 0.0;
+   double numHoursClippedBegin = 0.0;
    double startTime_doub = 0.0;
 
    /* Initialize periodData pointer. */
@@ -8390,36 +9960,55 @@ static void checkNeedForPeriodName(int index, uChar * numPeriodNames,
       TDay[1] = parsedDataTime[9];
       TDay[2] = '\0';
    }
+//   printf ("issuanceType incoming= %d\n",issuanceType);
 
    /* Calculate how many periods were skipped at beginning. */
    Clock_Scan(&startTime_doub, parsedDataTime, 1);
-   numHoursClippedBegin = (startTime_doub - currentDoubTime) / 3600;
-
+   if (parameterName == NDFD_POP)
+      numHoursClippedBegin = ((startTime_doub + (0.5*12*3600)) - currentDoubTime) / 3600;
+   else
+      numHoursClippedBegin = (startTime_doub - currentDoubTime) / 3600;
+//   printf ("numHoursClippedBegin = %f\n",numHoursClippedBegin);
    /* Now we have to check and see if user supplied a shorter duration for
     * data formatting via the command line arguments startTime and endTime.
     * Then we need to see if period names are still applicable in this
     * shorter interval of time. */
-   if (startTime_cml != 0.0 && numHoursClippedBegin >= 12)
+   if ((startTime_cml != 0.0) && numHoursClippedBegin >= 12)
    {
       /* We use "12" instead of the period name because MaxT and MinT have
-       * periods of 24 hours, but forecast periods of 12 hours. */
-      numPeriodsClippedBegin = numHoursClippedBegin / 12;
-      if (numPeriodsClippedBegin >= *numPeriodNames)
+       * periods of 24 hours, but forecast periods of 12 hours for the 12hr
+       * summarization product.
+       */
+      if (parameterName == NDFD_POP)
+         numPeriodsClippedBegin = ceil(numHoursClippedBegin / 12.0);
+      else
+//         numPeriodsClippedBegin = floor(numHoursClippedBegin / 12.0);
+//         numPeriodsClippedBegin = ceil(numHoursClippedBegin / 24.0);
+         numPeriodsClippedBegin = myRound((numHoursClippedBegin / 24.0), 0);
+ 
+//      printf ("numPeriodsClippedBegin = %f\n",numPeriodsClippedBegin);
+//      printf ("*numPeriodNames = %d\n",*numPeriodNames);
+      if ((int)myRound(numPeriodsClippedBegin, 0) >= *numPeriodNames)
       {
          *outputPeriodName = 0;
+//         printf ("WE HERE 1\n");
          return;
       }
       else
       {
          *outputPeriodName = 1; /* Tell user they need to use a period name. */
-         whichPeriodName = *numPeriodNames - numPeriodsClippedBegin;
-
+//         whichPeriodName = (int)myRound(*numPeriodNames - numPeriodsClippedBegin, 0);
+         whichPeriodName = (int)myRound(numPeriodsClippedBegin, 0);
          /* Now that we have issuanceType, and whichPeriodName, retrieve the
           * periodName. */
          if (periodData[issuanceType][whichPeriodName] != NULL)
             strcpy(periodName, periodData[issuanceType][whichPeriodName]);
          else
             *outputPeriodName = 0;
+
+         printf ("issuanceType = %d\n",issuanceType);
+         printf ("whichPeriodName = %d\n",whichPeriodName);
+         printf ("WE HERE 2\n");
          return;
       }
    }
@@ -8428,14 +10017,11 @@ static void checkNeedForPeriodName(int index, uChar * numPeriodNames,
       /* Late in the day, the Max Temp value will be in the tomorrow period
        * so we need to detect that condition and return outputPeriodName =
        * false. */
-
       if (parameterName == NDFD_MAX)
       {
-
          /* If the max temp day is not the same as the today's day, then we
           * don't need to label it using "today".  This happens in the
           * evening after about 8:00 PM. */
-
          if (strcmp(currentDay, TDay) != 0 && index + 1 < *numPeriodNames)
          {
             *outputPeriodName = 1;  /* Tell user they need to use a period
@@ -8514,7 +10100,7 @@ static void checkNeedForPeriodName(int index, uChar * numPeriodNames,
          /* If the POP day is not the same as the today's day, then we don't
           * need to label it using "today".  This happens in the evening
           * after about 8:00 PM. */
-
+//	 printf ("currentDay, TDay = %s, %s\n",currentDay, TDay);
          if (strcmp(currentDay, TDay) == 0 && atoi(currentHour)
              <= 20 && index < *numPeriodNames)
          {
@@ -8534,10 +10120,18 @@ static void checkNeedForPeriodName(int index, uChar * numPeriodNames,
 
    /* Now that we have issuanceType, and whichPeriodName, retrieve the
     * periodName. */
+//   printf ("*outputPeriodName = %d\n",*outputPeriodName);
+//   printf ("issuanceType = %d\n",issuanceType);
+//   printf ("whichPeriodName = %d\n",whichPeriodName);
+
    if (*outputPeriodName != 0
        && periodData[issuanceType][whichPeriodName] != NULL)
+   {
+//      printf ("WE HERE 3?\n");
       strcpy(periodName, periodData[issuanceType][whichPeriodName]);
+   }
 
+//   printf ("periodName = %s\n",periodName);
    return;
 }
 
@@ -8785,7 +10379,8 @@ static void monthDayYearTime(genMatchType * match, size_t numMatch,
                              char *currentLocalTime, char *currentDay,
                              sChar f_observeDST, 
 			     double *firstMaxTValidTime_doub_adj,
-                             double *currentLocalTime_doub_adj, sChar TZoffset)
+                             double *currentLocalTime_doub_adj, sChar TZoffset,
+			     numRowsInfo numRows)
 {
 
    int i;
@@ -8807,8 +10402,11 @@ static void monthDayYearTime(genMatchType * match, size_t numMatch,
     * the year, month, and day to = 0. */
 
    for (i = 0; i < numMatch; i++)
-   {
-      if (match[i].elem.ndfdEnum == NDFD_MAX) /* Set first MaxT validtime. */
+   {  
+      /* Set first MaxT validtime. */
+      if (match[i].elem.ndfdEnum == NDFD_MAX && 
+	  match[i].validTime >= numRows.firstUserTime &&
+	  match[i].validTime <= numRows.lastUserTime) 
       {
          formatValidTime(match[i].validTime, firstMaxTValidTime_char, 30, 
 			 TZoffset, f_observeDST);
@@ -8840,18 +10438,18 @@ static void monthDayYearTime(genMatchType * match, size_t numMatch,
    strcat(firstMaxTValidTime_char_adj, maxTDay);
 
    if (TZoffset < 0)
-      sprintf(time_adj, "T00:00:00%02d:00", TZoffset);
+      sprintf(time_adj, "T00:00:00+%02d:00", -1 * TZoffset);
    else
       sprintf(time_adj, "T00:00:00-%02d:00", TZoffset);
    
    strcat(firstMaxTValidTime_char_adj, time_adj);
+//   printf ("firstMaxTValidTime_char_adj = %s\n",firstMaxTValidTime_char_adj);
 
    /* Get the adjusted MaxT validTime in double form. */
    Clock_Scan(firstMaxTValidTime_doub_adj, firstMaxTValidTime_char_adj, 1);
 
-   /* B`uild the current Local time, adjusted with hours, minutes, and seconds 
+   /* Build the current Local time, adjusted with hours, minutes, and seconds
     * all set to zeroes. */
-
    currentYear[0] = currentLocalTime[0];
    currentYear[1] = currentLocalTime[1];
    currentYear[2] = currentLocalTime[2];
@@ -8869,14 +10467,13 @@ static void monthDayYearTime(genMatchType * match, size_t numMatch,
    strcat(currentLocalTime_char_adj, currentDay);
    
    if (TZoffset < 0)
-      sprintf(time_adj, "T00:00:00%02d:00", TZoffset);
+      sprintf(time_adj, "T00:00:00+%02d:00", -1 * TZoffset);
    else
       sprintf(time_adj, "T00:00:00-%02d:00", TZoffset);
    
    strcat(currentLocalTime_char_adj, time_adj);
-
+//   printf ("currentLocalTime_char_adj = %s\n",currentLocalTime_char_adj);
    /* Get the adjusted current LocalTime in double form. */
-
    Clock_Scan(currentLocalTime_doub_adj, currentLocalTime_char_adj, 1);
 
    return;
@@ -9100,7 +10697,7 @@ static int isNewLayout(layouts newLayout, size_t * numLayoutSoFar,
  *****************************************************************************
  */
 
-static void generateTimeLayout(uChar numRows, uChar parameterName,
+static void generateTimeLayout(numRowsInfo numRows, uChar parameterName,
                                char *layoutKey, const char *timeCoordinate,
                                char *summarization, genMatchType * match,
                                size_t numMatch, uChar f_formatPeriodName,
@@ -9110,17 +10707,16 @@ static void generateTimeLayout(uChar numRows, uChar parameterName,
                                char *currentDay, char *frequency,
                                xmlNodePtr data, double startTime_cml,
                                double currentDoubTime, int *numFmtdRows,
-			       uChar f_XML, int numPopRowsSkippedBeginning)
+			       uChar f_XML)
 {
-
    int i;
    int f_finalTimeLayout = 0; /* Flag denoting if this is the last time
                                * layout being processed. */
-   int elemCount = 0;         /* Counter used in determining first validTime. 
-                               */
+//   int elemCount = 0;         /* Counter used in determining first validTime. 
+//                               */
    int period = 0;            /* Length between an elements successive
                                * validTimes. */
-   int numPopRowsSkippedTemp = 0;
+   int numActualRows;
    double startTime_doub = 0.0; /* Holds startTimes as a double. */
    double firstValidTime = 0.0; /* The validTime of the first match for the
                                  * element being processed. */
@@ -9152,99 +10748,88 @@ static void generateTimeLayout(uChar numRows, uChar parameterName,
                                * "Overnight"). */
    uChar issuanceType = MAX_PERIODS;  /* Max number of issuanceTypes. */
    
+   /* Set the number of actual rows. */
+   numActualRows = numRows.total-numRows.skipBeg-numRows.skipEnd;
+//   printf ("parameterName = %d\n",parameterName);
+//   printf ("numRows.total = %d\n",numRows.total);
+//   printf ("numRows.skipBeg = %d\n",numRows.skipBeg);
+//   printf ("numRows.skipEnd = %d\n",numRows.skipEnd);
+//   printf ("numActualRows = %d\n",numActualRows);
+//   printf ("numRows.firstUserTime = %f\n",numRows.firstUserTime);
+//   printf ("numRows.lastUserTime = %f\n",numRows.lastUserTime);
+
    /* If DWMLgen product, set numFmtdRows = to numRows. */
    if (f_XML == 1 || f_XML == 2)
-      *numFmtdRows = numRows;
+      *numFmtdRows = numActualRows;
+//   printf ("numFmtdRows at beg = %d\n",*numFmtdRows);
+//   printf ("parameterName at beg of generateTimes = %d\n",parameterName);
+   /* Find first and second validTime per element (if exists) interested in. */
+   getFirstSecondValidTimes(&firstValidTime, &secondValidTime, match, numMatch,
+		            parameterName, numRows.total, numRows.skipBeg,
+			    numRows.skipEnd);
 
-   /* Find first validTime per element interested in and start filling in the 
-    * time layout array with this current data. Also, to retrieve the period
-    * length get the first and second valid time in double form. */
-   for (i = 1; i < numMatch; i++)
-   {
-      if (match[i - 1].elem.ndfdEnum == parameterName && numRows != 1)
-      {
-         elemCount += 1;
-         if (match[i].elem.ndfdEnum != match[i - 1].elem.ndfdEnum)
-         {
-            formatValidTime(match[i - elemCount].validTime,
-                            currentTimeLayout.fmtdStartTime, 30, TZoffset,
-                            f_observeDST);
-            firstValidTime = match[i - elemCount].validTime;
-            secondValidTime = match[i - (elemCount - 1)].validTime;
-            break;
-         }
-      }
-      else if (match[i - 1].elem.ndfdEnum == parameterName && numRows == 1)
-      {
-         formatValidTime(match[i - 1].validTime,
-                         currentTimeLayout.fmtdStartTime, 30, TZoffset,
-                         f_observeDST);
-         firstValidTime = match[i - 1].validTime;
-         break;
-      }
+   /* Start filling in the time layout array's  with this current data. */
+   formatValidTime(firstValidTime, currentTimeLayout.fmtdStartTime, 30,
+		   TZoffset, f_observeDST);
+//   printf ("currentTimeLayout.fmtdStartTime = %s\n",currentTimeLayout.fmtdStartTime);
 
-      if ((i == numMatch - 1) && (match[i - 1].elem.ndfdEnum == parameterName))
-      {
-         formatValidTime(match[i - elemCount].validTime,
-                         currentTimeLayout.fmtdStartTime, 30, TZoffset,
-                         f_observeDST);
-         firstValidTime = match[i - elemCount].validTime;
-         secondValidTime = match[i - (elemCount - 1)].validTime;
-      }
-   }
-
+//   printf ("are we here 1\n");
    /* Get the period length using either the period name or the valid times. */
-
    if (parameterName == NDFD_MAX || parameterName == NDFD_MIN)
       period = 24;
    else if (parameterName == NDFD_POP)
       period = 12;
-   else                       /* Calculate it */
-      period = determinePeriodLength(firstValidTime, secondValidTime, numRows,
-                                     parameterName);
-   /* Fill the rest of the time layout array with current data. */
+   else /* Calculate it */
+      period = determinePeriodLength(firstValidTime, secondValidTime,
+		                     numActualRows, parameterName);
+//   printf ("are we here 2\n");
 
+   /* Fill the rest of the time layout array with current data. */
    currentTimeLayout.period = period;
-   currentTimeLayout.numRows = numRows;
+   currentTimeLayout.numRows = numActualRows;
 
    /* Determine if this layout information has already been formatted. */
    if (isNewLayout(currentTimeLayout, numLayoutSoFar, numCurrentLayout,
                    f_finalTimeLayout) == 1)
    {
-      /* Create the new key and bump the number of layouts by one. */
-      sprintf(layoutKey, "k-p%dh-n%d-%d", period, *numFmtdRows, 
+      /* Create the new key and then bump up the number of layouts by one. */
+      sprintf(layoutKey, "k-p%dh-n%d-%d", period, *numFmtdRows,
 	      *numLayoutSoFar);
       *numLayoutSoFar += 1;
-      
+//   printf ("are we here 3\n");
+
       /* See if we need to format an <end-valid-time> tag . */
       useEndTimes = checkNeedForEndTime(parameterName);
 
       /* Some parameters like max and min temp don't have valid times that
-       * match the real start time.  So make the adjustment. */
-      if (*numFmtdRows > numRows) 
+       * match the real start time.  So make the adjustment. 
+       */
+      if (*numFmtdRows > numActualRows)
       {
          startTimes = (char **)malloc(*numFmtdRows * sizeof(char *));
-        if (useEndTimes)
-            endTimes = (char **)malloc(*numFmtdRows * sizeof(char *));
+         if (useEndTimes)
+             endTimes = (char **)malloc(*numFmtdRows * sizeof(char *));
+//   printf ("are we here 4\n"); 
 	
          computeStartEndTimes(parameterName, *numFmtdRows, period, TZoffset,
                               f_observeDST, match, numMatch, useEndTimes,
                               startTimes, endTimes, frequency, f_XML, 
-			      startTime_cml, currentDoubTime, 
-			      &numPopRowsSkippedBeginning);
+		              startTime_cml, currentDoubTime, numRows);
       }
       else
       {
-         startTimes = (char **)malloc(numRows * sizeof(char *));
+         startTimes = (char **)malloc(numActualRows* sizeof(char *));
          if (useEndTimes)
-            endTimes = (char **)malloc(numRows * sizeof(char *));
-         computeStartEndTimes(parameterName, numRows, period, TZoffset,
+            endTimes = (char **)malloc(numActualRows * sizeof(char *));
+         computeStartEndTimes(parameterName, *numFmtdRows, period, TZoffset,
                               f_observeDST, match, numMatch, useEndTimes,
                               startTimes, endTimes, frequency, f_XML, 
-			      startTime_cml, currentDoubTime, 
-			      &numPopRowsSkippedBeginning);
+			      startTime_cml, currentDoubTime, numRows);
       }
-      
+
+//      for (i=0;i<numActualRows;i++)
+//	      printf("startTimes[%d] = %s\n",i,startTimes[i]);
+
       /* Format the XML time layout in the output string. */
       time_layout = xmlNewChild(data, NULL, BAD_CAST "time-layout", NULL);
       xmlNewProp(time_layout, BAD_CAST "time-coordinate", BAD_CAST
@@ -9252,6 +10837,7 @@ static void generateTimeLayout(uChar numRows, uChar parameterName,
       xmlNewProp(time_layout, BAD_CAST "summarization", BAD_CAST summarization);
       layout_key = xmlNewChild(time_layout, NULL, BAD_CAST "layout-key",
                                BAD_CAST layoutKey);
+//   printf ("are we here 5\n"); 
 
       /* Before looping throught the valid times determine the period
        * information "issuanceType" and "numPeriodNames". */
@@ -9261,101 +10847,94 @@ static void generateTimeLayout(uChar numRows, uChar parameterName,
                        &issuanceType, &numPeriodNames, period, frequency);
       
       /* Now we get the time values for this parameter and format the valid time
-       * tags. */
-      numPopRowsSkippedTemp = numPopRowsSkippedBeginning;
+       * tags. 
+       */
       for (i = 0; i < *numFmtdRows; i++)
       {
          if (i < *numFmtdRows) /* Accounts for DWMLgenByDay. */
          {
 	    if (startTimes[i])
             {
-	       if (numPopRowsSkippedTemp == 0)
-	       {	       
-                  startValTime = xmlNewChild(time_layout, NULL, BAD_CAST
-                                             "start-valid-time", BAD_CAST
-                                             startTimes[i]);
+               startValTime = xmlNewChild(time_layout, NULL, BAD_CAST
+                                          "start-valid-time", BAD_CAST
+                                          startTimes[i]);
 
-                  /* We only format period names for parameters with period
-                   * greater than 12 hours like (max and min temp, and pop12
-                   * etc). */
-                  if (f_formatPeriodName && period >= 12)
+               /* We only format period names for parameters with period
+                * greater than 12 hours like (max and min temp, and pop12
+                * etc). */
+               if (f_formatPeriodName && period >= 12)
+               {
+                  outputPeriodName = 0;
+                  periodName[0] = '\0';
+                  Clock_Scan(&startTime_doub, startTimes[i], 1);
+		  Clock_Print2(dayName, 30, startTime_doub, "%v", 
+			       TZoffset, f_observeDST);
+
+		  /* First see if one of these first special period names is
+		   * to be trumped by a holiday name. If so, don't get the 
+		   * special period name.
+		   */
+    	          if (strcmp(dayName, "Sunday") == 0 || 
+		      strcmp(dayName, "Monday") == 0 ||
+		      strcmp(dayName, "Tuesday") == 0 ||
+		      strcmp(dayName, "Wednesday") == 0 ||
+		      strcmp(dayName, "Thursday") == 0 ||
+		      strcmp(dayName, "Friday") == 0 ||
+		      strcmp(dayName, "Saturday") == 0)
                   {
-                     outputPeriodName = 0;
-                     periodName[0] = '\0';
-                     Clock_Scan(&startTime_doub, startTimes[i], 1);
-		     Clock_Print2(dayName, 30, startTime_doub, "%v", 
-			          TZoffset, f_observeDST);
+                     checkNeedForPeriodName(i, &numPeriodNames,
+                                            TZoffset, parameterName,
+                                            startTimes[i],
+                                            &outputPeriodName, issuanceType,
+                                            periodName, currentHour, 
+					    currentDay, startTime_cml, 
+					    currentDoubTime, firstValidTime,
+					    period);
+		  }
 
-		     /* First see if one of these first special period names is
-		      * to be trumped by a holiday name. If so, don't get the 
-		      * special period name.
+                  /* Handle each special period name (up to 3 of them). */
+                  if (outputPeriodName)
+                  {
+//		    printf ("periodName in generateTimeLayout = %s\n",periodName);
+                     xmlNewProp(startValTime, BAD_CAST "period-name", BAD_CAST
+                                periodName);
+                  }
+                  else
+                   /* We are past special names occurring during the
+                    * first few periods.
+		    */
+                  {
+                     /* We will use the day of the week for the period name
+                      * and add "Night" if it's a night time period. Since we
+                      * may have altered the startTimes from the
+                      * match.validTimes, we need to send the double version
+                      * of the string startTimes into Clock_Print2 routine.
 		      */
-    	             if (strcmp(dayName, "Sunday") == 0 || 
-		         strcmp(dayName, "Monday") == 0 ||
-		         strcmp(dayName, "Tuesday") == 0 ||
-		         strcmp(dayName, "Wednesday") == 0 ||
-		         strcmp(dayName, "Thursday") == 0 ||
-		         strcmp(dayName, "Friday") == 0 ||
-		         strcmp(dayName, "Saturday") == 0)
+                     if (useNightPeriodName(startTimes[i]) == 0)
                      {
-                        checkNeedForPeriodName(i, &numPeriodNames,
-                                               TZoffset, parameterName,
-                                               startTimes[i],
-                                               &outputPeriodName, issuanceType,
-                                               periodName, currentHour, 
-					       currentDay, startTime_cml, 
-					       currentDoubTime, firstValidTime,
-					       period);
-		     }
-
-                     /* Handle each special period name (up to 3 of them). */
-                     if (outputPeriodName)
-                     {
-                        xmlNewProp(startValTime, BAD_CAST "period-name", BAD_CAST
-                                   periodName);
-                     }		  
-                     else
-                      /* We are past special names occurring during the *
-                       * first few periods. 
-		       */
-                     {
-                        /* We will use the day of the week for the period name
-                         * and add "Night" if it's a night time period. Since we
-                         * may have altered the startTimes from the
-                         * match.validTimes, we need to send the double version
-                         * of the string startTimes into Clock_Print2 routine. 
-			 */
-
-                        if (useNightPeriodName(startTimes[i]) == 0)
-                        {
-                           xmlNewProp(startValTime, BAD_CAST "period-name",
-                                      BAD_CAST dayName);
-                        }
-                        else /* Night time period. Use the "%A" format to insure
-			      * that a holiday name isn't placed in a night 
-			      * period.
-			      */
-		        {
-			   Clock_Print2(dayName, 30, startTime_doub, "%A", 
-					TZoffset, f_observeDST);
-                           strcat(dayName, " Night");
-                           xmlNewProp(startValTime, BAD_CAST "period-name",
-                                      BAD_CAST dayName);
-			}
+                        xmlNewProp(startValTime, BAD_CAST "period-name",
+                                   BAD_CAST dayName);
                      }
-                  }   
-                  /* If this is a parameter needing an <end-valid-time> tag, we
-                   * format it. */
-
-                  if (useEndTimes)
-                     xmlNewChild(time_layout, NULL, BAD_CAST "end-valid-time",
-                                 BAD_CAST endTimes[i]);
-	       }
-	       else
-	       {
-                  numPopRowsSkippedTemp--;
-	          continue;
+                     else /* Night time period. Use the "%A" format to insure
+		           * that a holiday name isn't placed in a night
+			   * period.
+			   */
+		     {
+			Clock_Print2(dayName, 30, startTime_doub, "%A",
+				     TZoffset, f_observeDST);
+                        strcat(dayName, " Night");
+                        xmlNewProp(startValTime, BAD_CAST "period-name",
+                                   BAD_CAST dayName);
+	             }
+                  }
                }
+               /* If this is a parameter needing an <end-valid-time> tag, we
+                * format it.
+		*/
+               if (useEndTimes)
+                  xmlNewChild(time_layout, NULL, BAD_CAST "end-valid-time",
+                              BAD_CAST endTimes[i]);
+
             }
             else /* No startTime or the first Pop Rows is skipped. */
             {
@@ -9367,13 +10946,14 @@ static void generateTimeLayout(uChar numRows, uChar parameterName,
                   endValTime = xmlNewChild(time_layout, NULL, BAD_CAST
                                            "end-valid-time", BAD_CAST NULL);
                   xmlNewProp(endValTime, BAD_CAST "xsi:nil", BAD_CAST "true");
-               }               
-	    }	       
+               }
+	    }
 	 }
       }
+//   printf ("are we here 5.5\n");
 
       /* Free some things. */
-      if (*numFmtdRows > numRows) 
+      if (*numFmtdRows > numActualRows)
       {
          for (i = 0; i < *numFmtdRows; i++)
          {
@@ -9384,7 +10964,7 @@ static void generateTimeLayout(uChar numRows, uChar parameterName,
       }
       else
       {
-         for (i = 0; i < numRows; i++)
+         for (i = 0; i < numActualRows; i++)
          {
             free(startTimes[i]);
             if (useEndTimes)
@@ -9395,15 +10975,15 @@ static void generateTimeLayout(uChar numRows, uChar parameterName,
       free(startTimes);
       if (useEndTimes)
          free(endTimes);
+//   printf ("are we here 6\n"); 
 
    }
-   else                       /* Not a new key so just return the key name */
+   else /* Not a new key so just return the key name */
    {
       sprintf(layoutKey, "k-p%dh-n%d-%d", period, *numFmtdRows, *numCurrentLayout);
    }
    
    return;
-
 }
 
 /*****************************************************************************
@@ -9561,23 +11141,58 @@ static void formatMetaDWML(uChar f_XML, xmlDocPtr * doc, xmlNodePtr * data,
  * PURPOSE
  *  Code retrieves the number of rows of data (aka the number of data values) 
  *  for each element retrieved from by degrib from NDFD. These are the elements  
- *  formatted and also any elements used to derive the formatted elements. 
+ *  formatted and also any elements used to derive the formatted elements. Code
+ *  also calcuates the number of rows skipped at the beginning and ending of a 
+ *  time period if user has shortened the time period by setting startTime and
+ *  endTime command line arguments. The first and last valid Times corresponding
+ *  to the rows are also found. 
  *
  * ARGUMENTS
  *           f_XML = Flag denoting type of XML product (1 = DWMLgen's 
  *                   "time-series" product, 2 = DWMLgen's "glance" product, 3 = 
  *                   DWMLgenByDay's "12 hourly" product, 4 = DWMLgenByDay's 
  *                   "24 hourly" product. (Input) 
- * numRowsForPoint = Number of rows data is formatted for in the output XML (aka 
- *                   the number of data values). This number is point dependant.
- *                   (Input/Output).
+ * numRowsForPoint = Structure with info on the number of rows data is formatted
+ *                   for in the output XML (aka the number of data values). This 
+ *                   number is point dependant. (Input/Output).
+ *   timeUserStart = The beginning of the first forecast period (06 hr
+ *                   or 18hr) based on the startTime argument. (Itput)
+ *     timeUserEnd = The end of the last forecast period (18 hr) based 
+ *                   on the startTime & numDays arguments. (Input)
  *           match = Pointer to the array of element matches from degrib. 
  *                   (Input) 
+ *    wxParameters = Array containing the flags denoting whether a certain 
+ *                   element is formatted in the output XML (= 1), or used in 
+ *                   deriving another formatted element (= 2). (Input) 
  *        numMatch = The number of matches from degrib. (Input)
+ *          f_icon = Flag denoting whether icons are to be derived and formatted.
+ *                   If this flag is chosen, the other 4 elements' data used to 
+ *                   derive the icons must be retrieved/derived too (WS, SKY, 
+ *                   TEMP, WX). (Input)
+ *        TZoffset = # of hours to add to current time to get GMT time.
+ *                   (Input) 
+ *    f_observeDST = Flag determining if current point observes Daylight 
+ *                   Savings Time. (Input)   
+ *       startDate = Point specific startDate that the user supplied 
+ *                   startTime falls in (first Valid Match time if startTime
+ *                   was not entered). It is the form (i.e. 2006-04-15).
+ *                   (Intput) 
  *         numDays = The number of days the validTimes for all the data rows 
- *                   (values) consist of. Used for the DWMLgenByDay products 
- *                   only. (Input)
- *                   
+ *                   (values) consist of. (Input)
+ *       startTime = Incoming argument set by user as a double in seconds 
+ *                   since 1970 denoting the starting time data was retrieved
+ *                   for from NDFD. (Set to 0.0 if not entered.) (Input) 
+ *         endTime = Incoming argument set by user as a double in seconds 
+ *                   since 1970 denoting the ending time data was retrieved
+ *                   for from NDFD. (Set to 0.0 if not entered.) (Input) 
+ *     currentHour = Current hour = in 2 digit form. (Input)
+ *  firstValidTime_pop = The very first validTime for POP12hr returned from the
+ *                       grid probe. (Input) 
+ *  *f_6CycleFirst = Denotes if first forecast cycle relative to current time 
+ *                   is the 06 or 18 forecast cycle. (Input)
+ * firstValidTimeMatch = The very first validTime for all matches returned 
+ *                       from the grid probe. (Input) 
+ * 
  * FILES/DATABASES: None
  *
  * RETURNS: void
@@ -9589,39 +11204,286 @@ static void formatMetaDWML(uChar f_XML, xmlDocPtr * doc, xmlNodePtr * data,
  ******************************************************************************
  */
 
-static void getNumRows(uChar * numRowsForPoint, size_t numMatch, 
-		       genMatchType * match, int numDays, uChar * wxParameters, 
-		       uChar f_XML, sChar * f_icon)
+static void getNumRows(numRowsInfo *numRowsForPoint, double *timeUserStart,
+		       double *timeUserEnd, size_t numMatch,
+                       genMatchType *match, uChar *wxParameters, uChar f_XML,
+                       sChar *f_icon, sChar TZoffset, sChar f_observeDST,
+                       char *startDate, int numDays, double startTime,
+                       double endTime, char currentHour[3],
+                       double firstValidTime_pop, int *f_6CycleFirst,
+                       double firstValidTimeMatch)
 {
+   int i; /* Counter thru match structure. */
+   int k; /* Counter thru elements */
+   int firstWx = 1; /* Flag used to determine if first forecast cycle is
+                     * 06th hour. */
+   double firstWxDiffFromBase = 0.0; /* Used to determine if first forecast
+                                      * cycle is 06th hour. */
+   double period = 3; /* Element's periods (initialize to 3 hrs). */
+   double timeDataEnd; /* End of time data is valid for (in secs since 1970). */
+   double timeDataStart;/* Start of time data is valid for (in secs since 1970). */
+   double timeUserStartPerElement; /* The beginning of the first forecast
+                                    * period (06 hr or 18hr) based on the
+                                    * startTime argument, and adjusted per
+                                    * element. */
 
-   int i;
+   double timeUserEndPerElement;/* The end of the last forecast period
+                                 * (06 hr or 18hr) based on the startTime
+                                 * argument, and adjusted per element. */
+   double firstValidTime = 0.0; /* An element's 1st valid time. Used to
+                                 * determine an element's period lenght. */
+   double secondValidTime = 0.0; /* An element's 2nd valid time. Used to
+                                  * determine an element's period lenght. */
+   double deltaSecs; /* Amount of secs time window is reduced to prevent data
+                      * that just barely fits in the time window from getting
+                      * in. */
+   int f_POPUserStart = 0; /* Used to determine if startDates are different
+                            * between the very first match in the match
+                            * structure and the first POP12hr match. If so, the
+                            * first 24 hr forecast period will begin on the
+                            * next day (from current day). */
 
-   /* Initialize numRowsForPoint to zero. */
+   /* Initialize numRowsForPoint structure to all zeros. */
+   for (k = 0; k < (NDFD_MATCHALL + 1); k++)
+   {
+      numRowsForPoint[k].total = 0;
+      numRowsForPoint[k].skipBeg = 0;
+      numRowsForPoint[k].skipEnd = 0;
+      numRowsForPoint[k].firstUserTime = 0.0;
+      numRowsForPoint[k].lastUserTime = 0.0;
+   }
+//   printf ("currentHour = %s\n",currentHour);
 
-   for (i = 0; i < (NDFD_MATCHALL + 1); i++)
-      numRowsForPoint[i] = 0;
-   
-   /* Retrieve the number of rows per element for the DWMLgen products. */
+   /* Retrieve the total number of rows per element for the DWMLgen/DWMLgenByDay
+    * products.
+    */
+   for (i = 0; i < numMatch; i++)
+      numRowsForPoint[match[i].elem.ndfdEnum].total++;
 
-
+   /* Retrieve the first validTime and last validTime per element amongst all
+    * matches.
+    */
+   for (k = 0; k < (NDFD_MATCHALL + 1); k++)
+   {
       for (i = 0; i < numMatch; i++)
-         numRowsForPoint[match[i].elem.ndfdEnum]++;
+      {
+	 if (match[i].elem.ndfdEnum == k)
+	 {
+            numRowsForPoint[k].firstUserTime = match[i].validTime;
+//	    printf ("%d + numRowsForPoint[%d].total-1 = %d\n",i,k, i + numRowsForPoint[k].total-1);
+	    numRowsForPoint[k].lastUserTime = match[i + (numRowsForPoint[k].total-1)].validTime;
+//	    printf ("numRowsForPoint[%d].firstUserTime before adj = %f\n",k,numRowsForPoint[k].firstUserTime);
+//	    printf ("numRowsForPoint[%d].lastUserTime before adj= %f\n",k,numRowsForPoint[k].lastUserTime);
+	    break;
+	 }
+      }
+   }
+
+   /* Find the start of the User time interval the summarization is done for,
+    * modified to fit the first day's forecast period. If there is a startTime
+    * on a day in the future other than the current day, we use the 06th hour.
+    * If there is no startTime entered, the start of the next closest forecast
+    * period is chosen (06th or 18th hr). Routine then finds the end of the user
+    * time interval the summarization is done for, modified to fit the last
+    * day's forecast period (18 hr). Routine is only accessed if product type is
+    * one of the summarizations (f_XML = 3 or f_XML = 4).
+    */
+   if (f_XML == 3 || f_XML == 4)
+   {
+      getUserTimes(&timeUserStart, &timeUserEnd, &f_POPUserStart, startDate,
+                   TZoffset, startTime, f_observeDST, numDays,
+                   firstValidTime_pop, &f_6CycleFirst, f_XML,
+                   firstValidTimeMatch);
+//      printf ("timeUserStart for DWMLgenByDay check = %f\n", *timeUserStart);
+//      printf ("timeUserEnd for DWMLgenByDay check = %f\n", *timeUserEnd);
+   }
+   else /* For DWMLgen products, simply assign startTime and endTime. */
+   {
+      *timeUserStart = startTime;
+      *timeUserEnd = endTime;
+//      printf ("timeUserStart for DWMLgen check = %f\n", *timeUserStart);
+//      printf ("timeUserEnd for DWMLgen check = %f\n", *timeUserEnd);
+   }
+
+   /* Initialize the starting/ending times per element. */
+   timeUserStartPerElement = *timeUserStart;
+   timeUserEndPerElement = *timeUserEnd;
+
+   /* Adjust the number of rows per element and the first validTime and last
+    * validTime we're interested in.
+    */
+   for (k = 0; k < (NDFD_MATCHALL + 1); k++)
+   {
+      if (wxParameters[k] != 0)
+      {
+	 if (k == NDFD_MAX || k == NDFD_MIN)
+	    period = 12;
+	 else
+	 {
+            getFirstSecondValidTimes(&firstValidTime, &secondValidTime,
+	   		             match, numMatch, k,
+		                     numRowsForPoint[k].total, 0, 0);
+	    period = determinePeriodLength(firstValidTime, secondValidTime,
+	                                   numRowsForPoint[k].total, k);
+         }
+//	 printf ("period = %f\n",period);
+   	 deltaSecs = (period / 4) * 3600;
+//	 printf ("deltaSecs = %f\n",deltaSecs);
+
+         /* Adjust the timeUserStart/timeUserEnd on an element basis,
+	  * if necessary. Tweek the user start and end times to prevent data
+	  * that just barely fits in the time window from getting in. We
+	  * reduce the window by 1/4th of the data's period length at each
+	  * end. We will only do this after 6 AM to allow for the overnight
+	  * minimum temperature to continue to be formatted from midnight to
+	  * 6 AM.
+          */
+         if (atoi(currentHour) >= 6 && (k != NDFD_MIN || k != NDFD_POP))
+         {
+            timeUserStartPerElement = *timeUserStart + deltaSecs;
+            timeUserEndPerElement = *timeUserEnd - deltaSecs;
+         }
+         if (k == NDFD_POP)
+         {
+            if (!f_POPUserStart && startTime == 0.0 &&
+            (atoi(currentHour) > 20 || atoi(currentHour) < 6))
+            {
+               timeUserStartPerElement = *timeUserStart;
+               timeUserEndPerElement = *timeUserEnd;
+            }
+            else
+            {
+//               printf ("Shrinking Interval for POP\n");
+               timeUserStartPerElement = *timeUserStart + deltaSecs;
+               timeUserEndPerElement = *timeUserEnd - deltaSecs;
+            }
+         }
+         if (k == NDFD_MIN)
+         {
+            if (startTime == 0.0  &&
+            (atoi(currentHour) > 18 || atoi(currentHour) < 6))
+            {
+               timeUserStartPerElement = *timeUserStart;
+               timeUserEndPerElement = *timeUserEnd;
+            }
+            else
+            {
+//               printf ("Shrinking Interval for MINT\n");
+               timeUserStartPerElement = *timeUserStart + deltaSecs;
+               timeUserEndPerElement = *timeUserEnd - deltaSecs;
+            }
+         }
+
+//         printf ("**timeUserStart 2 (after possible adjustment = %f\n",*timeUserStart);
+
+	 /* Loop thru and make the adjustments to the number of rows interested
+	  * in per element.
+	  */
+         for (i = 0; i < numMatch; i++)
+         {
+	    /* Since the data's validTime is the end of the time range the data
+	     * is valid for, find the data's starting time.
+	     */
+	    if (match[i].elem.ndfdEnum == k)
+	    {
+	       timeDataEnd = match[i].validTime;
+               timeDataStart = match[i].validTime - (3600 * (period - 1));
+       	       if (*timeUserStart != 0.0) /* Rule out DWMLgen cases where no startTime entered. */
+
+	       {
+//		  printf ("timeDataEnd - timeUserStartperElement = %f\n",(timeDataEnd - timeUserStartPerElement)/3600);
+                  if (match[i].elem.ndfdEnum == NDFD_WX && firstWx == 1)
+                  {   
+                     firstWxDiffFromBase = (timeDataEnd - timeUserStartPerElement)/3600;
+                     if (f_XML == 3)
+                     {
+                        if (firstWxDiffFromBase >= 12.0)
+                           *f_6CycleFirst = 1;
+                     }
+                     else if (f_XML == 4)
+                     {
+                        if (firstWxDiffFromBase >= 24.0)
+                           *f_6CycleFirst = 1;
+                     }
+                     firstWx = 0;
+                  }
+                  
+	          if (match[i].elem.ndfdEnum != NDFD_POP)
+                  {
+                     if (timeDataEnd < timeUserStartPerElement)
+	                numRowsForPoint[k].skipBeg++;
+                  }
+                  else if (match[i].elem.ndfdEnum == NDFD_POP && f_POPUserStart != 1)
+                  {
+                     if (timeDataEnd < timeUserStartPerElement)
+	                numRowsForPoint[k].skipBeg++;
+                  }                  
+                  else if (match[i].elem.ndfdEnum == NDFD_POP && f_POPUserStart == 1)
+                  {
+                     if (timeDataEnd < (timeUserStartPerElement - (12 * 3600)))
+	                numRowsForPoint[k].skipBeg++;
+                  }      
+	       }
+       	       if (*timeUserEnd != 0.0) /* Rule out DWMLgen cases where no endTime entered. */	
+	       {
+	          if (timeDataStart > timeUserEndPerElement)
+                     numRowsForPoint[k].skipEnd++;
+	       }
+	    }
+	 }
+      }
+   }
+   
+   /* Adjust the first validTime and last validTime interested in, per 
+    * element. 
+    */
+   for (k = 0; k < (NDFD_MATCHALL + 1); k++)
+   {
+      if ((wxParameters[k] != 0) && 
+	  (numRowsForPoint[k].skipBeg != 0 || numRowsForPoint[k].skipEnd != 0))
+      {
+         for (i = 0; i < numMatch; i++)
+	 {
+	    if (match[i].elem.ndfdEnum == k)
+	    {
+               numRowsForPoint[k].firstUserTime = 
+	          match[i+numRowsForPoint[k].skipBeg].validTime;
+	       numRowsForPoint[k].lastUserTime = 
+	          match[i + ((numRowsForPoint[k].total-1) - 
+		  numRowsForPoint[k].skipEnd)].validTime;
+	       break;
+	    }
+         }
+      }
+   }
 
    /* Since numRows determination is based off of what was actually returned
     * from NDFD, update the weatherParameters array accordingly to reflect
-    * this. */
-   for (i = 0; i < (NDFD_MATCHALL + 1); i++)
+    * this. 
+    */
+   for (k = 0; k < (NDFD_MATCHALL + 1); k++)
    {
-      if (wxParameters[i] >= 1 && numRowsForPoint[i] == 0)
-         wxParameters[i] = 0;
+      if (wxParameters[k] >= 1 && (numRowsForPoint[k].total -
+		                  numRowsForPoint[k].skipBeg -
+				  numRowsForPoint[k].skipEnd) == 0)
+         wxParameters[k] = 0;
    }
 
    /* Now, check to see that Icons have all the necessary elements retrieved
-    * from NDFD to derive them. */
+    * from NDFD to derive them. 
+    */
    if ((f_XML == 1 || f_XML == 2) && *f_icon == 1)
    {
-      if (numRowsForPoint[NDFD_TEMP] == 0 || numRowsForPoint[NDFD_WS] == 0 ||
-          numRowsForPoint[NDFD_SKY] == 0 || numRowsForPoint[NDFD_WX] == 0)
+      if ((numRowsForPoint[NDFD_TEMP].total-numRowsForPoint[NDFD_TEMP].skipBeg -
+	   numRowsForPoint[NDFD_TEMP].skipEnd) == 0 || 
+          (numRowsForPoint[NDFD_WS].total-numRowsForPoint[NDFD_WS].skipBeg -
+	   numRowsForPoint[NDFD_WS].skipEnd) == 0 ||
+          (numRowsForPoint[NDFD_SKY].total-numRowsForPoint[NDFD_SKY].skipBeg -
+	   numRowsForPoint[NDFD_SKY].skipEnd) == 0 || 
+	  (numRowsForPoint[NDFD_WX].total-numRowsForPoint[NDFD_WX].skipBeg -
+	   numRowsForPoint[NDFD_WX].skipEnd) == 0 ||
+	  (numRowsForPoint[NDFD_POP].total-numRowsForPoint[NDFD_POP].skipBeg -
+	   numRowsForPoint[NDFD_POP].skipEnd) == 0)
       {
          printf("**************************************\n");
          printf("Cannot format Icons at this time as\n");
@@ -9629,13 +11491,8 @@ static void getNumRows(uChar * numRowsForPoint, size_t numMatch,
          printf("**************************************\n");
          *f_icon = 0;
       }
-   }
-   
-   /* Now, check to see that Icons have all the necessary elements retrieved
-    * from NDFD to derive them. */
-   
+   }   
    return;
-
 }
 
 /*****************************************************************************
@@ -9685,8 +11542,8 @@ static void prepareDWMLgen(uChar f_XML, uChar * f_formatPeriodName,
                                    * DWMLgen products. */
 
    /* Flag those elements in the "time-series" product to be formatted in the 
-    * output XML. */
-
+    * output XML. 
+    */
    if (f_XML == 1)
    {
       if (varFilter[NDFD_MAX] == 2)
@@ -9717,11 +11574,25 @@ static void prepareDWMLgen(uChar f_XML, uChar * f_formatPeriodName,
          wxParameters[NDFD_AT] = 1;
       if (varFilter[NDFD_RH] == 2)
          wxParameters[NDFD_RH] = 1;
-
+      if (varFilter[NDFD_WG] == 2)
+         wxParameters[NDFD_WG] = 1;
+      if (varFilter[NDFD_INC34] == 2)
+         wxParameters[NDFD_INC34] = 1;
+      if (varFilter[NDFD_INC50] == 2)
+         wxParameters[NDFD_INC50] = 1;
+      if (varFilter[NDFD_INC64] == 2)
+         wxParameters[NDFD_INC64] = 1;
+      if (varFilter[NDFD_CUM34] == 2)
+         wxParameters[NDFD_CUM34] = 1;
+      if (varFilter[NDFD_CUM50] == 2)
+         wxParameters[NDFD_CUM50] = 1;
+      if (varFilter[NDFD_CUM64] == 2)
+         wxParameters[NDFD_CUM64] = 1;
+      
       /* We need to create a time layout for the icons in the case that only
-       * icons is to be formatted. When this occurs, we make Icons use the
-       * weather's time layout. Set the wxParameters flag for WX to = 3. */
-
+       * icons is to be formatted. When this occurs, make Icons use the
+       * weather's time layout. Set the wxParameters flag for WX to = 3. 
+       */
       if (*f_icon == 1)
       {
          if (wxParameters[NDFD_WX] != 1)
@@ -9732,8 +11603,8 @@ static void prepareDWMLgen(uChar f_XML, uChar * f_formatPeriodName,
    /* For DWMLgen's "glance" product, there are five pre-defined set of NDFD
     * parameters to be formatted. Four of these are maxt, mint, sky, and wx.
     * Two other elements not formatted (temp and wind speed) are used to
-    * derive the 5th element formatted: Icons. */
-
+    * derive the 5th element formatted: Icons. 
+    */
    else if (f_XML == 2)
    {
       *f_formatPeriodName = 1;
@@ -9846,15 +11717,14 @@ static void prepareDWMLgenByDay(genMatchType *match, size_t numMatch,
          *numDays = ceil(((*lastValidTimeMatch - currentDoubTime) / 3600) / 24);
       }
       else
-      {
          *numDays = (int)myRound(((*endTime_cml - currentDoubTime) / 3600) / 24, 0);
-      }
 
    }
-   else if (*startTime_cml != 0.0)
+   else if (*startTime_cml != 0.0 && *endTime_cml == 0.0)
    {
-      /* First, see if the startTime entered on the command line occurs before
-       * current system time. 
+      /* Then startTime was entered as a command line argument. First, see if 
+       * the startTime occurs before current system time. If so, simply treat 
+       * it as if no startTime was entered (set startTime = 0.0).
        */
       if (*startTime_cml < currentDoubTime)
       {
@@ -9862,28 +11732,32 @@ static void prepareDWMLgenByDay(genMatchType *match, size_t numMatch,
          *numDays = ceil(((*lastValidTimeMatch - currentDoubTime) / 3600) / 24);
       }      
       else
-      {
-         *numDays = ceil(((*lastValidTimeMatch - *firstValidTimeMatch) / 3600) / 24);
-      }
+         *numDays = ceil(((*lastValidTimeMatch - *startTime_cml) / 3600) / 24);	      
+//         *numDays = ceil(((*lastValidTimeMatch - *firstValidTimeMatch) / 3600) / 24);
    }      
+   else if (*startTime_cml != 0.0 && *endTime_cml != 0.0)
+      /* Then both startTime and endTime were entered as command line arguments.
+       * Simply subtract the times.
+       */
+//      *numDays = (int)myRound(((*endTime_cml - *startTime_cml) / (3600 * 24)), 0);
+       *numDays = floor((*endTime_cml - *startTime_cml) / (3600 * 24));   
+//       printf ("*numDays in prepareDGen = %d\n",*numDays);
+//       printf ("numDays in secs = %f\n", *endTime_cml - *startTime_cml);
 
-   /* Then startTime was entered as a command line argument from the user.
-    * Simply calculate numDays. 
-    */
-    
-   /* DWMLgenByDay, both formats, have pre-defined sets of NDFD parameters. */	   
+   /* DWMLgenByDay, both formats, have pre-defined sets of NDFD parameters. */
    if (f_XML == 3)
    {
       *f_formatPeriodName = 1;
       *timeInterval = 3600 * 12;  /* number of seconds in half a day */
-      *numOutputLines = *numDays * 2; /* All elements formatted this way in 
+      *numOutputLines = *numDays * 2; /* All elements formatted this way in
 					 12 hourly product except MaxT & Mint. */
+//      printf ("numOutputLines = %d\n",*numOutputLines);
       strcpy(summarization, "12hourly");
       strcpy(format, "12 hourly");
    }
    else if (f_XML == 4)       /* Note, there is no formatting of period
                                * names. */
-   {	    
+   {
       *timeInterval = 3600 * 24;  /* number of seconds in a whole day */
       *numOutputLines = *numDays; /* Pop is only element formatted this way
 					 in 24 hourly product. */
@@ -9893,7 +11767,6 @@ static void prepareDWMLgenByDay(genMatchType *match, size_t numMatch,
 
    /* Flag the below four elements for formatting in the ouput XML (icons
     * will be the fifth element formatted). Set the value to = 1. */
-
    wxParameters[NDFD_MAX] = 1;
    wxParameters[NDFD_MIN] = 1;
    wxParameters[NDFD_POP] = 1;
@@ -9901,8 +11774,8 @@ static void prepareDWMLgenByDay(genMatchType *match, size_t numMatch,
 
    /* We need to collect data for the following three elements too. They are
     * not formatted in the output XML, but are used in icon determination.
-    * Set these values to = 2. */
-
+    * Set these values to = 2.
+    */
    wxParameters[NDFD_SKY] = 2;
    wxParameters[NDFD_WS] = 2;
    wxParameters[NDFD_WD] = 2;
@@ -10225,7 +12098,6 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
              uChar * ndfdVars, char *f_inTypes, char *gribFilter,
              size_t numSector, char **sector, sChar f_ndfdConven)
 {
-
    size_t numElem = 0;        /* Num of elements returned by degrib. */
    genElemDescript *elem = NULL;  /* Structure with info about the element. */
    uChar varFilter[NDFD_MATCHALL + 1];  /* Shows what NDFD variables are of
@@ -10249,13 +12121,14 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
 		         * formatted data every 12 hours, we use this variable and 
 		         * set it to numDays *2 when calling generateTimeLayout().
 		         */
-   int numPopRowsSkippedBeginning = 0;
    uChar weatherParameters[NDFD_MATCHALL + 1];  /* Array containing the flags 
                                                  * denoting whether a certain 
                                                  * element is formatted in
                                                  * the output XML (=1), or
                                                  * used in deriving another
                                                  * formatted element (=2). */
+   int *f_6CycleFirst = NULL; /* Denotes if first forecast cycle relative to 
+				 current time is the 06 or 18 forecast cycle.*/
    sChar *TZoffset = NULL;    /* Number of hours to add to current time to
                                * get GMT time. */
    char **startDate = NULL;   /* Point specific user supplied start Date
@@ -10263,8 +12136,8 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
    int f_atLeastOnePointInSectors = 0;  /* Flag used to denote if at least
                                          * one point is in any of NDFD
                                          * Sectors. */
-   uChar **numRowsForPoint;   /* Number of data rows in the Match structure
-				 for each element. */
+   numRowsInfo **numRowsForPoint; /* Number of data rows in the Match structure
+				     for each element. */
    uChar f_formatPeriodName = 0;  /* Flag to indicate if period names (i.e.
                                    * "today") appear in the start valid time
                                    * tag: <start-valid-time
@@ -10279,11 +12152,11 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                                * numOutputLines. For the "12 hourly" format,
                                * numOutputLines is equal to twice the number
                                * of days since there are two 12 hour period. */
-   int integerStartUserTime = 0; /* Number of seconds since 1970 to when the
-				  * user established periods begin. */
+//   int integerStartUserTime = 0; /* Number of seconds since 1970 to when the
+//				  * user established periods begin. */
    int integerTime = 0; /* Number of seconds since 1970 to when the data is 
-			  * valid. Allows the code to know if this data belongs 
-			  * in the current period being processed. */ 
+			 * valid. Allows the code to know if this data belongs 
+			 * in the current period being processed. */ 
    const char whichTimeCoordinate[] = "local";  /* Flag indicating which time
                                                  * coordinate we are to format
                                                  * the data in (local is the
@@ -10304,20 +12177,24 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                                * hour periods for each 24 hour day. (6 AM to
                                * 6 PM) day and (6 PM to 6 AM) night periods. */
    char ***layoutKeys = NULL; /* Array containing the layout keys. */
-   char currentDay[3];        /* Current day's 2-digit date. */
-   char currentHour[3];       /* Current hour's 2-digit hour. */
-   char startDateHr[3];       /* Hour of the first match in the match 
-				 structure. */
+   char **currentDay = NULL;  /* Current day's 2-digit date. */
+   char **currentHour = NULL; /* Current hour's 2-digit hour. */
    sChar f_WxParse;           /* Flag denoting wether to return the weather
                                * strings from NDFD as coded "ugly stings" or
                                * their English equivalent. */
+   double *timeUserStart = NULL; /* User supplied startTime, if available. Defaults
+				    to first validTime if argument startTime not 
+				    entered. */
+   double *timeUserEnd = NULL;  /* User supplied endTime, if available. Defaults
+				   to last validTime if argument endTime not 
+				   entered. */
    double firstValidTimeMatch;  /* The very first validTime for all matches.
                                  * Used in determining numDays. */
    double lastValidTimeMatch; /* The very last validTime for all matches.
                                * Used in determining numDays. */
-   double firstValidTime_maxt = 0.0;
-   double firstValidTime_mint = 0.0;
-   double firstValidTime_pop = 0.0;
+   double firstValidTime_maxt = 0.0; /* Valid time of first MaxT */
+   double firstValidTime_mint = 0.0;/* Valid time of first MinT */
+   double firstValidTime_pop = 0.0;/* Valid time of first Pop12Hr */
    int f_formatNIL = 0;       /* Flag denoting that we may have to create a
                                * NIL value for the first max temp if the
                                * request for data is late in the day. Only 
@@ -10331,7 +12208,6 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
 
    sChar f_observeDST;        /* Flag determining if current point observes
                                * Daylight Savings Time.  */
-   char startDateBuff[30];    /* Temporary string. */
    double currentDoubTime;    /* Current real time in double format.  */
    char currentLocalTime[30]; /* Current Local Time in
                                * "2006-14-29T00:00:00-00:00" format. */
@@ -10356,7 +12232,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                                              * set to zeroes, translated to
                                              * double form. Used in a
                                              * DWNLgenByDay check. */
-   char *pstr;                /* Temporary pointer character string. */
+//   char *pstr;                /* Temporary pointer character string. */
 
    /* Variables that will go into formatParameterInfo() routine. */
 
@@ -10427,16 +12303,26 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                                * "timeLayoutDefinitions". */
 
    /* XML Document pointer */
-
    xmlDocPtr doc = NULL;      /* An xml Node Pointer denoting the top-level
                                * document node. */
 
    /* XML Node pointers */
-
    xmlNodePtr dwml = NULL;    /* An xml Node Pointer denoting the <dwml>
                                * node. */
    xmlNodePtr data = NULL;    /* An xml Node Pointer denoting the <data>
                                * node. */
+
+   /* First, get the current system time, in double form. */
+   currentDoubTime = Clock_Seconds();
+
+   /* Get out if time arguments were chosen erroneously and don't make 
+    * intuitive sense.
+    */
+   if (endTime != 0.0 && endTime < currentDoubTime)
+   {
+      printf("endTime argument is before current time. No data returned.\n");
+      return 0;
+   }
 
    /* Set up the varFilter array to show what NDFD variables are of
     * interest(1) or vital(2) to this procedure. */
@@ -10456,6 +12342,13 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
    varFilter[NDFD_WH] = 1;
    varFilter[NDFD_AT] = 1;
    varFilter[NDFD_RH] = 1;
+   varFilter[NDFD_WG] = 1;
+   varFilter[NDFD_INC34] = 1;
+   varFilter[NDFD_INC50] = 1;
+   varFilter[NDFD_INC64] = 1;
+   varFilter[NDFD_CUM34] = 1;
+   varFilter[NDFD_CUM50] = 1;
+   varFilter[NDFD_CUM64] = 1;
 
    /* Force genprobe() to return required NDFD element(s). */
    if (f_XML == 2)
@@ -10466,6 +12359,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
       varFilter[NDFD_WS] = 2;
       varFilter[NDFD_SKY] = 2;
       varFilter[NDFD_WX] = 2;
+      varFilter[NDFD_POP] = 2;
    }
    else if (f_XML == 1 && f_icon == 1)
    {
@@ -10473,6 +12367,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
       varFilter[NDFD_WS] = 2;
       varFilter[NDFD_SKY] = 2;
       varFilter[NDFD_WX] = 2;
+      varFilter[NDFD_POP] = 2;
    }
    else if (f_XML == 3 || f_XML == 4)
    {
@@ -10486,24 +12381,28 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
    }
 
    /* Allow user filter of variables to reduce the element list, but include
-    * all "vital" (Filter == 2) variables. */
+    * all "vital" (Filter == 2) variables. 
+    */
    genElemListInit2(varFilter, numNdfdVars, ndfdVars, &numElem, &elem);
 
    /* If product is of DWMLgen's time-series, we need to decipher between
     * elements originating on the command line argument and those forced if
-    * command line argument -Icon is set to 1 (turned on). */
+    * command line argument -Icon is set to 1 (turned on). 
+    */
    if (f_XML == 1 && f_icon == 1)
    {
       varFilter[NDFD_TEMP]--;
       varFilter[NDFD_WS]--;
       varFilter[NDFD_SKY]--;
       varFilter[NDFD_WX]--;
+      varFilter[NDFD_POP]--;
    }
 
    /* We need to turn the f_icon flag on if all elements are to be formatted
     * by default (when there is no -ndfdfVars command option) AND there was
     * no forcing of elements.  This will ensure Icons are formatted along
-    * with all the NDFD elements. */
+    * with all the NDFD elements. 
+    */
    if (f_XML == 1 && numNdfdVars == 0 && f_icon == 0)
       f_icon = 1;
 
@@ -10528,11 +12427,44 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
       printf("************************************************************\n");
       return 0;
    }
+//   printf ("startTime as coming in = %f\n",startTime);
+//   printf ("endTime as coming in = %f\n",endTime);
+
+   /* If the product is one of the summarizations (f_XML = 3 or 4) and a
+    * startTime and/or endTime command line argument is entered, we need to
+    * shorten the time window the grid probe returns data for so not all data
+    * is returned. The time frame needs to start at 05 hours on the date of
+    * the startTime and end at hour 18 on the day containing the endTime.
+    */
+   if ((f_XML == 3 || f_XML == 4) && (startTime != 0.0))
+      startTime = dayStartTime(&startTime, currentDoubTime);
+   if ((f_XML == 3 || f_XML == 4) && (endTime != 0.0))
+      endTime = dayEndTime(&endTime, currentDoubTime);
+
+   /* If the adjusted startTime and endTime are just 12 hours apart (i.e., user
+    * chose a startTime and an endTime on the same calander day), bump the
+    * endTime up by 24 hours to at minimum format 1 days summarization. Add a
+    * logical time check too.
+    */
+   if (f_XML == 3 || f_XML == 4)
+   {
+      if (endTime != 0.0 && startTime != 0.0)
+      {
+         if (endTime - startTime < 0)
+         {
+            printf ("Command line argument endTime starts before startTime\n");
+            printf ("exiting.... \n");
+            return 0;
+         }
+	 if (endTime - startTime == (12 * 3600))
+            endTime = endTime + (24 * 3600);
+      }
+   }
+//   printf ("startTime after altering = %f\n",startTime);
+//   printf ("endTime after altering = %f\n",endTime);
 
    /* f_WxParse = 0, is the flag to return WX as ugly weather codes. */
-
    f_WxParse = 0;
-
    if (genProbe(numPnts, pnts, f_pntType, numInFiles, inFiles, f_fileType,
                 f_interp, f_unit, majEarth, minEarth, f_WxParse,
                 f_SimpleVer, numElem, elem, f_valTime, startTime, endTime,
@@ -10552,16 +12484,25 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
       return -1;
    }
 
-   /* If no data is retrived from NDFD (matches = zero), get out. */
+   /* If no data is retrieved from NDFD (matches = zero), get out. */
    if (numMatch <= 0)
    {
       printf("No data retrieved from NDFD (matches = 0).\n");
       return 0;
    }
 
-   /* Sort the matches by element and then by valid time within each element. 
+   /* Sort the matches by element and then by valid time within each element.
     */
    qsort(match, numMatch, sizeof(match[0]), matchCompare);
+
+/*
+   for (i=0; i < numMatch; i++) {
+      printf ("%d : elem %d : sector %d refTime %f valTime %f\n", i,
+              (match)[i].elem.ndfdEnum,
+              (match)[i].f_sector,
+              (match)[i].refTime, (match)[i].validTime);
+   }
+*/
 
    /* Allocate f_pntNoData. */
    f_pntHasData = calloc(numPnts, sizeof(char));
@@ -10592,10 +12533,10 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
             f_pntHasData[j] = 1;
       }
    }
-   
+
    /* Get the first Valid times for MaxT, MinT, and Pop. */
    for (i = 0; i < numMatch; i++)
-   { 
+   {
       if (match[i].elem.ndfdEnum == NDFD_MAX)
       {
          firstValidTime_maxt = match[i].validTime;
@@ -10603,15 +12544,54 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
       }
    }
    for (i = 0; i < numMatch; i++)
-   { 
+   {
       if (match[i].elem.ndfdEnum == NDFD_MIN)
       {
          firstValidTime_mint = match[i].validTime;
          break;
       }
    }
+
+//   firstValidTime_pop = (double *)malloc(numPnts * sizeof(double));
+//   printf ("are we here 0\n");
+
+//   for (i = 0; i < numMatch; i++)
+//   {
+//      if (match[i].elem.ndfdEnum == NDFD_POP)
+//      {
+//         printf ("are we here 1\n");
+//         for (j = 0; j < numPnts; j++)
+//         {
+//            for (i = 0; i < numMatch; i++)
+//            {
+//               if  (match[i].elem.ndfdEnum == NDFD_POP && match[i].value[j].valueType == 0)
+//               {
+//                  firstValidTime_pop[j] = match[i].validTime;
+//                  printf ("match[%d].validTime check 1 = %f\n", i,match[i].validTime);
+//                  printf ("firstValidTime_pop[%d] check 1 = %f\n", j,firstValidTime_pop[j]);
+//                  break;
+//               }
+//               break;
+//            }
+ //           break;
+//         }
+//         break;
+//      }
+//      break;
+//   }
+//   for (j = 0; j < numPnts; j++)
+//   {
+//      printf ("firstValidTime_pop[%d] = %f\n", j,firstValidTime_pop[j]);
+//      printf ("pntInfo[%d].timeZone = %d\n",j,pntInfo[j].timeZone);
+//      printf ("pntInfo[%d].f_dayLight = %d\n",j,pntInfo[j].f_dayLight);
+
+//      formatValidTime (firstValidTime_pop[j], startDateBuf, 30,
+//                       pntInfo[j].timeZone, pntInfo[j].f_dayLight);
+//      printf ("firstValidTime_pop[%d] = %s\n",j,startDateBuf);
+//   }
+
    for (i = 0; i < numMatch; i++)
-   { 
+   {
       if (match[i].elem.ndfdEnum == NDFD_POP)
       {
          firstValidTime_pop = match[i].validTime;
@@ -10637,38 +12617,36 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
    }
 #endif
 
-   /* Get the current system time, in double form. */
-   currentDoubTime = Clock_Seconds();
-
-   /*************************************************************************** 
+   /***************************************************************************
     *                   Start formatting the XML.                             *
-    *                                    
+    *
     ***********************  HEADER INFO  *************************************/
 
    /* Create the XML document and format the Meta Data before looping through
-    * points. */
-
+    * points.
+    */
    formatMetaDWML(f_XML, &doc, &data, &dwml);
 
    /* Initialize the weatherParameters array. This denotes those elements
     * that will ultimately be formatted (= 1). Those retrieved from NDFD by
-    * degrib but used only to derive other elements are set to = 2. */
-
+    * degrib but used only to derive other elements are set to = 2.
+    */
    for (i = 0; i < NDFD_MATCHALL + 1; i++)
       weatherParameters[i] = 0;
 
    /* Prepare some data for DWMLgen's "time-series" product. */
-
    if ((f_XML == 1) || (f_XML == 2))
       prepareDWMLgen(f_XML, &f_formatPeriodName, &(weatherParameters[0]),
                      whatSummarization, varFilter, &f_icon);
 
-   /* Prepare data for DWMLgenByDay's "12 hourly" & "24 hourly" products. */
+//   for (i = 0; i < NDFD_MATCHALL + 1; i++)
+//      printf("weatherParameters 1 [%d] = %d\n", i, weatherParameters[i]);
 
+   /* Prepare data for DWMLgenByDay's "12 hourly" & "24 hourly" products. */
    if ((f_XML == 3) || (f_XML == 4))
-      prepareDWMLgenByDay(match, numMatch, f_XML, &startTime, &endTime, 
-		          &firstValidTimeMatch, &lastValidTimeMatch, &numDays, 
-			  format, &f_formatPeriodName, &(weatherParameters[0]), 
+      prepareDWMLgenByDay(match, numMatch, f_XML, &startTime, &endTime,
+		          &firstValidTimeMatch, &lastValidTimeMatch, &numDays,
+			  format, &f_formatPeriodName, &(weatherParameters[0]),
 			  &timeInterval, &numOutputLines, whatSummarization,
 			  currentDoubTime);
 
@@ -10680,19 +12658,62 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
    /* Run through matches to find numRows returned per element for each
     * point. Since this is based off of what was actually returned from NDFD,
     * update the weatherParameters array accordingly to reflect what is
-    * actually returned from the NDFD. */
+    * actually returned from the NDFD.
+    */
+   numRowsForPoint = (numRowsInfo **) malloc(numPnts * sizeof(numRowsInfo *));
+   startDate = (char **)malloc(numPnts * sizeof(char *));
+   currentDay = (char **)malloc(numPnts * sizeof(char *));
+   currentHour = (char **)malloc(numPnts * sizeof(char *));
+   timeUserStart = (double *)malloc(numPnts * sizeof(double));
+   timeUserEnd = (double *)malloc(numPnts * sizeof(double));
+   f_6CycleFirst = (int *)malloc(numPnts * sizeof(int));
 
-   numRowsForPoint = (uChar **) malloc(numPnts * sizeof(uChar **));
    for (j = 0; j < numPnts; j++)
    {
       if (isPntInASector(pnts[j]))
       {
-         numRowsForPoint[j] = (uChar *) malloc((NDFD_MATCHALL + 1) *
-                                               sizeof(uChar));
-         getNumRows(numRowsForPoint[j], numMatch, match, 
-	            numDays, &(weatherParameters[0]), f_XML, &f_icon);
-      }
+	 /* Open up each point's # of Rows to an element allocation. */
+         numRowsForPoint[j] = (numRowsInfo *) malloc((NDFD_MATCHALL + 1) *
+                                               sizeof(numRowsInfo));
 
+	 /* Fill/Get the startDate array. */
+         getStartDates(startDate, f_XML, startTime, firstValidTimeMatch,
+		       firstValidTime_maxt, pntInfo[j].timeZone,
+		       pntInfo[j].f_dayLight, j);
+
+         /* Convert the system time to a formatted local time
+          * (i.e. 2006-02-02T17:00:00-05:00) to get the current Hour and Day
+	  * for the point location.
+	  */
+         Clock_Print2(currentLocalTime, 30, currentDoubTime,
+                      "%Y-%m-%dT%H:%M:%S", pntInfo[j].timeZone, 1);
+
+         /* Now get the current day's date and hour. */
+	 currentDay[j] = (char *) malloc(3 * sizeof(char));
+         currentDay[j][0] = currentLocalTime[8];
+         currentDay[j][1] = currentLocalTime[9];
+         currentDay[j][2] = '\0';
+
+	 currentHour[j] = (char *) malloc(3 * sizeof(char));
+         currentHour[j][0] = currentLocalTime[11];
+         currentHour[j][1] = currentLocalTime[12];
+         currentHour[j][2] = '\0';
+
+//	 printf (" Testing 1 \n");
+//	 printf ("startDate[%d] = %s\n",j,startDate[j]);
+//	 printf ("numDays = %d\n",numDays);
+
+         f_6CycleFirst[j] = 1;
+         getNumRows(numRowsForPoint[j], &timeUserStart[j], &timeUserEnd[j],
+                    numMatch, match, &(weatherParameters[0]), f_XML, &f_icon,
+                    pntInfo[j].timeZone, pntInfo[j].f_dayLight, startDate[j],
+                    numDays, startTime, endTime, currentHour[j],
+		    firstValidTime_pop, &f_6CycleFirst[j], firstValidTimeMatch);
+         f_6CycleFirst[j] = 1;
+//         printf ("timeUserStart for point[%d] = %f\n",j, timeUserStart[j]);
+//         printf ("timeUserEnd for point[%d] = %f\n",j, timeUserEnd[j]);
+//         printf ("f_6CycleFirst for point[%d] = %d\n",j, f_6CycleFirst[j]);
+      }
    }
 
 #ifdef PRINT
@@ -10703,95 +12724,40 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
       for (i = 0; i < NDFD_MATCHALL + 1; i++)
       {
          if (isPntInASector(pnts[j]))
-            printf("numRowsForPoint[%d][%d] = %d\n",j, i, numRowsForPoint[j][i]);
+            printf("numRowsForPoint[%d][%d].total = %d\n",j, i,
+	            numRowsForPoint[j][i].total);
       }
    }
 #endif
-   
+
    /***********************  TIME LAYOUT INFO  *****************************/
 
-   /* Allocate the time zone information, startDates, and the layoutKeys to
-    * the number of points. The layout-keys will only be generated once,
-    * UNLESS, a point is chosen in a different time zone (which will alter
-    * the time-layout info). */
+   /* Allocate the time zone information and the layoutKeys to the number
+    * of points. The layout-keys will only be generated once, UNLESS,
+    * a point is chosen in a different time zone (which will alter the
+    * time-layout info). */
 
    layoutKeys = (char ***)malloc(numPnts * sizeof(char **));
    TZoffset = (sChar *) malloc(numPnts * sizeof(sChar));
-   startDate = (char **)malloc(numPnts * sizeof(char *));
 
    /* Begin point loop for time-layout generation. */
    for (j = 0; j < numPnts; j++)
    {
       if (isPntInASector(pnts[j]))
-      {   
+      {
          TZoffset[j] = pntInfo[j].timeZone;
          f_observeDST = pntInfo[j].f_dayLight;
 
-         /* If product is of type DWMLgenByDay, find startDates (which depend
-          * on point). */
-
-         if (f_XML == 3 || f_XML == 4) 
-	 {
-            formatValidTime(firstValidTimeMatch, startDateBuff, 30,
-                            TZoffset[j], f_observeDST);
-	    
-	    /* We may have to alter startDate if the hour is late in the day 
-	     * and the first forecast period (of which startDate is used in
-	     * formulating) is in the next day.
-	     */
-	    startDateHr[0] = startDateBuff[11];
-	    startDateHr[1] = startDateBuff[12];
-	    startDateHr[2] = '\0';
-	    
-            if ((f_XML == 4 && atoi(startDateHr) > 21) || 
-	        ((f_XML == 3 && atoi(startDateHr) > 18 && firstValidTimeMatch != firstValidTime_maxt)))
-	    {
-	       firstValidTimeMatch = firstValidTimeMatch + (3600*24);
-               startDateBuff[0] = '\0';	       
-               formatValidTime(firstValidTimeMatch, startDateBuff, 30,
-                               TZoffset[j], f_observeDST);
-	    }
-	    
-            pstr = strchr(startDateBuff, 'T');
-            startDate[j] = (char *)calloc((pstr - startDateBuff) + 1,
-                                          sizeof(char));
-            strncpy(startDate[j], startDateBuff, pstr - startDateBuff);
-	    
-         }
-         else
-         {
-            /* If the products of type DWMLgen, simply set startDate[j]
-             * to = NULL. */
-            startDate[j] = (char *)calloc(1, sizeof(char));
-            startDate[j][0] = '\0';
-         }
-
          /* Convert the system time to a formatted local time
-          * (i.e. 2006-02-02T17:00:00). 
-	  */
+          * (i.e. 2006-02-02T17:00:00-05:00).
+	 */
          Clock_Print2(currentLocalTime, 30, currentDoubTime,
-                      "%Y-%m-%dT%H:%M:%S", TZoffset[j], 1);
-
-         /* If the startTime entered on the command line is before the
-          * firstValidTimeMatch, treat it as if there was no startTime
-          * entered on the command line, since it didn't effectively shorten
-          * the interval of time data was retrieved for. */
-         if (startTime < currentDoubTime)
-            startTime = 0.0;
-
-         /* Now get the current day's date and hour. */
-
-         currentDay[0] = currentLocalTime[8];
-         currentDay[1] = currentLocalTime[9];
-         currentDay[2] = '\0';
-
-         currentHour[0] = currentLocalTime[11];
-         currentHour[1] = currentLocalTime[12];
-         currentHour[2] = '\0';
+                      "%Y-%m-%dT%H:%M:%S",TZoffset[j], 1);
 
          /* Check to see if points are in different time zones. We need to
-          * compare current points' time zone to all prior * valid points'
-          * time zones. */
+          * compare current points' time zone to all prior valid points'
+          * time zones.
+	  */
          if (j > 0)
          {
             for (i = j - 1; i >= 0; i--)
@@ -10803,7 +12769,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                      f_formatNewPointTimeLayouts = 1;
                      break;
                   }
-               }     
+               }
             }
          }
          layoutKeys[j] = (char **)malloc((NDFD_MATCHALL + 1) * sizeof(char *));
@@ -10811,14 +12777,11 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
          if (f_firstPointLoopIteration || f_formatNewPointTimeLayouts)
          {
             /* Generate a new set of time-layouts for the point. */
-
             for (k = 0; k < (NDFD_MATCHALL + 1); k++)
             {
                if (weatherParameters[k] == 1 || weatherParameters[k] == 3)
                {
-
                   /* For DWMLgen products' "time-series" and "glance". */
-
                   if (f_XML == 1 || f_XML == 2)
                   {
                      generateTimeLayout(numRowsForPoint[j][k], k, layoutKey,
@@ -10826,19 +12789,16 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                                         whatSummarization, match, numMatch,
                                         f_formatPeriodName, TZoffset[j],
                                         f_observeDST, &numLayoutSoFar,
-                                        &numCurrentLayout, currentHour,
-                                        currentDay, "boggus", data, startTime,
-                                        currentDoubTime, &numDays, f_XML, 
-					numPopRowsSkippedBeginning);
+                                        &numCurrentLayout, currentHour[j],
+                                        currentDay[j], "boggus", data, startTime,
+                                        currentDoubTime, &numDays, f_XML);
 
                      layoutKeys[j][k] = malloc(strlen(layoutKey) + 1);
                      strcpy(layoutKeys[j][k], layoutKey);
-
                   }
                   else if (f_XML == 3)
                   {
                      /* For DWMLgenByDay product w/ format == "12 hourly". */
-
                      if (k == NDFD_MAX || k == NDFD_MIN)
                      {
                         generateTimeLayout(numRowsForPoint[j][k], k, layoutKey,
@@ -10847,28 +12807,28 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                                            numMatch, f_formatPeriodName,
                                            TZoffset[j], f_observeDST,
                                            &numLayoutSoFar, &numCurrentLayout,
-                                           currentHour, currentDay, format,
-                                           data, startTime, currentDoubTime, 
-					   &numDays, f_XML, 
-					   numPopRowsSkippedBeginning);
-			
+                                           currentHour[j], currentDay[j], format,
+                                           data, startTime, currentDoubTime,
+					   &numDays, f_XML);
+
                         layoutKeys[j][k] = malloc(strlen(layoutKey) + 1);
                         strcpy(layoutKeys[j][k], layoutKey);
                      }
                      else
                      {
-                        /* The other element's will share Pop's layout. */
+                        /* The other element's (Wx and Icons) will share
+			 * Pop's layout.
+			 */
                         generateTimeLayout(numRowsForPoint[j][NDFD_POP],
 				           NDFD_POP, layoutKey,
                                            whichTimeCoordinate,
                                            whatSummarization, match,
                                            numMatch, f_formatPeriodName,
                                            TZoffset[j], f_observeDST,
-                                           &numLayoutSoFar, &numCurrentLayout, 
-                                           currentHour, currentDay, format, 
-                                           data, startTime, currentDoubTime, 
-					   &numOutputLines, f_XML, 
-					   numPopRowsSkippedBeginning);
+                                           &numLayoutSoFar, &numCurrentLayout,
+                                           currentHour[j], currentDay[j], format,
+                                           data, startTime, currentDoubTime,
+					   &numOutputLines, f_XML);
 
                         layoutKeys[j][k] = malloc(strlen(layoutKey) + 1);
                         strcpy(layoutKeys[j][k], layoutKey);
@@ -10882,25 +12842,24 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                       * their time layout equals that of MaxT and/or MinT
                       * since their periods are = to 24 hours also (the
                       * exception is Pop, since it still has to use a 12
-                      * hourly summariztion). 
+                      * hourly summariztion).
 		      */
                      if (k != NDFD_POP)
                      {
-
                         /* If the request for MaxT's is late in the day, then
                          * we will format "nil" for first MaxT data value and
                          * simply use the MinT's time layout. Retrieve the
-                         * necessary info for this check. 
+                         * necessary info for this check.
 			 */
                         monthDayYearTime(match, numMatch, currentLocalTime,
-                                         currentDay, f_observeDST,
+                                         currentDay[j], f_observeDST,
                                          &firstMaxTValidTime_doub_adj,
-                                         &currentLocalTime_doub_adj, 
-					 TZoffset[j]);
+                                         &currentLocalTime_doub_adj,
+					 TZoffset[j],
+					 numRowsForPoint[j][NDFD_MAX]);
 
-                        if (atoi(currentHour) > 18 &&
-                            (currentLocalTime_doub_adj + 86400) ==
-                            firstMaxTValidTime_doub_adj)
+                    if (atoi(currentHour[j]) > 18 && currentLocalTime_doub_adj + 86400 == firstMaxTValidTime_doub_adj)
+
                         {
                            f_formatNIL = 1;
                            f_useMinTempTimes = 1;
@@ -10912,10 +12871,9 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                                               numMatch, f_formatPeriodName,
                                               TZoffset[j], f_observeDST,
                                               &numLayoutSoFar, &numCurrentLayout,
-                                              currentHour, currentDay,
+                                              currentHour[j], currentDay[j],
                                               format, data, startTime,
-                                              currentDoubTime, &numDays, f_XML, 
-					      numPopRowsSkippedBeginning);
+                                              currentDoubTime, &numDays, f_XML);
 
                            layoutKeys[j][k] = malloc(strlen(layoutKey) + 1);
                            strcpy(layoutKeys[j][k], layoutKey);
@@ -10933,10 +12891,9 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                                               TZoffset[j], f_observeDST,
                                               &numLayoutSoFar,
                                               &numCurrentLayout,
-                                              currentHour, currentDay,
+                                              currentHour[j], currentDay[j],
                                               format, data, startTime,
-                                              currentDoubTime, &numDays, f_XML, 
-					      numPopRowsSkippedBeginning);
+                                              currentDoubTime, &numDays, f_XML);
 
                            layoutKeys[j][k] = malloc(strlen(layoutKey) + 1);
                            strcpy(layoutKeys[j][k], layoutKey);
@@ -10945,34 +12902,35 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                      }
                      else
                      {
-                              /* POP gets its own time-layout, using
-                               * 12-hourly summarization and format (force
-                               * these). */
+                        /* POP gets its own time-layout, using
+                         * 12-hourly summarization and format (force
+                         * these), even though f_XML == 4.
+			 */
 			numPopLines = numDays*2;
-                        generateTimeLayout(numRowsForPoint[j][k], 
-					   NDFD_POP, layoutKey, 
+                        generateTimeLayout(numRowsForPoint[j][k],
+					   NDFD_POP, layoutKey,
 					   whichTimeCoordinate, "12hourly",
                                            match, numMatch,
                                            f_formatPeriodName, TZoffset[j],
                                            f_observeDST, &numLayoutSoFar,
-                                           &numCurrentLayout, currentHour,
-                                           currentDay, "12 hourly", data,
-                                           startTime, currentDoubTime, 
-					   &numPopLines, f_XML, 
-					   numPopRowsSkippedBeginning);
+                                           &numCurrentLayout, currentHour[j],
+                                           currentDay[j], "12 hourly", data,
+                                           startTime, currentDoubTime,
+					   &numPopLines, f_XML);
 
                         layoutKeys[j][k] = malloc(strlen(layoutKey) + 1);
                         strcpy(layoutKeys[j][k], layoutKey);
                      }
 
-                  }           /* End of "f_XML type" check. */
-               }              /* End weatherParameters "if" statement. */
-            }                 /* End weatherParameters "k" loop. */
+                  } /* End of "f_XML type" check. */
+               } /* End weatherParameters "if" statement. */
+            } /* End weatherParameters "k" loop. */
          }
          else
          {
             /* Simply copy the previous valid point's time layout-keys into
-             * this point's time layout-keys. */
+             * this point's time layout-keys.
+	     */
             for (i = j - 1; i >= 0; i--)
             {
                if (isPntInASector(pnts[i]))
@@ -10989,10 +12947,10 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
             }
          }  /* End of "if-else" of "format New Point time layout" check. */
 	 f_firstPointLoopIteration = 0;
-	 
+
       }  /* End of "is Point in Sector" check. */
    }  /* End "Point Loop" for Time-Layouts. */
-   
+
    /***********************  PARAMETER INFO  *******************************/
 
    /* Format the Parameter Information into the XML/DWML. */
@@ -11016,36 +12974,36 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
          /* Format Minimum Temperature Values, if applicable. */
          if (weatherParameters[NDFD_MIN] == 1)
             genMinTempValues(j, layoutKeys[j][NDFD_MIN], match, numMatch,
-                             parameters, f_XML, startTime, 
-			     numRowsForPoint[j][NDFD_MIN], currentDay, 
-			     currentHour, TZoffset[j], pntInfo[j].f_dayLight, 
+                             parameters, f_XML, startTime,
+			     numRowsForPoint[j][NDFD_MIN], currentDay[j],
+			     currentHour[j], TZoffset[j], pntInfo[j].f_dayLight,
 			     numDays);
 
          /* Format Hourly Temperature Values, if applicable. */
          if (weatherParameters[NDFD_TEMP] == 1)
-         {
             genTempValues(j, layoutKeys[j][NDFD_TEMP], match, numMatch,
-                          parameters);
-         }
+                          parameters, numRowsForPoint[j][NDFD_TEMP]);
+
          /* Format Dew Point Temperature Values, if applicable. */
          if (weatherParameters[NDFD_TD] == 1)
             genDewPointTempValues(j, layoutKeys[j][NDFD_TD], match,
-                                  numMatch, parameters);
+                                  numMatch, parameters,
+				  numRowsForPoint[j][NDFD_TEMP]);
 
          /* Format Apparent Temperature Values, if applicable. */
          if (weatherParameters[NDFD_AT] == 1)
             genAppTempValues(j, layoutKeys[j][NDFD_AT], match, numMatch,
-                             parameters);
+                             parameters, numRowsForPoint[j][NDFD_AT]);
 
          /* Format QPF Values, if applicable. */
          if (weatherParameters[NDFD_QPF] == 1)
             genQPFValues(j, layoutKeys[j][NDFD_QPF], match, numMatch,
-                         parameters);
+                         parameters, numRowsForPoint[j][NDFD_QPF]);
 
          /* Format Snow Amount Values, if applicable. */
          if (weatherParameters[NDFD_SNOW] == 1)
             genSnowValues(j, layoutKeys[j][NDFD_SNOW], match, numMatch,
-                          parameters);
+                          parameters, numRowsForPoint[j][NDFD_SNOW]);
 
          /* Format PoP12 Values, if applicable. */
          if (weatherParameters[NDFD_POP] == 1)
@@ -11063,17 +13021,83 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
             {
                maxDailyPop = malloc((numDays) * sizeof(int));
                for (i = 0; i < numDays; i++)
-                  maxDailyPop[i] = 0;		  
+                  maxDailyPop[i] = 0;
 	    }
-	    
+//	    printf ("numDays = %d\n",numDays);
             genPopValues(j, layoutKeys[j][NDFD_POP], match, numMatch,
                          parameters, numRowsForPoint[j][NDFD_POP], f_XML,
                          startTime, maxDailyPop, numDays, currentDoubTime,
-			 currentHour, numPopRowsSkippedBeginning);
+			 currentHour[j]);
 	 }
-	 
+
+         /* Format Incremental Probability of 34 Knt Wind Values for DWMLgen
+	  * product, if applicable.
+	  */
+#ifdef TEST_WINDS
+	 printf ("j = %d\n",j);
+	 printf ("NDFD_INC34 = %d\n",NDFD_INC34);
+
+	 weatherParameters[NDFD_INC34] = 1;
+	 printf ("here1\n");
+         layoutKeys[j][NDFD_INC34] = malloc(12);
+ 	 strcpy (layoutKeys[j][NDFD_INC34], "k-p3h-n26-1");
+	 printf ("here2\n");
+	 printf ("layoutKeys[j][NDFD_INC34] = %s\n",layoutKeys[j][NDFD_INC34]);
+#endif
+         if (weatherParameters[NDFD_INC34] == 1)
+            genWindIncCumValues(j, layoutKeys[j][NDFD_INC34], NDFD_INC34,
+	                        match, numMatch, "incremental34",
+	 "Probability of a Tropical Cyclone Wind Speed >34 Knots (Incremental)",
+	                        parameters, doc,
+				numRowsForPoint[j][NDFD_INC34]);
+
+         /* Format Incremental Probability of 50 Knt Wind Values for DWMLgen
+	  * product, if applicable.
+	  */
+         if (weatherParameters[NDFD_INC50] == 1)
+            genWindIncCumValues(j, layoutKeys[j][NDFD_INC50], NDFD_INC50,
+			        match, numMatch, "incremental50",
+	 "Probability of a Tropical Cyclone Wind Speed >50 Knots (Incremental)",
+	                        parameters, doc, numRowsForPoint[j][NDFD_INC50]);
+
+         /* Format Incremental Probability of 64 Knt Wind Values for DWMLgen
+	  * product, if applicable.
+	  */
+         if (weatherParameters[NDFD_INC64] == 1)
+            genWindIncCumValues(j, layoutKeys[j][NDFD_INC64], NDFD_INC64,
+			        match, numMatch, "incremental64",
+	 "Probability of a Tropical Cyclone Wind Speed >64 Knots (Incremental)",
+	                        parameters, doc, numRowsForPoint[j][NDFD_INC64]);
+
+         /* Format Cumulative Probability of 34 Knt Wind Values for DWMLgen
+	  * product, if applicable.
+	  */
+         if (weatherParameters[NDFD_CUM34] == 1)
+            genWindIncCumValues(j, layoutKeys[j][NDFD_CUM34], NDFD_CUM34,
+			        match, numMatch, "cumulative34",
+	 "Probability of a Tropical Cyclone Wind Speed >34 Knots (Cumulative)",
+	                        parameters, doc, numRowsForPoint[j][NDFD_CUM34]);
+
+         /* Format Cumulative Probability of 50 Knt Wind Values for DWMLgen
+	  * product, if applicable.
+	  */
+         if (weatherParameters[NDFD_CUM50] == 1)
+            genWindIncCumValues(j, layoutKeys[j][NDFD_CUM50], NDFD_CUM50,
+			        match, numMatch, "cumulative50",
+	 "Probability of a Tropical Cyclone Wind Speed >50 Knots (Cumulative)",
+	                        parameters, doc, numRowsForPoint[j][NDFD_CUM50]);
+
+         /* Format Cumulative Probability of 64 Knt Wind Values for DWMLgen
+	  * product, if applicable.
+	  */
+         if (weatherParameters[NDFD_CUM64] == 1)
+            genWindIncCumValues(j, layoutKeys[j][NDFD_CUM64], NDFD_CUM64,
+			        match, numMatch, "cumulative64",
+	 "Probability of a Tropical Cyclone Wind Speed >64 Knots (Cumulative)",
+	                        parameters, doc, numRowsForPoint[j][NDFD_CUM64]);
+
          /* Format Wind Speed Values for DWMLgen products, if applicable.
-          * Collect Max Wind Speed values if product is of type DWMLgenByDay. 
+          * Collect Max Wind Speed values if product is of type DWMLgenByDay.
           */
          if (weatherParameters[NDFD_WS] == 1 || weatherParameters[NDFD_WS] == 2)
          {
@@ -11082,35 +13106,53 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
              * period to derive the weather and icon elements.  Also,
              * allocate the array holding the valid times that correspond to
              * the max wind speeds. These times will be used to collect the
-             * wind directions that correspond to the times when the max.
-             * wind speeds occurred. */
-
+             * wind directions that correspond to the times when the max
+             * wind speeds occurred.
+	     */
             if (f_XML == 3 || f_XML == 4)
             {
                maxWindSpeed = malloc((numOutputLines) * sizeof(int));
                valTimeForWindDirMatch = malloc((numOutputLines) * sizeof(double));
-               for (i = 0; i < (numOutputLines); i++)
+               for (i = 0; i < (numOutputLines); i++)//   if (startTime != 0.0 || endTime != 0.0)
                {
                   maxWindSpeed[i] = -999;
                   valTimeForWindDirMatch[i] = -999;
                }
             }
-
-            genWindSpeedValues(j, layoutKeys[j][NDFD_WS], match, numMatch,
+//            printf ("are we here before genWindSpeedValues?\n");
+            genWindSpeedValues(timeUserStart[j], timeUserEnd[j], j,
+			       layoutKeys[j][NDFD_WS], match, numMatch,
                                parameters, startDate[j], maxWindSpeed,
                                numOutputLines, timeInterval, TZoffset[j],
                                pntInfo[j].f_dayLight, NDFD_WS,
                                numRowsForPoint[j][NDFD_WS], f_XML,
-                               valTimeForWindDirMatch);
+                               valTimeForWindDirMatch, f_6CycleFirst[j],
+                               startTime);
+//           printf ("numOutputLines = %d\n",numOutputLines);
+//	   if (f_XML == 3 || f_XML == 4)
+//           {
+//             for (i = 0; i < numOutputLines; i++)
+//             {
+//                printf ("maxWindSpeed[%d] = %d\n",i,maxWindSpeed[i]);
+//                printf ("valTimeForWindDirMatch[%d] = %f\n",i,valTimeForWindDirMatch[i]);
+//             }
+//           }
+//           printf ("are we here 1000\n");
          }
+
+         /* Format Wind Speed Gust Values for DWMLgen products, if applicable. */
+         if (weatherParameters[NDFD_WG] == 1)
+            genWindSpeedGustValues(j, layoutKeys[j][NDFD_WG], match, numMatch,
+                                   parameters, numRowsForPoint[j][NDFD_WG]);
 
          /* Format Wind Direction values for DWMLgen products, if applicable.
           * Collect the Wind Direction values that correspond to the times
           * when the maximum Wind Speeds existed if product is of type
           * DWMLgenByDay. */
+//           printf ("are we here 1001\n");
          if (weatherParameters[NDFD_WD] == 1 || weatherParameters[NDFD_WD] == 2)
          {
-		 
+//           printf ("are we here 1002\n");
             /* If product is of DWMLgenByDay type, allocate maxWindDirection
              * array and initialize. We need these wind direction values for
              * each forecast period to derive the weather and icon elements. */
@@ -11120,13 +13162,21 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                for (i = 0; i < (numOutputLines); i++)
                   maxWindDirection[i] = -999;
             }
-	    
+//	    printf ("are we here before genWindDirValues\n");
             genWindDirectionValues(j, layoutKeys[j][NDFD_WD], match,
                                    numMatch, parameters, maxWindDirection,
                                    f_XML, numOutputLines,
-				   valTimeForWindDirMatch);
+				   valTimeForWindDirMatch,
+				   numRowsForPoint[j][NDFD_WD]);
+// 	    printf ("are we here after genWindDirValues\n");
+//	    if (f_XML == 3 || f_XML == 4)
+//            {
+//               for (i = 0; i < numOutputLines; i++)
+ //                 printf ("maxWindDirection[%d] = %d\n",i,maxWindDirection[i]);
+//            }
+
          }
-	 
+
          /* Format Sky Cover Values for DWMLgen products, if applicable.
           * Collect Max and Min Sky Cover values for icon determination if
           * product is of type DWMLgenByDay. */
@@ -11135,9 +13185,10 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
          {
 
             /* If product is of DWMLgenByDay type, allocate the maxSkyCover,
-             * minSkyCover, minSkyNum, maxSkyNum, startPositions, endPositions,
-	     * and averageSkyCover arrays and initialize them. We need these 
-	     * sky values for each forecast period to derive the weather and 
+             * minSkyCover, minSkyNum, maxSkyNum, startPositions, e
+	     * ndPositions,
+	     * and averageSkyCover arrays and initialize them. We need these
+	     * sky values for each forecast period to derive the weather and
 	     * icon elements. */
 
             if (f_XML == 3 || f_XML == 4)
@@ -11149,7 +13200,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
 	       maxSkyNum = malloc(numOutputLines * sizeof(int));
                minSkyNum = malloc(numOutputLines * sizeof(int));
                averageSkyCover = malloc(numOutputLines * sizeof(int));
-               
+
                for (i = 0; i < numOutputLines; i++)
                {
 		  maxSkyCover[i]    = -999;
@@ -11165,21 +13216,36 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                               parameters, startDate[j], maxSkyCover,
                               minSkyCover, averageSkyCover, numOutputLines,
                               timeInterval, TZoffset[j], pntInfo[j].f_dayLight,
-                              NDFD_SKY, numRowsForPoint[j][NDFD_SKY], f_XML, 
-			      maxSkyNum, minSkyNum, startPositions,  
-			      endPositions, &integerStartUserTime, 
-			      &integerTime, currentHour);
+                              NDFD_SKY, numRowsForPoint[j][NDFD_SKY], f_XML,
+			      maxSkyNum, minSkyNum, startPositions,
+			      endPositions, &integerTime, currentHour[j],
+			      timeUserStart[j], f_6CycleFirst[j], startTime);
+
+//            if (f_XML == 3 || f_XML == 4)
+//            {
+//	       for (i=0;i<numOutputLines;i++)
+//               {
+//	         printf ("averageSkyCover[%d] #2 = %d\n",i,averageSkyCover[i]);
+//	         printf ("minSkyNum[%d] #2 = %d\n",i,minSkyNum[i]);
+//	         printf ("maxSkyNum[%d] #2 = %d\n",i,maxSkyNum[i]);
+//	         printf ("minSkyCover[%d] #2 = %d\n",i,minSkyCover[i]);
+//	         printf ("maxSkyCover[%d] #2 = %d\n",i,maxSkyCover[i]);
+//	         printf ("startPositions[%d] #2 = %d\n",i,startPositions[i]);
+//	         printf ("endPositions[%d] #2 = %d\n",i,endPositions[i]);
+//	       }
+//            }
          }
 
          /* Format Relative Humidity Values, if applicable. */
          if (weatherParameters[NDFD_RH] == 1)
             genRelHumidityValues(j, layoutKeys[j][NDFD_RH], match, numMatch,
-                                 parameters);
+                                 parameters, numRowsForPoint[j][NDFD_RH]);
 
          /* Format Weather Values and\or Icons, if applicable. We must have
           * at least some rows of weather data to format either. */
-
-         if (numRowsForPoint[j][NDFD_WX] > 0)
+         if ((numRowsForPoint[j][NDFD_WX].total - 
+	      numRowsForPoint[j][NDFD_WX].skipBeg - 
+	      numRowsForPoint[j][NDFD_WX].skipBeg) > 0)
          {
             if (f_XML == 1 || f_XML == 2)
                genWeatherValues(j, layoutKeys[j][NDFD_WX], match, numMatch,
@@ -11187,33 +13253,30 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                                 numRowsForPoint[j][NDFD_WS],
                                 numRowsForPoint[j][NDFD_SKY],
                                 numRowsForPoint[j][NDFD_TEMP],
-                                numRowsForPoint[j][NDFD_WX], parameters,
+                                numRowsForPoint[j][NDFD_WX], 
+				numRowsForPoint[j][NDFD_POP], parameters,
                                 pnts[j].Y, pnts[j].X);
 	    else
 	       genWeatherValuesByDay(j, layoutKeys[j][NDFD_WX], match, numMatch,
                                 weatherParameters[NDFD_WX],
-                                numRowsForPoint[j][NDFD_WS],
-                                numRowsForPoint[j][NDFD_SKY],
+				numRowsForPoint[j][NDFD_WS],
 				numRowsForPoint[j][NDFD_POP],
 				numRowsForPoint[j][NDFD_MAX],
 				numRowsForPoint[j][NDFD_MIN],
-                                numRowsForPoint[j][NDFD_TEMP],
                                 numRowsForPoint[j][NDFD_WX], parameters,
-                                pnts[j].Y, pnts[j].X, numDays, TZoffset[j],
-                                pntInfo[j].f_dayLight, format, 
-				f_useMinTempTimes, f_XML, numOutputLines,
+                                numDays, TZoffset[j], pntInfo[j].f_dayLight,
+                                format, f_useMinTempTimes, f_XML, numOutputLines,
 				maxDailyPop, averageSkyCover, maxSkyCover,
 				minSkyCover, maxSkyNum, minSkyNum, 
 				startPositions, endPositions, maxWindSpeed,
 				maxWindDirection, integerTime, 
-				integerStartUserTime, startTime);
+				timeUserStart[j], startTime, f_6CycleFirst[j]);
          }
 
          /* Format Wave Height Values, if applicable. */
-
          if (weatherParameters[NDFD_WH] == 1)
             genWaveHeightValues(j, layoutKeys[j][NDFD_WH], match, numMatch,
-                                parameters);
+                                parameters, numRowsForPoint[j][NDFD_WH]);
 	 
          /* Free some things before leaving this iteration of the point loop. */
          if (f_XML == 3 || f_XML == 4)
@@ -11233,14 +13296,14 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
 
 	 free(numRowsForPoint[j]);
          free(startDate[j]);
-	 
+         free(currentDay[j]);
+         free(currentHour[j]);
 
          for (k = 0; k < NDFD_MATCHALL + 1; k++)
          {
             if (weatherParameters[k] == 1 || weatherParameters[k] == 3)
                free(layoutKeys[j][k]);
          }
-
 
       }                       /* End of "is Point in Sectors" check. */
 
@@ -11260,34 +13323,32 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
    isNewLayout(dummyTimeLayout, 0, 0, 1);
 
    /* Append <data> node to XML document. */
-
    xmlAddChild(dwml, data);
 
    /* Dump XML document to file or stdio (use "-" for stdio). */
-
    xmlSaveFormatFile("-", doc, 1);
 
    /* Free the document. */
-
    xmlFreeDoc(doc);
 
    /* Free the global variables that may have been allocated by parser. */
-
    xmlCleanupParser();
 
    /* This is to debug memory for regression tests. */
-
    xmlMemoryDump();
 
    /* Free some more memory. */
-
    free(layoutKeys);
    free(numRowsForPoint);
    free(TZoffset);
-   free(startDate);
+   free(startDate);         
+   free(currentHour);
+   free(currentDay);
+   free(timeUserStart);	 
+   free(timeUserEnd);
+   free(f_6CycleFirst);
 
    /* Free even some more memory. */
-
    free(f_pntHasData);
    free(collate);
 
