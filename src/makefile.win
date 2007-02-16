@@ -44,8 +44,7 @@ all: config zlib libpng emapf
 	@echo "-----------------------------"
 	@echo "Attempting to compile libxml..."
 	@echo "-----------------------------"
-#	(cd ./libxml && make libxml2.la)
-	(cd ./libxml && make)
+	(cd ./libxml && make libxml2.la)
 	@echo "Finished with libxml..."
 	@echo "-----------------------------"
 	@echo ""
