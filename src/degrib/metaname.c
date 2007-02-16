@@ -597,8 +597,8 @@ GRIB2ParmTable MeteoMoist[] = {
    /* 16 */ {"SNOM", "Snow melt", "kg/(m^2)", UC_NONE},
    /* 17 */ {"SNOAG", "Snow age", "day", UC_NONE},
    /* 18 */ {"", "Absolute humidity", "kg/(m^3)", UC_NONE},
-   /* 19 */ {"", "Precipitation type", "(1 Rain, 2 Thunderstorm, "
-             "3 Freezing Rain, 4 Mixed/ice, 5 snow, 255 missing)", UC_NONE},
+   /* 19 */ {"", "Precipitation type", "1=Rain; 2=Thunderstorm; "
+             "3=Freezing Rain; 4=Mixed/ice; 5=snow; 255=missing", UC_NONE},
    /* 20 */ {"", "Integrated liquid water", "kg/(m^2)", UC_NONE},
    /* 21 */ {"TCOND", "Condensate", "kg/kg", UC_NONE},
 /* CLWMR Did not make it to tables yet should be "-" */
@@ -611,13 +611,13 @@ GRIB2ParmTable MeteoMoist[] = {
    /* 28 */ {"", "Maximum absolute humidity", "kg/(m^3)", UC_NONE},
             /* NDFD */
    /* 29 */ {"ASNOW", "Total snowfall", "m", UC_M2Inch},
-   /* 30 */ {"", "Precipitable water category", "(undefined)", UC_NONE},
+   /* 30 */ {"", "Precipitable water category", "undefined", UC_NONE},
    /* 31 */ {"", "Hail", "m", UC_NONE},
    /* 32 */ {"", "Graupel (snow pellets)", "kg/kg", UC_NONE},
-/* 33 */    {"CRAIN", "Categorical rain", "0=no, 1=yes", UC_NONE},
-/* 34 */    {"CFRZR", "Categorical freezing rain", "0=no, 1=yes", UC_NONE},
-/* 35 */    {"CICEP", "Categorical ice pellets", "0=no, 1=yes", UC_NONE},
-/* 36 */    {"CSNOW", "Categorical snow", "0=no, 1=yes", UC_NONE},
+/* 33 */    {"CRAIN", "Categorical rain", "0=no; 1=yes", UC_NONE},
+/* 34 */    {"CFRZR", "Categorical freezing rain", "0=no; 1=yes", UC_NONE},
+/* 35 */    {"CICEP", "Categorical ice pellets", "0=no; 1=yes", UC_NONE},
+/* 36 */    {"CSNOW", "Categorical snow", "0=no; 1=yes", UC_NONE},
 /* 37 */    {"CPRAT", "Convective precipitation rate", "kg/(m^2*s)", UC_NONE},
 /* 38 */    {"MCONV", "Horizontal moisture divergence", "kg/(kg*s)", UC_NONE},
 /* 39 */    {"CPOFP", "Percent frozen precipitation", "%", UC_NONE},
@@ -724,18 +724,18 @@ GRIB2ParmTable MeteoCloud[] = {
    /* 5 */ {"HCDC", "High cloud cover", "%", UC_NONE},
    /* 6 */ {"CWAT", "Cloud water", "kg/(m^2)", UC_NONE},
    /* 7 */ {"", "Cloud amount", "%", UC_NONE},
-   /* 8 */ {"", "Cloud type", "(0 clear, 1 Cumulonimbus, 2 Stratus, "
-            "3 Stratocumulus, 4 Cumulus, 5 Altostratus, 6 Nimbostratus, "
-            "7 Altocumulus, 8 Cirrostratus, 9 Cirrocumulus, 10 Cirrus, "
-            "11 Cumulonimbus (fog), 12 Stratus (fog), 13 Stratocumulus (fog),"
-            " 14 Cumulus (fog), 15 Altostratus (fog), 16 Nimbostratus (fog), "
-            "17 Altocumulus (fog), 18 Cirrostratus (fog), "
-            "19 Cirrocumulus (fog), 20 Cirrus (fog), 191 unknown, "
-            "255 missing)", UC_NONE},
+   /* 8 */ {"", "Cloud type", "0=clear; 1=Cumulonimbus; 2=Stratus; "
+            "3=Stratocumulus; 4=Cumulus; 5=Altostratus; 6=Nimbostratus; "
+            "7=Altocumulus; 8=Cirrostratus; 9=Cirrocumulus; 10=Cirrus; "
+            "11=Cumulonimbus (fog); 12=Stratus (fog); 13=Stratocumulus (fog);"
+            " 14=Cumulus (fog); 15=Altostratus (fog); 16=Nimbostratus (fog); "
+            "17=Altocumulus (fog); 18=Cirrostratus (fog); "
+            "19=Cirrocumulus (fog); 20=Cirrus (fog); 191=unknown; "
+            "255=missing", UC_NONE},
    /* 9 */ {"", "Thunderstorm maximum tops", "m", UC_NONE},
-   /* 10 */ {"", "Thunderstorm coverage", "(0 none, 1 isolated (1%-2%), "
-             "2 few (3%-15%), 3 scattered (16%-45%), 4 numerous (> 45%), "
-             "255 missing)", UC_NONE},
+   /* 10 */ {"", "Thunderstorm coverage", "0=none; 1=isolated (1%-2%); "
+             "2=few (3%-15%); 3=scattered (16%-45%); 4=numerous (> 45%); "
+             "255=missing", UC_NONE},
    /* 11 */ {"", "Cloud base", "m", UC_NONE},
    /* 12 */ {"", "Cloud top", "m", UC_NONE},
    /* 13 */ {"", "Ceiling", "m", UC_NONE},
@@ -769,8 +769,8 @@ GRIB2ParmTable MeteoStability[] = {
 
 /* GRIB2 Code table 4.2 : 0.13 */
 GRIB2ParmTable MeteoAerosols[] = {
-   /* 0 */ {"", "Aerosol type", "(0 Aerosol not present, 1 Aerosol present, "
-            "255 missing)", UC_NONE},
+   /* 0 */ {"", "Aerosol type", "0=Aerosol not present; 1=Aerosol present; "
+            "255=missing", UC_NONE},
 };
 
 /* GRIB2 Code table 4.2 : 0.14 */
@@ -815,23 +815,23 @@ GRIB2ParmTable MeteoAtmos[] = {
    /* 1 */ {"ALBDO", "Albedo", "%", UC_NONE},
    /* 2 */ {"TSTM", "Thunderstorm probability", "%", UC_NONE},
    /* 3 */ {"MIXHT", "mixed layer depth", "m", UC_NONE},
-   /* 4 */ {"", "Volcanic ash", "(0 not present, 1 present, 255 missing)", UC_NONE},
+   /* 4 */ {"", "Volcanic ash", "0=not present; 1=present; 255=missing", UC_NONE},
    /* 5 */ {"", "Icing top", "m", UC_NONE},
    /* 6 */ {"", "Icing base", "m", UC_NONE},
-   /* 7 */ {"", "Icing", "(0 None, 1 Light, 2 Moderate, 3 Severe, "
-            "255 missing)", UC_NONE},
+   /* 7 */ {"", "Icing", "0=None; 1=Light; 2=Moderate; 3=Severe; "
+            "255=missing", UC_NONE},
    /* 8 */ {"", "Turbulance top", "m", UC_NONE},
    /* 9 */ {"", "Turbulence base", "m", UC_NONE},
-   /* 10 */ {"", "Turbulance", "(0 None(smooth), 1 Light, 2 Moderate, "
-             "3 Severe, 4 Extreme, 255 missing)", UC_NONE},
+   /* 10 */ {"", "Turbulance", "0=None(smooth); 1=Light; 2=Moderate; "
+             "3=Severe; 4=Extreme; 255=missing", UC_NONE},
    /* 11 */ {"TKE", "Turbulent Kinetic Energy", "J/kg", UC_NONE},
-   /* 12 */ {"", "Planetary boundary layer regime", "(0 Reserved, 1 Stable, "
-             "2 Mechanically driven turbulence, 3 Forced convection, "
-             "4 Free convection, 255 missing)", UC_NONE},
-   /* 13 */ {"", "Contrail intensity", "(0 Contrail not present, "
-             "1 Contrail present, 255 missing)", UC_NONE},
-   /* 14 */ {"", "Contrail engine type", "(0 Low bypass, 1 High bypass, "
-             "2 Non bypass, 255 missing)", UC_NONE},
+   /* 12 */ {"", "Planetary boundary layer regime", "0=Reserved; 1=Stable; "
+             "2=Mechanically driven turbulence; 3=Forced convection; "
+             "4=Free convection; 255=missing", UC_NONE},
+   /* 13 */ {"", "Contrail intensity", "0=Contrail not present; "
+             "1=Contrail present; 255=missing", UC_NONE},
+   /* 14 */ {"", "Contrail engine type", "0=Low bypass; 1=High bypass; "
+             "2=Non bypass; 255=missing", UC_NONE},
    /* 15 */ {"", "Contrail top", "m", UC_NONE},
    /* 16 */ {"", "Contrail base", "m", UC_NONE},
 /* 17 */    {"MXSALB", "Maximum snow albedo", "%", UC_NONE},
@@ -852,10 +852,10 @@ GRIB2ParmTable MeteoMisc[] = {
 GRIB2ParmTable HydroBasic[] = {
    /* 0 */ {"", "Flash flood guidance", "kg/(m^2)", UC_NONE},
    /* 1 */ {"", "Flash flood runoff", "kg/(m^2)", UC_NONE},
-   /* 2 */ {"", "Remotely sensed snow cover", "(50 no-snow/no-cloud, "
-            "100 Clouds, 250 Snow, 255 missing)", UC_NONE},
-   /* 3 */ {"", "Elevation of snow covered terrain", "(0-90 elevation in "
-            "increments of 100m, 254 clouds, 255 missing)", UC_NONE},
+   /* 2 */ {"", "Remotely sensed snow cover", "50=no-snow/no-cloud; "
+            "100=Clouds; 250=Snow; 255=missing", UC_NONE},
+   /* 3 */ {"", "Elevation of snow covered terrain", "0-90=elevation in "
+            "increments of 100m; 254=clouds; 255=missing", UC_NONE},
    /* 4 */ {"", "Snow water equivalent percent of normal", "%", UC_NONE},
 /* 5 */    {"BGRUN", "Baseflow-groundwater runoff", "kg/(m^2)", UC_NONE},
 /* 6 */    {"SSRUN", "Storm surface runoff", "kg/(m^2)", UC_NONE},
@@ -880,10 +880,10 @@ GRIB2ParmTable LandVeg[] = {
    /* 5 */ {"WATR", "Water runoff", "kg/(m^2)", UC_NONE},
    /* 6 */ {"", "Evapotranspiration", "1/(kg^2 s)", UC_NONE},
    /* 7 */ {"", "Model terrain height", "m", UC_NONE},
-   /* 8 */ {"", "Land use", "(1 Urban land, 2 agriculture, 3 Range Land, "
-            "4 Deciduous forest, 5 Coniferous forest, 6 Forest/wetland, "
-            "7 Water, 8 Wetlands, 9 Desert, 10 Tundra, 11 Ice, "
-            "12 Tropical forest, 13 Savannah)", UC_NONE},
+   /* 8 */ {"", "Land use", "1=Urban land; 2=agriculture; 3=Range Land; "
+            "4=Deciduous forest; 5=Coniferous forest; 6=Forest/wetland; "
+            "7=Water; 8=Wetlands; 9=Desert; 10=Tundra; 11=Ice; "
+            "12=Tropical forest; 13=Savannah", UC_NONE},
 /* 9 */    {"SOILW", "Volumetric soil moisture content", "fraction", UC_NONE},
 /* 10 */   {"GFLUX", "Ground heat flux", "W/(m^2)", UC_NONE},
 /* 11 */   {"MSTAV", "Moisture availability", "%", UC_NONE},
@@ -902,10 +902,10 @@ GRIB2ParmTable LandVeg[] = {
 /* GRIB2 Code table 4.2 : 2.3 */
 /* NCEP changed 0 to be "Soil type (as in Zobler)" I ignored them */
 GRIB2ParmTable LandSoil[] = {
-   /* 0 */ {"SOTYP", "Soil type", "(1 Sand, 2 Loamy sand, 3 Sandy loam, "
-            "4 Silt loam, 5 Organic (redefined), 6 Sandy clay loam, "
-            "7 Silt clay loam, 8 Clay loam, 9 Sandy clay, 10 Silty clay, "
-            "11 Clay)", UC_NONE},
+   /* 0 */ {"SOTYP", "Soil type", "1=Sand; 2=Loamy sand; 3=Sandy loam; "
+            "4=Silt loam; 5=Organic (redefined); 6=Sandy clay loam; "
+            "7=Silt clay loam; 8=Clay loam; 9=Sandy clay; 10=Silty clay; "
+            "11=Clay", UC_NONE},
    /* 1 */ {"", "Upper layer soil temperature", "K", UC_NONE},
    /* 2 */ {"", "Upper layer soil moisture", "kg/(m^3)", UC_NONE},
    /* 3 */ {"", "Lower layer soil moisture", "kg/(m^3)", UC_NONE},
@@ -926,17 +926,17 @@ GRIB2ParmTable SpaceImage[] = {
    /* 4 */ {"", "Scaled lifted index", "numeric", UC_NONE},
    /* 5 */ {"", "Scaled cloud top pressure", "numeric", UC_NONE},
    /* 6 */ {"", "Scaled skin temperature", "numeric", UC_NONE},
-   /* 7 */ {"", "Cloud mask", "(0 clear over water, 1 clear over land, "
-            "2 cloud)", UC_NONE},
-/* 8 */ {"", "Pixel scene type", "(0 No scene, 1 needle, 2 broad-leafed, "
-         "3 Deciduous needle, 4 Deciduous broad-leafed, 5 Deciduous mixed, "
-         "6 Closed shrub, 7 Open shrub, 8 Woody savannah, 9 Savannah, "
-         "10 Grassland, 11 wetland, 12 Cropland, 13 Urban, 14 crops, "
-         "15 snow, 16 Desert, 17 Water, 18 Tundra, 97 Snow on land, "
-         "98 Snow on water, 99 Sun-glint, 100 General cloud, "
-         "101 (fog, Stratus), 102 Stratocumulus, 103 Low cloud, "
-         "104 Nimbotratus, 105 Altostratus, 106 Medium cloud, 107 Cumulus, "
-         "108 Cirrus, 109 High cloud, 110 Unknown cloud)", UC_NONE},
+   /* 7 */ {"", "Cloud mask", "0=clear over water; 1=clear over land; "
+            "2=cloud", UC_NONE},
+/* 8 */ {"", "Pixel scene type", "0=No scene; 1=needle; 2=broad-leafed; "
+         "3=Deciduous needle; 4=Deciduous broad-leafed; 5=Deciduous mixed; "
+         "6=Closed shrub; 7=Open shrub; 8=Woody savannah; 9=Savannah; "
+         "10=Grassland; 11=wetland; 12=Cropland; 13=Urban; 14=crops; "
+         "15=snow; 16=Desert; 17=Water; 18=Tundra; 97=Snow on land; "
+         "98=Snow on water; 99=Sun-glint; 100=General cloud; "
+         "101=fog Stratus; 102=Stratocumulus; 103=Low cloud; "
+         "104=Nimbotratus; 105=Altostratus; 106=Medium cloud; 107=Cumulus; "
+         "108=Cirrus; 109=High cloud; 110=Unknown cloud", UC_NONE},
 };
 
 /* GRIB2 Code table 4.2 : 3.1 */
@@ -944,9 +944,9 @@ GRIB2ParmTable SpaceQuantitative[] = {
    /* 0 */ {"", "Estimated precipitation", "kg/(m^2)", UC_NONE},
 /* 1 */ {"", "Instantaneous rain rate", "kg/(m^2*s)", UC_NONE},
 /* 2 */ {"", "Cloud top height", "kg/(m^2*s)", UC_NONE},
-/* 3 */ {"", "Cloud top height quality indicator", "(0 Nominal cloud top "
-         "height quality, 1 Fog in segment, 2 Poor quality height estimation "
-         "3 Fog in segment and poor quality height estimation)", UC_NONE},
+/* 3 */ {"", "Cloud top height quality indicator", "0=Nominal cloud top "
+         "height quality; 1=Fog in segment; 2=Poor quality height estimation; "
+         "3=Fog in segment and poor quality height estimation", UC_NONE},
 /* 4 */ {"", "Estimated u component of wind", "m/s", UC_NONE},
 /* 5 */ {"", "Estimated v component of wind", "m/s", UC_NONE},
 };
@@ -1204,7 +1204,7 @@ GRIB2LocalTable NDFD_LclTable[] = {
    /* 3 */ {0, 14, 192, "O3MR", "Ozone Mixing Ratio", "kg/kg", UC_NONE},
    /* 4 */ {0, 14, 193, "OZCON", "Ozone Concentration", "PPB", UC_NONE},
    /* Added 1/23/2007 in preparation for SPC NDFD Grids */
-           {0, 19, 194, "ConvOutlook", "Convective Hazard Outlook", "4=slight, 6=moderate, 8=high", UC_NONE},
+           {0, 19, 194, "ConvOutlook", "Convective Hazard Outlook", "0=none; 2=tstm; 4=slight; 6=moderate; 8=high", UC_NONE},
            {0, 19, 197, "TornadoProb", "Tornado probability", "%", UC_NONE},
            {0, 19, 198, "HailProb", "Hail probability", "%", UC_NONE},
            {0, 19, 199, "WindProb", "Damaging thunderstorm wind probability", "%", UC_NONE},
@@ -1246,10 +1246,10 @@ GRIB2LocalTable NCEP_LclTable[] = {
    /*  0 */ {0, 0, 192, "SNOHF", "Snow Phase Change Heat Flux", "W/(m^2)", UC_NONE},
             {0, 0, 193, "TTRAD", "Temperature tendency by all radiation", "K/s", UC_NONE},
 
-   /*  1 */ {0, 1, 192, "CRAIN", "Categorical Rain", "(0 no; 1 yes)", UC_NONE},
-   /*  2 */ {0, 1, 193, "CFRZR", "Categorical Freezing Rain", "(0 no; 1 yes)", UC_NONE},
-   /*  3 */ {0, 1, 194, "CICEP", "Categorical Ice Pellets", "(0 no; 1 yes)", UC_NONE},
-   /*  4 */ {0, 1, 195, "CSNOW", "Categorical Snow", "(0 no; 1 yes)", UC_NONE},
+   /*  1 */ {0, 1, 192, "CRAIN", "Categorical Rain", "0=no; 1=yes", UC_NONE},
+   /*  2 */ {0, 1, 193, "CFRZR", "Categorical Freezing Rain", "0=no; 1=yes", UC_NONE},
+   /*  3 */ {0, 1, 194, "CICEP", "Categorical Ice Pellets", "0=no; 1=yes", UC_NONE},
+   /*  4 */ {0, 1, 195, "CSNOW", "Categorical Snow", "0=no; 1=yes", UC_NONE},
    /*  5 */ {0, 1, 196, "CPRAT", "Convective Precipitation Rate", "kg/(m^2*s)", UC_NONE},
    /*  6 */ {0, 1, 197, "MCONV", "Horizontal Moisture Divergence", "kg/(kg*s)", UC_NONE},
 /* Following was grandfathered in... Should use: 1, 1, 193 */
@@ -1334,7 +1334,7 @@ GRIB2LocalTable NCEP_LclTable[] = {
             {0, 19, 200, "", "Significant Tornado probability", "%", UC_NONE},
             {0, 19, 201, "", "Significant Hail probability", "%", UC_NONE},
             {0, 19, 202, "", "Significant Wind probability", "%", UC_NONE},
-            {0, 19, 203, "TSTMC", "Categorical Thunderstorm", "0=no, 1=yes", UC_NONE},
+            {0, 19, 203, "TSTMC", "Categorical Thunderstorm", "0=no; 1=yes", UC_NONE},
             {0, 19, 204, "MIXLY", "Number of mixed layers next to surface", "integer", UC_NONE},
 
    /* 47 */ {0, 191, 192, "NLAT", "Latitude (-90 to 90)", "deg", UC_NONE},
