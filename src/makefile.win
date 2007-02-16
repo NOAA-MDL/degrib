@@ -171,13 +171,13 @@ clean: config.status
 	(cd ./gd && make -f ./scripts/makefile.win clean)
 # jpeg2000 make distclean doesn't seem to work on mingw properly.
 #	(cd ./jpeg2000 && make distclean)
-	(cd ./jpeg2000/ && rm -f config.log config.status libtool jasper.spec Makefile)
+	(cd ./jpeg2000/ && rm -rf config.log config.status libtool jasper.spec Makefile autom4te.cache)
 	(cd ./jpeg2000/src/ && rm -f Makefile)
 	(cd ./jpeg2000/src/libjasper/ && rm -rf *.o *.lo *.la .deps .libs Makefile)
 	(cd ./jpeg2000/src/libjasper/base && rm -rf *.o *.lo *.la .libs .deps Makefile)
 	(cd ./jpeg2000/src/libjasper/jpc && rm -rf *.o *.lo *.la .libs .deps Makefile)
 	(cd ./jpeg2000/src/libjasper/include && rm -f Makefile)
-	(cd ./jpeg2000/src/libjasper/include/jasper && rm -f Makefile stamp-h1 jas_config.h)
+	(cd ./jpeg2000/src/libjasper/include/jasper && rm -f Makefile stamp-h1 jas_config.h jas_config.h.in~)
 # libxml make distclean doesn't seem to work on mingw properly.
 #	(cd ./libxml && make distclean)
 	(cd ./libxml && rm -rf *.o *.lo *.pc config.status xml2-config .deps Makefile libtool config.log *.la .libs stamp-h1 libxml2.spec)
@@ -191,4 +191,3 @@ clean: config.status
 	(cd ./libxml/include && rm -f Makefile)
 	(cd ./libxml/include/libxml && rm -f Makefile)
 	rm -f config.status
-
