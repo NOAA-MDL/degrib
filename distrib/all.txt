@@ -371,9 +371,16 @@ A,G:degrib/bin/MakeData.tcl
 
 # GUI Lib
 G:degrib/lib/degrib/*.*
-G:degrib/lib/tcl8.3/*.* recurse
+G:degrib/lib/tcl8.3/*.tcl
 G:degrib/lib/tcl8.3/tclIndex
+G:degrib/lib/tcl8.3/dde1.1/*.*
 G:degrib/lib/tcl8.3/encoding/*.*
+G:degrib/lib/tcl8.3/http1.0/*.*
+G:degrib/lib/tcl8.3/http2.3/*.*
+G:degrib/lib/tcl8.3/msgcat1.0/*.*
+G:degrib/lib/tcl8.3/opt0.4/*.*
+G:degrib/lib/tcl8.3/reg1.0/*.*
+G:degrib/lib/tcl8.3/tcltest1.0/*.*
 G:degrib/lib/tk8.3/*.*
 G:degrib/lib/tk8.3/tclIndex
 G:degrib/lib/tk8.3/demos/Readme
@@ -406,8 +413,8 @@ A:degrib/docs/NDFD_GRIB2Decoder.html
 A:degrib/docs/images/*
 
 # ArcView
-A:degrib/arcview/point_legend/*
-A:degrib/arcview/poly_legend/*
+A:degrib/arcview/point_legend/*.avl
+A:degrib/arcview/poly_legend/*.avl
 A:degrib/arcview/prj.adf
 A:degrib/arcview/NDFD.prj
 A:degrib/arcview/readme.txt
