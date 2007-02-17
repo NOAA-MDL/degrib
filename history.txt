@@ -1,5 +1,64 @@
+2/16  AAT Updated metaname.c's units to use ; instead of , when dealing with
+          a look up table.  This should help with people parsing probe output.
+2/16  AAT fixed the method used to check memory allocation in g2_unpack2.c
+2/16  AAT added drawshp.txt to /degrib/docs
+2/15  AAT Adjusted sectors/numSectors prior to calling expandInName so if a
+          point falls on Puerto Rico, it grabs data from nhemi as well. (r369)
+2/9   AAT Added support for labeling Error Grids (RTMA) (r362)
+2/9   AAT modified sector.c to be more forgiving in SectorFindGDS, and to add
+          point sector information.  PntSectInfo now contains a list of the
+          sectors a point fall in.  A point does not count multiple times when
+          creating the "sector" list.  eg a point in "conus,nhemi,alaska" only
+          counts as "conus" in the sector list, but has an entry of
+          "conus,nhemi,alaska" in its point-sector list. (r361)
 #
-#----- Release: Version 1.85a 11/08/2006 -----
+#----- Release: Version 1.85e 02/07/2007 -----
+#
+ 2/7  AAT modified genprobe.c to check if a match already exists for the 4
+          items: refTime,validTime,f_sector,ndfdEnum.  If so, then don't
+          create a second match.  Only way to do that is if we have duplicate
+          copies of the data on the drive. (r358)
+ 2/7  AAT modified expandInNames to include the "root directory" only once.
+ 2/7  AAT Adjusted sectors/numSectors prior to calling expandInName so if a
+          point falls on conus, it grabs data from nhemi as well.
+ 2/7  AAT Changed behavior of -DP so a point falling outside the grid returns
+          missing instead of nearest grid cell.  (DC should not have a value
+          on the Hawaii grid).
+ 2/7  AAT Enabled WG and Tropical cyclone winds for -DP and -DC options
+          Need to deal with -DC / tropical cyclone glitches.
+ 2/7  AAT Adjusted match type to include sector information for genProbe.
+#
+#----- Release: Version 1.85d 02/05/2007 -----
+#
+ 2/5  AAT Updated makefile.aix32/aix64 to use DWMLFLAGS
+ 1/31 AAT Adjusted ReadSECT0 to allocate in 200 byte increments instead of 5.
+#
+#----- Release: Version 1.85c 01/29/2007 -----
+#
+ 1/24 AAT Corrected the indexing of pnts in Grib2DataProbe so it can handle
+          multiple -DP points correctly.
+ 1/24 AAT Modified makefile.aix32 and makefile.aix64 to use
+          -bmaxdata:0x30000000 so they have ~800 megs of dynamic memory
+          available.
+ 1/24 AAT Modified makefile's which use -ansi to pass -c99 to dwmllib code
+          to support // comments.
+ 1/24 AAT Fixed strTrimRight() and strTrim() based on emails from Joe Lang.
+          Unsigned int loop counter couldn't handle a string filled with
+          only spaces (i >= 0 was always true).
+ 1/24 AAT Fixed bi-linear interpolation based on jeff.sharkey's email.  I was
+          interpolating holding y constant, but accidentally used the values
+          as if I was holding x constant.
+ 1/23 AAT Added SPC metaname information which will be released on Feb 27.
+          Decided to add an override in ParseElemName() to help keep names
+          closer to what was dictated.
+ 1/11 AAT NUMDAYS uses valTime 2,3 (instead of 1,3)
+ 1/10 AAT Adjusted NumDays to be +12 hours instead of +36 hours.
+#
+#----- Release: Version 1.85b 01/09/2007 -----
+#
+ 1/9  AAT Added -startDate and -numDays options for XML 3,4
+#
+#----- Release: Version 1.85a 11/08/2009 -----
 #
 11/7  AAT updated degrib1.c to handle center 9 subcenter 161 data for GRIB1.
 #

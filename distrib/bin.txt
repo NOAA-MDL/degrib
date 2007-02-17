@@ -224,7 +224,13 @@ S:degrib/src/netcdf/rules.make
 S:degrib/src/netcdf/libsrc/Makefile
 S:degrib/src/netcdf/libsrc/depend
 S:degrib/src/netcdf/libsrc/*.c
-S:degrib/src/netcdf/libsrc/*.h
+S:degrib/src/netcdf/libsrc/nc.h
+S:degrib/src/netcdf/libsrc/rnd.h
+S:degrib/src/netcdf/libsrc/ncx.h
+S:degrib/src/netcdf/libsrc/ncio.h
+S:degrib/src/netcdf/libsrc/fbits.h
+S:degrib/src/netcdf/libsrc/netcdf.h
+S:degrib/src/netcdf/libsrc/onstack.h
 S:degrib/src/netcdf/libsrc/*.3
 S:degrib/src/netcdf/libsrc/*.m4
 S:degrib/src/netcdf/libsrc/*.in
@@ -402,6 +408,7 @@ A,E:degrib/bin/sector.tbl
 # Docs
 A:degrib/readme.txt
 A:degrib/history.txt
+A:degrib/license.txt
 A:degrib/version.txt
 A:degrib/docs/readme.txt
 A:degrib/docs/degrib.txt
