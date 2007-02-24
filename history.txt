@@ -1,3 +1,6 @@
+#
+#----- Release: Version 1.85f 02/16/2007 -----
+#
 2/16  AAT Updated metaname.c's units to use ; instead of , when dealing with
           a look up table.  This should help with people parsing probe output.
 2/16  AAT fixed the method used to check memory allocation in g2_unpack2.c
