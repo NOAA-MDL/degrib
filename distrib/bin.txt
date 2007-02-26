@@ -297,7 +297,14 @@ S:degrib/src/libxml/configure
 S:degrib/src/libxml/install-sh
 S:degrib/src/libxml/missing
 S:degrib/src/libxml/*.c
-S:degrib/src/libxml/*.h
+S:degrib/src/libxml/acconfig.h
+S:degrib/src/libxml/elfgcchack.h
+S:degrib/src/libxml/libxml.h
+S:degrib/src/libxml/trio.h
+S:degrib/src/libxml/triodef.h
+S:degrib/src/libxml/trionan.h
+S:degrib/src/libxml/triop.h
+S:degrib/src/libxml/triostr.h
 S:degrib/src/libxml/depcomp
 S:degrib/src/libxml/include/*.h
 S:degrib/src/libxml/include/libxml/*.h
