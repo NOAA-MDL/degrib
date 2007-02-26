@@ -1,16 +1,6 @@
 #!/bin/sh
 # The next line restarts with wish \
-if test -x /usr/bin/tclsh
-# \
-then
-  # \
-  exec tclsh "$0" "$@"
-# \
-else
-  # \
-  exec cygtclsh "d:/cygwin$0" "$@"
-# \
-fi
+exec tclsh "$0" "$@"
 
 set src_dir [file dirname [info script]]
 if {[file pathtype $src_dir] != "absolute"} {
@@ -19,7 +9,6 @@ if {[file pathtype $src_dir] != "absolute"} {
   set src_dir [pwd]
   cd $cur_dir
 }
-
 
 #-----------------------------------------------------------------------------
 # ReadIni --
@@ -35,7 +24,8 @@ if {[file pathtype $src_dir] != "absolute"} {
 #-----------------------------------------------------------------------------
 proc ReadIni {file section lstVars} {
   if {! [file isfile $file]} {
-    tk_messageBox -message "Unable to open $file"
+#    tk_messageBox -message "Unable to open $file"
+    puts "Unable to open $file"
     return ""
   }
   set fp [open $file r]
@@ -51,7 +41,8 @@ proc ReadIni {file section lstVars} {
   }
   if {! $f_found} {
     close $fp
-    tk_messageBox -message "Unable to find \[$section\] section in $file"
+#    tk_messageBox -message "Unable to find \[$section\] section in $file"
+    puts "Unable to find \[$section\] section in $file"
     return ""
   }
 #####
@@ -158,9 +149,9 @@ proc DoIt {filename} {
   set Zip_Also false
 
   set StartDir [file dirname [file dirname $src_dir]]
-  set DestDir $StartDir
+  set DestDir $StartDir/degrib.web/degrib2/download
   set UpdatePages ""         ;# intended to be a list.
-  set Version ""
+  set Version [FindVersion $StartDir/degrib]
   set DoGeneric true
   set DoExe true
   set DoSrc true
@@ -236,7 +227,7 @@ proc DoIt {filename} {
 #     file copy -force degrib-src.tar degrib-temp.tar
 #  }
   if {$ansFile == "degrib-src"} {
-    eval {exec gzip -c} $ansFile.tar > $ansFile.tar.gz 
+    eval {exec gzip -c} $ansFile.tar > $ansFile.tar.gz
   } else {
     eval {exec gzip} $ansFile.tar
   }
@@ -263,9 +254,13 @@ proc DoIt {filename} {
   cd $DestDir
   if {$Zip_Also} {
     puts "Creating $ansFile.exe"
-    exec "c:/program files/winzip self-extractor/wzipse32.exe" $ansFile.zip \
-          -y -d c:\\ -le -overwrite
-    file delete -force $ansFile.zip
+    if {! [file isfile "c:/program files/winzip self-extractor/wzipse32.exe"]} {
+       puts "Couldn't find wzipse32.exe... no self extracting zip created"
+    } else {
+       exec "c:/program files/winzip self-extractor/wzipse32.exe" $ansFile.zip \
+             -y -d c:\\ -le -overwrite
+       file delete -force $ansFile.zip
+    }
   }
   if {$UpdatePages != ""} {
     foreach elem $UpdatePages {
