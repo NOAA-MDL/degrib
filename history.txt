@@ -1,4 +1,14 @@
 #
+#----- Release: Version 1.85h 02/26/2007 -----
+#
+2/26  AAT Last minute change of abbreviations for SPC grids.
+          From: SigTornProb SigHailProb SigWindprob TotalProbOutlook
+          SigTotProbOutlook
+          To: XtrmTornProb XtrmHailProb XtrmWindProb TotalSvrProb
+          TotalXtrmProb
+2/26  AAT Updated xmlparse.c to Paul's current version
+2/26  AAT Added filenames for new SPC grids to ndfd.ini (r405)
+#
 #----- Release: Version 1.85g 02/26/2007 -----
 #
 2/26  AAT Added SigTotProbOutlook, and updated some handling of SPC grids (r397)

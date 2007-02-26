@@ -7,7 +7,7 @@
 #   +1 is for a large set of new features
 
 [degrib]
-Version=1.85g
+Version=1.85h
 Date=02/26/2007
 Web=http://www.nws.noaa.gov/NDFD_GRIB2Decoder/index.htm
 
