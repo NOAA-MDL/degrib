@@ -24,10 +24,10 @@ Class_E=Exe
 Class_G=GUI
 Class_S=Src
 Class_AMS=AMS
-StartDir=e:/prj/ndfd/
-DestDir=e:/prj/ndfd/degrib.web/degrib2/download
-WebDir=e:/prj/ndfd/degrib.web/degrib2
-Version=[FindVersion e:/prj/ndfd/degrib]
+#StartDir=e:/prj/ndfd/
+#DestDir=e:/prj/ndfd/degrib.web/degrib2/download
+#WebDir=e:/prj/ndfd/degrib.web/degrib2
+#Version=[FindVersion e:/prj/ndfd/degrib]
 
 # General
 S:degrib/src/readme.txt
