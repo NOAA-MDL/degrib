@@ -787,8 +787,9 @@ sChar Clock_GetTimeZone ()
  * 1/1/2016 Fri (5)
  * 1/1/2028 Sat (6)
  *   --- Since there is an extra day, the delta is the same
- *   --- Problems occur with leap years starting on Mon, or Thur
- *       (delta shift by 7 days = 604,800 seconds)
+ *   --- Problems occur with leap years pre 2007 which start on Mon or Thur
+ *       (delta shift by 7 days = 604,800 seconds) After 2007, it was leap
+ *       years starting only on Thur.
  *****************************************************************************
  */
 int Clock_IsDaylightSaving2 (double clock, sChar TimeZone)
@@ -796,25 +797,26 @@ int Clock_IsDaylightSaving2 (double clock, sChar TimeZone)
    sInt4 totDay, year;
    int day, first;
    double secs;
+   sInt4 start, end;
 
    /* These are the deltas between the 1st sun in apr and beginning of year
     * in seconds + 2 hours. */
-   sInt4 start2006[7] = {7869600, 7783200, 8301600, 8215200,
-                         8128800, 8042400, 7956000};
+   static sInt4 start2006[7] = {7869600, 7783200, 8301600, 8215200,
+                                8128800, 8042400, 7956000};
    /* These are the deltas between the last sun in oct and beginning of year
     * in seconds + 1 hour. */
-   sInt4 end2006[7] = {26010000, 25923600, 25837200, 25750800,
-                       25664400, 26182800, 26096400};
+   static sInt4 end2006[7] = {26010000, 25923600, 25837200, 25750800,
+                              25664400, 26182800, 26096400};
    /* Previous version had typo ...26664400 -> 25664400 */
 
    /* These are the deltas between the 2nd sun in mar and beginning of year
     * in seconds + 2 hours. */
-   sInt4 start2007[7] = {6055200, 5968800, 5882400, 5796000,
-                         5709600, 6228000, 6141600};
+   static sInt4 start2007[7] = {6055200, 5968800, 5882400, 5796000,
+                                5709600, 6228000, 6141600};
    /* These are the deltas between the 1st sun in nov and beginning of year
     * in seconds + 1 hour. */
-   sInt4 end2007[7] = {26614800, 26528400, 26442000, 26355600,
-                       26269200, 26787600, 26701200};
+   static sInt4 end2007[7] = {26614800, 26528400, 26442000, 26355600,
+                              26269200, 26787600, 26701200};
 
    clock = clock - TimeZone * 3600.;
    /* Clock should now be in Standard Time, so comparisons later have to be
@@ -830,30 +832,29 @@ int Clock_IsDaylightSaving2 (double clock, sChar TimeZone)
                                         * -day+1 => sun == 0, ... sat == 6 */
 
    if (year >= 2007) {
+      start = start2007[first];
+      end = end2007[first];
       if (((year % 4) == 0) && (((year % 100) != 0) || ((year % 400) == 0))) {
          if (first == 4) {
-            start2007[4] += 604800;
-            end2007[4] += 604800;
+            start += 604800;
+            end += 604800;
          }
-      }
-      if ((secs >= start2007[first]) && (secs <= end2007[first])) {
-         return 1;
-      } else {
-         return 0;
       }
    } else {
+      start = start2006[first];
+      end = end2006[first];
       if (((year % 4) == 0) && (((year % 100) != 0) || ((year % 400) == 0))) {
          if (first == 1) {
-            start2006[1] += 604800;
+            start += 604800;
          } else if (first == 4) {
-            end2006[4] += 604800;
+            end += 604800;
          }
       }
-      if ((secs >= start2006[first]) && (secs <= end2006[first])) {
-         return 1;
-      } else {
-         return 0;
-      }
+   }
+   if ((secs >= start) && (secs <= end)) {
+      return 1;
+   } else {
+      return 0;
    }
 }
 
@@ -2427,13 +2428,17 @@ int Clock_Scan (double *clock, char *buffer, char f_gmt)
       *clock = *clock + TimeZone * 3600;
    }
 
-   free (Stack);
-   free (Rel);
+   if (Stack != NULL)
+      free (Stack);
+   if (Rel != NULL)
+      free (Rel);
    return 0;
 
  errorReturn:
-   free (Stack);
-   free (Rel);
+   if (Stack != NULL)
+      free (Stack);
+   if (Rel != NULL)
+      free (Rel);
    return -1;
 }
 
