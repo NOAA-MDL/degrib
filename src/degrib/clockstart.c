@@ -367,10 +367,12 @@ int main (int argc, char **argv)
          UserFree (&usr);
          return 0;
       case CMD_ISDAYLIGHT:
+/*
          usr.d_clock -= usr.timeZone * 3600.;
          if (usr.f_dayLight == 1) {
             usr.d_clock += 3600.;
          }
+*/
          if (Clock_IsDaylightSaving2 (usr.d_clock, usr.timeZone)) {
             printf ("1\n");
          } else {
