@@ -1,16 +1,4 @@
-#!/bin/sh
-# The next line restarts with wish \
-if test -x /usr/bin/tclsh
-# \
-then
-  # \
-  exec tclsh "$0" "$@"
-# \
-else
-  # \
-  exec cygtclsh "d:/cygwin$0" "$@"
-# \
-fi
+#!/usr/bin/tclsh
 
 set src_dir [file dirname [info script]]
 if {[file pathtype $src_dir] != "absolute"} {
@@ -72,7 +60,8 @@ proc clean {filename outfile {trim 0} {mode unix} } {
 #-----------------------------------------------------------------------------
 proc ReadIni {file section lstVars} {
   if {! [file isfile $file]} {
-    tk_messageBox -message "Unable to open $file"
+#    tk_messageBox -message "Unable to open $file"
+    puts "Unable to open $file"
     return ""
   }
   set fp [open $file r]
@@ -88,7 +77,8 @@ proc ReadIni {file section lstVars} {
   }
   if {! $f_found} {
     close $fp
-    tk_messageBox -message "Unable to find \[$section\] section in $file"
+#    tk_messageBox -message "Unable to find \[$section\] section in $file"
+    puts "Unable to find \[$section\] section in $file"
     return ""
   }
 #####
@@ -342,10 +332,9 @@ puts [exec bash pack.tcl no-tests]
 #####
 # 7) Update some of the pages on the web site.
 #####
-set webDir e:/www/htdocs/degrib2/
+set webDir [file dirname [file dirname $src_dir]]/degrib.web/degrib2/
+# set webDir e:/www/htdocs/degrib2/
 set date [lindex $argv 1]
-# set date [clock format [clock seconds] -format "%m/%d/%Y"]
-# set date2 [clock format [clock seconds] -format "%Y%m%d"]
 set date2 [clock format [clock scan $date] -format "%Y%m%d"]
 puts $date2
 puts $date
@@ -357,8 +346,6 @@ exec cp [file join [file dirname $src_dir] docs degrib.txt] \
         [file join $webDir degrib.txt]
 exec cp [file join [file dirname $src_dir] docs tkdegrib.txt] \
         [file join $webDir tkdegrib.txt]
-#exec cp [file join [file dirname $src_dir] version.txt] \
-#        [file join $webDir download version.txt]
 file copy -force [file join [file dirname $src_dir] version.txt] [file join $webDir download version.txt]
 
 puts "----------"
