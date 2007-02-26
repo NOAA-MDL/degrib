@@ -105,8 +105,8 @@ static char *NDFD_Type[] = { "maxt", "mint", "pop12", "t", "winddir",
    "windspd", "td", "sky", "qpf", "snowamt", "wx", "waveheight",
    "apparentt", "rh", "windgust", "probwindspd34i", "probwindspd50c",
    "probwindspd64c", "probwindspd34c", "probwindspd50c", "probwindspd64c",
-   "convoutlook", "tornadoprob", "hailprob", "windprob", "sigtornprob",
-   "sighailprob", "sigwindprob", "totalproboutlook", "sigtotproboutlook",
+   "convoutlook", "tornadoprob", "hailprob", "windprob", "xtrmtornprob",
+   "xtrmhailprob", "xtrmwindprob", "totalsvrprob", "totalxtrmprob",
    NULL
 };
 /* These match the convention on official download pages. */

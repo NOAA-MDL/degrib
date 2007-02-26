@@ -1208,11 +1208,11 @@ GRIB2LocalTable NDFD_LclTable[] = {
            {0, 19, 197, "TornadoProb", "Tornado Probability", "%", UC_NONE},
            {0, 19, 198, "HailProb", "Hail Probability", "%", UC_NONE},
            {0, 19, 199, "WindProb", "Damaging Thunderstorm Wind Probability", "%", UC_NONE},
-           {0, 19, 200, "SigTornProb", "Extreme Tornado Probability", "%", UC_NONE},
-           {0, 19, 201, "SigHailProb", "Extreme Hail Probability", "%", UC_NONE},
-           {0, 19, 202, "SigWindProb", "Extreme Thunderstorm Wind Probability", "%", UC_NONE},
-           {0, 19, 203, "TotalProbOutlook", "Total Probability of Severe Thunderstorms", "%", UC_NONE},
-           {0, 19, 204, "SigTotProbOutlook", "Total Probability of Extreme Severe Thunderstorms", "%", UC_NONE},
+           {0, 19, 200, "XtrmTornProb", "Extreme Tornado Probability", "%", UC_NONE},
+           {0, 19, 201, "XtrmHailProb", "Extreme Hail Probability", "%", UC_NONE},
+           {0, 19, 202, "XtrmWindProb", "Extreme Thunderstorm Wind Probability", "%", UC_NONE},
+           {0, 19, 203, "TotalSvrProb", "Total Probability of Severe Thunderstorms", "%", UC_NONE},
+           {0, 19, 204, "TotalXtrmProb", "Total Probability of Extreme Severe Thunderstorms", "%", UC_NONE},
    /* Arthur Added this to both NDFD and NCEP local tables. (5/1/2006) */
            {10, 3, 192, "Surge", "Hurricane Storm Surge", "m", UC_M2Feet},
            {10, 3, 193, "ETSurge", "Extra Tropical Storm Surge", "m", UC_M2Feet}
