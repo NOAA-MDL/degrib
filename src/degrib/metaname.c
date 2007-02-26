@@ -1205,22 +1205,14 @@ GRIB2LocalTable NDFD_LclTable[] = {
    /* 4 */ {0, 14, 193, "OZCON", "Ozone Concentration", "PPB", UC_NONE},
    /* Added 1/23/2007 in preparation for SPC NDFD Grids */
            {0, 19, 194, "ConvOutlook", "Convective Hazard Outlook", "0=none; 2=tstm; 4=slight; 6=moderate; 8=high", UC_NONE},
-           {0, 19, 197, "TornadoProb", "Tornado probability", "%", UC_NONE},
-           {0, 19, 198, "HailProb", "Hail probability", "%", UC_NONE},
-           {0, 19, 199, "WindProb", "Damaging thunderstorm wind probability", "%", UC_NONE},
-           {0, 19, 200, "SigTornProb", "Extreme tornado probability", "%", UC_NONE},
-           {0, 19, 201, "SigHailProb", "Extreme hail probability", "%", UC_NONE},
-           {0, 19, 202, "SigWindProb", "Extreme thunderstorm wind probability", "%", UC_NONE},
-           {0, 19, 203, "TotalProbOutlook", "Total probability of Severe Thunderstorms", "%", UC_NONE},
-/*
-           {0, 19, 197, "Tornado", "Tornado", "", UC_NONE},
-           {0, 19, 198, "Hail", "Hail", "", UC_NONE},
-           {0, 19, 199, "Wind", "Damaging thunderstorm wind", "", UC_NONE},
-           {0, 19, 200, "SigTorn", "Extreme tornado", "", UC_NONE},
-           {0, 19, 201, "SigHail", "Extreme hail", "", UC_NONE},
-           {0, 19, 202, "SigWind", "Extreme thunderstorm wind", "", UC_NONE},
-           {0, 19, 203, "TotalOutlook", "Severe Thunderstorms", "%", UC_NONE},
-*/
+           {0, 19, 197, "TornadoProb", "Tornado Probability", "%", UC_NONE},
+           {0, 19, 198, "HailProb", "Hail Probability", "%", UC_NONE},
+           {0, 19, 199, "WindProb", "Damaging Thunderstorm Wind Probability", "%", UC_NONE},
+           {0, 19, 200, "SigTornProb", "Extreme Tornado Probability", "%", UC_NONE},
+           {0, 19, 201, "SigHailProb", "Extreme Hail Probability", "%", UC_NONE},
+           {0, 19, 202, "SigWindProb", "Extreme Thunderstorm Wind Probability", "%", UC_NONE},
+           {0, 19, 203, "TotalProbOutlook", "Total Probability of Severe Thunderstorms", "%", UC_NONE},
+           {0, 19, 204, "SigTotProbOutlook", "Total Probability of Extreme Severe Thunderstorms", "%", UC_NONE},
    /* Arthur Added this to both NDFD and NCEP local tables. (5/1/2006) */
            {10, 3, 192, "Surge", "Hurricane Storm Surge", "m", UC_M2Feet},
            {10, 3, 193, "ETSurge", "Extra Tropical Storm Surge", "m", UC_M2Feet}

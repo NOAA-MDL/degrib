@@ -100,20 +100,28 @@ static const uChar NdfdElementsLen = (sizeof (NdfdElements) /
  *****************************************************************************
  */
 #ifndef UNDEF_NDFD_WG
+/* these are a string tolower on the short name of each NDFD element */
 static char *NDFD_Type[] = { "maxt", "mint", "pop12", "t", "winddir",
    "windspd", "td", "sky", "qpf", "snowamt", "wx", "waveheight",
    "apparentt", "rh", "windgust", "probwindspd34i", "probwindspd50c",
    "probwindspd64c", "probwindspd34c", "probwindspd50c", "probwindspd64c",
+   "convoutlook", "tornadoprob", "hailprob", "windprob", "sigtornprob",
+   "sighailprob", "sigwindprob", "totalproboutlook", "sigtotproboutlook",
    NULL
 };
+/* These match the convention on official download pages. */
 static char *NDFD_File[] = { "maxt", "mint", "pop12", "temp", "wdir",
    "wspd", "td", "sky", "qpf", "snow", "wx", "waveh", "apt", "rhm",
    "wgust", "tcwspdabv34i", "tcwspdabv50i", "tcwspdabv64i",
-   "tcwspdabv34c", "tcwspdabv50c", "tcwspdabv64c", NULL
+   "tcwspdabv34c", "tcwspdabv50c", "tcwspdabv64c", "conhazo", "ptornado",
+   "phail", "ptstmwinds", "pxtornado", "pxhail", "pxtstmwinds",
+   "ptotsvrtstm", "pxtotsvrtstm", NULL
 };
+/* A 2 letter abreviation scheme created with/for the verification group */
 static char *NDFD_File2[] = { "mx", "mn", "po", "tt", "wd",
    "ws", "dp", "cl", "qp", "sn", "wx", "wh", "at", "rh", "wg", "i3",
-   "i5", "i6", "c3", "c5", "c6", NULL
+   "i5", "i6", "c3", "c5", "c6", "ch", "pt", "ph", "pw", "xt", "xh", "xw",
+   "ps", "xs", NULL
 };
 #else
 static char *NDFD_Type[] = { "maxt", "mint", "pop12", "t", "winddir",
