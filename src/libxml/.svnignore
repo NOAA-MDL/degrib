@@ -1,6 +1,7 @@
 libxml-2.0.pc
 config.status
 config.log
+config.h
 xml2-config
 .deps
 Makefile
