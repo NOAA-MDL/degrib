@@ -1,8 +1,15 @@
 #
+#----- Release: Version 1.85g 02/26/2007 -----
+#
+2/26  AAT Added SigTotProbOutlook, and updated some handling of SPC grids (r397)
+2/26  AAT Overhaul of clockstart.c to try to fix some bugs in clock.exe (r394)
+2/24  AAT Added support for the 2007 change to daylight saving time (r392)
+#
 #----- Release: Version 1.85f 02/16/2007 -----
 #
 2/16  AAT Updated metaname.c's units to use ; instead of , when dealing with
           a look up table.  This should help with people parsing probe output.
+          (r374)
 2/16  AAT fixed the method used to check memory allocation in g2_unpack2.c
 2/16  AAT added drawshp.txt to /degrib/docs
 2/15  AAT Adjusted sectors/numSectors prior to calling expandInName so if a
