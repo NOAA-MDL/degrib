@@ -12,13 +12,13 @@ ARFLAGS = -ruv @ARFLAGS@
 STD_DEF=-DUSE_JPEG2000 -DUSE_PNG -D_FORTRAN @DSIZEOF_LONG_INT@ @DWORDS_BIGENDIAN@
 #STD_DEF=-DUSE_JPEG2000 -DUSE_PNG @DSIZEOF_LONG_INT@ @DWORDS_BIGENDIAN@
 
-STD_INC=-Ig2clib-1.0.2 -I../jpeg2000/src/libjasper/include \
+STD_INC=-Ig2clib-1.0.4 -I../jpeg2000/src/libjasper/include \
         -I../libpng -I../zlib
 STD_LIB=
 PRJ_NAME=libgrib2.a
 CFLAGS=$(STD_FLAGS) $(STD_DEF) $(STD_INC)
 
-VPATH = ./g2clib-1.0.2:./grib2unpacker:./grib2packer
+VPATH = ./g2clib-1.0.4:./grib2unpacker:./grib2packer
 
 all: $(PRJ_NAME)
 
