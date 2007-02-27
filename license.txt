@@ -42,7 +42,7 @@ To QUOTE: "http://www.nws.noaa.gov/mdl/iwt/grib2/decoder.htm"
 
 B) emapf-c: See "http://www.arl.noaa.gov/ss/models/cmapf.html"
 
-C) g2clib-1.0.2: See "http://www.nco.ncep.noaa.gov/pmb/codes/GRIB2/"
+C) g2clib-1.0.4: See "http://www.nco.ncep.noaa.gov/pmb/codes/GRIB2/"
 
 D) dwmllib: (only needed if you want to output NDFD at a point to DWML
 (a flavor of XML))
