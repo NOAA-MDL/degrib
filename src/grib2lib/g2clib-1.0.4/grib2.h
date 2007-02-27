@@ -147,7 +147,13 @@
 //                     that holds the data.
 */
 
-#ifdef __64BIT__
+/* Modified #ifdef __64BIT__ to SIZEOF_LONG_INT test: Arthur 10/1/2006 */
+/*
+  #ifdef __64BIT__
+  #else
+  #endif
+*/
+#if SIZEOF_LONG_INT != 4
 typedef int g2int;
 typedef unsigned int g2intu;
 #else
