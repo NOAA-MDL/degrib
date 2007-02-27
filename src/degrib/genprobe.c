@@ -115,7 +115,7 @@ static char *NDFD_File[] = { "maxt", "mint", "pop12", "temp", "wdir",
    "wgust", "tcwspdabv34i", "tcwspdabv50i", "tcwspdabv64i",
    "tcwspdabv34c", "tcwspdabv50c", "tcwspdabv64c", "conhazo", "ptornado",
    "phail", "ptstmwinds", "pxtornado", "pxhail", "pxtstmwinds",
-   "ptotsvrtstm", "pxtotsvrtstm", NULL
+   "ptotsvrtstm", "ptotxsvrtstm", NULL
 };
 /* A 2 letter abreviation scheme created with/for the verification group */
 static char *NDFD_File2[] = { "mx", "mn", "po", "tt", "wd",

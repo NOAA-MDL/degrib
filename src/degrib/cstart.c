@@ -222,7 +222,7 @@ static void Usage (char *argv0, userType *usr)
          printf ("      xtrmhailprob pxhail xh 'Extreme Hail Probability'\n");
          printf ("      xtrmwindprob pxtstmwinds xw 'Extreme Thunderstorm Wind Probability'\n");
          printf ("      totalsvrprob ptotsvrtstm ps 'Total Probability of Severe Thunderstorms'\n");
-         printf ("      totalxtrmprob pxtotsvrtstm xs 'Total Probability of Extreme Severe Thunderstorms'\n");
+         printf ("      totalxtrmprob ptotxsvrtstm xs 'Total Probability of Extreme Severe Thunderstorms'\n");
          printf ("   Example:  -ndfdConven 1\n");
          printf ("   -gribFilter [string]\n");
          printf ("      By default when expanding a directory to find GRIB files or database\n");
@@ -395,7 +395,7 @@ static void Usage (char *argv0, userType *usr)
          printf ("      xtrmhailprob pxhail xh 'Extreme Hail Probability'\n");
          printf ("      xtrmwindprob pxtstmwinds xw 'Extreme Thunderstorm Wind Probability'\n");
          printf ("      totalsvrprob ptotsvrtstm ps 'Total Probability of Severe Thunderstorms'\n");
-         printf ("      totalxtrmprob pxtotsvrtstm xs 'Total Probability of Extreme Severe Thunderstorms'\n");
+         printf ("      totalxtrmprob ptotxsvrtstm xs 'Total Probability of Extreme Severe Thunderstorms'\n");
          printf ("   Example:  -ndfdConven 1\n");
          printf ("   -gribFilter [string]\n");
          printf ("      By default when expanding a directory to find GRIB files or database\n");

@@ -1,6 +1,7 @@
 #
 #----- Release: Version 1.85 02/27/2007 -----
 #
+2/27  AAT Fixed naming glitch in pxtotsvrtstm -> ptotxsvrtstm 
 2/26  AAT Upgraded to most recent copy of emapf-c
 2/26  AAT Upgraded to g2clib-1.0.4 (from 1.0.2)
 2/26  AAT Last minute change of abbreviations for SPC grids.
