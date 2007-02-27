@@ -1,8 +1,5 @@
 #include <stdlib.h>
 #include "cmapf.h"
-#define REARTH stcprm->arad
-#define EPSIL stcprm->eccen
-#define BRAD stcprm->brad
 
 /*
  * eqvlat.c  - source file for conformal mapping function utility.
@@ -42,13 +39,13 @@ double eqvlat(maparam * stcprm,double lat1,double lat2) {
  *      will return 0.
  */
 
-double result,midslat,slat1,slat2,dlat,ymerc1,ymerc2,s1,s2;
+double result,slat1,slat2,ymerc1,ymerc2,s1,s2;
 
 
 /*First, test whether stcprm is a valid geoid
  */
   if (mkGeoid(stcprm,TST,0.,0.) != 0) return 999.;
-  
+
   slat1 = sin(RADPDEG * lat1);
   slat2 = sin(RADPDEG * lat2);
 /* reorder, slat1 larger */
@@ -56,6 +53,9 @@ double result,midslat,slat1,slat2,dlat,ymerc1,ymerc2,s1,s2;
      double temp = slat1;
      slat1 = slat2;
      slat2 = temp;
+     temp = lat1;
+     lat1 = lat2;
+     lat2 = temp;
   }
 /*  Take care of special cases first */
   if (slat1 == slat2) return asin(slat1) * DEGPRAD;
@@ -63,25 +63,22 @@ double result,midslat,slat1,slat2,dlat,ymerc1,ymerc2,s1,s2;
   if (slat1 >= 1.) return 90.;
   if (slat2 <= -1.) return -90.;
 /********************************************************/
-#define FSM 1.e-4
-  midslat = .5*(slat1+slat2);
-  dlat = (slat1-slat2);
-  if ( fabs(dlat) > FSM*(1-midslat)*(1.+midslat) ) {
-    ymerc1 = cl2ymr(stcprm, lat1);
-    ymerc2 = cl2ymr(stcprm, lat2);
-    s1 = stcprm->brad * tan(RADPDEG * lat1) / REARTH;
-    s2 = stcprm->brad * tan(RADPDEG * lat2) / REARTH;
-    result = .5 * (log(1.+s2*s2)-log(1.+s1*s1)) /
+
+  ymerc1 = cl2ymr(stcprm, lat1);
+  ymerc2 = cl2ymr(stcprm, lat2);
+  if (ymerc1 > ymerc2 ) {
+
+    s1 = ymrcInvScale(stcprm, lat1);
+    s2 = ymrcInvScale(stcprm,lat2);
+    result = log(s1/s2) /
            (ymerc2 - ymerc1);
   } else {
-    /*If two latitudes are extremely close, power series representation of above*/
-    result = midslat * (1. + .5*dlat*dlat*(1./(1.-midslat)/(1.+midslat)+
-          EPSIL*EPSIL/(1. - EPSIL*midslat) / (1.+EPSIL*midslat) )/3.);
+    /* We are here because sin(lat1) > sin(lat2) while ymerc1 <= ymerc2.
+     * This can only happen through round-off error when sin(lat1) is very
+     * clos eo sin(lat2).  We return the common ymerc value,
+     */
+    return cymr2l(stcprm,.5*(ymerc2+ymerc1));
   }
   /*At this point, result is a sine of latitude.*/
   return DEGPRAD*atan2(result,sqrt((1.-result)*(1.+result)));
-#undef FSM
-#undef REARTH
-#undef EPSIL
-#undef BRAD
 }

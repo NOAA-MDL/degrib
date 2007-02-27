@@ -7,14 +7,15 @@
 int strcasecmp(const char *A, const char *B);
 #endif
 
-typedef struct {
-char * name;
-GspecType t;
-double arg1,arg2;
-} GeoidData;
 GeoidData GData[] = {
 #include "geoids.h"
 };
+int _GeoidCount = sizeof(GData)/sizeof(GData[0]);
+
+int infoGeoids(GeoidData ** geoids) {
+*geoids = GData;
+return _GeoidCount;
+}
 
 int mkGeoid(maparam * stcprm,GspecType t,double arg1,double arg2){
 #define ECCEN stcprm->eccen
@@ -23,13 +24,13 @@ int mkGeoid(maparam * stcprm,GspecType t,double arg1,double arg2){
 
   switch(t) {
   case AF:
-  /*arg1 = Equatorial radius of Earth, arg2 = inverse of flattening,
-    i.e. arg2 =  arad/(arad-brad)*/
+  /*arg1 = Equatorial radius of Earth, arg2 = flattening,
+    i.e. arg2 =  (arad-brad)/arad */
     if (arg1 <= 0.) return 1;
-    if (arg2 <= 1. ) return 1;
+    if ( (arg2 < 0.) || (arg2 >= 1.) ) return 1;
     stcprm->arad = arg1;
-    stcprm->brad = arg1 * (arg2-1.) / arg2;
-    stcprm->eccen = sqrt ( (2.* arg2 - 1.) )/arg2;
+    stcprm->brad = arg1 * (1. - arg2) ;
+    stcprm->eccen = sqrt ( (2. - arg2 ) * arg2);
     break;
   case AE:
   /*arg1 = Equatorial radius of Earth, arg2 = eccentricity*/
@@ -59,10 +60,11 @@ int mkGeoid(maparam * stcprm,GspecType t,double arg1,double arg2){
     if (( ECCEN < 0.) || (ECCEN >= 1.) ) return 1;
     if (fabs((ARAD-BRAD)/ARAD*(ARAD+BRAD)/ARAD - ECCEN*ECCEN) > 1.e-9)
        return 1;
-    break;
+    return 0;
   default:
     return 1;
   }
+  stcprm->gamma = 10.;
   return 0;
 #undef BRAD
 #undef ARAD
@@ -90,6 +92,7 @@ int k;
 }
 
 #ifndef HAVE_STRCASECMP
+#include <ctype.h>
 int strcasecmp(const char *A, const char *B)  {
    int a,b;
    while (*A != '\0') {

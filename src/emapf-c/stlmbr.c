@@ -5,6 +5,7 @@
 #define ARAD stcprm->arad
 #define BRAD stcprm->brad
 #define ECCEN stcprm->eccen
+#define GAMMA stcprm->gamma
 
 /*
  * stlmbr.c  - source file for conformal mapping function utility.
@@ -24,14 +25,14 @@ double xi,eta;
   if (mkGeoid(stcprm,TST,0.,0.) != 0) return 1;
 
   stcprm->reflon = reflon;
-  stcprm->gamma = sin(tnglat * RADPDEG);
+  GAMMA = sin(tnglat * RADPDEG);
   stcprm->x0 = stcprm->y0 = stcprm->srotate = 0;
   stcprm->crotate = 1.;
   stcprm->gridszeq = REARTH;
   cnllxy(stcprm, 89.,reflon, &xi, &eta);
-  stcprm->npwarn = 2. * eta - stcprm->gamma * (eta * eta);
+  stcprm->npwarn = 2. * eta - GAMMA * (eta * eta);
   cnllxy(stcprm, -89.,reflon, &xi, &eta);
-  stcprm->spwarn = 2. * eta - stcprm->gamma * (eta * eta);
+  stcprm->spwarn = 2. * eta - GAMMA * (eta * eta);
   return 0;
 }
 
@@ -48,13 +49,15 @@ double xi,eta;
 static void cnllxy(maparam * stcprm,double lat,double longit,
 		double * xi,double * eta) {
 #define FSM 1.e-2
-#define NEARONE .9999999999999
-double slat,gdlong,sndgam,cdgam,mercy,gmercy,rhog1;
+/*#define NEARONE .9999999999999
+  double slat;
+*/
+double gdlong,sndgam,cdgam,mercy,gmercy,rhog1;
 double dlong=RADPDEG * cperiodic(longit - stcprm->reflon,-180.,180.);
-  gdlong = stcprm->gamma * dlong;
+  gdlong = GAMMA * dlong;
   if ((gdlong < -FSM) || (gdlong > FSM)) {
-    sndgam = sin(gdlong) /stcprm->gamma;
-    cdgam = (1. - cos(gdlong)) / stcprm->gamma / stcprm->gamma;
+    sndgam = sin(gdlong) /GAMMA;
+    cdgam = (1. - cos(gdlong)) / GAMMA / GAMMA;
   } else {
     gdlong *= gdlong;
     sndgam = dlong * (1. - 1./6. * gdlong *
@@ -64,28 +67,36 @@ double dlong=RADPDEG * cperiodic(longit - stcprm->reflon,-180.,180.);
 			    (1. - 1./30. * gdlong *
                             (1. - 1./56. * gdlong )));
   }
+#if 1==0
   slat = sin(RADPDEG * lat);
   if ((slat >=NEARONE) || (slat <= -NEARONE)) {
-    *eta = 1./stcprm->gamma;
+    *eta = 1./GAMMA;
     *xi = 0.;
     return ;
   }
+#endif
   mercy =  cl2ymr(stcprm,lat);
-  gmercy = mercy * stcprm->gamma;
+  gmercy = mercy * GAMMA;
   if ( (gmercy < -FSM) || (gmercy > FSM)){
-    rhog1 = (1. - exp(- gmercy) ) / stcprm->gamma;
+    rhog1 = (1. - exp(- gmercy) ) / GAMMA;
+    if (GAMMA > 0.) {
+      if (mercy >= MAXYMERC) rhog1 = 1. / GAMMA;
+    } else if (GAMMA < 0.) {
+      if (mercy <= -MAXYMERC) rhog1 = 1. / GAMMA;
+    }
   } else {
     rhog1 = mercy * (1. - 1./2. * gmercy *
 		    (1. - 1./3. * gmercy *
 		    (1. - 1./4. * gmercy)));
   }
-  *eta = rhog1 + (1. - stcprm->gamma * rhog1) * stcprm->gamma *
+  *eta = rhog1 + (1. - GAMMA * rhog1) * GAMMA *
 			cdgam;
-  *xi = (1. - stcprm->gamma * rhog1 ) * sndgam;
+  *xi = (1. - GAMMA * rhog1 ) * sndgam;
 #undef FSM
 #undef REARTH
-#undef ARAD
-#undef BRAD
+#undef GAMMA
 #undef ECCEN
+#undef BRAD
+#undef ARAD
 }
 

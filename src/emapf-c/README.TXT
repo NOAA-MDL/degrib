@@ -1,15 +1,15 @@
 Installation:
 
-./configure [CC=compiler name] [--enable-aixsize=[32|64]] [--prefix=DIR]
+./configure [CC=compiler name] [--enable-aix-64] [--prefix=DIR]
 make
 make install
 
-where the optional configure parameters while select the C compiler, enable
+where the optional configure parameters will select the C compiler, enable
 64-bit arithmetic on AIX systems (if available) and change the installation
 directory for the library to DIR/lib (default is DIR=/usr/local).
 
-Options:  ./configure --enable-aixsize=[32|64] will configure the Makefile to
-create 6ther 32-bit or 64-bit code on Aix machines.
+Options:  ./configure --enable-aix-64 will configure the Makefile to
+create 64-bit code on Aix machines.
 
 
 
@@ -80,28 +80,33 @@ in stcprm, where arad and eccen represent the equatorial radius in kilometers
 and eccen represents the eccentricity.  Again, rc is zero if successful, one
 if data are invalid.  A geoid is determined by the following two data:
 Equatorial radius in km. (arad) and polar radius in km. (brad), or by either of
-the radii and one of the following: inverse flattening (one divided by the
-fraction by which brad is less than arad) or the eccentricity of the ellipse
-with axes arad and brad.  By convention, geoids are defined by arad and the
-inverse flattening (e.g. the WGS84 ellipsoid by 6378.1370, 298.257223563.
-the geoid specification modes governing mkGeoid are:
+the radii and one of the following: flattening (The difference between arad and
+brad, divided by arad) or the eccentricity of the ellipse with axes arad and
+brad.  In most cases, geoids are defined by arad and the flattening (e.g. the
+WGS84 ellipsoid by 6378.1370 and 1. / 298.257223563).
+
+The geoid specification modes governing mkGeoid are:
 
 AB: arguments arad, brad
 AE: arguments arad, eccentricity
-AF: arguments arad, inverse flattening
+AF: arguments arad, flattening
 BE: arguments brad, eccentricity
-TST:  evaluates consistency og geoid data in stcprm, returning 0 if valid 
-      and 1 if invalid.  The other two arguments are unused. 
+TST:  evaluates consistency of geoid data in stcprm, returning 0 if valid
+      and 1 if invalid.  The other two arguments are unused.
 
-note: as the inverse flattening increases to infinity, the corresponding geoid
-becomes closer and closer to, but does not quite become, a sphere.  As the
-inverse flattening tends down to one, the geoid becomes a disk.  Typical values
-for a geoid representing the Earth are 279 to 300.
+Note: to specify the sphere using mode AF (flattening), it is useful to write
+the flattening in the form 1./###.###, since geoid flattening is generally
+published in that form.  Thus:
 
-note: to obtain a sphere of radius R, use
+mkGeoid(&stcprm, AF, 6378.1234, 1. / 298.2);
+
+Note: to obtain a sphere of radius R, use
 
 mkGeoid(&stcprm, AE, R, 0.);
 
+or
+
+mkGeoid(&stcprm, AF, R, 0.);
 
 Stage II - Selecting a Map Projection.
 

@@ -14,6 +14,27 @@ if ( rc != 0) {
   fprintf(stderr,"useGeoid failed\n");
   return 1;
 }
+stlmbr(&stcprm,90.,-100.);
+
+if (stcm1p(&stcprm,33.,33., 90.,-100., 60.,-100., 371., 0.)!=0) {
+  fprintf(stderr,"stcm1p error\n");
+}
+printf("gsize %f\n",cgszll(&stcprm,60.,-100.));
+
+{double lat1, ymrc, lat2,sl,cl;
+  for (lat1=-55.;lat1<60.;lat1+=55.) {
+   ymrc=cl2ymr(&stcprm,lat1);
+   lat2=cymr2l(&stcprm,ymrc);
+   cmr2sc(&stcprm,ymrc,&sl,&cl);
+   printf("ymerc: %f %f %f %f %f\n",lat1,ymrc,lat2,sl,cl);
+ }
+}
+
+{double lat1=-55.,lon1=-145,x1,y1,lat2,lon2;
+  cll2xy(&stcprm,lat1,lon1,&x1,&y1);
+  cxy2ll(&stcprm,x1,y1,&lat2,&lon2);
+  printf("LLXY (%f,%f) (%f,%f) (%f,%f)\n",lat1,lon1,x1,y1,lat2,lon2);
+}
 
 cnflat = eqvlat(&stcprm,40.,60.);
 printf("%f ",cnflat);
@@ -50,6 +71,8 @@ for (x=1.;x<=33.;x+=1.) {
   gszb = cgszll(&stcprm2, xlat,ylong);
   printf(" %8.3f %8.3f %8.3f\n",xlat,gsza,gszb);
 }
+#ifdef N_HOLD
 getc(stdin);
+#endif
 return 0;
 }

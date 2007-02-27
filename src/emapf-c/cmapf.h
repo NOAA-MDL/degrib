@@ -2,8 +2,12 @@
 #ifndef CMAPF_H
 #define CMAPF_H
 #define HAVE_STRCASECMP 1
+#define F77_FUNC(name,NAME) name ## _
 #include <math.h>
-/* #include <float.h> */
+#include <float.h>
+
+#define MAXYMERC  (M_LN2 + M_LN10 * (DBL_DIG +1 ) )
+
 /*
  * cmapf.h  - header file for conformal mapping function utility.
  * Written 12/21/94 by
@@ -22,10 +26,10 @@ double arad,brad,eccen,gamma,reflon,
 #define RADPDEG (M_PI/180.)
 #define DEGPRAD (180./M_PI)
 int stlmbr(maparam * stcprm,double tnglat,double reflon) ;
-void stcm2p(maparam * stcprm,
+int stcm2p(maparam * stcprm,
 	    double x1, double y1, double xlat1, double xlong1,
 	    double x2, double y2, double xlat2, double xlong2) ;
-void stcm1p(maparam * stcprm,
+int stcm1p(maparam * stcprm,
 	    double x1, double y1, double xlat1, double xlong1,
 	    double xlatg, double xlong,double gridsz, double orient) ;
 
@@ -71,10 +75,20 @@ void cpolxy(maparam * stcprm,double x, double y,
 void cmr2sc(maparam * stcprm,double ymerc,double * sinlat,double * coslat) ;
 double cl2ymr(maparam * stcprm,double lat) ;
 double cymr2l(maparam * stcprm,double ymerc) ;
+double ymrcInvScale (maparam * stcprm,double lat) ;
+double ymrcInvScaleT (maparam * stcprm,double slat,double clat);
 
 typedef  enum {AF,AE,AB,BE,TST} GspecType;
+
+typedef struct {
+char * name;
+GspecType t;
+double arg1,arg2;
+} GeoidData;
+
 int mkGeoid(maparam * stcprm,GspecType t,double arg1,double arg2);
 int useGeoid (maparam * stcprm,char * name);
-void lsGeoid();
+int infoGeoids(GeoidData ** geoids);
+void lsGeoid(void);
 
 #endif /* CMAPF_H */

@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include "cmapf.h"
 #define REARTH stcprm->arad
+#define GAMMA stcprm->gamma
 
 /*
  * cc2gxy.c  - source file for conformal mapping function utility.
@@ -12,7 +13,39 @@
  */
 
 static void cnxyll(maparam * stcprm,double xi,double eta,
-		double * lat,double * longit) ;
+		double * lat,double * longit) {
+#define FSM .01
+#define NEARONE .9999999999999
+double ymerc,temp;
+double arg;
+double radial = 2.*eta - GAMMA * (xi*xi + eta*eta);
+  if ( GAMMA * radial >= NEARONE) {
+    *lat = GAMMA>0? 90. : -90.;
+/*    *longit = stcprm->reflon; */
+	 *longit = 90. + *lat;
+/* Change made 02/12/02 to acommodate WMO reporting conventions.  North
+   pole is longitude 180., so "North" points to the Greenwich Meridian,
+   South Pole is longitude 0. so "North" again points to the Greenwich
+   Meridian.  */
+    return;
+  }
+  ymerc =  .5 * log1pabovera( - GAMMA, radial);
+  * lat = cymr2l(stcprm, ymerc) ;
+  temp = GAMMA * xi;
+  arg = 1. - GAMMA * eta;
+  if ( (temp<0 ? - temp:temp) < FSM*arg) {
+    temp = temp/arg; temp *= temp;
+    temp = xi / arg * (1.    - temp *
+		      (1./3. - temp *
+		      (1./5. - temp *
+		      (1./7.))));
+  } else {
+    temp = atan2(temp,arg) / GAMMA;
+  }
+  * longit = stcprm->reflon + DEGPRAD * temp;
+}
+#undef FSM
+#undef NEARONE
 
 void cxy2ll(maparam * stcprm,double x, double y,
 		double * lat, double * longit) {
@@ -32,8 +65,8 @@ double xpolg,ypolg,temp;
   xi0 = (x - stcprm->x0) * stcprm->gridszeq / REARTH;
   eta0 = (y - stcprm->y0) * stcprm->gridszeq / REARTH;
 /*  Normal Case; meteorological coordinate related to true North*/
-  xpolg = stcprm->srotate - stcprm->gamma * xi0;
-  ypolg = stcprm->crotate - stcprm->gamma * eta0;
+  xpolg = stcprm->srotate - GAMMA * xi0;
+  ypolg = stcprm->crotate - GAMMA * eta0;
   temp = sqrt(xpolg*xpolg + ypolg*ypolg);
   if (temp < 1.e-6) {
     double xi,eta,xlat,xlong;
@@ -57,7 +90,7 @@ double radial;
   eta0 = (y - stcprm->y0) * stcprm->gridszeq / REARTH;
   xi = xi0 * stcprm->crotate - eta0 * stcprm->srotate;
   eta = xi0 * stcprm->srotate + eta0 * stcprm->crotate;
-  radial = 2. * eta - stcprm->gamma * (xi*xi + eta*eta);
+  radial = 2. * eta - GAMMA * (xi*xi + eta*eta);
   if(radial > stcprm->npwarn) {
 /* North Pole Case; "North" along Prime meridian */
   double xlat,xlong;
@@ -72,8 +105,8 @@ double radial;
     } else {
 /*  Normal Case; meteorological coordinate related to true North*/
     double temp,xpolg,ypolg;
-      xpolg = stcprm->srotate - stcprm->gamma * xi0;
-      ypolg = stcprm->crotate - stcprm->gamma * eta0;
+      xpolg = stcprm->srotate - GAMMA * xi0;
+      ypolg = stcprm->crotate - GAMMA * eta0;
       temp = sqrt(xpolg*xpolg + ypolg*ypolg);
       xpolg /= temp;
       ypolg /= temp;
@@ -90,8 +123,8 @@ double xpolg,ypolg,temp;
   xi0 = (x - stcprm->x0) * stcprm->gridszeq / REARTH;
   eta0 = (y - stcprm->y0) * stcprm->gridszeq / REARTH;
 /*  Normal Case; meteorological coordinate related to true North*/
-  xpolg = stcprm->srotate - stcprm->gamma * xi0;
-  ypolg = stcprm->crotate - stcprm->gamma * eta0;
+  xpolg = stcprm->srotate - GAMMA * xi0;
+  ypolg = stcprm->crotate - GAMMA * eta0;
   temp = sqrt(xpolg*xpolg + ypolg*ypolg);
   if (temp < 1.e-6) {
     double xi,eta,xlat,xlong;
@@ -115,7 +148,7 @@ double radial,xpolg,ypolg;
   eta0 = (y - stcprm->y0) * stcprm->gridszeq / REARTH;
   xi = xi0 * stcprm->crotate - eta0 * stcprm->srotate;
   eta = xi0 * stcprm->srotate + eta0 * stcprm->crotate;
-  radial = 2. * eta - stcprm->gamma * (xi*xi + eta*eta);
+  radial = 2. * eta - GAMMA * (xi*xi + eta*eta);
   if(radial > stcprm->npwarn) {
 /* North Pole Case; "North" along Prime meridian */
   double xlat,xlong;
@@ -130,8 +163,8 @@ double radial,xpolg,ypolg;
     } else {
 /*  Normal Case; meteorological coordinate related to true North*/
     double temp;
-      xpolg = stcprm->srotate - stcprm->gamma * xi0;
-      ypolg = stcprm->crotate - stcprm->gamma * eta0;
+      xpolg = stcprm->srotate - GAMMA * xi0;
+      ypolg = stcprm->crotate - GAMMA * eta0;
       temp = sqrt(xpolg*xpolg + ypolg*ypolg);
       xpolg /= temp;
       ypolg /= temp;
@@ -141,38 +174,5 @@ double radial,xpolg,ypolg;
   }
 }
 
-static void cnxyll(maparam * stcprm,double xi,double eta,
-		double * lat,double * longit) {
-#define FSM .01
-#define NEARONE .9999999999999
-double ymerc,temp;
-double arg;
-double radial = 2.*eta - stcprm->gamma * (xi*xi + eta*eta);
-  if ( stcprm->gamma * radial >= NEARONE) {
-    *lat = stcprm->gamma>0? 90. : -90.;
-/*    *longit = stcprm->reflon; */
-	 *longit = 90. + *lat;
-/* Change made 02/12/02 to acommodate WMO reporting conventions.  North
-   pole is longitude 180., so "North" points to the Greenwich Meridian,
-   South Pole is longitude 0. so "North" again points to the Greenwich
-   Meridian.  */
-    return;
-  }
-  ymerc = .5 * log1pabovera( - stcprm->gamma, radial);
-  * lat = cymr2l(stcprm, ymerc) ;
-  temp = stcprm->gamma * xi;
-  arg = 1. - stcprm->gamma * eta;
-  if ( (temp<0 ? - temp:temp) < FSM*arg) {
-    temp = temp/arg; temp *= temp;
-    temp = xi / arg * (1.    - temp *
-		      (1./3. - temp *
-		      (1./5. - temp *
-		      (1./7.))));
-  } else {
-    temp = atan2(temp,arg) / stcprm->gamma;
-  }
-  * longit = stcprm->reflon + DEGPRAD * temp;
-#undef FSM
-#undef NEARONE
+#undef GAMMA
 #undef REARTH
-}

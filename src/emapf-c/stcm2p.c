@@ -12,10 +12,12 @@
 
 
 
-void stcm2p(maparam * stcprm,
+int stcm2p(maparam * stcprm,
 	    double x1, double y1, double xlat1, double xlong1,
 	    double x2, double y2, double xlat2, double xlong2) {
 double x1a,y1a, x2a,y2a, den,dena;
+  if (mkGeoid(stcprm,TST,0.,0.) != 0) return 1;
+  if (fabs(stcprm->gamma) > 1.) return 2;
   stcprm->x0 = stcprm->y0 = stcprm->srotate = 0;
   stcprm->crotate = stcprm->gridszeq = 1.;
   cll2xy(stcprm, xlat1,xlong1, &x1a, &y1a);
@@ -30,4 +32,5 @@ double x1a,y1a, x2a,y2a, den,dena;
   cll2xy(stcprm, xlat1,xlong1, &x1a,&y1a);
   stcprm->x0 += x1 - x1a;
   stcprm->y0 += y1 - y1a;
+  return 0;
 }

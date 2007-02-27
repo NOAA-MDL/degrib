@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "cmapf.h"
-
+#define GAMMA stcprm->gamma
 /*
  * cpolll.c  - source file for conformal mapping function utility.
  * Written 12/21/94 by
@@ -14,7 +14,7 @@
 
 void cpolll(maparam * stcprm,double lat, double longit,
 		double * enx,double * eny, double * enz) {
-double fan = -RADPDEG * stcprm->gamma *
+double fan = -RADPDEG * GAMMA *
 		cperiodic(longit - stcprm->reflon,-180.,180.);
 double clat = cos(RADPDEG * lat);
 double sfan = sin(fan), cfan = cos(fan);
@@ -22,3 +22,4 @@ double sfan = sin(fan), cfan = cos(fan);
   *eny = clat * (cfan * stcprm->crotate - sfan * stcprm->srotate);
   *enz = sin(RADPDEG * lat);
 }
+#undef GAMMA

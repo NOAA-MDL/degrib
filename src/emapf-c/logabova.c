@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <math.h>
-#include <float.h>
+#include "cmapf.h"
 
 /*
  * logabova.c  - source file for conformal mapping function utility.

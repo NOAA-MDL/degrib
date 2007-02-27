@@ -12,12 +12,14 @@
 
 static double cspanf(double value,double begin,double end);
 
-void stcm1p(maparam * stcprm,
+int stcm1p(maparam * stcprm,
 	    double x1, double y1, double xlat1, double xlong1,
 	    double xlatg, double xlong, double gridsz, double orient) {
 double x1a,y1a;
 double turn=RADPDEG * (orient - stcprm->gamma *
     cspanf(xlong - stcprm->reflon,-180.,180.) );
+  if (mkGeoid(stcprm,TST,0.,0.) != 0) return 1;
+  if (fabs(stcprm->gamma) > 1.) return 2;
   stcprm->x0 = stcprm->y0 = 0.;
   stcprm->gridszeq = 1.;
   stcprm->crotate = cos(turn);
@@ -27,6 +29,7 @@ double turn=RADPDEG * (orient - stcprm->gamma *
   cll2xy(stcprm, xlat1,xlong1, &x1a,&y1a);
   stcprm->x0 += x1 - x1a;
   stcprm->y0 += y1 - y1a;
+  return 0;
 }
 
 static double cspanf(double value,double begin,double end){

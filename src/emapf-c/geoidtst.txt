@@ -1,0 +1,37 @@
+1
+Known Geoids:
+
+WGS84
+Clarke1866
+GRS80
+WGS72
+WGS66
+WGS60
+Clarke1880
+Everest
+International
+Australian
+Airy
+Hayford
+IUGG1967
+SphereGRIB
+SphereGRIB2
+0
+0
+6378.137000 6356.752314 0.081819 
+Number of geoids is 15
+geoid 0 is WGS84
+geoid 1 is Clarke1866
+geoid 2 is GRS80
+geoid 3 is WGS72
+geoid 4 is WGS66
+geoid 5 is WGS60
+geoid 6 is Clarke1880
+geoid 7 is Everest
+geoid 8 is International
+geoid 9 is Australian
+geoid 10 is Airy
+geoid 11 is Hayford
+geoid 12 is IUGG1967
+geoid 13 is SphereGRIB
+geoid 14 is SphereGRIB2
