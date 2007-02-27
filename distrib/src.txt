@@ -77,13 +77,13 @@ S:degrib/src/grib2lib/config.h.in
 S:degrib/src/grib2lib/config_H/*
 S:degrib/src/grib2lib/*.txt
 
-# g2clib-1.0.2 source
-S:degrib/src/grib2lib/g2clib-1.0.2/make*
-S:degrib/src/grib2lib/g2clib-1.0.2/*.c
-S:degrib/src/grib2lib/g2clib-1.0.2/*.h
-S:degrib/src/grib2lib/g2clib-1.0.2/README
-S:degrib/src/grib2lib/g2clib-1.0.2/CHANGES
-S:degrib/src/grib2lib/g2clib-1.0.2/grib2c.doc
+# g2clib-1.0.4 source
+S:degrib/src/grib2lib/g2clib-1.0.4/make*
+S:degrib/src/grib2lib/g2clib-1.0.4/*.c
+S:degrib/src/grib2lib/g2clib-1.0.4/*.h
+S:degrib/src/grib2lib/g2clib-1.0.4/README
+S:degrib/src/grib2lib/g2clib-1.0.4/CHANGES
+S:degrib/src/grib2lib/g2clib-1.0.4/grib2c.doc
 
 # grib2unpacker source
 S:degrib/src/grib2lib/grib2unpacker/make*
@@ -206,6 +206,8 @@ S:degrib/src/emapf-c/*.hin
 S:degrib/src/emapf-c/*.h
 S:degrib/src/emapf-c/*.sh
 S:degrib/src/emapf-c/*.TXT
+S:degrib/src/emapf-c/*.txt
+S:degrib/src/emapf-c/configure.ac
 
 # netcdf source
 S:degrib/src/netcdf/COMPATIBILITY
