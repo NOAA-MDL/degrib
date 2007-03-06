@@ -26,8 +26,7 @@ LIBNAME = emapf
 LIBA = lib$(LIBNAME).a
 
 SOURCE = cc2gll.c cc2gxy.c ccurv.c cg2cll.c cgszll.c cgszxy.c cpolll.c \
- cpolxy.c eqvlat.c logabova.c mkgeoid.c stcm1p.c stcm2p.c stlmbr.c ymercfns.c\
- f77wrappers.c
+ cpolxy.c eqvlat.c logabova.c mkgeoid.c stcm1p.c stcm2p.c stlmbr.c ymercfns.c
 
 TESTPROGS = testemapf tseqlat geoidtst tsgridft
 
