@@ -1,5 +1,5 @@
-#define PROGRAM_VERSION "1.1"
-#define PROGRAM_DATE "02/25/2007"
+#define PROGRAM_VERSION "1.11"
+#define PROGRAM_DATE "03/7/2007"
 
 #include <stdio.h>
 #include <string.h>
@@ -281,6 +281,7 @@ static int ParseUserChoice (userType *usr, char *cur, char *n1, char *n2,
             return -1;
          }
          usr->amnt = d_temp;
+         usr->cmd = CMD_ADD;
          return 4;
       default:
          printf ("Invalid option '%s'\n", cur);
