@@ -1257,6 +1257,8 @@ GRIB2LocalTable NCEP_LclTable[] = {
             {0, 1, 206, "TIPD", "Total Icing Potential Diagnostic", "-", UC_NONE},
             {0, 1, 207, "NCIP", "Number concentration for ice particles", "-", UC_NONE},
             {0, 1, 208, "SNOT", "Snow temperature", "K", UC_NONE},
+            {0, 1, 209, "TCLSW", "Total column-integrated supercooled liquid water", "kg/(m^2)", UC_NONE},
+            {0, 1, 210, "TCOLM", "Total column-integrated melting ice", "kg/(m^2)", UC_NONE},
 
    /* 15 */ {0, 2, 192, "VWSH", "Vertical speed sheer", "1/s", UC_NONE},
    /* 16 */ {0, 2, 193, "MFLX", "Horizontal Momentum Flux", "N/(m^2)", UC_NONE},
@@ -1279,6 +1281,7 @@ GRIB2LocalTable NCEP_LclTable[] = {
    /* 28 */ {0, 4, 193, "USWRF", "Upward Short-Wave Rad. Flux", "W/(m^2)", UC_NONE},
             {0, 4, 194, "DUVB", "UV-B downward solar flux", "W/(m^2)", UC_NONE},
             {0, 4, 195, "CDUVB", "Clear sky UV-B downward solar flux", "W/(m^2)", UC_NONE},
+            {0, 4, 196, "CSDSF", "Clear sky Downward Solar Flux", "W/(m^2)", UC_NONE},
 
    /* 29 */ {0, 5, 192, "DLWRF", "Downward Long-Wave Rad. Flux", "W/(m^2)", UC_NONE},
    /* 30 */ {0, 5, 193, "ULWRF", "Upward Long-Wave Rad. Flux", "W/(m^2)", UC_NONE},
