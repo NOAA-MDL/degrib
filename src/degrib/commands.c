@@ -282,7 +282,7 @@ int SimpConvert (userType *usr, grib_MetaData *meta, double *Data,
 #endif
 
 int MainConvert (userType *usr, IS_dataType *is, grib_MetaData *meta,
-                 double *Data, sInt4 DataLen, int f_unit, int msgNum)
+                 double *Data, sInt4 DataLen, int f_unit, int f_first)
 {
    char *outName = NULL; /* Name of the output file */
    size_t outLen;       /* String length of outName. */
@@ -488,20 +488,10 @@ int MainConvert (userType *usr, IS_dataType *is, grib_MetaData *meta,
    /* Create the .nc file (NetCDF) */
    if (usr->f_NetCDF) {
       strncpy (outName + strlen (outName) - 3, "nc\0", 3);
-      if (usr->msgNum == 0) {
-         if (gribWriteNetCDF (outName, Data, meta, usr->f_NetCDF,
-                              usr->decimal, usr->LatLon_Decimal,
-                              msgNum) != 0) {
-            free (outName);
-            return 1;
-         }
-      } else {
-         if (gribWriteNetCDF (outName, Data, meta, usr->f_NetCDF,
-                              usr->decimal, usr->LatLon_Decimal,
-                              usr->msgNum - 1) != 0) {
-            free (outName);
-            return 1;
-         }
+      if (gribWriteNetCDF (outName, Data, meta, usr->f_NetCDF,
+                           usr->decimal, usr->LatLon_Decimal) != 0) {
+         free (outName);
+         return 1;
       }
       strncpy (outName + strlen (outName) - 2, "txt", 3);
    }
@@ -539,7 +529,7 @@ int MainConvert (userType *usr, IS_dataType *is, grib_MetaData *meta,
          }
       } else {
          strncpy (outName + strlen (outName) - 3, "tdl", 3);
-         if (msgNum == 0) {
+         if (f_first) {
             if ((fp = fopen (outName, "wb")) != NULL) {
                if (meta->gridAttrib.f_miss == 0) {
                   WriteTDLPRecord (fp, Data, DataLen, meta->gridAttrib.DSF,
@@ -637,7 +627,7 @@ int MainConvert (userType *usr, IS_dataType *is, grib_MetaData *meta,
          fwrite (cPack, sizeof (char), c_len, stdout);
       } else {
          strncpy (outName + strlen (outName) - 3, "grb", 3);
-         if (msgNum == 0) {
+         if (f_first) {
             if ((fp = fopen (outName, "wb")) != NULL) {
                fwrite (cPack, sizeof (char), c_len, fp);
                fclose (fp);
@@ -692,9 +682,9 @@ int Grib2Convert (userType *usr, FILE *grib_fp, IS_dataType *is,
    int c;               /* Determine if end of the file without fileLen. */
    sInt4 f_endMsg = 1;  /* 1 if we read the last grid in a GRIB message, or
                          * we haven't read any messages. */
-   int subgNum;         /* The subgrid in the message that we are interested
-                         * in. */
-   int msgNum = 0;      /* The message number we are working on. */
+   int subgNum;         /* The subgrid that we are looking for */
+   int msgNum = 1;      /* The message number we are working on. */
+   int f_first = 1;     /* Is this the first message? */
 
    if ((!usr->f_Met) && (!usr->f_IS0) && (!usr->f_Flt) && (!usr->f_Shp) &&
        (!usr->f_Csv) && (!usr->f_Grib2) && (!usr->f_NetCDF) &&
@@ -709,14 +699,17 @@ int Grib2Convert (userType *usr, FILE *grib_fp, IS_dataType *is,
    /* Set up inital state of data for unpacker. */
    grib_DataLen = 0;
    grib_Data = NULL;
-   subgNum = usr->subgNum;
    if (usr->msgNum == 0) {
       subgNum = 0;
+   } else {
+      subgNum = usr->subgNum;
    }
+
 /* Start loop for all messages. */
-   while ((c = fgetc (grib_fp)) != EOF) {
-/*      printf ("Message Number: %d\n", msgNum);*/
-      ungetc (c, grib_fp);
+   while (((c = fgetc (grib_fp)) != EOF) || (f_endMsg != 1)) {
+      if (c != EOF) {
+         ungetc (c, grib_fp);
+      }
       /* Read the GRIB message. */
       if (ReadGrib2Record (grib_fp, usr->f_unit, &grib_Data, &grib_DataLen,
                            meta, is, subgNum, usr->majEarth, usr->minEarth,
@@ -760,21 +753,26 @@ int Grib2Convert (userType *usr, FILE *grib_fp, IS_dataType *is,
       }
 */
       if (MainConvert (usr, is, meta, grib_Data, grib_DataLen,
-                       usr->f_unit, msgNum) != 0) {
+                       usr->f_unit, f_first) != 0) {
          preErrSprintf ("ERROR: In call to MainConvert.\n");
          free (grib_Data);
          return 1;
       }
-      msgNum++;
+      f_first = 0;
 
-      if (usr->msgNum == 0) {
-         if (f_endMsg != 1) {
-            subgNum++;
-         } else {
-            subgNum = 0;
-         }
-      } else {
+      /* Break out if we're only converting one message. */
+      if (usr->msgNum != 0) {
          break;
+      }
+/*      printf ("Just finished message: %d %d\n", msgNum, subgNum);*/
+
+      /* If we haven't found the end of the message, increase the subgrid
+       * we're interested in. */
+      if (f_endMsg != 1) {
+         subgNum++;
+      } else {
+         subgNum = 0;
+         msgNum++;
       }
 /*
       IS_Free (is);
