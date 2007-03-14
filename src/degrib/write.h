@@ -59,8 +59,7 @@ int gribWriteCsv (FILE * out_fp, double *grib_Data, grib_MetaData * meta,
                   sChar f_WxParse, sChar f_NoMissing, sChar LatLon_Decimal);
 
 int gribWriteNetCDF (char *filename, double *grib_Data, grib_MetaData * meta,
-                     sChar f_NetCDF, sChar decimal, sChar LatLon_Decimal,
-                     int msgNum);
+                     sChar f_NetCDF, sChar decimal, sChar LatLon_Decimal);
 
 /* Possible error messages left in errSprintf() */
 int gribInterpFloat (const char *Filename, double *grib_Data,

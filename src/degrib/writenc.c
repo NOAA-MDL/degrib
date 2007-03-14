@@ -1987,7 +1987,6 @@ static int netCDF_V1 (char *filename, double *grib_Data,
  *       f_NetCDF = Version of degrib-NetCDF to use (1, or 2) (In)
  *        decimal = How many decimals to store the data with. (Input)
  * LatLon_Decimal = How many decimals to calculate lat/lon to. (Input)
- *         msgNum = Grib Message Number. (Input)
  *
  * FILES/DATABASES:
  *
@@ -2003,6 +2002,7 @@ static int netCDF_V1 (char *filename, double *grib_Data,
  *   1/2005 AAT: Updated for pdsTdlp type
  *   9/2005 AAT: Modified to handle version 3 which should be more CF
  *          compliant
+ *   3/2007 AAT: Realized that msgNum is not actually used anymore (removed).
  *
  * NOTES
  *   See: http://www.cgd.ucar.edu/cms/eaton/cf-metadata/CF-1.0.html#gmap
@@ -2011,7 +2011,7 @@ static int netCDF_V1 (char *filename, double *grib_Data,
  */
 static int netCDF_V2 (char *filename, double *grib_Data,
                       grib_MetaData *meta, sChar f_NetCDF, sChar decimal,
-                      sChar LatLon_Decimal, int msgNum)
+                      sChar LatLon_Decimal)
 {
    int ncid;            /* netCDF file id */
    int stat;            /* Return value from NetCDF call */
@@ -2894,7 +2894,6 @@ static int netCDF_V2 (char *filename, double *grib_Data,
 
    }
    start[0] = insertIndex;
-/*   start[0] = msgNum;*/
 
    /* Store the Grib data */
    for (i = 0; i < meta->gds.Nx * meta->gds.Ny; i++) {
@@ -2950,7 +2949,6 @@ static int netCDF_V2 (char *filename, double *grib_Data,
  *       f_NetCDF = Version of degrib-NetCDF to use (1, or 2) (Input)
  *        decimal = How many decimals to store the data with. (Input)
  * LatLon_Decimal = How many decimals to calculate lat/lon to. (Input)
- *         msgNum = Grib Message Number. (Input)
  *
  * FILES/DATABASES:
  *
@@ -2964,6 +2962,7 @@ static int netCDF_V2 (char *filename, double *grib_Data,
  *          the same NetCDF file.
  *  12/2004 Arthur Taylor (MDL): Modified to toggle between netCDF_V1 and
  *          netCDF_V2.
+ *   3/2007 AAT: Realized that msgNum is not actually used anymore (removed).
  *
  * NOTES
  *   See: http://www.cgd.ucar.edu/cms/eaton/cf-metadata/CF-1.0.html#gmap
@@ -2971,19 +2970,18 @@ static int netCDF_V2 (char *filename, double *grib_Data,
  *****************************************************************************
  */
 int gribWriteNetCDF (char *filename, double *grib_Data, grib_MetaData *meta,
-                     sChar f_NetCDF, sChar decimal, sChar LatLon_Decimal,
-                     int msgNum)
+                     sChar f_NetCDF, sChar decimal, sChar LatLon_Decimal)
 {
    if (f_NetCDF == 1) {
       return (netCDF_V1 (filename, grib_Data, meta, f_NetCDF, decimal,
                          LatLon_Decimal));
    } else if ((f_NetCDF == 2) || (f_NetCDF == 3)) {
       return (netCDF_V2 (filename, grib_Data, meta, f_NetCDF, decimal,
-                         LatLon_Decimal, msgNum));
+                         LatLon_Decimal));
    } else {
       errSprintf ("Warning: Only 2 versions of NetCDF currently available\n"
                   "Using the default one");
       return (netCDF_V2 (filename, grib_Data, meta, f_NetCDF, decimal,
-                         LatLon_Decimal, msgNum));
+                         LatLon_Decimal));
    }
 }
