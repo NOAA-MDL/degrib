@@ -32,7 +32,7 @@ DWML_FLAGS = -O3 -Wall -pedantic -std=c99 -mno-cygwin
 ############################
 # Link Flags
 ############################
-LD_FLAGS = -Wl,--stack,6000000
+LD_FLAGS = -Wl,--stack,4000000
 # Use -mconsole if you want to use "puts" diagnostics...
 # Use -mwindows if you want to ship out the program...
 #TK_LD_FLAGS = ${LD_FLAGS} -mwindows
@@ -51,8 +51,9 @@ XML_CLEAN = (cd ../dwmllib && make -f makefile clean)
 ############################
 # Standard Defines
 ############################
-STD_DEF = $(XML_DEF) -DSIZEOF_LONG_INT=4 -DMEMWATCH -DMEMWATCH_STDIO -DVERBOSE -DTIMING_INFO -DDEBUG
-STUB_DEF = $(STD_DEF) -DTCL_USE_STUBS
+STD_DEF = $(XML_DEF) -DSIZEOF_LONG_INT=4 -DMEMWATCH -DMEMWATCH_STDIO -DVERBOSE -DTIMING_INFO -DDEBUG -D_WINDOWS_ -D_GCC_ $(XML_DEF)
+#STD_DEF = $(XML_DEF) -DSIZEOF_LONG_INT=4 -D_WINDOWS_ -D_GCC_ $(XML_DEF)
+STUB_DEF = -DUSE_TCL_STUBS -DUSE_TK_STUBS -DEXPORTS
 
 ############################
 # Do we want to watch memory?

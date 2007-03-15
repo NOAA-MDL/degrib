@@ -44,15 +44,14 @@ TCL_LD_FLAGS = ${LD_FLAGS} -mconsole
 ############################
 XML_DEF = -D_DWML_
 XML_INC = -I../libxml/include -I../dwmllib
-XML_LIB = -L../dwmllib -ldwml ../libxml/.libs/libxml2.a
+XML_LIB = -L../dwmllib -ldwml -L../libxml/.libs/ -lxml2
 XML_DEP = ../dwmllib/libdwml.a ../libxml/.libs/libxml2.a
 XML_CLEAN = (cd ../dwmllib && make -f makefile clean)
 
 ############################
 # Standard Defines
 ############################
-STD_DEF = $(XML_DEF) -DSIZEOF_LONG_INT=4
-GUI_DEF = -D_WINDOWS_ -D_GCC_ $(XML_DEF)
+STD_DEF = $(XML_DEF) -DSIZEOF_LONG_INT=4 -D_WINDOWS_ -D_GCC_ $(XML_DEF)
 STUB_DEF = -DUSE_TCL_STUBS -DUSE_TK_STUBS -DEXPORTS
 
 ############################
@@ -110,7 +109,7 @@ PRJ_A = libdegrib$(TCL_VERSION).a
 TARGETS = $(PRJ_NAME) $(DP_NAME) $(CLOCK_NAME) $(DRAWSHP_NAME) $(TCL_NAME) $(TK_NAME)
 
 CFLAGS = $(STD_FLAGS) $(STD_DEF) $(STD_INC)
-GUIFLAGS = $(STD_FLAGS) $(GUI_DEF) $(GUI_INC)
+GUIFLAGS = $(STD_FLAGS) $(STD_DEF) $(GUI_INC)
 DWMLFLAGS = $(DWML_FLAGS) $(STD_DEF) $(STD_INC)
 
 ############################
