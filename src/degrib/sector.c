@@ -127,28 +127,20 @@ int SectorFindGDS (gdsType *gds)
          continue;
       if (fabs (gds->southLon - NdfdDefGds[i].southLon) > 0.000001)
          continue;
+/* Following were not stored in the data cube. */
+/*
       if (fabs (gds->poleLat - NdfdDefGds[i].poleLat) > 0.000001)
          continue;
       if (fabs (gds->poleLon - NdfdDefGds[i].poleLon) > 0.000001)
          continue;
       if (fabs (gds->stretchFactor - NdfdDefGds[i].stretchFactor) > 0.000001)
          continue;
-
       if (gds->f_typeLatLon != NdfdDefGds[i].f_typeLatLon)
          continue;
-
-/* AngleRotate is not stored in the data cube. */
-/*
       if (gds->angleRotate != NdfdDefGds[i].angleRotate)
          continue;
 */
       return i;
-/*
-      if (memcmp ((void *) &(*gds), (void *) &(NdfdDefGds[i]),
-                  sizeof (gdsType)) == 0) {
-         return i;
-      }
-*/
    }
    return -1;
 }

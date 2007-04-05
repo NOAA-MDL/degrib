@@ -285,6 +285,10 @@ void ReadGDSBuffer (char *ptr, gdsType *gds)
    MEMCPY_LIT (&(gds->southLat), ptr, sizeof (double));
    ptr += 8;
    MEMCPY_LIT (&(gds->southLon), ptr, sizeof (double));
+   gds->poleLat = 0;
+   gds->poleLon = 0;
+   gds->stretchFactor = 0;
+   gds->f_typeLatLon = 0;
    gds->angleRotate = 0;
 }
 
