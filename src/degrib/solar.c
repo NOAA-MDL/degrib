@@ -424,10 +424,11 @@ int sunTime (sInt4 year, int mon, int day, double lat, double lon,
 /*-------------------------------------------------------------------------*/
 /* Returns true if the time (in UTC) at lat/lon is during the night.
  * returns false if the time (in UTC) at lat/lon is during the day.
+ * zone (EST is 4) = amount to shift from UTC to LST
  */
 #define ISDARK 1
 #define ISLIGHT 0
-int isNightPeriod (double time, double lat, double lon)
+int isNightPeriod (double time, double lat, double lon, int zone)
 {
    sInt4 year;
    int mon;
@@ -440,12 +441,13 @@ int isNightPeriod (double time, double lat, double lon)
    double now;
    int rc;
 
+   time = time - zone * 3600;
    Clock_PrintDate (time, &year, &mon, &day, &hour, &min, &sec);
    now = hour + min / 60. + sec / 3600.;
 
    /* sunrise is 1 so we get sunrise */
    /* num_off_UTC = 0 is number of hours offset from UTC. */
-   rc = RiseSet (year, mon, day, lat, lon, &rise, 1, 0);
+   rc = RiseSet (year, mon, day, lat, lon, &rise, 1, -1 * zone);
    switch (rc) {
       case SUN_DOWN:
          return ISDARK;
@@ -455,7 +457,7 @@ int isNightPeriod (double time, double lat, double lon)
 
    /* sunrise is 0 so we get sunset */
    /* num_off_UTC = 0 is number of hours offset from UTC. */
-   rc = RiseSet (year, mon, day, lat, lon, &set, 0, 0);
+   rc = RiseSet (year, mon, day, lat, lon, &set, 0, -1 * zone);
    switch (rc) {
       case SUN_DOWN:
          return ISDARK;
@@ -479,6 +481,39 @@ int isNightPeriod (double time, double lat, double lon)
          return ISLIGHT;
    }
 }
+
+#ifdef DEBUG_SOLAR
+int main (int argc, char **argv)
+{
+   double time;
+   double lat;
+   double lon;
+   sInt4 year;
+   int month;
+   int day;
+   int hour;
+   int min;
+   double sec;
+   int i;
+   char f_isNight;
+
+   lat = 38;
+   lon = -78;
+   time = Clock_Seconds();
+
+   for (i = 0; i < 100; ++i) {
+      Clock_PrintDate (time, &year, &month, &day, &hour, &min, &sec);
+      f_isNight = isNightPeriod (time, lat, lon, 4);
+      if (f_isNight) {
+         printf ("Night: %d/%d/%d %d:%d\n", month, day, year, hour, min);
+      } else {
+         printf ("Day: %d/%d/%d %d:%d\n", month, day, year, hour, min);
+      }
+      /* Add 1 hour to time */
+      time = time + 3600;
+   }
+}
+#endif
 
 #undef ISDARK
 #undef ISLIGHT
