@@ -114,8 +114,8 @@ static const uChar NdfdElementsLen = (sizeof (NdfdElements) /
 /* these are a string tolower on the short name of each NDFD element */
 static char *NDFD_Type[] = { "maxt", "mint", "pop12", "t", "winddir",
    "windspd", "td", "sky", "qpf", "snowamt", "wx", "waveheight",
-   "apparentt", "rh", "windgust", "probwindspd34i", "probwindspd50c",
-   "probwindspd64c", "probwindspd34c", "probwindspd50c", "probwindspd64c",
+   "apparentt", "rh", "windgust", "probwindspd34i", "probwindspd50i",
+   "probwindspd64i", "probwindspd34c", "probwindspd50c", "probwindspd64c",
    "convoutlook", "tornadoprob", "hailprob", "windprob", "xtrmtornprob",
    "xtrmhailprob", "xtrmwindprob", "totalsvrprob", "totalxtrmprob",
    NULL
