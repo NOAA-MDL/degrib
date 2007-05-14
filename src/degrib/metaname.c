@@ -1792,8 +1792,25 @@ static void ElemNameNorm (uShort2 center, uShort2 subcenter, int prodType,
    if (table != NULL) {
       if (subcat < tableLen) {
          /* Check for NDFD over-rides. */
-         if (IsData_NDFD (center, subcenter) ||
-             IsData_MOS (center, subcenter)) {
+         if (IsData_MOS (center, subcenter)) {
+            if (strcmp (table[subcat].name, "APCP") == 0) {
+               mallocSprintf (name, "%s%02d", "QPF", lenTime);
+               mallocSprintf (comment, "%02d hr %s", lenTime,
+                              table[subcat].comment);
+               mallocSprintf (unit, "[%s]", table[subcat].unit);
+               *convert = table[subcat].convert;
+               return;
+            }
+            if (strcmp (table[subcat].name, "ASNOW") == 0) {
+               mallocSprintf (name, "%s%02d", "SnowAmt", lenTime);
+               mallocSprintf (comment, "%02d hr %s", lenTime,
+                              table[subcat].comment);
+               mallocSprintf (unit, "[%s]", table[subcat].unit);
+               *convert = table[subcat].convert;
+               return;
+            }
+         }
+         if (IsData_NDFD (center, subcenter) || IsData_MOS (center, subcenter)) {
             for (i = 0; i < (sizeof (NDFD_Overide) /
                              sizeof (NDFD_AbrevOverideTable)); i++) {
                if (strcmp (NDFD_Overide[i].GRIB2name, table[subcat].name) ==
