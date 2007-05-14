@@ -351,10 +351,14 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
 
    static char *NDFD_Type[] = { "T", "MaxT", "MinT", "Td", "QPF",
       "SnowAmt", "WindDir", "WindSpd", "Sky", "WaveHeight", "Wx",
-      "PoP12", "ApparentT", "RH", "WindGust", NULL
+      "PoP12", "ApparentT", "RH", "WindGust", "ConvOutlook", "TornadoProb",
+      "HailProb", "WindProb", "XtrmTornProb", "XtrmHailProb", "XtrmWindProb",
+      "TotalSvrProb", "TotalXtrmProb", NULL
    };
    enum { TEMP, MAXT, MINT, TD, QPF, SNOW, WINDDIR, WINDSPD, SKY,
-      WAVEHEIGHT, WX, POP12, APPARENTT, RH, WINDGUST, DEFAULT_NUM
+      WAVEHEIGHT, WX, POP12, APPARENTT, RH, WINDGUST, CONVOUTLOOK, PTORN,
+      PHAIL, PWIND, PXTRMTORN, PXTRMHAIL, PXTRMWIND, PTOTSVR, PTOTXTRM,
+      DEFAULT_NUM
    };
 /* *INDENT-OFF* */
    static NDFD_ValuesTable NDFD_Values[] = {
@@ -373,6 +377,15 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
       /* AppT */    { 0, 0, 193, 0, 1, 0, 2},
       /* RHM */     { 0, 1,   1, 0, 0, 0, 2},
       /* WindGust*/ { 0, 2,  22, 0, 1, 0, 3},
+   /* ConvOutlook*/ { 0, 19, 194, 8, 1, 0, 2},
+   /* Ptornado */   { 0, 19, 197, 9, 1, 0, 2},
+   /* Phail */      { 0, 19, 198, 9, 1, 0, 2},
+   /* Pwind */      { 0, 19, 199, 9, 1, 0, 2},
+   /* PXtrmTorn */  { 0, 19, 200, 9, 1, 0, 2},
+   /* PXtrmHail */  { 0, 19, 201, 9, 1, 0, 2},
+   /* PXtrmWind */  { 0, 19, 202, 9, 1, 0, 2},
+   /* TotSvrProb */ { 0, 19, 203, 9, 1, 0, 2},
+   /* TotXtrmProb */{ 0, 19, 204, 9, 1, 0, 2},
       /* Default */ { 0, 0,   0, 0, 0, 0, 3},
    };
 /* *INDENT-ON* */
@@ -431,7 +444,13 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
    meta->pds2.lclVersion = 0;
    meta->pds2.sigTime = 1; /* refTime is start of forecast. */
    meta->pds2.refTime = (time_t) refTime;
-   meta->pds2.operStatus = 0; /* Pretend NDFD is operational. */
+   if ((elemNum == CONVOUTLOOK) || (elemNum == PHAIL) || (elemNum == PTORN) ||
+       (elemNum == PWIND) || (elemNum == PXTRMTORN) || (elemNum == PXTRMHAIL) ||
+       (elemNum == PXTRMWIND) || (elemNum == PTOTSVR) || (elemNum == PTOTXTRM)) {
+      meta->pds2.operStatus = 1;
+   } else {
+      meta->pds2.operStatus = 0; /* Pretend NDFD is operational. */
+   }
    meta->pds2.dataType = 1; /* NDFD is a forecast */
    if (elemNum == WX) {
       meta->pds2.f_sect2 = 1;
@@ -453,12 +472,13 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
    meta->pds2.sect4.f_validCutOff = 0; /* Cutoff data missing */
    meta->pds2.sect4.foreSec = meta->deltTime;
    meta->pds2.sect4.fstSurfType = 1; /* Surface level */
-   meta->pds2.sect4.fstSurfValue = 0; /* NDFD used missing == -1. */
-   meta->pds2.sect4.fstSurfScale = -1; /* NDFD used missing == -1. */
+   meta->pds2.sect4.fstSurfValue = 0; 
+   meta->pds2.sect4.fstSurfScale = 0;
    meta->pds2.sect4.sndSurfType = GRIB2MISSING_u1;
    meta->pds2.sect4.sndSurfValue = -1; /* NDFD used missing == -1. */
    meta->pds2.sect4.sndSurfScale = -1; /* NDFD used missing == -1. */
    meta->pds2.sect4.validTime = (time_t) valTime;
+
    if (meta->pds2.sect4.templat == 8) {
       meta->pds2.sect4.numInterval = 1;
       meta->pds2.sect4.Interval = (sect4_IntervalType *)
@@ -467,11 +487,17 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
                      sizeof (sect4_IntervalType));
       meta->pds2.sect4.numMissing = 0;
       if (elemNum == MAXT) {
+         /* Statistical process = Maximum */
          meta->pds2.sect4.Interval[0].processID = 2;
       } else if (elemNum == MINT) {
+         /* Statistical process = Minimum */
          meta->pds2.sect4.Interval[0].processID = 3;
       } else if ((elemNum == QPF) || (elemNum == SNOW)) {
+         /* Statistical process = Accumulation */
          meta->pds2.sect4.Interval[0].processID = 1;
+      } else if (elemNum == CONVOUTLOOK) {
+         /* Statistical process = Average */
+         meta->pds2.sect4.Interval[0].processID = 0;
       }
       meta->pds2.sect4.Interval[0].incrType = GRIB2MISSING_u1;
       meta->pds2.sect4.Interval[0].timeRangeUnit = 1;
@@ -479,20 +505,28 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
          meta->pds2.sect4.Interval[0].lenTime = 12;
       } else if ((elemNum == QPF) || (elemNum == SNOW)) {
          meta->pds2.sect4.Interval[0].lenTime = 6;
+      } else if (elemNum == CONVOUTLOOK) {
+         meta->pds2.sect4.Interval[0].lenTime = 24;
       }
       meta->pds2.sect4.Interval[0].incrUnit = 1;
       meta->pds2.sect4.Interval[0].timeIncr = 0;
+
    } else if (meta->pds2.sect4.templat == 9) {
       meta->pds2.sect4.foreProbNum = GRIB2MISSING_u1;
       meta->pds2.sect4.numForeProbs = GRIB2MISSING_u1;
       meta->pds2.sect4.probType = 1;
-      /* Next line should be GRIB2MISSING_1, but factor has to have sign,
-       * since we use one for the upper limit so we use -1, even though that
-       * could have meaning. */
-      meta->pds2.sect4.lowerLimit.factor = -1;
+
+      meta->pds2.sect4.lowerLimit.factor = GRIB2MISSING_s1;
       meta->pds2.sect4.lowerLimit.value = GRIB2MISSING_s4;
-      meta->pds2.sect4.upperLimit.factor = 3; /* Defin of scale factor. */
-      meta->pds2.sect4.upperLimit.value = 254;
+      if (elemNum == POP12) {
+         meta->pds2.sect4.upperLimit.factor = 3; /* Defin of scale factor. */
+         meta->pds2.sect4.upperLimit.value = 254;
+      } else if ((elemNum == PHAIL) || (elemNum == PTORN) || (elemNum == PWIND) ||
+                 (elemNum == PXTRMTORN) || (elemNum == PXTRMHAIL) || (elemNum == PXTRMWIND) ||
+                 (elemNum == PTOTSVR) || (elemNum == PTOTXTRM)) {
+         meta->pds2.sect4.upperLimit.factor = 0; /* Defin of scale factor. */
+         meta->pds2.sect4.upperLimit.value = 0;
+      }
       meta->pds2.sect4.numInterval = 1;
       meta->pds2.sect4.Interval = (sect4_IntervalType *)
             realloc (meta->pds2.sect4.Interval,
@@ -501,10 +535,20 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
       meta->pds2.sect4.numMissing = 0;
       if (elemNum == POP12) {
          meta->pds2.sect4.Interval[0].processID = 1; /* For PoP12 */
+      } else if ((elemNum == PHAIL) || (elemNum == PTORN) || (elemNum == PWIND) ||
+                 (elemNum == PXTRMTORN) || (elemNum == PXTRMHAIL) || (elemNum == PXTRMWIND) ||
+                 (elemNum == PTOTSVR) || (elemNum == PTOTXTRM)) {
+         meta->pds2.sect4.Interval[0].processID = 0;
       }
       meta->pds2.sect4.Interval[0].incrType = GRIB2MISSING_u1;
       meta->pds2.sect4.Interval[0].timeRangeUnit = 1;
-      meta->pds2.sect4.Interval[0].lenTime = 12;
+      if (elemNum == POP12) {
+         meta->pds2.sect4.Interval[0].lenTime = 12;
+      } else if ((elemNum == PHAIL) || (elemNum == PTORN) || (elemNum == PWIND) ||
+                 (elemNum == PXTRMTORN) || (elemNum == PXTRMHAIL) || (elemNum == PXTRMWIND) ||
+                 (elemNum == PTOTSVR) || (elemNum == PTOTXTRM)) {
+         meta->pds2.sect4.Interval[0].lenTime = 24;
+      }
       meta->pds2.sect4.Interval[0].incrUnit = 1;
       meta->pds2.sect4.Interval[0].timeIncr = 0;
    }
@@ -517,7 +561,13 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
    /* Start with 3 ... should downgrade to 2? */
 /*   meta->gridAttrib.packType = 3; */
    meta->gridAttrib.packType = NDFD_Values[elemNum].packType;
-   meta->gridAttrib.ESF = 0;
+   if ((elemNum == CONVOUTLOOK) || (elemNum == PHAIL) || (elemNum == PTORN) ||
+       (elemNum == PWIND) || (elemNum == PXTRMTORN) || (elemNum == PXTRMHAIL) ||
+       (elemNum == PXTRMWIND) || (elemNum == PTOTSVR) || (elemNum == PTOTXTRM)) {
+      meta->gridAttrib.ESF = 1;
+   } else {
+      meta->gridAttrib.ESF = 0;
+   }
    meta->gridAttrib.DSF = NDFD_Values[elemNum].DSF;
    meta->gridAttrib.fieldType = NDFD_Values[elemNum].fieldType;
    meta->gridAttrib.f_maxmin = 0;
