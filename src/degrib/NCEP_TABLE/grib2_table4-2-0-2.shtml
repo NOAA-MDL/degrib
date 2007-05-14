@@ -1,0 +1,379 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta name="Keywords" content="GRIB">
+  <title>GRIBv2 - Table 4.2-0-2 Meteorological - Momentum</title>
+</head>
+<body style="color: rgb(0, 0, 0); background-color: white;"
+ alink="#ff0000" link="#0000ff" vlink="#551a8b">
+<br>
+<center>
+<big><big><big><b>GRIB2 - TABLE 4.2-0-2</b></big></big></big><br>
+<span style="font-weight: bold;"><br>
+</span><b>&nbsp;<big><big> PARAMETERS FOR DISCIPLINE 0<br>
+CATEGORY 2<br>
+<small style="color: rgb(51, 51, 255);">(Meteorological products,
+momentum category)</small><br>
+</big></big></b><big><big><br>
+</big></big><big><big><big><small>Section 0 , Octet 7 = 0</small></big></big></big><b><big><big><big><small><br>
+</small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 2<br>
+</big></big></center>
+<br>
+<center>
+<center>
+<center><b>Revised 04/09/2007</b><br>
+<span style="color: red; font-size: 10pt;"><b>Red text depicts changes
+made since 02/21/2006</b></span><b><br>
+</b></center>
+</center>
+<b></b></center>
+<br>
+<br>
+<center>
+<table style="width: 90%;" border="1" cellpadding="5" cellspacing="0">
+  <tbody>
+    <tr>
+      <th>Number<br>
+(Section 4, octet 11)<br>
+      </th>
+      <th>Parameter</th>
+      <td style="text-align: center; vertical-align: middle;"><span
+ style="font-weight: bold;">Units</span><br>
+      </td>
+      <td
+ style="text-align: center; vertical-align: middle; font-weight: bold;">Abbrev<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align: center;">0<br>
+      </td>
+      <td>Wind Direction (from which blowing)<br>
+      </td>
+      <td style="vertical-align: top;">Degree<br>
+true<br>
+      </td>
+      <td style="vertical-align: top;">WDIR </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">1<br>
+      </td>
+      <td style="vertical-align: top;">Wind Speed<br>
+      </td>
+      <td style="vertical-align: top;">m s<sup>-1</sup><br>
+      </td>
+      <td style="vertical-align: top;">WIND </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">2<br>
+      </td>
+      <td style="vertical-align: top;">U-Component of Wind<br>
+      </td>
+      <td style="vertical-align: top;">m s<sup>-1</sup></td>
+      <td style="vertical-align: top;">U GRD </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">3<br>
+      </td>
+      <td style="vertical-align: top;">V-Component of Wind</td>
+      <td style="vertical-align: top;">m s<sup>-1</sup></td>
+      <td style="vertical-align: top;">V GRD </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">4<br>
+      </td>
+      <td style="vertical-align: top;">Stream Function<br>
+      </td>
+      <td style="vertical-align: top;">m<sup>2</sup> s<sup>-1</sup></td>
+      <td style="vertical-align: top;">STRM </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">5<br>
+      </td>
+      <td style="vertical-align: top;">Velocity Potential<br>
+      </td>
+      <td style="vertical-align: top;">m<sup>2</sup> s<sup>-1</sup></td>
+      <td style="vertical-align: top;">V POT </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">6<br>
+      </td>
+      <td style="vertical-align: top;">Montgomery Stream Function</td>
+      <td style="vertical-align: top;">m<sup>2</sup> s<sup>-1</sup></td>
+      <td style="vertical-align: top;">MNTSF </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">7<br>
+      </td>
+      <td style="vertical-align: top;">Sigma Coordinate Vertical
+Velocity<br>
+      </td>
+      <td style="vertical-align: top;">s<sup>-1</sup></td>
+      <td style="vertical-align: top;">SGCVV </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">8<br>
+      </td>
+      <td style="vertical-align: top;">Vertical Velocity (Pressure)<br>
+      </td>
+      <td style="vertical-align: top;">Pa s<sup>-1</sup></td>
+      <td style="vertical-align: top;">V VEL </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">9<br>
+      </td>
+      <td style="vertical-align: top;">Vertical Velocity (Geometric)</td>
+      <td style="vertical-align: top;">m s<sup>-1</sup></td>
+      <td style="vertical-align: top;">DZDT </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">10<br>
+      </td>
+      <td style="vertical-align: top;">Absolute Vorticity<br>
+      </td>
+      <td style="vertical-align: top;">s<sup>-1</sup></td>
+      <td style="vertical-align: top;">ABS V </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">11<br>
+      </td>
+      <td style="vertical-align: top;">Absolute Divergence<br>
+      </td>
+      <td style="vertical-align: top;">s<sup>-1</sup></td>
+      <td style="vertical-align: top;">ABS D </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">12<br>
+      </td>
+      <td style="vertical-align: top;">Relative Vorticity<br>
+      </td>
+      <td style="vertical-align: top;">s<sup>-1</sup></td>
+      <td style="vertical-align: top;">REL V </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">13<br>
+      </td>
+      <td style="vertical-align: top;">Relative Divergence<br>
+      </td>
+      <td style="vertical-align: top;">s<sup>-1</sup></td>
+      <td style="vertical-align: top;">REL D </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">14<br>
+      </td>
+      <td style="vertical-align: top;">Potential Vorticity<br>
+      </td>
+      <td style="vertical-align: top;">m<sup>2</sup> kg<sup>-1</sup> s<sup>-1</sup></td>
+      <td style="vertical-align: top;">PVORT<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">15<br>
+      </td>
+      <td style="vertical-align: top;">Vertical U-Component of Shear<br>
+      </td>
+      <td style="vertical-align: top;">s<sup>-1</sup></td>
+      <td style="vertical-align: top;">VUCSH </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">16<br>
+      </td>
+      <td style="vertical-align: top;">Vertical V-Component of Shear<br>
+      </td>
+      <td style="vertical-align: top;">s<sup>-1</sup></td>
+      <td style="vertical-align: top;">VVCSH </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">17<br>
+      </td>
+      <td style="vertical-align: top;">Momentum Flux, U-Component</td>
+      <td style="vertical-align: top;">N m<sup>-2</sup></td>
+      <td style="vertical-align: top;">U FLX </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">18<br>
+      </td>
+      <td style="vertical-align: top;">Momentum Flux, V-Component</td>
+      <td style="vertical-align: top;">N m<sup>-2</sup></td>
+      <td style="vertical-align: top;">V FLX </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">19<br>
+      </td>
+      <td style="vertical-align: top;">Wind Mixing Energy<br>
+      </td>
+      <td style="vertical-align: top;">J<br>
+      </td>
+      <td style="vertical-align: top;">WMIXE </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">20<br>
+      </td>
+      <td style="vertical-align: top;">Boundary Layer Dissipation<br>
+      </td>
+      <td style="vertical-align: top;">W m<sup>-2</sup></td>
+      <td style="vertical-align: top;">BLYDP<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">21<br>
+      </td>
+      <td style="vertical-align: top;">Maximum Wind Speed<br>
+      </td>
+      <td style="vertical-align: top;">m s<sup>-1</sup></td>
+      <td style="vertical-align: top;">-<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">22<br>
+      </td>
+      <td style="vertical-align: top;">Wind Speed (Gust)<br>
+      </td>
+      <td style="vertical-align: top;">m s<sup>-1</sup></td>
+      <td style="vertical-align: top;">GUST<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">23<br>
+      </td>
+      <td style="vertical-align: top;">U-Component of Wind (Gust)</td>
+      <td style="vertical-align: top;">m s<sup>-1</sup></td>
+      <td style="vertical-align: top;">-<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">24<br>
+      </td>
+      <td style="vertical-align: top;">V-Component of Wind (Gust)</td>
+      <td style="vertical-align: top;">m s<sup>-1</sup></td>
+      <td style="vertical-align: top;">-<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">25<br>
+      </td>
+      <td style="vertical-align: top;">Vertical speed sheer</td>
+      <td style="vertical-align: top;">s<sup>-1</sup></td>
+      <td style="vertical-align: top;">VW SH</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">26<br>
+      </td>
+      <td style="vertical-align: top;">Horizontal Momentum Flux</td>
+      <td style="vertical-align: top;">N m<sup>-2</sup></td>
+      <td style="vertical-align: top;">M FLX </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">27<br>
+      </td>
+      <td style="vertical-align: top;">U-Component Storm Motion</td>
+      <td style="vertical-align: top;">m s<sup>-1</sup></td>
+      <td style="vertical-align: top;">USTM </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">28<br>
+      </td>
+      <td style="vertical-align: top;">V-Component Storm Motion</td>
+      <td style="vertical-align: top;">m s<sup>-1</sup></td>
+      <td style="vertical-align: top;">VSTM </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">29<br>
+      </td>
+      <td style="vertical-align: top;">Drag Coefficient</td>
+      <td style="vertical-align: top;">Numeric</td>
+      <td style="vertical-align: top;">CD<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">30<br>
+      </td>
+      <td style="vertical-align: top;">Frictional Velocity</td>
+      <td style="vertical-align: top;">m s<sup>-1</sup></td>
+      <td style="vertical-align: top;">FRICV </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">31-191<br>
+      </td>
+      <td style="vertical-align: top;">Reserved</td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+    <tr>
+      <td
+ style="vertical-align: top; text-align: center; background-color: rgb(204, 204, 204);">192-254<br>
+      </td>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204);">Reserved
+for Local Use<br>
+      </td>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204);"><br>
+      </td>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204);"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">192<br>
+      </td>
+      <td style="vertical-align: top;">Vertical speed sheer</td>
+      <td style="vertical-align: top;">s<sup>-1</sup></td>
+      <td style="vertical-align: top;">VW SH </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">193<br>
+      </td>
+      <td style="vertical-align: top;">Horizontal Momentum Flux</td>
+      <td style="vertical-align: top;">N m<sup>-2</sup></td>
+      <td style="vertical-align: top;">M FLX </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">194<br>
+      </td>
+      <td style="vertical-align: top;">U-Component Storm Motion</td>
+      <td style="vertical-align: top;">m s<sup>-1</sup></td>
+      <td style="vertical-align: top;">USTM </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">195<br>
+      </td>
+      <td style="vertical-align: top;">V-Component Storm Motion</td>
+      <td style="vertical-align: top;">m s<sup>-1</sup></td>
+      <td style="vertical-align: top;">VSTM </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">196<br>
+      </td>
+      <td style="vertical-align: top;">Drag Coefficient</td>
+      <td style="vertical-align: top;">non-dim</td>
+      <td style="vertical-align: top;">CD </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">197<br>
+      </td>
+      <td style="vertical-align: top;">Frictional Velocity</td>
+      <td style="vertical-align: top;">m s<sup>-1</sup></td>
+      <td style="vertical-align: top;">FRICV </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">255<br>
+      </td>
+      <td style="vertical-align: top;">Missing<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</center>
+<br>
+<br>
+<center><a href="/pmb/docs/grib2/grib2_doc.shtml">Back</a></center>
+<br>
+<br>
+</body>
+</html>

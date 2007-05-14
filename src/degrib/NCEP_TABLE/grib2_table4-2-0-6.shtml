@@ -1,0 +1,334 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta name="Keywords" content="GRIB">
+  <title>GRIBv2 - Table 4.2-0-6 Meteorological - Cloud</title>
+</head>
+<body style="color: rgb(0, 0, 0); background-color: white;"
+ alink="#ff0000" link="#0000ff" vlink="#551a8b">
+<br>
+<center>
+<big><big><big><b>GRIB2 - TABLE 4.2-0-6</b></big></big></big><br>
+<span style="font-weight: bold;"><br>
+</span><b>&nbsp;<big><big> PARAMETERS FOR DISCIPLINE 0<br>
+CATEGORY 6<br>
+<small style="color: rgb(51, 51, 255);">(Meteorological products, cloud
+category)</small><br>
+</big></big></b><big><big><br>
+</big></big><big><big><big><small>Section 0 , Octet 7 = 0</small></big></big></big><b><big><big><big><small><br>
+</small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 6<br>
+</big></big></center>
+<br>
+<center><b>Revised 04/23/2007</b><br>
+<span style="color: red; font-size: 10pt;"><b>Red text depicts changes
+made since 02/21/2006</b></span></center>
+<br>
+<br>
+<center>
+<table style="width: 90%;" border="1" cellpadding="5" cellspacing="0">
+  <tbody>
+    <tr>
+      <th>Number<br>
+(Section 4, octet 11)<br>
+      </th>
+      <th>Parameter</th>
+      <td
+ style="text-align: center; vertical-align: middle; font-weight: bold;">Units<br>
+      </td>
+      <td
+ style="vertical-align: middle; font-weight: bold; text-align: center;">Abbrev</td>
+    </tr>
+    <tr>
+      <td style="text-align: center;">0<br>
+      </td>
+      <td>Cloud Ice<br>
+      </td>
+      <td style="vertical-align: top;">kg m<sup>-2</sup><br>
+      </td>
+      <td style="vertical-align: top;">C ICE </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">1<br>
+      </td>
+      <td style="vertical-align: top;">Total Cloud Cover<br>
+      </td>
+      <td style="vertical-align: top;">%<br>
+      </td>
+      <td style="vertical-align: top;">T CDC </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">2<br>
+      </td>
+      <td style="vertical-align: top;">Convective Cloud Cover<br>
+      </td>
+      <td style="vertical-align: top;">%<br>
+      </td>
+      <td style="vertical-align: top;">CDCON </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">3<br>
+      </td>
+      <td style="vertical-align: top;">Low Cloud Cover</td>
+      <td style="vertical-align: top;">%<br>
+      </td>
+      <td style="vertical-align: top;">L CDC </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">4<br>
+      </td>
+      <td style="vertical-align: top;">Medium Cloud Cover</td>
+      <td style="vertical-align: top;">%<br>
+      </td>
+      <td style="vertical-align: top;">M CDC </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">5<br>
+      </td>
+      <td style="vertical-align: top;">High Cloud Cover</td>
+      <td style="vertical-align: top;">%<br>
+      </td>
+      <td style="vertical-align: top;">H CDC </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">6<br>
+      </td>
+      <td style="vertical-align: top;">Cloud Water<br>
+      </td>
+      <td style="vertical-align: top;">kg m<sup>-2</sup></td>
+      <td style="vertical-align: top;">C WAT </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">7<br>
+      </td>
+      <td style="vertical-align: top;">Cloud Amount<br>
+      </td>
+      <td style="vertical-align: top;">%<br>
+      </td>
+      <td style="vertical-align: top;">-<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">8<br>
+      </td>
+      <td style="vertical-align: top;">Cloud Type<br>
+      </td>
+      <td style="vertical-align: top;">See <a
+ href="grib2_table4-203.shtml">Table 4.203</a><br>
+      </td>
+      <td style="vertical-align: top;">-<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">9<br>
+      </td>
+      <td style="vertical-align: top;">Thunderstorm Maximum Tops<br>
+      </td>
+      <td style="vertical-align: top;">m<br>
+      </td>
+      <td style="vertical-align: top;">-<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">10<br>
+      </td>
+      <td style="vertical-align: top;">Thunderstorm Coverage<br>
+      </td>
+      <td style="vertical-align: top;">See <a
+ href="grib2_table4-204.shtml">Table 4.204</a></td>
+      <td style="vertical-align: top;">-<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">11<br>
+      </td>
+      <td style="vertical-align: top;">Cloud Base<br>
+      </td>
+      <td style="vertical-align: top;">m<br>
+      </td>
+      <td style="vertical-align: top;">-<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">12<br>
+      </td>
+      <td style="vertical-align: top;">Cloud Top<br>
+      </td>
+      <td style="vertical-align: top;">m<br>
+      </td>
+      <td style="vertical-align: top;">-<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">13<br>
+      </td>
+      <td style="vertical-align: top;">Ceiling<br>
+      </td>
+      <td style="vertical-align: top;">m<br>
+      </td>
+      <td style="vertical-align: top;">CEIL<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">14<br>
+      </td>
+      <td style="vertical-align: top;">Non-Convective Cloud Cover</td>
+      <td style="vertical-align: top;">%<br>
+      </td>
+      <td style="vertical-align: top;">CDLYR </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">15<br>
+      </td>
+      <td style="vertical-align: top;">Cloud Work Function</td>
+      <td style="vertical-align: top;">J kg<sup>-1</sup><br>
+      </td>
+      <td style="vertical-align: top;">CWORK </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">16<br>
+      </td>
+      <td style="vertical-align: top;">Convective Cloud Efficiency</td>
+      <td style="vertical-align: top;">Proportion</td>
+      <td style="vertical-align: top;">CUEFI </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">17<br>
+      </td>
+      <td style="vertical-align: top;">Total Condensate</td>
+      <td style="vertical-align: top;">kg kg<sup>-1</sup></td>
+      <td style="vertical-align: top;">TCOND </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">18<br>
+      </td>
+      <td style="vertical-align: top;">Total Column-Integrated Cloud
+Water</td>
+      <td style="vertical-align: top;">kg m<sup>-2</sup></td>
+      <td style="vertical-align: top;">TCOLW </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">19<br>
+      </td>
+      <td style="vertical-align: top;">Total Column-Integrated Cloud Ice</td>
+      <td style="vertical-align: top;">kg m<sup>-2</sup></td>
+      <td style="vertical-align: top;">TCOLI </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">20<br>
+      </td>
+      <td style="vertical-align: top;">Total Column-Integrated
+Condensate</td>
+      <td style="vertical-align: top;">kg m<sup>-2</sup></td>
+      <td style="vertical-align: top;">TCOLC </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">21<br>
+      </td>
+      <td style="vertical-align: top;">Ice fraction of total condensate</td>
+      <td style="vertical-align: top;">Proportion</td>
+      <td style="vertical-align: top;">FICE </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">22-191<br>
+      </td>
+      <td style="vertical-align: top;">Reserved</td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+    <tr>
+      <td
+ style="vertical-align: top; text-align: center; background-color: rgb(204, 204, 204);">192-254<br>
+      </td>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204);">Reserved
+for Local Use<br>
+      </td>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204);"><br>
+      </td>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204);"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">192<br>
+      </td>
+      <td style="vertical-align: top;">Non-Convective Cloud Cover</td>
+      <td style="vertical-align: top;">%<br>
+      </td>
+      <td style="vertical-align: top;">CDLYR </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">193<br>
+      </td>
+      <td style="vertical-align: top;">Cloud Work Function</td>
+      <td style="vertical-align: top;">J kg<sup>-1</sup><br>
+      </td>
+      <td style="vertical-align: top;">CWORK </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">194<br>
+      </td>
+      <td style="vertical-align: top;">Convective Cloud Efficiency</td>
+      <td style="vertical-align: top;">non-dim</td>
+      <td style="vertical-align: top;">CUEFI </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">195<br>
+      </td>
+      <td style="vertical-align: top;">Total Condensate</td>
+      <td style="vertical-align: top;">kg kg<sup>-1</sup></td>
+      <td style="vertical-align: top;">TCOND </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">196<br>
+      </td>
+      <td style="vertical-align: top;">Total Column-Integrated Cloud
+Water</td>
+      <td style="vertical-align: top;">kg m<sup>-2</sup></td>
+      <td style="vertical-align: top;">TCOLW </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">197<br>
+      </td>
+      <td style="vertical-align: top;">Total Column-Integrated Cloud Ice</td>
+      <td style="vertical-align: top;">kg m<sup>-2</sup></td>
+      <td style="vertical-align: top;">TCOLI </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">198<br>
+      </td>
+      <td style="vertical-align: top;">Total Column-Integrated
+Condensate</td>
+      <td style="vertical-align: top;">kg m<sup>-2</sup></td>
+      <td style="vertical-align: top;">TCOLC </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">199<br>
+      </td>
+      <td style="vertical-align: top;">Ice fraction of total condensate</td>
+      <td style="vertical-align: top;">non-dim</td>
+      <td style="vertical-align: top;">FICE </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">255<br>
+      </td>
+      <td style="vertical-align: top;">Missing<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</center>
+<br>
+<br>
+<center><a href="/pmb/docs/grib2/grib2_doc.shtml">Back</a></center>
+<br>
+<br>
+</body>
+</html>

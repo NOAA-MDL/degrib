@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta name="Keywords" content="GRIB">
+  <title>GRIBv2 - Table 4.2-0-16 Meteorological - Forecast Radar Imagery</title>
+</head>
+<body style="color: rgb(0, 0, 0); background-color: white;"
+ alink="#ff0000" link="#0000ff" vlink="#551a8b">
+<br>
+<center>
+<big><big><big><b>GRIB2 - TABLE 4.2-0-16</b></big></big></big><br>
+<span style="font-weight: bold;"><br>
+</span><b>&nbsp;<big><big> PARAMETERS FOR DISCIPLINE 0<br>
+CATEGORY 16<br>
+<small style="color: rgb(51, 51, 255);">(Meteorological products,
+Forecast Radar
+Imagery category)</small><br>
+</big></big></b><big><big><br>
+</big></big><big><big><big><small>Section 0 , Octet 7 = 0</small></big></big></big><b><big><big><big><small><br>
+</small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 16<br>
+</big></big></center>
+<br>
+<center><b>Created 03/14/06<br>
+</b></center>
+<br>
+<br>
+<center>
+<table style="width: 90%;" border="1" cellpadding="5" cellspacing="0">
+  <tbody>
+    <tr>
+      <th>Number<br>
+(Section 4, octet 11)<br>
+      </th>
+      <th>Parameter</th>
+      <td
+ style="text-align: center; vertical-align: middle; font-weight: bold;">Units<br>
+      </td>
+      <td
+ style="vertical-align: middle; font-weight: bold; text-align: center;">Abbrev</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">0-191<br>
+      </td>
+      <td style="vertical-align: top;">Reserved</td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+    <tr>
+      <td
+ style="vertical-align: top; text-align: center; background-color: rgb(204, 204, 204);">192-254<br>
+      </td>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204);">Reserved
+for Local Use<br>
+      </td>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204);"><br>
+      </td>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204);"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">192<br>
+      </td>
+      <td style="vertical-align: top;">Derived
+radar reflectivity backscatter from rain</td>
+      <td style="vertical-align: top;">mm<sup>6</sup>/m<sup>3</sup></td>
+      <td style="vertical-align: top;">REFZR</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">193<br>
+      </td>
+      <td style="vertical-align: top;">Derived
+radar reflectivity backscatter from ice</td>
+      <td style="vertical-align: top;">mm<sup>6</sup>/m<sup>3</sup></td>
+      <td style="vertical-align: top;">REFZI</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">194<br>
+      </td>
+      <td style="vertical-align: top;">Derived
+radar reflectivity backscatter from parameterized convection</td>
+      <td style="vertical-align: top;">mm<sup>6</sup>/m<sup>3</sup></td>
+      <td style="vertical-align: top;">REFZC</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">195<br>
+      </td>
+      <td style="vertical-align: top;">Derived
+radar reflectivity</td>
+      <td style="vertical-align: top;">dB<br>
+      </td>
+      <td style="vertical-align: top;">REFD</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">196<br>
+      </td>
+      <td style="vertical-align: top;">Maximum/Composite
+radar reflectivity</td>
+      <td style="vertical-align: top;">dB<br>
+      </td>
+      <td style="vertical-align: top;">REFC</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">255<br>
+      </td>
+      <td style="vertical-align: top;">Missing<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</center>
+<br>
+<br>
+<center><a href="/pmb/docs/grib2/grib2_doc.shtml">Back</a></center>
+<br>
+<br>
+</body>
+</html>

@@ -1,0 +1,248 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta name="Keywords" content="GRIB">
+  <title>GRIBv2 - Table 4.2-0-0 Meteorological - Temperature</title>
+</head>
+<body style="color: rgb(0, 0, 0); background-color: white;"
+ alink="#ff0000" link="#0000ff" vlink="#551a8b">
+<br>
+<center>
+<big><big><big><b>GRIB2 - TABLE 4.2-0-0</b></big></big></big><br>
+<span style="font-weight: bold;"><br>
+</span><b>&nbsp;<big><big> PARAMETERS FOR DISCIPLINE 0<br>
+CATEGORY 0<br>
+<small style="color: rgb(51, 51, 255);">(Meteorological products,
+temperature category)</small><br>
+</big></big></b><big><big><br>
+</big></big><big><big><big><small>Section 0 , Octet 7 = 0</small></big></big></big><b><big><big><big><small><br>
+</small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 0<br>
+</big></big></center>
+<br>
+<center><b>Revised 03/13/2006</b><br>
+<span style="color: red; font-size: 10pt;"><b>Red text depicts changes
+made since 02/21/2006</b></span><b><br>
+</b></center>
+<br>
+<br>
+<center>
+<table style="width: 90%;" border="1" cellpadding="5" cellspacing="0">
+  <tbody>
+    <tr>
+      <th>Number<br>
+(Section 4, octet 11)<br>
+      </th>
+      <th>Parameter</th>
+      <td
+ style="text-align: center; vertical-align: middle; font-weight: bold;">Units<br>
+      </td>
+      <td
+ style="vertical-align: middle; font-weight: bold; text-align: center;">Abbrev</td>
+    </tr>
+    <tr>
+      <td style="text-align: center;">0<br>
+      </td>
+      <td>Temperature<br>
+      </td>
+      <td style="vertical-align: top;">K<br>
+      </td>
+      <td style="vertical-align: top;">TMP </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">1<br>
+      </td>
+      <td style="vertical-align: top;">Virtual Temperature<br>
+      </td>
+      <td style="vertical-align: top;">K<br>
+      </td>
+      <td style="vertical-align: top;">VTMP </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">2<br>
+      </td>
+      <td style="vertical-align: top;">Potential Temperature</td>
+      <td style="vertical-align: top;">K<br>
+      </td>
+      <td style="vertical-align: top;">POT </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">3<br>
+      </td>
+      <td style="vertical-align: top;">Pseudo-Adiabatic Potential
+Temperature<br>
+(or Equivalent Potential Temperature)</td>
+      <td style="vertical-align: top;">K<br>
+      </td>
+      <td style="vertical-align: top;">EPOT </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">4<br>
+      </td>
+      <td style="vertical-align: top;">Maximum Temperature</td>
+      <td style="vertical-align: top;">K<br>
+      </td>
+      <td style="vertical-align: top;">T MAX </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">5<br>
+      </td>
+      <td style="vertical-align: top;">Minimum Temperature</td>
+      <td style="vertical-align: top;">K<br>
+      </td>
+      <td style="vertical-align: top;">T MIN </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">6<br>
+      </td>
+      <td style="vertical-align: top;">Dew Point Temperature</td>
+      <td style="vertical-align: top;">K<br>
+      </td>
+      <td style="vertical-align: top;">DPT </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">7<br>
+      </td>
+      <td style="vertical-align: top;">Dew Point Depression<br>
+      </td>
+      <td style="vertical-align: top;">K<br>
+      </td>
+      <td style="vertical-align: top;">DEPR </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">8<br>
+      </td>
+      <td style="vertical-align: top;">Lapse Rate<br>
+      </td>
+      <td style="vertical-align: top;">K m<sup>-1</sup><br>
+      </td>
+      <td style="vertical-align: top;">LAPR </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">9<br>
+      </td>
+      <td style="vertical-align: top;">Temperature Anomaly<br>
+      </td>
+      <td style="vertical-align: top;">K<br>
+      </td>
+      <td style="vertical-align: top;">TMP A </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">10<br>
+      </td>
+      <td style="vertical-align: top;">Latent Heat Net Flux<br>
+      </td>
+      <td style="vertical-align: top;">W m<sup>-2</sup></td>
+      <td style="vertical-align: top;">LHTFL </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">11<br>
+      </td>
+      <td style="vertical-align: top;">Sensible Heat Net Flux</td>
+      <td style="vertical-align: top;">W m<sup>-2</sup></td>
+      <td style="vertical-align: top;">SHTFL </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">12<br>
+      </td>
+      <td style="vertical-align: top;">Heat Index<br>
+      </td>
+      <td style="vertical-align: top;">K<br>
+      </td>
+      <td style="vertical-align: top;">-<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">13<br>
+      </td>
+      <td style="vertical-align: top;">Wind Chill Temperature</td>
+      <td style="vertical-align: top;">K<br>
+      </td>
+      <td style="vertical-align: top;">-<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">14<br>
+      </td>
+      <td style="vertical-align: top;">Minimum Dew Point depression</td>
+      <td style="vertical-align: top;">K<br>
+      </td>
+      <td style="vertical-align: top;">-<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">15<br>
+      </td>
+      <td style="vertical-align: top;">Virtual Potential Temperature</td>
+      <td style="vertical-align: top;">K<br>
+      </td>
+      <td style="vertical-align: top;">VPTMP </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">16<br>
+      </td>
+      <td style="vertical-align: top;">Snow phase change heat flux</td>
+      <td style="vertical-align: top;">Wm<sup>-2</sup><br>
+      </td>
+      <td style="vertical-align: top;">SNOHF </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">17-191<br>
+      </td>
+      <td style="vertical-align: top;">Reserved</td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+    <tr>
+      <td
+ style="vertical-align: top; text-align: center; background-color: rgb(204, 204, 204);">192-254<br>
+      </td>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204);">Reserved
+for Local Use<br>
+      </td>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204);"><br>
+      </td>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204);"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">192<br>
+      </td>
+      <td style="vertical-align: top;">Snow Phase Change Heat Flux</td>
+      <td style="vertical-align: top;">W m<sup>-2</sup></td>
+      <td style="vertical-align: top;">SNOHF </td>
+    </tr>
+    <tr>
+      <td
+ style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">193<br>
+      </td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Temperature
+tendency by all radiation</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">K s<sup>-1</sup><br>
+      </td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">TTRAD</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">255<br>
+      </td>
+      <td style="vertical-align: top;">Missing<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</center>
+<br>
+<br>
+<center><a href="/pmb/docs/grib2/grib2_doc.shtml">Back</a></center>
+<br>
+<br>
+</body>
+</html>

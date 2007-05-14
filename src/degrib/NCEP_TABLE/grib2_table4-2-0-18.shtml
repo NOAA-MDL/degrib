@@ -1,0 +1,167 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta name="Keywords" content="GRIB">
+  <title>GRIBv2 - Table 4.2-0-18 Meteorological - Nuclear/Radiology</title>
+</head>
+<body style="color: rgb(0, 0, 0); background-color: white;"
+ link="#0000ff" vlink="#551a8b" alink="#ff0000">
+<br>
+<center>
+<big><big><big><b>GRIB2 - TABLE 4.2-0-18</b></big></big></big><br>
+<span style="font-weight: bold;"><br>
+</span><b>&nbsp;<big><big> PARAMETERS FOR DISCIPLINE 0<br>
+CATEGORY 18<br>
+<small style="color: rgb(51, 51, 255);">(Meteorological products,
+Nuclear/Radiology
+category)</small><br>
+</big></big></b><big><big><br>
+</big></big><big><big><big><small>Section 0 , Octet 7 = 0</small></big></big></big><b><big><big><big><small><br>
+</small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 18<br>
+</big></big></center>
+<br>
+<center><b>Created 05/20/05<br>
+</b></center>
+<br>
+<br>
+<center>
+<table border="1" cellspacing="0" cellpadding="5" style="width: 90%;">
+  <tbody>
+    <tr>
+      <th>Number<br>
+(Section 4, octet 11)<br>
+      </th>
+      <th>Parameter</th>
+      <td
+ style="text-align: center; vertical-align: middle; font-weight: bold;">Units<br>
+      </td>
+      <td
+ style="vertical-align: middle; font-weight: bold; text-align: center;">Abbrev</td>
+    </tr>
+    <tr>
+      <td style="text-align: center;">0<br>
+      </td>
+      <td>Air Concentration of Cesium 137<br>
+      </td>
+      <td style="vertical-align: top;">Bq m<sup>-3</sup><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">1<br>
+      </td>
+      <td style="vertical-align: top;">Air Concentration of Iodine 131<br>
+      </td>
+      <td style="vertical-align: top;">Bq m<sup>-3</sup></td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">2<br>
+      </td>
+      <td style="vertical-align: top;">Air Concentration of Radioactive
+Pollutant<br>
+      </td>
+      <td style="vertical-align: top;">Bq m<sup>-3</sup></td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">3<br>
+      </td>
+      <td style="vertical-align: top;">Ground Deposition of Cesium 137</td>
+      <td style="vertical-align: top;">Bq m<sup>-2</sup></td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">4<br>
+      </td>
+      <td style="vertical-align: top;">Ground Deposition of Iodine 131 </td>
+      <td style="vertical-align: top;">Bq m<sup>-2</sup></td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">5<br>
+      </td>
+      <td style="vertical-align: top;">Ground Deposition of Radioactive
+Pollutant </td>
+      <td style="vertical-align: top;">Bq m<sup>-2</sup></td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">6<br>
+      </td>
+      <td style="vertical-align: top;">Time Integrated Air
+Concentration of Cesium Pollutant<br>
+      </td>
+      <td style="vertical-align: top;">Bq m<sup>-3</sup></td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">7<br>
+      </td>
+      <td style="vertical-align: top;">Time Integrated Air
+Concentration of Iodine Pollutant<br>
+      </td>
+      <td style="vertical-align: top;">Bq m<sup>-3</sup> </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">8<br>
+      </td>
+      <td style="vertical-align: top;">Time Integrated Air
+Concentration of Radioactive Pollutant</td>
+      <td style="vertical-align: top;">Bq m<sup>-3</sup> </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">9-191<br>
+      </td>
+      <td style="vertical-align: top;">Reserved</td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+    <tr>
+      <td
+ style="vertical-align: top; text-align: center; background-color: rgb(204, 204, 204);">192-254<br>
+      </td>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204);">Reserved
+for Local Use<br>
+      </td>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204);"><br>
+      </td>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204);"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">255<br>
+      </td>
+      <td style="vertical-align: top;">Missing<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</center>
+<br>
+<br>
+<center><a href="/pmb/docs/grib2/grib2_doc.shtml">Back</a></center>
+<br>
+<br>
+</body>
+</html>
