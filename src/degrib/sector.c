@@ -67,7 +67,6 @@ static const char *NdfdDefSect[] = {
 
 static size_t NumNdfdDefSect = sizeof (NdfdDefGds) / sizeof (NdfdDefGds[0]);
 
-
 int SectorFindGDS (gdsType *gds)
 {
    size_t i;            /* loop counter. */
@@ -79,23 +78,21 @@ int SectorFindGDS (gdsType *gds)
          continue;
       if (gds->f_sphere != NdfdDefGds[i].f_sphere)
          continue;
-
-      if (fabs (gds->majEarth - NdfdDefGds[i].majEarth) > 0.000001)
+      if (fabs (gds->majEarth - NdfdDefGds[i].majEarth) > 0.1)
          continue;
-      if (fabs (gds->minEarth - NdfdDefGds[i].minEarth) > 0.000001)
+      if (fabs (gds->minEarth - NdfdDefGds[i].minEarth) > 0.1)
          continue;
-
       if (gds->Nx != NdfdDefGds[i].Nx)
          continue;
       if (gds->Ny != NdfdDefGds[i].Ny)
          continue;
 
       /* Guam uncertainty in the lat1 is high.  Trust only 5 decimals */
-      if (fabs (gds->lat1 - NdfdDefGds[i].lat1) > 0.00001)
+      if (fabs (gds->lat1 - NdfdDefGds[i].lat1) > 0.1) /* Only took out 1 zero */
          continue;
-      if (fabs (gds->lon1 - NdfdDefGds[i].lon1) > 0.000001)
+      if (fabs (gds->lon1 - NdfdDefGds[i].lon1) > 0.1)
          continue;
-      if (fabs (gds->orientLon - NdfdDefGds[i].orientLon) > 0.000001)
+      if (fabs (gds->orientLon - NdfdDefGds[i].orientLon) > 0.1)
          continue;
 
       /* Alaska uncertainty in the DX is high.  Trust only 0 decimals */
@@ -105,39 +102,41 @@ int SectorFindGDS (gdsType *gds)
          continue;
       if (fabs (gds->Dy - NdfdDefGds[i].Dy) > 1)
          continue;
-      if (fabs (gds->meshLat - NdfdDefGds[i].meshLat) > 0.000001)
+      if (fabs (gds->meshLat - NdfdDefGds[i].meshLat) > 0.1)
          continue;
-
       if (gds->resFlag != NdfdDefGds[i].resFlag)
          continue;
       if (gds->center != NdfdDefGds[i].center)
          continue;
       if (gds->scan != NdfdDefGds[i].scan)
          continue;
+      if (fabs (gds->lat2 - NdfdDefGds[i].lat2) > 0.1)
+         continue;
+      if (fabs (gds->lon2 - NdfdDefGds[i].lon2) > 0.1)
+         continue;
+      if (fabs (gds->scaleLat1 - NdfdDefGds[i].scaleLat1) > 0.1)
+         continue;
+      if (fabs (gds->scaleLat2 - NdfdDefGds[i].scaleLat2) > 0.1)
+         continue;
+      if (fabs (gds->southLat - NdfdDefGds[i].southLat) > 0.1)
+         continue;
+      if (fabs (gds->southLon - NdfdDefGds[i].southLon) > 0.1)
+         continue;
 
-      if (fabs (gds->lat2 - NdfdDefGds[i].lat2) > 0.000001)
-         continue;
-      if (fabs (gds->lon2 - NdfdDefGds[i].lon2) > 0.000001)
-         continue;
-      if (fabs (gds->scaleLat1 - NdfdDefGds[i].scaleLat1) > 0.000001)
-         continue;
-      if (fabs (gds->scaleLat2 - NdfdDefGds[i].scaleLat2) > 0.000001)
-         continue;
-      if (fabs (gds->southLat - NdfdDefGds[i].southLat) > 0.000001)
-         continue;
-      if (fabs (gds->southLon - NdfdDefGds[i].southLon) > 0.000001)
-         continue;
-/* Following were not stored in the data cube. */
+/* AngleRotate, poleLat, poleLon, stretchFactor, f_typeLatLon are
+ * not stored in the data cube (they are not defined in ReadGDSBuffer
+ * routine in database.c).
+ */
 /*
-      if (fabs (gds->poleLat - NdfdDefGds[i].poleLat) > 0.000001)
+      if (gds->angleRotate != NdfdDefGds[i].angleRotate)
          continue;
-      if (fabs (gds->poleLon - NdfdDefGds[i].poleLon) > 0.000001)
+      if (fabs (gds->poleLat - NdfdDefGds[i].poleLat) > 0.1)
          continue;
-      if (fabs (gds->stretchFactor - NdfdDefGds[i].stretchFactor) > 0.000001)
+      if (fabs (gds->poleLon - NdfdDefGds[i].poleLon) > 0.1)
+         continue;
+      if (fabs (gds->stretchFactor - NdfdDefGds[i].stretchFactor) > 0.1)
          continue;
       if (gds->f_typeLatLon != NdfdDefGds[i].f_typeLatLon)
-         continue;
-      if (gds->angleRotate != NdfdDefGds[i].angleRotate)
          continue;
 */
       return i;
