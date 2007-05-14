@@ -259,7 +259,7 @@ void SetMapParam (myMaparam *map, const gdsType *gds)
       } else {
          /* Should not get here */
 #ifdef DEBUG
-         printf ("lat1 == lat2?\n");
+         printf ("lat1 %f == lat2 %f?\n", gds->lat1, gds->lat2);
 #endif
          myAssert (1 == 0);
       }

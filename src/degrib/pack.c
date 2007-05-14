@@ -549,6 +549,9 @@ int WriteGrib2Record (grib_MetaData *meta, double *Grib_Data,
    nd5 = 250 + (nx * ny) + (nx * ny) / 8 + 4000;
    ipack = (sInt4 *) malloc (nd5 * sizeof (sInt4));
 
+   /* Warning messages of "909" can occur if the user claimed missing
+    * data, but the packer didn't find any, so the packer reset
+    * is5[23] accordingly */
    pk_grib2 (&kfildo, ain, is->iain, &nx, &ny, is->idat, &(is->nidat),
              is->rdat, &(is->nrdat), is->is[0], &(is->ns[0]),
              is->is[1], &(is->ns[1]), is->is[3], &(is->ns[3]),
@@ -556,6 +559,7 @@ int WriteGrib2Record (grib_MetaData *meta, double *Grib_Data,
              is->is[6], &(is->ns[6]), is->is[7], &(is->ns[7]),
              is->ib, &ibitmap, ipack, &nd5, &missp, &xmissp, &misss,
              &xmisss, &inew, &minpk, &iclean, &l3264b, jer, &ndjer, &kjer);
+
 
    for (i = 0; i < kjer; i++) {
       if (jer[ndjer + i] == 0) {
