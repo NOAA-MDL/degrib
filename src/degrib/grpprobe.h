@@ -6,8 +6,6 @@
 
 #include "genprobe.h"
 
-int matchCompare (const void *A, const void *B);
-
 int matchCompare2 (const void *A, const void *B);
 
 typedef struct {

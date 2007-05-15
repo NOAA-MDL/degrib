@@ -12,43 +12,6 @@
 #include "myutil.h"
 #include "myerror.h"
 
-/* Compare match A with B.  First compares "NDFDtype", then compares valid
- * time.  Result should be 1,0 1,6 1,12 2,0 2,6 2,12 where x,y is NDFDType,
- * validTime.
- */
-int matchCompare (const void *A, const void *B)
-{
-   const genMatchType *a = (genMatchType *) A;
-   const genMatchType *b = (genMatchType *) B;
-   double f_sectA = a->f_sector; /* Temp placeholder */
-   double f_sectB = b->f_sector; /* Temp placeholder */
-
-   /* Get the match structure in the sector enum order (0 - conus, 5 - nhemi,
-    * 1 - peurtori, 2 - hawaii, 3 - guam, 4 - alaska, 6 - undefined for point
-    * processing in XMLParse. Take note if there are any elements from Sector
-    * 5 (tropical winds are found in the nhemi sector).
-    */
-   if (f_sectA == 5)
-      f_sectA = 0.5;
-   if (f_sectB == 5)
-      f_sectB = 0.5;
-
-   /* Sort */
-   if (f_sectA < f_sectB)
-      return -1;
-   if (f_sectA > f_sectB)
-      return 1;
-   if (a->elem.ndfdEnum < b->elem.ndfdEnum)
-      return -1;
-   if (a->elem.ndfdEnum > b->elem.ndfdEnum)
-      return 1;
-   if (a->validTime < b->validTime)
-      return -1;
-   if (a->validTime > b->validTime)
-      return 1;
-   return 0;
-}
-
 int matchCompare2 (const void *A, const void *B)
 {
    const genMatchType *a = (genMatchType *) A;
