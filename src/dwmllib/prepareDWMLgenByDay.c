@@ -80,12 +80,15 @@ void prepareDWMLgenByDay(genMatchType *match, uChar f_XML,
                * matches can be found. */
    double lastValidTimeMatch = 0.0; /* Time of last valid data value. Used in 
                                      * determining numDays value. */
- 
+
    /* Get the validTime of the first match and last match of the match 
     * structure. We'll need these to calculate numDays. 
     */
    for (j = 0; j < numPnts; j++)
    {
+/*      printf ("pntInfo[%d].startNum = %d\n",j,pntInfo[j].startNum);
+        printf ("pntInfo[%d].endNum = %d\n",j,pntInfo[j].endNum);
+*/
       startNum = pntInfo[j].startNum;
       endNum = pntInfo[j].endNum;
 
@@ -98,7 +101,7 @@ void prepareDWMLgenByDay(genMatchType *match, uChar f_XML,
          if (match[i].validTime > lastValidTimeMatch)
             lastValidTimeMatch = match[i].validTime;
       }
-   
+
       if (*startTime_cml == 0.0 && *endTime_cml == 0.0)	   
          numDays[j] = ceil(((lastValidTimeMatch - currentDoubTime) / 3600) / 24);
       else if (*startTime_cml == 0.0 && *endTime_cml != 0.0)
@@ -107,14 +110,13 @@ void prepareDWMLgenByDay(genMatchType *match, uChar f_XML,
           * entered occurs after the last valid data in NDFD. If so, simply treat
           * it as if no endTime was entered (set endTime = 0.0).
           */	   
-         if (*endTime_cml > lastValidTimeMatch)
+         if (*endTime_cml < currentDoubTime || *endTime_cml > lastValidTimeMatch)
          {
             *endTime_cml = 0.0;
             numDays[j] = ceil(((lastValidTimeMatch - currentDoubTime) / 3600) / 24);
          }
          else
             numDays[j] = (int)myRound(((*endTime_cml - currentDoubTime) / 3600) / 24, 0);
-
       }
       else if (*startTime_cml != 0.0 && *endTime_cml == 0.0)
       {
@@ -122,20 +124,52 @@ void prepareDWMLgenByDay(genMatchType *match, uChar f_XML,
           * the startTime occurs before current system time. If so, simply treat 
           * it as if no startTime was entered (set startTime = 0.0).
           */
-         if (*startTime_cml < currentDoubTime)
+         if (*startTime_cml < currentDoubTime || *startTime_cml > lastValidTimeMatch)
          {
             *startTime_cml = 0.0;
             numDays[j] = ceil(((lastValidTimeMatch - currentDoubTime) / 3600) / 24);
          }      
          else
-            numDays[j] = ceil(((lastValidTimeMatch - *startTime_cml) / 3600) / 24);	      
+         {
+            numDays[j] = ceil(((lastValidTimeMatch - *startTime_cml) / 3600) / 24);
+         }
       }      
       else if (*startTime_cml != 0.0 && *endTime_cml != 0.0)
-
+      {
          /* Then both startTime and endTime were entered as command line arguments.
-          * Simply subtract the times.
+          * Simply subtract the times. Rule out erroneous choices for these times. If
+          * that is the case, simply use times returned in match structure.
           */
-          numDays[j] = floor((*endTime_cml - *startTime_cml) / (3600 * 24));   
+          if (*startTime_cml < currentDoubTime || *startTime_cml > lastValidTimeMatch)
+          { 
+             /* startTime not valid. */
+             *startTime_cml = 0.0;
+             if (*endTime_cml < currentDoubTime || *endTime_cml > lastValidTimeMatch)
+             {
+                /* endTime is not valid. */
+                *endTime_cml = 0.0;
+                numDays[j] = ceil(((lastValidTimeMatch - currentDoubTime) / 3600) / 24);
+             }
+             else /* startTime is not valid (before current time), but endTime is valid, 
+                     shortening the time period data is retrieved for. */
+             {
+                numDays[j] = ceil((*endTime_cml - currentDoubTime) / (3600 * 24));
+             }
+          }
+          else /* startTime is valid. */
+          {
+             if (*endTime_cml < currentDoubTime || *endTime_cml > lastValidTimeMatch)
+             { 
+                /* endTime is not valid. */
+                *endTime_cml = 0.0; 
+                numDays[j] = ceil(((lastValidTimeMatch - *startTime_cml) / 3600) / 24);
+             }
+             else /* Both are valid, shortening the time period data is returned for. */
+             {
+                numDays[j] = floor((*endTime_cml - *startTime_cml) / (3600 * 24));
+             }
+          }   
+      }
 
       /* Flag the below four elements for formatting in the ouput XML (icons
        * will be the fifth element formatted). Set the value to = 1. 
@@ -160,7 +194,8 @@ void prepareDWMLgenByDay(genMatchType *match, uChar f_XML,
           */
          numOutputLines[j] = numDays[j] * 2;
       else if (f_XML == 4)
-         numOutputLines[j] = numDays[j];         
+         numOutputLines[j] = numDays[j];
+
    } /* End Point Loop. */
 
    /* DWMLgenByDay, both formats, have pre-defined sets of NDFD parameters. */	   

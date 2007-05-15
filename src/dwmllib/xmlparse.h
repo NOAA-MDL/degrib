@@ -19,6 +19,7 @@
 #include <libxml/tree.h>
 #include "myutil.h"
 #include "solar.h"
+#define NDFD_DAYS 6
 
 /* Set all choices for the period names for those elements needing them in the 
  * time layouts. 
@@ -67,11 +68,25 @@ typedef struct                /* Structure with info on the number of rows
 			       * retrieved for from NDFD. 
 			       */
 {
-   int total;
-   int skipBeg;
-   int skipEnd;
-   double firstUserTime; /* First time of an element interested in. */
-   double lastUserTime;  /* Last time of an element interested in. */
+   int total; /* Total number of rows interested in. If a user shortens
+                 the time period data is retrieved for, this value is 
+                 reduced by these "skipped data". */
+   int skipBeg; /* If a user shortens the time period data is retrieved
+                   for, this value is the number of rows skipped at the
+                   beginning. */
+   int skipEnd; /* If a user shortens the time period data is retrieved
+                   for, this value is the number of rows skipped at the
+                   end. */
+   double firstUserTime; /* First validTime of an element interested in. 
+                            If a user does not shorten the time period
+                            data is retrieved for, this value is simply
+                            the first validTime for the element returned
+                            from the match structure. */
+   double lastUserTime;  /* Last validTime of an element interested in. 
+                            If a user does not shorten the time period
+                            data is retrieved for, this value is simply
+                            the last validTime for the element returned
+                            from the match structure. */
 } numRowsInfo;
 
 typedef struct                /* Denotes structure of sector info for use in a 
@@ -411,6 +426,8 @@ void windExtremePhrase(int f_isDayTime, int f_isNightTime, int dayIndex,
 		       int *maxWindDirection, int integerTime, 
 		       int integerStartUserTime, int *periodMaxTemp, 
 		       icon_def *iconInfo, char **phrase);
+
+int XMLmatchCompare(const void *A, const void *B);
 
 int XMLParse (uChar f_XML, size_t numPnts, Point * pnts, PntSectInfo *pntInfo,
               sChar f_pntType, char **labels, size_t numInFiles,

@@ -316,7 +316,7 @@ void skyPhrase(int *maxSkyCover, int *minSkyCover, int *averageSkyCover,
 	          strcpy (phrase[dayIndex], "Partly Cloudy");
 	       }
  	       else if ((averageSkyCover[dayIndex] <= 90) && f_isDayTime)
-	       {
+	       { 
                   sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, 
 		          "bkn.jpg");
 	          strcpy (phrase[dayIndex], "Mostly Cloudy");
@@ -355,7 +355,7 @@ void skyPhrase(int *maxSkyCover, int *minSkyCover, int *averageSkyCover,
                }
                else if (f_isNightTime)
                {
-                 sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, 
+                  sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, 
 		          nightSkyImage[maxCategory]);
 	          strcpy (phrase[dayIndex], nightSkyPhrase[maxCategory]);
                }
@@ -458,18 +458,18 @@ void skyPhrase(int *maxSkyCover, int *minSkyCover, int *averageSkyCover,
                /* Cloudy...then clearing mid-period. */
                if (trend_speed < 4) 
                {
-                  if (f_isDayTime) 
+                  if (f_isDayTime)
                      sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, 
-			     "bkn.jpg"); 
+			     "bkn.jpg");
 	          else if (f_isNightTime)
                      sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, 
-			     "nbkn.jpg"); 
+			     "nbkn.jpg");
 
 	          strcpy (phrase[dayIndex], "Clearing");
 	       }
 	       else if (trend_speed >= 4)
 	       {
-                  if (f_isDayTime) 
+                  if (f_isDayTime)
                      sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, 
 			     "bkn.jpg"); 
 	          else if (f_isNightTime)
@@ -488,12 +488,14 @@ void skyPhrase(int *maxSkyCover, int *minSkyCover, int *averageSkyCover,
             if (f_isDayTime)
             {
 	       strcpy (phrase[dayIndex], "Decreasing Clouds");
-	       sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "bkn.jpg");
+	       sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, 
+                       daySkyImage[avgCategory]);
 	    } 
             else if (f_isNightTime)
             {
 	       strcpy (phrase[dayIndex], "Decreasing Clouds");
-	       sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "bkn.jpg");
+	       sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, 
+                       nightSkyImage[avgCategory]);
 	    } 
 	 }
 	 else if (trend_speed < 4)

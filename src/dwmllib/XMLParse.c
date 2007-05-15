@@ -441,15 +441,14 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
    /* If no data is retrieved from NDFD (matches = zero), get out. */
    if (numMatch <= 0)
    {
-      #ifdef PRINT_DIAG
-      printf ("TESTING\n");
+/*      #ifdef PRINT_DIAG */
       printf("No data retrieved from NDFD (matches = 0).\n");
       return 0;
-      #endif
+/*      #endif */
    }
 	      
    /* Sort the matches by sector, element, and then by valid time. */
-   qsort(match, numMatch, sizeof(match[0]), matchCompare);
+   qsort(match, numMatch, sizeof(match[0]), XMLmatchCompare);
 
    /* Allocate f_pntNoData. */
    f_pntHasData = calloc(numPnts, sizeof(char));

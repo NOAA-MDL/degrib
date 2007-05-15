@@ -338,12 +338,14 @@ void getNumRows(numRowsInfo *numRowsForPoint, double *timeUserStart,
 	  (numRowsForPoint[NDFD_POP].total-numRowsForPoint[NDFD_POP].skipBeg -
 	   numRowsForPoint[NDFD_POP].skipEnd) == 0)
       {
+         #ifdef PRINT_DIAG
          printf("**************************************\n");
          printf("Cannot format Icons at this time for\n");
          printf("point %d",(pnt+1)); 
          printf(" as element(s) used to derive\n");
          printf("icons are missing.\n");
          printf("**************************************\n");
+         #endif
          *f_formatIconForPnt = 0;
       }
    }   
