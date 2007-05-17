@@ -1720,6 +1720,9 @@ int MetaParse (grib_MetaData *meta, sInt4 *is0, sInt4 ns0,
       preErrSprintf ("Parse error Section 3\n");
       return ierr;
    }
+   if (IsData_NDFD (meta->center, meta->subcenter)) {
+      meta->gds.hdatum = 1;
+   }
    if (meta->gds.f_sphere != 1) {
       errSprintf ("Driver Filter: Can only handle spheres.\n");
       return -10;
