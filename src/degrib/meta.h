@@ -433,6 +433,9 @@ typedef struct {
    double stretchFactor;      /* Factor of stretching. */
    int f_typeLatLon;          /* 0 regular, 1 stretch, 2 stretch / rotate. */
    double angleRotate;        /* Rotation angle. */
+/* following is just to track the datum. */
+   uChar hdatum;              /* horizontal datum to use.  0=undefined (use
+                               * grid dataum) 1=WGS84 */
 } gdsType;
 
 typedef struct {

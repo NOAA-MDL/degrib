@@ -694,6 +694,7 @@ static int ParseSect3 (sInt4 *is3, sInt4 ns3, grib_MetaData *meta)
       return -1;
    }
    /* Assert: is3[14] is the shape of the earth. */
+   meta->gds.hdatum = 0;
    switch (is3[14]) {
       case 0:
          meta->gds.f_sphere = 1;
@@ -792,6 +793,12 @@ static int ParseSect3 (sInt4 *is3, sInt4 ns3, grib_MetaData *meta)
          if (meta->gds.minEarth < 6.4) {
             meta->gds.minEarth = meta->gds.minEarth * 1000.;
          }
+         break;
+      case 8:
+         meta->gds.f_sphere = 1;
+         meta->gds.majEarth = 6371.2;
+         meta->gds.minEarth = 6371.2;
+         meta->gds.hdatum = 1;
          break;
       default:
          errSprintf ("Undefined shape of earth? %ld\n", is3[14]);
