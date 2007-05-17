@@ -246,11 +246,19 @@ static GRIB1ParmTable *Choose_ParmTable (pdsG1Type *pdsMeta,
          return &parm_table_cmc[0];
          break;
    }
-   if ((pdsMeta->mstrVersion > 3) || (pdsMeta->cat > 127)) {
-      printf ("Undefined parameter table (center %d-%d table %d).\n"
-              "Please email arthur.taylor@noaa.gov about adding this table.\n"
-              "to his 'degrib1.c' and 'grib1tab.c' files.",
+   if (pdsMeta->mstrVersion > 3) {
+      printf ("Don't understand the parameter table, since center %d-%d used\n"
+              "parameter table version %d instead of 3 (international exchange).\n"
+              "Using default for now, but please email arthur.taylor@noaa.gov\n"
+              "about adding this table to his 'degrib1.c' and 'grib1tab.c' files.",
               center, subcenter, pdsMeta->mstrVersion);
+   }
+   if (pdsMeta->cat > 127) {
+      printf ("Parameter %d is > 127, so it falls in the local use section of\n"
+              "the parameter table (and is undefined on the international table.\n"
+              "Using default for now, but please email arthur.taylor@noaa.gov\n"
+              "about adding this table to his 'degrib1.c' and 'grib1tab.c' files.",
+              pdsMeta->cat);
    }
    return &parm_table_undefined[0];
 }

@@ -1526,6 +1526,7 @@ static void ElemNameProb (uShort2 center, uShort2 subcenter, int prodType,
    if (f_isNdfd || f_isMos) {
       /* Deal with NDFD/MOS handling of Prob Precip_Tot -> PoP12 */
       if ((prodType == 0) && (cat == 1) && (subcat == 8)) {
+printf ("probType: %d\n", probType);
          myAssert (probType == 1);
          if (lenTime > 0) {
             mallocSprintf (name, "PoP%02d", lenTime);
