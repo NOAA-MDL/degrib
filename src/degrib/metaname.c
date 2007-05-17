@@ -1526,21 +1526,40 @@ static void ElemNameProb (uShort2 center, uShort2 subcenter, int prodType,
    if (f_isNdfd || f_isMos) {
       /* Deal with NDFD/MOS handling of Prob Precip_Tot -> PoP12 */
       if ((prodType == 0) && (cat == 1) && (subcat == 8)) {
-printf ("probType: %d\n", probType);
-         myAssert (probType == 1);
-         if (lenTime > 0) {
-            mallocSprintf (name, "PoP%02d", lenTime);
-            mallocSprintf (comment, "%02d hr Prob of Precip > 0.01 "
-                           "In.", lenTime);
+         if (probType == 0) {
+            if (lenTime > 0) {
+               mallocSprintf (name, "ProbPrcpBlw%02d", lenTime);
+               mallocSprintf (comment, "%02d hr Prob of Precip below average", lenTime);
+            } else {
+               mallocSprintf (name, "ProbPrcpBlw");
+               mallocSprintf (comment, "Prob of precip below average");
+            }
+            *convert = UC_NONE;
+         } else if (probType == 3) {
+            if (lenTime > 0) {
+               mallocSprintf (name, "ProbPrcpAbv%02d", lenTime);
+               mallocSprintf (comment, "%02d hr Prob of Precip above average", lenTime);
+            } else {
+               mallocSprintf (name, "ProbPrcpAbv");
+               mallocSprintf (comment, "Prob of precip above average");
+            }
+            *convert = UC_NONE;
          } else {
-            *name = (char *) malloc (strlen ("PoP") + 1);
-            strcpy (*name, "PoP");
-            *comment =
-                  (char *) malloc (strlen ("Prob of Precip > 0.01 In.") +
-                                   1);
-            strcpy (*comment, "Prob of Precip > 0.01 In.");
+            myAssert (probType == 1);
+            if (lenTime > 0) {
+               mallocSprintf (name, "PoP%02d", lenTime);
+               mallocSprintf (comment, "%02d hr Prob of Precip > 0.01 "
+                              "In.", lenTime);
+            } else {
+               *name = (char *) malloc (strlen ("PoP") + 1);
+               strcpy (*name, "PoP");
+               *comment =
+                     (char *) malloc (strlen ("Prob of Precip > 0.01 In.") +
+                                      1);
+               strcpy (*comment, "Prob of Precip > 0.01 In.");
+            }
+            *convert = UC_NONE;
          }
-         *convert = UC_NONE;
          return;
       }
       /*
@@ -1614,20 +1633,58 @@ printf ("probType: %d\n", probType);
             mallocSprintf (comment, "Prob of %s ", table[subcat].comment);
          }
          if (probType == 0) {
-            reallocSprintf (comment, "< %g %s", lowerProb,
-                            table[subcat].unit);
+            /* 2550 is 255, scale -1 = missing (would prefer to use
+             * GRIB_MISSING code */
+            if (lowerProb != 2550) {
+               reallocSprintf (comment, "< %g %s", lowerProb, table[subcat].unit);
+            } else {
+               reallocSprintf (comment, "below average");
+               free (*name);
+               if (lenTime > 0) {
+                  mallocSprintf (name, "Prob%sBlw%02d", table[subcat].name, lenTime);
+               } else {
+                  mallocSprintf (name, "Prob%sBlw", table[subcat].name);
+               }
+            }
          } else if (probType == 1) {
-            reallocSprintf (comment, "> %g %s", upperProb,
-                            table[subcat].unit);
+            if (upperProb != 2550) {
+               reallocSprintf (comment, "> %g %s", upperProb, table[subcat].unit);
+            } else {
+               reallocSprintf (comment, "above average");
+               free (*name);
+               if (lenTime > 0) {
+                  mallocSprintf (name, "Prob%sAbv%02d", table[subcat].name, lenTime);
+               } else {
+                  mallocSprintf (name, "Prob%sAbv", table[subcat].name);
+               }
+            }
          } else if (probType == 2) {
-            reallocSprintf (comment, ">= %g, < %g %s", lowerProb,
-                            upperProb, table[subcat].unit);
+            reallocSprintf (comment, ">= %g, < %g %s", lowerProb, upperProb,
+                            table[subcat].unit);
          } else if (probType == 3) {
-            reallocSprintf (comment, "> %g %s", lowerProb,
-                            table[subcat].unit);
+            if (lowerProb != 2550) {
+               reallocSprintf (comment, "> %g %s", lowerProb, table[subcat].unit);
+            } else {
+               reallocSprintf (comment, "above average");
+               free (*name);
+               if (lenTime > 0) {
+                  mallocSprintf (name, "Prob%sAbv%02d", table[subcat].name, lenTime);
+               } else {
+                  mallocSprintf (name, "Prob%sAbv", table[subcat].name);
+               }
+            }
          } else if (probType == 4) {
-            reallocSprintf (comment, "< %g %s", upperProb,
-                            table[subcat].unit);
+            if (upperProb != 2550) {
+               reallocSprintf (comment, "< %g %s", upperProb, table[subcat].unit);
+            } else {
+               reallocSprintf (comment, "below average");
+               free (*name);
+               if (lenTime > 0) {
+                  mallocSprintf (name, "Prob%sBlw%02d", table[subcat].name, lenTime);
+               } else {
+                  mallocSprintf (name, "Prob%sBlw", table[subcat].name);
+               }
+            }
          } else {
             reallocSprintf (comment, "%s", table[subcat].unit);
          }
