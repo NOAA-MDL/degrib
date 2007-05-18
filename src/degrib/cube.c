@@ -353,12 +353,15 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
       "SnowAmt", "WindDir", "WindSpd", "Sky", "WaveHeight", "Wx",
       "PoP12", "ApparentT", "RH", "WindGust", "ConvOutlook", "TornadoProb",
       "HailProb", "WindProb", "XtrmTornProb", "XtrmHailProb", "XtrmWindProb",
-      "TotalSvrProb", "TotalXtrmProb", NULL
+      "TotalSvrProb", "TotalXtrmProb", "ProbWindSpd34c", "ProbWindSpd34i",
+      "ProbWindSpd50c", "ProbWindSpd50i", "ProbWindSpd64c", "ProbWindSpd64i",
+      NULL
    };
    enum { TEMP, MAXT, MINT, TD, QPF, SNOW, WINDDIR, WINDSPD, SKY,
       WAVEHEIGHT, WX, POP12, APPARENTT, RH, WINDGUST, CONVOUTLOOK, PTORN,
       PHAIL, PWIND, PXTRMTORN, PXTRMHAIL, PXTRMWIND, PTOTSVR, PTOTXTRM,
-      DEFAULT_NUM
+      PROBWINDSPD34C, PROBWINDSPD34I, PROBWINDSPD50C, PROBWINDSPD50I,
+      PROBWINDSPD64C, PROBWINDSPD64I, DEFAULT_NUM
    };
 /* *INDENT-OFF* */
    static NDFD_ValuesTable NDFD_Values[] = {
@@ -386,6 +389,12 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
    /* PXtrmWind */  { 0, 19, 202, 9, 1, 0, 2},
    /* TotSvrProb */ { 0, 19, 203, 9, 1, 0, 2},
    /* TotXtrmProb */{ 0, 19, 204, 9, 1, 0, 2},
+   /* PWndSpd34c */ { 0, 2,   1, 9, 0, 0, 2},
+   /* PWndSpd34i */ { 0, 2,   1, 9, 0, 0, 2},
+   /* PWndSpd50c */ { 0, 2,   1, 9, 0, 0, 2},
+   /* PWndSpd50i */ { 0, 2,   1, 9, 0, 0, 2},
+   /* PWndSpd64c */ { 0, 2,   1, 9, 0, 0, 2},
+   /* PWndSpd64i */ { 0, 2,   1, 9, 0, 0, 2},
       /* Default */ { 0, 0,   0, 0, 0, 0, 3},
    };
 /* *INDENT-ON* */
@@ -446,7 +455,10 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
    meta->pds2.refTime = (time_t) refTime;
    if ((elemNum == CONVOUTLOOK) || (elemNum == PHAIL) || (elemNum == PTORN) ||
        (elemNum == PWIND) || (elemNum == PXTRMTORN) || (elemNum == PXTRMHAIL) ||
-       (elemNum == PXTRMWIND) || (elemNum == PTOTSVR) || (elemNum == PTOTXTRM)) {
+       (elemNum == PXTRMWIND) || (elemNum == PTOTSVR) || (elemNum == PTOTXTRM) ||
+       (elemNum == PROBWINDSPD34C) || (elemNum == PROBWINDSPD34I) ||
+       (elemNum == PROBWINDSPD50C) || (elemNum == PROBWINDSPD50I) ||
+       (elemNum == PROBWINDSPD64C) || (elemNum == PROBWINDSPD64I)) {
       meta->pds2.operStatus = 1;
    } else {
       meta->pds2.operStatus = 0; /* Pretend NDFD is operational. */
@@ -471,9 +483,17 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
    meta->pds2.sect4.genID = 0; /* Generating process id */
    meta->pds2.sect4.f_validCutOff = 0; /* Cutoff data missing */
    meta->pds2.sect4.foreSec = meta->deltTime;
-   meta->pds2.sect4.fstSurfType = 1; /* Surface level */
-   meta->pds2.sect4.fstSurfValue = 0; 
-   meta->pds2.sect4.fstSurfScale = 0;
+   if ((elemNum == PROBWINDSPD34C) || (elemNum == PROBWINDSPD34I) ||
+       (elemNum == PROBWINDSPD50C) || (elemNum == PROBWINDSPD50I) ||
+       (elemNum == PROBWINDSPD64C) || (elemNum == PROBWINDSPD64I)) {
+      meta->pds2.sect4.fstSurfType = 103; /* Surface level */
+      meta->pds2.sect4.fstSurfValue = 10;
+      meta->pds2.sect4.fstSurfScale = 0;
+   } else {
+      meta->pds2.sect4.fstSurfType = 1; /* Surface level */
+      meta->pds2.sect4.fstSurfValue = 0;
+      meta->pds2.sect4.fstSurfScale = 0;
+   }
    meta->pds2.sect4.sndSurfType = GRIB2MISSING_u1;
    meta->pds2.sect4.sndSurfValue = -1; /* NDFD used missing == -1. */
    meta->pds2.sect4.sndSurfScale = -1; /* NDFD used missing == -1. */
@@ -526,6 +546,15 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
                  (elemNum == PTOTSVR) || (elemNum == PTOTXTRM)) {
          meta->pds2.sect4.upperLimit.factor = 0; /* Defin of scale factor. */
          meta->pds2.sect4.upperLimit.value = 0;
+      } else if ((elemNum == PROBWINDSPD34C) || (elemNum == PROBWINDSPD34I)) {
+         meta->pds2.sect4.upperLimit.factor = 3; /* Defin of scale factor. */
+         meta->pds2.sect4.upperLimit.value = 17491;
+      } else if ((elemNum == PROBWINDSPD50C) || (elemNum == PROBWINDSPD50I)) {
+         meta->pds2.sect4.upperLimit.factor = 3; /* Defin of scale factor. */
+         meta->pds2.sect4.upperLimit.value = 25722;
+      } else if ((elemNum == PROBWINDSPD64C) || (elemNum == PROBWINDSPD64I)) {
+         meta->pds2.sect4.upperLimit.factor = 3; /* Defin of scale factor. */
+         meta->pds2.sect4.upperLimit.value = 32924;
       }
       meta->pds2.sect4.numInterval = 1;
       meta->pds2.sect4.Interval = (sect4_IntervalType *)
@@ -533,14 +562,25 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
                      meta->pds2.sect4.numInterval *
                      sizeof (sect4_IntervalType));
       meta->pds2.sect4.numMissing = 0;
-      if (elemNum == POP12) {
-         meta->pds2.sect4.Interval[0].processID = 1; /* For PoP12 */
+      if ((elemNum == POP12) || (elemNum == PROBWINDSPD34C) ||
+          (elemNum == PROBWINDSPD34I) || (elemNum == PROBWINDSPD50C) ||
+          (elemNum == PROBWINDSPD50I) || (elemNum == PROBWINDSPD64C) ||
+          (elemNum == PROBWINDSPD64I)) {
+         meta->pds2.sect4.Interval[0].processID = 1; /* For Accumulation */
       } else if ((elemNum == PHAIL) || (elemNum == PTORN) || (elemNum == PWIND) ||
                  (elemNum == PXTRMTORN) || (elemNum == PXTRMHAIL) || (elemNum == PXTRMWIND) ||
                  (elemNum == PTOTSVR) || (elemNum == PTOTXTRM)) {
-         meta->pds2.sect4.Interval[0].processID = 0;
+         meta->pds2.sect4.Interval[0].processID = 0; /* For Average */
       }
-      meta->pds2.sect4.Interval[0].incrType = GRIB2MISSING_u1;
+      if ((elemNum == PROBWINDSPD34C) || (elemNum == PROBWINDSPD50C) ||
+          (elemNum == PROBWINDSPD64C)) {
+         meta->pds2.sect4.Interval[0].incrType = 192;
+      } else if ((elemNum == PROBWINDSPD34I) || (elemNum == PROBWINDSPD50I) ||
+          (elemNum == PROBWINDSPD64I)) {
+         meta->pds2.sect4.Interval[0].incrType = 2;
+      } else {
+         meta->pds2.sect4.Interval[0].incrType = GRIB2MISSING_u1;
+      }
       meta->pds2.sect4.Interval[0].timeRangeUnit = 1;
       if (elemNum == POP12) {
          meta->pds2.sect4.Interval[0].lenTime = 12;
@@ -548,6 +588,12 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
                  (elemNum == PXTRMTORN) || (elemNum == PXTRMHAIL) || (elemNum == PXTRMWIND) ||
                  (elemNum == PTOTSVR) || (elemNum == PTOTXTRM)) {
          meta->pds2.sect4.Interval[0].lenTime = 24;
+      } else if ((elemNum == PROBWINDSPD34I) || (elemNum == PROBWINDSPD50I) ||
+                 (elemNum == PROBWINDSPD64I)) {
+         meta->pds2.sect4.Interval[0].lenTime = 6;
+      } else if ((elemNum == PROBWINDSPD34C) || (elemNum == PROBWINDSPD50C) ||
+                 (elemNum == PROBWINDSPD64C)) {
+         meta->pds2.sect4.Interval[0].lenTime = (valTime - refTime) / 3600;
       }
       meta->pds2.sect4.Interval[0].incrUnit = 1;
       meta->pds2.sect4.Interval[0].timeIncr = 0;
@@ -571,8 +617,19 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
    meta->gridAttrib.DSF = NDFD_Values[elemNum].DSF;
    meta->gridAttrib.fieldType = NDFD_Values[elemNum].fieldType;
    meta->gridAttrib.f_maxmin = 0;
-   meta->gridAttrib.f_miss = 1;
-   meta->gridAttrib.missPri = 9999;
+/*
+   if ((elemNum == PROBWINDSPD34C) || (elemNum == PROBWINDSPD34I) ||
+       (elemNum == PROBWINDSPD50C) || (elemNum == PROBWINDSPD50I) ||
+       (elemNum == PROBWINDSPD64C) || (elemNum == PROBWINDSPD64I)) {
+      meta->gridAttrib.f_miss = 0;
+      meta->gridAttrib.missPri = 0;
+   } else {
+*/
+      meta->gridAttrib.f_miss = 1;
+      meta->gridAttrib.missPri = 9999;
+/*
+   }
+*/
    meta->gridAttrib.missSec = 0;
 
    return 0;
