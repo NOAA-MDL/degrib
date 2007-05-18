@@ -459,7 +459,8 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
        (elemNum == PROBWINDSPD34C) || (elemNum == PROBWINDSPD34I) ||
        (elemNum == PROBWINDSPD50C) || (elemNum == PROBWINDSPD50I) ||
        (elemNum == PROBWINDSPD64C) || (elemNum == PROBWINDSPD64I) ||
-       (elemNum == QPF) || (elemNum == SKY) || (elemNum == SNOW)) {
+       (elemNum == QPF) || (elemNum == SKY) || (elemNum == SNOW) ||
+       (elemNum == WAVEHEIGHT)) {
       meta->pds2.operStatus = 1;
    } else {
       meta->pds2.operStatus = 0; /* Pretend NDFD is operational. */
@@ -551,12 +552,8 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
          meta->pds2.sect4.lowerLimit.factor = 0;
          meta->pds2.sect4.lowerLimit.value = 0;
       } else {
-         meta->pds2.sect4.lowerLimit.factor = -1;
-         meta->pds2.sect4.lowerLimit.value = -2147483647;
-/*
          meta->pds2.sect4.lowerLimit.factor = GRIB2MISSING_s1;
          meta->pds2.sect4.lowerLimit.value = GRIB2MISSING_s4;
-*/
       }
 
       if (elemNum == POP12) {
