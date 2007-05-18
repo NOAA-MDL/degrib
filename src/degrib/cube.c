@@ -370,7 +370,7 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
       /* MinT */    { 0, 0,   5, 8, 1, 0, 3},
       /* Td */      { 0, 0,   6, 0, 1, 0, 3},
       /* QPF */     { 0, 1,   8, 8, 2, 0, 2}, /* Why this packtype? */
-      /* Snow */    { 0, 1,  29, 8, 3, 0, 2}, /* Why this packtype? */
+      /* Snow */    { 0, 1,  29, 8, 3, 0, 3},
       /* WndDir */  { 0, 2,   0, 0, 0, 0, 3},
       /* WndSpd */  { 0, 2,   1, 0, 1, 0, 3}, /* DSF actually 0? */
       /* Sky */     { 0, 6,   1, 0, 0, 0, 3},
@@ -458,7 +458,8 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
        (elemNum == PXTRMWIND) || (elemNum == PTOTSVR) || (elemNum == PTOTXTRM) ||
        (elemNum == PROBWINDSPD34C) || (elemNum == PROBWINDSPD34I) ||
        (elemNum == PROBWINDSPD50C) || (elemNum == PROBWINDSPD50I) ||
-       (elemNum == PROBWINDSPD64C) || (elemNum == PROBWINDSPD64I)) {
+       (elemNum == PROBWINDSPD64C) || (elemNum == PROBWINDSPD64I) ||
+       (elemNum == QPF) || (elemNum == SKY) || (elemNum == SNOW)) {
       meta->pds2.operStatus = 1;
    } else {
       meta->pds2.operStatus = 0; /* Pretend NDFD is operational. */
@@ -482,7 +483,15 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
    meta->pds2.sect4.bgGenID = 0; /* Background Generating process id */
    meta->pds2.sect4.genID = 0; /* Generating process id */
    meta->pds2.sect4.f_validCutOff = 0; /* Cutoff data missing */
-   meta->pds2.sect4.foreSec = meta->deltTime;
+   if ((elemNum == PROBWINDSPD34C) || (elemNum == PROBWINDSPD50C) ||
+       (elemNum == PROBWINDSPD64C)) {
+      meta->pds2.sect4.foreSec = 0;
+   } else if ((elemNum == PROBWINDSPD34I) || (elemNum == PROBWINDSPD50I) ||
+       (elemNum == PROBWINDSPD64I)) {
+      meta->pds2.sect4.foreSec = meta->deltTime - 6 * 3600;
+   } else {
+      meta->pds2.sect4.foreSec = meta->deltTime;
+   }
    if ((elemNum == PROBWINDSPD34C) || (elemNum == PROBWINDSPD34I) ||
        (elemNum == PROBWINDSPD50C) || (elemNum == PROBWINDSPD50I) ||
        (elemNum == PROBWINDSPD64C) || (elemNum == PROBWINDSPD64I)) {
@@ -536,8 +545,20 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
       meta->pds2.sect4.numForeProbs = GRIB2MISSING_u1;
       meta->pds2.sect4.probType = 1;
 
-      meta->pds2.sect4.lowerLimit.factor = GRIB2MISSING_s1;
-      meta->pds2.sect4.lowerLimit.value = GRIB2MISSING_s4;
+      if ((elemNum == PROBWINDSPD34C) || (elemNum == PROBWINDSPD34I) ||
+          (elemNum == PROBWINDSPD50C) || (elemNum == PROBWINDSPD50I) ||
+          (elemNum == PROBWINDSPD64C) || (elemNum == PROBWINDSPD64I)) {
+         meta->pds2.sect4.lowerLimit.factor = 0;
+         meta->pds2.sect4.lowerLimit.value = 0;
+      } else {
+         meta->pds2.sect4.lowerLimit.factor = -1;
+         meta->pds2.sect4.lowerLimit.value = -2147483647;
+/*
+         meta->pds2.sect4.lowerLimit.factor = GRIB2MISSING_s1;
+         meta->pds2.sect4.lowerLimit.value = GRIB2MISSING_s4;
+*/
+      }
+
       if (elemNum == POP12) {
          meta->pds2.sect4.upperLimit.factor = 3; /* Defin of scale factor. */
          meta->pds2.sect4.upperLimit.value = 254;
