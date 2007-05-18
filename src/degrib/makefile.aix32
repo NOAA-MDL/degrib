@@ -37,7 +37,7 @@ DWML_FLAGS = -O -q32 -qchars=signed -qmaxmem=8192 -qlanglvl=stdc99
 ############################
 # Link Flags
 ############################
-LD_FLAGS = -b32 -bmaxdata:0x30000000
+LD_FLAGS = -b32 -bmaxdata:0x50000000
 
 ############################
 # XML Dependence
