@@ -202,7 +202,6 @@ void freeEnGribMeta (enGribMeta *en)
    }
    en->lenDrsTmpl = 0;
    if (en->fld != NULL) {
-      printf ("Freeing fld\n");
       free (en->fld);
       en->fld = NULL;
    }
@@ -718,7 +717,7 @@ int fillSect4_0 (enGribMeta *en, uShort2 tmplNum, uChar cat, uChar subCat,
    en->pdsTmpl[4] = genID;
    if (f_valCutOff) {
       en->pdsTmpl[5] = cutOff / 3600;
-      en->pdsTmpl[6] = (cutOff - en->pdsTmpl[5] * 3600) / 60;
+      en->pdsTmpl[6] = (cutOff % 3600) / 60;
    } else {
       en->pdsTmpl[5] = GRIB2MISSING_2;
       en->pdsTmpl[6] = GRIB2MISSING_1;
