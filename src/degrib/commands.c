@@ -291,7 +291,7 @@ int MainConvert (userType *usr, IS_dataType *is, grib_MetaData *meta,
    char *msg;           /* Used to print the error stack, and return version
                          * info. */
    uChar FltScan;       /* Scan mode to use for the .flt/.tlf file. */
-   char *cPack;         /* Used to store packed message during test. */
+   uChar *cPack;        /* Used to store packed message during test. */
    sInt4 c_len;         /* length of cPack */
    size_t i;            /* loop counter. */
    int j;               /* Loop counter used to save to .is0 file. */
@@ -413,7 +413,7 @@ int MainConvert (userType *usr, IS_dataType *is, grib_MetaData *meta,
       } else {
          FltScan = 0;
       }
-      /* 
+      /*
        * Determine if we are creating an un-projected (lat/lon) coverage grid
        * using bi-linear interpolation or creating a normal "projected" grid,
        * which is true to the data since it has no interpolation.
@@ -617,12 +617,20 @@ int MainConvert (userType *usr, IS_dataType *is, grib_MetaData *meta,
             meta->gridAttrib.packType = 3;
          }
       }
+      if (WriteGrib2Record2 (meta, Data, DataLen, is, f_unit, &cPack, &c_len,
+                             usr->f_stdout) != 0) {
+         free (cPack);
+         free (outName);
+         return 1;
+      }
+/*
       if (WriteGrib2Record (meta, Data, DataLen, is, f_unit, &cPack, &c_len,
                             usr->f_stdout) != 0) {
          free (cPack);
          free (outName);
          return 1;
       }
+*/
       if (usr->f_stdout) {
          fwrite (cPack, sizeof (char), c_len, stdout);
       } else {

@@ -24,6 +24,7 @@
 #include "pack.h"
 #include "myutil.h"
 #include "clock.h"
+#include "engribapi.h"
 
 static sInt4 NearestInt (double a)
 {
@@ -136,7 +137,7 @@ meta->pds2.sect4.numBands
 
 int WriteGrib2Record (grib_MetaData *meta, double *Grib_Data,
                       sInt4 grib_DataLen, IS_dataType *is, sChar f_unit,
-                      char **cPack, sInt4 *c_len, uChar f_stdout)
+                      uChar **cPack, sInt4 *c_len, uChar f_stdout)
 {
    sInt4 kfildo = 20;   /* Set kfildo to random number say 20. */
    sInt4 nx, ny;
@@ -577,14 +578,14 @@ int WriteGrib2Record (grib_MetaData *meta, double *Grib_Data,
          errSprintf ("ERROR: Pack library error code (%ld %ld)\n",
                      jer[i], jer[ndjer + i]);
 
-         *cPack = (char *) ipack;
+         *cPack = (uChar *) ipack;
          *c_len = ipack[3];
          return -3;
       }
    }
 
    /* figure out end of message. */
-   *cPack = (char *) ipack;
+   *cPack = (uChar *) ipack;
    *c_len = ipack[3];
 
    /* mem swap if need be. */
@@ -593,3 +594,455 @@ int WriteGrib2Record (grib_MetaData *meta, double *Grib_Data,
 #endif
    return 0;
 }
+
+/*
+ * uChar processID     = Statistical process method used.
+ * uChar incrType      = Type of time increment between intervals
+ * uChar timeRangeUnit = Time range unit. [Code Table 4.4]
+ * sInt4 lenTime       = Range or length of time interval.
+ * uChar incrUnit      = Unit of time increment. [Code Table 4.4]
+ * sInt4 timeIncr      = Time increment between intervals.
+ */
+void fillSect4_Interval (sect4IntervalType * val, uChar processID,
+                         uChar incrType, uChar timeRangeUnit, sInt4 lenTime,
+                         uChar incrUnit, sInt4 timeIncr)
+{
+   val->processID = processID;
+   val->incrType = incrType;
+   val->timeRangeUnit = timeRangeUnit;
+   val->lenTime = lenTime;
+   val->incrUnit = incrUnit;
+   val->timeIncr = timeIncr;
+}
+
+/*****************************************************************************
+ * fillGridUnit() -- Arthur Taylor / MDL
+ *
+ * PURPOSE
+ *   Completes the data portion.  If f_boustify, then it walks through the
+ * data winding back and forth.  Note it does this in a row oriented fashion
+ * If you need a column oriented fashion because your grid is defined the
+ * other way, then swap your Nx and Ny in your call.
+ *
+ * ARGUMENTS
+ *         en = A pointer to meta data to pass to GRIB2 encoder. (Output)
+ *       data = Data array to add. (Input)
+ *    lenData = Length of Data array. (Input)
+ *         Nx = Number of X coordinates (Input)
+ *         Ny = Number of Y coordinates (Input)
+ *      ibmap = [Code 6.0] Bitmap indicator (Input)
+ *              0 = bitmap applies and is included in Section 6.
+ *              1-253 = Predefined bitmap applies
+ *              254 = Previously defined bitmap applies to this field
+ *              255 = Bit map does not apply to this product.
+ * f_boustify = true if we should re-Wrap the grid. (Input)
+ *     f_miss = 1 if missPri valid, 2 if missSec valid. (Input)
+ *    missPri = Primary missing value (Input)
+ *    missSec = Secondary missing value (Input)
+ *      unitM = -10 => unit conversion by log10(value), otherwise the slope of
+ *              unit conversion formula
+ *      unitB = The rise of the unit conversion formula
+ *
+ * RETURNS: int
+ *    > 0 (max length of sect 6 and sect 7).
+ *    -1 Can't handle this kind of bitmap (pre-defined).
+ *    -2 No missing value when trying to create the bmap.
+ *    -3 Can't handle Nx * Ny != lenData.
+ *
+ *  4/2006 Arthur Taylor (MDL): Created.
+ *  5/2007 Arthur Taylor (MDL): Added unitM, unitB to call
+ *
+ * NOTES:
+ *****************************************************************************
+ */
+int fillGridUnit (enGribMeta *en, double *data, sInt4 lenData, sInt4 Nx, sInt4 Ny,
+                  sInt4 ibmap, sChar f_boustify, uChar f_miss, double missPri,
+                  double missSec, double unitM, double unitB)
+{
+   uChar f_flip;        /* Used to help keep track of the direction when
+                         * "boustifying" the data. */
+   sInt4 x;             /* loop counter over Nx. */
+   sInt4 y;             /* loop counter over Ny. */
+   sInt4 ind1;          /* index to copy to. */
+   sInt4 ind2;          /* index to copy from. */
+
+   if ((ibmap != 0) && (ibmap != 255)) {
+      /* Can't handle this kind of bitmap (pre-defined). */
+      return -1;
+   }
+   if ((ibmap == 0) && (f_miss != 1) && (f_miss != 2)) {
+      /* No missing value when trying to create the bmap. */
+      return -2;
+   }
+   if (Nx * Ny != lenData) {
+      /* Can't handle Nx * Ny != lenData. */
+      return -3;
+   }
+
+   if (en->ngrdpts < lenData) {
+      if (en->fld != NULL) {
+         free (en->fld);
+      }
+      en->fld = (float *) malloc (lenData * sizeof (float));
+      if (ibmap == 0) {
+         if (en->bmap != NULL) {
+            free (en->bmap);
+         }
+         en->bmap = (sInt4 *) malloc (lenData * sizeof (sInt4));
+      }
+   }
+   en->ngrdpts = lenData;
+   en->ibmap = ibmap;
+
+   /* Now need to walk over data and boustify it and create bmap. */
+
+   if (ibmap == 0) {
+      /* boustify uses row oriented boustification, however for column
+       * oriented, swap the Ny and Nx in the call to the procedure. */
+      if (f_boustify) {
+         f_flip = 0;
+         for (y = 0; y < Ny; y++) {
+            for (x = 0; x < Nx; x++) {
+               ind1 = x + y * Nx;
+               if (!f_flip) {
+                  ind2 = ind1;
+               } else {
+                  ind2 = (Nx - x - 1) + y * Nx;
+               }
+               if ((data[ind2] == missPri) ||
+                   ((f_miss == 2) && (data[ind2] == missSec))) {
+                  en->bmap[ind1] = 0;
+                  en->fld[ind1] = (float) data[ind2];
+               } else {
+                  en->bmap[ind1] = 1;
+                  if (unitM == -10) {
+                     en->fld[ind1] = (float) myRound (log10 (data[ind2]), 7);
+                  } else {
+                     en->fld[ind1] = (float) myRound (((data[ind2] - unitB) / unitM), 7);
+                  }
+               }
+            }
+            f_flip = (!f_flip);
+         }
+      } else {
+         for (ind1 = 0; ind1 < lenData; ind1++) {
+            if ((data[ind1] == missPri) ||
+                ((f_miss == 2) && (data[ind1] == missSec))) {
+               en->bmap[ind1] = 0;
+               en->fld[ind1] = (float) data[ind1];
+            } else {
+               en->bmap[ind1] = 1;
+               if (unitM == -10) {
+                  en->fld[ind1] = (float) myRound (log10 (data[ind1]), 7);
+               } else {
+                  en->fld[ind1] = (float) myRound (((data[ind1] - unitB) / unitM), 7);
+               }
+            }
+         }
+      }
+      /* len(sect6) < 6 + (lenData/8 + 1), len(sect7) < 5 + lenData * 4 */
+      return (6 + lenData / 8 + 1) + (5 + lenData * 4);
+   } else {
+      /* boustify uses row oriented boustification, however for column
+       * oriented, swap the Ny and Nx in the call to the procedure. */
+      if (f_boustify) {
+         f_flip = 0;
+         for (y = 0; y < Ny; y++) {
+            for (x = 0; x < Nx; x++) {
+               ind1 = x + y * Nx;
+               if (!f_flip) {
+                  ind2 = ind1;
+               } else {
+                  ind2 = (Nx - x - 1) + y * Nx;
+               }
+               if ((data[ind2] == missPri) ||
+                   ((f_miss == 2) && (data[ind2] == missSec))) {
+                  en->fld[ind1] = (float) data[ind2];
+               } else {
+                  if (unitM == -10) {
+                     en->fld[ind1] = (float) myRound (log10 (data[ind2]), 7);
+                  } else {
+                     en->fld[ind1] = (float) myRound (((data[ind2] - unitB) / unitM), 7);
+                  }
+               }
+            }
+            f_flip = (!f_flip);
+         }
+      } else {
+         for (ind1 = 0; ind1 < lenData; ind1++) {
+            if ((data[ind1] == missPri) ||
+                ((f_miss == 2) && (data[ind1] == missSec))) {
+               en->fld[ind1] = (float) data[ind1];
+            } else {
+               if (unitM == -10) {
+                  en->fld[ind1] = (float) myRound (log10 (data[ind1]), 7);
+               } else {
+                  en->fld[ind1] = (float) myRound (((data[ind1] - unitB) / unitM), 7);
+               }
+            }
+         }
+      }
+      /* len(sect6) = 6, len(sect7) < 5 + lenData * 4 */
+      return 6 + (5 + lenData * 4);
+   }
+}
+
+int WriteGrib2Record2 (grib_MetaData *meta, double *Grib_Data,
+                       sInt4 grib_DataLen, IS_dataType *is, sChar f_unit,
+                       uChar **cPack, sInt4 *c_len, uChar f_stdout)
+{
+   enGribMeta en;
+   sInt4 cgribLen;
+   sInt4 year;
+   int month;
+   int day;
+   int hour;
+   int min;
+   double sec;
+   int ans;
+   uChar timeCode;
+   sect4IntervalType * interval;
+   uShort2 tmplNum;
+   int i;
+   double dlowVal;
+   double dupVal;
+   double unitM, unitB; /* values in y = m x + b used for unit conversion. */
+   char unitName[15];   /* Holds the string name of the current unit. */
+
+   initEnGribMeta (&en);
+
+   fillSect0 (&en, meta->pds2.prodType);
+
+   Clock_PrintDate (meta->pds2.refTime, &year, &month, &day, &hour, &min,
+                    &sec);
+   fillSect1 (&en, meta->center, meta->subcenter, meta->pds2.mstrVersion,
+              meta->pds2.lclVersion, meta->pds2.sigTime, year, month, day,
+              hour, min, sec, meta->pds2.operStatus, meta->pds2.dataType);
+   /* length based on section 0 and 1. */
+   cgribLen = 16 + 21;
+
+   if (meta->pds2.f_sect2) {
+   } else {
+      /* No section 2 data */
+      fillSect2 (&en, NULL, 0);
+   }
+   /* length based on section 2. */
+   cgribLen += 5 + en.lenSec2;
+
+   ans = fillSect3 (&en, meta->gds.projType, meta->gds.majEarth,
+                    meta->gds.minEarth, meta->gds.Nx, meta->gds.Ny,
+                    meta->gds.lat1, meta->gds.lon1, meta->gds.lat2,
+                    meta->gds.lon2, meta->gds.Dx, meta->gds.Dy,
+                    meta->gds.resFlag, meta->gds.scan, meta->gds.center,
+                    meta->gds.angleRotate, 0, meta->gds.meshLat,
+                    meta->gds.orientLon, meta->gds.scaleLat1,
+                    meta->gds.scaleLat2, meta->gds.southLat,
+                    meta->gds.southLon);
+   if (ans < 0) {
+      freeEnGribMeta (&en);
+      printf ("Problems packing section 3\n");
+      return 1;
+   }
+   cgribLen += ans;
+
+   tmplNum = meta->pds2.sect4.templat;
+   /* Fill out section 4.0 info which is common to the following templates */
+   if ((tmplNum == 0) || (tmplNum == 1) || (tmplNum == 2) || (tmplNum == 5) ||
+       (tmplNum == 8) || (tmplNum == 9) || (tmplNum == 10) ||
+       (tmplNum == 12)) {
+      if (IsData_NDFD (meta->center, meta->subcenter)) {
+         timeCode = 1; /* Hours */
+      } else {
+         timeCode = 13; /* Seconds */
+      }
+      ans = fillSect4_0 (&en, tmplNum, meta->pds2.sect4.cat,
+                         meta->pds2.sect4.subcat, meta->pds2.sect4.genProcess,
+                         meta->pds2.sect4.bgGenID, meta->pds2.sect4.genID,
+                         meta->pds2.sect4.f_validCutOff,
+                         meta->pds2.sect4.cutOff, timeCode,
+                         meta->pds2.sect4.foreSec, meta->pds2.sect4.fstSurfType,
+                         meta->pds2.sect4.fstSurfScale,
+                         meta->pds2.sect4.fstSurfValue,
+                         meta->pds2.sect4.sndSurfType,
+                         meta->pds2.sect4.sndSurfScale,
+                         meta->pds2.sect4.sndSurfValue);
+      /* Don't add ans to cgribLen yet (because of extra section 4 info */
+      if (ans != 34) {
+         freeEnGribMeta (&en);
+         printf ("Problems packing section 4.0 info\n");
+         return 1;
+      }
+   } else {
+      freeEnGribMeta (&en);
+      printf ("Problems packing section 4\n");
+      return 1;
+   }
+
+   /* Fill out extra section 4 information */
+   if (tmplNum == 1) {
+      ans = fillSect4_1 (&en, tmplNum, meta->pds2.sect4.typeEnsemble,
+                         meta->pds2.sect4.perturbNum,
+                         meta->pds2.sect4.numberFcsts);
+   } else if (tmplNum == 2) {
+      ans = fillSect4_2 (&en, tmplNum, meta->pds2.sect4.numberFcsts,
+                         meta->pds2.sect4.derivedFcst);
+   } else if (tmplNum == 5) {
+      dlowVal = (meta->pds2.sect4.lowerLimit.value /
+                 pow (10, meta->pds2.sect4.lowerLimit.factor));
+      dupVal = (meta->pds2.sect4.upperLimit.value /
+                pow (10, meta->pds2.sect4.upperLimit.factor));
+      ans = fillSect4_5 (&en, tmplNum, meta->pds2.sect4.numForeProbs,
+                         meta->pds2.sect4.foreProbNum,
+                         meta->pds2.sect4.probType,
+                         meta->pds2.sect4.lowerLimit.factor, dlowVal,
+                         meta->pds2.sect4.upperLimit.factor, dupVal);
+   } else if (tmplNum == 8) {
+      Clock_PrintDate (meta->pds2.sect4.validTime, &year, &month, &day, &hour,
+                       &min, &sec);
+      interval = (sect4IntervalType *) malloc (meta->pds2.sect4.numInterval *
+                                               sizeof (sect4IntervalType));
+      for (i = 0; i < meta->pds2.sect4.numInterval; ++i) {
+         fillSect4_Interval (&(interval[i]),
+                             meta->pds2.sect4.Interval[i].processID,
+                             meta->pds2.sect4.Interval[i].incrType,
+                             meta->pds2.sect4.Interval[i].timeRangeUnit,
+                             meta->pds2.sect4.Interval[i].lenTime,
+                             meta->pds2.sect4.Interval[i].incrUnit,
+                             meta->pds2.sect4.Interval[i].timeIncr);
+      }
+      ans = fillSect4_8 (&en, tmplNum, year, month, day, hour, min, sec,
+                         meta->pds2.sect4.numInterval,
+                         meta->pds2.sect4.numMissing, interval);
+      free (interval);
+   } else if (tmplNum == 9) {
+      Clock_PrintDate (meta->pds2.sect4.validTime, &year, &month, &day, &hour,
+                       &min, &sec);
+      interval = (sect4IntervalType *) malloc (meta->pds2.sect4.numInterval *
+                                               sizeof (sect4IntervalType));
+      for (i = 0; i < meta->pds2.sect4.numInterval; ++i) {
+         fillSect4_Interval (&(interval[i]),
+                             meta->pds2.sect4.Interval[i].processID,
+                             meta->pds2.sect4.Interval[i].incrType,
+                             meta->pds2.sect4.Interval[i].timeRangeUnit,
+                             meta->pds2.sect4.Interval[i].lenTime,
+                             meta->pds2.sect4.Interval[i].incrUnit,
+                             meta->pds2.sect4.Interval[i].timeIncr);
+      }
+      dlowVal = (meta->pds2.sect4.lowerLimit.value /
+                 pow (10, meta->pds2.sect4.lowerLimit.factor));
+      dupVal = (meta->pds2.sect4.upperLimit.value /
+                pow (10, meta->pds2.sect4.upperLimit.factor));
+      ans = fillSect4_9 (&en, tmplNum, meta->pds2.sect4.numForeProbs,
+                         meta->pds2.sect4.foreProbNum,
+                         meta->pds2.sect4.probType,
+                         meta->pds2.sect4.lowerLimit.factor, dlowVal,
+                         meta->pds2.sect4.upperLimit.factor, dupVal,
+                         year, month, day, hour, min, sec,
+                         meta->pds2.sect4.numInterval,
+                         meta->pds2.sect4.numMissing, interval);
+      free (interval);
+   } else if (tmplNum == 10) {
+      Clock_PrintDate (meta->pds2.sect4.validTime, &year, &month, &day, &hour,
+                       &min, &sec);
+      interval = (sect4IntervalType *) malloc (meta->pds2.sect4.numInterval *
+                                               sizeof (sect4IntervalType));
+      for (i = 0; i < meta->pds2.sect4.numInterval; ++i) {
+         fillSect4_Interval (&(interval[i]),
+                             meta->pds2.sect4.Interval[i].processID,
+                             meta->pds2.sect4.Interval[i].incrType,
+                             meta->pds2.sect4.Interval[i].timeRangeUnit,
+                             meta->pds2.sect4.Interval[i].lenTime,
+                             meta->pds2.sect4.Interval[i].incrUnit,
+                             meta->pds2.sect4.Interval[i].timeIncr);
+      }
+      ans = fillSect4_10 (&en, tmplNum, meta->pds2.sect4.percentile, year,
+                          month, day, hour, min, sec,
+                          meta->pds2.sect4.numInterval,
+                          meta->pds2.sect4.numMissing, interval);
+      free (interval);
+   } else if (tmplNum == 12) {
+      Clock_PrintDate (meta->pds2.sect4.validTime, &year, &month, &day, &hour,
+                       &min, &sec);
+      interval = (sect4IntervalType *) malloc (meta->pds2.sect4.numInterval *
+                                               sizeof (sect4IntervalType));
+      for (i = 0; i < meta->pds2.sect4.numInterval; ++i) {
+         fillSect4_Interval (&(interval[i]),
+                             meta->pds2.sect4.Interval[i].processID,
+                             meta->pds2.sect4.Interval[i].incrType,
+                             meta->pds2.sect4.Interval[i].timeRangeUnit,
+                             meta->pds2.sect4.Interval[i].lenTime,
+                             meta->pds2.sect4.Interval[i].incrUnit,
+                             meta->pds2.sect4.Interval[i].timeIncr);
+      }
+      ans = fillSect4_12 (&en, tmplNum, meta->pds2.sect4.numberFcsts,
+                         meta->pds2.sect4.derivedFcst, year,
+                          month, day, hour, min, sec,
+                          meta->pds2.sect4.numInterval,
+                          meta->pds2.sect4.numMissing, interval);
+      free (interval);
+   }
+   if (ans < 0) {
+      freeEnGribMeta (&en);
+      printf ("Problems packing section 4\n");
+      return 1;
+   }
+   cgribLen += ans;
+
+   /* The 2 is because we currently always use second order differences...
+    * Could change this in the future.
+    */
+   ans = fillSect5 (&en, meta->gridAttrib.packType, meta->gridAttrib.ESF,
+                    meta->gridAttrib.DSF, meta->gridAttrib.fieldType,
+                    meta->gridAttrib.f_miss, (float) meta->gridAttrib.missPri,
+                    (float) meta->gridAttrib.missSec, 2);
+   if (ans < 0) {
+      freeEnGribMeta (&en);
+      printf ("Problems packing section 5\n");
+      return 1;
+   }
+   cgribLen += ans;
+
+   ComputeUnit (meta->convert, meta->unitName, f_unit, &unitM, &unitB,
+                unitName);
+   /* 255 is because we don't currently use bitmaps. 1 is because we always
+    * "boustify the grids" for now.  The code exists to allow other choices
+    * for both of these, but we need to pass the info into this procedure. */
+   ans = fillGridUnit (&en, Grib_Data, grib_DataLen, meta->gds.Nx,
+                       meta->gds.Ny, 255, 1, meta->gridAttrib.f_miss,
+                       meta->gridAttrib.missPri, meta->gridAttrib.missSec,
+                       unitM, unitB);
+   if (ans < 0) {
+      freeEnGribMeta (&en);
+      printf ("Error in Fill Grid2 %d\n", ans);
+      return 1;
+   }
+   cgribLen += ans;
+
+   *cPack = (uChar *) malloc (cgribLen * sizeof (char));
+
+   ans = C_pkGrib2 (*cPack, en.sec0, en.sec1, en.sec2, en.lenSec2,
+                    en.gds, en.gdsTmpl, en.idefList, en.idefnum, en.ipdsnum,
+                    en.pdsTmpl, en.coordlist, en.numcoord, en.idrsnum,
+                    en.drsTmpl, en.fld, en.ngrdpts, en.ibmap, en.bmap);
+   if (ans < 0) {
+      printf ("Error in pkGrib2 %d\n", ans);
+      freeEnGribMeta (&en);
+      free (*cPack);
+      *c_len = 0;
+      *cPack = NULL;
+      return 1;
+   }
+   /* Set c_len to valid length of cPack */
+   *c_len = ans;
+
+#ifdef MEMWATCH
+   /* memwatch isn't being done in library. so... */
+   if (en.fld != NULL) {
+      free (en.fld);
+   }
+   en.fld = NULL;
+#endif
+   freeEnGribMeta (&en);
+   return 0;
+}
+
