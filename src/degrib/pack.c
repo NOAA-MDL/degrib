@@ -115,6 +115,110 @@ static void PackSect2_Wx (grib_MetaData *meta, IS_dataType *is)
    is->rdat[0] = 0;
 }
 
+/* compute number of bits needed to store val */
+static int power (uInt4 val)
+{
+   int i;
+
+   if (val == 0) {
+      return 1;
+   }
+   for (i = 0; val != 0; i++) {
+      val = val >> 1;
+   }
+   return i;
+}
+
+void fillSect2_Wx (enGribMeta *en, grib_MetaData *meta, sChar f_mdlPack)
+{
+   int i;
+   size_t count;
+   uChar *ray;
+   uChar max;
+   uChar min = 0; /* Since we're including /0 characters */
+   uChar *cpack;
+   size_t cpackLen;
+   uShort2 numGroups; /* Number of groups */
+   sInt4 numVal;
+   float refVal;
+   uShort2 scale;
+   uInt4 maxdif;
+   uChar dataType;
+   uChar bufLoc;
+   uChar *ptr;
+   size_t numUsed;
+   size_t numBits;
+
+   /* Count the number of characters needed. */
+   count = 0;
+   for (i = 0; i < meta->pds2.sect2.wx.dataLen; i++) {
+      count += strlen (meta->pds2.sect2.wx.data[i]) + 1;
+   }
+
+   /* Set up array */
+   ray = (uChar *) malloc (count * sizeof (char));
+   count = 0;
+   for (i = 0; i < meta->pds2.sect2.wx.dataLen; ++i) {
+      memcpy (ray + count, meta->pds2.sect2.wx.data[i],
+              strlen (meta->pds2.sect2.wx.data[i]) + 1);
+      count += strlen (meta->pds2.sect2.wx.data[i]) + 1;
+   }
+
+   /* Check if we don't want to apply mdl_sect2Pack */
+   if (! f_mdlPack) {
+      fillSect2 (en, ray, count);
+      free (ray);
+      return;
+   }
+
+   /* Do 1 group simple case of mdl_sect2Pack */
+
+   /* Find the max value of field */
+   max = 0;
+   for (i = 0; i < count; ++i) {
+      if (ray[i] > max)
+         max = ray[i];
+   }
+
+   /* Allocate enough space in cpack for 1 group, and unpacked ray. */
+   /* The 3 is overall header space, the 12 is per group space. */
+   cpackLen = cpackLen + 3 + 12;
+   cpack = (uChar *) malloc (count * sizeof (char));
+   cpack[0] = 1;
+   numGroups = 1;
+   MEMCPY_BIG ((cpack + 1), &numGroups, sizeof (uShort2));
+   numVal = count;
+   refVal = 0;
+   scale = 0;
+   MEMCPY_BIG ((cpack + 3), &numVal, sizeof (sInt4));
+   MEMCPY_BIG ((cpack + 7), &refVal, sizeof (float));
+   MEMCPY_BIG ((cpack + 11), &scale, sizeof (uShort2));
+   maxdif = max - min;
+   numBits = power (maxdif);
+   cpack[13] = numBits;
+   dataType = 1; /* integer */
+   cpack[14] = dataType;
+
+   ptr = cpack + 15;
+   /* make sure ptr is init to 0 before memBitWrite() calls */
+   memset (ptr, 0, count);
+   count = 15;
+   bufLoc = 8;
+   for (i = 0; i < numVal; i++) {
+      memBitWrite (&(ray[i]), sizeof (char), ptr, numBits, &bufLoc, &numUsed);
+      ptr += numUsed;
+      count += numUsed;
+   }
+   /* Make sure "remainder byte is stored. */
+   if (bufLoc != 8) {
+      ptr ++;
+      count ++;
+   }
+   fillSect2 (en, cpack, count);
+   free (ray);
+   free (cpack);
+}
+
 /*
 meta->pds2.prodType,    meta->pds2.center,     meta->pds2.subcenter,
 meta->pds2.mstrVersion, meta->pds2.lclVersion, meta->pds2.sigTime,
@@ -808,6 +912,8 @@ int WriteGrib2Record2 (grib_MetaData *meta, double *Grib_Data,
    double dupVal;
    double unitM, unitB; /* values in y = m x + b used for unit conversion. */
    char unitName[15];   /* Holds the string name of the current unit. */
+   uChar scanFlag;
+   sChar f_boustify;
 
    initEnGribMeta (&en);
 
@@ -822,6 +928,13 @@ int WriteGrib2Record2 (grib_MetaData *meta, double *Grib_Data,
    cgribLen = 16 + 21;
 
    if (meta->pds2.f_sect2) {
+      if (meta->pds2.sect2.ptrType == GS2_WXTYPE) {
+         /* The 1 is because we want to use the MDL Sect2 SimpPack method */
+         fillSect2_Wx (&en, meta, 1);
+      } else {
+         errSprintf ("ERROR (pack.c): Don't handle this yet\n");
+         return -3;
+      }
    } else {
       /* No section 2 data */
       fillSect2 (&en, NULL, 0);
@@ -829,11 +942,21 @@ int WriteGrib2Record2 (grib_MetaData *meta, double *Grib_Data,
    /* length based on section 2. */
    cgribLen += 5 + en.lenSec2;
 
+   /* The user passed in a scan mode of 64 of their data.  We want to
+    * boustify this for them.  Presumably we should allow the user control of
+    * this in the future. */
+   scanFlag = meta->gds.scan;
+   if (scanFlag == 64) {
+      scanFlag = 80;
+      f_boustify = 1;
+   } else {
+      f_boustify = 0;
+   }
    ans = fillSect3 (&en, meta->gds.projType, meta->gds.majEarth,
                     meta->gds.minEarth, meta->gds.Nx, meta->gds.Ny,
                     meta->gds.lat1, meta->gds.lon1, meta->gds.lat2,
                     meta->gds.lon2, meta->gds.Dx, meta->gds.Dy,
-                    meta->gds.resFlag, meta->gds.scan, meta->gds.center,
+                    meta->gds.resFlag, scanFlag, meta->gds.center,
                     meta->gds.angleRotate, 0, meta->gds.meshLat,
                     meta->gds.orientLon, meta->gds.scaleLat1,
                     meta->gds.scaleLat2, meta->gds.southLat,
@@ -1004,11 +1127,10 @@ int WriteGrib2Record2 (grib_MetaData *meta, double *Grib_Data,
 
    ComputeUnit (meta->convert, meta->unitName, f_unit, &unitM, &unitB,
                 unitName);
-   /* 255 is because we don't currently use bitmaps. 1 is because we always
-    * "boustify the grids" for now.  The code exists to allow other choices
-    * for both of these, but we need to pass the info into this procedure. */
+   /* 255 is because we don't currently use bitmaps.  The code exists to
+    * allow other choices, but we need to pass the info into this proc. */
    ans = fillGridUnit (&en, Grib_Data, grib_DataLen, meta->gds.Nx,
-                       meta->gds.Ny, 255, 1, meta->gridAttrib.f_miss,
+                       meta->gds.Ny, 255, f_boustify, meta->gridAttrib.f_miss,
                        meta->gridAttrib.missPri, meta->gridAttrib.missSec,
                        unitM, unitB);
    if (ans < 0) {
