@@ -24,9 +24,19 @@
 #include "memwatch.h"
 #endif
 
+#define GRIB2MISSING_u1 (uChar) (0xff)
+#define GRIB2MISSING_s1 (sChar) -1 * (0x7f)
+#define GRIB2MISSING_u2 (uShort2) (0xffff)
+#define GRIB2MISSING_s2 (sShort2) -1 * (0x7fff)
+#define GRIB2MISSING_u4 (uInt4) (0xffffffff)
+/* following is -1 * 2&31 because of the way signed integers are stored in
+   GRIB2. */
+#define GRIB2MISSING_s4 (sInt4) -2147483647
+/*
 #define GRIB2MISSING_1 (int) (0xff)
 #define GRIB2MISSING_2 (int) (0xffff)
 #define GRIB2MISSING_4 (sInt4) (0xffffffff)
+*/
 
 /* Following is from gridtemplates.h */
 #define MAXGRIDTEMP 23              /* maximum number of templates */
@@ -150,7 +160,7 @@ void initEnGribMeta (enGribMeta *en)
    en->fld = NULL;
    en->ngrdpts = 0;
    en->bmap = NULL;
-   en->ibmap = GRIB2MISSING_1;
+   en->ibmap = GRIB2MISSING_u1;
 }
 
 /*****************************************************************************
@@ -210,7 +220,7 @@ void freeEnGribMeta (enGribMeta *en)
       free (en->bmap);
       en->bmap = NULL;
    }
-   en->ibmap = GRIB2MISSING_1;
+   en->ibmap = GRIB2MISSING_u1;
 }
 
 /*****************************************************************************
@@ -719,8 +729,8 @@ int fillSect4_0 (enGribMeta *en, uShort2 tmplNum, uChar cat, uChar subCat,
       en->pdsTmpl[5] = cutOff / 3600;
       en->pdsTmpl[6] = (cutOff % 3600) / 60;
    } else {
-      en->pdsTmpl[5] = GRIB2MISSING_2;
-      en->pdsTmpl[6] = GRIB2MISSING_1;
+      en->pdsTmpl[5] = GRIB2MISSING_u2;
+      en->pdsTmpl[6] = GRIB2MISSING_u1;
    }
    en->pdsTmpl[7] = timeCode;
    if (getCodedTime (timeCode, foreSec, &(en->pdsTmpl[8])) != 0) {
@@ -728,17 +738,17 @@ int fillSect4_0 (enGribMeta *en, uShort2 tmplNum, uChar cat, uChar subCat,
       return -3;
    }
    en->pdsTmpl[9] = surfType1;
-   if (surfType1 == GRIB2MISSING_1) {
-      en->pdsTmpl[10] = GRIB2MISSING_1;
-      en->pdsTmpl[11] = GRIB2MISSING_4;
+   if (surfType1 == GRIB2MISSING_u1) {
+      en->pdsTmpl[10] = GRIB2MISSING_s1;
+      en->pdsTmpl[11] = GRIB2MISSING_s4;
    } else {
       en->pdsTmpl[10] = surfScale1;
       en->pdsTmpl[11] = NearestInt (dSurfVal1 * pow (10, surfScale1));
    }
    en->pdsTmpl[12] = surfType2;
-   if (surfType2 == GRIB2MISSING_1) {
-      en->pdsTmpl[13] = GRIB2MISSING_1;
-      en->pdsTmpl[14] = GRIB2MISSING_4;
+   if (surfType2 == GRIB2MISSING_u1) {
+      en->pdsTmpl[13] = GRIB2MISSING_s1;
+      en->pdsTmpl[14] = GRIB2MISSING_s4;
    } else {
       en->pdsTmpl[13] = surfScale2;
       en->pdsTmpl[14] = NearestInt (dSurfVal2 * pow (10, surfScale2));
@@ -871,16 +881,16 @@ int fillSect4_5 (enGribMeta *en, uShort2 tmplNum, uChar numFcsts,
    en->pdsTmpl[15] = foreProbNum;
    en->pdsTmpl[16] = numFcsts;
    en->pdsTmpl[17] = probType;
-   if ((uChar) lowScale == GRIB2MISSING_1) {
-      en->pdsTmpl[18] = GRIB2MISSING_1;
-      en->pdsTmpl[19] = GRIB2MISSING_4;
+   if (lowScale == GRIB2MISSING_s1) {
+      en->pdsTmpl[18] = GRIB2MISSING_s1;
+      en->pdsTmpl[19] = GRIB2MISSING_s4;
    } else {
       en->pdsTmpl[18] = lowScale;
       en->pdsTmpl[19] = NearestInt (dlowVal * pow (10, lowScale));
    }
-   if ((uChar) upScale == GRIB2MISSING_1) {
-      en->pdsTmpl[20] = GRIB2MISSING_1;
-      en->pdsTmpl[21] = GRIB2MISSING_4;
+   if (upScale == GRIB2MISSING_s1) {
+      en->pdsTmpl[20] = GRIB2MISSING_s1;
+      en->pdsTmpl[21] = GRIB2MISSING_s4;
    } else {
       en->pdsTmpl[20] = upScale;
       en->pdsTmpl[21] = NearestInt (dupVal * pow (10, upScale));
@@ -1018,16 +1028,16 @@ int fillSect4_9 (enGribMeta *en, uShort2 tmplNum, uChar numFcsts,
    en->pdsTmpl[15] = foreProbNum;
    en->pdsTmpl[16] = numFcsts;
    en->pdsTmpl[17] = probType;
-   if ((uChar) lowScale == GRIB2MISSING_1) {
-      en->pdsTmpl[18] = GRIB2MISSING_1;
-      en->pdsTmpl[19] = GRIB2MISSING_4;
+   if (lowScale == GRIB2MISSING_s1) {
+      en->pdsTmpl[18] = GRIB2MISSING_s1;
+      en->pdsTmpl[19] = GRIB2MISSING_s4;
    } else {
       en->pdsTmpl[18] = lowScale;
       en->pdsTmpl[19] = NearestInt (dlowVal * pow (10, lowScale));
    }
-   if ((uChar) upScale == GRIB2MISSING_1) {
-      en->pdsTmpl[20] = GRIB2MISSING_1;
-      en->pdsTmpl[21] = GRIB2MISSING_4;
+   if (upScale == GRIB2MISSING_s1) {
+      en->pdsTmpl[20] = GRIB2MISSING_s1;
+      en->pdsTmpl[21] = GRIB2MISSING_s4;
    } else {
       en->pdsTmpl[20] = upScale;
       en->pdsTmpl[21] = NearestInt (dupVal * pow (10, upScale));
