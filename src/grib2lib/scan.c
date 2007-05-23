@@ -54,8 +54,8 @@
  *  scan & GRIB2BIT_4 => adjacent rows scan in opposite directions.
  *****************************************************************************
  */
-void ScanIndex2XY (sInt4 row, sInt4 * X, sInt4 * Y, uChar scan, sInt4 Nx,
-                   sInt4 Ny)
+void ScanIndex2XY(sInt4 row, sInt4 *X, sInt4 *Y, uChar scan, sInt4 Nx,
+                  sInt4 Ny)
 {
    sInt4 x;             /* local copy of x */
    sInt4 y;             /* local copy of y */
@@ -122,8 +122,8 @@ void ScanIndex2XY (sInt4 row, sInt4 * X, sInt4 * Y, uChar scan, sInt4 Nx,
  *  scan & GRIB2BIT_4 => adjacent rows scan in opposite directions.
  *****************************************************************************
  */
-void XY2ScanIndex (sInt4 * Row, sInt4 x, sInt4 y, uChar scan, sInt4 Nx,
-                   sInt4 Ny)
+void XY2ScanIndex(sInt4 *Row, sInt4 x, sInt4 y, uChar scan, sInt4 Nx,
+                  sInt4 Ny)
 {
    sInt4 row;           /* local copy of row */
 
@@ -179,7 +179,7 @@ void XY2ScanIndex (sInt4 * Row, sInt4 x, sInt4 y, uChar scan, sInt4 Nx,
  */
 #ifdef TEST_SCAN
 #include <stdio.h>
-int main (int argc, char **argv)
+int main(int argc, char **argv)
 {
    int data[3][4];
    int ray1[6];
@@ -200,32 +200,32 @@ int main (int argc, char **argv)
    for (i = 0; i < 16; i++) {
       scan = i << 4;
       /* Print scan info. */
-      printf ("Checking xy2row -> row2xy for scan %d ", i);
+      printf("Checking xy2row -> row2xy for scan %d ", i);
       if (scan & GRIB2BIT_1)
-         printf ("-1");
+         printf("-1");
       else
-         printf ("-0");
+         printf("-0");
       if (scan & GRIB2BIT_2)
-         printf ("-1");
+         printf("-1");
       else
-         printf ("-0");
+         printf("-0");
       if (scan & GRIB2BIT_3)
-         printf ("-1");
+         printf("-1");
       else
-         printf ("-0");
+         printf("-0");
       if (scan & GRIB2BIT_4)
-         printf ("-1");
+         printf("-1");
       else
-         printf ("-0");
-      printf ("\n");
+         printf("-0");
+      printf("\n");
 
       /* Test invertiblity of functions. */
       for (x = 1; x <= Nx; x++) {
          for (y = 1; y <= Ny; y++) {
-            XY2ScanIndex (&row, x, y, scan, Nx, Ny);
-            ScanIndex2XY (row, &x1, &y1, scan, Nx, Ny);
+            XY2ScanIndex(&row, x, y, scan, Nx, Ny);
+            ScanIndex2XY(row, &x1, &y1, scan, Nx, Ny);
             if ((x1 != x) || (y1 != y)) {
-               printf ("   %ld %ld .. %ld .. %ld %ld \n", x, y, row, x1, y1);
+               printf("   %ld %ld .. %ld .. %ld %ld \n", x, y, row, x1, y1);
             }
          }
       }
@@ -233,15 +233,15 @@ int main (int argc, char **argv)
       /* Set up sample scan data. */
       for (x = 1; x <= Nx; x++) {
          for (y = 1; y <= Ny; y++) {
-            XY2ScanIndex (&row, x, y, scan, Nx, Ny);
+            XY2ScanIndex(&row, x, y, scan, Nx, Ny);
             ray1[row] = data[x][y];
          }
       }
 
       /* Convert from ray1[] to ray2[] where ray2[] is scan value 0100. */
       for (x = 0; x < NxNy; x++) {
-         printf ("%d ", ray1[x]);
-         ScanIndex2XY (x, &x1, &y1, scan, Nx, Ny);
+         printf("%d ", ray1[x]);
+         ScanIndex2XY(x, &x1, &y1, scan, Nx, Ny);
          /* 
           * To get scan 0000 do the following:
           * row = x1 + ((Ny-1) - y1) * Nx;
@@ -249,11 +249,11 @@ int main (int argc, char **argv)
          row = (x1 - 1) + (y1 - 1) * Nx;
          ray2[row] = ray1[x];
       }
-      printf ("\n");
+      printf("\n");
       for (x = 0; x < NxNy; x++) {
-         printf ("%d ", ray2[x]);
+         printf("%d ", ray2[x]);
       }
-      printf ("\n");
+      printf("\n");
    }
    return 0;
 }

@@ -42,12 +42,12 @@
  *****************************************************************************
  */
 #ifdef DEBUG
-void _myAssert (const char *file, int lineNum)
+void _myAssert(const char *file, int lineNum)
 {
-   fflush (NULL);
-   fprintf (stderr, "\nAssertion failed: %s, line %d\n", file, lineNum);
-   fflush (stderr);
-   abort ();
+   fflush(NULL);
+   fprintf(stderr, "\nAssertion failed: %s, line %d\n", file, lineNum);
+   fflush(stderr);
+   abort();
 /*      exit (EXIT_FAILURE);*/
 }
 #endif

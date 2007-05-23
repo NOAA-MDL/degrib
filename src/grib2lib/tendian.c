@@ -49,7 +49,7 @@
  * 2) Could try this with exclusive or?
  *****************************************************************************
  */
-void memswp (void *Data, const size_t elem_size, const size_t num_elem)
+void memswp(void *Data, const size_t elem_size, const size_t num_elem)
 {
    size_t j;            /* Element count */
    char *data;          /* Allows us to treat Data as an array of char. */
@@ -59,7 +59,7 @@ void memswp (void *Data, const size_t elem_size, const size_t num_elem)
    if (elem_size == 1) {
       return;
    }
-   data = (char *) Data;
+   data = (char *)Data;
    for (j = 0; j < elem_size * num_elem; j += elem_size) {
       ptr = data + j;
       ptr2 = ptr + elem_size - 1;
@@ -102,11 +102,11 @@ void memswp (void *Data, const size_t elem_size, const size_t num_elem)
  *    justified?
  *****************************************************************************
  */
-void *revmemcpy (void *Dst, void *Src, const size_t len)
+void *revmemcpy(void *Dst, void *Src, const size_t len)
 {
    size_t j;            /* Byte count */
-   char *src = (char *) Src; /* Allows us to treat Src as an array of char. */
-   char *dst = (char *) Dst; /* Allows us to treat Dst as an array of char. */
+   char *src = (char *)Src; /* Allows us to treat Src as an array of char. */
+   char *dst = (char *)Dst; /* Allows us to treat Dst as an array of char. */
 
    src = src + len - 1;
    for (j = 0; j < len; ++j) {
@@ -142,16 +142,16 @@ void *revmemcpy (void *Dst, void *Src, const size_t len)
  * 1) Assumes that Dst is allocated to a size of Src.
  *****************************************************************************
  */
-void *revmemcpyRay (void *Dst, void *Src, const size_t elem_size,
-                    const size_t num_elem)
+void *revmemcpyRay(void *Dst, void *Src, const size_t elem_size,
+                   const size_t num_elem)
 {
    size_t i;            /* Element count. */
    size_t j;            /* Byte count. */
-   char *src = (char *) Src; /* Allows us to treat Src as an array of char. */
-   char *dst = (char *) Dst; /* Allows us to treat Dst as an array of char. */
+   char *src = (char *)Src; /* Allows us to treat Src as an array of char. */
+   char *dst = (char *)Dst; /* Allows us to treat Dst as an array of char. */
 
    if (elem_size == 1) {
-      return memcpy (Dst, Src, num_elem);
+      return memcpy(Dst, Src, num_elem);
    }
    src -= (elem_size + 1);
    for (i = 0; i < num_elem; ++i) {
@@ -193,7 +193,7 @@ void *revmemcpyRay (void *Dst, void *Src, const size_t elem_size,
  * revfwrite.
  *****************************************************************************
  */
-size_t revfread (void *Dst, size_t elem_size, size_t num_elem, FILE * fp)
+size_t revfread(void *Dst, size_t elem_size, size_t num_elem, FILE *fp)
 {
    size_t ans;          /* The answer from fread. */
    size_t j;            /* Byte count. */
@@ -201,12 +201,12 @@ size_t revfread (void *Dst, size_t elem_size, size_t num_elem, FILE * fp)
    char temp;           /* A temporary holder of a byte when swapping. */
    char *ptr, *ptr2;    /* Pointers to the two bytes to swap. */
 
-   ans = fread (Dst, elem_size, num_elem, fp);
+   ans = fread(Dst, elem_size, num_elem, fp);
    if (elem_size == 1) {
       return ans;
    }
    if (ans == num_elem) {
-      dst = (char *) Dst;
+      dst = (char *)Dst;
       for (j = 0; j < elem_size * num_elem; j += elem_size) {
          ptr = dst + j;
          ptr2 = ptr + elem_size - 1;
@@ -251,7 +251,7 @@ size_t revfread (void *Dst, size_t elem_size, size_t num_elem, FILE * fp)
  * This is the exact opposite method as revfread.
  *****************************************************************************
  */
-size_t revfwrite (void *Src, size_t elem_size, size_t num_elem, FILE * fp)
+size_t revfwrite(void *Src, size_t elem_size, size_t num_elem, FILE *fp)
 {
    char *ptr;           /* Current byte to put to file. */
    size_t i;            /* Byte count */
@@ -259,14 +259,14 @@ size_t revfwrite (void *Src, size_t elem_size, size_t num_elem, FILE * fp)
    char *src;           /* Allows us to treat Src as an array of char. */
 
    if (elem_size == 1) {
-      return fwrite (Src, elem_size, num_elem, fp);
+      return fwrite(Src, elem_size, num_elem, fp);
    } else {
-      src = (char *) Src;
+      src = (char *)Src;
       ptr = src - elem_size - 1;
       for (j = 0; j < num_elem; ++j) {
          ptr += 2 * elem_size;
          for (i = 0; i < elem_size; ++i) {
-            if (fputc ((int) *(ptr--), fp) == EOF) {
+            if (fputc((int)*(ptr--), fp) == EOF) {
                return 0;
             }
          }
@@ -301,13 +301,13 @@ size_t revfwrite (void *Src, size_t elem_size, size_t num_elem, FILE * fp)
  * NOTES
  *****************************************************************************
  */
-size_t FREAD_ODDINT_BIG (sInt4 * dst, uChar len, FILE * fp)
+size_t FREAD_ODDINT_BIG(sInt4 *dst, uChar len, FILE *fp)
 {
    *dst = 0;
 #ifdef LITTLE_ENDIAN
-   return revfread (dst, len, 1, fp);
+   return revfread(dst, len, 1, fp);
 #else
-   return fread ((((char *) dst) + (4 - len)), len, 1, fp);
+   return fread((((char *)dst) + (4 - len)), len, 1, fp);
 #endif
 }
 
@@ -337,13 +337,13 @@ size_t FREAD_ODDINT_BIG (sInt4 * dst, uChar len, FILE * fp)
  * NOTES
  *****************************************************************************
  */
-size_t FREAD_ODDINT_LIT (sInt4 * dst, uChar len, FILE * fp)
+size_t FREAD_ODDINT_LIT(sInt4 *dst, uChar len, FILE *fp)
 {
    *dst = 0;
 #ifdef LITTLE_ENDIAN
-   return fread (dst, len, 1, fp);
+   return fread(dst, len, 1, fp);
 #else
-   return revfread ((((char *) dst) + (4 - len)), len, 1, fp);
+   return revfread((((char *)dst) + (4 - len)), len, 1, fp);
 #endif
 }
 
@@ -373,12 +373,12 @@ size_t FREAD_ODDINT_LIT (sInt4 * dst, uChar len, FILE * fp)
  * NOTES
  *****************************************************************************
  */
-size_t FWRITE_ODDINT_BIG (sInt4 * src, uChar len, FILE * fp)
+size_t FWRITE_ODDINT_BIG(sInt4 *src, uChar len, FILE *fp)
 {
 #ifdef LITTLE_ENDIAN
-   return revfwrite (src, len, 1, fp);
+   return revfwrite(src, len, 1, fp);
 #else
-   return fwrite ((((char *) src) + (4 - len)), len, 1, fp);
+   return fwrite((((char *)src) + (4 - len)), len, 1, fp);
 #endif
 }
 
@@ -408,12 +408,12 @@ size_t FWRITE_ODDINT_BIG (sInt4 * src, uChar len, FILE * fp)
  * NOTES
  *****************************************************************************
  */
-size_t FWRITE_ODDINT_LIT (sInt4 * src, uChar len, FILE * fp)
+size_t FWRITE_ODDINT_LIT(sInt4 *src, uChar len, FILE *fp)
 {
 #ifdef LITTLE_ENDIAN
-   return fwrite (src, len, 1, fp);
+   return fwrite(src, len, 1, fp);
 #else
-   return revfwrite ((((char *) src) + (4 - len)), len, 1, fp);
+   return revfwrite((((char *)src) + (4 - len)), len, 1, fp);
 #endif
 }
 
@@ -451,13 +451,11 @@ size_t FWRITE_ODDINT_LIT (sInt4 * src, uChar len, FILE * fp)
  *    boundaries ie 00100110101101 => 001001 | 10101101
  *****************************************************************************
  */
-char memBitRead (void *Dst, size_t dstLen, void *Src, size_t numBits,
-                 uChar * bufLoc, size_t * numUsed)
+char memBitRead(void *Dst, size_t dstLen, void *Src, size_t numBits,
+                uChar *bufLoc, size_t *numUsed)
 {
-   uChar *src = (uChar *) Src; /* Allows us to treat Src as an array of
-                                * char. */
-   uChar *dst = (uChar *) Dst; /* Allows us to treat Dst as an array of
-                                * char. */
+   uChar *src = (uChar *)Src; /* Allows us to treat Src as an array of char. */
+   uChar *dst = (uChar *)Dst; /* Allows us to treat Dst as an array of char. */
    size_t numBytes;     /* How many bytes are needed in dst. */
    uChar dstLoc;        /* Where we are writing to in dst. */
    uChar *ptr;          /* Current byte we are writing to in dst. */
@@ -466,7 +464,7 @@ char memBitRead (void *Dst, size_t dstLen, void *Src, size_t numBits,
    };
 
    if (numBits == 0) {
-      memset (Dst, 0, dstLen);
+      memset(Dst, 0, dstLen);
       (*numUsed) = 0;
       return 0;
    }
@@ -474,14 +472,14 @@ char memBitRead (void *Dst, size_t dstLen, void *Src, size_t numBits,
    if (dstLen < numBytes) {
       return 1;
    }
-   memset (Dst, 0, dstLen);
+   memset(Dst, 0, dstLen);
    dstLoc = ((numBits - 1) % 8) + 1;
    if ((*bufLoc == 8) && (dstLoc == 8)) {
 #ifdef LITTLE_ENDIAN
-      MEMCPY_BIG (Dst, Src, numBytes);
+      MEMCPY_BIG(Dst, Src, numBytes);
 #else
       /* If numBytes != dstLen, then we need to right justify the ans */
-      MEMCPY_BIG (dst + (dstLen - numBytes), Src, numBytes);
+      MEMCPY_BIG(dst + (dstLen - numBytes), Src, numBytes);
 #endif
       (*numUsed) = numBytes;
       return 0;
@@ -521,8 +519,8 @@ char memBitRead (void *Dst, size_t dstLen, void *Src, size_t numBits,
    }
    /* Assert: dstLoc should now be 8, but we don't use again in procedure. */
 
-   /* We have now reached the state which we want after each iteration of
-    * the loop.  That is initDstLoc == 8, initBufLoc = bufLoc < dstLoc. */
+   /* We have now reached the state which we want after each iteration of the 
+    * loop.  That is initDstLoc == 8, initBufLoc = bufLoc < dstLoc. */
 #ifdef LITTLE_ENDIAN
    while (ptr >= dst) {
 #else
@@ -587,13 +585,11 @@ char memBitRead (void *Dst, size_t dstLen, void *Src, size_t numBits,
  * 2) Assumes that Dst is already zero'ed out.
  *****************************************************************************
  */
-char memBitWrite (void *Src, size_t srcLen, void *Dst, size_t numBits,
-                  uChar * bufLoc, size_t * numUsed)
+char memBitWrite(void *Src, size_t srcLen, void *Dst, size_t numBits,
+                 uChar *bufLoc, size_t *numUsed)
 {
-   uChar *src = (uChar *) Src; /* Allows us to treat Src as an array of
-                                * char. */
-   uChar *dst = (uChar *) Dst; /* Allows us to treat Dst as an array of
-                                * char. */
+   uChar *src = (uChar *)Src; /* Allows us to treat Src as an array of char. */
+   uChar *dst = (uChar *)Dst; /* Allows us to treat Dst as an array of char. */
    size_t numBytes;     /* How many bytes are needed from src. */
    uChar srcLoc;        /* Which bit we are reading from in src. */
    uChar *ptr;          /* Current byte we are reading from in src. */
@@ -611,7 +607,7 @@ char memBitWrite (void *Src, size_t srcLen, void *Dst, size_t numBits,
    srcLoc = ((numBits - 1) % 8) + 1;
 
    if ((*bufLoc == 8) && (srcLoc == 8)) {
-      MEMCPY_BIG (Dst, Src, numBytes);
+      MEMCPY_BIG(Dst, Src, numBytes);
       (*numUsed) = numBytes;
       return 0;
    }
@@ -651,8 +647,8 @@ char memBitWrite (void *Src, size_t srcLen, void *Dst, size_t numBits,
    }
    /* Assert: dstLoc should now be 8, but we don't use again in procedure. */
 
-   /* We have now reached the state which we want after each iteration of
-    * the loop.  That is initSrcLoc == 8, initBufLoc = bufLoc < srcLoc. */
+   /* We have now reached the state which we want after each iteration of the 
+    * loop.  That is initSrcLoc == 8, initBufLoc = bufLoc < srcLoc. */
 #ifdef LITTLE_ENDIAN
    while (ptr >= src) {
 #else
@@ -712,8 +708,8 @@ char memBitWrite (void *Src, size_t srcLen, void *Dst, size_t numBits,
  * NOTES
  *****************************************************************************
  */
-int fileBitRead (void *Dst, size_t dstLen, uShort2 num_bits, FILE * fp,
-                 uChar * gbuf, sChar * gbufLoc)
+int fileBitRead(void *Dst, size_t dstLen, uShort2 num_bits, FILE *fp,
+                uChar *gbuf, sChar *gbufLoc)
 {
    static uChar BitRay[] = { 0, 1, 3, 7, 15, 31, 63, 127, 255 };
    register uChar buf_loc, buf, *ptr;
@@ -722,7 +718,7 @@ int fileBitRead (void *Dst, size_t dstLen, uShort2 num_bits, FILE * fp,
    uChar dst_loc;
    int c;
 
-   memset (Dst, 0, dstLen);
+   memset(Dst, 0, dstLen);
 
    if (num_bits == 0) {
       *gbuf = 0;
@@ -739,7 +735,7 @@ int fileBitRead (void *Dst, size_t dstLen, uShort2 num_bits, FILE * fp,
    }
 
    /* num_bits was modified earlier. */
-   dst_loc = (uChar) ((num_bits % 8) + 1);
+   dst_loc = (uChar)((num_bits % 8) + 1);
    buf_loc = *gbufLoc;
    buf = *gbuf;
 
@@ -753,33 +749,33 @@ int fileBitRead (void *Dst, size_t dstLen, uShort2 num_bits, FILE * fp,
    if (buf_loc >= dst_loc) {
       /* can now deal with entire "remainder". */
 #ifdef LITTLE_ENDIAN
-      *(ptr--) |= (uChar) ((buf & BitRay[buf_loc]) >> (buf_loc - dst_loc));
+      *(ptr--) |= (uChar)((buf & BitRay[buf_loc]) >> (buf_loc - dst_loc));
 #else
-      *(ptr++) |= (uChar) ((buf & BitRay[buf_loc]) >> (buf_loc - dst_loc));
+      *(ptr++) |= (uChar)((buf & BitRay[buf_loc]) >> (buf_loc - dst_loc));
 #endif
       buf_loc -= dst_loc;
    } else {
       /* need to do 2 calls to deal with entire "remainder". */
       if (buf_loc != 0) {
-         *ptr |= (uChar) ((buf & BitRay[buf_loc]) << (dst_loc - buf_loc));
+         *ptr |= (uChar)((buf & BitRay[buf_loc]) << (dst_loc - buf_loc));
       }
       /* buf_loc is now 0. so we need more data. */
       /* dst_loc is now dst_loc - buf_loc. */
-      if ((c = fgetc (fp)) == EOF) {
+      if ((c = fgetc(fp)) == EOF) {
          *gbufLoc = buf_loc;
          *gbuf = buf;
          return EOF;
       }
       /* buf_loc should be 8 */
-      buf = (uChar) c;
+      buf = (uChar)c;
       /* 8 - (dst_loc - buf_loc) */
-      buf_loc += (uChar) (8 - dst_loc);
+      buf_loc += (uChar)(8 - dst_loc);
       /* Need mask in case right shift with sign extension? Should be ok
        * since buf is a uChar, so it fills with 0s. */
 #ifdef LITTLE_ENDIAN
-      *(ptr--) |= (uChar) (buf >> buf_loc);
+      *(ptr--) |= (uChar)(buf >> buf_loc);
 #else
-      *(ptr++) |= (uChar) (buf >> buf_loc);
+      *(ptr++) |= (uChar)(buf >> buf_loc);
 #endif
       /* buf_loc should now be 8 - (dst_loc - buf_loc) */
    }
@@ -792,21 +788,21 @@ int fileBitRead (void *Dst, size_t dstLen, uShort2 num_bits, FILE * fp,
    while (ptr < dst + dstLen) {
 #endif
       if (buf_loc != 0) {
-         *ptr |= (uChar) ((buf & BitRay[buf_loc]) << (8 - buf_loc));
+         *ptr |= (uChar)((buf & BitRay[buf_loc]) << (8 - buf_loc));
       }
       /* buf_loc is now 0. so we need more data. */
-      if ((c = fgetc (fp)) == EOF) {
+      if ((c = fgetc(fp)) == EOF) {
          *gbufLoc = buf_loc;
          *gbuf = buf;
          return EOF;
       }
-      buf = (uChar) c;
+      buf = (uChar)c;
       /* Need mask in case right shift with sign extension? Should be ok
        * since buf is a uChar, so it fills with 0s. */
 #ifdef LITTLE_ENDIAN
-      *(ptr--) |= (uChar) (buf >> buf_loc);
+      *(ptr--) |= (uChar)(buf >> buf_loc);
 #else
-      *(ptr++) |= (uChar) (buf >> buf_loc);
+      *(ptr++) |= (uChar)(buf >> buf_loc);
 #endif
    }
 
@@ -845,8 +841,8 @@ int fileBitRead (void *Dst, size_t dstLen, uShort2 num_bits, FILE * fp,
  * NOTES
  *****************************************************************************
  */
-char fileBitWrite (void *Src, size_t srcLen, uShort2 numBits, FILE * fp,
-                   uChar * pbuf, sChar * pbufLoc)
+char fileBitWrite(void *Src, size_t srcLen, uShort2 numBits, FILE *fp,
+                  uChar *pbuf, sChar *pbufLoc)
 {
    uChar buf_loc, buf, *ptr;
    uChar *src = Src;
@@ -855,7 +851,7 @@ char fileBitWrite (void *Src, size_t srcLen, uShort2 numBits, FILE * fp,
 
    if (numBits == 0) {
       if (*pbufLoc != 8) {
-         fputc ((int) *pbuf, fp);
+         fputc((int)*pbuf, fp);
          *pbuf = 0;
          *pbufLoc = 8;
          return 8;
@@ -874,7 +870,7 @@ char fileBitWrite (void *Src, size_t srcLen, uShort2 numBits, FILE * fp,
    }
 
    /* num_bits was modified earlier. */
-   src_loc = (uChar) ((numBits % 8) + 1);
+   src_loc = (uChar)((numBits % 8) + 1);
    buf_loc = *pbufLoc;
    buf = *pbuf;
 
@@ -891,34 +887,33 @@ char fileBitWrite (void *Src, size_t srcLen, uShort2 numBits, FILE * fp,
       /* Mask? ... Safer to do so... Particularly if user has a number where
        * she wants us to start saving half way through. */
 #ifdef LITTLE_ENDIAN
-      buf |= (uChar) ((*(ptr--) & ((1 << src_loc) - 1)) <<
-                      (buf_loc - src_loc));
+      buf |= (uChar)((*(ptr--) & ((1 << src_loc) - 1)) <<
+                     (buf_loc - src_loc));
 #else
-      buf |= (uChar) ((*(ptr++) & ((1 << src_loc) - 1)) <<
-                      (buf_loc - src_loc));
+      buf |= (uChar)((*(ptr++) & ((1 << src_loc) - 1)) <<
+                     (buf_loc - src_loc));
 #endif
       buf_loc -= src_loc;
    } else {
       /* need to do 2 calls to store the MSB. */
       if (buf_loc != 0) {
-         buf |= (uChar) ((*ptr & ((1 << src_loc) - 1)) >>
-                         (src_loc - buf_loc));
+         buf |= (uChar)((*ptr & ((1 << src_loc) - 1)) >> (src_loc - buf_loc));
       }
       /* buf_loc is now 0, so we write it out. */
-      if (fputc ((int) buf, fp) == EOF) {
+      if (fputc((int)buf, fp) == EOF) {
          *pbufLoc = buf_loc;
          *pbuf = buf;
          return 1;
       }
-      buf = (uChar) 0;
+      buf = (uChar)0;
       /* src_loc is now src_loc - buf_loc */
       /* store rest of ptr in buf. So left shift by 8 - (src_loc -buf_loc)
        * and set buf_loc to 8 - (src_loc - buf_loc) */
-      buf_loc += (uChar) (8 - src_loc);
+      buf_loc += (uChar)(8 - src_loc);
 #ifdef LITTLE_ENDIAN
-      buf |= (uChar) (*(ptr--) << buf_loc);
+      buf |= (uChar)(*(ptr--) << buf_loc);
 #else
-      buf |= (uChar) (*(ptr++) << buf_loc);
+      buf |= (uChar)(*(ptr++) << buf_loc);
 #endif
    }
    /* src_loc should always be considered 8 from now on.. */
@@ -930,46 +925,46 @@ char fileBitWrite (void *Src, size_t srcLen, uShort2 numBits, FILE * fp,
 #endif
       if (buf_loc == 0) {
          /* Simple case where buf and src line up.. */
-         if (fputc ((int) buf, fp) == EOF) {
+         if (fputc((int)buf, fp) == EOF) {
             *pbufLoc = buf_loc;
             *pbuf = buf;
             return 1;
          }
 #ifdef LITTLE_ENDIAN
-         buf = (uChar) * (ptr--);
+         buf = (uChar)*(ptr--);
 #else
-         buf = (uChar) * (ptr++);
+         buf = (uChar)*(ptr++);
 #endif
       } else {
          /* No mask since src_loc is considered 8. */
          /* Need mask in case right shift with sign extension? Should be ok
           * since *ptr is a uChar so it fills with 0s. */
-         buf |= (uChar) ((*ptr) >> (8 - buf_loc));
+         buf |= (uChar)((*ptr) >> (8 - buf_loc));
          /* buf_loc is now 0, so we write it out. */
-         if (fputc ((int) buf, fp) == EOF) {
+         if (fputc((int)buf, fp) == EOF) {
             *pbufLoc = buf_loc;
             *pbuf = buf;
             return 1;
          }
-         buf = (uChar) 0;
+         buf = (uChar)0;
          /* src_loc is 8-buf_loc... */
          /* need to left shift by 8 - (8-buf_loc) */
 #ifdef LITTLE_ENDIAN
-         buf |= (uChar) (*(ptr--) << buf_loc);
+         buf |= (uChar)(*(ptr--) << buf_loc);
 #else
-         buf |= (uChar) (*(ptr++) << buf_loc);
+         buf |= (uChar)(*(ptr++) << buf_loc);
 #endif
       }
    }
    /* We would rather not keep a full bit buffer. */
    if (buf_loc == 0) {
-      if (fputc ((int) buf, fp) == EOF) {
+      if (fputc((int)buf, fp) == EOF) {
          *pbufLoc = buf_loc;
          *pbuf = buf;
          return 1;
       }
       buf_loc = 8;
-      buf = (uChar) 0;
+      buf = (uChar)0;
    }
    *pbufLoc = buf_loc;
    *pbuf = buf;
@@ -1000,7 +995,7 @@ char fileBitWrite (void *Src, size_t srcLen, uShort2 numBits, FILE * fp,
  *****************************************************************************
  */
 #ifdef DEBUG_ENDIAN
-int main (int argc, char **argv)
+int main(int argc, char **argv)
 {
    uChar buff[5], buff2[5];
    uChar bufLoc = 8;
@@ -1014,33 +1009,33 @@ int main (int argc, char **argv)
    buff[4] = 0x8f;
 
    bufLoc = 7;
-   memBitRead (buff2, sizeof (buff2), buff, 39, &bufLoc, &numUsed);
-   printf ("%d %d %d %d %d ", buff2[0], buff2[1], buff2[2], buff2[3],
-           buff2[4]);
-   printf ("-------should be----- ");
-   printf ("143 143 143 143 15\n");
+   memBitRead(buff2, sizeof(buff2), buff, 39, &bufLoc, &numUsed);
+   printf("%d %d %d %d %d ", buff2[0], buff2[1], buff2[2], buff2[3],
+          buff2[4]);
+   printf("-------should be----- ");
+   printf("143 143 143 143 15\n");
 
-   memset (buff, 0, sizeof (buff));
+   memset(buff, 0, sizeof(buff));
    bufLoc = 8;
    ptr = buff;
    ptr2 = buff2;
-   memBitWrite (ptr2, sizeof (buff2), ptr, 9, &bufLoc, &numUsed);
+   memBitWrite(ptr2, sizeof(buff2), ptr, 9, &bufLoc, &numUsed);
    ptr += numUsed;
    ptr2++;
-   memBitWrite (ptr2, sizeof (buff2), ptr, 7, &bufLoc, &numUsed);
+   memBitWrite(ptr2, sizeof(buff2), ptr, 7, &bufLoc, &numUsed);
    ptr += numUsed;
    ptr2++;
-   memBitWrite (ptr2, sizeof (buff2), ptr, 7, &bufLoc, &numUsed);
+   memBitWrite(ptr2, sizeof(buff2), ptr, 7, &bufLoc, &numUsed);
    ptr += numUsed;
    ptr2++;
-   memBitWrite (ptr2, sizeof (buff2), ptr, 9, &bufLoc, &numUsed);
+   memBitWrite(ptr2, sizeof(buff2), ptr, 9, &bufLoc, &numUsed);
    ptr += numUsed;
    ptr2++;
-   memBitWrite (ptr2, sizeof (buff2), ptr, 8, &bufLoc, &numUsed);
+   memBitWrite(ptr2, sizeof(buff2), ptr, 8, &bufLoc, &numUsed);
    ptr += numUsed;
-   printf ("%d %d %d %d %d ", buff[0], buff[1], buff[2], buff[3], buff[4]);
-   printf ("-------should be----- ");
-   printf ("199 143 31 143 15\n");
+   printf("%d %d %d %d %d ", buff[0], buff[1], buff[2], buff[3], buff[4]);
+   printf("-------should be----- ");
+   printf("199 143 31 143 15\n");
    return 0;
 }
 #endif

@@ -21,39 +21,39 @@
 #include "scan.h"
 #include "tendian.h"
 #include "myassert.h"
-#include "config.h" /*config.h created by configure - ADT mod*/
+#include "config.h"     /* config.h created by configure - ADT mod */
 
 /* Declare the external FORTRAN routine
  * gcc has two __ if there is one _ in the procedure name. */
 #ifdef _FORTRAN
-   extern void UNPK_G2MDL
-   (sInt4 * kfildo, sInt4 * jmin, sInt4 * lbit, sInt4 * nov, sInt4 * iwork,
-   float * ain, sInt4 * iain, sInt4 * nd2x3, sInt4 * idat, sInt4 * nidat,
-   float * rdat, sInt4 * nrdat, sInt4 * is0, sInt4 * ns0, sInt4 * is1,
-   sInt4 * ns1, sInt4 * is2, sInt4 * ns2, sInt4 * is3, sInt4 * ns3,
-   sInt4 * is4, sInt4 * ns4, sInt4 * is5, sInt4 * ns5, sInt4 * is6,
-   sInt4 * ns6, sInt4 * is7, sInt4 * ns7, sInt4 * ib, sInt4 * ibitmap,
-   sInt4 * ipack, sInt4 * nd5, float * xmissp, float * xmisss,
-   sInt4 * inew, sInt4 * iclean, sInt4 * l3264b, sInt4 * iendpk, sInt4 * jer,
-   sInt4 * ndjer, sInt4 * kjer);
+extern void UNPK_G2MDL
+      (sInt4 *kfildo, sInt4 *jmin, sInt4 *lbit, sInt4 *nov, sInt4 *iwork,
+       float *ain, sInt4 *iain, sInt4 *nd2x3, sInt4 *idat, sInt4 *nidat,
+       float *rdat, sInt4 *nrdat, sInt4 *is0, sInt4 *ns0, sInt4 *is1,
+       sInt4 *ns1, sInt4 *is2, sInt4 *ns2, sInt4 *is3, sInt4 *ns3,
+       sInt4 *is4, sInt4 *ns4, sInt4 *is5, sInt4 *ns5, sInt4 *is6,
+       sInt4 *ns6, sInt4 *is7, sInt4 *ns7, sInt4 *ib, sInt4 *ibitmap,
+       sInt4 *ipack, sInt4 *nd5, float *xmissp, float *xmisss,
+       sInt4 *inew, sInt4 *iclean, sInt4 *l3264b, sInt4 *iendpk, sInt4 *jer,
+       sInt4 *ndjer, sInt4 *kjer);
 
-   extern void PK_G2MDL
-   (sInt4 * kfildo, sInt4 * jmax, sInt4 * jmin, sInt4 * lbit, sInt4 * nov,
-   sInt4 * misslx, float * a, sInt4 * ia, sInt4 * newbox, sInt4 * newboxp,
-   float * ain, sInt4 * iain, sInt4 * nx, sInt4 * ny, sInt4 * idat,
-   sInt4 * nidat, float * rdat, sInt4 * nrdat, sInt4 * is0, sInt4 * ns0,
-   sInt4 * is1, sInt4 * ns1, sInt4 * is3, sInt4 * ns3, sInt4 * is4,
-   sInt4 * ns4, sInt4 * is5, sInt4 * ns5, sInt4 * is6, sInt4 * ns6,
-   sInt4 * is7, sInt4 * ns7, sInt4 * ib, sInt4 * ibitmap, sInt4 * ipack,
-   sInt4 * nd5, sInt4 * missp, float * xmissp, sInt4 * misss,
-   float * xmisss, sInt4 * inew, sInt4 * minpk, sInt4 * iclean,
-   sInt4 * l3264b, sInt4 * jer, sInt4 * ndjer, sInt4 * kjer);
+extern void PK_G2MDL
+      (sInt4 *kfildo, sInt4 *jmax, sInt4 *jmin, sInt4 *lbit, sInt4 *nov,
+       sInt4 *misslx, float *a, sInt4 *ia, sInt4 *newbox, sInt4 *newboxp,
+       float *ain, sInt4 *iain, sInt4 *nx, sInt4 *ny, sInt4 *idat,
+       sInt4 *nidat, float *rdat, sInt4 *nrdat, sInt4 *is0, sInt4 *ns0,
+       sInt4 *is1, sInt4 *ns1, sInt4 *is3, sInt4 *ns3, sInt4 *is4,
+       sInt4 *ns4, sInt4 *is5, sInt4 *ns5, sInt4 *is6, sInt4 *ns6,
+       sInt4 *is7, sInt4 *ns7, sInt4 *ib, sInt4 *ibitmap, sInt4 *ipack,
+       sInt4 *nd5, sInt4 *missp, float *xmissp, sInt4 *misss,
+       float *xmisss, sInt4 *inew, sInt4 *minpk, sInt4 *iclean,
+       sInt4 *l3264b, sInt4 *jer, sInt4 *ndjer, sInt4 *kjer);
 #endif
 /* Would prefer to include "gribtemplates.h" but can't since NCEP decided to
  * put a const struct in it.  The result is if I include it, I get 2 copies
  * of the data.
  */
-extern sInt4 getgridindex (sInt4 number);
+extern sInt4 getgridindex(sInt4 number);
 
 /* have now put this in grib2api.h... may bring it back. */
 #define MAXGRIDTEMP 23  /* maximum number of templates */
@@ -70,7 +70,7 @@ extern const struct gridtemplate templatesgrid[MAXGRIDTEMP];
  * put a const struct in it.  The result is if I include it, I get 2 copies
  * of the data.
  */
-extern sInt4 getpdsindex (sInt4 number);
+extern sInt4 getpdsindex(sInt4 number);
 
 /* have now put this in grib2api.h... may bring it back. */
 #define MAXPDSTEMP 23   /* maximum number of templates */
@@ -87,7 +87,7 @@ extern const struct pdstemplate templatespds[MAXPDSTEMP];
  * put a const struct in it.  The result is if I include it, I get 2 copies
  * of the data.
  */
-extern sInt4 getdrsindex (sInt4 number);
+extern sInt4 getdrsindex(sInt4 number);
 
 #define MAXDRSTEMP 8    /* maximum number of templates */
 #define MAXDRSMAPLEN 200 /* maximum template map length */
@@ -140,15 +140,15 @@ extern const struct drstemplate templatesdrs[MAXDRSTEMP];
  *****************************************************************************
  */
 #define GRIB_UNSIGN_INT2(a,b) ((a<<8)+b)
-static int mdl_LocalUnpack (unsigned char *local, sInt4 locallen,
-                            sInt4 * idat, sInt4 * nidat, float * rdat,
-                            sInt4 * nrdat)
+static int mdl_LocalUnpack(unsigned char *local, sInt4 locallen,
+                           sInt4 *idat, sInt4 *nidat, float *rdat,
+                           sInt4 *nrdat)
 {
    int BytesUsed = 0;   /* How many bytes have been used. */
    unsigned int numGroup; /* Number of groups */
    int i;               /* Counter over the groups. */
    sInt4 numVal;        /* Number of values in a given group. */
-   float refVal;       /* The reference value in a given group. */
+   float refVal;        /* The reference value in a given group. */
    unsigned int scale;  /* The power of 10 scale value in the group. */
    sInt4 recScale10;    /* 1 / 10**scale.. For faster computations. */
    unsigned char numBits; /* # of bits for a single element in the group. */
@@ -157,41 +157,41 @@ static int mdl_LocalUnpack (unsigned char *local, sInt4 locallen,
    int curIndex = 0;    /* Where to store the current data. */
    int j;               /* Counter over the number of values in a group. */
    size_t numUsed;      /* Number of bytes used in call to memBitRead. */
-   uChar bufLoc;   /* Where to read for more bits in the data stream. */
-   uInt4 uli_temp; /* Temporary storage to hold unpacked data. */
+   uChar bufLoc;        /* Where to read for more bits in the data stream. */
+   uInt4 uli_temp;      /* Temporary storage to hold unpacked data. */
 
    if (locallen < BytesUsed + 3) {
 #ifdef DEBUG
-      printf ("Locallen is too small.\n");
+      printf("Locallen is too small.\n");
 #endif
       return 5;
    }
    /* The calling routine should check octet 6, which is local[0], to be 1,
     * so we just assert it is 1. */
-   myAssert (local[0] == 1);
-   numGroup = GRIB_UNSIGN_INT2 (local[1], local[2]);
+   myAssert(local[0] == 1);
+   numGroup = GRIB_UNSIGN_INT2(local[1], local[2]);
    local += 3;
    BytesUsed += 3;
-   myAssert (*nrdat > 1);
-   myAssert (*nidat > 1);
+   myAssert(*nrdat > 1);
+   myAssert(*nidat > 1);
    idat[0] = 0;
    rdat[0] = 0;
 
    for (i = 0; i < numGroup; i++) {
       if (locallen < BytesUsed + 12) {
 #ifdef DEBUG
-         printf ("Locallen is too small.\n");
+         printf("Locallen is too small.\n");
 #endif
          return 5;
       }
-      MEMCPY_BIG (&numVal, local, sizeof (sInt4));
-      MEMCPY_BIG (&refVal, local + 4, sizeof (float));
-      scale = GRIB_UNSIGN_INT2 (local[8], local[9]);
-      recScale10 = 1 / pow (10, scale);
+      MEMCPY_BIG(&numVal, local, sizeof(sInt4));
+      MEMCPY_BIG(&refVal, local + 4, sizeof(float));
+      scale = GRIB_UNSIGN_INT2(local[8], local[9]);
+      recScale10 = 1 / pow(10, scale);
       numBits = local[10];
       if (numBits >= 32) {
 #ifdef DEBUG
-         printf ("Too many bits too unpack.\n");
+         printf("Too many bits too unpack.\n");
 #endif
          return 4;
       }
@@ -200,7 +200,7 @@ static int mdl_LocalUnpack (unsigned char *local, sInt4 locallen,
       BytesUsed += 12;
       if (locallen < BytesUsed + ((numBits * numVal) + 7) / 8) {
 #ifdef DEBUG
-         printf ("Locallen is too small.\n");
+         printf("Locallen is too small.\n");
 #endif
          return 5;
       }
@@ -208,7 +208,7 @@ static int mdl_LocalUnpack (unsigned char *local, sInt4 locallen,
          f_firstType = f_dataType;
       } else if (f_firstType != f_dataType) {
 #ifdef DEBUG
-         printf ("Local use data has mixed float/integer type?\n");
+         printf("Local use data has mixed float/integer type?\n");
 #endif
          return 1;
       }
@@ -217,7 +217,7 @@ static int mdl_LocalUnpack (unsigned char *local, sInt4 locallen,
          /* Floating point data. */
          if (*nrdat < (curIndex + numVal + 3)) {
 #ifdef DEBUG
-            printf ("nrdat is not large enough.\n");
+            printf("nrdat is not large enough.\n");
 #endif
             return 2;
          }
@@ -226,8 +226,8 @@ static int mdl_LocalUnpack (unsigned char *local, sInt4 locallen,
          rdat[curIndex] = scale;
          curIndex++;
          for (j = 0; j < numVal; j++) {
-            memBitRead (&uli_temp, sizeof (sInt4), local, numBits,
-                        &bufLoc, &numUsed);
+            memBitRead(&uli_temp, sizeof(sInt4), local, numBits,
+                       &bufLoc, &numUsed);
             local += numUsed;
             BytesUsed += numUsed;
             rdat[curIndex] = (refVal + uli_temp) * recScale10;
@@ -238,7 +238,7 @@ static int mdl_LocalUnpack (unsigned char *local, sInt4 locallen,
          /* Integer point data. */
          if (*nidat < (curIndex + numVal + 3)) {
 #ifdef DEBUG
-            printf ("nidat is not large enough.\n");
+            printf("nidat is not large enough.\n");
 #endif
             return 3;
          }
@@ -247,8 +247,8 @@ static int mdl_LocalUnpack (unsigned char *local, sInt4 locallen,
          idat[curIndex] = scale;
          curIndex++;
          for (j = 0; j < numVal; j++) {
-            memBitRead (&uli_temp, sizeof (sInt4), local, numBits,
-                        &bufLoc, &numUsed);
+            memBitRead(&uli_temp, sizeof(sInt4), local, numBits,
+                       &bufLoc, &numUsed);
             local += numUsed;
             BytesUsed += numUsed;
             idat[curIndex] = (refVal + uli_temp) * recScale10;
@@ -296,10 +296,9 @@ static int mdl_LocalUnpack (unsigned char *local, sInt4 locallen,
  * NOTES
  *****************************************************************************
  */
-static int fillOutSectLen (unsigned char *c_ipack, int lenCpack,
-                           int subgNum, sInt4 * is2, sInt4 * is3,
-                           sInt4 * is4, sInt4 * is5, sInt4 * is6,
-                           sInt4 * is7)
+static int fillOutSectLen(unsigned char *c_ipack, int lenCpack,
+                          int subgNum, sInt4 *is2, sInt4 *is3,
+                          sInt4 *is4, sInt4 *is5, sInt4 *is6, sInt4 *is7)
 {
    sInt4 offset = 0;    /* How far in c_ipack we have read. */
    sInt4 sectLen;       /* The length of the current section. */
@@ -308,25 +307,25 @@ static int fillOutSectLen (unsigned char *c_ipack, int lenCpack,
 
    if (lenCpack < 5) {
 #ifdef DEBUG
-      printf ("Cpack is not large enough.\n");
+      printf("Cpack is not large enough.\n");
 #endif
       return 1;
    }
    /* assert that we start with data in either section 2 or 3. */
-   myAssert ((c_ipack[4] == 2) || (c_ipack[4] == 3));
+   myAssert((c_ipack[4] == 2) || (c_ipack[4] == 3));
    while (gNum <= subgNum) {
       if (lenCpack < offset + 5) {
 #ifdef DEBUG
-         printf ("Cpack is not large enough.\n");
+         printf("Cpack is not large enough.\n");
 #endif
          return 1;
       }
-      MEMCPY_BIG (&sectLen, c_ipack + offset, sizeof (sInt4));
+      MEMCPY_BIG(&sectLen, c_ipack + offset, sizeof(sInt4));
       /* Check if we just read section 8.  If so, then it is "7777" =
        * 926365495 regardless of endian'ness. */
       if (sectLen == 926365495L) {
 #ifdef DEBUG
-         printf ("Shouldn't see sect 8. Should stop after correct sect 7\n");
+         printf("Shouldn't see sect 8. Should stop after correct sect 7\n");
 #endif
          return 2;
       }
@@ -353,7 +352,7 @@ static int fillOutSectLen (unsigned char *c_ipack, int lenCpack,
             break;
          default:
 #ifdef DEBUG
-            printf ("Invalid section id %d.\n", sectId);
+            printf("Invalid section id %d.\n", sectId);
 #endif
             return 2;
       }
@@ -401,18 +400,18 @@ static int fillOutSectLen (unsigned char *c_ipack, int lenCpack,
  *   May want to disable the scan adjustment in the future.
  *****************************************************************************
  */
-static int TransferInt (float * fld, sInt4 ngrdpts, sInt4 ibitmap,
-                        sInt4 * bmap, char f_ignoreScan, sInt4 * scan,
-                        sInt4 nx, sInt4 ny, sInt4 iclean, float xmissp,
-                        sInt4 * iain, sInt4 nd2x3, sInt4 * ib)
+static int TransferInt(float *fld, sInt4 ngrdpts, sInt4 ibitmap,
+                       sInt4 *bmap, char f_ignoreScan, sInt4 *scan,
+                       sInt4 nx, sInt4 ny, sInt4 iclean, float xmissp,
+                       sInt4 *iain, sInt4 nd2x3, sInt4 *ib)
 {
    int i;               /* loop counter over all grid points. */
-   sInt4 x, y;       /* Where we are in a grid of scan value 0100???? */
+   sInt4 x, y;          /* Where we are in a grid of scan value 0100???? */
    int curIndex;        /* Where in iain to store the current data. */
 
    if (nd2x3 < ngrdpts) {
 #ifdef DEBUG
-      printf ("nd2x3(%ld) is < ngrdpts(%ld)\n", nd2x3, ngrdpts);
+      printf("nd2x3(%ld) is < ngrdpts(%ld)\n", nd2x3, ngrdpts);
 #endif
       return 1;
    }
@@ -435,16 +434,16 @@ static int TransferInt (float * fld, sInt4 ngrdpts, sInt4 ibitmap,
    } else {
       if (nx * ny != ngrdpts) {
 #ifdef DEBUG
-         printf ("nx * ny (%ld) != ngrdpts(%ld)\n", nx * ny, ngrdpts);
+         printf("nx * ny (%ld) != ngrdpts(%ld)\n", nx * ny, ngrdpts);
 #endif
          return 2;
       }
       if (ibitmap) {
          for (i = 0; i < ngrdpts; i++) {
-            ScanIndex2XY (i, &x, &y, *scan, nx, ny);
+            ScanIndex2XY(i, &x, &y, *scan, nx, ny);
             /* ScanIndex returns value as if scan was 0100(0000) */
             curIndex = (x - 1) + (y - 1) * nx;
-            myAssert (curIndex < nd2x3);
+            myAssert(curIndex < nd2x3);
             ib[curIndex] = bmap[i];
             /* Check if we are supposed to insert xmissp into the field */
             if ((iclean != 0) && (ib[curIndex] == 0)) {
@@ -455,10 +454,10 @@ static int TransferInt (float * fld, sInt4 ngrdpts, sInt4 ibitmap,
          }
       } else {
          for (i = 0; i < ngrdpts; i++) {
-            ScanIndex2XY (i, &x, &y, *scan, nx, ny);
+            ScanIndex2XY(i, &x, &y, *scan, nx, ny);
             /* ScanIndex returns value as if scan was 0100(0000) */
             curIndex = (x - 1) + (y - 1) * nx;
-            myAssert (curIndex < nd2x3);
+            myAssert(curIndex < nd2x3);
             iain[curIndex] = fld[i];
          }
       }
@@ -506,18 +505,18 @@ static int TransferInt (float * fld, sInt4 ngrdpts, sInt4 ibitmap,
  *   May want to disable the scan adjustment in the future.
  *****************************************************************************
  */
-static int TransferFloat (float * fld, sInt4 ngrdpts, sInt4 ibitmap,
-                          sInt4 * bmap, char f_ignoreScan, sInt4 * scan,
-                          sInt4 nx, sInt4 ny, sInt4 iclean, float xmissp,
-                          float * ain, sInt4 nd2x3, sInt4 * ib)
+static int TransferFloat(float *fld, sInt4 ngrdpts, sInt4 ibitmap,
+                         sInt4 *bmap, char f_ignoreScan, sInt4 *scan,
+                         sInt4 nx, sInt4 ny, sInt4 iclean, float xmissp,
+                         float *ain, sInt4 nd2x3, sInt4 *ib)
 {
    int i;               /* loop counter over all grid points. */
-   sInt4 x, y;       /* Where we are in a grid of scan value 0100???? */
+   sInt4 x, y;          /* Where we are in a grid of scan value 0100???? */
    int curIndex;        /* Where in ain to store the current data. */
 
    if (nd2x3 < ngrdpts) {
 #ifdef DEBUG
-      printf ("nd2x3(%ld) is < ngrdpts(%ld)\n", nd2x3, ngrdpts);
+      printf("nd2x3(%ld) is < ngrdpts(%ld)\n", nd2x3, ngrdpts);
 #endif
       return 1;
    }
@@ -540,16 +539,16 @@ static int TransferFloat (float * fld, sInt4 ngrdpts, sInt4 ibitmap,
    } else {
       if (nx * ny != ngrdpts) {
 #ifdef DEBUG
-         printf ("nx * ny (%ld) != ngrdpts(%ld)\n", nx * ny, ngrdpts);
+         printf("nx * ny (%ld) != ngrdpts(%ld)\n", nx * ny, ngrdpts);
 #endif
          return 2;
       }
       if (ibitmap) {
          for (i = 0; i < ngrdpts; i++) {
-            ScanIndex2XY (i, &x, &y, *scan, nx, ny);
+            ScanIndex2XY(i, &x, &y, *scan, nx, ny);
             /* ScanIndex returns value as if scan was 0100(0000) */
             curIndex = (x - 1) + (y - 1) * nx;
-            myAssert (curIndex < nd2x3);
+            myAssert(curIndex < nd2x3);
             ib[curIndex] = bmap[i];
             /* Check if we are supposed to insert xmissp into the field */
             if ((iclean != 0) && (ib[curIndex] == 0)) {
@@ -560,10 +559,10 @@ static int TransferFloat (float * fld, sInt4 ngrdpts, sInt4 ibitmap,
          }
       } else {
          for (i = 0; i < ngrdpts; i++) {
-            ScanIndex2XY (i, &x, &y, *scan, nx, ny);
+            ScanIndex2XY(i, &x, &y, *scan, nx, ny);
             /* ScanIndex returns value as if scan was 0100(0000) */
             curIndex = (x - 1) + (y - 1) * nx;
-            myAssert (curIndex < nd2x3);
+            myAssert(curIndex < nd2x3);
             ain[curIndex] = fld[i];
          }
       }
@@ -584,16 +583,16 @@ static int TransferFloat (float * fld, sInt4 ngrdpts, sInt4 ibitmap,
 }
 
 #ifdef PKNCEP
-int pk_g2ncep (sInt4 * kfildo, float * ain, sInt4 * iain, sInt4 * nx,
-               sInt4 * ny, sInt4 * idat, sInt4 * nidat, float * rdat,
-               sInt4 * nrdat, sInt4 * is0, sInt4 * ns0, sInt4 * is1,
-               sInt4 * ns1, sInt4 * is3, sInt4 * ns3, sInt4 * is4,
-               sInt4 * ns4, sInt4 * is5, sInt4 * ns5, sInt4 * is6,
-               sInt4 * ns6, sInt4 * is7, sInt4 * ns7, sInt4 * ib,
-               sInt4 * ibitmap, unsigned char *cgrib, sInt4 * nd5,
-               sInt4 * missp, float * xmissp, sInt4 * misss,
-               float * xmisss, sInt4 * inew, sInt4 * minpk, sInt4 * iclean,
-               sInt4 * l3264b, sInt4 * jer, sInt4 * ndjer, sInt4 * kjer)
+int pk_g2ncep(sInt4 *kfildo, float *ain, sInt4 *iain, sInt4 *nx,
+              sInt4 *ny, sInt4 *idat, sInt4 *nidat, float *rdat,
+              sInt4 *nrdat, sInt4 *is0, sInt4 *ns0, sInt4 *is1,
+              sInt4 *ns1, sInt4 *is3, sInt4 *ns3, sInt4 *is4,
+              sInt4 *ns4, sInt4 *is5, sInt4 *ns5, sInt4 *is6,
+              sInt4 *ns6, sInt4 *is7, sInt4 *ns7, sInt4 *ib,
+              sInt4 *ibitmap, unsigned char *cgrib, sInt4 *nd5,
+              sInt4 *missp, float *xmissp, sInt4 *misss,
+              float *xmisss, sInt4 *inew, sInt4 *minpk, sInt4 *iclean,
+              sInt4 *l3264b, sInt4 *jer, sInt4 *ndjer, sInt4 *kjer)
 {
    g2int listsec0[2];
    g2int listsec1[13];
@@ -619,11 +618,11 @@ int pk_g2ncep (sInt4 * kfildo, float * ain, sInt4 * iain, sInt4 * nx,
    listsec1[11] = is1[19];
    listsec1[12] = is1[20];
 
-   ierr = g2_create (cgrib, listsec0, listsec1);
-   printf ("Length = %d\n", ierr);
+   ierr = g2_create(cgrib, listsec0, listsec1);
+   printf("Length = %d\n", ierr);
 
    if ((idat[0] != 0) || (rdat[0] != 0)) {
-      printf ("Don't handle this yet.\n");
+      printf("Don't handle this yet.\n");
 /*
       ierr = g2_addlocal (cgrib, unsigned char *csec2, g2int lcsec2);
 */
@@ -635,15 +634,15 @@ int pk_g2ncep (sInt4 * kfildo, float * ain, sInt4 * iain, sInt4 * nx,
    igds[3] = is3[11];
    igds[4] = is3[12];
 
-IS3(15) -  IS3(nn) = Grid Definition Template, stored in bytes 15-nn (*)
+   IS3(15) - IS3(nn) = Grid Definition Template, stored in bytes 15 - nn(*)
 
-   ierr = g2_addgrid (cgrib, igds, g2int *igdstmpl, g2int *ideflist,
-                      g2int idefnum)
-
-
+         ierr = g2_addgrid(cgrib, igds, g2int * igdstmpl, g2int * ideflist,
+                           g2int idefnum)
 
 
-   return 0;
+
+
+         return 0;
 /*
 
 To start a new GRIB2 message, call function g2_create.  G2_create
@@ -784,16 +783,16 @@ is required for each GRIB2 message.
  * gfld->num_coord = number of values in array gfld->coord_list[].
  *****************************************************************************
  */
-void unpk_g2ncep (sInt4 * kfildo, float * ain, sInt4 * iain, sInt4 * nd2x3,
-                  sInt4 * idat, sInt4 * nidat, float * rdat, sInt4 * nrdat,
-                  sInt4 * is0, sInt4 * ns0, sInt4 * is1, sInt4 * ns1,
-                  sInt4 * is2, sInt4 * ns2, sInt4 * is3, sInt4 * ns3,
-                  sInt4 * is4, sInt4 * ns4, sInt4 * is5, sInt4 * ns5,
-                  sInt4 * is6, sInt4 * ns6, sInt4 * is7, sInt4 * ns7,
-                  sInt4 * ib, sInt4 * ibitmap, unsigned char *c_ipack,
-                  sInt4 * nd5, float * xmissp, float * xmisss,
-                  sInt4 * inew, sInt4 * iclean, sInt4 * l3264b,
-                  sInt4 * iendpk, sInt4 * jer, sInt4 * ndjer, sInt4 * kjer)
+void unpk_g2ncep(sInt4 *kfildo, float *ain, sInt4 *iain, sInt4 *nd2x3,
+                 sInt4 *idat, sInt4 *nidat, float *rdat, sInt4 *nrdat,
+                 sInt4 *is0, sInt4 *ns0, sInt4 *is1, sInt4 *ns1,
+                 sInt4 *is2, sInt4 *ns2, sInt4 *is3, sInt4 *ns3,
+                 sInt4 *is4, sInt4 *ns4, sInt4 *is5, sInt4 *ns5,
+                 sInt4 *is6, sInt4 *ns6, sInt4 *is7, sInt4 *ns7,
+                 sInt4 *ib, sInt4 *ibitmap, unsigned char *c_ipack,
+                 sInt4 *nd5, float *xmissp, float *xmisss,
+                 sInt4 *inew, sInt4 *iclean, sInt4 *l3264b,
+                 sInt4 *iendpk, sInt4 *jer, sInt4 *ndjer, sInt4 *kjer)
 {
    int i;               /* A counter used for a number of purposes. */
    static unsigned int subgNum = 0; /* The sub grid we read most recently.
@@ -814,24 +813,24 @@ void unpk_g2ncep (sInt4 * kfildo, float * ain, sInt4 * iain, sInt4 * nd2x3,
    int scanIndex;       /* Where in is3 to find the scan mode. */
    int nxIndex;         /* Where in is3 to find the number of x values. */
    int nyIndex;         /* Where in is3 to find the number of y values. */
-   float f_temp;       /* Assist with handling weird MDL behavior in is5[] */
+   float f_temp;        /* Assist with handling weird MDL behavior in is5[] */
    char f_ignoreScan;   /* Flag to ignore the attempt at changing the scan */
    sInt4 dummyScan;     /* Dummy place holder for call to Transfer routines
                          * if ignoring scan. */
 
-   myAssert (*ndjer >= 8);
+   myAssert(*ndjer >= 8);
    /* Init the error handling array. */
-   memset ((void *) jer, 0, 2 * *ndjer * sizeof (sInt4));
+   memset((void *)jer, 0, 2 * *ndjer * sizeof(sInt4));
    for (i = 0; i < 8; i++) {
       jer[i] = i * 100;
    }
    *kjer = 8;
 
-   /* The first time in, figure out how many grids there are, and store it
-    * in numfields for subsequent calls with inew != 1. */
+   /* The first time in, figure out how many grids there are, and store it in 
+    * numfields for subsequent calls with inew != 1. */
    if (*inew == 1) {
       subgNum = 0;
-      ierr = g2_info (c_ipack, listsec0, listsec1, &numfields, &numlocal);
+      ierr = g2_info(c_ipack, listsec0, listsec1, &numfields, &numlocal);
       if (ierr != 0) {
          switch (ierr) {
             case 1:    /* Beginning characters "GRIB" not found. */
@@ -863,7 +862,7 @@ void unpk_g2ncep (sInt4 * kfildo, float * ain, sInt4 * iain, sInt4 * nd2x3,
    /* Expand the desired subgrid. */
    unpack = 1;
    expand = 1;
-   ierr = g2_getfld (c_ipack, subgNum + 1, unpack, expand, &gfld);
+   ierr = g2_getfld(c_ipack, subgNum + 1, unpack, expand, &gfld);
    if (ierr != 0) {
       switch (ierr) {
          case 1:       /* Beginning characters "GRIB" not found. */
@@ -911,32 +910,32 @@ void unpk_g2ncep (sInt4 * kfildo, float * ain, sInt4 * iain, sInt4 * nd2x3,
             *kjer = 9;
             break;
       }
-      g2_free (gfld);
+      g2_free(gfld);
       return;
    }
    /* Check if data wasn't unpacked. */
    if (!gfld->unpacked) {
       jer[0 + *ndjer] = 2;
       *kjer = 1;
-      g2_free (gfld);
+      g2_free(gfld);
       return;
    }
 
    /* Start going through the gfld structure and converting it to the needed
     * data output formats. */
-   myAssert (*ns0 >= 16);
-   MEMCPY_BIG (&(is0[0]), c_ipack, sizeof (sInt4));
+   myAssert(*ns0 >= 16);
+   MEMCPY_BIG(&(is0[0]), c_ipack, sizeof(sInt4));
    is0[6] = gfld->discipline;
    is0[7] = gfld->version;
-   MEMCPY_BIG (&(is0[8]), c_ipack + 8, sizeof (sInt4));
+   MEMCPY_BIG(&(is0[8]), c_ipack + 8, sizeof(sInt4));
    /* The following assert fails only if the GRIB message is more that 4
     * giga-bytes large, which I think would break the fortran library. */
-   myAssert (is0[8] == 0);
-   MEMCPY_BIG (&(is0[8]), c_ipack + 12, sizeof (sInt4));
+   myAssert(is0[8] == 0);
+   MEMCPY_BIG(&(is0[8]), c_ipack + 12, sizeof(sInt4));
 
-   myAssert (*ns1 >= 21);
-   myAssert (gfld->idsectlen >= 13);
-   MEMCPY_BIG (&(is1[0]), c_ipack + 16, sizeof (sInt4));
+   myAssert(*ns1 >= 21);
+   myAssert(gfld->idsectlen >= 13);
+   MEMCPY_BIG(&(is1[0]), c_ipack + 16, sizeof(sInt4));
    is1[4] = c_ipack[20];
    is1[5] = gfld->idsect[0];
    is1[7] = gfld->idsect[1];
@@ -955,19 +954,19 @@ void unpk_g2ncep (sInt4 * kfildo, float * ain, sInt4 * iain, sInt4 * nd2x3,
    /* Fill out section lengths (separate procedure because of possibility of
     * having multiple grids.  Should combine fillOutSectLen g2_info, and
     * g2_getfld into one procedure to optimize it. */
-   fillOutSectLen (c_ipack + 16 + is1[0], 4 * *nd5 - 15 - is1[0], subgNum,
-                   is2, is3, is4, is5, is6, is7);
+   fillOutSectLen(c_ipack + 16 + is1[0], 4 * *nd5 - 15 - is1[0], subgNum,
+                  is2, is3, is4, is5, is6, is7);
 
    /* Check if there is section 2 data. */
    if (gfld->locallen > 0) {
       /* The + 1 is so we don't overwrite the section length */
-      memset ((void *) (is2 + 1), 0, (*ns2 - 1) * sizeof (sInt4));
+      memset((void *)(is2 + 1), 0, (*ns2 - 1) * sizeof(sInt4));
       is2[4] = 2;
       is2[5] = gfld->local[0];
       /* check if MDL Local use simple packed data */
       if (is2[5] == 1) {
-         mdl_LocalUnpack (gfld->local, gfld->locallen, idat, nidat,
-                          rdat, nrdat);
+         mdl_LocalUnpack(gfld->local, gfld->locallen, idat, nidat,
+                         rdat, nrdat);
       } else {
          /* local use section was not MDL packed, return it in is2. */
          for (i = 0; i < gfld->locallen; i++) {
@@ -988,24 +987,24 @@ void unpk_g2ncep (sInt4 * kfildo, float * ain, sInt4 * iain, sInt4 * nd2x3,
       jer[8 + *ndjer] = 2;
       jer[8] = 2001;    /* nd2x3 is not large enough */
       *kjer = 9;
-      g2_free (gfld);
+      g2_free(gfld);
       return;
    }
    is3[10] = gfld->numoct_opt;
    is3[11] = gfld->interp_opt;
    is3[12] = gfld->igdtnum;
-   gridIndex = getgridindex (gfld->igdtnum);
+   gridIndex = getgridindex(gfld->igdtnum);
    if (gridIndex == -1) {
       jer[8 + *ndjer] = 2;
       jer[8] = 2003;    /* undefined sect 3 template */
       *kjer = 9;
-      g2_free (gfld);
+      g2_free(gfld);
       return;
    }
    curIndex = 14;
    for (i = 0; i < gfld->igdtlen; i++) {
       is3[curIndex] = gfld->igdtmpl[i];
-      curIndex += abs (templatesgrid[gridIndex].mapgrid[i]);
+      curIndex += abs(templatesgrid[gridIndex].mapgrid[i]);
    }
    /* API attempts to return grid in scan mode 0100????.  Find the necessary
     * indexes into the is3 array for the attempt. */
@@ -1061,47 +1060,47 @@ void unpk_g2ncep (sInt4 * kfildo, float * ain, sInt4 * iain, sInt4 * nd2x3,
    is4[4] = 4;
    is4[5] = gfld->num_coord;
    is4[7] = gfld->ipdtnum;
-   pdsIndex = getpdsindex (gfld->ipdtnum);
+   pdsIndex = getpdsindex(gfld->ipdtnum);
    if (pdsIndex == -1) {
       jer[8 + *ndjer] = 2;
       jer[8] = 2004;    /* undefined sect 4 template */
       *kjer = 9;
-      g2_free (gfld);
+      g2_free(gfld);
       return;
    }
    curIndex = 9;
    for (i = 0; i < gfld->ipdtlen; i++) {
       is4[curIndex] = gfld->ipdtmpl[i];
-      curIndex += abs (templatespds[pdsIndex].mappds[i]);
+      curIndex += abs(templatespds[pdsIndex].mappds[i]);
    }
 
    is5[4] = 5;
    is5[5] = gfld->ndpts;
    is5[9] = gfld->idrtnum;
-   drsIndex = getdrsindex (gfld->idrtnum);
+   drsIndex = getdrsindex(gfld->idrtnum);
    if (drsIndex == -1) {
       jer[8 + *ndjer] = 2;
       jer[8] = 2005;    /* undefined sect 5 template */
       *kjer = 9;
-      g2_free (gfld);
+      g2_free(gfld);
       return;
    }
    curIndex = 11;
    for (i = 0; i < gfld->idrtlen; i++) {
       is5[curIndex] = gfld->idrtmpl[i];
-      curIndex += abs (templatesdrs[drsIndex].mapdrs[i]);
+      curIndex += abs(templatesdrs[drsIndex].mapdrs[i]);
    }
    /* Mimic MDL's handling of reference value (IS5(12)) */
-   memcpy (&f_temp, &(is5[11]), sizeof (float));
-   is5[11] = (sInt4) f_temp;
+   memcpy(&f_temp, &(is5[11]), sizeof(float));
+   is5[11] = (sInt4)f_temp;
    if ((is5[9] == 2) || (is5[9] == 3)) {
       if (is5[20] == 0) {
-         memcpy (&(f_temp), &(is5[23]), sizeof (float));
+         memcpy(&(f_temp), &(is5[23]), sizeof(float));
          *xmissp = f_temp;
-         is5[23] = (sInt4) f_temp;
-         memcpy (&(f_temp), &(is5[27]), sizeof (float));
+         is5[23] = (sInt4)f_temp;
+         memcpy(&(f_temp), &(is5[27]), sizeof(float));
          *xmisss = f_temp;
-         is5[27] = (sInt4) f_temp;
+         is5[27] = (sInt4)f_temp;
       } else {
          *xmissp = is5[23];
          *xmisss = is5[27];
@@ -1125,42 +1124,41 @@ void unpk_g2ncep (sInt4 * kfildo, float * ain, sInt4 * iain, sInt4 * nd2x3,
    }
 
    /* Check type of original field, before transfering the memory. */
-   myAssert (*ns5 > 20);
+   myAssert(*ns5 > 20);
    /* Check if NCEP had problems expanding the data.  If so we currently
     * abort.  May need to revisit this behavior. */
    if (!gfld->expanded) {
       jer[0 + *ndjer] = 2;
       *kjer = 1;
-      g2_free (gfld);
+      g2_free(gfld);
       return;
    }
    f_ignoreScan = 0;
-   /* Check if integer type... is5[20] == 1 implies integer (code table
-    * 5.1), but only for certain templates. (0,1,2,3,40,41,40000,40010).
-    * (not 50,51) */
+   /* Check if integer type... is5[20] == 1 implies integer (code table 5.1), 
+    * but only for certain templates. (0,1,2,3,40,41,40000,40010). (not
+    * 50,51) */
    if ((is5[20] == 1) && ((is5[9] != 50) && (is5[9] != 51))) {
       /* integer data, use iain */
       if ((scanIndex < 0) || (nxIndex < 0) || (nyIndex < 0)) {
-         ierr = TransferInt (gfld->fld, gfld->ngrdpts, *ibitmap, gfld->bmap,
-                             1, &(dummyScan), 0, 0, *iclean, *xmissp,
-                             iain, *nd2x3, ib);
+         ierr = TransferInt(gfld->fld, gfld->ngrdpts, *ibitmap, gfld->bmap,
+                            1, &(dummyScan), 0, 0, *iclean, *xmissp,
+                            iain, *nd2x3, ib);
       } else {
-         ierr = TransferInt (gfld->fld, gfld->ngrdpts, *ibitmap, gfld->bmap,
-                             f_ignoreScan, &(is3[scanIndex]), is3[nxIndex],
-                             is3[nyIndex], *iclean, *xmissp, iain, *nd2x3,
-                             ib);
+         ierr = TransferInt(gfld->fld, gfld->ngrdpts, *ibitmap, gfld->bmap,
+                            f_ignoreScan, &(is3[scanIndex]), is3[nxIndex],
+                            is3[nyIndex], *iclean, *xmissp, iain, *nd2x3, ib);
       }
    } else {
       /* float data, use ain */
       if ((scanIndex < 0) || (nxIndex < 0) || (nyIndex < 0)) {
-         ierr = TransferFloat (gfld->fld, gfld->ngrdpts, *ibitmap,
-                               gfld->bmap, 1, &(dummyScan), 0, 0, *iclean,
-                               *xmissp, ain, *nd2x3, ib);
+         ierr = TransferFloat(gfld->fld, gfld->ngrdpts, *ibitmap,
+                              gfld->bmap, 1, &(dummyScan), 0, 0, *iclean,
+                              *xmissp, ain, *nd2x3, ib);
       } else {
-         ierr = TransferFloat (gfld->fld, gfld->ngrdpts, *ibitmap,
-                               gfld->bmap, f_ignoreScan, &(is3[scanIndex]),
-                               is3[nxIndex], is3[nyIndex], *iclean, *xmissp,
-                               ain, *nd2x3, ib);
+         ierr = TransferFloat(gfld->fld, gfld->ngrdpts, *ibitmap,
+                              gfld->bmap, f_ignoreScan, &(is3[scanIndex]),
+                              is3[nxIndex], is3[nyIndex], *iclean, *xmissp,
+                              ain, *nd2x3, ib);
       }
    }
    if (ierr != 0) {
@@ -1178,10 +1176,10 @@ void unpk_g2ncep (sInt4 * kfildo, float * ain, sInt4 * iain, sInt4 * nd2x3,
             jer[8] = 9999; /* Unknown error message. */
             *kjer = 9;
       }
-      g2_free (gfld);
+      g2_free(gfld);
       return;
    }
-   g2_free (gfld);
+   g2_free(gfld);
 }
 
 /*****************************************************************************
@@ -1231,80 +1229,80 @@ void unpk_g2ncep (sInt4 * kfildo, float * ain, sInt4 * iain, sInt4 * nd2x3,
  * NOTES
  *****************************************************************************
  */
-static int validate (char *filename, float * ain, sInt4 * iain,
-                     sInt4 * nd2x3, sInt4 * idat, sInt4 * nidat,
-                     float * rdat, sInt4 * nrdat, sInt4 * is0, sInt4 * ns0,
-                     sInt4 * is1, sInt4 * ns1, sInt4 * is2, sInt4 * ns2,
-                     sInt4 * is3, sInt4 * ns3, sInt4 * is4, sInt4 * ns4,
-                     sInt4 * is5, sInt4 * ns5, sInt4 * is6, sInt4 * ns6,
-                     sInt4 * is7, sInt4 * ns7, sInt4 * ib, sInt4 * ibitmap,
-                     float * xmissp, float * xmisss, sInt4 * iendpk,
-                     sInt4 * jer, sInt4 * ndjer, sInt4 * kjer)
+static int validate(char *filename, float *ain, sInt4 *iain,
+                    sInt4 *nd2x3, sInt4 *idat, sInt4 *nidat,
+                    float *rdat, sInt4 *nrdat, sInt4 *is0, sInt4 *ns0,
+                    sInt4 *is1, sInt4 *ns1, sInt4 *is2, sInt4 *ns2,
+                    sInt4 *is3, sInt4 *ns3, sInt4 *is4, sInt4 *ns4,
+                    sInt4 *is5, sInt4 *ns5, sInt4 *is6, sInt4 *ns6,
+                    sInt4 *is7, sInt4 *ns7, sInt4 *ib, sInt4 *ibitmap,
+                    float *xmissp, float *xmisss, sInt4 *iendpk,
+                    sInt4 *jer, sInt4 *ndjer, sInt4 *kjer)
 {
    FILE *fp;            /* Open file to write to. */
    int i;               /* Counter for printing to file. */
 
-   if ((fp = fopen (filename, "wt")) == NULL) {
+   if ((fp = fopen(filename, "wt")) == NULL) {
 #ifdef DEBUG
-      printf ("unable to open %s for write\n", filename);
+      printf("unable to open %s for write\n", filename);
 #endif
       return -1;
    }
    for (i = 0; i < *ns0; i++) {
-      fprintf (fp, "Sect 0 : %d of %ld : %ld\n", i, *ns0, is0[i]);
+      fprintf(fp, "Sect 0 : %d of %ld : %ld\n", i, *ns0, is0[i]);
    }
    for (i = 0; i < *ns1; i++) {
-      fprintf (fp, "Sect 1 : %d of %ld : %ld\n", i, *ns1, is1[i]);
+      fprintf(fp, "Sect 1 : %d of %ld : %ld\n", i, *ns1, is1[i]);
    }
    for (i = 0; i < *ns2; i++) {
-      fprintf (fp, "Sect 2 : %d of %ld : %ld\n", i, *ns2, is2[i]);
+      fprintf(fp, "Sect 2 : %d of %ld : %ld\n", i, *ns2, is2[i]);
    }
    for (i = 0; i < idat[0]; i++) {
-      fprintf (fp, "idat : %d of %ld : %ld\n", i, idat[0], idat[i]);
+      fprintf(fp, "idat : %d of %ld : %ld\n", i, idat[0], idat[i]);
    }
    for (i = 0; i < rdat[0]; i++) {
-      fprintf (fp, "rdat : %d of %f : %f\n", i, rdat[0], rdat[i]);
+      fprintf(fp, "rdat : %d of %f : %f\n", i, rdat[0], rdat[i]);
    }
    for (i = 0; i < *ns3; i++) {
-      fprintf (fp, "Sect 3 : %d of %ld : %ld\n", i, *ns3, is3[i]);
+      fprintf(fp, "Sect 3 : %d of %ld : %ld\n", i, *ns3, is3[i]);
    }
    for (i = 0; i < *ns4; i++) {
-      fprintf (fp, "Sect 4 : %d of %ld : %ld\n", i, *ns4, is4[i]);
+      fprintf(fp, "Sect 4 : %d of %ld : %ld\n", i, *ns4, is4[i]);
    }
    for (i = 0; i < *ns5; i++) {
-      fprintf (fp, "Sect 5 : %d of %ld : %ld\n", i, *ns5, is5[i]);
+      fprintf(fp, "Sect 5 : %d of %ld : %ld\n", i, *ns5, is5[i]);
    }
    for (i = 0; i < *ns6; i++) {
-      fprintf (fp, "Sect 6 : %d of %ld : %ld\n", i, *ns6, is6[i]);
+      fprintf(fp, "Sect 6 : %d of %ld : %ld\n", i, *ns6, is6[i]);
    }
    for (i = 0; i < *ns7; i++) {
-      fprintf (fp, "Sect 7 : %d of %ld : %ld\n", i, *ns7, is7[i]);
+      fprintf(fp, "Sect 7 : %d of %ld : %ld\n", i, *ns7, is7[i]);
    }
-   fprintf (fp, "Xmissp = %f\n", *xmissp);
-   fprintf (fp, "xmisss = %f\n", *xmisss);
+   fprintf(fp, "Xmissp = %f\n", *xmissp);
+   fprintf(fp, "xmisss = %f\n", *xmisss);
    if ((is5[9] == 0) || (is5[9] == 1) || (is5[9] == 2) || (is5[9] == 3)) {
       if (is5[20] == 1) {
          for (i = 0; i < *nd2x3; i++) {
-            fprintf (fp, "Int Data : %d of %ld : %ld\n", i, *nd2x3, iain[i]);
+            fprintf(fp, "Int Data : %d of %ld : %ld\n", i, *nd2x3, iain[i]);
          }
       }
    } else {
       for (i = 0; i < *nd2x3; i++) {
-         fprintf (fp, "Float Data : %d of %ld : %f\n", i, *nd2x3, ain[i]);
+         fprintf(fp, "Float Data : %d of %ld : %f\n", i, *nd2x3, ain[i]);
       }
    }
-   fprintf (fp, "ibitmap = %ld\n", *ibitmap);
+   fprintf(fp, "ibitmap = %ld\n", *ibitmap);
    if (*ibitmap) {
       for (i = 0; i < *nd2x3; i++) {
-         fprintf (fp, "Bitmap Data : %d of %ld : %ld\n", i, *nd2x3, ib[i]);
+         fprintf(fp, "Bitmap Data : %d of %ld : %ld\n", i, *nd2x3, ib[i]);
       }
    }
    for (i = 0; i < *ndjer; i++) {
-      fprintf (fp, "jer(i,1) %ld jer(i,2) %ld\n", jer[i], jer[i + *ndjer]);
+      fprintf(fp, "jer(i,1) %ld jer(i,2) %ld\n", jer[i], jer[i + *ndjer]);
    }
-   fprintf (fp, "kjer = %ld\n", *kjer);
-   fprintf (fp, "iendpk = %ld\n", *iendpk);
-   fclose (fp);
+   fprintf(fp, "kjer = %ld\n", *kjer);
+   fprintf(fp, "iendpk = %ld\n", *iendpk);
+   fclose(fp);
    return 0;
 }
 
@@ -1354,35 +1352,35 @@ static int validate (char *filename, float * ain, sInt4 * iain,
  * NOTES
  *****************************************************************************
  */
-static void clear (float * ain, sInt4 * iain, sInt4 * nd2x3, sInt4 * idat,
-                   sInt4 * nidat, float * rdat, sInt4 * nrdat, sInt4 * is0,
-                   sInt4 * ns0, sInt4 * is1, sInt4 * ns1, sInt4 * is2,
-                   sInt4 * ns2, sInt4 * is3, sInt4 * ns3, sInt4 * is4,
-                   sInt4 * ns4, sInt4 * is5, sInt4 * ns5, sInt4 * is6,
-                   sInt4 * ns6, sInt4 * is7, sInt4 * ns7, sInt4 * ib,
-                   sInt4 * ibitmap, float * xmissp, float * xmisss,
-                   sInt4 * iendpk, sInt4 * jer, sInt4 * ndjer, sInt4 * kjer)
+static void clear(float *ain, sInt4 *iain, sInt4 *nd2x3, sInt4 *idat,
+                  sInt4 *nidat, float *rdat, sInt4 *nrdat, sInt4 *is0,
+                  sInt4 *ns0, sInt4 *is1, sInt4 *ns1, sInt4 *is2,
+                  sInt4 *ns2, sInt4 *is3, sInt4 *ns3, sInt4 *is4,
+                  sInt4 *ns4, sInt4 *is5, sInt4 *ns5, sInt4 *is6,
+                  sInt4 *ns6, sInt4 *is7, sInt4 *ns7, sInt4 *ib,
+                  sInt4 *ibitmap, float *xmissp, float *xmisss,
+                  sInt4 *iendpk, sInt4 *jer, sInt4 *ndjer, sInt4 *kjer)
 {
-   memset ((void *) ain, 0, *nd2x3 * sizeof (float));
-   memset ((void *) iain, 0, *nd2x3 * sizeof (sInt4));
-   memset ((void *) idat, 0, *nidat * sizeof (sInt4));
-   memset ((void *) rdat, 0, *nrdat * sizeof (float));
-   memset ((void *) is0, 0, *ns0 * sizeof (sInt4));
-   memset ((void *) is1, 0, *ns1 * sizeof (sInt4));
-   memset ((void *) is2, 0, *ns2 * sizeof (sInt4));
-   memset ((void *) is3, 0, *ns3 * sizeof (sInt4));
-   memset ((void *) is4, 0, *ns4 * sizeof (sInt4));
+   memset((void *)ain, 0, *nd2x3 * sizeof(float));
+   memset((void *)iain, 0, *nd2x3 * sizeof(sInt4));
+   memset((void *)idat, 0, *nidat * sizeof(sInt4));
+   memset((void *)rdat, 0, *nrdat * sizeof(float));
+   memset((void *)is0, 0, *ns0 * sizeof(sInt4));
+   memset((void *)is1, 0, *ns1 * sizeof(sInt4));
+   memset((void *)is2, 0, *ns2 * sizeof(sInt4));
+   memset((void *)is3, 0, *ns3 * sizeof(sInt4));
+   memset((void *)is4, 0, *ns4 * sizeof(sInt4));
    if ((is5[9] == 2) || (is5[9] == 3)) {
       *xmissp = 0;
       *xmisss = 0;
    }
-   memset ((void *) is5, 0, *ns5 * sizeof (sInt4));
-   memset ((void *) is6, 0, *ns6 * sizeof (sInt4));
-   memset ((void *) is7, 0, *ns7 * sizeof (sInt4));
-   memset ((void *) ib, 0, *nd2x3 * sizeof (sInt4));
+   memset((void *)is5, 0, *ns5 * sizeof(sInt4));
+   memset((void *)is6, 0, *ns6 * sizeof(sInt4));
+   memset((void *)is7, 0, *ns7 * sizeof(sInt4));
+   memset((void *)ib, 0, *nd2x3 * sizeof(sInt4));
    *ibitmap = 0;
    *iendpk = 0;
-   memset ((void *) jer, 0, 2 * *ndjer * sizeof (sInt4));
+   memset((void *)jer, 0, 2 * *ndjer * sizeof(sInt4));
    *kjer = 0;
 }
 
@@ -1419,9 +1417,9 @@ static void clear (float * ain, sInt4 * iain, sInt4 * nd2x3, sInt4 * idat,
  * NOTES
  *****************************************************************************
  */
-static void BigByteCpy (sInt4 * dst, sInt4 * ipack, sInt4 nd5,
-                        unsigned int startInt, unsigned int startByte,
-                        int numByte)
+static void BigByteCpy(sInt4 *dst, sInt4 *ipack, sInt4 nd5,
+                       unsigned int startInt, unsigned int startByte,
+                       int numByte)
 {
    static char Lshift[] = { 0, 8, 16, 24 }; /* Amounts to shift left by. */
    unsigned int intIndex; /* Where in ipack to read from. */
@@ -1430,13 +1428,13 @@ static void BigByteCpy (sInt4 * dst, sInt4 * ipack, sInt4 nd5,
    unsigned int curByte; /* The current byte we have read. */
    int i;               /* Loop counter over number of bytes to read. */
 
-   myAssert (numByte <= 4);
-   myAssert (startByte < 4);
+   myAssert(numByte <= 4);
+   myAssert(startByte < 4);
    *dst = 0;
    intIndex = startInt;
    byteIndex = startByte;
    for (i = 0; i < numByte; i++) {
-      curInt = (uInt4) ipack[intIndex];
+      curInt = (uInt4)ipack[intIndex];
       curByte = (curInt << Lshift[byteIndex]) >> 24;
       *dst = (*dst << 8) + curByte;
       byteIndex++;
@@ -1479,10 +1477,10 @@ static void BigByteCpy (sInt4 * dst, sInt4 * ipack, sInt4 nd5,
  * NOTES
  *****************************************************************************
  */
-static int FindTemplateIDs (sInt4 * ipack, sInt4 nd5, int subgNum,
-                            sInt4 * gdsTmpl, sInt4 * pdsTmpl,
-                            sInt4 * drsTmpl, sInt4 * numGrps,
-                            uChar * f_noBitmap, sInt4 * orderDiff)
+static int FindTemplateIDs(sInt4 *ipack, sInt4 nd5, int subgNum,
+                           sInt4 *gdsTmpl, sInt4 *pdsTmpl,
+                           sInt4 *drsTmpl, sInt4 *numGrps,
+                           uChar *f_noBitmap, sInt4 *orderDiff)
 {
    unsigned int gNum = 0; /* Which sub group we are currently working with. */
    sInt4 offset;        /* Where in the bytes stream we currently are. */
@@ -1493,49 +1491,49 @@ static int FindTemplateIDs (sInt4 * ipack, sInt4 nd5, int subgNum,
    /* Jump over section 0. */
    offset = 16;
    while (gNum <= subgNum) {
-      BigByteCpy (&sectLen, ipack, nd5, (offset / 4), (offset % 4), 4);
+      BigByteCpy(&sectLen, ipack, nd5, (offset / 4), (offset % 4), 4);
       /* Check if we just read section 8.  If so, then it is "7777" =
        * 926365495 regardless of endian'ness. */
       if (sectLen == 926365495L) {
 #ifdef DEBUG
-         printf ("Shouldn't see sect 8. Should stop after correct sect 5\n");
+         printf("Shouldn't see sect 8. Should stop after correct sect 5\n");
 #endif
          return 2;
       }
-      BigByteCpy (&sectId, ipack, nd5, ((offset + 4) / 4),
-                  ((offset + 4) % 4), 1);
+      BigByteCpy(&sectId, ipack, nd5, ((offset + 4) / 4),
+                 ((offset + 4) % 4), 1);
       switch (sectId) {
          case 1:
          case 2:
             break;
          case 3:
-            BigByteCpy (gdsTmpl, ipack, nd5, ((offset + 12) / 4),
-                        ((offset + 12) % 4), 2);
+            BigByteCpy(gdsTmpl, ipack, nd5, ((offset + 12) / 4),
+                       ((offset + 12) % 4), 2);
             break;
          case 4:
-            BigByteCpy (pdsTmpl, ipack, nd5, ((offset + 7) / 4),
-                        ((offset + 7) % 4), 2);
+            BigByteCpy(pdsTmpl, ipack, nd5, ((offset + 7) / 4),
+                       ((offset + 7) % 4), 2);
             break;
          case 5:
-            BigByteCpy (drsTmpl, ipack, nd5, ((offset + 9) / 4),
-                        ((offset + 9) % 4), 2);
+            BigByteCpy(drsTmpl, ipack, nd5, ((offset + 9) / 4),
+                       ((offset + 9) % 4), 2);
             if ((*drsTmpl == 2) || (*drsTmpl == 3)) {
-               BigByteCpy (numGrps, ipack, nd5, ((offset + 31) / 4),
-                           ((offset + 31) % 4), 4);
+               BigByteCpy(numGrps, ipack, nd5, ((offset + 31) / 4),
+                          ((offset + 31) % 4), 4);
             } else {
                *numGrps = 0;
             }
             if (*drsTmpl == 3) {
-               BigByteCpy (&li_temp, ipack, nd5, ((offset + 44) / 4),
-                           ((offset + 44) % 4), 1);
+               BigByteCpy(&li_temp, ipack, nd5, ((offset + 44) / 4),
+                          ((offset + 44) % 4), 1);
                *orderDiff = li_temp;
             } else {
                *orderDiff = 0;
             }
             break;
          case 6:
-            BigByteCpy (&li_temp, ipack, nd5, ((offset + 5) / 4),
-                        ((offset + 5) % 4), 1);
+            BigByteCpy(&li_temp, ipack, nd5, ((offset + 5) / 4),
+                       ((offset + 5) % 4), 1);
             if (li_temp == 255) {
                *f_noBitmap = 1;
             }
@@ -1545,7 +1543,7 @@ static int FindTemplateIDs (sInt4 * ipack, sInt4 nd5, int subgNum,
             break;
          default:
 #ifdef DEBUG
-            printf ("Invalid section id %ld.\n", sectId);
+            printf("Invalid section id %ld.\n", sectId);
 #endif
             return 2;
       }
@@ -1650,19 +1648,19 @@ static int FindTemplateIDs (sInt4 * ipack, sInt4 nd5, int subgNum,
  *
  *****************************************************************************
  */
-void unpk_grib2 (sInt4 * kfildo, float * ain, sInt4 * iain, sInt4 * nd2x3,
-                 sInt4 * idat, sInt4 * nidat, float * rdat, sInt4 * nrdat,
-                 sInt4 * is0, sInt4 * ns0, sInt4 * is1, sInt4 * ns1,
-                 sInt4 * is2, sInt4 * ns2, sInt4 * is3, sInt4 * ns3,
-                 sInt4 * is4, sInt4 * ns4, sInt4 * is5, sInt4 * ns5,
-                 sInt4 * is6, sInt4 * ns6, sInt4 * is7, sInt4 * ns7,
-                 sInt4 * ib, sInt4 * ibitmap, sInt4 * ipack, sInt4 * nd5,
-                 float * xmissp, float * xmisss, sInt4 * inew,
-                 sInt4 * iclean, sInt4 * l3264b, sInt4 * iendpk, sInt4 * jer,
-                 sInt4 * ndjer, sInt4 * kjer)
+void unpk_grib2(sInt4 *kfildo, float *ain, sInt4 *iain, sInt4 *nd2x3,
+                sInt4 *idat, sInt4 *nidat, float *rdat, sInt4 *nrdat,
+                sInt4 *is0, sInt4 *ns0, sInt4 *is1, sInt4 *ns1,
+                sInt4 *is2, sInt4 *ns2, sInt4 *is3, sInt4 *ns3,
+                sInt4 *is4, sInt4 *ns4, sInt4 *is5, sInt4 *ns5,
+                sInt4 *is6, sInt4 *ns6, sInt4 *is7, sInt4 *ns7,
+                sInt4 *ib, sInt4 *ibitmap, sInt4 *ipack, sInt4 *nd5,
+                float *xmissp, float *xmisss, sInt4 *inew,
+                sInt4 *iclean, sInt4 *l3264b, sInt4 *iendpk, sInt4 *jer,
+                sInt4 *ndjer, sInt4 *kjer)
 {
-   unsigned char *c_ipack; /* The compressed data as char instead of sInt4
-                            * so it is easier to work with. */
+   unsigned char *c_ipack; /* The compressed data as char instead of sInt4 so 
+                            * it is easier to work with. */
    sInt4 gdsTmpl;
    sInt4 pdsTmpl;
    sInt4 drsTmpl;
@@ -1676,20 +1674,20 @@ void unpk_grib2 (sInt4 * kfildo, float * ain, sInt4 * iain, sInt4 * nd2x3,
    sInt4 orderDiff;
 
 #ifdef DEBUG
-   f_useMDL = 0;   /* Experiment with smoke data 12/16/2005 */
+   f_useMDL = 0;        /* Experiment with smoke data 12/16/2005 */
 #endif
 
-   if (FindTemplateIDs (ipack, *nd5, 0, &gdsTmpl, &pdsTmpl, &drsTmpl,
-                        &numGrps, &f_noBitmap, &orderDiff) != 0) {
+   if (FindTemplateIDs(ipack, *nd5, 0, &gdsTmpl, &pdsTmpl, &drsTmpl,
+                       &numGrps, &f_noBitmap, &orderDiff) != 0) {
       jer[0 + *ndjer] = 2;
       jer[0] = 3000;    /* Couldn't figure out which templates are used. */
       *kjer = 1;
    }
 #ifdef DEBUG
-   printf ("gdsTemplate number = %ld\n", gdsTmpl);
-   printf ("pdsTemplate number = %ld\n", pdsTmpl);
-   printf ("drsTemplate number = %ld\n", drsTmpl);
-   printf ("f_noBitmap = %d\n", f_noBitmap);
+   printf("gdsTemplate number = %ld\n", gdsTmpl);
+   printf("pdsTemplate number = %ld\n", pdsTmpl);
+   printf("drsTemplate number = %ld\n", drsTmpl);
+   printf("f_noBitmap = %d\n", f_noBitmap);
 #endif
    if ((gdsTmpl != 0) && (gdsTmpl != 10) && (gdsTmpl != 20) &&
        (gdsTmpl != 30) && (gdsTmpl != 90) && (gdsTmpl != 110) &&
@@ -1702,42 +1700,42 @@ void unpk_grib2 (sInt4 * kfildo, float * ain, sInt4 * iain, sInt4 * nd2x3,
       f_useMDL = 0;
    }
 #ifdef DEBUG
-   printf ("UseMDL? 1=yes 0=no : ans %d\n", f_useMDL);
+   printf("UseMDL? 1=yes 0=no : ans %d\n", f_useMDL);
 #endif
    if ((drsTmpl != 0) && (drsTmpl != 2) && (drsTmpl != 3)) {
       f_useMDL = 0;
    }
 #ifdef DEBUG
-   printf ("UseMDL? 1=yes 0=no : ans %d\n", f_useMDL);
+   printf("UseMDL? 1=yes 0=no : ans %d\n", f_useMDL);
 #endif
    /* MDL GRIB2 lib does not support drsTmpl 2 or 3 if there is a bitmap. */
    if ((!f_noBitmap) && ((drsTmpl == 2) || (drsTmpl == 3))) {
       f_useMDL = 0;
    }
 #ifdef DEBUG
-   printf ("UseMDL? 1=yes 0=no : ans %d\n", f_useMDL);
+   printf("UseMDL? 1=yes 0=no : ans %d\n", f_useMDL);
 #endif
    /* MDL GRIB2 lib does not support anything but second order differencing. */
    if ((drsTmpl == 3) && (orderDiff != 2) && (orderDiff != 0)) {
       f_useMDL = 0;
    }
 #ifdef DEBUG
-   printf ("orderDiff = %d, drsTmpl = %d\n", orderDiff, drsTmpl), 
-   printf ("UseMDL? 1=yes 0=no : ans %d\n", f_useMDL);
+   printf("orderDiff = %d, drsTmpl = %d\n", orderDiff, drsTmpl),
+         printf("UseMDL? 1=yes 0=no : ans %d\n", f_useMDL);
 #endif
 
 #ifdef _FORTRAN
    if (f_useMDL) {
-      jmin = (sInt4 *) malloc (numGrps * sizeof (sInt4));
-      lbit = (sInt4 *) malloc (numGrps * sizeof (sInt4));
-      nov = (sInt4 *) malloc (numGrps * sizeof (sInt4));
-      iwork = (sInt4 *) malloc ((*nd2x3) * sizeof (sInt4));
+      jmin = (sInt4 *)malloc(numGrps * sizeof(sInt4));
+      lbit = (sInt4 *)malloc(numGrps * sizeof(sInt4));
+      nov = (sInt4 *)malloc(numGrps * sizeof(sInt4));
+      iwork = (sInt4 *)malloc((*nd2x3) * sizeof(sInt4));
 
-      UNPK_G2MDL (kfildo, jmin, lbit, nov, iwork, ain, iain, nd2x3, idat,
-                  nidat, rdat, nrdat, is0, ns0, is1, ns1, is2, ns2, is3, ns3,
-                  is4, ns4, is5, ns5, is6, ns6, is7, ns7, ib, ibitmap, ipack,
-                  nd5, xmissp, xmisss, inew, iclean, l3264b, iendpk, jer,
-                  ndjer, kjer);
+      UNPK_G2MDL(kfildo, jmin, lbit, nov, iwork, ain, iain, nd2x3, idat,
+                 nidat, rdat, nrdat, is0, ns0, is1, ns1, is2, ns2, is3, ns3,
+                 is4, ns4, is5, ns5, is6, ns6, is7, ns7, ib, ibitmap, ipack,
+                 nd5, xmissp, xmisss, inew, iclean, l3264b, iendpk, jer,
+                 ndjer, kjer);
 /*
       if (1==1) {
          int i;
@@ -1748,10 +1746,10 @@ void unpk_grib2 (sInt4 * kfildo, float * ain, sInt4 * iain, sInt4 * nd2x3,
          }
       }
 */
-      free (jmin);
-      free (lbit);
-      free (nov);
-      free (iwork);
+      free(jmin);
+      free(lbit);
+      free(nov);
+      free(iwork);
 
       /* Check the behavior of the NCEP routines. */
 /*
@@ -1790,17 +1788,17 @@ void unpk_grib2 (sInt4 * kfildo, float * ain, sInt4 * iain, sInt4 * nd2x3,
        * unfortunately means they would have to get the first message again,
        * causing 2 swaps, and breaking their second request for the first
        * message (as well as their second message). */
-      memswp (ipack, sizeof (sInt4), *nd5);
+      memswp(ipack, sizeof(sInt4), *nd5);
 #endif
-      c_ipack = (unsigned char *) ipack;
-      unpk_g2ncep (kfildo, ain, iain, nd2x3, idat, nidat, rdat, nrdat, is0,
-                   ns0, is1, ns1, is2, ns2, is3, ns3, is4, ns4, is5, ns5,
-                   is6, ns6, is7, ns7, ib, ibitmap, c_ipack, nd5, xmissp,
-                   xmisss, inew, iclean, l3264b, iendpk, jer, ndjer, kjer);
+      c_ipack = (unsigned char *)ipack;
+      unpk_g2ncep(kfildo, ain, iain, nd2x3, idat, nidat, rdat, nrdat, is0,
+                  ns0, is1, ns1, is2, ns2, is3, ns3, is4, ns4, is5, ns5,
+                  is6, ns6, is7, ns7, ib, ibitmap, c_ipack, nd5, xmissp,
+                  xmisss, inew, iclean, l3264b, iendpk, jer, ndjer, kjer);
 
 #ifdef LITTLE_ENDIAN
       /* Swap back because we could be called again for the subgrid data. */
-      memswp (ipack, sizeof (sInt4), *nd5);
+      memswp(ipack, sizeof(sInt4), *nd5);
 #endif
 #ifdef _FORTRAN
    }
@@ -1810,21 +1808,21 @@ void unpk_grib2 (sInt4 * kfildo, float * ain, sInt4 * iain, sInt4 * nd2x3,
 /* Not sure I need this... It is intended to provide a way to call it from
  * FORTRAN, but I'm not sure it is needed. */
 /* gcc has two __ if there is one _ in the procedure name. */
-void unpk_grib2__ (sInt4 * kfildo, float * ain, sInt4 * iain,
-                   sInt4 * nd2x3, sInt4 * idat, sInt4 * nidat, float * rdat,
-                   sInt4 * nrdat, sInt4 * is0, sInt4 * ns0, sInt4 * is1,
-                   sInt4 * ns1, sInt4 * is2, sInt4 * ns2, sInt4 * is3,
-                   sInt4 * ns3, sInt4 * is4, sInt4 * ns4, sInt4 * is5,
-                   sInt4 * ns5, sInt4 * is6, sInt4 * ns6, sInt4 * is7,
-                   sInt4 * ns7, sInt4 * ib, sInt4 * ibitmap, sInt4 * ipack,
-                   sInt4 * nd5, float * xmissp, float * xmisss,
-                   sInt4 * inew, sInt4 * iclean, sInt4 * l3264b,
-                   sInt4 * iendpk, sInt4 * jer, sInt4 * ndjer, sInt4 * kjer)
+void unpk_grib2__(sInt4 *kfildo, float *ain, sInt4 *iain,
+                  sInt4 *nd2x3, sInt4 *idat, sInt4 *nidat, float *rdat,
+                  sInt4 *nrdat, sInt4 *is0, sInt4 *ns0, sInt4 *is1,
+                  sInt4 *ns1, sInt4 *is2, sInt4 *ns2, sInt4 *is3,
+                  sInt4 *ns3, sInt4 *is4, sInt4 *ns4, sInt4 *is5,
+                  sInt4 *ns5, sInt4 *is6, sInt4 *ns6, sInt4 *is7,
+                  sInt4 *ns7, sInt4 *ib, sInt4 *ibitmap, sInt4 *ipack,
+                  sInt4 *nd5, float *xmissp, float *xmisss,
+                  sInt4 *inew, sInt4 *iclean, sInt4 *l3264b,
+                  sInt4 *iendpk, sInt4 *jer, sInt4 *ndjer, sInt4 *kjer)
 {
-   unpk_grib2 (kfildo, ain, iain, nd2x3, idat, nidat, rdat, nrdat, is0, ns0,
-               is1, ns1, is2, ns2, is3, ns3, is4, ns4, is5, ns5, is6, ns6,
-               is7, ns7, ib, ibitmap, ipack, nd5, xmissp, xmisss, inew,
-               iclean, l3264b, iendpk, jer, ndjer, kjer);
+   unpk_grib2(kfildo, ain, iain, nd2x3, idat, nidat, rdat, nrdat, is0, ns0,
+              is1, ns1, is2, ns2, is3, ns3, is4, ns4, is5, ns5, is6, ns6,
+              is7, ns7, ib, ibitmap, ipack, nd5, xmissp, xmisss, inew,
+              iclean, l3264b, iendpk, jer, ndjer, kjer);
 }
 
 /*****************************************************************************
@@ -1918,40 +1916,40 @@ void unpk_grib2__ (sInt4 * kfildo, float * ain, sInt4 * iain,
  *
  *****************************************************************************
  */
-int C_pkGrib2 (unsigned char *cgrib, sInt4 *sec0, sInt4 *sec1,
-               unsigned char *csec2, sInt4 lcsec2,
-               sInt4 *igds, sInt4 *igdstmpl, sInt4 *ideflist,
-               sInt4 idefnum, sInt4 ipdsnum, sInt4 *ipdstmpl,
-               float *coordlist, sInt4 numcoord, sInt4 idrsnum,
-               sInt4 *idrstmpl, float *fld, sInt4 ngrdpts,
-               sInt4 ibmap, sInt4 *bmap)
+int C_pkGrib2(unsigned char *cgrib, sInt4 *sec0, sInt4 *sec1,
+              unsigned char *csec2, sInt4 lcsec2,
+              sInt4 *igds, sInt4 *igdstmpl, sInt4 *ideflist,
+              sInt4 idefnum, sInt4 ipdsnum, sInt4 *ipdstmpl,
+              float *coordlist, sInt4 numcoord, sInt4 idrsnum,
+              sInt4 *idrstmpl, float *fld, sInt4 ngrdpts,
+              sInt4 ibmap, sInt4 *bmap)
 {
-   int ierr;      /* error value from grib2 library. */
+   int ierr;            /* error value from grib2 library. */
 
-   if ((ierr = g2_create (cgrib, sec0, sec1)) == -1) {
+   if ((ierr = g2_create(cgrib, sec0, sec1)) == -1) {
       /* Tried to use for version other than GRIB Ed 2 */
       return -1;
    }
 
-   if ((ierr = g2_addlocal (cgrib, csec2, lcsec2)) < 0) {
-      /* Some how got a bad section 2.  Should be impossible unless an
-       * assert was broken. */
+   if ((ierr = g2_addlocal(cgrib, csec2, lcsec2)) < 0) {
+      /* Some how got a bad section 2.  Should be impossible unless an assert 
+       * was broken. */
       return -2;
    }
 
-   if ((ierr = g2_addgrid (cgrib, igds, igdstmpl, ideflist, idefnum)) < 0) {
+   if ((ierr = g2_addgrid(cgrib, igds, igdstmpl, ideflist, idefnum)) < 0) {
       /* Some how got a bad section 3.  Only way would be should be with an
        * unsupported template number unless an assert was broken. */
       return -3;
    }
 
-   if ((ierr = g2_addfield (cgrib, ipdsnum, ipdstmpl, coordlist, numcoord,
-                            idrsnum, idrstmpl, fld, ngrdpts, ibmap,
-                            bmap)) < 0) {
+   if ((ierr = g2_addfield(cgrib, ipdsnum, ipdstmpl, coordlist, numcoord,
+                           idrsnum, idrstmpl, fld, ngrdpts, ibmap,
+                           bmap)) < 0) {
       return -4;
    }
 
-   if ((ierr = g2_gribend (cgrib)) < 0) {
+   if ((ierr = g2_gribend(cgrib)) < 0) {
       return -5;
    }
 
@@ -2053,16 +2051,16 @@ int C_pkGrib2 (unsigned char *cgrib, sInt4 *sec0, sInt4 *sec1,
  *
  *****************************************************************************
  */
-void pk_grib2 (sInt4 * kfildo, float * ain, sInt4 * iain, sInt4 * nx,
-               sInt4 * ny, sInt4 * idat, sInt4 * nidat, float * rdat,
-               sInt4 * nrdat, sInt4 * is0, sInt4 * ns0, sInt4 * is1,
-               sInt4 * ns1, sInt4 * is3, sInt4 * ns3, sInt4 * is4,
-               sInt4 * ns4, sInt4 * is5, sInt4 * ns5, sInt4 * is6,
-               sInt4 * ns6, sInt4 * is7, sInt4 * ns7, sInt4 * ib,
-               sInt4 * ibitmap, sInt4 * ipack, sInt4 * nd5, sInt4 * missp,
-               float * xmissp, sInt4 * misss, float * xmisss, sInt4 * inew,
-               sInt4 * minpk, sInt4 * iclean, sInt4 * l3264b, sInt4 * jer,
-               sInt4 * ndjer, sInt4 * kjer)
+void pk_grib2(sInt4 *kfildo, float *ain, sInt4 *iain, sInt4 *nx,
+              sInt4 *ny, sInt4 *idat, sInt4 *nidat, float *rdat,
+              sInt4 *nrdat, sInt4 *is0, sInt4 *ns0, sInt4 *is1,
+              sInt4 *ns1, sInt4 *is3, sInt4 *ns3, sInt4 *is4,
+              sInt4 *ns4, sInt4 *is5, sInt4 *ns5, sInt4 *is6,
+              sInt4 *ns6, sInt4 *is7, sInt4 *ns7, sInt4 *ib,
+              sInt4 *ibitmap, sInt4 *ipack, sInt4 *nd5, sInt4 *missp,
+              float *xmissp, sInt4 *misss, float *xmisss, sInt4 *inew,
+              sInt4 *minpk, sInt4 *iclean, sInt4 *l3264b, sInt4 *jer,
+              sInt4 *ndjer, sInt4 *kjer)
 {
    sInt4 gdsTmpl;
    sInt4 pdsTmpl;
@@ -2081,12 +2079,12 @@ void pk_grib2 (sInt4 * kfildo, float * ain, sInt4 * iain, sInt4 * nx,
    int i;
 
 #ifndef _FORTRAN
-   printf ("Can not pack things unless using FORTRAN!\n");
+   printf("Can not pack things unless using FORTRAN!\n");
    return;
 #endif
-   myAssert (*ndjer >= 8);
+   myAssert(*ndjer >= 8);
    /* Init the error handling array. */
-   memset ((void *) jer, 0, 2 * *ndjer * sizeof (sInt4));
+   memset((void *)jer, 0, 2 * *ndjer * sizeof(sInt4));
    for (i = 0; i < 8; i++) {
       jer[i] = i * 100;
    }
@@ -2114,40 +2112,40 @@ void pk_grib2 (sInt4 * kfildo, float * ain, sInt4 * iain, sInt4 * nx,
 */
    if (f_useMDL) {
       /* pk_cmplx.f ==> jmax(M), jmin(M), nov(M), lbit(M) */
-      jmax = (sInt4 *) malloc ((*nx) * (*ny) * sizeof (sInt4));
-      jmin = (sInt4 *) malloc ((*nx) * (*ny) * sizeof (sInt4));
-      nov = (sInt4 *) malloc ((*nx) * (*ny) * sizeof (sInt4));
-      lbit = (sInt4 *) malloc ((*nx) * (*ny) * sizeof (sInt4));
+      jmax = (sInt4 *)malloc((*nx) * (*ny) * sizeof(sInt4));
+      jmin = (sInt4 *)malloc((*nx) * (*ny) * sizeof(sInt4));
+      nov = (sInt4 *)malloc((*nx) * (*ny) * sizeof(sInt4));
+      lbit = (sInt4 *)malloc((*nx) * (*ny) * sizeof(sInt4));
       /* pk_grib2.f ==> a(NX,NY), ia(NX,NY) */
 /*      a = (float *) malloc ((*nx) * (*ny) * sizeof (float));*/
-      ia = (sInt4 *) malloc ((*nx) * (*ny) * sizeof (sInt4));
+      ia = (sInt4 *)malloc((*nx) * (*ny) * sizeof(sInt4));
       /* pack_gp.f ==> misslx(NDG = NXY = nx*ny) */
-      misslx = (sInt4 *) malloc ((*nx) * (*ny) * sizeof (sInt4));
+      misslx = (sInt4 *)malloc((*nx) * (*ny) * sizeof(sInt4));
       /* Able to use jmax(nxy) for iwork(nxy) in int_map.f, and pk_missp.f */
       /* Able to use jmax(nxy) for work(nxy) in flt_map.f */
       /* reduce.f ==> newbox(ndg=nxy), newboxp(ndg=nxy) */
-      newbox = (sInt4 *) malloc ((*nx) * (*ny) * sizeof (sInt4));
-      newboxp = (sInt4 *) malloc ((*nx) * (*ny) * sizeof (sInt4));
+      newbox = (sInt4 *)malloc((*nx) * (*ny) * sizeof(sInt4));
+      newboxp = (sInt4 *)malloc((*nx) * (*ny) * sizeof(sInt4));
 
       /* other known automatic arrays... itemp(nidat) pk_sect2.f */
       /* other known automatic arrays... rtemp(nrdat) pk_sect2.f */
 
       /* a and ia are equivalenced here. */
-      PK_G2MDL (kfildo, jmax, jmin, lbit, nov, misslx, (float *) ia, ia,
-                newbox, newboxp, ain, iain, nx, ny, idat, nidat, rdat, nrdat,
-                is0, ns0, is1, ns1, is3, ns3, is4, ns4, is5, ns5, is6, ns6,
-                is7, ns7, ib, ibitmap, ipack, nd5, missp, xmissp, misss,
-                xmisss, inew, minpk, iclean, l3264b, jer, ndjer, kjer);
+      PK_G2MDL(kfildo, jmax, jmin, lbit, nov, misslx, (float *)ia, ia,
+               newbox, newboxp, ain, iain, nx, ny, idat, nidat, rdat, nrdat,
+               is0, ns0, is1, ns1, is3, ns3, is4, ns4, is5, ns5, is6, ns6,
+               is7, ns7, ib, ibitmap, ipack, nd5, missp, xmissp, misss,
+               xmisss, inew, minpk, iclean, l3264b, jer, ndjer, kjer);
 
-      free (jmax);
-      free (jmin);
-      free (nov);
-      free (lbit);
-      free (misslx);
+      free(jmax);
+      free(jmin);
+      free(nov);
+      free(lbit);
+      free(misslx);
 /*      free (a);*/
-      free (ia);
-      free (newbox);
-      free (newboxp);
+      free(ia);
+      free(newbox);
+      free(newboxp);
    } else {
 
 
@@ -2162,21 +2160,21 @@ void pk_grib2 (sInt4 * kfildo, float * ain, sInt4 * iain, sInt4 * nx,
       memswp (ipack, sizeof (sInt4), *nd5);
 */
 #endif
-      c_ipack = (unsigned char *) ipack;
-      pk_g2ncep (kfildo, ain, iain, nx, ny, idat, nidat, rdat, nrdat, is0,
-                 ns0, is1, ns1, is3, ns3, is4, ns4, is5, ns5, is6, ns6, is7,
-                 ns7, ib, ibitmap, c_ipack, nd5, missp, xmissp, misss, xmisss,
-                 inew, minpk, iclean, l3264b, jer, ndjer, kjer);
+      c_ipack = (unsigned char *)ipack;
+      pk_g2ncep(kfildo, ain, iain, nx, ny, idat, nidat, rdat, nrdat, is0,
+                ns0, is1, ns1, is3, ns3, is4, ns4, is5, ns5, is6, ns6, is7,
+                ns7, ib, ibitmap, c_ipack, nd5, missp, xmissp, misss, xmisss,
+                inew, minpk, iclean, l3264b, jer, ndjer, kjer);
 
 #ifdef LITTLE_ENDIAN
       /* Swap back because we could be called again for the subgrid data. */
-      memswp (ipack, sizeof (sInt4), *nd5);
+      memswp(ipack, sizeof(sInt4), *nd5);
 #endif
 #else
 
-      printf ("Unable to use MDL Pack library?\n");
-      printf ("gdsTmpl : %ld , pdsTmpl %ld : drsTmpl %ld\n", gdsTmpl,
-              pdsTmpl, drsTmpl);
+      printf("Unable to use MDL Pack library?\n");
+      printf("gdsTmpl : %ld , pdsTmpl %ld : drsTmpl %ld\n", gdsTmpl,
+             pdsTmpl, drsTmpl);
       jer[0 + *ndjer] = 31415926;
       *kjer = 1;
 #endif
