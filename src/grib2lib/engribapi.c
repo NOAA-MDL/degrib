@@ -1506,4 +1506,3 @@ int fillGrid (enGribMeta *en, double *data, sInt4 lenData, sInt4 Nx, sInt4 Ny,
       return 6 + (5 + lenData * 4);
    }
 }
-

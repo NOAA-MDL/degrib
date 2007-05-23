@@ -199,4 +199,3 @@ $(PRJ_NAME): $(C_GRIB2_OBJS) $(FORT_UNPK_OBJS) $(FORT_PACK_OBJS) \
 
 config.h: ./config_H/config.h.gcc
 	cp ./config_H/config.h.gcc config.h
-
