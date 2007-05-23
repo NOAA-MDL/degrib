@@ -552,7 +552,9 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
          meta->pds2.sect4.lowerLimit.factor = 0;
          meta->pds2.sect4.lowerLimit.value = 0;
       } else {
-         meta->pds2.sect4.lowerLimit.factor = GRIB2MISSING_s1;
+/* The following probably should be GRIB2MISSING_s1, but to mirror what the
+ * NDFD used, we have to use -1. */
+         meta->pds2.sect4.lowerLimit.factor = -1;
          meta->pds2.sect4.lowerLimit.value = GRIB2MISSING_s4;
       }
 
