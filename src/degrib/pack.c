@@ -182,8 +182,8 @@ void fillSect2_Wx (enGribMeta *en, grib_MetaData *meta, sChar f_mdlPack)
 
    /* Allocate enough space in cpack for 1 group, and unpacked ray. */
    /* The 3 is overall header space, the 12 is per group space. */
-   cpackLen = cpackLen + 3 + 12;
-   cpack = (uChar *) malloc (count * sizeof (char));
+   cpackLen = count + 3 + 12;
+   cpack = (uChar *) malloc (cpackLen * sizeof (char));
    cpack[0] = 1;
    numGroups = 1;
    MEMCPY_BIG ((cpack + 1), &numGroups, sizeof (uShort2));
@@ -930,6 +930,7 @@ int fillGridUnit (enGribMeta *en, double *data, sInt4 lenData, sInt4 Nx, sInt4 N
    return ans;
 }
 
+#define TESTING
 int WriteGrib2Record2 (grib_MetaData *meta, double *Grib_Data,
                        sInt4 grib_DataLen, IS_dataType *is, sChar f_unit,
                        uChar **cPack, sInt4 *c_len, uChar f_stdout)
@@ -943,6 +944,10 @@ int WriteGrib2Record2 (grib_MetaData *meta, double *Grib_Data,
    int min;
    double sec;
    int ans;
+#ifdef TESTING
+   int ans2;
+   uChar *cPack2;
+#endif
    uChar timeCode;
    sect4IntervalType * interval;
    uShort2 tmplNum;
@@ -971,7 +976,7 @@ int WriteGrib2Record2 (grib_MetaData *meta, double *Grib_Data,
          /* The 1 is because we want to use the MDL Sect2 SimpPack method */
          fillSect2_Wx (&en, meta, 1);
       } else {
-         errSprintf ("ERROR (pack.c): Don't handle this yet\n");
+         printf ("ERROR (pack.c): Don't handle this yet\n");
          return -3;
       }
    } else {
@@ -1181,6 +1186,15 @@ int WriteGrib2Record2 (grib_MetaData *meta, double *Grib_Data,
 
    *cPack = (uChar *) malloc (cgribLen * sizeof (char));
 
+#ifdef TESTING
+   /* If idrsnum == 2 or 3, try 3 first, then try 2, then compare. */
+   if ((en.idrsnum == 2) || (en.idrsnum == 3)) {
+      en.idrsnum = 3;
+      cPack2 = (uChar *) malloc (cgribLen * sizeof (char));
+   } else {
+      cPack2 = NULL;
+   }
+#endif
    ans = C_pkGrib2 (*cPack, en.sec0, en.sec1, en.sec2, en.lenSec2,
                     en.gds, en.gdsTmpl, en.idefList, en.idefnum, en.ipdsnum,
                     en.pdsTmpl, en.coordlist, en.numcoord, en.idrsnum,
@@ -1195,6 +1209,36 @@ int WriteGrib2Record2 (grib_MetaData *meta, double *Grib_Data,
    }
    /* Set c_len to valid length of cPack */
    *c_len = ans;
+
+#ifdef TESTING
+   /* If idrsnum == 2 or 3, now try 2, then compare. */
+   if (en.idrsnum == 3) {
+      en.idrsnum = 2;
+      ans2 = C_pkGrib2 (cPack2, en.sec0, en.sec1, en.sec2, en.lenSec2,
+                        en.gds, en.gdsTmpl, en.idefList, en.idefnum, en.ipdsnum,
+                        en.pdsTmpl, en.coordlist, en.numcoord, en.idrsnum,
+                        en.drsTmpl, en.fld, en.ngrdpts, en.ibmap, en.bmap);
+      if (ans2 < 0) {
+         printf ("Error in pkGrib2 %d\n", ans2);
+         freeEnGribMeta (&en);
+         free (*cPack);
+         free (cPack2);
+         *c_len = 0;
+         *cPack = NULL;
+         return 1;
+      }
+      if (ans2 < ans) {
+         free (*cPack);
+         *cPack = cPack2;
+         /* Set c_len to valid length of cPack */
+         *c_len = ans2;
+      } else {
+         free (cPack2);
+         /* Set c_len to valid length of cPack */
+         *c_len = ans;
+      }
+   }
+#endif
 
 #ifdef MEMWATCH
    /* memwatch isn't being done in library. so... */
