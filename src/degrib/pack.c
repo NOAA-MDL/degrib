@@ -723,10 +723,12 @@ void fillSect4_Interval (sect4IntervalType * val, uChar processID,
  * fillGridUnit() -- Arthur Taylor / MDL
  *
  * PURPOSE
- *   Completes the data portion.  If f_boustify, then it walks through the
+ *    Completes the data portion.  If f_boustify, then it walks through the
  * data winding back and forth.  Note it does this in a row oriented fashion
  * If you need a column oriented fashion because your grid is defined the
  * other way, then swap your Nx and Ny in your call.
+ *    It also detects if the missing value is used.  If it is not, it sets
+ * the correct portion of section 5
  *
  * ARGUMENTS
  *         en = A pointer to meta data to pass to GRIB2 encoder. (Output)
@@ -752,6 +754,7 @@ void fillSect4_Interval (sect4IntervalType * val, uChar processID,
  *    -1 Can't handle this kind of bitmap (pre-defined).
  *    -2 No missing value when trying to create the bmap.
  *    -3 Can't handle Nx * Ny != lenData.
+ *    -4 Discrepancy in what has been stored in section 5.
  *
  *  4/2006 Arthur Taylor (MDL): Created.
  *  5/2007 Arthur Taylor (MDL): Added unitM, unitB to call
@@ -769,6 +772,10 @@ int fillGridUnit (enGribMeta *en, double *data, sInt4 lenData, sInt4 Nx, sInt4 N
    sInt4 y;             /* loop counter over Ny. */
    sInt4 ind1;          /* index to copy to. */
    sInt4 ind2;          /* index to copy from. */
+   uChar f_detectMiss = 0; /* If we detect a missing value. */
+   float enMissPri;     /* encoded primary missing value. */
+   float enMissSec;     /* encoded secondary missing value. */
+   int ans;             /* computed max length of sect6, sect7 */
 
    if ((ibmap != 0) && (ibmap != 255)) {
       /* Can't handle this kind of bitmap (pre-defined). */
@@ -781,6 +788,24 @@ int fillGridUnit (enGribMeta *en, double *data, sInt4 lenData, sInt4 Nx, sInt4 N
    if (Nx * Ny != lenData) {
       /* Can't handle Nx * Ny != lenData. */
       return -3;
+   }
+   if ((en->idrsnum == 2) || (en->idrsnum == 3)) {
+      /* Discrepancy in what has been stored in Sect5 */
+      if (en->drsTmpl[6] != f_miss) {
+         return -4;
+      }
+      if (f_miss == 1) {
+         memcpy (&(enMissPri), &(en->drsTmpl[7]), sizeof (float));
+         if (enMissPri != (float) missPri) {
+            return -4;
+         }
+      } else if (f_miss == 2) {
+         memcpy (&(enMissPri), &(en->drsTmpl[7]), sizeof (float));
+         memcpy (&(enMissSec), &(en->drsTmpl[8]), sizeof (float));
+         if ((enMissPri != (float)missPri) || (enMissSec != (float)missSec)) {
+            return -4;
+         }
+      }
    }
 
    if (en->ngrdpts < lenData) {
@@ -817,6 +842,7 @@ int fillGridUnit (enGribMeta *en, double *data, sInt4 lenData, sInt4 Nx, sInt4 N
                    ((f_miss == 2) && (data[ind2] == missSec))) {
                   en->bmap[ind1] = 0;
                   en->fld[ind1] = (float) data[ind2];
+                  f_detectMiss = 1;
                } else {
                   en->bmap[ind1] = 1;
                   if (unitM == -10) {
@@ -834,6 +860,7 @@ int fillGridUnit (enGribMeta *en, double *data, sInt4 lenData, sInt4 Nx, sInt4 N
                 ((f_miss == 2) && (data[ind1] == missSec))) {
                en->bmap[ind1] = 0;
                en->fld[ind1] = (float) data[ind1];
+               f_detectMiss = 1;
             } else {
                en->bmap[ind1] = 1;
                if (unitM == -10) {
@@ -845,7 +872,7 @@ int fillGridUnit (enGribMeta *en, double *data, sInt4 lenData, sInt4 Nx, sInt4 N
          }
       }
       /* len(sect6) < 6 + (lenData/8 + 1), len(sect7) < 5 + lenData * 4 */
-      return (6 + lenData / 8 + 1) + (5 + lenData * 4);
+      ans = (6 + lenData / 8 + 1) + (5 + lenData * 4);
    } else {
       /* boustify uses row oriented boustification, however for column
        * oriented, swap the Ny and Nx in the call to the procedure. */
@@ -862,6 +889,7 @@ int fillGridUnit (enGribMeta *en, double *data, sInt4 lenData, sInt4 Nx, sInt4 N
                if ((data[ind2] == missPri) ||
                    ((f_miss == 2) && (data[ind2] == missSec))) {
                   en->fld[ind1] = (float) data[ind2];
+                  f_detectMiss = 1;
                } else {
                   if (unitM == -10) {
                      en->fld[ind1] = (float) myRound (log10 (data[ind2]), 7);
@@ -877,6 +905,7 @@ int fillGridUnit (enGribMeta *en, double *data, sInt4 lenData, sInt4 Nx, sInt4 N
             if ((data[ind1] == missPri) ||
                 ((f_miss == 2) && (data[ind1] == missSec))) {
                en->fld[ind1] = (float) data[ind1];
+               f_detectMiss = 1;
             } else {
                if (unitM == -10) {
                   en->fld[ind1] = (float) myRound (log10 (data[ind1]), 7);
@@ -887,8 +916,18 @@ int fillGridUnit (enGribMeta *en, double *data, sInt4 lenData, sInt4 Nx, sInt4 N
          }
       }
       /* len(sect6) = 6, len(sect7) < 5 + lenData * 4 */
-      return 6 + (5 + lenData * 4);
+      ans = 6 + (5 + lenData * 4);
    }
+   /* For tmplNum 2,3 we stored the missing value in the drsTmpl.  We check
+    * here to see if we ever used the missing value.  If it wasn't used, there
+    * isn't any point in hurting the packing algorithm, so we update drsTmpl.
+    */
+   if ((en->idrsnum == 2) || (en->idrsnum == 3)) {
+      if ((f_miss != 0) && (f_detectMiss == 0)) {
+         en->drsTmpl[6] = 0;
+      }
+   }
+   return ans;
 }
 
 int WriteGrib2Record2 (grib_MetaData *meta, double *Grib_Data,

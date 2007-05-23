@@ -460,7 +460,7 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
        (elemNum == PROBWINDSPD50C) || (elemNum == PROBWINDSPD50I) ||
        (elemNum == PROBWINDSPD64C) || (elemNum == PROBWINDSPD64I) ||
        (elemNum == QPF) || (elemNum == SKY) || (elemNum == SNOW) ||
-       (elemNum == WAVEHEIGHT)) {
+       (elemNum == WAVEHEIGHT) || (elemNum == WINDGUST)) {
       meta->pds2.operStatus = 1;
    } else {
       meta->pds2.operStatus = 0; /* Pretend NDFD is operational. */
@@ -635,19 +635,10 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
    meta->gridAttrib.DSF = NDFD_Values[elemNum].DSF;
    meta->gridAttrib.fieldType = NDFD_Values[elemNum].fieldType;
    meta->gridAttrib.f_maxmin = 0;
-/*
-   if ((elemNum == PROBWINDSPD34C) || (elemNum == PROBWINDSPD34I) ||
-       (elemNum == PROBWINDSPD50C) || (elemNum == PROBWINDSPD50I) ||
-       (elemNum == PROBWINDSPD64C) || (elemNum == PROBWINDSPD64I)) {
-      meta->gridAttrib.f_miss = 0;
-      meta->gridAttrib.missPri = 0;
-   } else {
-*/
-      meta->gridAttrib.f_miss = 1;
-      meta->gridAttrib.missPri = 9999;
-/*
-   }
-*/
+   /* Missing values are set to 9999, but if no missing values are detected
+    * in the field, then f_miss is reset to 0 by pack::fillGridUnit() */
+   meta->gridAttrib.f_miss = 1;
+   meta->gridAttrib.missPri = 9999;
    meta->gridAttrib.missSec = 0;
 
    return 0;
