@@ -61,6 +61,10 @@
  *                pnt = Number of current point being processed. (Input)
  * f_formatIconForPnt = Flag denoting if current point processes and formats
  *                      the Icon element. (Output)
+ * f_formatSummarizations = Flag denoting if all 7 elements used in deriving 
+ *                          the phrase/icon for the summarization products are
+ *                          available. Flag denotes if an element has all missing
+ *                          data (does not test for missing data per projection).
  *
  * FILES/DATABASES: None
  *
@@ -80,7 +84,7 @@ void getNumRows(numRowsInfo *numRowsForPoint, double *timeUserStart,
                 int *numDays, double startTime, double endTime, 
                 char currentHour[3], double *firstValidTime_pop, 
                 int *f_6CycleFirst, double *firstValidTimeMatch, 
-                int *f_formatIconForPnt, int pnt)
+                int *f_formatIconForPnt, int *f_formatSummarizations, int pnt)
 {
    int i; /* Counter thru match structure. */
    int k; /* Counter thru elements */
@@ -348,6 +352,21 @@ void getNumRows(numRowsInfo *numRowsForPoint, double *timeUserStart,
          #endif
          *f_formatIconForPnt = 0;
       }
-   }   
+   }
+   else if (f_XML == 3 || f_XML == 4)
+   {
+      /* We need all 7 elements to have data to create weather phrase/icon for the 
+       * summarization period. If one is missing, don't format XML. This only checks
+       * to see if ALL an elements's data is missing (not individual projections).
+       */
+      if (wxParameters[NDFD_MAX] == 0 || wxParameters[NDFD_MIN] == 0 ||
+          wxParameters[NDFD_POP] == 0 || wxParameters[NDFD_WX] == 0 ||
+          wxParameters[NDFD_SKY] == 0 || wxParameters[NDFD_WS] == 0 ||
+          wxParameters[NDFD_WD] == 0)
+      {
+         *f_formatSummarizations = 0;
+      }
+   }
+   
    return;
 }

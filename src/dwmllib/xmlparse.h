@@ -320,7 +320,7 @@ void getNumRows(numRowsInfo *numRowsForPoint, double *timeUserStart,
                 int *numDays, double startTime, double endTime, 
                 char currentHour[3], double *firstValidTime_pop, 
                 int *f_6CycleFirst, double *firstValidTimeMatch, 
-                int *f_formatIconForPnt, int pnt);
+                int *f_formatIconForPnt, int *f_formatSummarizations, int pnt);
 
 void getPeriodInfo(uChar parameterName, char *firstValidTime, char *currentHour, 
                    char *currentDay, uChar * issuanceType, 

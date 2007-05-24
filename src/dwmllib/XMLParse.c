@@ -120,6 +120,13 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
    int *f_formatIconForPnt = NULL; /* Determines wether there is enough data to 
                                       icons for the particular point being 
                                       processed. */
+   int *f_formatSummarizations = NULL; /*  Flag denoting if all 7 elements used 
+                                           in deriving the phrase/icon for the 
+                                           summarization products (f_XML = 3 or 
+                                           4) are available. Flag denotes if an
+                                           element has all missing data (does 
+                                           not test for missing data per 
+                                           projection). */
    sChar *TZoffset = NULL;    /* Number of hours to add to current time to
                                * get GMT time. */
    char **startDate = NULL;   /* Point specific user supplied start Date
@@ -596,13 +603,17 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
    f_formatNIL = (int *)malloc(numPnts * sizeof(int));
    f_useMinTempTimes = (int *)malloc(numPnts * sizeof(int));
    f_formatIconForPnt = (int *) malloc(numPnts * sizeof(int));
+   f_formatSummarizations = (int *) malloc(numPnts * sizeof(int));
 
    for (j = 0; j < numPnts; j++)
    {
+      /* Initialize a few things. */
       if (f_icon == 1)
          f_formatIconForPnt[j] = 1;
       else
          f_formatIconForPnt[j] = 0;
+ 
+      f_formatSummarizations[j] = 1;
 
       if (isPntInASector(pnts[j]))
       {
@@ -640,7 +651,8 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                     pntInfo[j].startNum, pntInfo[j].endNum, startDate[j], 
                     &numDays[j], startTime, endTime, currentHour[j], 
 		    &firstValidTime_pop[j], &f_6CycleFirst[j], 
-                    &firstValidTimeMatch[j], &f_formatIconForPnt[j], j);
+                    &firstValidTimeMatch[j], &f_formatIconForPnt[j], 
+                    &f_formatSummarizations[j], j);
       }
    }
 
@@ -1249,38 +1261,50 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
          /* Format Weather Values and\or Icons, if applicable. We must have
           * at least some rows of weather data to format either. 
           */
-         if ((numRowsForPoint[j][NDFD_WX].total - 
-	      numRowsForPoint[j][NDFD_WX].skipBeg - 
-	      numRowsForPoint[j][NDFD_WX].skipBeg) > 0)
+         if ((f_XML == 1 || f_XML == 2) && weatherParameters[NDFD_WX]) 
          {
-            if (f_XML == 1 || f_XML == 2)
-               genWeatherValues(j, layoutKeys[j][NDFD_WX], match,
-                                weatherParameters[j][NDFD_WX],
-                                f_formatIconForPnt[j], 
-                                numRowsForPoint[j][NDFD_WS],
-                                numRowsForPoint[j][NDFD_SKY],
-                                numRowsForPoint[j][NDFD_TEMP],
-                                numRowsForPoint[j][NDFD_WX], 
-				numRowsForPoint[j][NDFD_POP], parameters,
-                                pnts[j].Y, pnts[j].X, pntInfo[j].startNum, 
-                                pntInfo[j].endNum, TZoffset[j], 
-                                pntInfo[j].f_dayLight);
-	    else
+            genWeatherValues(j, layoutKeys[j][NDFD_WX], match,
+                             weatherParameters[j][NDFD_WX],
+                             f_formatIconForPnt[j], 
+                             numRowsForPoint[j][NDFD_WS],
+                             numRowsForPoint[j][NDFD_SKY],
+                             numRowsForPoint[j][NDFD_TEMP],
+                             numRowsForPoint[j][NDFD_WX], 
+	                     numRowsForPoint[j][NDFD_POP], parameters,
+                             pnts[j].Y, pnts[j].X, pntInfo[j].startNum, 
+                             pntInfo[j].endNum, TZoffset[j], 
+                             pntInfo[j].f_dayLight);
+         }
+	 else if (f_XML == 3 || f_XML == 4)
+         { 
+            if (f_formatSummarizations[j])
+            {
 	       genWeatherValuesByDay(j, layoutKeys[j][NDFD_WX], match, numMatch,
-				numRowsForPoint[j][NDFD_WS],
-				numRowsForPoint[j][NDFD_POP],
-				numRowsForPoint[j][NDFD_MAX],
-				numRowsForPoint[j][NDFD_MIN],
-                                numRowsForPoint[j][NDFD_WX], parameters,
-                                &numDays[j], TZoffset[j], pntInfo[j].f_dayLight,
-                                format, f_useMinTempTimes[j], f_XML, &numOutputLines[j],
-				maxDailyPop, averageSkyCover, maxSkyCover,
-				minSkyCover, maxSkyNum, minSkyNum, 
-				startPositions, endPositions, maxWindSpeed,
-				maxWindDirection, integerTime, 
-				timeUserStart[j], startTime, f_6CycleFirst[j], 
-                                format_value, pntInfo[j].startNum, 
-                                pntInfo[j].endNum);
+	                             numRowsForPoint[j][NDFD_WS],
+			             numRowsForPoint[j][NDFD_POP],
+			             numRowsForPoint[j][NDFD_MAX],
+			             numRowsForPoint[j][NDFD_MIN],
+                                     numRowsForPoint[j][NDFD_WX], parameters,
+                                     &numDays[j], TZoffset[j], pntInfo[j].f_dayLight,
+                                     format, f_useMinTempTimes[j], f_XML, 
+                                     &numOutputLines[j], maxDailyPop, averageSkyCover, 
+                                     maxSkyCover, minSkyCover, maxSkyNum, minSkyNum, 
+			             startPositions, endPositions, maxWindSpeed,
+			             maxWindDirection, integerTime, 
+			             timeUserStart[j], startTime, f_6CycleFirst[j], 
+                                     format_value, pntInfo[j].startNum, 
+                                     pntInfo[j].endNum);
+            }
+            else
+            {
+               #ifdef PRINT_DIAG
+               printf ("******************************************************\n");
+               printf ("Can't format weather summaries and icons for point\n");
+               printf ("#%d as all elements needed to derive these are not\n",(j+1));
+               printf ("available.\n");
+               printf ("******************************************************\n");
+               #endif
+            }
          }
 
          /* Format Wave Height Values, if applicable. */
@@ -1378,6 +1402,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
    free(numDays);
    free(numOutputLines);
    free(f_formatIconForPnt);
+   free(f_formatSummarizations);
 
    /* Free even some more memory. */
    free(f_pntHasData);
