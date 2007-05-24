@@ -930,7 +930,7 @@ int fillGridUnit (enGribMeta *en, double *data, sInt4 lenData, sInt4 Nx, sInt4 N
    return ans;
 }
 
-#define TESTING
+/* #define TESTING*/
 int WriteGrib2Record2 (grib_MetaData *meta, double *Grib_Data,
                        sInt4 grib_DataLen, IS_dataType *is, sChar f_unit,
                        uChar **cPack, sInt4 *c_len, uChar f_stdout)
@@ -1186,8 +1186,33 @@ int WriteGrib2Record2 (grib_MetaData *meta, double *Grib_Data,
 
    *cPack = (uChar *) malloc (cgribLen * sizeof (char));
 
+   /* Ideally we would determine which packing method (2 or 3) is more
+    * efficient.  Dr. Glahn attempted to do so in his routine "pk_missp.f"
+    * and "pk_nomiss.f".  Unfortunately the input to those routines would
+    * take some massaging (time and memory allocation) to get from en.fld, and
+    * it is an approximation.
+    *
+    * The correct time to test for 2 vs 3 (complex vs complex + spatial diff)
+    * would be inside NCEP's "cmplxpack.c", or inside "compack.c",
+    * "misspack.c" when the data has been massaged.
+    *
+    * I have worked on various packing / grouping algorithms inside "tdlpack.c"
+    * and TDL_UseSecDiff_Prim, TDL_UseSecDiff are supposed to be solving this
+    * question, but they don't appear to be working properly.
+    *
+    * The most wasteful method is to pack both ways from here (see TESTING
+    * code).  This creates the optimal solution, but is slow.  I also found
+    * that the majority of the time the optimal solution is 2, so that is the
+    * default until I have time to modify cmplxpack.c.
+    */
+   if ((en.idrsnum == 2) || (en.idrsnum == 3)) {
+      en.idrsnum = 2;
+   }
+/*
 #ifdef TESTING
+*/
    /* If idrsnum == 2 or 3, try 3 first, then try 2, then compare. */
+/*
    if ((en.idrsnum == 2) || (en.idrsnum == 3)) {
       en.idrsnum = 3;
       cPack2 = (uChar *) malloc (cgribLen * sizeof (char));
@@ -1195,6 +1220,7 @@ int WriteGrib2Record2 (grib_MetaData *meta, double *Grib_Data,
       cPack2 = NULL;
    }
 #endif
+*/
    ans = C_pkGrib2 (*cPack, en.sec0, en.sec1, en.sec2, en.lenSec2,
                     en.gds, en.gdsTmpl, en.idefList, en.idefnum, en.ipdsnum,
                     en.pdsTmpl, en.coordlist, en.numcoord, en.idrsnum,
@@ -1210,8 +1236,11 @@ int WriteGrib2Record2 (grib_MetaData *meta, double *Grib_Data,
    /* Set c_len to valid length of cPack */
    *c_len = ans;
 
+/*
 #ifdef TESTING
+*/
    /* If idrsnum == 2 or 3, now try 2, then compare. */
+/*
    if (en.idrsnum == 3) {
       en.idrsnum = 2;
       ans2 = C_pkGrib2 (cPack2, en.sec0, en.sec1, en.sec2, en.lenSec2,
@@ -1230,15 +1259,20 @@ int WriteGrib2Record2 (grib_MetaData *meta, double *Grib_Data,
       if (ans2 < ans) {
          free (*cPack);
          *cPack = cPack2;
+*/
          /* Set c_len to valid length of cPack */
+/*
          *c_len = ans2;
       } else {
          free (cPack2);
+*/
          /* Set c_len to valid length of cPack */
+/*
          *c_len = ans;
       }
    }
 #endif
+*/
 
 #ifdef MEMWATCH
    /* memwatch isn't being done in library. so... */
