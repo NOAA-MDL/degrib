@@ -1095,10 +1095,12 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
             totDay = (sInt4) floor (usr->startTime / SEC_DAY);
             usr->startTime = totDay * SEC_DAY + 5 * 3600.;
             if (usr->f_valTime == -1) {
+               /* No num days yet */
                usr->f_valTime = 1;
             } else {
+               /* have num days */
                usr->f_valTime = 3;
-               usr->endTime = (totDay + usr->endTime) * SEC_DAY + 12 * 3600.;
+               usr->endTime = (totDay + usr->numDays) * SEC_DAY + 12 * 3600.;
             }
 /*            printf ("start Time '%s' %f\n", next, usr->startTime);*/
             return 2;
@@ -1117,13 +1119,18 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
                errSprintf ("Bad value to '%s' of '%s'\n", cur, next);
                return -1;
             }
-            usr->endTime = li_temp;
+            usr->numDays = li_temp;
             if (usr->f_valTime == -1) {
+               /* No start date yet */
                usr->f_valTime = 2;
+               /* Calc endTime based on cur date. */
+               totDay = (sInt4) floor (Clock_Seconds() / SEC_DAY);
+               usr->endTime = (totDay + usr->numDays) * SEC_DAY + 12 * 3600.;
             } else {
+               /* Have start date */
                usr->f_valTime = 3;
                totDay = (sInt4) floor (usr->startTime / SEC_DAY);
-               usr->endTime = (totDay + usr->endTime) * SEC_DAY + 12 * 3600.;
+               usr->endTime = (totDay + usr->numDays) * SEC_DAY + 12 * 3600.;
             }
          }
       case SIMPLEWX_VER:
