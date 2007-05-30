@@ -1286,8 +1286,13 @@ int fillSect5(enGribMeta * en, uShort2 tmplNum, sShort2 BSF, sShort2 DSF,
       en->drsTmpl[4] = fieldType; /* code table 5.1 */
       en->drsTmpl[5] = 9999; /* missing for group splitting method used */
       en->drsTmpl[6] = f_miss;
-      memcpy(&(en->drsTmpl[7]), &missPri, sizeof(float));
-      memcpy(&(en->drsTmpl[8]), &missSec, sizeof(float));
+      if (fieldType == 1) {
+         en->drsTmpl[7] = missPri;
+         en->drsTmpl[8] = missSec;
+      } else {
+         memcpy(&(en->drsTmpl[7]), &missPri, sizeof(float));
+         memcpy(&(en->drsTmpl[8]), &missSec, sizeof(float));
+      }
       en->drsTmpl[9] = 9999; /* number of groups */
       en->drsTmpl[10] = 9999; /* group widths */
       en->drsTmpl[11] = 9999; /* numBits for group widths */
@@ -1305,8 +1310,13 @@ int fillSect5(enGribMeta * en, uShort2 tmplNum, sShort2 BSF, sShort2 DSF,
       en->drsTmpl[4] = fieldType; /* code table 5.1 */
       en->drsTmpl[5] = 9999; /* missing for group splitting method used */
       en->drsTmpl[6] = f_miss;
-      memcpy(&(en->drsTmpl[7]), &missPri, sizeof(float));
-      memcpy(&(en->drsTmpl[8]), &missSec, sizeof(float));
+      if (fieldType == 1) {
+         en->drsTmpl[7] = missPri;
+         en->drsTmpl[8] = missSec;
+      } else {
+         memcpy(&(en->drsTmpl[7]), &missPri, sizeof(float));
+         memcpy(&(en->drsTmpl[8]), &missSec, sizeof(float));
+      }
       en->drsTmpl[9] = 9999; /* number of groups */
       en->drsTmpl[10] = 9999; /* group widths */
       en->drsTmpl[11] = 9999; /* numBits for group widths */
