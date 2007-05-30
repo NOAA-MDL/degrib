@@ -51,7 +51,7 @@ STD_DEF = $(XML_DEF) -DSIZEOF_LONG_INT=4 -DWORDS_BIGENDIAN
 ############################
 # Standard Includes
 ############################
-STD_INC= -I../degrib -I../emapf-c -I../grib2lib -I../netcdf/libsrc -I../gd $(XML_INC)
+STD_INC= -I../degrib -I../emapf-c -I../mdl_g2c -I../libaat -I../netcdf/libsrc -I../gd $(XML_INC)
 TCL_INC=-I$(TCL_PREFIX)/include
 TK_INC=-I$(TK_PREFIX)/include
 GUI_INC=$(TCL_INC) $(TK_INC) $(STD_INC)
@@ -63,12 +63,12 @@ CLOCK_LIB = -L/usr/lib -lm
 DP_LIB = -L../emapf-c/ -lemapf $(XML_LIB) -L../zlib -lz -L/usr/lib -lm
 DRAWSHP_LIB = -L../gd -lgd -L../libpng -lpng -L../zlib -lz \
           -L../emapf-c/ -lemapf -L/usr/lib -lm
-STD_LIB = -L../grib2lib -lgrib2 -L../gd -lgd -L../libpng -lpng \
+STD_LIB = -L../mdl_g2c -lmdl_g2c -L../libaat -laat -L../gd -lgd -L../libpng -lpng \
           $(XML_LIB) -L../zlib -lz \
           -L../jpeg2000/src/libjasper/jpc/.libs/ -ljpc \
           -L../jpeg2000/src/libjasper/base/.libs/ -lbase \
           -L../netcdf/libsrc/ -lnetcdf \
-          -L/usr/lib/ -lg2c -L../emapf-c/ -lemapf -L/usr/lib -lm
+          -L../emapf-c/ -lemapf -L/usr/lib -lm
 
 TK_LIB=-L$(TK_PREFIX)/lib -ltk$(TCL_VERSION)
 TCL_LIB=-L$(TCL_PREFIX)/lib -ltcl$(TCL_VERSION)
@@ -211,7 +211,7 @@ DP_MAIN = dpstart.c
 
 DRAWSHP_MAIN = drawshp.c
 
-LIB_DEPENDS = ../emapf-c/libemapf.a ../grib2lib/libgrib2.a \
+LIB_DEPENDS = ../emapf-c/libemapf.a ../mdl_g2c/libmdl_g2c.a ../libaat/libaat.a \
             ../libpng/libpng.a ../zlib/libz.a \
             ../jpeg2000/src/libjasper/jpc/.libs/libjpc.a \
             ../jpeg2000/src/libjasper/base/.libs/libbase.a \
