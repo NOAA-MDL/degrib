@@ -148,17 +148,17 @@
 */
 
 /* Modified #ifdef __64BIT__ to SIZEOF_LONG_INT test: Arthur 10/1/2006 */
-/*
-  #ifdef __64BIT__
-  #else
-  #endif
-*/
+#ifdef __64BIT__
+typedef int g2int;
+typedef unsigned int g2intu;
+#else
 #if SIZEOF_LONG_INT != 4
 typedef int g2int;
 typedef unsigned int g2intu;
 #else
 typedef long g2int;
 typedef unsigned long g2intu;
+#endif
 #endif
 typedef float g2float;
 
