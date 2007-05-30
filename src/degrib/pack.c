@@ -763,8 +763,8 @@ void fillSect4_Interval (sect4IntervalType * val, uChar processID,
  *****************************************************************************
  */
 int fillGridUnit (enGribMeta *en, double *data, sInt4 lenData, sInt4 Nx, sInt4 Ny,
-                  sInt4 ibmap, sChar f_boustify, uChar f_miss, double missPri,
-                  double missSec, double unitM, double unitB)
+                  sInt4 ibmap, sChar f_boustify, uChar fieldType, uChar f_miss,
+                  double missPri, double missSec, double unitM, double unitB)
 {
    uChar f_flip;        /* Used to help keep track of the direction when
                          * "boustifying" the data. */
@@ -795,13 +795,22 @@ int fillGridUnit (enGribMeta *en, double *data, sInt4 lenData, sInt4 Nx, sInt4 N
          return -4;
       }
       if (f_miss == 1) {
-         memcpy (&(enMissPri), &(en->drsTmpl[7]), sizeof (float));
+         if (fieldType == 1) {
+            enMissPri = en->drsTmpl[7];
+         } else {
+            memcpy (&(enMissPri), &(en->drsTmpl[7]), sizeof (float));
+         }
          if (enMissPri != (float) missPri) {
             return -4;
          }
       } else if (f_miss == 2) {
-         memcpy (&(enMissPri), &(en->drsTmpl[7]), sizeof (float));
-         memcpy (&(enMissSec), &(en->drsTmpl[8]), sizeof (float));
+         if (fieldType == 1) {
+            enMissPri = en->drsTmpl[7];
+            enMissSec = en->drsTmpl[8];
+         } else {
+            memcpy (&(enMissPri), &(en->drsTmpl[7]), sizeof (float));
+            memcpy (&(enMissSec), &(en->drsTmpl[8]), sizeof (float));
+         }
          if ((enMissPri != (float)missPri) || (enMissSec != (float)missSec)) {
             return -4;
          }
@@ -1142,7 +1151,7 @@ int WriteGrib2Record2 (grib_MetaData *meta, double *Grib_Data,
                              meta->pds2.sect4.Interval[i].timeIncr);
       }
       ans = fillSect4_12 (&en, tmplNum, meta->pds2.sect4.numberFcsts,
-                         meta->pds2.sect4.derivedFcst, year,
+                          meta->pds2.sect4.derivedFcst, year,
                           month, day, hour, min, sec,
                           meta->pds2.sect4.numInterval,
                           meta->pds2.sect4.numMissing, interval);
@@ -1174,9 +1183,9 @@ int WriteGrib2Record2 (grib_MetaData *meta, double *Grib_Data,
    /* 255 is because we don't currently use bitmaps.  The code exists to
     * allow other choices, but we need to pass the info into this proc. */
    ans = fillGridUnit (&en, Grib_Data, grib_DataLen, meta->gds.Nx,
-                       meta->gds.Ny, 255, f_boustify, meta->gridAttrib.f_miss,
-                       meta->gridAttrib.missPri, meta->gridAttrib.missSec,
-                       unitM, unitB);
+                       meta->gds.Ny, 255, f_boustify, meta->gridAttrib.fieldType,
+                       meta->gridAttrib.f_miss, meta->gridAttrib.missPri,
+                       meta->gridAttrib.missSec, unitM, unitB);
    if (ans < 0) {
       freeEnGribMeta (&en);
       printf ("Error in Fill Grid2 %d\n", ans);
