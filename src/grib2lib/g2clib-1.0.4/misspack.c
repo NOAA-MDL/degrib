@@ -90,8 +90,13 @@ void misspack(g2float *fld,g2int ndpts,g2int idrsnum,g2int *idrstmpl,
          return;
       }
       else {    //  Get missing values
-         rdieee(idrstmpl+7,&rmissp,1);
-         if (missopt == 2) rdieee(idrstmpl+8,&rmisss,1);
+         if (idrstmpl[4] == 1) {
+            rmissp=idrstmpl[7];
+            if (missopt == 2) rmisss=idrstmpl[8];
+         } else {
+            rdieee(idrstmpl+7,&rmissp,1);
+            if (missopt == 2) rdieee(idrstmpl+8,&rmisss,1);
+         }
       }
 //
 //  Find min value of non-missing values in the data,
