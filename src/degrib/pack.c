@@ -19,18 +19,20 @@
 #include "meta.h"
 #include "metaname.h"
 #include "degrib2.h"
-#include "grib2api.h"
+#include "mdl_g2c.h"
 #include "tendian.h"
 #include "pack.h"
 #include "myutil.h"
 #include "clock.h"
-#include "engribapi.h"
 
+#ifdef FORTRAN_GRIB2
 static sInt4 NearestInt (double a)
 {
    return (sInt4) floor (a + .5);
 }
+#endif
 
+#ifdef FORTRAN_GRIB2
 /* Skipped over type 5 (Don't know WGS84 sphere) */
 /* Skipped over type 4 (minEarth in mm?) */
 static void InitEarth (grib_MetaData *meta, IS_dataType *is)
@@ -83,7 +85,9 @@ static void InitEarth (grib_MetaData *meta, IS_dataType *is)
       }
    }
 }
+#endif
 
+#ifdef FORTRAN_GRIB2
 static void PackSect2_Wx (grib_MetaData *meta, IS_dataType *is)
 {
    size_t i, j;
@@ -114,6 +118,7 @@ static void PackSect2_Wx (grib_MetaData *meta, IS_dataType *is)
    is->idat[3 - 1 + count] = 0;
    is->rdat[0] = 0;
 }
+#endif
 
 /* compute number of bits needed to store val */
 static int power (uInt4 val)
@@ -239,6 +244,7 @@ meta->pds2.sect4.numBands
 
 */
 
+#ifdef FORTRAN_GRIB2
 int WriteGrib2Record (grib_MetaData *meta, double *Grib_Data,
                       sInt4 grib_DataLen, IS_dataType *is, sChar f_unit,
                       uChar **cPack, sInt4 *c_len, uChar f_stdout)
@@ -698,6 +704,7 @@ int WriteGrib2Record (grib_MetaData *meta, double *Grib_Data,
 #endif
    return 0;
 }
+#endif
 
 /*
  * uChar processID     = Statistical process method used.
