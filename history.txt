@@ -1,28 +1,69 @@
 #
+#----- Release: Version 1.86 05/31/2007 -----
+#
+ 5/30 AAT Swicthing from grib2lib to mdl_g2c / libaat (r475)
+ 5/30 AAT Adjusted how misspack.c gets the missing values if data type is an
+          integer instead of a float (r471)
+ 5/24 AAT Adjusted -numDays -startDate behavior to match John's options
+ 5/24 AAT Adding weather summaries to dwmllib (r469)
+ 5/23 AAT Adjusted NCEP pack routines to not ignore idrstmpl[4] (r464)
+ 5/21 AAT Introduced C only (no FORTRAN) pack routine for degrib
+          WriteGrib2Record2() (r459)
+ 5/18 AAT Fixed glitch in makefile.aix32 for dwmllib, and increased the dynamic
+          memory allocation for aix systems.
+ 5/18 AAT Updated emapf-c to latest copy (r455)
+ 5/18 AAT Added RTMA grids to ndfd.ini / NDGD (r451)
+ 5/18 AAT Updated ndfd.ini for status of NDGD smoke Grids. (r450)
+ 5/18 AAT Made configuration changes for operational/experimental shift (r447)
+ 5/18 AAT Expanded variables "-DC -cube" can handle to include tcwspd prob.
+ 5/18 AAT Added "grb2shp" script at John Huddleston's request (r445)
+ 5/17 AAT Introduced concept of hdatum (different from grid datum) (r443)
+ 5/17 AAT Updated metaname.c to handle CPC probability of X above/below avg.
+ 5/17 AAT Updating degrib1.c error message when dealing with unknown parm table
+ 5/15 AAT Some updates to dwmllib (r439)
+ 5/14 AAT Updating metaname.c based on ncep.noaa.gov (r436)
+ 5/14 AAT Updated metaname.c to handle GMOS QPF06/QPF12 and SnowAmt24
+ 5/14 AAT Updated dwmllib to the new file structure (r434)
+ 5/14 AAT Allowed SectorFindGDS() to be more lenient)
+ 5/14 AAT Fixed typo in genprobe.c:NDFD_Type (50c->50i, 64c->64i for pwind)
+ 5/14 AAT Expanding the variables "-DC -cube" can handle
+ 4/26 AAT Adjusted solar.c::isNightPeriod() to take local time offset.  This
+          is needed to determine special exceptions for really long days
+          (summer) Would like a "RiseSet2()" (r428)
+ 4/5  AAT Fixed bug found by paul with regards to which parts of GDS are
+          actually stored in the data cubes. (r427)
+ 3/22 AAT Added p* and conhazo files to genprobe.c
+ 3/15 AAT Adjusted configurations for p* and conhazo files.
+ 3/14 AAT Fixed a bug when converting all messages, and last one is a subgird.
+          => Adjusting the calculation of msgNum in commands.c::Grib2Convert()
+ 3/14 AAT Updating metaname.c based on ncep.noaa.gov
+ 3/7  AAT Fixed a bug in clockstart.c (no CMD_ADD option)
+ 3/6  AAT Removing f77wrappers.c from emapf-c because of aix compile bug
+#
 #----- Release: Version 1.85 02/27/2007 -----
 #
-2/27  AAT Fixed naming glitch in pxtotsvrtstm -> ptotxsvrtstm 
-2/26  AAT Upgraded to most recent copy of emapf-c
-2/26  AAT Upgraded to g2clib-1.0.4 (from 1.0.2)
-2/26  AAT Last minute change of abbreviations for SPC grids.
+ 2/27  AAT Fixed naming glitch in pxtotsvrtstm -> ptotxsvrtstm (r415)
+ 2/26  AAT Upgraded to most recent copy of emapf-c
+ 2/26  AAT Upgraded to g2clib-1.0.4 (from 1.0.2)
+ 2/26  AAT Last minute change of abbreviations for SPC grids.
           From: SigTornProb SigHailProb SigWindprob TotalProbOutlook
           SigTotProbOutlook
           To: XtrmTornProb XtrmHailProb XtrmWindProb TotalSvrProb
           TotalXtrmProb
-2/26  AAT Updated xmlparse.c to Paul's current version
-2/26  AAT Added filenames for new SPC grids to ndfd.ini (r405)
-2/26  AAT Added SigTotProbOutlook, and updated some handling of SPC grids (r397)
-2/26  AAT Overhaul of clockstart.c to try to fix some bugs in clock.exe (r394)
-2/24  AAT Added support for the 2007 change to daylight saving time (r392)
-2/16  AAT Updated metaname.c's units to use ; instead of , when dealing with
+ 2/26 AAT Updated xmlparse.c to Paul's current version
+ 2/26 AAT Added filenames for new SPC grids to ndfd.ini (r405)
+ 2/26 AAT Added SigTotProbOutlook, and updated some handling of SPC grids (r397)
+ 2/26 AAT Overhaul of clockstart.c to try to fix some bugs in clock.exe (r394)
+ 2/24 AAT Added support for the 2007 change to daylight saving time (r392)
+ 2/16 AAT Updated metaname.c's units to use ; instead of , when dealing with
           a look up table.  This should help with people parsing probe output.
           (r374)
-2/16  AAT fixed the method used to check memory allocation in g2_unpack2.c
-2/16  AAT added drawshp.txt to /degrib/docs
-2/15  AAT Adjusted sectors/numSectors prior to calling expandInName so if a
+ 2/16 AAT fixed the method used to check memory allocation in g2_unpack2.c
+ 2/16 AAT added drawshp.txt to /degrib/docs
+ 2/15 AAT Adjusted sectors/numSectors prior to calling expandInName so if a
           point falls on Puerto Rico, it grabs data from nhemi as well. (r369)
-2/9   AAT Added support for labeling Error Grids (RTMA) (r362)
-2/9   AAT modified sector.c to be more forgiving in SectorFindGDS, and to add
+ 2/9  AAT Added support for labeling Error Grids (RTMA) (r362)
+ 2/9  AAT modified sector.c to be more forgiving in SectorFindGDS, and to add
           point sector information.  PntSectInfo now contains a list of the
           sectors a point fall in.  A point does not count multiple times when
           creating the "sector" list.  eg a point in "conus,nhemi,alaska" only

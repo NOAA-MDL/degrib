@@ -53,53 +53,27 @@ S:degrib/src/makefile.sgi
 S:degrib/src/makefile.sun
 S:degrib/src/makefile.win
 
-# grib2lib source
-S:degrib/src/grib2lib/makefile.aix32
-S:degrib/src/grib2lib/makefile.aix64
-S:degrib/src/grib2lib/makefile.cyg
-S:degrib/src/grib2lib/makefile.hpgcc
-S:degrib/src/grib2lib/makefile.lin64
-S:degrib/src/grib2lib/makefile.linux
-S:degrib/src/grib2lib/makefile.mac
-S:degrib/src/grib2lib/makefile.sgi
-S:degrib/src/grib2lib/makefile.sun
-S:degrib/src/grib2lib/makefile.win
-S:degrib/src/grib2lib/Makefile.in
-S:degrib/src/grib2lib/*.c
-S:degrib/src/grib2lib/engribapi.h
-S:degrib/src/grib2lib/grib2api.h
-S:degrib/src/grib2lib/gridtemplates.h
-S:degrib/src/grib2lib/myassert.h
-S:degrib/src/grib2lib/scan.h
-S:degrib/src/grib2lib/tendian.h
-S:degrib/src/grib2lib/type.h
-S:degrib/src/grib2lib/config.h.in
-S:degrib/src/grib2lib/config_H/*
-S:degrib/src/grib2lib/*.txt
-
 # g2clib-1.0.4 source
-S:degrib/src/grib2lib/g2clib-1.0.4/make*
-S:degrib/src/grib2lib/g2clib-1.0.4/*.c
-S:degrib/src/grib2lib/g2clib-1.0.4/*.h
-S:degrib/src/grib2lib/g2clib-1.0.4/README
-S:degrib/src/grib2lib/g2clib-1.0.4/CHANGES
-S:degrib/src/grib2lib/g2clib-1.0.4/grib2c.doc
+S:degrib/src/mdl_g2c/g2clib-1.0.4/make*
+S:degrib/src/mdl_g2c/g2clib-1.0.4/*.c
+S:degrib/src/mdl_g2c/g2clib-1.0.4/*.h
+S:degrib/src/mdl_g2c/g2clib-1.0.4/README
+S:degrib/src/mdl_g2c/g2clib-1.0.4/CHANGES
+S:degrib/src/mdl_g2c/g2clib-1.0.4/grib2c.doc
 
-# grib2unpacker source
-S:degrib/src/grib2lib/grib2unpacker/make*
-S:degrib/src/grib2lib/grib2unpacker/Make*
-S:degrib/src/grib2lib/grib2unpacker/*.f
-S:degrib/src/grib2lib/grib2unpacker/*.c
-S:degrib/src/grib2lib/grib2unpacker/grib2-makefile
-S:degrib/src/grib2lib/grib2unpacker/unpkgrib.315.wpd
+# mdl_g2c source
+S:degrib/src/mdl_g2c/make*
+S:degrib/src/mdl_g2c/Make*
+S:degrib/src/mdl_g2c/*.c
+S:degrib/src/mdl_g2c/*.h
+S:degrib/src/mdl_g2c/readme.txt
 
-# grib2packer source
-S:degrib/src/grib2lib/grib2packer/makefile
-S:degrib/src/grib2lib/grib2packer/README
-S:degrib/src/grib2lib/grib2packer/*.f
-S:degrib/src/grib2lib/grib2packer/grib2-makefile
-S:degrib/src/grib2lib/grib2packer/*.c
-S:degrib/src/grib2lib/grib2packer/pk_grib2.315.wpd
+# libaat source
+S:degrib/src/libaat/makefile*
+S:degrib/src/libaat/Make*
+S:degrib/src/libaat/*.c
+S:degrib/src/libaat/*.h
+S:degrib/src/mdl_g2c/readme.txt
 
 # pnglib source
 S:degrib/src/libpng/contrib/gregbook/LICENSE
