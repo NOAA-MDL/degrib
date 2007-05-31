@@ -19,10 +19,17 @@ all: config ./zlib/libzlib.a ./libpng/libpng.a ./emapf/libemapf.a
 	@echo "-----------------------------"
 	@echo ""
 	@echo "-----------------------------"
-	@echo "Attempting to compile grib2lib..."
+	@echo "Attempting to compile mdl_g2c..."
 	@echo "-----------------------------"
-	(cd grib2lib && make -f makefile.aix32)
-	@echo "Finished with grib2lib..."
+	(cd mdl_g2c && make -f makefile.aix32)
+	@echo "Finished with mdl_g2c..."
+	@echo "-----------------------------"
+	@echo ""
+	@echo "-----------------------------"
+	@echo "Attempting to compile libaat..."
+	@echo "-----------------------------"
+	(cd libaat && make -f makefile.aix32)
+	@echo "Finished with libaat..."
 	@echo "-----------------------------"
 	@echo ""
 	@echo "-----------------------------"
@@ -141,7 +148,8 @@ config.status:
 tidy:
 	(cd ./zlib && rm -f *.a *.o *~ example example.exe minigzip minigzip.exe foo.gz so_locations _match.s maketree)
 	(cd ./libpng && rm -f *.a *.pic.o *.o pngtest-stat.exe pngtest.exe pngout.png libpng.def libpng-config libpng.pc pngtesti.exe)
-	(cd ./grib2lib && rm -f *.a)
+	(cd ./mdl_g2c && rm -f *.a)
+	(cd ./libaat && rm -f *.a)
 	(cd ./emapf-c && rm -f *.o *.a)
 	(cd ./degrib && rm -f *.o degrib degrib.exe tcldegrib tcldegrib.exe tkdegrib tkdegrib.exe clock clock.exe degrib_DP degrib_DP.exe drawshp drawshp.exe)
 	(cd ./dwmllib && rm -f *.a)
@@ -159,7 +167,8 @@ distclean: clean
 clean: config.status
 	(cd ./zlib && rm -f *.a *.o *~ example example.exe minigzip minigzip.exe foo.gz so_locations _match.s maketree)
 	(cd ./libpng && rm -f *.a *.pic.o *.o pngtest-stat.exe pngtest.exe pngout.png libpng.def libpng-config libpng.pc pngtesti.exe)
-	(cd ./grib2lib && rm -f *.a)
+	(cd ./mdl_g2c && rm -f *.a)
+	(cd ./libaat && rm -f *.a)
 	(cd ./emapf-c && rm -f *.o *.a config.log config.status Makefile)
 	(cd ./degrib && rm -f *.o degrib degrib.exe tcldegrib tcldegrib.exe tkdegrib tkdegrib.exe clock clock.exe degrib_DP degrib_DP.exe drawshp drawshp.exe)
 	(cd ./dwmllib && rm -f *.a)

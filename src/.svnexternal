@@ -1,3 +1,3 @@
-emapf-c -r72 http://slosh.nws.noaa.gov/svn/libpub/emapf-20070323
-mdl_g2c -r72 http://slosh.nws.noaa.gov/svn/libpub/mdl_g2c/mdl_g2c
-libaat -r72 http://slosh.nws.noaa.gov/svn/libpub/libaat/libaat
+emapf-c -r85 http://slosh.nws.noaa.gov/svn/libpub/emapf-20070323
+mdl_g2c -r85 http://slosh.nws.noaa.gov/svn/libpub/mdl_g2c/mdl_g2c
+libaat -r85 http://slosh.nws.noaa.gov/svn/libpub/libaat/libaat

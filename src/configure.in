@@ -1,4 +1,4 @@
-AC_INIT([degrib],[1.84a],[arthur.taylor@noaa.gov])
+AC_INIT([degrib],[1.86a],[arthur.taylor@noaa.gov])
 AC_CONFIG_SRCDIR([degrib/degrib1.c])
 AC_CONFIG_HEADERS([grib2lib/config.h])
 AC_CONFIG_HEADERS([gd/config.h:gd/scripts/config.hin])
