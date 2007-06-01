@@ -11,7 +11,6 @@ SHELL = @SHELL@
 abs_top_builddir = @abs_top_builddir@
 AIXCMD = @AIXCMD@
 CC = @CC@
-F77 = @F77@
 ARFLAGS = @ARFLAGS@
 CFLAGS = @CFLAGS@
 EXEEXT = @EXEEXT@
@@ -38,7 +37,7 @@ netcdf/macros.make:
 	(cd ./netcdf && $(AIXCMD) export CC=$(CC) && CFLAGS="-O" ARFLAGS="cru"\
                               CXX="" FC="" F90="" ./configure)
 
-libraries: zlib/libz.a emapf-c/libemapf.a gd/libgd.a jpeg2000/src/libjasper/.libs/libjasper.a libxml/libxml2.la libpng/libpng.a netcdf/libsrc/libnetcdf.a grib2lib/libgrib2.a
+libraries: zlib/libz.a emapf-c/libemapf.a gd/libgd.a jpeg2000/src/libjasper/.libs/libjasper.a libxml/libxml2.la libpng/libpng.a netcdf/libsrc/libnetcdf.a mdl_g2c/libmdl_g2c.a libaat/libaat.a
 
 zlib/libz.a:
 	(cd zlib && $(AIXCMD) make )
@@ -63,8 +62,11 @@ libpng/libpng.a: zlib/libz.a
 libxml/libxml2.la: libxml/Makefile
 	(cd libxml && $(AIXCMD) make libxml2.la)
 
-grib2lib/libgrib2.a:
-	(cd grib2lib &&  $(AIXCMD) make)
+mdl_g2c/libmdl_g2c.a:
+	(cd mdl_g2c &&  $(AIXCMD) make)
+
+libaat/libaat.a:
+	(cd libaat &&  $(AIXCMD) make)
 
 ../bin/ncdump: netcdf/macros.make
 	- (cd netcdf &&  $(AIXCMD) make && cp ncdump/ncdump$(exeext) ../../bin)
