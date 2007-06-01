@@ -387,6 +387,7 @@ E:degrib/bin/clock.exe
 E:degrib/bin/ncdump.exe
 A,E:degrib/bin/MakeDataBase.sh
 A,E:degrib/bin/sector.tbl
+A,E:degrib/bin/grb2shp.sh
 
 # Docs
 A:degrib/readme.txt
