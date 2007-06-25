@@ -12,18 +12,21 @@
 #    5/2003 Arthur Taylor (MDL / RSIS): Created (makefile.linux)
 #    9/2003 James Scott (JAScott1@dow.com): Modified and tested.
 #   12/2003 Arthur Taylor (MDL / RSIS): Updated
+#    6/2007 TR Shaw (OITC): Updated for OSX and ActiveState Tk/Tcl 8.4 distro
 #
 # NOTES
 ##############################################################################
 
 ############################
 # SYSTEM Directories
+# Based upon free ActiveState distro for Mac OSX
+#    http://www.activestate.com/Products/ActiveTcl/
 ############################
-TCL_PREFIX=/usr/local/tcltk
-TK_PREFIX=/usr/local/tcltk
-# TCL_PREFIX=/usr
-# TK_PREFIX=/usr
-TCL_VERSION = 8.3
+#TCL_PREFIX=/usr/local/tcltk
+#TK_PREFIX=/usr/local/tcltk
+TCL_PREFIX=/usr
+TK_PREFIX=/usr
+TCL_VERSION = 8.4
 
 ############################
 # DEFAULT Compilers and Compiler flags.
