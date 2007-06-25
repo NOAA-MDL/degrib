@@ -1,5 +1,8 @@
-#!/bin/make
-#SHELL = /bin/sh
+SHELL = /bin/sh
+
+#####
+# makefile.win: Intended for 32 Bit mingw systems
+#####
 
 LIB_DEPENDS = ./zlib/libz.a \
               ./libpng/libpng.a \
@@ -16,7 +19,7 @@ PRJ_NAME = degrib
 
 all: $(PRJ_NAME)/$(PRJ_NAME) install
 
-$(PRJ_NAME)/$(PRJ_NAME): $(LIB_DEPENDS)
+$(PRJ_NAME)/$(PRJ_NAME): $(LIB_DEPENDS) makefile.win
 	@echo "-----------------------------"
 	@echo "Attempting to compile degrib..."
 	(cd degrib && make -f makefile.win)
@@ -24,6 +27,9 @@ $(PRJ_NAME)/$(PRJ_NAME): $(LIB_DEPENDS)
 	@echo "-----------------------------"
 	@echo ""
 
+#####
+# LIBRARIES
+#####
 ./zlib/libz.a: ./zlib/Makefile
 	@echo "-----------------------------"
 	@echo "Attempting to compile Zlib..."
@@ -31,13 +37,6 @@ $(PRJ_NAME)/$(PRJ_NAME): $(LIB_DEPENDS)
 	@echo "   the makefiles in ./degrib to use it, skipping this step"
 	(cd ./zlib && make)
 	@echo "Finished with Zlib..."
-	@echo "-----------------------------"
-	@echo ""
-
-./zlib/Makefile: ./zlib/configure
-	@echo "-----------------------------"
-	@echo "Attempting to configure Zlib..."
-	(cd ./zlib && ./configure)
 	@echo "-----------------------------"
 	@echo ""
 
@@ -81,28 +80,11 @@ $(PRJ_NAME)/$(PRJ_NAME): $(LIB_DEPENDS)
 	@echo "-----------------------------"
 	@echo ""
 
-./jpeg2000/Makefile: ./jpeg2000/configure
-	@echo "-----------------------------"
-	@echo "Attempting to configure jpeg2000..."
-	(cd ./jpeg2000 && ./configure)
-	# following is only needed for mingw version.
-	cp ./jpeg2000/libtool.mingw ./jpeg2000/libtool
-	@echo "Finished with jpeg2000..."
-	@echo "-----------------------------"
-	@echo ""
-
 ./libaat/libaat.a: ./libaat/Makefile
 	@echo "-----------------------------"
 	@echo "Attempting to compile libaat..."
 	(cd libaat && make)
 	@echo "Finished with libaat..."
-	@echo "-----------------------------"
-	@echo ""
-
-./libaat/Makefile: ./libaat/configure
-	@echo "-----------------------------"
-	@echo "Attempting to configure libaat..."
-	(cd ./libaat && ./configure CFLAGS="-O3 -Wall -pedantic -ansi -mno-cygwin")
 	@echo "-----------------------------"
 	@echo ""
 
@@ -125,15 +107,7 @@ $(PRJ_NAME)/$(PRJ_NAME): $(LIB_DEPENDS)
 ./emapf-c/libemapf.a: ./emapf-c/Makefile
 	@echo "-----------------------------"
 	@echo "Attempting to compile emapf-c..."
-	(cd emapf-c &&	make -f Makefile)
-	@echo "Finished with emapf-c..."
-	@echo "-----------------------------"
-	@echo ""
-
-./emapf-c/Makefile: ./emapf-c/configure
-	@echo "-----------------------------"
-	@echo "Attempting to configure emapf-c..."
-	(cd ./emapf-c && ./configure)
+	(cd emapf-c &&	make)
 	@echo "Finished with emapf-c..."
 	@echo "-----------------------------"
 	@echo ""
@@ -141,16 +115,8 @@ $(PRJ_NAME)/$(PRJ_NAME): $(LIB_DEPENDS)
 ./netcdf/libsrc/libnetcdf.a: ./netcdf/Makefile
 	@echo "-----------------------------"
 	@echo "Attempting to compile netcdf..."
-	(cd netcdf && make -f Makefile)
+	(cd netcdf && make)
 	cp ./netcdf/ncdump/ncdump.exe ../bin
-	@echo "Finished with netcdf..."
-	@echo "-----------------------------"
-	@echo ""
-
-./netcdf/Makefile: ./netcdf/configure
-	@echo "-----------------------------"
-	@echo "Attempting to configure netcdf..."
-	(cd ./netcdf && CC="gcc" CXX="" FC="" F90="" ./configure)
 	@echo "Finished with netcdf..."
 	@echo "-----------------------------"
 	@echo ""
@@ -163,6 +129,49 @@ $(PRJ_NAME)/$(PRJ_NAME): $(LIB_DEPENDS)
 	@echo "-----------------------------"
 	@echo ""
 
+#####
+# Configurables
+#####
+./zlib/Makefile: ./zlib/configure
+	@echo "-----------------------------"
+	@echo "Attempting to configure Zlib..."
+	(cd ./zlib && ./configure)
+	@echo "-----------------------------"
+	@echo ""
+
+./jpeg2000/Makefile: ./jpeg2000/configure
+	@echo "-----------------------------"
+	@echo "Attempting to configure jpeg2000..."
+	(cd ./jpeg2000 && ./configure)
+	# following is only needed for mingw version.
+	cp ./jpeg2000/libtool.mingw ./jpeg2000/libtool
+	@echo "Finished with jpeg2000..."
+	@echo "-----------------------------"
+	@echo ""
+
+./libaat/Makefile: ./libaat/configure
+	@echo "-----------------------------"
+	@echo "Attempting to configure libaat..."
+	(cd ./libaat && ./configure CFLAGS="-O3 -Wall -pedantic -ansi -mno-cygwin")
+	@echo "-----------------------------"
+	@echo ""
+
+./emapf-c/Makefile: ./emapf-c/configure
+	@echo "-----------------------------"
+	@echo "Attempting to configure emapf-c..."
+	(cd ./emapf-c && ./configure)
+	@echo "Finished with emapf-c..."
+	@echo "-----------------------------"
+	@echo ""
+
+./netcdf/Makefile: ./netcdf/configure
+	@echo "-----------------------------"
+	@echo "Attempting to configure netcdf..."
+	(cd ./netcdf && CC="gcc" CXX="" FC="" F90="" ./configure)
+	@echo "Finished with netcdf..."
+	@echo "-----------------------------"
+	@echo ""
+
 ./libxml/Makefile: ./libxml/configure
 	@echo "-----------------------------"
 	@echo "Attempting to configure libxml..."
@@ -171,6 +180,9 @@ $(PRJ_NAME)/$(PRJ_NAME): $(LIB_DEPENDS)
 	@echo "-----------------------------"
 	@echo ""
 
+#####
+# Regular targets
+#####
 install:
 	@echo "-----------------------------"
 	@echo "Attempting to install degrib..."

@@ -1,9 +1,56 @@
-#!/usr/local/bin/make
-#SHELL = /usr/bin/sh
+SHELL = /bin/sh
 
-all: config zlib libpng emapf
-	@echo "This assumes that we have gcc on a SUN system"
+#####
+# makefile.sun: Intended for 32 Bit Sun Solaris systems
+#####
+
+LIB_DEPENDS = ./zlib/libz.a \
+              ./libpng/libpng.a \
+              ./jpeg2000/src/libjasper/jpc/.libs/libjpc.a \
+              ./jpeg2000/src/libjasper/base/.libs/libbase.a \
+              ./libaat/libaat.a \
+              ./mdl_g2c/libmdl_g2c.a \
+              ./gd/libgd.a \
+              ./emapf-c/libemapf.a \
+              ./netcdf/libsrc/libnetcdf.a \
+              ./libxml/.libs/libxml2.a
+
+PRJ_NAME = degrib
+
+all: $(PRJ_NAME)/$(PRJ_NAME) install
+
+$(PRJ_NAME)/$(PRJ_NAME): $(LIB_DEPENDS) makefile.sun
+	@echo "-----------------------------"
+	@echo "Attempting to compile degrib..."
+	(cd degrib && make -f makefile.sun)
+	@echo "Finished with degrib"
+	@echo "-----------------------------"
 	@echo ""
+
+#####
+# LIBRARIES
+#####
+./zlib/libz.a: ./zlib/makefile.sun
+	@echo "-----------------------------"
+	@echo "Attempting to compile Zlib..."
+	@echo "You may already have zlib (libz.a).  If so, you could change"
+	@echo "   the makefiles in ./degrib to use it, skipping this step"
+	(cd ./zlib && make -f makefile.sun)
+	@echo "Finished with Zlib..."
+	@echo "-----------------------------"
+	@echo ""
+
+./libpng/libpng.a: ./libpng/scripts/makefile.sunos
+	@echo "-----------------------------"
+	@echo "Attempting to compile libpng..."
+	@echo "You may already have libpng (libpng.a).  If so, you could change"
+	@echo "   the makefiles in ./degrib to use it, skipping this step"
+	(cd ./libpng && make -f ./scripts/makefile.sunos)
+	@echo "Finished with libpng..."
+	@echo "-----------------------------"
+	@echo ""
+
+./jpeg2000/src/libjasper/jpc/.libs/libjpc.a: ./jpeg2000/Makefile
 	@echo "-----------------------------"
 	@echo "Attempting to compile jpeg2000..."
 	@echo "You may already have jasper (libjasper.a).  If so, you could change"
@@ -17,134 +64,134 @@ all: config zlib libpng emapf
 	@echo "Finished with jpeg2000..."
 	@echo "-----------------------------"
 	@echo ""
+
+./jpeg2000/src/libjasper/base/.libs/libbase.a: ./jpeg2000/Makefile
+	@echo "-----------------------------"
+	@echo "Attempting to compile jpeg2000..."
+	@echo "You may already have jasper (libjasper.a).  If so, you could change"
+	@echo "   the makefiles in ./degrib to use it, skipping this step"
+	@echo "What I have provided is the subset of jasper used by the GRIB2 library"
+	@echo "If it doesn't work, try the complete jasper library available at:"
+	@echo "   http://www.ece.uvic.ca/~mdadams/jasper/"
+	@echo "If you use -ljasper.a, you may need to change the makefiles in ./degrib"
+	@echo "-----------------------------"
+	(cd ./jpeg2000 && make)
+	@echo "Finished with jpeg2000..."
+	@echo "-----------------------------"
+	@echo ""
+
+./libaat/libaat.a: ./libaat/Makefile
+	@echo "-----------------------------"
+	@echo "Attempting to compile libaat..."
+	(cd libaat && make)
+	@echo "Finished with libaat..."
+	@echo "-----------------------------"
+	@echo ""
+
+./mdl_g2c/libmdl_g2c.a: ./mdl_g2c/makefile.sun
 	@echo "-----------------------------"
 	@echo "Attempting to compile mdl_g2c..."
-	@echo "-----------------------------"
 	(cd mdl_g2c && make -f makefile.sun)
 	@echo "Finished with mdl_g2c..."
 	@echo "-----------------------------"
 	@echo ""
-	@echo "-----------------------------"
-	@echo "Attempting to compile libaat..."
-	@echo "-----------------------------"
-	(cd libaat && make -f makefile.sun)
-	@echo "Finished with libaat..."
-	@echo "-----------------------------"
-	@echo ""
+
+./gd/libgd.a: ./gd/scripts/makefile.sun
 	@echo "-----------------------------"
 	@echo "Attempting to compile gd..."
-	@echo "-----------------------------"
 	(cd ./gd && make -f ./scripts/makefile.sun)
 	@echo "Finished with gd..."
 	@echo "-----------------------------"
 	@echo ""
-	@echo "-----------------------------"
-	@echo "Attempting to compile netcdf..."
-	@echo "-----------------------------"
-	(cd netcdf && make -f Makefile)
-	cp ./netcdf/ncdump/ncdump ../bin
-	@echo "Finished with netcdf..."
-	@echo "-----------------------------"
-	@echo ""
-	@echo "-----------------------------"
-	@echo "Attempting to compile libxml..."
-	@echo "-----------------------------"
-	(cd ./libxml && make libxml2.la)
-	@echo "Finished with libxml..."
-	@echo "-----------------------------"
-	@echo ""
-	@echo "-----------------------------"
-	@echo "Attempting to compile degrib..."
-	@echo "-----------------------------"
-	(cd degrib && make -f makefile.sun)
-	@echo "Finished with degrib"
-	@echo "-----------------------------"
-	@echo ""
-	@echo "-----------------------------"
-	@echo "Attempting to install degrib..."
-	@echo "-----------------------------"
-	(cd degrib && make -f makefile.sun install)
-	@echo "Finished with install of degrib"
-	@echo "-----------------------------"
 
-zlib: config
-	@echo "-----------------------------"
-	@echo "Attempting to compile Zlib..."
-	@echo "You may already have zlib (libz.a).  If so, you could change"
-	@echo "   the makefiles in ./degrib to use it, skipping this step"
-	@echo "-----------------------------"
-	(cd ./zlib && make -f makefile.sun)
-	@echo "Finished with Zlib..."
-	@echo "-----------------------------"
-	@echo ""
-
-libpng: config
-	@echo "-----------------------------"
-	@echo "Attempting to compile libpng..."
-	@echo "You may already have libpng (libpng.a).  If so, you could change"
-	@echo "   the makefiles in ./degrib to use it, skipping this step"
-	@echo "-----------------------------"
-	(cd ./libpng && make -f ./scripts/makefile.sunos)
-	@echo "Finished with libpng..."
-	@echo "-----------------------------"
-	@echo ""
-
-emapf: config
+./emapf-c/libemapf.a: ./emapf-c/makefile.sun
 	@echo "-----------------------------"
 	@echo "Attempting to compile emapf-c..."
-	@echo "-----------------------------"
 	(cd emapf-c &&	make -f makefile.sun)
 	@echo "Finished with emapf-c..."
 	@echo "-----------------------------"
 	@echo ""
 
-config: config.status
+./netcdf/libsrc/libnetcdf.a: ./netcdf/Makefile
+	@echo "-----------------------------"
+	@echo "Attempting to compile netcdf..."
+	(cd netcdf && make)
+	cp ./netcdf/ncdump/ncdump ../bin
+	@echo "Finished with netcdf..."
+	@echo "-----------------------------"
+	@echo ""
 
-config.status:
+./libxml/.libs/libxml2.a: ./libxml/Makefile
+	@echo "-----------------------------"
+	@echo "Attempting to compile libxml..."
+	(cd ./libxml && make libxml2.la)
+	@echo "Finished with libxml..."
+	@echo "-----------------------------"
+	@echo ""
+
+#####
+# Configurables
+#####
+#./zlib/Makefile: ./zlib/configure
 #	@echo "-----------------------------"
 #	@echo "Attempting to configure Zlib..."
-#	@echo "-----------------------------"
 #	(cd ./zlib && ./configure)
-#	@echo "Finished with Zlib..."
 #	@echo "-----------------------------"
 #	@echo ""
+
+./jpeg2000/Makefile: ./jpeg2000/configure
 	@echo "-----------------------------"
 	@echo "Attempting to configure jpeg2000..."
-	@echo "-----------------------------"
 	(cd ./jpeg2000 && ./configure)
 	# following is only needed for mingw version.
-	#(cd ./jpeg2000 && cp libtool.mingw libtool)
+#	cp ./jpeg2000/libtool.mingw ./jpeg2000/libtool
 	@echo "Finished with jpeg2000..."
 	@echo "-----------------------------"
-#	@echo ""
+	@echo ""
+
+./libaat/Makefile: ./libaat/configure
+	@echo "-----------------------------"
+	@echo "Attempting to configure libaat..."
+	(cd ./libaat && CC=gcc CFLAGS="-O3 -Wall -DWORDS_BIGENDIAN" ./configure)
+	@echo "-----------------------------"
+	@echo ""
+
+#./emapf-c/Makefile: ./emapf-c/configure
 #	@echo "-----------------------------"
 #	@echo "Attempting to configure emapf-c..."
-#	@echo "-----------------------------"
 #	(cd ./emapf-c && ./configure)
 #	@echo "Finished with emapf-c..."
 #	@echo "-----------------------------"
 #	@echo ""
+
+./netcdf/Makefile: ./netcdf/configure
 	@echo "-----------------------------"
 	@echo "Attempting to configure netcdf..."
-	@echo "-----------------------------"
 	(cd ./netcdf && CC="gcc" CXX="" FC="" F90="" ./configure)
 	@echo "Finished with netcdf..."
 	@echo "-----------------------------"
 	@echo ""
+
+./libxml/Makefile: ./libxml/configure
 	@echo "-----------------------------"
 	@echo "Attempting to configure libxml..."
-	@echo "-----------------------------"
 	(cd ./libxml && ./configure --with-minimum --with-tree --with-output --enable-shared=no)
 #	(cd ./libxml && ./configure --with-minimum --without-threads --without-python --without-ftp --enable-shared=no --without-html --without-legacy --without-modules)
 	@echo "Finished with libxml..."
 	@echo "-----------------------------"
-	@echo "configure ok" > config.status
+	@echo ""
 
-####
-# Tidy means I don't have to run configure again, but I have to recompile
-# all the code.
-####
-tidy:
+#####
+# Regular targets
+#####
+install:
+	@echo "-----------------------------"
+	@echo "Attempting to install degrib..."
+	(cd degrib && make -f makefile.sun install)
+	@echo "Finished with install of degrib"
+	@echo "-----------------------------"
+
+clean:
 	(cd ./zlib && rm -f *.a *.o *~ example example.exe minigzip minigzip.exe foo.gz so_locations _match.s maketree)
 	(cd ./libpng && rm -f *.a *.pic.o *.o pngtest-stat.exe pngtest.exe pngout.png libpng.def libpng-config libpng.pc pngtesti.exe)
 	(cd ./mdl_g2c && rm -f *.a)
@@ -153,17 +200,10 @@ tidy:
 	(cd ./degrib && rm -f *.o degrib degrib.exe tcldegrib tcldegrib.exe tkdegrib tkdegrib.exe clock clock.exe degrib_DP degrib_DP.exe drawshp drawshp.exe)
 	(cd ./dwmllib && rm -f *.a)
 	(cd ./jpeg2000 && make clean)
-	(cd ./netcdf && make clean)
 	(cd ./libxml && make clean)
 	(cd ./gd && make -f ./scripts/makefile.sun clean)
 
-####
-# clean means I try to return as close as possible to the distribution state.
-# aka distclean
-####
-distclean: clean
-
-clean: config.status
+distclean: config.status
 	(cd ./zlib && rm -f *.a *.o *~ example example.exe minigzip minigzip.exe foo.gz so_locations _match.s maketree)
 	(cd ./libpng && rm -f *.a *.pic.o *.o pngtest-stat.exe pngtest.exe pngout.png libpng.def libpng-config libpng.pc pngtesti.exe)
 	(cd ./mdl_g2c && rm -f *.a)
@@ -171,13 +211,32 @@ clean: config.status
 	(cd ./emapf-c && rm -f *.o *.a config.log config.status Makefile)
 	(cd ./degrib && rm -f *.o degrib degrib.exe tcldegrib tcldegrib.exe tkdegrib tkdegrib.exe clock clock.exe degrib_DP degrib_DP.exe drawshp drawshp.exe)
 	(cd ./dwmllib && rm -f *.a)
-	rm -f config.status
 	(cd ./zlib && rm -f Makefile)
-	(cd ./jpeg2000 && make distclean)
 	(cd ./netcdf && make distclean)
 	(cd ./netcdf && rm -f macros.make)
-	(cd ./netcdf/ncdump && rm -f ncdump)
-	(cd ./netcdf/ncgen && rm -f ncgen)
-	(cd ./libxml && make distclean)
+	(cd ./netcdf/ncdump && rm -f ncdump.exe)
+	(cd ./netcdf/ncgen && rm -f ncgen.exe)
 	(cd ./gd && make -f ./scripts/makefile.sun clean)
+# jpeg2000 make distclean doesn't seem to work on mingw properly.
+#	(cd ./jpeg2000 && make distclean)
+	(cd ./jpeg2000/ && rm -rf config.log config.status libtool jasper.spec Makefile autom4te.cache)
+	(cd ./jpeg2000/src/ && rm -f Makefile)
+	(cd ./jpeg2000/src/libjasper/ && rm -rf *.o *.lo *.la .deps .libs Makefile)
+	(cd ./jpeg2000/src/libjasper/base && rm -rf *.o *.lo *.la .libs .deps Makefile)
+	(cd ./jpeg2000/src/libjasper/jpc && rm -rf *.o *.lo *.la .libs .deps Makefile)
+	(cd ./jpeg2000/src/libjasper/include && rm -f Makefile)
+	(cd ./jpeg2000/src/libjasper/include/jasper && rm -f Makefile stamp-h1 jas_config.h jas_config.h.in~)
+# libxml make distclean doesn't seem to work on mingw properly.
+#	(cd ./libxml && make distclean)
+	(cd ./libxml && rm -rf *.o *.lo *.pc config.status xml2-config .deps Makefile libtool config.log *.la .libs stamp-h1 libxml2.spec)
+	(cd ./libxml/xstc && rm -f Makefile)
+	(cd ./libxml/python && rm -rf setup.py Makefile .deps)
+	(cd ./libxml/python/tests && rm -f Makefile)
+	(cd ./libxml/example && rm -rf .deps Makefile)
+	(cd ./libxml/doc && rm -f Makefile)
+	(cd ./libxml/doc/devhelp && rm -f Makefile)
+	(cd ./libxml/doc/examples && rm -rf .deps Makefile)
+	(cd ./libxml/include && rm -f Makefile)
+	(cd ./libxml/include/libxml && rm -f Makefile)
+	rm -f config.status
 
