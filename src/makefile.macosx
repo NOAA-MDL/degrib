@@ -18,14 +18,14 @@ all: config zlib libpng emapf
 	@echo "-----------------------------"
 	@echo "Attempting to compile mdl_g2c..."
 	@echo "-----------------------------"
-	(cd mdl_g2c && make -f makefile.mac)
+	(cd mdl_g2c && make -f makefile.macosx)
 	@echo "Finished with mdl_g2c..."
 	@echo "-----------------------------"
 	@echo ""
 	@echo "-----------------------------"
 	@echo "Attempting to compile libaat..."
 	@echo "-----------------------------"
-	(cd libaat && make -f makefile.mac)
+	(cd libaat && make -f makefile.macosx)
 	@echo "Finished with libaat..."
 	@echo "-----------------------------"
 	@echo ""
@@ -54,14 +54,14 @@ all: config zlib libpng emapf
 	@echo "-----------------------------"
 	@echo "Attempting to compile degrib..."
 	@echo "-----------------------------"
-	(cd degrib && make -f makefile.mac)
+	(cd degrib && make -f makefile.macosx)
 	@echo "Finished with degrib"
 	@echo "-----------------------------"
 	@echo ""
 	@echo "-----------------------------"
 	@echo "Attempting to install degrib..."
 	@echo "-----------------------------"
-	(cd degrib && make -f makefile.mac install)
+	(cd degrib && make -f makefile.macosx install)
 	@echo "Finished with install of degrib"
 	@echo "-----------------------------"
 
