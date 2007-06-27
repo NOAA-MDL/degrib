@@ -202,4 +202,4 @@ clean:
 	rm -f *.o *.a *.so ${PROGRAMS} test/gdtest.jpg test/gdtest.wbmp test/fttest.png test/fttest.jpg font*test*.png
 
 distclean: clean
-	rm -f Makefile
+	rm -f Makefile config.h

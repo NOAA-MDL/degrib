@@ -223,6 +223,7 @@ clean:
 	$(XML_CLEAN)
 
 distclean: clean
+	rm -r -f Makefile
 
 ../dwmllib/libdwml.a:
 	@echo "-----------------------------"
