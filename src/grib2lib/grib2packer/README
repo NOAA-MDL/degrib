@@ -1,8 +1,0 @@
-11/13/01   GLAHN   DOWNLOADED FROM MDL IWT WEB PAGE.  MAKEFILE FOR FORTRAN90
-                   REPLACED WITH MY FORTRAN 77 CODE.  ADDED TIMPR.F AND IERX.F
-11/22/01   GLAHN   REMOVED prep_sect2.f and ierx.f FROM makefile.  flr.f needed
-                   in fmkieee.
-3/19/02    GLAHN   MOVED ALL SOURCE AND MAKEFILE TO
-                   home21/glahn/grib2_packer_web to put on web.
-7/8/02     GLAHN   COPIED pk_sect4.f and pk_temp49.f from users24/rudack/packer;
-                   UPDATED grib2-makefile.            
