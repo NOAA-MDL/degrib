@@ -4,6 +4,8 @@ SHELL = /bin/sh
 # makefile.win: Intended for 32 Bit mingw systems
 #####
 
+EXEEXT = .exe
+
 LIB_DEPENDS = ./zlib/libz.a \
               ./libpng/libpng.a \
               ./jpeg2000/src/libjasper/jpc/.libs/libjpc.a \
@@ -116,7 +118,7 @@ $(PRJ_NAME)/$(PRJ_NAME): $(LIB_DEPENDS) makefile.win
 	@echo "-----------------------------"
 	@echo "Attempting to compile netcdf..."
 	(cd netcdf && make)
-	cp ./netcdf/ncdump/ncdump.exe ../bin
+	cp ./netcdf/ncdump/ncdump$(EXEEXT) ../bin
 	@echo "Finished with netcdf..."
 	@echo "-----------------------------"
 	@echo ""

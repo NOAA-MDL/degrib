@@ -1,10 +1,213 @@
+# DEGRIB aclocal.m4 : version 20070627
+
+#####
+# Set @DWORDS_BIGENDIAN@ variable.
+# May want to use CPPFLAGS instead.
+#####
+AC_DEFUN([SET_BIGENDIAN],
+[
+  AC_C_BIGENDIAN([AC_SUBST([DWORDS_BIGENDIAN],"-DWORDS_BIGENDIAN")])
+])
+
+#####
+# Set @DSIZEOF_LONG_INT@ variable.
+# May want to use CPPFLAGS instead.
+#####
+AC_DEFUN([SET_SIZEOF_LONGINT],
+[
+  # For some reason on cygwin/mingw system there is an extra carriage return
+  # in ac_cv_sizeof_long_int?
+  AC_LONG_64_BITS
+  AC_CHECK_SIZEOF([long int])
+  AS_IF([test "x${LONG_64_BITS}" = "x"],
+      [AC_SUBST([DSIZEOF_LONG_INT],"-DSIZEOF_LONG_INT=4")],
+      [AC_SUBST([DSIZEOF_LONG_INT],"-DSIZEOF_LONG_INT=${ac_cv_sizeof_long_int}")])
+])
+
+#####
+# Set @ANSIFLAG@ variable.
+# Set @C99FLAG@ variable.
+# Adjusts: CFLAGS (preset output variable)
+#####
+AC_DEFUN([SET_ANSIFLAG],
+[
+  AS_IF([test "$ac_cv_c_compiler_gnu" = yes],
+    [
+     CFLAGS="${CFLAGS} -Wall"
+     # -ansi is not allowed in linux if myutil.c::MyStat uses "S_IFDIR", etc.
+     ANSIFLAG="-pedantic"
+     C99FLAG="-pedantic"
+     case $host in
+       *-*-cygwin*|*-*-mingw*)
+         ANSIFLAG="-ansi -pedantic"
+         C99FLAG="-std=c99 -pedantic";;
+     esac
+    ],[
+     ANSIFLAG=""
+     C99FLAG=""
+     case $host in
+       *-*-aix*)
+         CFLAGS="${CFLAGS} -qcpluscmt"
+         C99FLAG="-qlanglvl=stdc99";;
+       *-*-hp*)
+         CFLAGS="${CFLAGS} -Aa"
+         C99FLAG="-c99";;
+     esac
+    ])
+  AC_SUBST([ANSIFLAG])
+  AC_SUBST([C99FLAG])
+])
+
+#####
+# Set @DWINDOWS@ variable.
+#####
+AC_DEFUN([SET_DWINDOWS],
+[
+  DWINDOWS=""
+  case $host in
+    *-*-cygwin*|*-*-mingw*)
+      DWINDOWS="-D_WINDOWS_";;
+  esac
+  AC_SUBST([DWINDOWS])
+])
+
+#####
+# Set @DYNAMIC_LIB@ variable.
+# may not properly handle the hpgcc case of -ldld
+#####
+AC_DEFUN([SET_DYNAMIC_LIB],
+[
+  DYNAMIC_LIB="-ldl"
+  case $host in
+    *-*-cygwin*|*-*-mingw*)
+      DYNAMIC_LIB="";;
+  esac
+  AC_SUBST([DYNAMIC_LIB])
+])
+
+#####
+# Adds the flags to CFLAGS to compile using signed char.
+# Needs: AC_CANONICAL_HOST
+# Adjusts: CFLAGS (preset output variable)
+#####
+AC_DEFUN([AAT_MYSIGN],
+[
+  AC_C_CHAR_UNSIGNED()
+  AS_IF([test x$at_c_cv_char_unsigned = xyes],
+    [AS_IF([test "$ac_cv_c_compiler_gnu" = yes],
+      [CFLAGS="${CFLAGS} -fsigned-char"],
+      [case $host in
+         *-*-aix*) CFLAGS="${CFLAGS} -qchars=signed";;
+         *-*-hp*)  CFLAGS="${CFLAGS} -signed";;
+         esac
+      ])
+    ])
+])
+
+#####
+# Provides --with-cygwin option (Default is --without-cygwin)
+# Adjusts: CFLAGS (preset output variable)
+#####
+AC_DEFUN([OPT_CYGWIN],
+[
+  AC_ARG_WITH([cygwin],
+    [AS_HELP_STRING([--with-cygwin],[Create executables which use cygwin1.dll])],
+    [],
+    [with_cygwin=no])
+  AS_IF([test "x$with_cygwin" == xno],
+    [case "$build" in
+       *-*-cygwin*)
+         AS_IF([test "$ac_cv_c_compiler_gnu" = yes],
+               [CFLAGS="${CFLAGS} -mno-cygwin"]);;
+       esac
+    ])
+])
+
+#####
+# Provides --with-memwatch option (Default is --without-memwatch)
+# Assumes $(top_srcdir) is set in the Makefile.in
+# Set @MEM_CLEAN@ variable
+# Set @MEM_DEF@ variable
+# Set @MEM_NAME@ variable
+# Set @MEM_LIBDEP@ variable
+# Set @MEM_STDINC@ variable
+# Set @MEM_STDLIB@ variable
+#####
+AC_DEFUN([OPT_MEMWATCH],
+[
+  AC_ARG_WITH([memwatch],
+    [AS_HELP_STRING([--with-memwatch], [enable memory watching library.])],
+    [],
+    [with_memwatch=no])
+  AS_IF([test "x$with_memwatch" != xno],
+    [
+      AC_SUBST([MEM_CLEAN],"libmemwatch-clean")
+      AC_SUBST([MEM_DEF],"-DMEMWATCH -DMEMWATCH_STDIO")
+  # Single quotes are the key to the following.
+      AC_SUBST([MEM_NAME],'memwatch-2.71')
+      AC_SUBST([MEM_LIBDEP],'$(top_srcdir)/memwatch-2.71/libmemwatch.a')
+      AC_SUBST([MEM_STDINC],'-I$(top_srcdir)/memwatch-2.71')
+      AC_SUBST([MEM_STDLIB],'-L$(top_srcdir)/memwatch-2.71 -lmemwatch')
+    ])
+])
+
+#####
+# Provides --without-strip Option (Default is --with-strip)
+# Make sure you call AC_SUBST([STRIP])
+#####
+AC_DEFUN([OPT_NOSTRIP],
+[
+  AC_ARG_WITH([strip],
+    [AS_HELP_STRING([--without-strip], [disable symbol stripping in binaries.])],
+    [],
+    [with_strip=yes])
+  STRIP=:
+    AS_IF([test "x$with_strip" != xno],
+      [
+        AC_PATH_PROG([STRIP], [strip],[:])
+      ])
+])
+
+#####
+# Provides --enable-aixsize option (32 or 64 bit compiling (default 64) for AIX
+# Adjusts: CFLAGS (preset output variable)
+# Adjusts: FFLAGS (preset output variable)
+# Make sure you call AC_SUBST(ARFLAGS)
+#####
+AC_DEFUN([OPT_AIXSIZE],
+[
+  AC_ARG_ENABLE(aixsize,
+    [AS_HELP_STRING([--enable-aixsize=val], [build val-bit (32 or 64, default 64) libraries for aix])],
+    [case ${enableval}x in
+       32x)
+         AS_IF([test "$ac_cv_c_compiler_gnu" = yes],
+           [CFLAGS="${CFLAGS} -maix32"],
+           [CFLAGS="${CFLAGS} -q32"])
+         FFLAGS="${FFLAGS} -q32"
+         ARFLAGS="${ARFLAGS} -X32";;
+       64x)
+         AS_IF([test "$ac_cv_c_compiler_gnu" = yes],
+           [CFLAGS="${CFLAGS} -maix64"],
+           [CFLAGS="${CFLAGS} -q64"])
+         FFLAGS="${FFLAGS} -q64"
+         ARFLAGS="${ARFLAGS} -X64";;
+       *)
+         AC_MSG_WARN([Invalid aixsize value- ${enableval}])
+       esac
+    ],)
+])
+
+#####
+# Splits a full_path into component parts.
+# IF "Prefix" == at_temp, then set at_temp to stuff before last / in FULL_PATH
+#####
 AC_DEFUN([ADT_SPLIT],
 [
 dnl  #ADT_SPLIT(FULL_PATH,PREFIX,LAST_PART)
-  AS_IF([ test "$2" != ""],
-    [ AS_IF([ test "$2" = "at_temp" || test "${$2}" = ""], 
-      [ $2=${$1%/*}]) 
-    ] )
+  AS_IF([test "$2" != ""],
+    [AS_IF([test "$2" = "at_temp" || test "${$2}" = ""],
+      [$2=${$1%/*}])
+    ])
   if test "$3" != ""
   then
     AS_IF( [ test "$3" = "at_temp" || test "${$3}" = ""],
@@ -12,48 +215,14 @@ dnl  #ADT_SPLIT(FULL_PATH,PREFIX,LAST_PART)
   fi
 ])
 
-AC_DEFUN([ADT_SHLIB],
-  [ if test "$ac_cv_c_compiler_gnu" = yes; then
-      case "$host" in
-      *-*-aix*)
-        LD_FLAGS="${LD_FLAGS} -Wl,-brtl";;
-      esac
-    else
-      case "$host" in
-      *-*-aix*)
-        LD_FLAGS="${LD_FLAGS} -brtl";;
-      esac
-    fi]
-)
-
-AC_DEFUN([ADT_MYSIGN],
-[ 
-  AS_IF([test x$at_c_cv_char_unsigned = xyes],
-        [
-          AS_IF([test "$ac_compiler_gnu" = yes],
-                [ CSGFLAGS="-fsigned-char"],
-                [case $host in
-                   *-*-aix*) CSGFLAGS="-qchars=signed";;
-                   *-*-hp*)  CSGFLAGS="-signed";;
-                 esac 
-                ])
-        ])
-])
-
-AC_DEFUN([AT_TCL_VERSION],
-[ if test "$TCL_VERSION" = ""
-  then
-    AC_MSG_CHECKING([Tcl/Tk version])
-    if test "$TCL_BINARY" = "" || test "$TCL_BINARY" = "not_found"
-    then
-      TCL_VERSION="not_found"
-    else
-      TCL_VERSION=`echo puts \\$tcl_version | $TCL_BINARY`
-    fi
-    AC_MSG_RESULT([$TCL_VERSION])
-  fi
-])
-
+#####
+# Attempt to set up Tcl/Tk libraries on the current system.
+# Possible adjustment to TCL_PREFIX
+# Possible adjustment to TK_PREFIX
+# Calls AC_SUBST([TK_LIBS])
+# Calls AC_SUBST([TCL_LIBS])
+# Make sure you call AC_SUBST(LD_FLAGS)
+#####
 AC_DEFUN([AT_PROG_TCL],
 [ if test "$TCL_PREFIX" = ""
   then
@@ -107,7 +276,15 @@ AC_DEFUN([AT_PROG_TCL],
     then ADT_SPLIT([tcl_lib_dotso],[at_temp])
       at_temp2=${tcl_lib_dotso%*.so}
 # Deal with Tcl shared libraries
-      ADT_SHLIB
+      if test "$ac_cv_c_compiler_gnu" = yes; then
+        case "$host" in
+          *-*-aix*) LD_FLAGS="${LD_FLAGS} -Wl,-brtl";;
+        esac
+      else
+        case "$host" in
+          *-*-aix*) LD_FLAGS="${LD_FLAGS} -brtl";;
+        esac
+      fi
     fi
     TCL_LIBS="-L$at_temp -l${at_temp2##*/lib}"
     if test $tcl_lib_stubs != not_found
@@ -143,121 +320,69 @@ AC_DEFUN([AT_PROG_TCL],
   fi
 ])
 
-AC_DEFUN([ADT_SPECFLAGS],
+#####
+# Provides the --with-badtclssh option (Default is --without-badtclssh)
+# This option allows for the bad exit With Tcl/Tk and SSH on NCEP's AIX
+#####
+AC_DEFUN([OPT_DBADTCLSSH],
 [
-  if test "$ac_cv_c_compiler_gnu" = yes; then
-#    CFLAGS="${CFLAGS} -Wall -pedantic"
-    CFLAGS="${CFLAGS} -Wall"
-# -ansi is not allowed in linux if myutil.c::MyStat uses "S_IFDIR", etc.
-    ANSIFLAG="-pedantic"
-    case $host in
-      *-*-cygwin*|*-*-mingw*)
-# -ansi seems to be needed for mingw to link with gd?
-        ANSIFLAG="-ansi -pedantic"
-        ;;
-    esac
-  else
-    ANSIFLAG=""
-    case $host in
-      *-*-aix*) CFLAGS="${CFLAGS} -qcpluscmt -qmaxmem=8192";;
-      *-*-hp*) CFLAGS="${CFLAGS} -Aa";;
-    esac
-  fi
-  AC_SUBST([ANSIFLAG])
-  if test "$ac_cv_f77_compiler_gnu" = no; then
-    case $host in
-      *-*-aix*)
-      FFLAGS="${FFLAGS} -qstrict -qfixed -qarch=auto -qintlog -qintsize=4"
-      FFLAGS="${FFLAGS} -qmaxmem=8192  -qrealsize=4";;
-    esac
-  fi
-])
-
-AC_DEFUN([AAT_JPEG2000_LIBTOOL_FIX],
-[
-  JPEG2000_LIBTOOL_FIX=""
-  case $host in
-    *-*-cygwin*|*-*-mingw*)
-      JPEG2000_LIBTOOL_FIX="cp ./jpeg2000/libtool.mingw ./jpeg2000/libtool"
-      ;;
-  esac
-  AC_SUBST([JPEG2000_LIBTOOL_FIX])
-]
-)
-
-AC_DEFUN([AAT_DWINDOWS],
-[
-  DWINDOWS=""
-  case $host in
-    *-*-cygwin*|*-*-mingw*)
-#      MNOCYGWIN="-mno-cygwin"
-      DWINDOWS="-D_WINDOWS_"
-#      AC_DEFINE(_WINDOWS_)
-      ;;
-  esac
-  AC_SUBST([DWINDOWS])
-]
-)
-
-AC_DEFUN([AAT_XLIBS],
-[
-  if test "$X_LIBS" != ""
-  then
-    X_LIBS="${X_LIBS} -lX11"
-  fi
-]
-)
-
-AC_DEFUN([AAT_DYNAMIC_LIB],
-[
-  DYNAMIC_LIB="-ldl"
-  case $host in
-    *-*-cygwin*|*-*-mingw*)
-      DYNAMIC_LIB=""
-      ;;
-  esac
-  AC_SUBST([DYNAMIC_LIB])
-]
-)
-
-AC_DEFUN([AAT_DBADTCLSSH],
-[
+  AC_ARG_WITH([badtclssh],
+    [AS_HELP_STRING([--with-badtclssh], [enable special exit for Tcl/Tk.])],
+    [],
+    [with_badtclssh=no])
   DBAD_TCLSSH=""
-  case "$host" in
-  *-*-aix*)
-    DBAD_TCLSSH="-D_BAD_TCL_SSH_EXIT";;
-  esac
+  AS_IF([test "x$with_badtclssh" != xno],
+    [case "$host" in
+       *-*-aix*)
+         DBAD_TCLSSH="-D_BAD_TCL_SSH_EXIT";;
+       esac
+    ])
   AC_SUBST([DBAD_TCLSSH])
-]
-)
-
-AC_DEFUN([ADT_AIXSIZE],[
-
-AC_ARG_ENABLE(aixsize,
-  [AS_HELP_STRING([--enable-aixsize=val],
-         [build val-bit (32 or 64, default 64) libraries for aix])],
-   [at_c_savcflags=${CFLAGS}
-    at_c_savarflags=${ARFLAGS}
-    case ${enableval}x in
-    32x)
-      if test "$ac_compiler_gnu" = yes; then
-        CFLAGS="${CFLAGS} -maix32"
-      else
-        CFLAGS="${CFLAGS} -q32"
-      fi
-      FFLAGS="${FFLAGS} -q32"
-      ARFLAGS="${ARFLAGS} -X32";;
-    64x)
-      if test "$ac_compiler_gnu" = yes; then
-        CFLAGS="${CFLAGS} -maix64"
-      else
-        CFLAGS="${CFLAGS} -q64"
-      fi
-      FFLAGS="${FFLAGS} -q64"
-      ARFLAGS="${ARFLAGS} -X64";;
-    *)
-      AC_MSG_WARN([Invalid aixsize value- ${enableval}])
-    esac
-    ],
-    )
 ])
+
+#####
+# Provides the --with-tkputs option (Default is --without-tkputs)
+# This option allows for puts in MS-Windows from a Tk app (ie creates a console)
+#####
+AC_DEFUN([OPT_TKPUTS],
+[
+  AC_ARG_WITH([tkputs],
+    [AS_HELP_STRING([--with-tkputs], [enable puts from a Tk app (ie create a console window)])],
+    [],
+    [with_tkputs=no])
+  TCL_LDFLAGS=""
+  TK_LDFLAGS=""
+  case "$host" in
+    *-*-cygwin*|*-*-mingw*)
+      TCL_LDFLAGS="-mconsole"
+      AS_IF([test "x$with_tkputs" != xno],
+        [TK_LDFLAGS="-mconsole"],
+        [TK_LDFLAGS="-mwindows"]);;
+    esac
+  AC_SUBST([TCL_LDFLAGS])
+  AC_SUBST([TK_LDFLAGS])
+])
+
+#####
+# Set @TCL_VERSION@ variable (current version of Tcl/Tk)
+# Not needed since TK_LIBS and TCL_LIBS are already set.
+#####
+#AC_DEFUN([SET_TCL_VERSION],
+#[if test "$TCL_VERSION" = ""
+# then
+#  AC_MSG_CHECKING([Tcl/Tk version])
+#  if test "$TCL_BINARY" = "" || test "$TCL_BINARY" = "not_found"
+#  then
+#    TCL_VERSION="not_found"
+#  else
+#    TCL_VERSION=`echo puts \\$tcl_version | $TCL_BINARY`
+#  fi
+#  AC_MSG_RESULT([$TCL_VERSION])
+# fi
+#])
+
+
+
+
+
+
