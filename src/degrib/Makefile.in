@@ -238,9 +238,6 @@ distclean: clean
 tcldegrib.o: tcldegrib.c tcldegrib.h $(H_SOURCES)
 	$(CC) -c $(GUIFLAGS) $<
 
-memwatch.o: ./memwatch/memwatch.c ./memwatch/memwatch.h
-	$(CC) -c $(CFLAGS) ./memwatch/memwatch.c
-
 dpgenprobe.o : $(H_SOURCES) genprobe.c
 	$(CC) -c $(CFLAGS) -DDP_ONLY genprobe.c -o dpgenprobe.o
 
