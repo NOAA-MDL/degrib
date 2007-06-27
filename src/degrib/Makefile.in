@@ -1,105 +1,50 @@
 SHELL = @SHELL@
 
-##############################################################################
-# makefile.in
-#
-# DESCRIPTION
-#    Makefile template for configure to use to create Makefile that makes and
-#    installs degrib
-#    Package and Version Information:
-#         @PACKAGE_STRING@
-#   send bugreports to <@PACKAGE_BUGREPORT@>
+top_srcdir = @top_srcdir@
+TCL_PREFIX = @TCL_PREFIX@
+TK_PREFIX = @TK_PREFIX@
 
-#
-# HISTORY
-#    Makefile.in Created by Albion Taylor, Aug, 2006
-#    degrib created 5/2003 Arthur Taylor (MDL): Created.
-#
-# NOTES
-##############################################################################
-
-############################
-# SYSTEM Directories
-############################
-TCL_PREFIX=@TCL_PREFIX@
-TK_PREFIX=@TK_PREFIX@
-# asp/bsp
-TCL_VERSION = @TCL_VERSION@
-
-############################
-# DEFAULT Compilers and Compiler flags.
-############################
-#CC = cc
 CC = @CC@
 STRIP = @STRIP@
-#STD_FLAGS = -O -q32 -qchars=signed -qmaxmem=8192
-STD_FLAGS = @CFLAGS@ @CSGFLAGS@ @ANSIFLAG@
+STD_FLAGS = @CFLAGS@ @ANSIFLAG@
+DWML_FLAGS = @CFLAGS@ @C99FLAG@
 EXEEXT = @EXEEXT@
-
-############################
-# Link Flags
-############################
 LD_FLAGS = @LD_FLAGS@
+TCL_LDFLAGS = ${LD_FLAGS} @TCL_LDFLAGS@
+TK_LDFLAGS = ${LD_FLAGS} @TK_LDFLAGS@
 
 ############################
 # XML Dependence
-############################
 XML_DEF = -D_DWML_
 XML_INC = -I../degrib -I../libxml/include -I../dwmllib
 XML_LIB = -L../dwmllib -ldwml -L../libxml/.libs/ -lxml2
-XML_DEP = ../dwmllib/libdwml.a ../libxml/.libs/libxml2.a
+XML_LIBDEP = ../dwmllib/libdwml.a ../libxml/.libs/libxml2.a
 XML_CLEAN = (cd ../dwmllib && make -f makefile clean)
+############################
 
-############################
-# Standard Defines
-############################
-STD_DEF = @DSIZEOF_LONG_INT@ @DWORDS_BIGENDIAN@ @DBAD_TCLSSH@ @DWINDOWS@ $(XML_DEF) 
+STD_DEF = @DSIZEOF_LONG_INT@ @DWORDS_BIGENDIAN@ @MEM_DEF@ @DDEBUG@ @DWINDOWS@ @DBAD_TCLSSH@ $(XML_DEF)
+STD_INC = @MEM_STDINC@ -I../emapf-c -I../mdl_g2c -I../libaat -I../netcdf/libsrc -I../gd $(XML_INC)
+TCL_INC = -I$(TCL_PREFIX)/include
+TK_INC = -I$(TK_PREFIX)/include
+GUI_INC = $(TCL_INC) $(TK_INC) $(STD_INC)
 
-############################
-# Do we want to watch memory?
-############################
-MEMWATCH=
-#MEMWATCH = memwatch.o
-MEMWATCH_OBJ=
-#MEMWATCH_OBJ = memwatch.obj
-
-############################
-# Standard Includes
-############################
-STD_INC= -I../emapf-c -I../mdl_g2c -I../libaat -I../netcdf/libsrc -I../gd $(XML_INC)
-TCL_INC=-I$(TCL_PREFIX)/include
-TK_INC=-I$(TK_PREFIX)/include
-GUI_INC=$(TCL_INC) $(TK_INC) $(STD_INC)
-
-############################
-# Standard Libraries
-############################
-CLOCK_LIB = -L/usr/lib -lm
-DP_LIB = -L../emapf-c/ -lemapf $(XML_LIB) -L../zlib -lz -L/usr/lib -lm
-DRAWSHP_LIB = -L../gd/ -lgd -L../libpng -lpng -L../zlib -lz \
+CLOCK_LIB = @MEM_STDLIB@ -L/usr/lib -lm
+DP_LIB = @MEM_STDLIB@ -L../emapf-c/ -lemapf $(XML_LIB) -L../zlib -lz -L/usr/lib -lm
+DRAWSHP_LIB = @MEM_STDLIB@ -L../gd/ -lgd -L../libpng -lpng -L../zlib -lz \
           -L../emapf-c/ -lemapf -L/usr/lib -lm
-STD_LIB = -L../mdl_g2c -lmdl_g2c -L../libaat -laat -L../gd -lgd -L../libpng -lpng \
-          $(XML_LIB) -L../zlib -lz \
+STD_LIB = @MEM_STDLIB@ -L../mdl_g2c -lmdl_g2c -L../libaat -laat -L../gd -lgd -L../libpng -lpng \
+          -L../zlib -lz \
           -L../jpeg2000/src/libjasper/jpc/.libs/ -ljpc \
           -L../jpeg2000/src/libjasper/base/.libs/ -lbase \
-          -L../netcdf/libsrc/ -lnetcdf \
+          -L../netcdf/libsrc/ -lnetcdf $(XML_LIB) \
           -L../emapf-c/ -lemapf -L/usr/lib -lm
-
-#TCL_LIB=-L$(TCL_PREFIX)/lib -ltcl$(TCL_VERSION)
-#TK_LIB=-L$(TK_PREFIX)/lib -ltk$(TCL_VERSION)
-#X_LIB=-L/usr/X11R6/lib -lX11
-# DYNAMIC_LIB = -ldld
 
 TCL_LIB = @TCL_LIBS@
 TK_LIB = @TK_LIBS@
-#X_LIB=@X_LIBS@ -lX11
-X_LIB=@X_LIBS@
+X_LIB = @X_LIBS@
 DYNAMIC_LIB = @DYNAMIC_LIB@
-GUI_LIB=$(TK_LIB) $(TCL_LIB) $(X_LIB) $(DYNAMIC_LIB) $(STD_LIB)
+GUI_LIB = $(TK_LIB) $(TCL_LIB) $(X_LIB) $(DYNAMIC_LIB) $(STD_LIB)
 
-############################
-# Project names
-############################
 CLOCK_NAME = clock
 DP_NAME = degrib_DP
 DRAWSHP_NAME = drawshp
@@ -109,6 +54,7 @@ TK_NAME = tkdegrib
 
 CFLAGS = $(STD_FLAGS) $(STD_DEF) $(STD_INC)
 GUIFLAGS = $(STD_FLAGS) $(STD_DEF) $(GUI_INC)
+DWMLFLAGS = $(DWML_FLAGS) $(STD_DEF) $(STD_INC)
 
 ############################
 # FILES
@@ -225,12 +171,10 @@ LIB_DEPENDS = ../emapf-c/libemapf.a ../mdl_g2c/libmdl_g2c.a ../libaat/libaat.a \
             ../libpng/libpng.a ../zlib/libz.a \
             ../jpeg2000/src/libjasper/jpc/.libs/libjpc.a \
             ../jpeg2000/src/libjasper/base/.libs/libbase.a \
-            ../netcdf/libsrc/libnetcdf.a ../gd/libgd.a $(XML_DEP)
+            ../netcdf/libsrc/libnetcdf.a ../gd/libgd.a $(XML_LIBDEP)
 
 ############################
-#
 # TARGETS
-#
 ############################
 all: $(PRJ_NAME) $(CLOCK_NAME) $(DP_NAME) $(DRAWSHP_NAME) $(TCL_NAME) $(TK_NAME)
 
@@ -251,14 +195,16 @@ $(DRAWSHP_NAME): $(DRAWSHP_MAIN) $(DRAWSHP_OBJECTS) $(H_SOURCES)
 	$(STRIP) -s $(DRAWSHP_NAME)$(EXEEXT)
 
 $(TK_NAME): $(GUI_OBJECTS) $(GUI_MAIN) $(LIB_DEPENDS) $(H_SOURCES)
-	$(CC) $(GUI_MAIN) $(GUIFLAGS) $(LD_FLAGS) $(GUI_OBJECTS) $(GUI_LIB) -o $(TK_NAME)
+	$(CC) $(GUI_MAIN) $(GUIFLAGS) $(TK_LDFLAGS) $(GUI_OBJECTS) $(GUI_LIB) -o $(TK_NAME)
 	$(STRIP) -s $(TK_NAME)$(EXEEXT)
 
 $(TCL_NAME): $(GUI_OBJECTS) $(GUI_MAIN) $(LIB_DEPENDS) $(H_SOURCES)
-	$(CC) $(GUI_MAIN) $(GUIFLAGS) -DNO_TK $(LD_FLAGS) $(GUI_OBJECTS) $(GUI_LIB) -o $(TCL_NAME)
+	$(CC) $(GUI_MAIN) $(GUIFLAGS) -DNO_TK $(TCL_LDFLAGS) $(GUI_OBJECTS) $(GUI_LIB) -o $(TCL_NAME)
 	$(STRIP) -s $(TCL_NAME)$(EXEEXT)
 
-install: $(PRJ_NAME) $(CLOCK_NAME) $(DP_NAME) $(DRAWSHP_NAME) $(TCL_NAME) $(TK_NAME)
+# Note: Absence of TCL_NAME and TK_NAME intentional (so degrib can be built
+# and installed without Tcl/Tk).
+install: $(PRJ_NAME) $(CLOCK_NAME) $(DP_NAME) $(DRAWSHP_NAME)
 	cp $(PRJ_NAME)$(EXEEXT) ../../bin
 	cp $(CLOCK_NAME)$(EXEEXT) ../../bin
 	cp $(DP_NAME)$(EXEEXT) ../../bin
@@ -267,9 +213,13 @@ install: $(PRJ_NAME) $(CLOCK_NAME) $(DP_NAME) $(DRAWSHP_NAME) $(TCL_NAME) $(TK_N
 	cp $(TK_NAME)$(EXEEXT) ../../bin
 
 clean:
-	rm -f *.o *.bak *.BAK
-	rm -f $(PRJ_NAME)$(EXEEXT) $(CLOCK_NAME)$(EXEEXT) $(DP_NAME)$(EXEEXT)
-	rm -f $(DRAWSHP_NAME)$(EXEEXT) $(TCL_NAME)$(EXEEXT) $(TK_NAME)$(EXEEXT)
+	rm -f *.o *.bak *.BAK *.obj
+	rm -f $(PRJ_NAME)$(EXEEXT)
+	rm -f $(CLOCK_NAME)$(EXEEXT)
+	rm -f $(DP_NAME)$(EXEEXT)
+	rm -f $(DRAWSHP_NAME)$(EXEEXT)
+	rm -f $(TCL_NAME)$(EXEEXT)
+	rm -f $(TK_NAME)$(EXEEXT)
 	$(XML_CLEAN)
 
 distclean: clean
@@ -277,14 +227,12 @@ distclean: clean
 ../dwmllib/libdwml.a:
 	@echo "-----------------------------"
 	@echo "Attempting to compile dwmllib..."
-	(cd ../dwmllib && export CC='$(CC)' && export CFLAGS='$(CFLAGS)' && make -f makefile)
+	(cd ../dwmllib && export CC='$(CC)' && export CFLAGS='$(DWMLFLAGS)' && make -f makefile)
 	@echo "Finished with dwmllib..."
 	@echo "-----------------------------"
 
 ############################
-#
 # SUFFIXES
-#
 ############################
 tcldegrib.o: tcldegrib.c tcldegrib.h $(H_SOURCES)
 	$(CC) -c $(GUIFLAGS) $<
@@ -292,11 +240,9 @@ tcldegrib.o: tcldegrib.c tcldegrib.h $(H_SOURCES)
 memwatch.o: ./memwatch/memwatch.c ./memwatch/memwatch.h
 	$(CC) -c $(CFLAGS) ./memwatch/memwatch.c
 
-dpgenprobe.o : $(H_SOURCES)
+dpgenprobe.o : $(H_SOURCES) genprobe.c
 	$(CC) -c $(CFLAGS) -DDP_ONLY genprobe.c -o dpgenprobe.o
 
 .c.o : $(H_SOURCES)
 	$(CC) -c $(CFLAGS) $<
 
-%.obj : %.c $(H_SOURCES)
-	$(CC) -c $(GUIFLAGS) $(STUB_DEF) -o $@ $<
