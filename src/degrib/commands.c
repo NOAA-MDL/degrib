@@ -11,11 +11,6 @@
  * NOTES
  *****************************************************************************
  */
-/*
- * This flag is used to test timing of the program.
- */
-/* #define TIMING_INFO */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -840,7 +835,7 @@ int DegribIt (userType *usr)
    int msgNum;          /* The messageNumber during the inventory. */
    int curMsg;          /* The current message used during the FindGRIB */
 
-#ifdef TIMING_INFO
+#ifdef DEBUG
    if (!usr->f_stdout) {
       fprintf (stderr, "Timing info. %f\n", clock () /
                (double) (CLOCKS_PER_SEC));
@@ -1036,7 +1031,7 @@ int DegribIt (userType *usr)
       default:
          printf ("Unknown command?");
    }
-#ifdef TIMING_INFO
+#ifdef DEBUG
    if (!usr->f_stdout) {
       fprintf (stderr, "Timing info. %f\n", clock () /
                (double) (CLOCKS_PER_SEC));

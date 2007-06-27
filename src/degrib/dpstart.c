@@ -240,7 +240,7 @@ int main (int argc, char **argv)
    }
 
    /* Do it. */
-#ifdef TIMING_INFO
+#ifdef DEBUG
    if (!usr.f_stdout) {
       fprintf (stderr, "Timing info. %f\n", clock () /
                (double) (CLOCKS_PER_SEC));
@@ -263,7 +263,7 @@ int main (int argc, char **argv)
          return -1;
       }
    }
-#ifdef TIMING_INFO
+#ifdef DEBUG
    if (!usr.f_stdout) {
       fprintf (stderr, "Timing info. %f\n", clock () /
                (double) (CLOCKS_PER_SEC));

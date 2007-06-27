@@ -2922,7 +2922,7 @@ printf ("Why is this needed here?\n");
          }
       }
    }
-#ifdef TIMING_INFO
+#ifdef DEBUG
    printf ("Begin Drawing now. %f\n", clock () / (double) (CLOCKS_PER_SEC));
 #endif
 
@@ -2948,7 +2948,7 @@ printf ("Why is this needed here?\n");
                     gdFrame[frameNum].maxLt, gdFrame[frameNum].maxLg);
       }
    }
-#ifdef TIMING_INFO
+#ifdef DEBUG
    printf ("Done with Generic draws. %f\n", clock () /
            (double) (CLOCKS_PER_SEC));
 #endif

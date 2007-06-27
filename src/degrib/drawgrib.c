@@ -130,7 +130,7 @@ int drawGrib (const char *Filename, double *grib_Data,
    FILE *fp;
    int i;
 
-#ifdef TIMING_INFO
+#ifdef DEBUG
    printf ("start drawGrib. %f\n", clock () / (double) (CLOCKS_PER_SEC));
 #endif
 
@@ -319,11 +319,11 @@ int drawGrib (const char *Filename, double *grib_Data,
       FreeMapIni (&mapIni);
       return 0;
    }
-#ifdef TIMING_INFO
+#ifdef DEBUG
    printf ("Before ControlDraw. %f\n", clock () / (double) (CLOCKS_PER_SEC));
 #endif
    ControlDraw (&mapIni);
-#ifdef TIMING_INFO
+#ifdef DEBUG
    printf ("after ControlDraw. %f\n", clock () / (double) (CLOCKS_PER_SEC));
 #endif
 
