@@ -127,7 +127,7 @@ $(PRJ_NAME)/$(PRJ_NAME): $(LIB_DEPENDS)
 	@echo "-----------------------------"
 	@echo ""
 
-./netcdf/libsrc/libnetcdf.a: ./netcdf/Makefile
+./netcdf/libsrc/libnetcdf.a: ./netcdf/macros.make
 	@echo "-----------------------------"
 	@echo "Attempting to compile netcdf..."
 	(cd netcdf && make)
@@ -165,7 +165,7 @@ ${top_srcdir}/@MEM_NAME@/Makefile: ${top_srcdir}/@MEM_NAME@/configure
 ./jpeg2000/Makefile: ./jpeg2000/configure
 	@echo "-----------------------------"
 	@echo "Attempting to configure jpeg2000..."
-	(cd ./jpeg2000 && ./configure CC=$(CC) CFLAGS="$(CFLAGS)")
+	(cd ./jpeg2000 && export CC=$(CC) && export CFLAGS="$(CFLAGS)" && ./configure)
 	@JPEG2000_LIBTOOL_FIX@
 	@echo "Finished with jpeg2000..."
 	@echo "-----------------------------"
@@ -187,10 +187,10 @@ ${top_srcdir}/@MEM_NAME@/Makefile: ${top_srcdir}/@MEM_NAME@/configure
 	@echo "-----------------------------"
 	@echo ""
 
-./netcdf/Makefile: ./netcdf/configure
+./netcdf/macros.make: ./netcdf/configure
 	@echo "-----------------------------"
 	@echo "Attempting to configure netcdf..."
-	(cd ./netcdf && ./configure CC=$(CC) CFLAGS="$(CFLAGS)" ARFLAGS=$(ARFLAGS) CXX="" FC="" F90="")
+	(cd ./netcdf && export CC=$(CC) CFLAGS="$(CFLAGS)" ARFLAGS="cru" CXX="" FC="" F90="" && ./configure)
 	@echo "Finished with netcdf..."
 	@echo "-----------------------------"
 	@echo ""
@@ -217,33 +217,35 @@ install:
 
 # clean: ./emapf-c/Makefile ./netcdf/Makefile ./jpeg2000/Makefile ./libxml/Makefile
 clean: ./emapf-c/Makefile ./netcdf/Makefile
-	(cd ./zlib && make clean)
-	(cd ./libpng && make clean)
+	- (cd ./zlib && make clean && rm -f example$(EXEEXT) minigzip$(EXEEXT))
+	- (cd ./libpng && make clean)
 	(cd ./libaat && make clean)
 	(cd ./mdl_g2c && make clean)
-	(cd ./gd && make clean)
-	(cd ./emapf-c && make clean)
-	(cd ./netcdf && make clean)
+	- (cd ./gd && make clean)
+	- (cd ./emapf-c && make clean)
+	- (cd ./netcdf && make clean)
 	(cd ./dwmllib && make clean)
-	(cd ./degrib && make clean)
+	- (cd ./degrib && make clean)
 # Following gave problems in cygwin/mingw environment
 #	(cd ./jpeg2000 && make clean)
 #	(cd ./libxml && make clean)
+	rm -f netcdf/ncdump/ncdump$(EXEEXT)
+	rm -f netcdf/ncgen/ncgen$(EXEEXT)
 	rm -r -f *.bak
 
 # Note: This depends on the "Configurable's"
 #distclean: ./emapf-c/Makefile ./netcdf/Makefile ./jpeg2000/Makefile ./libxml/Makefile
 distclean: ./emapf-c/Makefile ./netcdf/Makefile
-	(cd ./zlib && make distclean)
-	(cd ./libpng && make distclean)
+	- (cd ./zlib && make distclean)
+	- (cd ./libpng && make distclean)
 	(cd ./libaat && make distclean)
 	(cd ./mdl_g2c && make distclean)
-	(cd ./gd && make distclean)
-	(cd ./emapf-c && make distclean)
-	(cd ./netcdf && make distclean)
+	- (cd ./gd && make distclean)
+	- (cd ./emapf-c && make distclean)
+	- (cd ./netcdf && make distclean && rm macros.make)
 # ./dwmllib didn't implement distclean
 	(cd ./dwmllib && make clean)
-	(cd ./degrib && make distclean)
+	- (cd ./degrib && make distclean)
 # Following gave problems in cygwin/mingw environment
 #	(cd ./jpeg2000 && make distclean)
 	(cd ./jpeg2000/ && rm -rf config.log config.status libtool jasper.spec Makefile autom4te.cache)
@@ -265,5 +267,7 @@ distclean: ./emapf-c/Makefile ./netcdf/Makefile
 	(cd ./libxml/doc/examples && rm -rf .deps Makefile)
 	(cd ./libxml/include && rm -f Makefile)
 	(cd ./libxml/include/libxml && rm -f Makefile)
+	rm -f netcdf/ncdump/ncdump$(EXEEXT)
+	rm -f netcdf/ncgen/ncgen$(EXEEXT)
 	rm -r -f *.bak config.status config.log Makefile autom4te.cache
 
