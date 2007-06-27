@@ -3,8 +3,8 @@
 # DEGRIB configure.ac : version 20070627
 
 AC_PREREQ(2.59)
-AC_INIT([degrib],[1.87],[arthur.taylor@noaa.gov])
-AC_SUBST(PACKAGE_DATE,'20070625')
+AC_INIT([degrib],[1.87a],[arthur.taylor@noaa.gov])
+AC_SUBST(PACKAGE_DATE,'20070627')
 AC_CONFIG_SRCDIR([Makefile.in])
 AC_CONFIG_HEADERS([gd/config.h:gd/scripts/config.hin])
 AC_CANONICAL_HOST()
@@ -106,9 +106,19 @@ AC_ARG_WITH([debug],
 AS_IF([test "x$with_debug" != xno],
   [
     AC_SUBST(DDEBUG,["-DDEBUG"])
-#    AC_SUBST(PNGDEBUG,["-g -DPNG_DEBUG=5"])
-#    AC_SUBST(ZLIB_DEBUG,["-g -DDEBUG"])
   ])
+
+# Provides --with-extradebug option
+AC_ARG_WITH([extradebug],
+  [AS_HELP_STRING([--with-extradebug],[set extra debug defines (default=no)])],
+  [],
+  [with_extradebug=no])
+AS_IF([test "x$with_extradebug" != xno],
+  [
+    AC_SUBST(PNGDEBUG,["-g -DPNG_DEBUG=5"])
+    AC_SUBST(ZLIB_DEBUG,["-g -DDEBUG"])
+  ])
+
 
 # Handle JPEG2000 Libtool fix
 JPEG2000_LIBTOOL_FIX=""
