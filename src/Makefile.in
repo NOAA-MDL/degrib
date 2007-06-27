@@ -232,7 +232,8 @@ clean: ./emapf-c/Makefile ./netcdf/Makefile
 	rm -r -f *.bak
 
 # Note: This depends on the "Configurable's"
-distclean: ./emapf-c/Makefile ./netcdf/Makefile ./jpeg2000/Makefile ./libxml/Makefile
+#distclean: ./emapf-c/Makefile ./netcdf/Makefile ./jpeg2000/Makefile ./libxml/Makefile
+distclean: ./emapf-c/Makefile ./netcdf/Makefile
 	(cd ./zlib && make distclean)
 	(cd ./libpng && make distclean)
 	(cd ./libaat && make distclean)
