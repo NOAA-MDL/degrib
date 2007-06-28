@@ -3,3 +3,4 @@ mdl_g2c -r117 http://slosh.nws.noaa.gov/svn/libpub/mdl_g2c/mdl_g2c
 libaat -r118 http://slosh.nws.noaa.gov/svn/libpub/libaat/libaat
 memwatch-2.71 -r108 http://slosh.nws.noaa.gov/svn/libpub/memwatch-2.71
 zlib -r118 http://slosh.nws.noaa.gov/svn/libpub/zlib-1.1.4
+libpng -r118 http://slosh.nws.noaa.gov/svn/libpub/libpng-1.2.5
