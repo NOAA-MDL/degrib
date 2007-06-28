@@ -32,12 +32,14 @@ CLOCK_LIB =  -L/usr/lib -lm
 DP_LIB =  -L../emapf-c/ -lemapf $(XML_LIB) -L../zlib -lz -L/usr/lib -lm
 DRAWSHP_LIB =  -L../gd/ -lgd -L../libpng -lpng -L../zlib -lz \
           -L../emapf-c/ -lemapf -L/usr/lib -lm
-STD_LIB =  -L../mdl_g2c -lmdl_g2c -L../libaat -laat -L../gd -lgd -L../libpng -lpng \
-          -L../zlib -lz \
+# XML_LIB has to come before zlib.
+STD_LIB = $(XML_LIB) -L../mdl_g2c -lmdl_g2c -L../gd -lgd -L../emapf-c/ -lemapf \
+          -L../netcdf/libsrc/ -lnetcdf \
           -L../jpeg2000/src/libjasper/jpc/.libs/ -ljpc \
           -L../jpeg2000/src/libjasper/base/.libs/ -lbase \
-          -L../netcdf/libsrc/ -lnetcdf $(XML_LIB) \
-          -L../emapf-c/ -lemapf -L/usr/lib -lm
+          -L../libpng -lpng -L../zlib -lz \
+          -L../libaat -laat  \
+          -L/usr/lib -lm
 
 TCL_LIB = -L/usr/local/tcltk/lib -ltcl8.4 -ltclstub8.4
 TK_LIB = -L/usr/local/tcltk/lib -ltk8.4 -ltkstub8.4
