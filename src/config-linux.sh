@@ -1,0 +1,1 @@
+configure CFLAGS="-O3"

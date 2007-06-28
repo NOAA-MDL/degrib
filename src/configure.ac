@@ -64,7 +64,12 @@ OPT_AIXSIZE()
 # ................................
 
 # Provides X linker flags to X_LIBS
+# Probably should chek into X_CFLAGS
 AC_PATH_XTRA()
+if test "$X_LIBS" != ""
+then
+  X_LIBS="${X_LIBS} -lX11"
+fi
 
 # ................................
 # ....Tcl/Tk configurations   ....

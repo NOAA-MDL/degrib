@@ -5428,6 +5428,7 @@ fi
 # ................................
 
 # Provides X linker flags to X_LIBS
+# Probably should chek into X_CFLAGS
 { echo "$as_me:$LINENO: checking for X" >&5
 echo $ECHO_N "checking for X... $ECHO_C" >&6; }
 
@@ -7015,6 +7016,10 @@ fi
 
 fi
 
+if test "$X_LIBS" != ""
+then
+  X_LIBS="${X_LIBS} -lX11"
+fi
 
 # ................................
 # ....Tcl/Tk configurations   ....

@@ -257,7 +257,7 @@ distclean: ./emapf-c/Makefile ./netcdf/Makefile
 	(cd ./jpeg2000/src/libjasper/include/jasper && rm -f Makefile stamp-h1 jas_config.h jas_config.h.in~)
 # Following gave problems in cygwin/mingw environment
 #	(cd ./libxml && make distclean)
-	(cd ./libxml && rm -rf *.o *.lo *.pc config.status xml2-config .deps Makefile libtool config.log *.la .libs stamp-h1 libxml2.spec)
+	(cd ./libxml && rm -rf *.o *.lo *.pc config.status xml2-config .deps Makefile libtool config.h COPYING COPYING.lnk config.log *.la .libs stamp-h1 libxml2.spec)
 	(cd ./libxml/xstc && rm -f Makefile)
 	(cd ./libxml/python && rm -rf setup.py Makefile .deps)
 	(cd ./libxml/python/tests && rm -f Makefile)
