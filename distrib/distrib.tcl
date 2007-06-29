@@ -44,9 +44,7 @@ proc clean {filename outfile {trim 0} {mode unix} } {
   close $fp
 }
 
-
 #-----------------------------------------------------------------------------
-
 # ReadIni --
 #
 #   Reads data from a .ini file.  Returns "" or [list [list variable value]]
@@ -178,52 +176,49 @@ proc WriteIni {file Section lstVars} {
   return
 }
 
-
 proc UpdateHeader {file version date} {
-
   set fp [open $file r]
-
   set op [open [file rootname $file].hpp w]
-
   fconfigure $op -translation lf
-
   set cnt 0
-
   while {[gets $fp line] >= 0} {
-
     if {$cnt >= 2} {
-
       if {$cnt == 2} {
-
         puts $op "\#define PROGRAM_VERSION \"$version\""
-
         puts $op "\#define PROGRAM_DATE \"$date\""
-
       }
-
       puts $op $line
-
     }
-
     incr cnt
-
   }
-
   close $fp
-
   close $op
-
   file copy -force [file rootname $file].hpp $file
-
   file delete -force [file rootname $file].hpp
-
 }
 
+proc UpdateConfigure {file name version author date} {
+  set fp [open $file r]
+  set op [open [file rootname $file].hpp w]
+  fconfigure $op -translation lf
+  while {[gets $fp line] >= 0} {
+    set line2 [string trim $line]
+    if {[string range $line2 0 6] == "AC_INIT"} {
+      puts $op "AC_INIT(\[$name\],\[$version\],\[$author\])"
+    } elseif {[string range $line2 0 20] == "AC_SUBST(PACKAGE_DATE"} {
+      puts $op "AC_SUBST(PACKAGE_DATE,'$date')"
+    } else {
+      puts $op $line
+    }
+  }
+  close $fp
+  close $op
+  file copy -force [file rootname $file].hpp $file
+  file delete -force [file rootname $file].hpp
+}
 
 proc UpdatePane {file} {
-
    set fp [open $file r]
-
    set lst ""
    gets $fp line  ;# Skip old setting of set PANE.
    while {[gets $fp line] >=0 } {
@@ -238,9 +233,7 @@ proc UpdatePane {file} {
    close $fp
 }
 
-
 if {($argc != 2)} {
-
   puts "Usage: $argv0 <version (see version.txt)> <version date>"
   exit
 }
@@ -267,6 +260,7 @@ if {$ray(Version) < [lindex $argv 0]} {
   set ray(Version) [lindex $argv 0]
 }
 set date [clock format [clock scan [lindex $argv 1]] -format "%m/%d/%Y"]
+set date2 [clock format [clock scan [lindex $argv 1]] -format "%Y%m%d"]
 # set date [clock format [clock seconds] -format "%m/%d/%Y"]
 set ray(Date) $date
 set newLst ""
@@ -280,6 +274,15 @@ WriteIni [file join [file dirname $src_dir] version.txt] degrib $newLst
 #####
 UpdateHeader [file join [file dirname $src_dir] src degrib userparse.h] \
        $ray(Version) $ray(Date)
+
+#####
+# 2b) Update the version in configure.ac
+#####
+UpdateConfigure [file join [file dirname $src_dir] src configure.ac] \
+       degrib $ray(Version) arthur.taylor@noaa.gov $date2
+#cd [file join [file dirname $src_dir] src]
+#exec /usr/bin/autoconf
+#cd $src_dir
 
 #####
 # 3) Make sure "Fun" is turned off in the tcl code.
@@ -352,6 +355,8 @@ puts "----------"
 puts "You may want to make the program and rerun distrib.tcl"
 puts "Since userparse.h probably got updated."
 puts "This may mean: first 'rm userparse.o'"
+puts "----------"
+puts "Also recommend running autoconf since configure.ac was updated"
 puts "----------"
 puts "Check ./degrib/checklst.txt for other suggestions"
 puts "----------"
