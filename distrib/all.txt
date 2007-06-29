@@ -35,23 +35,15 @@ A:degrib/bin/readme.txt
 G,E:degrib/bin/diff.exe
 
 # General source
-S:degrib/src/configure.in
+S:degrib/src/configure.ac
+S:degrib/src/aclocal.m4
 S:degrib/src/install-sh
 S:degrib/src/config.sub
 S:degrib/src/config.guess
-S:degrib/src/aclocal.m4
+S:degrib/src/config-*.sh
 S:degrib/src/configure
 S:degrib/src/Makefile.in
-S:degrib/src/makefile.aix32
-S:degrib/src/makefile.aix64
-S:degrib/src/makefile.cyg
-S:degrib/src/makefile.hpgcc
-S:degrib/src/makefile.lin64
-S:degrib/src/makefile.linux
-S:degrib/src/makefile.macosx
-S:degrib/src/makefile.sgi
-S:degrib/src/makefile.sun
-S:degrib/src/makefile.win
+S:degrib/src/scripts/makefile.*
 
 # g2clib-1.0.4 source
 S:degrib/src/mdl_g2c/g2clib-1.0.4/make*
@@ -62,18 +54,28 @@ S:degrib/src/mdl_g2c/g2clib-1.0.4/CHANGES
 S:degrib/src/mdl_g2c/g2clib-1.0.4/grib2c.doc
 
 # mdl_g2c source
-S:degrib/src/mdl_g2c/make*
-S:degrib/src/mdl_g2c/Make*
+S:degrib/src/mdl_g2c/configure.ac
+S:degrib/src/mdl_g2c/aclocal.m4
+#S:degrib/src/mdl_g2c/install-sh
+#S:degrib/src/mdl_g2c/config.sub
+#S:degrib/src/mdl_g2c/config.guess
+S:degrib/src/mdl_g2c/config-*.sh
+S:degrib/src/mdl_g2c/configure
+S:degrib/src/mdl_g2c/Makefile.in
 S:degrib/src/mdl_g2c/*.c
 S:degrib/src/mdl_g2c/*.h
 S:degrib/src/mdl_g2c/readme.txt
+S:degrib/src/mdl_g2c/scripts/makefile.*
 
 # libaat source
-S:degrib/src/libaat/makefile*
-S:degrib/src/libaat/Make*
+S:degrib/src/libaat/configure.ac
+S:degrib/src/libaat/config-*.sh
+S:degrib/src/libaat/configure
+S:degrib/src/libaat/Makefile.in
 S:degrib/src/libaat/*.c
 S:degrib/src/libaat/*.h
-S:degrib/src/mdl_g2c/readme.txt
+S:degrib/src/libaat/readme.txt
+S:degrib/src/libaat/scripts/makefile*
 
 # pnglib source
 S:degrib/src/libpng/contrib/gregbook/LICENSE
@@ -177,7 +179,7 @@ S:degrib/src/emapf-c/makefile*
 S:degrib/src/emapf-c/configure
 S:degrib/src/emapf-c/*.c
 S:degrib/src/emapf-c/*.hin
-S:degrib/src/emapf-c/*.h
+S:degrib/src/emapf-c/geoids.h
 S:degrib/src/emapf-c/*.sh
 S:degrib/src/emapf-c/*.TXT
 S:degrib/src/emapf-c/*.txt
@@ -232,7 +234,10 @@ S:degrib/src/netcdf/ncgen/*.y
 S:degrib/src/gd/config/*
 S:degrib/src/gd/test/*
 S:degrib/src/gd/*.c
-S:degrib/src/gd/*.h
+S:degrib/src/gd/g*.h
+S:degrib/src/gd/entities.h
+S:degrib/src/gd/jisx0208.h
+S:degrib/src/gd/wbmp.h
 S:degrib/src/gd/COPYING
 S:degrib/src/gd/INSTALL
 S:degrib/src/gd/scripts/*
@@ -312,22 +317,10 @@ S:degrib/src/dwmllib/*.h
 
 # degrib source
 S:degrib/src/degrib/readme.txt
-S:degrib/src/degrib/makefile.aix32
-S:degrib/src/degrib/makefile.aix64
-S:degrib/src/degrib/makefile.cyg
-S:degrib/src/degrib/makefile.hpgcc
-S:degrib/src/degrib/makefile.lin64
-S:degrib/src/degrib/makefile.linux
-S:degrib/src/degrib/makefile.mac
-S:degrib/src/degrib/makefile.sgi
-S:degrib/src/degrib/makefile.sun
-S:degrib/src/degrib/makefile.win
 S:degrib/src/degrib/Makefile.in
 S:degrib/src/degrib/*.c
 S:degrib/src/degrib/*.h
-
-# libg2c from Mingw.
-E:degrib/src/g2c-mingw/*
+S:degrib/src/degrib/scripts/makefile.*
 
 # tclsrc
 #G,S:degrib/bin/tclsrc/grib2flt.tcl
@@ -457,4 +450,8 @@ AMS:degrib/output/web_data/*
 
 # General data
 A:degrib/geodata/*
+
+# Draw Shp Control files.
+A:degrib/MapIni/*
+
 
