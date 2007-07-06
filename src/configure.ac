@@ -1,10 +1,10 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
-# DEGRIB configure.ac : version 20070627
+# DEGRIB configure.ac : version 20070705
 
 AC_PREREQ(2.59)
 AC_INIT([degrib],[1.87a],[arthur.taylor@noaa.gov])
-AC_SUBST(PACKAGE_DATE,'20070628')
+AC_SUBST(PACKAGE_DATE,'20070706')
 AC_CONFIG_SRCDIR([Makefile.in])
 AC_CONFIG_HEADERS([gd/config.h:gd/scripts/config.hin])
 AC_CANONICAL_HOST()
@@ -20,8 +20,13 @@ AC_PROG_MAKE_SET
 # May want to use CPPFLAGS instead.
 SET_BIGENDIAN()
 
+# Provides --enable-aixsize option (32 or 64 bit compiling (default 64) for AIX
+# Make sure you call AC_SUBST(ARFLAGS)
+OPT_AIXSIZE()
+
 # Set @DSIZEOF_LONG_INT@ variable.
 # May want to use CPPFLAGS instead.
+# This should be after "OPT_AIXSIZE"
 SET_SIZEOF_LONGINT()
 
 # Set @ANSIFLAG@ variable.
@@ -55,9 +60,6 @@ OPT_NOSTRIP()
 # Set @MEM_STDLIB@ variable
 OPT_MEMWATCH()
 
-# Provides --enable-aixsize option (32 or 64 bit compiling (default 64) for AIX
-# Make sure you call AC_SUBST(ARFLAGS)
-OPT_AIXSIZE()
 
 # ................................
 # ....Graphics Display configs....
