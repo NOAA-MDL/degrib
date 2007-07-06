@@ -190,7 +190,7 @@ ${top_srcdir}/@MEM_NAME@/Makefile: ${top_srcdir}/@MEM_NAME@/configure
 ./netcdf/macros.make: ./netcdf/configure
 	@echo "-----------------------------"
 	@echo "Attempting to configure netcdf..."
-	(cd ./netcdf && export CC="$(CC)" CFLAGS="$(CFLAGS)" ARFLAGS="cru" CXX="" FC="" F90="" && ./configure)
+	(cd ./netcdf && export CC="$(CC)" CFLAGS="$(CFLAGS)" ARFLAGS="$(ARFLAGS) cru" CXX="" FC="" F90="" && ./configure)
 	@echo "Finished with netcdf..."
 	@echo "-----------------------------"
 	@echo ""
