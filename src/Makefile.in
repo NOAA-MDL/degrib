@@ -74,7 +74,7 @@ $(PRJ_NAME)/$(PRJ_NAME): $(LIB_DEPENDS)
 	@echo "   http://www.ece.uvic.ca/~mdadams/jasper/"
 	@echo "If you use -ljasper.a, you may need to change the makefiles in ./degrib"
 	@echo "-----------------------------"
-	(cd ./jpeg2000 && make)
+	(cd ./jpeg2000 @OBJECT_MODE@ && make)
 	@echo "Finished with jpeg2000..."
 	@echo "-----------------------------"
 	@echo ""
