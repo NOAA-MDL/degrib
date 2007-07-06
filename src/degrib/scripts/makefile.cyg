@@ -1,5 +1,11 @@
 SHELL = /bin/sh
 
+############################
+# Intended to build on cygwin systems
+# Make sure you remove mingw from your path.
+# Validated: 20070629
+############################
+
 top_srcdir = ..
 TCL_PREFIX = /usr
 TK_PREFIX = /usr
@@ -22,7 +28,7 @@ XML_LIBDEP = ../dwmllib/libdwml.a ../libxml/.libs/libxml2.a
 XML_CLEAN = (cd ../dwmllib && make -f makefile clean)
 ############################
 
-STD_DEF = -DSIZEOF_LONG_INT=4  -D_WINDOWS_  $(XML_DEF)
+STD_DEF = -DSIZEOF_LONG_INT=4    -D_WINDOWS_  $(XML_DEF)
 STD_INC =  -I../emapf-c -I../mdl_g2c -I../libaat -I../netcdf/libsrc -I../gd $(XML_INC)
 TCL_INC = -I$(TCL_PREFIX)/include
 TK_INC = -I$(TK_PREFIX)/include
@@ -43,7 +49,7 @@ STD_LIB = $(XML_LIB) -L../mdl_g2c -lmdl_g2c -L../gd -lgd -L../emapf-c/ -lemapf \
 
 TCL_LIB = -L/usr/lib -ltcl84 -ltclstub84
 TK_LIB = -L/usr/lib -ltk84 -ltkstub84
-X_LIB =
+X_LIB =  -L/usr/X11R6/lib -lX11
 DYNAMIC_LIB =
 GUI_LIB = $(TK_LIB) $(TCL_LIB) $(X_LIB) $(DYNAMIC_LIB) $(STD_LIB)
 
@@ -225,6 +231,7 @@ clean:
 	$(XML_CLEAN)
 
 distclean: clean
+	rm -r -f Makefile
 
 ../dwmllib/libdwml.a:
 	@echo "-----------------------------"
@@ -238,9 +245,6 @@ distclean: clean
 ############################
 tcldegrib.o: tcldegrib.c tcldegrib.h $(H_SOURCES)
 	$(CC) -c $(GUIFLAGS) $<
-
-memwatch.o: ./memwatch/memwatch.c ./memwatch/memwatch.h
-	$(CC) -c $(CFLAGS) ./memwatch/memwatch.c
 
 dpgenprobe.o : $(H_SOURCES) genprobe.c
 	$(CC) -c $(CFLAGS) -DDP_ONLY genprobe.c -o dpgenprobe.o

@@ -1,5 +1,10 @@
 SHELL = /bin/sh
 
+############################
+# Intended to build on linux 32 bit systems
+# Validated: 20070628
+############################
+
 top_srcdir = ..
 TCL_PREFIX = /usr/local/tcltk
 TK_PREFIX = /usr/local/tcltk

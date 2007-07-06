@@ -1,5 +1,10 @@
 SHELL = /bin/sh
 
+############################
+# Intended to build on mingw systems
+# Validated: 20070629
+############################
+
 top_srcdir = ..
 TCL_PREFIX = c:/tcl832
 TK_PREFIX = c:/tcl832
@@ -22,7 +27,7 @@ XML_LIBDEP = ../dwmllib/libdwml.a ../libxml/.libs/libxml2.a
 XML_CLEAN = (cd ../dwmllib && make -f makefile clean)
 ############################
 
-STD_DEF = -DSIZEOF_LONG_INT=4  -D_WINDOWS_  $(XML_DEF)
+STD_DEF = -DSIZEOF_LONG_INT=4    -D_WINDOWS_  $(XML_DEF)
 STD_INC =  -I../emapf-c -I../mdl_g2c -I../libaat -I../netcdf/libsrc -I../gd $(XML_INC)
 TCL_INC = -I$(TCL_PREFIX)/include
 TK_INC = -I$(TK_PREFIX)/include
@@ -225,6 +230,7 @@ clean:
 	$(XML_CLEAN)
 
 distclean: clean
+	rm -r -f Makefile
 
 ../dwmllib/libdwml.a:
 	@echo "-----------------------------"
@@ -238,9 +244,6 @@ distclean: clean
 ############################
 tcldegrib.o: tcldegrib.c tcldegrib.h $(H_SOURCES)
 	$(CC) -c $(GUIFLAGS) $<
-
-memwatch.o: ./memwatch/memwatch.c ./memwatch/memwatch.h
-	$(CC) -c $(CFLAGS) ./memwatch/memwatch.c
 
 dpgenprobe.o : $(H_SOURCES) genprobe.c
 	$(CC) -c $(CFLAGS) -DDP_ONLY genprobe.c -o dpgenprobe.o
