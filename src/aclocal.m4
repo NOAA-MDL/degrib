@@ -178,6 +178,7 @@ AC_DEFUN([OPT_NOSTRIP],
 #####
 AC_DEFUN([OPT_AIXSIZE],
 [
+  OBJECT_MODE=""
   AC_ARG_ENABLE(aixsize,
     [AS_HELP_STRING([--enable-aixsize=val], [build val-bit (32 or 64, default 64) libraries for aix])],
     [case ${enableval}x in
@@ -186,7 +187,8 @@ AC_DEFUN([OPT_AIXSIZE],
            [CFLAGS="${CFLAGS} -maix32"],
            [CFLAGS="${CFLAGS} -q32"])
          FFLAGS="${FFLAGS} -q32"
-         ARFLAGS="${ARFLAGS} -X32";;
+         ARFLAGS="${ARFLAGS} -X32"
+         OBJECT_MODE="OBJECT_MODE=32";;
        64x)
          AS_IF([test "$ac_cv_c_compiler_gnu" = yes],
            [CFLAGS="${CFLAGS} -maix64"],
@@ -197,6 +199,7 @@ AC_DEFUN([OPT_AIXSIZE],
          AC_MSG_WARN([Invalid aixsize value- ${enableval}])
        esac
     ],)
+    AC_SUBST([OBJECT_MODE])
 ])
 
 #####
