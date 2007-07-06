@@ -24,6 +24,11 @@ SET_BIGENDIAN()
 # Make sure you call AC_SUBST(ARFLAGS)
 OPT_AIXSIZE()
 
+case "$host" in
+  *-*-aix*) STRIP_FLAGS="-X32_64";;
+  *) STRIP_FLAGS="-s";;
+esac
+
 # Set @DSIZEOF_LONG_INT@ variable.
 # May want to use CPPFLAGS instead.
 # This should be after "OPT_AIXSIZE"
@@ -162,6 +167,7 @@ esac
 
 # Perform "Substs"
 AC_SUBST([STRIP])
+AC_SUBST([STRIP_FLAGS])
 AC_SUBST([ARFLAGS])
 AC_SUBST([LD_FLAGS])
 
