@@ -165,7 +165,7 @@ ${top_srcdir}/@MEM_NAME@/Makefile: ${top_srcdir}/@MEM_NAME@/configure
 ./jpeg2000/Makefile: ./jpeg2000/configure
 	@echo "-----------------------------"
 	@echo "Attempting to configure jpeg2000..."
-	(cd ./jpeg2000 && export CC=$(CC) && export CFLAGS="$(CFLAGS)" && ./configure)
+	(cd ./jpeg2000 && export CC="$(CC)" && export CFLAGS="$(CFLAGS)" && ./configure)
 	@JPEG2000_LIBTOOL_FIX@
 	@echo "Finished with jpeg2000..."
 	@echo "-----------------------------"
@@ -182,7 +182,7 @@ ${top_srcdir}/@MEM_NAME@/Makefile: ${top_srcdir}/@MEM_NAME@/configure
 ./emapf-c/Makefile: ./emapf-c/configure
 	@echo "-----------------------------"
 	@echo "Attempting to configure emapf-c..."
-	(cd ./emapf-c && ./configure CC=$(CC) CFLAGS="$(CFLAGS)" ARFLAGS=$(ARFLAGS))
+	(cd ./emapf-c && ./configure CC="$(CC)" CFLAGS="$(CFLAGS)" ARFLAGS=$(ARFLAGS))
 	@echo "Finished with emapf-c..."
 	@echo "-----------------------------"
 	@echo ""
@@ -190,7 +190,7 @@ ${top_srcdir}/@MEM_NAME@/Makefile: ${top_srcdir}/@MEM_NAME@/configure
 ./netcdf/macros.make: ./netcdf/configure
 	@echo "-----------------------------"
 	@echo "Attempting to configure netcdf..."
-	(cd ./netcdf && export CC=$(CC) CFLAGS="$(CFLAGS)" ARFLAGS="cru" CXX="" FC="" F90="" && ./configure)
+	(cd ./netcdf && export CC="$(CC)" CFLAGS="$(CFLAGS)" ARFLAGS="cru" CXX="" FC="" F90="" && ./configure)
 	@echo "Finished with netcdf..."
 	@echo "-----------------------------"
 	@echo ""
@@ -198,7 +198,7 @@ ${top_srcdir}/@MEM_NAME@/Makefile: ${top_srcdir}/@MEM_NAME@/configure
 ./libxml/Makefile: ./libxml/configure
 	@echo "-----------------------------"
 	@echo "Attempting to configure libxml..."
-	(cd ./libxml && export CC=$(CC) && export CFLAGS="$(CFLAGS)" && \
+	(cd ./libxml && export CC="$(CC)" && export CFLAGS="$(CFLAGS)" && \
                  ./configure --with-minimum --with-tree --with-output --enable-shared=no \
                  --with-zlib=$(abs_top_builddir)/zlib)
 	@echo "Finished with libxml..."
