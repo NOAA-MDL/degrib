@@ -1,4 +1,19 @@
 #
+#----- Release: Version 1.87a 07/06/2007 -----
+#
+ 7/3  AAT Fixed writeshp.c since ESRI 9.2 doesn't like a ' ' in dbf column
+          headers. (r513)
+ 6/29 AAT Updated the release list based on configure/make system (r512)
+ 6/27 AAT Moved to a configure/make system from a make -f makefile system
+ 6/27 AAT Consolidated -DTIMING_INFO into -DDEBUG
+ 6/25 AAT Updated makefile.* to call libaat/configure (r492)
+ 6/25 AAT Moved makefile.mac -> makefile.macosx (consistently) (r490)
+ 6/25 AAT Updated makefile.mac based on actual locations of Tcl/Tk on Mac's.
+ 6/20 AAT Reconfigured ndfd.ini to allow custom sector to handle all NDFD
+          elements.
+ 6/1  AAT Forgot to include grb2shp.sh in the packing lists. (r486)
+ 6/1  AAT Made a minor patch to 1.86 to fix configure scripts. (r485)
+#
 #----- Release: Version 1.86 05/31/2007 -----
 #
  5/30 AAT Swicthing from grib2lib to mdl_g2c / libaat (r475)

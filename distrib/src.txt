@@ -245,7 +245,12 @@ S:degrib/src/gd/Makefile.am
 S:degrib/src/gd/Makefile.in
 S:degrib/src/gd/*.TXT
 S:degrib/src/gd/*.m4
-S:degrib/src/gd/config*
+S:degrib/src/gd/config.log
+S:degrib/src/gd/configure
+S:degrib/src/gd/configure.pl
+S:degrib/src/gd/config.hin
+S:degrib/src/gd/config.status
+S:degrib/src/gd/configure.ac
 S:degrib/src/gd/*.png
 S:degrib/src/gd/depcomp
 S:degrib/src/gd/*.out
