@@ -49,7 +49,7 @@ $(PRJ_NAME)/$(PRJ_NAME): $(LIB_DEPENDS)
 	@echo "Attempting to compile Zlib..."
 	@echo "You may already have zlib (libz.a).  If so, you could change"
 	@echo "   the makefiles in ./degrib to use it, skipping this step"
-	(cd ./zlib && @OBJECT_MODE@ && make)
+	(cd ./zlib @OBJECT_MODE@ && make)
 	@echo "Finished with Zlib..."
 	@echo "-----------------------------"
 	@echo ""
@@ -59,7 +59,7 @@ $(PRJ_NAME)/$(PRJ_NAME): $(LIB_DEPENDS)
 	@echo "Attempting to compile libpng..."
 	@echo "You may already have libpng (libpng.a).  If so, you could change"
 	@echo "   the makefiles in ./degrib to use it, skipping this step"
-	(cd ./libpng && @OBJECT_MODE@ && make)
+	(cd ./libpng @OBJECT_MODE@ && make)
 	@echo "Finished with libpng..."
 	@echo "-----------------------------"
 	@echo ""
@@ -89,7 +89,7 @@ $(PRJ_NAME)/$(PRJ_NAME): $(LIB_DEPENDS)
 	@echo "   http://www.ece.uvic.ca/~mdadams/jasper/"
 	@echo "If you use -ljasper.a, you may need to change the makefiles in ./degrib"
 	@echo "-----------------------------"
-	(cd ./jpeg2000 && @OBJECT_MODE@ && make)
+	(cd ./jpeg2000 @OBJECT_MODE@ && make)
 	@echo "Finished with jpeg2000..."
 	@echo "-----------------------------"
 	@echo ""
@@ -139,7 +139,7 @@ $(PRJ_NAME)/$(PRJ_NAME): $(LIB_DEPENDS)
 ./libxml/.libs/libxml2.a: ./libxml/Makefile
 	@echo "-----------------------------"
 	@echo "Attempting to compile libxml..."
-	(cd ./libxml && @OBJECT_MODE@ && make libxml2.la)
+	(cd ./libxml @OBJECT_MODE@ && make libxml2.la)
 	@echo "Finished with libxml..."
 	@echo "-----------------------------"
 	@echo ""
