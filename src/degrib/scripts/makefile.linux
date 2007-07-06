@@ -2,7 +2,7 @@ SHELL = /bin/sh
 
 ############################
 # Intended to build on linux 32 bit systems
-# Validated: 20070628
+# Validated: 20070706
 ############################
 
 top_srcdir = ..
@@ -10,9 +10,10 @@ TCL_PREFIX = /usr/local/tcltk
 TK_PREFIX = /usr/local/tcltk
 
 CC = gcc
-STRIP = strip
-STD_FLAGS = -O3 -Wall -pedantic
-DWML_FLAGS = -O3 -Wall -pedantic
+STRIP = /usr/bin/strip
+STRIP_FLAGS = -s
+STD_FLAGS = -O3 -Wall -fsigned-char -pedantic
+DWML_FLAGS = -O3 -Wall -fsigned-char -pedantic
 EXEEXT =
 LD_FLAGS =
 TCL_LDFLAGS = ${LD_FLAGS}
@@ -187,27 +188,27 @@ all: $(PRJ_NAME) $(CLOCK_NAME) $(DP_NAME) $(DRAWSHP_NAME) $(TCL_NAME) $(TK_NAME)
 
 $(PRJ_NAME): $(C_OBJECTS) $(C_MAIN) $(LIB_DEPENDS) $(H_SOURCES)
 	$(CC) $(C_MAIN) $(CFLAGS) $(LD_FLAGS) $(C_OBJECTS) $(STD_LIB) -o $(PRJ_NAME)
-	$(STRIP) -s $(PRJ_NAME)$(EXEEXT)
+	$(STRIP) $(STRIP_FLAGS) $(PRJ_NAME)$(EXEEXT)
 
 $(CLOCK_NAME): $(CLOCK_MAIN) $(CLOCK_OBJECTS) $(H_SOURCES)
 	$(CC) $(CLOCK_MAIN) $(CFLAGS) $(CLOCK_OBJECTS) $(CLOCK_LIB) -o $(CLOCK_NAME)
-	$(STRIP) -s $(CLOCK_NAME)$(EXEEXT)
+	$(STRIP) $(STRIP_FLAGS) $(CLOCK_NAME)$(EXEEXT)
 
 $(DP_NAME): $(DP_OBJECTS) $(DP_MAIN) $(LIB_DEPENDS) $(H_SOURCES)
 	$(CC) $(DP_MAIN) $(CFLAGS) $(LD_FLAGS) $(DP_OBJECTS) $(DP_LIB) -o $(DP_NAME)
-	$(STRIP) -s $(DP_NAME)$(EXEEXT)
+	$(STRIP) $(STRIP_FLAGS) $(DP_NAME)$(EXEEXT)
 
 $(DRAWSHP_NAME): $(DRAWSHP_MAIN) $(DRAWSHP_OBJECTS) $(H_SOURCES)
 	$(CC) $(DRAWSHP_MAIN) $(CFLAGS) $(DRAWSHP_OBJECTS) $(DRAWSHP_LIB) -o $(DRAWSHP_NAME)
-	$(STRIP) -s $(DRAWSHP_NAME)$(EXEEXT)
+	$(STRIP) $(STRIP_FLAGS) $(DRAWSHP_NAME)$(EXEEXT)
 
 $(TK_NAME): $(GUI_OBJECTS) $(GUI_MAIN) $(LIB_DEPENDS) $(H_SOURCES)
 	$(CC) $(GUI_MAIN) $(GUIFLAGS) $(TK_LDFLAGS) $(GUI_OBJECTS) $(GUI_LIB) -o $(TK_NAME)
-	$(STRIP) -s $(TK_NAME)$(EXEEXT)
+	$(STRIP) $(STRIP_FLAGS) $(TK_NAME)$(EXEEXT)
 
 $(TCL_NAME): $(GUI_OBJECTS) $(GUI_MAIN) $(LIB_DEPENDS) $(H_SOURCES)
 	$(CC) $(GUI_MAIN) $(GUIFLAGS) -DNO_TK $(TCL_LDFLAGS) $(GUI_OBJECTS) $(GUI_LIB) -o $(TCL_NAME)
-	$(STRIP) -s $(TCL_NAME)$(EXEEXT)
+	$(STRIP) $(STRIP_FLAGS) $(TCL_NAME)$(EXEEXT)
 
 # Note: Absence of TCL_NAME and TK_NAME intentional (so degrib can be built
 # and installed without Tcl/Tk).
@@ -235,7 +236,7 @@ distclean: clean
 ../dwmllib/libdwml.a:
 	@echo "-----------------------------"
 	@echo "Attempting to compile dwmllib..."
-	(cd ../dwmllib && export CC='$(CC)' && export CFLAGS='$(DWMLFLAGS)' && make -f makefile)
+	(cd ../dwmllib && export CC='$(CC)' && export CFLAGS='$(DWMLFLAGS)' && make -f makefile ARFLAGS=' -ruv')
 	@echo "Finished with dwmllib..."
 	@echo "-----------------------------"
 
