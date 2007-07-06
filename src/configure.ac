@@ -105,6 +105,26 @@ OPT_TKPUTS()
 # ....Local modifications     ....
 # ................................
 
+AC_ARG_WITH([zlib],
+  [AS_HELP_STRING([--with-zlib], [Path to the include directory for zlib])],
+  [AC_SUBST([ZLIB_PATH],$with_zlib)],
+  [AC_SUBST([ZLIB_PATH],../zlib)])
+
+AC_ARG_WITH([libpng],
+  [AS_HELP_STRING([--with-libpng], [Path to the include directory for libpng])],
+  [AC_SUBST([LIBPNG_PATH],$with_libpng)],
+  [AC_SUBST([LIBPNG_PATH],../libpng)])
+
+AC_ARG_WITH([libaat],
+  [AS_HELP_STRING([--with-libaat], [Path to the include directory for libaat])],
+  [AC_SUBST([LIBAAT_PATH],$with_libaat)],
+  [AC_SUBST([LIBAAT_PATH],../libaat)])
+
+AC_ARG_WITH([jpeg2000],
+  [AS_HELP_STRING([--with-jpeg2000], [Path to the include directory for jpeg2000])],
+  [AC_SUBST([JPEG2000_PATH],$with_jpeg2000)],
+  [AC_SUBST([JPEG2000_PATH],../jpeg2000/src/libjasper/include)])
+
 # Provides --with-debug option
 AC_ARG_WITH([debug],
   [AS_HELP_STRING([--with-debug],[set debug defines (default=no)])],
