@@ -17,11 +17,13 @@ AC_DEFUN([SET_SIZEOF_LONGINT],
 [
   # For some reason on cygwin/mingw system there is an extra carriage return
   # in ac_cv_sizeof_long_int?
-  AC_LONG_64_BITS
-  AC_CHECK_SIZEOF([long int])
-  AS_IF([test "x${LONG_64_BITS}" = "x"],
-      [AC_SUBST([DSIZEOF_LONG_INT],"-DSIZEOF_LONG_INT=4")],
-      [AC_SUBST([DSIZEOF_LONG_INT],"-DSIZEOF_LONG_INT=${ac_cv_sizeof_long_int}")])
+  case $host in
+    *-*-cygwin*|*-*-mingw*)
+      AC_SUBST([DSIZEOF_LONG_INT],"-DSIZEOF_LONG_INT=4");;
+    *)
+      AC_CHECK_SIZEOF([long int])
+      AC_SUBST([DSIZEOF_LONG_INT],"-DSIZEOF_LONG_INT=${ac_cv_sizeof_long_int}");;
+  esac
 ])
 
 #####
