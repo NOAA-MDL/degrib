@@ -17,6 +17,7 @@ AC_DEFUN([SET_SIZEOF_LONGINT],
 [
   # For some reason on cygwin/mingw system there is an extra carriage return
   # in ac_cv_sizeof_long_int?
+#  AC_LONG_64_BITS
   case $host in
     *-*-cygwin*|*-*-mingw*)
       AC_SUBST([DSIZEOF_LONG_INT],"-DSIZEOF_LONG_INT=4");;
@@ -94,16 +95,15 @@ AC_DEFUN([SET_DYNAMIC_LIB],
 #####
 AC_DEFUN([AAT_MYSIGN],
 [
-  AC_C_CHAR_UNSIGNED()
-  AS_IF([test x$at_c_cv_char_unsigned = xyes],
-    [AS_IF([test "$ac_cv_c_compiler_gnu" = yes],
-      [CFLAGS="${CFLAGS} -fsigned-char"],
-      [case $host in
-         *-*-aix*) CFLAGS="${CFLAGS} -qchars=signed";;
-         *-*-hp*)  CFLAGS="${CFLAGS} -signed";;
-         esac
-      ])
-    ])
+#   AC_C_CHAR_UNSIGNED()
+#   AS_IF([test "x$at_c_cv_char_unsigned" = "xyes"],
+   AS_IF([test "x$ac_cv_c_compiler_gnu" = "xyes"],
+         [CFLAGS="${CFLAGS} -fsigned-char"],
+         [case $host in
+            *-*-aix*) CFLAGS="${CFLAGS} -qchars=signed";;
+            *-*-hp*)  CFLAGS="${CFLAGS} -signed";;
+            esac
+         ])
 ])
 
 #####
@@ -178,28 +178,32 @@ AC_DEFUN([OPT_NOSTRIP],
 #####
 AC_DEFUN([OPT_AIXSIZE],
 [
-  OBJECT_MODE=""
-  AC_ARG_ENABLE(aixsize,
-    [AS_HELP_STRING([--enable-aixsize=val], [build val-bit (32 or 64, default 64) libraries for aix])],
-    [case ${enableval}x in
-       32x)
-         AS_IF([test "$ac_cv_c_compiler_gnu" = yes],
-           [CFLAGS="${CFLAGS} -maix32"],
-           [CFLAGS="${CFLAGS} -q32"])
-         FFLAGS="${FFLAGS} -q32"
-         ARFLAGS="${ARFLAGS} -X32"
-         OBJECT_MODE="OBJECT_MODE=32";;
-       64x)
-         AS_IF([test "$ac_cv_c_compiler_gnu" = yes],
-           [CFLAGS="${CFLAGS} -maix64"],
-           [CFLAGS="${CFLAGS} -q64"])
-         FFLAGS="${FFLAGS} -q64"
-         ARFLAGS="${ARFLAGS} -X64";;
-       *)
-         AC_MSG_WARN([Invalid aixsize value- ${enableval}])
-       esac
-    ],)
-    AC_SUBST([OBJECT_MODE])
+   OBJECT_MODE=""
+   AC_ARG_WITH([aixsize],
+      [AS_HELP_STRING([--with-aixsize=val], [build val-bit (32 or 64, default 64) libraries for aix])],
+      [aixsize=$with_aixsize],
+      [aixsize=64])
+   case $host in
+      *-*-aix*)
+         case ${aixsize}x in
+            32x)
+               AS_IF([test "$ac_cv_c_compiler_gnu" = yes],
+                     [CFLAGS="${CFLAGS} -maix32"],
+                     [CFLAGS="${CFLAGS} -q32"])
+               FFLAGS="${FFLAGS} -q32"
+               ARFLAGS="${ARFLAGS} -X32"
+               OBJECT_MODE="&& OBJECT_MODE=32";;
+            64x)
+               AS_IF([test "$ac_cv_c_compiler_gnu" = yes],
+                     [CFLAGS="${CFLAGS} -maix64"],
+                     [CFLAGS="${CFLAGS} -q64"])
+               FFLAGS="${FFLAGS} -q64"
+               ARFLAGS="${ARFLAGS} -X64";;
+            *)
+               AC_MSG_WARN([Invalid aixsize value- ${aixsize}])
+            esac;;
+      esac
+   AC_SUBST([OBJECT_MODE])
 ])
 
 #####
