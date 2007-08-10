@@ -249,62 +249,61 @@ static void FindBounds (maparam *map, int SizeX, int SizeY, double A,
                         double *maxLt, double *maxLg)
 {
    double x, y, X, Y;
-   double lat, lon;
+   double lat, lon1, lon2, lon3, lon4;
 
    x = 0;
    y = 0;
    X = (x - Bx) * A + projX1;
    Y = (SizeY - y - By) * A + projY1;
-   cxy2ll (map, X, Y, &lat, &lon);
+   cxy2ll (map, X, Y, &lat, &lon1);
    *minLt = lat;
    *maxLt = lat;
-   *minLg = lon;
-   *maxLg = lon;
    x = 0;
    y = SizeY;
    X = (x - Bx) * A + projX1;
    Y = (SizeY - y - By) * A + projY1;
-   cxy2ll (map, X, Y, &lat, &lon);
+   cxy2ll (map, X, Y, &lat, &lon2);
    if (*minLt > lat) {
       *minLt = lat;
    } else if (*maxLt < lat) {
       *maxLt = lat;
-   }
-   if (*minLg > lon) {
-      *minLg = lon;
-   } else if (*maxLg < lon) {
-      *maxLg = lon;
    }
    x = SizeX;
    y = 0;
    X = (x - Bx) * A + projX1;
    Y = (SizeY - y - By) * A + projY1;
-   cxy2ll (map, X, Y, &lat, &lon);
+   cxy2ll (map, X, Y, &lat, &lon3);
    if (*minLt > lat) {
       *minLt = lat;
    } else if (*maxLt < lat) {
       *maxLt = lat;
-   }
-   if (*minLg > lon) {
-      *minLg = lon;
-   } else if (*maxLg < lon) {
-      *maxLg = lon;
    }
    x = SizeX;
    y = SizeY;
    X = (x - Bx) * A + projX1;
    Y = (SizeY - y - By) * A + projY1;
-   cxy2ll (map, X, Y, &lat, &lon);
+   cxy2ll (map, X, Y, &lat, &lon4);
    if (*minLt > lat) {
       *minLt = lat;
    } else if (*maxLt < lat) {
       *maxLt = lat;
    }
-   if (*minLg > lon) {
-      *minLg = lon;
-   } else if (*maxLg < lon) {
-      *maxLg = lon;
+
+   if ((lon2 < lon1) && (lon1 - lon2 < 180)) {
+      *minLg = lon2;
+      *maxLg = lon4;
+   } else if (lon2 - lon1 < 180) {
+      *minLg = lon1;
+      *maxLg = lon3;
+   } else {
+      *minLg = lon2;
+      *maxLg = lon4;
    }
+
+   if (*minLg > *maxLg) {
+      *minLg = *minLg - 360;
+   }
+
    if ((orientLon > *minLg) && (orientLon < *maxLg)) {
       /* find big X for OrientLon */
       cll2xy (map, *maxLt, orientLon, &X, &Y);
@@ -312,7 +311,7 @@ static void FindBounds (maparam *map, int SizeX, int SizeY, double A,
       y = 0;
       Y = (SizeY - y - By) * A + projY1;
       /* find lat / lon for big X , big Y. */
-      cxy2ll (map, X, Y, &lat, &lon);
+      cxy2ll (map, X, Y, &lat, &lon1);
       /* check lat... probably only need to check maxLt. */
       if (*minLt > lat) {
          *minLt = lat;
@@ -1609,18 +1608,34 @@ static int DrawPointShpFile (char *filename, maparam *map, gdImagePtr im,
 /*
  * Control line:
  * minLat, minLon, maxLat, maxLon, space, color, style (1,2,3),
- *         subspace (only matters for style 3), label size (combination of LTRB (left top right bottom)) 
+ *         subspace (only matters for style 3),
+ *         label site (combination of LTRB (left top right bottom))
+ *         A '-' in the labelSite means "strict" keep lat labels on sides,
+ *         lon label on top/bottom
+ *
  */
-static void DrawLattice(maparam *map, gdImagePtr im, mapIniType * mapIni,
-                        double projX1, double projY1, double A, double Bx,
-                        double By, double minLon, double minLat, double maxLon,
-                        double maxLat, double space, colorType *color,
-                        int style, double subspace)
+static void DrawLattice(layerType *layer, maparam *map, gdImagePtr im,
+                        mapIniType * mapIni, double projX1, double projY1,
+                        double A, double Bx, double By, double minLon,
+                        double minLat, double maxLon, double maxLat,
+                        double X_Size, double Y_Size, double space,
+                        int style, char *labelSite)
 {
    double i, j, k;
    double X, Y;
    sInt4 x, y;
    sInt4 x0, y0, x1, y1, x2, y2, x3, y3;
+   char buffer[100];
+   sInt4 minX, maxX, minY, maxY;
+   double subspace = 1/5.;
+   double val;
+   char f_strict;
+
+   /* Round bounds to nearest "space" unit. */
+   minLat = (floor (minLat / space)) * space;
+   minLon = (floor (minLon / space)) * space;
+   maxLat = (ceil (maxLat / space)) * space;
+   maxLon = (ceil (maxLon / space)) * space;
 
    if (style == 1) {
       for (i = minLon; i <= maxLon; i += space) {
@@ -1630,8 +1645,7 @@ static void DrawLattice(maparam *map, gdImagePtr im, mapIniType * mapIni,
             /* need to scale them to pixel space. */
             x = (sInt4) (Bx + (X - projX1) / A);
             y = (sInt4) (mapIni->out.Y_Size - (By + (Y - projY1) / A));
-/*          gdImageFilledRectangle (im, x - 1, y - 1, x + 1, y + 1, color->gdIndex);*/
-            gdImageSetPixel (im, x, y, color->gdIndex);
+            gdImageSetPixel (im, x, y, layer->lattice.fg.gdIndex);
          }
       }
    } else if (style == 2) {
@@ -1645,16 +1659,16 @@ static void DrawLattice(maparam *map, gdImagePtr im, mapIniType * mapIni,
             cll2xy (map, j + space, i, &X, &Y);
             x1 = (sInt4) (Bx + (X - projX1) / A);
             y1 = (sInt4) (mapIni->out.Y_Size - (By + (Y - projY1) / A));
-            gdImageLine (im, x0, y0, x1, y1, color->gdIndex);
+            gdImageLine (im, x0, y0, x1, y1, layer->lattice.fg.gdIndex);
             cll2xy (map, j + space, i + space, &X, &Y);
             x2 = (sInt4) (Bx + (X - projX1) / A);
             y2 = (sInt4) (mapIni->out.Y_Size - (By + (Y - projY1) / A));
-            gdImageLine (im, x1, y1, x2, y2, color->gdIndex);
+            gdImageLine (im, x1, y1, x2, y2, layer->lattice.fg.gdIndex);
             cll2xy (map, j, i + space, &X, &Y);
             x3 = (sInt4) (Bx + (X - projX1) / A);
             y3 = (sInt4) (mapIni->out.Y_Size - (By + (Y - projY1) / A));
-            gdImageLine (im, x2, y2, x3, y3, color->gdIndex);
-            gdImageLine (im, x3, y3, x0, y0, color->gdIndex);
+            gdImageLine (im, x2, y2, x3, y3, layer->lattice.fg.gdIndex);
+            gdImageLine (im, x3, y3, x0, y0, layer->lattice.fg.gdIndex);
          }
       }
    } else {
@@ -1665,31 +1679,148 @@ static void DrawLattice(maparam *map, gdImagePtr im, mapIniType * mapIni,
             /* need to scale them to pixel space. */
             x = (sInt4) (Bx + (X - projX1) / A);
             y = (sInt4) (mapIni->out.Y_Size - (By + (Y - projY1) / A));
-            gdImageSetPixel (im, x, y, color->gdIndex);
-            for (k = 1; k <= space * subspace; k++) {
-               cll2xy (map, j + k / subspace, i, &X, &Y);
+            gdImageSetPixel (im, x, y, layer->lattice.fg.gdIndex);
+            for (k = 1; k <= space / subspace; k++) {
+               cll2xy (map, j + k * subspace, i, &X, &Y);
                x = (sInt4) (Bx + (X - projX1) / A);
                y = (sInt4) (mapIni->out.Y_Size - (By + (Y - projY1) / A));
-               gdImageSetPixel (im, x, y, color->gdIndex);
+               gdImageSetPixel (im, x, y, layer->lattice.fg.gdIndex);
             }
-            for (k = 1; k <= space * subspace; k++) {
-               cll2xy (map, j + space, i + k / subspace, &X, &Y);
+            for (k = 1; k <= space / subspace; k++) {
+               cll2xy (map, j + space, i + k * subspace, &X, &Y);
                x = (sInt4) (Bx + (X - projX1) / A);
                y = (sInt4) (mapIni->out.Y_Size - (By + (Y - projY1) / A));
-               gdImageSetPixel (im, x, y, color->gdIndex);
+               gdImageSetPixel (im, x, y, layer->lattice.fg.gdIndex);
             }
-            for (k = 1; k <= space * subspace; k++) {
-               cll2xy (map, j + k / subspace, i + space, &X, &Y);
+            for (k = 1; k <= space / subspace; k++) {
+               cll2xy (map, j + k * subspace, i + space, &X, &Y);
                x = (sInt4) (Bx + (X - projX1) / A);
                y = (sInt4) (mapIni->out.Y_Size - (By + (Y - projY1) / A));
-               gdImageSetPixel (im, x, y, color->gdIndex);
+               gdImageSetPixel (im, x, y, layer->lattice.fg.gdIndex);
             }
-            for (k = 1; k <= space * subspace; k++) {
-               cll2xy (map, j, i + k / subspace, &X, &Y);
+            for (k = 1; k <= space / subspace; k++) {
+               cll2xy (map, j, i + k * subspace, &X, &Y);
                x = (sInt4) (Bx + (X - projX1) / A);
                y = (sInt4) (mapIni->out.Y_Size - (By + (Y - projY1) / A));
-               gdImageSetPixel (im, x, y, color->gdIndex);
+               gdImageSetPixel (im, x, y, layer->lattice.fg.gdIndex);
             }
+         }
+      }
+   }
+/* Create labels */
+   f_strict = 0;
+   if (strchr (labelSite, '-') != NULL) {
+      f_strict = 1;
+   }
+
+   minX = 2;
+   minY = 0;
+   maxY = Y_Size - 15;
+   if (f_strict) {
+      if ((minLat >= 0) && (maxLat < 10)) {
+         maxX = X_Size - 7;
+      } else if (minLat > -10) {
+         maxX = X_Size - 15;
+      } else {
+         maxX = X_Size - 22;
+      }
+   } else {
+      if ((minLat >= 0) && (maxLat < 10) &&
+          (minLon >= 0) && (maxLon < 10)) {
+         maxX = X_Size - 7;
+      } else if ((minLat > -10) &&
+                 (minLon > -10) && (maxLon < 100)) {
+         maxX = X_Size - 15;
+      } else if (minLon > -100) {
+         maxX = X_Size - 22;
+      } else {
+         maxX = X_Size - 30;
+      }
+   }
+
+   if (strchr (labelSite, 'L') != NULL) {
+      for (j = minLat; j <= maxLat; j += space) {
+         for (i = minLon; i <= maxLon; i += subspace) {
+            cll2xy (map, j, i, &X, &Y);
+            x = (sInt4) (Bx + (X - projX1) / A);
+            y = (sInt4) (mapIni->out.Y_Size - (By + (Y - projY1) / A));
+            if ((x >= minX) && (x <= maxX) && (y >= minY) && (y <= maxY)) {
+               break;
+            }
+         }
+         if (f_strict && (x > minX + 10)) {
+         } else if (i <= maxLon) {
+            sprintf (buffer, "%.0f", j);
+            gdImageString (im, gdFontMediumBold, x, y, (unsigned char *) buffer,
+                           layer->lattice.fg.gdIndex);
+         }
+      }
+   }
+   if (strchr (labelSite, 'R') != NULL) {
+      for (j = minLat; j <= maxLat; j += space) {
+         for (i = maxLon; i >= minLon; i -= subspace) {
+            cll2xy (map, j, i, &X, &Y);
+            x = (sInt4) (Bx + (X - projX1) / A);
+            y = (sInt4) (mapIni->out.Y_Size - (By + (Y - projY1) / A));
+            if ((x >= minX) && (x <= maxX) && (y >= minY) && (y <= maxY)) {
+               break;
+            }
+         }
+         if (f_strict && (x < maxX - 10)) {
+         } else if (i >= minLon) {
+            sprintf (buffer, "%.0f", j);
+            gdImageString (im, gdFontMediumBold, x, y, (unsigned char *) buffer,
+                           layer->lattice.fg.gdIndex);
+         }
+      }
+   }
+   if (strchr (labelSite, 'T') != NULL) {
+      for (i = minLon; i <= maxLon; i += space) {
+         for (j = maxLat; j >= minLat; j -= subspace) {
+            cll2xy (map, j, i, &X, &Y);
+            x = (sInt4) (Bx + (X - projX1) / A);
+            y = (sInt4) (mapIni->out.Y_Size - (By + (Y - projY1) / A));
+            if ((x >= minX) && (x <= maxX) && (y >= minY) && (y <= maxY)) {
+               break;
+            }
+         }
+         if (f_strict && (y > minY + 10)) {
+         } else if (j >= minLat) {
+            val = i;
+            while (val > 180) {
+               val -= 360;
+            }
+            while (val < -180) {
+               val += 360;
+            }
+            sprintf (buffer, "%.0f", val);
+            gdImageString (im, gdFontMediumBold, x, y, (unsigned char *) buffer,
+                           layer->lattice.fg.gdIndex);
+         }
+      }
+   }
+   if (strchr (labelSite, 'B') != NULL) {
+      for (i = minLon; i <= maxLon; i += space) {
+         for (j = minLat; j <= maxLat; j += subspace) {
+            cll2xy (map, j, i, &X, &Y);
+            x = (sInt4) (Bx + (X - projX1) / A);
+            y = (sInt4) (mapIni->out.Y_Size - (By + (Y - projY1) / A));
+            if ((x >= minX) && (x <= maxX) && (y >= minY) && (y <= maxY)) {
+               break;
+            }
+         }
+         if (f_strict && (y < maxY - 10)) {
+         } else if (j <= maxLat) {
+            val = i;
+            while (val > 180) {
+               val -= 360;
+            }
+            while (val < -180) {
+               val += 360;
+            }
+            sprintf (buffer, "%.0f", val);
+            gdImageString (im, gdFontMediumBold, x, y, (unsigned char *) buffer,
+                           layer->lattice.fg.gdIndex);
          }
       }
    }
@@ -2757,7 +2888,8 @@ static int DrawPolyShpFile (char *filename, maparam *map, gdImagePtr im,
 static int DrawLayer (layerType *layer, maparam *map, gdImagePtr im,
                       mapIniType * mapIni, double projX1, double projY1,
                       double A, double Bx, double By, double minLt,
-                      double minLg, double maxLt, double maxLg)
+                      double minLg, double maxLt, double maxLg,
+                      double X_Size, double Y_Size)
 {
    double *Data;
    sInt4 numRec;
@@ -2812,11 +2944,11 @@ static int DrawLayer (layerType *layer, maparam *map, gdImagePtr im,
          }
          break;
       case LATTICE:
-         printf ("Here\n");
-         AllocGDColor (&layer->title.fg, im);
-         DrawLattice(map, im, mapIni, projX1, projY1, A, Bx, By,
-                     -210, 45, -100, 75, 5, &layer->title.fg, 3, 5);
-         /* DrawLattice (); */
+         AllocGDColor (&layer->lattice.fg, im);
+         DrawLattice(layer, map, im, mapIni, projX1, projY1, A, Bx, By,
+                     minLg, minLt, maxLg, maxLt, X_Size, Y_Size,
+                     layer->lattice.spacing, layer->lattice.style,
+                     layer->lattice.labelSite);
          break;
       case GRADUATED:
          /* We should read in the .dbf file first. */
@@ -3058,7 +3190,8 @@ printf ("Why is this needed here?\n");
                     gdFrame[frameNum].projY1, gdFrame[frameNum].A,
                     gdFrame[frameNum].Bx, gdFrame[frameNum].By,
                     gdFrame[frameNum].minLt, gdFrame[frameNum].minLg,
-                    gdFrame[frameNum].maxLt, gdFrame[frameNum].maxLg);
+                    gdFrame[frameNum].maxLt, gdFrame[frameNum].maxLg,
+                    gdFrame[frameNum].sizeX, gdFrame[frameNum].sizeY);
       }
    }
 #ifdef DEBUG
@@ -3094,7 +3227,9 @@ printf ("Why is this needed here?\n");
                               gdFrame[frameNum].minLt,
                               gdFrame[frameNum].minLg,
                               gdFrame[frameNum].maxLt,
-                              gdFrame[frameNum].maxLg) != 0) {
+                              gdFrame[frameNum].maxLg,
+                              gdFrame[frameNum].sizeX,
+                              gdFrame[frameNum].sizeY) != 0) {
                   f_break = 1;
                }
             }
