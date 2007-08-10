@@ -643,8 +643,8 @@ static void DrawLegend (layerType *layer, gdImagePtr im)
 {
    int h, w, x, y;
    int wid, hei;
-   int start, stop;
-   size_t i;
+   int start, stop, just;
+   size_t i, j;
    size_t len;
    char buffer[100];
    char format[50];
@@ -669,80 +669,97 @@ static void DrawLegend (layerType *layer, gdImagePtr im)
          if (hei == -1) {
             hei = layer->ramp.numColors;
          }
-         tic = layer->ramp.labMin;
          if (layer->legend.f_vert) {
             for (i = 0; i < layer->ramp.numColors; i++) {
                stop = y - (int) (i * hei / (layer->ramp.numColors - 1.0));
-               start =
-                     y -
-                     (int) ((i + 1) * hei / (layer->ramp.numColors - 1.0));
-               gdImageFilledRectangle (im, x, start, x + wid, stop,
-                                       layer->ramp.colors[i].gdIndex);
+               start = y - (int) ((i + 1) * hei / (layer->ramp.numColors - 1.0));
+               gdImageFilledRectangle (im, x, start, x + wid, stop, layer->ramp.colors[i].gdIndex);
             }
-            for (i = 0; i < layer->ramp.numColors; i++) {
-               stop = y - (int) (i * hei / (layer->ramp.numColors - 1.0));
-               start =
-                     y -
-                     (int) ((i + 1) * hei / (layer->ramp.numColors - 1.0));
-               val = layer->ramp.min + i * (layer->ramp.max -
-                                            layer->ramp.min) /
-                     (layer->ramp.numColors - 1.0);
-               if (val >= tic) {
-                  gdImageLine (im, x, start, x + wid, start,
-                               layer->ramp.outline.gdIndex);
-                  if (layer->ramp.labInterval >= 1) {
-                     sprintf (buffer, "%.0f", tic);
-                  } else {
-                     sprintf (buffer, "%0.1f", tic);
+            if (layer->ramp.numLab == 0) {
+               tic = layer->ramp.labMin;
+               for (i = 0; i < layer->ramp.numColors; i++) {
+                  stop = y - (int) (i * hei / (layer->ramp.numColors - 1.0));
+                  start = y - (int) ((i + 1) * hei / (layer->ramp.numColors - 1.0));
+                  val = layer->ramp.min + i * (layer->ramp.max - layer->ramp.min) / (layer->ramp.numColors - 1.0);
+                  if (val >= tic) {
+                     gdImageLine (im, x, start, x + wid, start, layer->ramp.outline.gdIndex);
+                     if (layer->ramp.labInterval >= 1) {
+                        sprintf (buffer, "%.0f", tic);
+                     } else {
+                        sprintf (buffer, "%0.1f", tic);
+                     }
+                     gdImageString (im, gdFontMediumBold, x - 3, start, (unsigned char *) buffer, layer->ramp.outline.gdIndex);
+                     tic += layer->ramp.labInterval;
+                     if (tic > layer->ramp.labMax)
+                        break;
                   }
-                  gdImageString (im, gdFontMediumBold, x - 3, start,
-                                 (unsigned char *) buffer,
-                                 layer->ramp.outline.gdIndex);
-                  tic += layer->ramp.labInterval;
-                  if (tic > layer->ramp.labMax)
-                     break;
+               }
+            } else {
+               for (i = 0; i < layer->ramp.numColors; i++) {
+                  stop = y - (int) (i * hei / (layer->ramp.numColors - 1.0));
+                  start = y - (int) ((i + 1) * hei / (layer->ramp.numColors - 1.0));
+                  val = layer->ramp.min + i * (layer->ramp.max - layer->ramp.min) / (layer->ramp.numColors - 1.0);
+                  for (j = 0; j < layer->ramp.numLab; j++) {
+                     if (val == layer->ramp.labRay[j]) {
+                        break;
+                     }
+                  }
+                  if (j != layer->ramp.numLab) {
+                     if (layer->ramp.labJust[j]) {
+                        just = stop;
+                     } else {
+                        just = start;
+                     }
+                     gdImageLine (im, x, just, x + wid, just, layer->ramp.outline.gdIndex);
+                     gdImageString (im, gdFontMediumBold, x - 3, just, (unsigned char *) layer->ramp.label[j], layer->ramp.outline.gdIndex);
+                  }
                }
             }
-
          } else {
             for (i = 0; i < layer->ramp.numColors; i++) {
                start = x + (int) (i * hei / (layer->ramp.numColors - 1.0));
-               stop = x +
-                     (int) ((i + 1) * hei / (layer->ramp.numColors - 1.0));
-               gdImageFilledRectangle (im, start, y - wid, stop, y,
-                                       layer->ramp.colors[i].gdIndex);
+               stop = x + (int) ((i + 1) * hei / (layer->ramp.numColors - 1.0));
+               gdImageFilledRectangle (im, start, y - wid, stop, y, layer->ramp.colors[i].gdIndex);
             }
-            for (i = 0; i < layer->ramp.numColors; i++) {
-               start = x + (int) (i * hei / (layer->ramp.numColors - 1.0));
-               stop = x +
-                     (int) ((i + 1) * hei / (layer->ramp.numColors - 1.0));
-               val = layer->ramp.min + i * (layer->ramp.max -
-                                            layer->ramp.min) /
-                     (layer->ramp.numColors - 1.0);
-/*
-               printf ("%d %f = %f vs %f \n", i, val - layer->ramp.colors[i].value, val, layer->ramp.colors[i].value);
-*/
-               val = layer->ramp.colors[i].value;
-               if (val >= tic) {
-                  gdImageLine (im, start, y - wid, start, y,
-                               layer->ramp.outline.gdIndex);
-                  if (layer->ramp.labInterval >= 1) {
-                     sprintf (buffer, "%.0f", tic);
-                  } else {
-                     sprintf (buffer, "%0.1f", tic);
+            if (layer->ramp.numLab == 0) {
+               tic = layer->ramp.labMin;
+               for (i = 0; i < layer->ramp.numColors; i++) {
+                  start = x + (int) (i * hei / (layer->ramp.numColors - 1.0));
+                  stop = x + (int) ((i + 1) * hei / (layer->ramp.numColors - 1.0));
+                  val = layer->ramp.min + i * (layer->ramp.max - layer->ramp.min) / (layer->ramp.numColors - 1.0);
+            /*      val = layer->ramp.colors[i].value;*/
+                  if (val >= tic) {
+                     gdImageLine (im, start, y - wid, start, y, layer->ramp.outline.gdIndex);
+                     if (layer->ramp.labInterval >= 1) {
+                        sprintf (buffer, "%.0f", tic);
+                     } else {
+                        sprintf (buffer, "%0.1f", tic);
+                     }
+                     gdImageString (im, gdFontMediumBold, start - 6, y, (unsigned char *) buffer, layer->ramp.outline.gdIndex);
+                     tic += layer->ramp.labInterval;
+                     if (tic > layer->ramp.labMax)
+                        break;
                   }
-/*
-                  gdImageString (im, gdFontMediumBold, start - 6,
-                                 y - wid + 5, (unsigned char *) buffer,
-                                 layer->ramp.outline.gdIndex);
-                  gdImageString (im, gdFontMediumBold, start - 6,
-                                 y - wid, (unsigned char *) buffer,
-                                 layer->ramp.outline.gdIndex);
-*/
-                  gdImageString (im, gdFontMediumBold, start - 6,
-                                 y, (unsigned char *) buffer,
-                                 layer->ramp.outline.gdIndex);
-                  tic += layer->ramp.labInterval;
+               }
+            } else {
+               for (i = 0; i < layer->ramp.numColors; i++) {
+                  start = x + (int) (i * hei / (layer->ramp.numColors - 1.0));
+                  stop = x + (int) ((i + 1) * hei / (layer->ramp.numColors - 1.0));
+                  val = layer->ramp.min + i * (layer->ramp.max - layer->ramp.min) / (layer->ramp.numColors - 1.0);
+                  for (j = 0; j < layer->ramp.numLab; j++) {
+                     if (val == layer->ramp.labRay[j]) {
+                        break;
+                     }
+                  }
+                  if (j != layer->ramp.numLab) {
+                     if (layer->ramp.labJust[j]) {
+                        just = stop;
+                     } else {
+                        just = start;
+                     }
+                     gdImageLine (im, just, y - wid, just, y, layer->ramp.outline.gdIndex);
+                     gdImageString (im, gdFontMediumBold, just - 6, y, (unsigned char *) layer->ramp.label[j], layer->ramp.outline.gdIndex);
+                  }
                }
             }
          }
@@ -1590,6 +1607,95 @@ static int DrawPointShpFile (char *filename, maparam *map, gdImagePtr im,
 }
 
 /*
+ * Control line:
+ * minLat, minLon, maxLat, maxLon, space, color, style (1,2,3),
+ *         subspace (only matters for style 3), label size (combination of LTRB (left top right bottom)) 
+ */
+static void DrawLattice(maparam *map, gdImagePtr im, mapIniType * mapIni,
+                        double projX1, double projY1, double A, double Bx,
+                        double By, double minLon, double minLat, double maxLon,
+                        double maxLat, double space, colorType *color,
+                        int style, double subspace)
+{
+   double i, j, k;
+   double X, Y;
+   sInt4 x, y;
+   sInt4 x0, y0, x1, y1, x2, y2, x3, y3;
+
+   if (style == 1) {
+      for (i = minLon; i <= maxLon; i += space) {
+         for (j = minLat; j <= maxLat; j += space) {
+            cll2xy (map, j, i, &X, &Y);
+            /* x, y are now in projected space. */
+            /* need to scale them to pixel space. */
+            x = (sInt4) (Bx + (X - projX1) / A);
+            y = (sInt4) (mapIni->out.Y_Size - (By + (Y - projY1) / A));
+/*          gdImageFilledRectangle (im, x - 1, y - 1, x + 1, y + 1, color->gdIndex);*/
+            gdImageSetPixel (im, x, y, color->gdIndex);
+         }
+      }
+   } else if (style == 2) {
+      for (i = minLon; i < maxLon; i += space) {
+         for (j = minLat; j < maxLat; j += space) {
+            cll2xy (map, j, i, &X, &Y);
+            /* x, y are now in projected space. */
+            /* need to scale them to pixel space. */
+            x0 = (sInt4) (Bx + (X - projX1) / A);
+            y0 = (sInt4) (mapIni->out.Y_Size - (By + (Y - projY1) / A));
+            cll2xy (map, j + space, i, &X, &Y);
+            x1 = (sInt4) (Bx + (X - projX1) / A);
+            y1 = (sInt4) (mapIni->out.Y_Size - (By + (Y - projY1) / A));
+            gdImageLine (im, x0, y0, x1, y1, color->gdIndex);
+            cll2xy (map, j + space, i + space, &X, &Y);
+            x2 = (sInt4) (Bx + (X - projX1) / A);
+            y2 = (sInt4) (mapIni->out.Y_Size - (By + (Y - projY1) / A));
+            gdImageLine (im, x1, y1, x2, y2, color->gdIndex);
+            cll2xy (map, j, i + space, &X, &Y);
+            x3 = (sInt4) (Bx + (X - projX1) / A);
+            y3 = (sInt4) (mapIni->out.Y_Size - (By + (Y - projY1) / A));
+            gdImageLine (im, x2, y2, x3, y3, color->gdIndex);
+            gdImageLine (im, x3, y3, x0, y0, color->gdIndex);
+         }
+      }
+   } else {
+      for (i = minLon; i < maxLon; i += space) {
+         for (j = minLat; j < maxLat; j += space) {
+            cll2xy (map, j, i, &X, &Y);
+            /* x, y are now in projected space. */
+            /* need to scale them to pixel space. */
+            x = (sInt4) (Bx + (X - projX1) / A);
+            y = (sInt4) (mapIni->out.Y_Size - (By + (Y - projY1) / A));
+            gdImageSetPixel (im, x, y, color->gdIndex);
+            for (k = 1; k <= space * subspace; k++) {
+               cll2xy (map, j + k / subspace, i, &X, &Y);
+               x = (sInt4) (Bx + (X - projX1) / A);
+               y = (sInt4) (mapIni->out.Y_Size - (By + (Y - projY1) / A));
+               gdImageSetPixel (im, x, y, color->gdIndex);
+            }
+            for (k = 1; k <= space * subspace; k++) {
+               cll2xy (map, j + space, i + k / subspace, &X, &Y);
+               x = (sInt4) (Bx + (X - projX1) / A);
+               y = (sInt4) (mapIni->out.Y_Size - (By + (Y - projY1) / A));
+               gdImageSetPixel (im, x, y, color->gdIndex);
+            }
+            for (k = 1; k <= space * subspace; k++) {
+               cll2xy (map, j + k / subspace, i + space, &X, &Y);
+               x = (sInt4) (Bx + (X - projX1) / A);
+               y = (sInt4) (mapIni->out.Y_Size - (By + (Y - projY1) / A));
+               gdImageSetPixel (im, x, y, color->gdIndex);
+            }
+            for (k = 1; k <= space * subspace; k++) {
+               cll2xy (map, j, i + k / subspace, &X, &Y);
+               x = (sInt4) (Bx + (X - projX1) / A);
+               y = (sInt4) (mapIni->out.Y_Size - (By + (Y - projY1) / A));
+               gdImageSetPixel (im, x, y, color->gdIndex);
+            }
+         }
+      }
+   }
+}
+
+/*
 static void joinRingParts_old (ringType *ring, gdPoint **PolyPnts, int *NumPolyPnts)
 {
    int i;
@@ -2003,7 +2109,7 @@ static int DrawGradPolyShpFile (char *filename, maparam *map, gdImagePtr im,
                         gdPnts[numGdPnts - 1] = gdPnts[0];
                      }
                      /* Finished a part.  */
-                     /* Check if there are at least 4 points (since first and 
+                     /* Check if there are at least 4 points (since first and
                       * last are equal). If so then find out if it is
                       * clockwise or counter-clockwise. Store data in
                       * clockwise or counter-clockwise list. */
@@ -2704,6 +2810,13 @@ static int DrawLayer (layerType *layer, maparam *map, gdImagePtr im,
             printf ("Info: %f %f => %ld %ld\n", layer->pnt[i].lat,
                     layer->pnt[i].lon, x, y);
          }
+         break;
+      case LATTICE:
+         printf ("Here\n");
+         AllocGDColor (&layer->title.fg, im);
+         DrawLattice(map, im, mapIni, projX1, projY1, A, Bx, By,
+                     -210, 45, -100, 75, 5, &layer->title.fg, 3, 5);
+         /* DrawLattice (); */
          break;
       case GRADUATED:
          /* We should read in the .dbf file first. */

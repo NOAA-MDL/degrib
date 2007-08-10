@@ -247,6 +247,10 @@ int drawGrib (const char *Filename, double *grib_Data,
       mapIni.all.layers[0].shpType = MEMORY;
       mapIni.all.layers[0].ramp.numColors = 0;
       mapIni.all.layers[0].ramp.colors = NULL;
+      mapIni.all.layers[0].ramp.numLab = 0;
+      mapIni.all.layers[0].ramp.labRay = NULL;
+      mapIni.all.layers[0].ramp.labJust = NULL;
+      mapIni.all.layers[0].ramp.label = NULL;
       mapIni.all.layers[0].ramp.f_missing = 0;
       mapIni.all.layers[0].ramp.thick = 0;
    }

@@ -82,7 +82,7 @@ typedef struct {
 } allOutputType;
 
 /* plotting methods. */
-enum {INVALID, SINGLE_SYMBOL, GRADUATED, TEXT, DB2, PNG, GRID, INFO};
+enum {INVALID, SINGLE_SYMBOL, GRADUATED, TEXT, DB2, PNG, GRID, INFO, LATTICE};
 /* supported shape file types. */
 enum {INVALID_SHP, POLYGON, POINT, MEMORY, VOID};
 
@@ -116,6 +116,10 @@ typedef struct {
    colorType outline;
    float labInterval;
    float labMax, labMin;
+   int numLab;
+   float *labRay;
+   int *labJust;
+   char **label;
 } rampType;
 
 typedef struct {

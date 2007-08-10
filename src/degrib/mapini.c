@@ -5,13 +5,14 @@
 #include "myutil.h"
 #include "mapini.h"
 #include "tendian.h"
+#include "myassert.h"
 #ifdef MEMWATCH
 #include "memwatch.h"
 #endif
 
 static char *LayerTypes[] = {
    "Invalid", "Single Symbol", "Graduated", "Text", "DB2", "Png", "Grid",
-   "Info", NULL
+   "Info", "Lattice", NULL
 };
 static char *ShpFileTypes[] = {
    "Invalid", "Polygon", "Point", "Memory", "Void", NULL
@@ -28,6 +29,9 @@ static int ReadColorTable (char *filename, layerType *layer)
    int r, g, b;
    float labMin, labMax, labInterval;
    int i;
+   size_t numCol;
+   char **colList;
+   char *ptr;
 
    if ((fp = fopen (filename, "rt")) == NULL) {
       printf ("Unable to read %s\n", filename);
@@ -36,6 +40,10 @@ static int ReadColorTable (char *filename, layerType *layer)
    cnt = 0;
    layer->ramp.numColors = 0;
    layer->ramp.colors = NULL;
+   layer->ramp.numLab = 0;
+   layer->ramp.labRay = NULL;
+   layer->ramp.labJust = NULL;
+   layer->ramp.label = NULL;
    while (reallocFGets (&line, &lineLen, fp) > 0) {
       strTrim (line);
       if (strlen (line) != 0) {
@@ -77,10 +85,51 @@ static int ReadColorTable (char *filename, layerType *layer)
             sscanf (line, "%d", &r);
             layer->ramp.decimal = r;
          } else if (cnt == 7) {
-            sscanf (line, "%f %f %f", &labMin, &labMax, &labInterval);
-            layer->ramp.labInterval = labInterval;
-            layer->ramp.labMin = labMin;
-            layer->ramp.labMax = labMax;
+            if (strncmp (line, "array", 5) == 0) {
+               line[strlen(line)-1] = '\0';
+               numCol = 0;
+               colList = NULL;
+               mySplit (line + 6, ',', &numCol, &colList, 1);
+               layer->ramp.numLab = numCol;
+               layer->ramp.labJust = (int *) malloc(numCol * sizeof(int));
+               layer->ramp.labRay = (float *) malloc(numCol * sizeof(float));
+               layer->ramp.label = (char **) malloc(numCol * sizeof(char *));
+               for (i = 0; i < numCol; i++) {
+                  if ((colList[i][0] == 'r') || (colList[i][0] == 'R') ||
+                      (colList[i][0] == 'l') || (colList[i][0] == 'L')) {
+                     if ((colList[i][0] == 'r') || (colList[i][0] == 'R')) {
+                        layer->ramp.labJust[i] = 1;
+                     } else {
+                        layer->ramp.labJust[i] = 0;
+                     }
+                     layer->ramp.labRay[i] = atof (colList[i] + 1);
+                     if ((ptr = strchr (colList[i] + 1, ':')) != NULL) {
+                        layer->ramp.label[i] = (char *) malloc (strlen (ptr + 1) + 1);
+                        strcpy (layer->ramp.label[i], ptr + 1);
+                     } else {
+                        layer->ramp.label[i] = (char *) malloc (strlen (colList[i] + 1) + 1);
+                        strcpy (layer->ramp.label[i], colList[i] + 1);
+                     }
+                  } else {
+                     layer->ramp.labJust[i] = 0;
+                     layer->ramp.labRay[i] = atof (colList[i]);
+                     if ((ptr = strchr (colList[i], ':')) != NULL) {
+                        layer->ramp.label[i] = (char *) malloc (strlen (ptr + 1) + 1);
+                        strcpy (layer->ramp.label[i], ptr + 1);
+                     } else {
+                        layer->ramp.label[i] = (char *) malloc (strlen (colList[i]) + 1);
+                        strcpy (layer->ramp.label[i], colList[i]);
+                     }
+                  }
+                  free (colList[i]);
+               }
+               free (colList);
+            } else {
+               sscanf (line, "%f %f %f", &labMin, &labMax, &labInterval);
+               layer->ramp.labInterval = labInterval;
+               layer->ramp.labMin = labMin;
+               layer->ramp.labMax = labMax;
+            }
          }
          cnt++;
       }
@@ -453,6 +502,7 @@ void InitLayer (layerType *layer)
 static void FreeLayer (layerType *layer)
 {
    size_t i;
+   size_t j;
 
    free (layer->filename);
    free (layer->title.name);
@@ -471,6 +521,12 @@ static void FreeLayer (layerType *layer)
          break;
       case GRID:
          free (layer->ramp.colors);
+         free (layer->ramp.labRay);
+         for (j = 0; j < layer->ramp.numLab; j++) {
+            free (layer->ramp.label[j]);
+         }
+         free (layer->ramp.label);
+         free (layer->ramp.labJust);
          break;
       case INFO:
          free (layer->pnt);
@@ -794,6 +850,10 @@ static int ParseLayerSect (allLayerType * all, layerType *layer, char *var,
             case GRID:
                layer->ramp.numColors = 0;
                layer->ramp.colors = NULL;
+               layer->ramp.labRay = NULL;
+               layer->ramp.label = NULL;
+               layer->ramp.labJust = NULL;
+               layer->ramp.numLab = 0;
                layer->ramp.f_missing = 0;
                layer->ramp.thick = 0;
                break;
