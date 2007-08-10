@@ -3,7 +3,7 @@
 
 #include "type.h"
 
-typedef struct {
+typedef struct {            
    short int r, g, b;
    float value;
    char f_null;
@@ -127,6 +127,14 @@ typedef struct {
 } dbf2Type;
 
 typedef struct {
+   char f_valid;
+   colorType fg;
+   double spacing; /* in degrees. */
+   int style; /* 1,2,3 */
+   char labelSite[6];
+} latticeType;
+
+typedef struct {
    char *filename;
    unsigned char type;
    unsigned char shpType;
@@ -139,6 +147,7 @@ typedef struct {
    graduatedType grad;
    rampType ramp;
    textType title;
+   latticeType lattice;
    legendType legend;
    dbf2Type db2;
    int frameNum;

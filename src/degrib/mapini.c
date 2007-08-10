@@ -492,6 +492,7 @@ void InitLayer (layerType *layer)
    layer->matchField = NULL;
    layer->matchVal = NULL;
    layer->legend.f_valid = 0;
+   layer->lattice.f_valid = 0;
    layer->frameNum = -1;
    layer->legendFrameNum = -1;
    layer->gridData = NULL;
@@ -636,12 +637,12 @@ static int ParseLayerSect (allLayerType * all, layerType *layer, char *var,
       "Filename", "Type", "Symbol", "ShpType", "Field", "Title", "Legend",
       "MatchField", "MatchValue", "LegendStyle", "LegendColor",
       "LegendPixelSize", "TitleColor", "Frame", "LegendFrame", "RampFile",
-      "Point", NULL
+      "Point", "Lattice", NULL
    };
    enum {
       FILENAME, TYPE, SYMBOL, SHPTYPE, FIELD, TITLE, LEGEND, MATCHFIELD,
       MATCHVALUE, LEGENDSTYLE, LEGENDCOLOR, LEGENDPIXELSIZE, TITLECOLOR,
-      FRAME, LEGENDFRAME, RAMPFILE, POINT
+      FRAME, LEGENDFRAME, RAMPFILE, POINT, LATTICE
    };
    int index;
    int cnt;
@@ -696,6 +697,39 @@ static int ParseLayerSect (allLayerType * all, layerType *layer, char *var,
                   }
                }
 
+            }
+         }
+         return 0;
+      case LATTICE:
+         first = strtok (value, "[]");
+         if (first != NULL) {
+            layer->lattice.f_valid = 1;
+            ParseColor (&(layer->lattice.fg), first);
+            layer->lattice.spacing = 5;
+            layer->lattice.style = 3;
+            /* User needs to put something in LRTB spot to disable this
+             * default.  "none" would work. */
+            strcpy (layer->lattice.labelSite, "-LRTB");
+            cnt = 1;
+            while ((first = strtok (NULL, "[]")) != NULL) {
+               cnt++;
+               switch (cnt) {
+                  case 2:
+                     layer->lattice.spacing = atof (first);
+                     break;
+                  case 3:
+                     layer->lattice.style = atoi (first);
+                     break;
+                  case 4:
+                     layer->lattice.labelSite[0] = '\0';
+                     layer->lattice.labelSite[1] = '\0';
+                     layer->lattice.labelSite[2] = '\0';
+                     layer->lattice.labelSite[3] = '\0';
+                     layer->lattice.labelSite[4] = '\0';
+                     strncpy (layer->lattice.labelSite, first, 5);
+                     layer->lattice.labelSite[5] = '\0';
+                     break;
+               }
             }
          }
          return 0;
@@ -1461,6 +1495,15 @@ int SaveMapIniFile (mapIniType * mapIni, char *filename)
                      mapIni->all.layers[i].title.bg.b,
                      mapIni->all.layers[i].title.x,
                      mapIni->all.layers[i].title.y);
+         }
+         if (mapIni->all.layers[i].lattice.f_valid) {
+            fprintf (fp, "Lattice=[%d,%d,%d][%f][%d][%s]\n",
+                     mapIni->all.layers[i].lattice.fg.r,
+                     mapIni->all.layers[i].lattice.fg.g,
+                     mapIni->all.layers[i].lattice.fg.b,
+                     mapIni->all.layers[i].lattice.spacing,
+                     mapIni->all.layers[i].lattice.style,
+                     mapIni->all.layers[i].lattice.labelSite); 
          }
          if (mapIni->all.layers[i].legend.f_valid) {
             fprintf (fp, "Legend=[%d,%d,%d][%d,%d,%d][%d][%d][%d]\n",
