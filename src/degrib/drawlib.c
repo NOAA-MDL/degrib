@@ -1627,7 +1627,7 @@ static void DrawLattice(layerType *layer, maparam *map, gdImagePtr im,
    sInt4 x0, y0, x1, y1, x2, y2, x3, y3;
    char buffer[100];
    sInt4 minX, maxX, minY, maxY;
-   double subspace = 1/5.;
+   double subspace = space/25.;
    double val;
    char f_strict;
 
