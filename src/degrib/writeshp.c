@@ -1440,6 +1440,7 @@ int gribWriteShp (const char *Filename, double *grib_Data,
    polyType *poly;      /* list of chains that represent large polygons. */
    int numPoly;         /* number of element in poly. */
    double *polyData;    /* Data values for each poly (no missing values) */
+   char EsriName[12];   /* element name shortened to 11 characters */
 
    nameLen = strlen (Filename);
    if (nameLen < 4) {
@@ -1514,10 +1515,18 @@ int gribWriteShp (const char *Filename, double *grib_Data,
       return -6;
    }
 
+   strncpy (EsriName, meta->element, 11);
+   if (strlen (meta->element) > 11) {
+      if (strncmp (meta->element, "Prob", 4) == 0) {
+         EsriName[0] = 'P';
+         strncpy (EsriName + 1, meta->element + 4, 11);
+      }
+   }
+
    /* Create the .dbf files */
-   if (strcmp (meta->element, "Wx") == 0) {
+   if (strcmp (EsriName, "Wx") == 0) {
       if (f_poly == 2) {
-         if (CreateWxDbf (filename, numPoly, 1, polyData, meta->element,
+         if (CreateWxDbf (filename, numPoly, 1, polyData, EsriName,
                           f_nMissing, &(meta->gridAttrib),
                           (sect2_WxType *) &(meta->pds2.sect2.wx), 0,
                           &map) != 0) {
@@ -1528,7 +1537,7 @@ int gribWriteShp (const char *Filename, double *grib_Data,
          free (polyData);
       } else {
          if (CreateWxDbf (filename, gds->Nx, gds->Ny, grib_Data,
-                          meta->element, f_nMissing, &(meta->gridAttrib),
+                          EsriName, f_nMissing, &(meta->gridAttrib),
                           (sect2_WxType *) &(meta->pds2.sect2.wx),
                           f_verbose, &map) != 0) {
             free (filename);
@@ -1573,7 +1582,7 @@ int gribWriteShp (const char *Filename, double *grib_Data,
       }
       if (fieldLen1 > fieldLen2) {
          if (f_poly == 2) {
-            if (CreateDbf (filename, numPoly, 1, polyData, meta->element,
+            if (CreateDbf (filename, numPoly, 1, polyData, EsriName,
                            fieldLen1, decimal, f_nMissing,
                            &(meta->gridAttrib), 0, &map) != 0) {
                free (filename);
@@ -1583,7 +1592,7 @@ int gribWriteShp (const char *Filename, double *grib_Data,
             free (polyData);
          } else {
             if (CreateDbf (filename, gds->Nx, gds->Ny, grib_Data,
-                           meta->element, fieldLen1, decimal, f_nMissing,
+                           EsriName, fieldLen1, decimal, f_nMissing,
                            &(meta->gridAttrib), f_verbose, &map) != 0) {
                free (filename);
                return -5;
@@ -1591,7 +1600,7 @@ int gribWriteShp (const char *Filename, double *grib_Data,
          }
       } else {
          if (f_poly == 2) {
-            if (CreateDbf (filename, numPoly, 1, polyData, meta->element,
+            if (CreateDbf (filename, numPoly, 1, polyData, EsriName,
                            fieldLen2, decimal, f_nMissing,
                            &(meta->gridAttrib), 0, &map) != 0) {
                free (filename);
@@ -1601,7 +1610,7 @@ int gribWriteShp (const char *Filename, double *grib_Data,
             free (polyData);
          } else {
             if (CreateDbf (filename, gds->Nx, gds->Ny, grib_Data,
-                           meta->element, fieldLen2, decimal, f_nMissing,
+                           EsriName, fieldLen2, decimal, f_nMissing,
                            &(meta->gridAttrib), f_verbose, &map) != 0) {
                free (filename);
                return -5;
