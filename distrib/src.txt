@@ -35,6 +35,7 @@ A:degrib/bin/readme.txt
 G,E:degrib/bin/diff.exe
 
 # General source
+S:degrib/src/README.config
 S:degrib/src/configure.ac
 S:degrib/src/aclocal.m4
 S:degrib/src/install-sh
