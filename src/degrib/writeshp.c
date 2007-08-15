@@ -519,13 +519,13 @@ static int CreateShpPoly (char *filename, LatLon *dp, int Nx, int Ny,
  * are specific to Esri ArcView.
  *
  * ARGUMENTS
- *   filename = Name of file to save to. (Output)
- *         dp = Array of lat/lon pairs for the grid cells. (Input)
- *         Nx = Number of x values in the grid. (Input)
- *         Ny = Number of y values in the grid. (Input)
- * f_nMissing = True if we should NOT store missing. (Input)
- *  grib_Data = Actual data so we can determine were missing values are. (In)
- *     attrib = Tells what type of missing values we used. (Input)
+ *       filename = Name of file to save to. (Output)
+ *            map = Holds the current map projection info to compute from. (In)
+ *            gds = Grid Definiton from the parsed GRIB msg to write. (Input)
+ * LatLon_Decimal = Number of decimals to round lat/lon's to. (Input)
+ *     f_nMissing = True if we should NOT store missing. (Input)
+ *      grib_Data = Actual data to determine where missing values are. (In)
+ *         attrib = Tells what type of missing values we used. (Input)
  *
  * FILES/DATABASES:
  *   Creates a .shp file, which is a binary file (Mixed Endian) consisting of
@@ -547,15 +547,17 @@ static int CreateShpPoly (char *filename, LatLon *dp, int Nx, int Ny,
  *   5/2003 AAT: Modified to allow us to not store missing values.
  *   5/2003 AAT: Decided to have 1,1 be lower left corner in .shp files.
  *   5/2003 AAT: Removed reliance on errno (since Tcl/Tk confuses the issue).
+ *   8/2007 AAT: Modified to internally compute dp as needed, so we don't
+ *               have to store massive quantities of lat/lons.
  *
  * NOTES
  * Doesn't inter-twine the write to files, as that could cause the hard
  *   drive to slow down.
  *****************************************************************************
  */
-static int CreateShpPnt (char *filename, LatLon *dp, int Nx, int Ny,
-                         sChar f_nMissing, double *grib_Data,
-                         gridAttribType *attrib)
+static int CreateShpPnt (char *filename, myMaparam *map, gdsType *gds,
+                         sChar LatLon_Decimal, sChar f_nMissing,
+                         double *grib_Data, gridAttribType *attrib)
 {
    FILE *sfp;           /* The open file pointer for .shp */
    FILE *xfp;           /* The open file pointer for .shx. */
@@ -569,11 +571,10 @@ static int CreateShpPnt (char *filename, LatLon *dp, int Nx, int Ny,
                          * maxLon, maxLat, ... */
    sInt4 dataType = 1;  /* Point shp type data. */
    sInt4 curRec[2];     /* rec number, and content length. */
-   LatLon *curDp;       /* Current lat/lon data point. */
+   LatLon curDp;        /* Current lat/lon data point. */
    double *curData;     /* Current Grid cell data point (for f_nMissing) */
    int err;             /* Internal err number. */
    int recLen;          /* Length in bytes of a record in the .shp file. */
-   sInt4 dpLen = Nx * Ny; /* Number of points in dp. */
    sInt4 numRec;        /* The total number of records actually stored. */
 
    strncpy (filename + strlen (filename) - 3, "shp", 3);
@@ -587,7 +588,7 @@ static int CreateShpPnt (char *filename, LatLon *dp, int Nx, int Ny,
    memset ((Head1 + 1), 0, 5 * sizeof (sInt4)); /* set 5 unused to 0 */
    recLen = sizeof (sInt4) + 2 * sizeof (double);
    /* .shp file size (in 2 byte words). */
-   Head1[6] = (100 + (2 * sizeof (sInt4) + recLen) * dpLen) / 2;
+   Head1[6] = (100 + (2 * sizeof (sInt4) + recLen) * gds->Nx * gds->Ny) / 2;
    FWRITE_BIG (Head1, sizeof (sInt4), 7, sfp);
    Head2[0] = 1000;     /* ArcView version identifier. */
    Head2[1] = dataType; /* Signal that these are point data. */
@@ -597,60 +598,73 @@ static int CreateShpPnt (char *filename, LatLon *dp, int Nx, int Ny,
 
    /* Start Writing data. */
    curRec[1] = recLen / 2; /* Content length in (2 byte words) */
-   curDp = dp;
+/*   curDp = dp;*/
    if ((!f_nMissing) || (attrib->f_miss == 0)) {
-      Bounds[0] = Bounds[2] = curDp->lon;
-      Bounds[1] = Bounds[3] = curDp->lat;
-      for (curRec[0] = 1; curRec[0] <= dpLen; curRec[0]++) {
-         FWRITE_BIG (curRec, sizeof (sInt4), 2, sfp);
-         FWRITE_LIT (&dataType, sizeof (sInt4), 1, sfp);
-         FWRITE_LIT (&(curDp->lon), sizeof (double), 1, sfp);
-         FWRITE_LIT (&(curDp->lat), sizeof (double), 1, sfp);
-         /* Update Bounds. */
-         if (curDp->lon < Bounds[0]) {
-            Bounds[0] = curDp->lon;
-         } else if (curDp->lon > Bounds[2]) {
-            Bounds[2] = curDp->lon;
+      myCxy2ll (map, 1, 1, &(curDp.lat), &(curDp.lon));
+      curDp.lat = myRound (curDp.lat, LatLon_Decimal);
+      curDp.lon = myRound (curDp.lon, LatLon_Decimal);
+      Bounds[0] = Bounds[2] = curDp.lon;
+      Bounds[1] = Bounds[3] = curDp.lat;
+      for (y = 0; y < gds->Ny; y++) {
+         for (x = 0; x < gds->Nx; x++) {
+            curRec[0] = 1 + x + y * gds->Nx;
+            myCxy2ll (map, x + 1, y + 1, &(curDp.lat), &(curDp.lon));
+            curDp.lat = myRound (curDp.lat, LatLon_Decimal);
+            curDp.lon = myRound (curDp.lon, LatLon_Decimal);
+
+            FWRITE_BIG (curRec, sizeof (sInt4), 2, sfp);
+            FWRITE_LIT (&dataType, sizeof (sInt4), 1, sfp);
+            FWRITE_LIT (&(curDp.lon), sizeof (double), 1, sfp);
+            FWRITE_LIT (&(curDp.lat), sizeof (double), 1, sfp);
+            /* Update Bounds. */
+            if (curDp.lon < Bounds[0]) {
+               Bounds[0] = curDp.lon;
+            } else if (curDp.lon > Bounds[2]) {
+               Bounds[2] = curDp.lon;
+            }
+            if (curDp.lat < Bounds[1]) {
+               Bounds[1] = curDp.lat;
+            } else if (curDp.lat > Bounds[3]) {
+               Bounds[3] = curDp.lat;
+            }
          }
-         if (curDp->lat < Bounds[1]) {
-            Bounds[1] = curDp->lat;
-         } else if (curDp->lat > Bounds[3]) {
-            Bounds[3] = curDp->lat;
-         }
-         curDp++;
       }
       numRec = curRec[0] - 1;
    } else {
       curRec[0] = 1;
-      for (y = 0; y < Ny; y++) {
-         curData = grib_Data + y * Nx;
-         for (x = 0; x < Nx; x++) {
+      for (y = 0; y < gds->Ny; y++) {
+         curData = grib_Data + y * gds->Nx;
+         for (x = 0; x < gds->Nx; x++) {
             if ((*curData != attrib->missPri) &&
                 ((attrib->f_miss != 2) || (*curData != attrib->missSec))) {
+               myCxy2ll (map, x + 1, y + 1, &(curDp.lat), &(curDp.lon));
+               curDp.lat = myRound (curDp.lat, LatLon_Decimal);
+               curDp.lon = myRound (curDp.lon, LatLon_Decimal);
+
                FWRITE_BIG (curRec, sizeof (sInt4), 2, sfp);
                FWRITE_LIT (&dataType, sizeof (sInt4), 1, sfp);
-               FWRITE_LIT (&(curDp->lon), sizeof (double), 1, sfp);
-               FWRITE_LIT (&(curDp->lat), sizeof (double), 1, sfp);
+               FWRITE_LIT (&(curDp.lon), sizeof (double), 1, sfp);
+               FWRITE_LIT (&(curDp.lat), sizeof (double), 1, sfp);
                /* Update Bounds. */
                if (curRec[0] == 1) {
-                  Bounds[0] = Bounds[2] = curDp->lon;
-                  Bounds[1] = Bounds[3] = curDp->lat;
+                  Bounds[0] = Bounds[2] = curDp.lon;
+                  Bounds[1] = Bounds[3] = curDp.lat;
                } else {
-                  if (curDp->lon < Bounds[0]) {
-                     Bounds[0] = curDp->lon;
-                  } else if (curDp->lon > Bounds[2]) {
-                     Bounds[2] = curDp->lon;
+                  if (curDp.lon < Bounds[0]) {
+                     Bounds[0] = curDp.lon;
+                  } else if (curDp.lon > Bounds[2]) {
+                     Bounds[2] = curDp.lon;
                   }
-                  if (curDp->lat < Bounds[1]) {
-                     Bounds[1] = curDp->lat;
-                  } else if (curDp->lat > Bounds[3]) {
-                     Bounds[3] = curDp->lat;
+                  if (curDp.lat < Bounds[1]) {
+                     Bounds[1] = curDp.lat;
+                  } else if (curDp.lat > Bounds[3]) {
+                     Bounds[3] = curDp.lat;
                   }
                }
                curRec[0]++;
             }
             curData++;
-            curDp++;
+/*            curDp++;*/
          }
       }
       numRec = curRec[0] - 1;
@@ -1497,16 +1511,22 @@ int gribWriteShp (const char *Filename, double *grib_Data,
 
       FreePolys (poly, numPoly);
    } else {             /* point */
+#ifdef TEST
       dp = (LatLon *) malloc (gds->numPts * (sizeof (LatLon)));
       /* Compute the lat/lon grid. */
       GridCompute (&map, gds, dp, 0, LatLon_Decimal);
-      if (CreateShpPnt (filename, dp, gds->Nx, gds->Ny, f_nMissing,
+#endif
+      if (CreateShpPnt (filename, &map, gds, LatLon_Decimal, f_nMissing,
                         grib_Data, &(meta->gridAttrib)) != 0) {
+#ifdef TEST
          free (dp);
+#endif
          free (filename);
          return -4;
       }
+#ifdef TEST
       free (dp);
+#endif
    }
 
    /* Create the .prj file */
