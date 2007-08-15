@@ -3,8 +3,8 @@
 # DEGRIB configure.ac : version 20070705
 
 AC_PREREQ(2.59)
-AC_INIT([degrib],[1.87a],[arthur.taylor@noaa.gov])
-AC_SUBST(PACKAGE_DATE,'20070706')
+AC_INIT([degrib],[1.87b],[arthur.taylor@noaa.gov])
+AC_SUBST(PACKAGE_DATE,'20070810')
 AC_CONFIG_SRCDIR([Makefile.in])
 AC_CONFIG_HEADERS([gd/config.h:gd/scripts/config.hin])
 AC_CANONICAL_HOST()
@@ -84,6 +84,7 @@ fi
 
 AC_ARG_VAR([TCL_PREFIX],[Base Directory for TCL/TK])
 AC_ARG_VAR([TK_PREFIX],[Base Directory for TCL/TK])
+AC_ARG_VAR([TCL_VERSION],[Current version of Tcl/Tk (8.3 or 8.4)])
 
 # Attempt to set up Tcl/Tk libraries on the current system.
 # Possible adjustment to TCL_PREFIX
