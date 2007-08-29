@@ -745,7 +745,7 @@ proc GRIBFrame {frame rayName} {
       $lb configure -exportselection false -takefocus 1 \
             -yscrollcommand [list multi_scroll2 $cur1.yscroll \
                              $ray(LB_list)]
-      bind $lb <Enter> "+ focus $lb"
+#      bind $lb <Enter> "+ focus $lb"
       bind $lb <ButtonRelease-1> \
             "+ AdjustSelectList $lb [list $ray(LB_list)] 0 ; focus $lb"
       bind $lb <B1-Motion> \
