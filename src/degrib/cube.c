@@ -744,12 +744,17 @@ int gribReadFloat (char *inName, char *dataFile, sInt4 offset,
                *gribData++ = attrib->missPri;
             }
          } else {
+            /* (startY + y) is the row (starting at 1) from the original file
+             * that we are looking at. */
             if (scan == 0) {
-               localOffset = (((subNy - 1) + (startY - 1) - y) * Nx +
-                              (startX - 1)) * 4 + offset;
+               localOffset = (((subNy - 1) + (startY - 1) - y) * Nx + offset;
             } else {
-               localOffset = ((startY - 1 + y) * Nx +
-                              (startX - 1)) * 4 + offset;
+               localOffset = ((startY - 1 + y) * Nx + offset;
+            }
+            /* Only want to add startX - 1 if it is > 0.  Otherwise we "fill"
+             * with missings before we start reading. */
+            if (startX - 1 > 0) {
+               localOffset += (startX - 1) * 4;
             }
             fseek (fp, localOffset, SEEK_SET);
             for (x = 0; x < subNx; x++) {
