@@ -554,26 +554,28 @@ static int Grib2ParseObj (Grib2Type * grib, Tcl_Interp * interp, int objc,
             useArgs = 2;
             break;
          case INTERPOLATE:
+            usr->f_coverageGrid = 1;
             if (objc == 1) {
-               usr->f_interp = 2;
+               usr->f_interp = 1;
                useArgs = 1;
             } else {
                if (Tcl_GetIntFromObj (interp, objPtr[1], &i_temp) != TCL_OK) {
                   strPtr = Tcl_GetStringFromObj (objPtr[1], &len);
                   if (strcmp (strPtr, "near") == 0) {
-                     usr->f_poly = (sChar) 1;
-                     useArgs = 2;
-                     break;
+                     usr->f_interp = 0;
                   } else if (strcmp (strPtr, "bilinear") == 0) {
-                     usr->f_poly = (sChar) 2;
-                     useArgs = 2;
-                     break;
+                     usr->f_interp = 1;
                   } else {
                      errSprintf ("Problems parsing -Interp option\n");
                      return TCL_ERROR;
                   }
+               } else {
+                  if (i_temp == 1) {
+                     usr->f_interp = 0;
+                  } else {
+                     usr->f_interp = 1;
+                  }
                }
-               usr->f_interp = (sChar) i_temp;
                useArgs = 2;
             }
             break;

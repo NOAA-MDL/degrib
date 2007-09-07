@@ -413,7 +413,7 @@ int MainConvert (userType *usr, IS_dataType *is, grib_MetaData *meta,
        * using bi-linear interpolation or creating a normal "projected" grid,
        * which is true to the data since it has no interpolation.
        */
-      if (usr->f_interp) {
+      if (usr->f_coverageGrid) {
          if (gribInterpFloat (outName, Data, meta, &(meta->gridAttrib),
                               FltScan, usr->f_MSB, usr->decimal,
                               usr->f_GrADS, usr->f_SimpleWx,

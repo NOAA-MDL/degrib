@@ -110,6 +110,7 @@ void UserInit (userType *usr)
    usr->f_surface = -1;
    usr->f_nLabel = -1;
    usr->f_interp = -1;
+   usr->f_coverageGrid = -1;
    usr->f_AscGrid = -1;
    usr->f_GrADS = -1;
    usr->f_NetCDF = -1;
@@ -435,6 +436,8 @@ int UserValidate (userType *usr)
       usr->f_GrADS = 0;
    if (usr->f_interp == -1)
       usr->f_interp = 0;
+   if (usr->f_coverageGrid == -1)
+      usr->f_coverageGrid = 0;
    if (usr->f_revFlt == -1)
       usr->f_revFlt = 0;
    if (usr->f_NetCDF == -1)
@@ -910,8 +913,11 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
                usr->f_poly = 1;
             return 1;
          case INTERPOLATE:
+            /* true f_coverageGrid, false f_interp */
+            if (usr->f_coverageGrid == -1)
+               usr->f_coverageGrid = 1;
             if (usr->f_interp == -1)
-               usr->f_interp = 2;
+               usr->f_interp = 1;
             return 1;
       }
    }
@@ -1387,12 +1393,16 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
          }
          return 2;
       case INTERPOLATE:
+         if (usr->f_coverageGrid == -1)
+            usr->f_coverageGrid = 1;
          if (usr->f_interp == -1) {
             if ((strcmp (next, "near") == 0) || (strcmp (next, "1") == 0)) {
-               usr->f_interp = 1;
+               /* true f_coverageGrid, false f_interp */
+               usr->f_interp = 0;
             } else if ((strcmp (next, "bilinear") == 0) ||
                        (strcmp (next, "2") == 0)) {
-               usr->f_interp = 2;
+               /* true f_coverageGrid, true f_interp */
+               usr->f_interp = 1;
             }
          }
          return 2;

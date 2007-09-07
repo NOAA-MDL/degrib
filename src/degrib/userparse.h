@@ -70,7 +70,10 @@ typedef struct {
    char *outName;       /* outName = -out or NULL (has 3 letter extension.) */
    sChar f_stdout;      /* true if outName is "stdout" */
    char *logName;       /* logName = -log or NULL (for error messages.) */
-   sChar f_interp;      /* f_interp = -Interp */
+   sChar f_interp;      /* true = bilinear, false = Nearest Neighbor */
+   sChar f_coverageGrid; /* (true if -Interp is provided on command line...
+                         * This tells if we are calling gribInterpFloat()
+                         * or gribWriteFloat() */
    sChar f_GrADS;       /* If we should create GrADS control file for .flt. */
    sChar f_AscGrid;     /* If we should create Ascii grids. */
    sChar f_NetCDF;      /* 0 for no NetCDF or integer for version of NetCDF

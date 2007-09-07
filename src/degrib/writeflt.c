@@ -811,7 +811,7 @@ static sInt4 IndexNearest (myMaparam *map, double lat, double lon, sInt4 Nx,
  *    f_GrADS = True if you want to generate GrADS .ctl files. 
  * f_SimpleWx = True if you want to simplify the weather via NDFD method,
  *              before output. (Input)
- *   f_interp = 1 : sample by nearest point, 2 : bi-linear interpolation. (in)
+ *   f_interp = false: sample by nearest point, true: bi-linear interp. (in)
  *
  * FILES/DATABASES:
  *   Calls gribWriteEsriHdr to create an Esri ascii .hdr file.
@@ -1054,8 +1054,7 @@ int gribInterpFloat (const char *Filename, double *grib_Data,
          }
          lon = ng.lon1 + x * ng.Dx;
 
-         if ((f_SimpleWx && (strcmp (meta->element, "Wx") == 0)) ||
-             (f_interp == 1)) {
+         if ((f_SimpleWx && (strcmp (meta->element, "Wx") == 0)) || (!f_interp)) {
             row = IndexNearest (&map, lat, lon, meta->gds.Nx, meta->gds.Ny);
             if (row < 0) {
                val = missing;
@@ -1070,7 +1069,7 @@ int gribInterpFloat (const char *Filename, double *grib_Data,
                /* For Simple weather we have to look up the value (which is
                 * now an index into a table) in the simple weather code
                 * table. */
-               if (f_interp != 1) {
+               if (f_SimpleWx && (strcmp (meta->element, "Wx") == 0)) {
                   row = (sInt4) val;
                   if ((row >= 0)
                       && (row < (sInt4) meta->pds2.sect2.wx.dataLen)) {
