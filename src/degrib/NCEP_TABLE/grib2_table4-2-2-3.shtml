@@ -19,8 +19,9 @@ category)</small><br>
 </small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 3<br>
 </big></big></center>
 <br>
-<center><b>Revised 02/21/06<br>
-</b></center>
+<center><b>Revised 08/24/2007</b><br>
+<span style="color: red; font-size: 10pt;"><b>Red text depicts changes
+made since 02/21/2006</b></span></center>
 <br>
 <br>
 <center>
@@ -98,12 +99,9 @@ category)</small><br>
       </td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center;">6<br>
-      </td>
-      <td style="vertical-align: top;"><span style="font-size: 11pt;">Number
-of Soil Layers in Root Zone</span></td>
-      <td style="vertical-align: top;">Numeric<br>
-      </td>
+      <td style="vertical-align: top; text-align: center;">6<br></td>
+      <td style="vertical-align: top;">Number of Soil Layers in Root Zone</span></td>
+      <td style="vertical-align: top;">Numeric<br></td>
       <td style="vertical-align: top;">RLYRS<br>
       </td>
     </tr>
@@ -167,13 +165,10 @@ for Local Use</td>
       <td style="vertical-align: top;">SOILL </td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center;">193<br>
-      </td>
-      <td style="vertical-align: top;"><span style="font-size: 11pt;">Number
-of Soil Layers in Root Zone</span></td>
-      <td style="vertical-align: top;">non-dim<br>
-      </td>
-      <td style="vertical-align: top;">RLYRS </td>
+      <td style="vertical-align: top; text-align: center;">193<br></td>
+      <td style="vertical-align: top;">Number of Soil Layers in Root Zone</span></td>
+      <td style="vertical-align: top;">non-dim<br></td>
+      <td style="vertical-align: top;">RLYRS</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">194<br>
@@ -200,12 +195,17 @@ moisture)</td>
       <td style="vertical-align: top;">SMDRY </td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center;">197<br>
-      </td>
+      <td style="vertical-align: top; text-align: center;">197<br></td>
       <td style="vertical-align: top;">Soil Porosity</td>
       <td style="vertical-align: top;">Proportion</td>
       <td style="vertical-align: top;">POROS<br>
       </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">198<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Land Surface Precipitation Accumulation</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">kg m<sup>-2</sup></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">LSPA</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">255<br>

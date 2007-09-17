@@ -20,9 +20,12 @@ category)</small><br>
 </small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 7<br>
 </big></big></center>
 <br>
-<center><b>Revised 05/01/2007</b><br>
+<center>
+<center><b>Revised 08/24/2007</b><br>
 <span style="color: red; font-size: 10pt;"><b>Red text depicts changes
-made since 05/01/2007</b></span></center>
+made since 05/25/2007</b></span><b><br>
+</b></center>
+<b></b></center>
 <br>
 <br>
 <center>
@@ -207,12 +210,16 @@ for Local Use<br>
       <td style="vertical-align: top;">RI </td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">195<br>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Planetary Boundary Regime</td>
-      <td style="vertical-align: top; "> <br>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">PBLREG</td>
+      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">195<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Copnvective Weather Detection Index</td>
+      <td style="vertical-align: top; "></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">CWDI</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">196<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Ultra Violet Index</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">J m<sup>-2</sup></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">UVI</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">255<br>

@@ -19,8 +19,9 @@ category)</small><br>
 </small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 0<br>
 </big></big></center>
 <br>
-<center><b>Revised 04/09/07<br>
-</b></center>
+<center><b>Revised 06/05/2007<br>
+<span style="color: red; font-size: 10pt;"><b>Red text depicts changes
+made since 04/09/2007</b></span><b></b></center>
 <br>
 <br>
 <center>
@@ -187,6 +188,15 @@ for Local Use<br>
       </td>
       <td
  style="vertical-align: top; background-color: rgb(204, 204, 204);"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">192<br>
+      </td>
+      <td style="vertical-align: top; color: red;">Wave Steepness</td>
+      <td style="vertical-align: top; color: red;"><br>
+      </td>
+      <td style="vertical-align: top; color: red;">WSTP<br>
       </td>
     </tr>
     <tr>

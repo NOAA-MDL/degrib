@@ -20,9 +20,9 @@ category)</small><br>
 </small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 3<br>
 </big></big></center>
 <br>
-<center><b>Revised 04/09/2007</b><br>
+<center><b>Revised 08/14/2007</b><br>
 <span style="color: red; font-size: 10pt;"><b>Red text depicts changes
-made since</b></span><b><span style="color: rgb(255, 0, 0);"> 05/20/05</span><br>
+made since</b></span><b><span style="color: rgb(255, 0, 0);"> 04/09/2007</span><br>
 </b></center>
 <br>
 <br>
@@ -106,6 +106,50 @@ Tropical Storm Surge<br>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">m<br>
       </td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">ETSRG<br>
+      </td>
+    </tr>
+    <tr>
+      <td
+ style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">194<br>
+      </td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Ocean Surface Elevation Relative to Geoid<br>
+      </td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">m<br>
+      </td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">ELEV<br>
+      </td>
+    </tr>
+    <tr>
+      <td
+ style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">195<br>
+      </td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Sea Surface Height Relative to Geoid<br>
+      </td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">m<br>
+      </td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">SSHG<br>
+      </td>
+    </tr>
+    <tr>
+      <td
+ style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">196<br>
+      </td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">3-D Temperature<br>
+      </td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">deg c<br>
+      </td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">WTMPC<br>
+      </td>
+    </tr>
+    <tr>
+      <td
+ style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">197<br>
+      </td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">3-D Salinity<br>
+      </td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">psu<br>
+      </td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">SALIN<br>
       </td>
     </tr>
     <tr>

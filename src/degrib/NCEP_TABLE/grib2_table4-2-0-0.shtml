@@ -19,9 +19,9 @@ temperature category)</small><br>
 </small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 0<br>
 </big></big></center>
 <br>
-<center><b>Revised 03/13/2006</b><br>
+<center><b>Revised 08/23/2007</b><br>
 <span style="color: red; font-size: 10pt;"><b>Red text depicts changes
-made since 02/21/2006</b></span><b><br>
+made since 08/14/2007</b></span><b><br>
 </b></center>
 <br>
 <br>
@@ -225,6 +225,65 @@ tendency by all radiation</td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">K s<sup>-1</sup><br>
       </td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">TTRAD</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">194<br>
+      </td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Relative Error Variance</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br>
+      </td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">REV</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">195<br>
+      </td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Large Scale Condensate Heating rate</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">K/s<br>
+      </td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">LRGHR</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">196<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Deep Convective Heating rate</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">K/s<br>
+      </td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">CNVHR</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">197<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Total Downward Heat Flux at Surface</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">W m<sup>-2</sup></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">THFLX</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">198<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Temperature Tendency By All Physics</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">K s<sup>-1</sup></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">TTDIA</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">199<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Temperature Tendency By Non-radiation Physics</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">K s<sup>-1</sup></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">TTPHY</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">200<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Standard Dev. of IR Temp. over 1x1 deg. area</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">K</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">TSD1D</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">201<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Shallow Convective Heating rate</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">K/s<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">SHAHR</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">202<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Vertical Diffusion Heating rate</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">K/s<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">VDFHR</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">255<br>

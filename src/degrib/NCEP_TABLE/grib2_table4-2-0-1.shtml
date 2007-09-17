@@ -20,9 +20,9 @@ moisture category)</small><br>
 </big></big></center>
 <br>
 <center>
-<center><b>Revised 05/04/2007</b><br>
+<center><b>Revised 08/24/2007</b><br>
 <span style="color: red; font-size: 10pt;"><b>Red text depicts changes
-made since 04/09/2007</b></span><b><br>
+made since 05/04/2007</b></span><b><br>
 </b></center>
 <b></b></center>
 <br>
@@ -506,11 +506,11 @@ no=0)</td>
       <td style="vertical-align: top;">MCONV</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">198
+      <td style="vertical-align: top; text-align: center;">198
       <br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Minimum Relative Humidity</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">%</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">MINRH</td>
+      <td style="vertical-align: top; ">Minimum Relative Humidity</td>
+      <td style="vertical-align: top; ">%</td>
+      <td style="vertical-align: top; ">MINRH</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">199<br>
@@ -537,91 +537,88 @@ no=0)</td>
     <tr>
       <td style="vertical-align: top; text-align: center;">202<br>
       </td>
-      <td style="vertical-align: top;">Rain Fraction of Total Liquid
-Water<br>
-      </td>
+      <td style="vertical-align: top;">Rain Fraction of Total Liquid Water<br></td>
       <td style="vertical-align: top;">non-dim</td>
       <td style="vertical-align: top;">FRAIN</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center;">203<br>
-      </td>
+      <td style="vertical-align: top; text-align: center;">203<br></td>
       <td style="vertical-align: top;">Rime Factor</td>
       <td style="vertical-align: top;">non-dim</td>
       <td style="vertical-align: top;">RIME<br>
       </td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center;">204<br>
-      </td>
+      <td style="vertical-align: top; text-align: center;">204<br></td>
       <td style="vertical-align: top;">Total Column Integrated Rain</td>
       <td style="vertical-align: top;">kg m<sup>-2</sup></td>
       <td style="vertical-align: top;">TCOLR</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center;">205<br>
-      </td>
+      <td style="vertical-align: top; text-align: center;">205<br></td>
       <td style="vertical-align: top;">Total Column Integrated Snow</td>
       <td style="vertical-align: top;">kg m<sup>-2</sup></td>
       <td style="vertical-align: top;">TCOLS</td>
     </tr>
     <tr>
-      <td
- style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">206<br>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Total
-Icing Potential Diagnostic</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">206<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Total Icing Potential Diagnostic</td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">non-dim</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">TIPD<br>
-      </td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">TIPD<br></td>
     </tr>
     <tr>
-      <td
- style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">207<br>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Number
-concentration for ice particles</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">207<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Number concentration for ice particles</td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">non-dim</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">NCIP<br>
-      </td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">NCIP<br></td>
     </tr>
     <tr>
-      <td
- style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">208<br>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Snow
-temperature</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">K<br>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">SNO T<br>
-      </td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">208<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Snow temperature</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">K<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">SNO T<br></td>
     </tr>
     <tr>
-      <td
- style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">209<br>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Total
-column-integrated supercooled liquid water</td>
+      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">209<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Total column-integrated supercooled liquid water</td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">kg m<sup>-2</sup></td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">TCLSW</td>
     </tr>
     <tr>
-      <td
- style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">210<br>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Total
-column-integrated melting ice</td>
+      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">210<br> </td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Total column-integrated melting ice</td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">kg m<sup>-2</sup></td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">TCOLM</td>
     </tr>
     <tr>
-      <td
- style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">211<br>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Sublimation 
-       (evaporation from snow)</td>
+      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">211<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Evaporation - Precipitation</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">cm/day</sup></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">EMNP</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">212<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Sublimation (evaporation from snow)</td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">W m<sup>-2</sup></td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">SBSNO</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">213<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Deep  Convective Moistening Rate</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">kg kg<sup>-1</sup> s<sup>-1</sup></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">CNVMR</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">214<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Shallow Convective Moistening Rate</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">kg kg<sup>-1</sup> s<sup>-1</sup></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">SHAMR</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">215<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Vertical Diffusion Moistening Rate</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">kg kg<sup>-1</sup> s<sup>-1</sup></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">VDFMR</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">255<br>

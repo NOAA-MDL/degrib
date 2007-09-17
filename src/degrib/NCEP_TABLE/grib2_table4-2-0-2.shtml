@@ -21,9 +21,9 @@ momentum category)</small><br>
 <br>
 <center>
 <center>
-<center><b>Revised 04/09/2007</b><br>
+<center><b>Revised 08/23/2007</b><br>
 <span style="color: red; font-size: 10pt;"><b>Red text depicts changes
-made since 02/21/2006</b></span><b><br>
+made since 06/05/2007</b></span><b><br>
 </b></center>
 </center>
 <b></b></center>
@@ -356,6 +356,91 @@ for Local Use<br>
       <td style="vertical-align: top;">Frictional Velocity</td>
       <td style="vertical-align: top;">m s<sup>-1</sup></td>
       <td style="vertical-align: top;">FRICV </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red ;">198<br>
+      </td>
+      <td style="vertical-align: top; color: red ;">Latitude of U Wind Component of
+          Velocity</td>
+      <td style="vertical-align: top; color: red ;">deg</td>
+      <td style="vertical-align: top; color: red ;">LAUV</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red ;">199<br>
+      </td>
+      <td style="vertical-align: top; color: red ;">Latitude of U Wind Component of 
+          Velocity</td>
+      <td style="vertical-align: top; color: red ;">deg</td>
+      <td style="vertical-align: top; color: red ;">LOUV</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red ;">200<br>
+      </td>
+      <td style="vertical-align: top; color: red ;">Latitude of V Wind Component of 
+          Velocity</td>
+      <td style="vertical-align: top; color: red ;">deg</td>
+      <td style="vertical-align: top; color: red ;">LAVV</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red ;">201<br>
+      </td>
+      <td style="vertical-align: top; color: red ;">Longitude of V Wind Component of        
+          Velocity</td>
+      <td style="vertical-align: top; color: red ;">deg</td>
+      <td style="vertical-align: top; color: red ;">LOUV</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red ;">202<br>
+      </td>
+      <td style="vertical-align: top; color: red ;">Latitude of Presure Point</td>
+      <td style="vertical-align: top; color: red ;">deg</td>
+      <td style="vertical-align: top; color: red ;">LAPP</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red ;">203<br>
+      </td>
+      <td style="vertical-align: top; color: red ;">Longitude of Presure Point</td>
+      <td style="vertical-align: top; color: red ;">deg</td>
+      <td style="vertical-align: top; color: red ;">LOPP</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red ;">204<br></td>
+      <td style="vertical-align: top; color: red ;">Vertical Eddy Diffusivity Heat exchange</td>
+      <td style="vertical-align: top; color: red ;">m<sup>2</sup> s<sup>-1</sup></td>
+      <td style="vertical-align: top; color: red ;">VEDH</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red ;">205<br></td>
+      <td style="vertical-align: top; color: red ;">Covariance between Meridional and Zonal<br>
+       Components of the wind.</td>
+      <td style="vertical-align: top; color: red ;">m<sup>2</sup> s<sup>-2</sup></td>
+      <td style="vertical-align: top; color: red ;">COVMZ</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red ;">206<br></td>
+      <td style="vertical-align: top; color: red ;">Covariance between Temperature and Zonal<br>
+       Components of the wind.</td>
+      <td style="vertical-align: top; color: red ;">k*m s<sup>-1</sup></td>
+      <td style="vertical-align: top; color: red ;">COVTZ</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red ;">207<br></td>
+      <td style="vertical-align: top; color: red ;">Covariance between Temperature and Meridional<br>
+       Components of the wind.</td>
+      <td style="vertical-align: top; color: red ;">k*m s<sup>-1</sup></td>
+      <td style="vertical-align: top; color: red ;">COVTM</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red ;">208<br></td>
+      <td style="vertical-align: top; color: red ;">Vertical Diffusion Zonal Acceleration<br></td>
+      <td style="vertical-align: top; color: red ;">m s<sup>-2</sup></td>
+      <td style="vertical-align: top; color: red ;">VDFUA</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red ;">209<br></td>
+      <td style="vertical-align: top; color: red ;">Vertical Diffusion Meridional Acceleration<br></td>
+      <td style="vertical-align: top; color: red ;">m s<sup>-2</sup></td>
+      <td style="vertical-align: top; color: red ;">VDFVA</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">255<br>

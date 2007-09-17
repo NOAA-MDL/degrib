@@ -19,9 +19,9 @@ category)</small><br>
 </small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 6<br>
 </big></big></center>
 <br>
-<center><b>Revised 04/23/2007</b><br>
+<center><b>Revised 08/24/2007</b><br>
 <span style="color: red; font-size: 10pt;"><b>Red text depicts changes
-made since 02/21/2006</b></span></center>
+made since 04/23/2007</b></span></center>
 <br>
 <br>
 <center>
@@ -300,17 +300,21 @@ Water</td>
     <tr>
       <td style="vertical-align: top; text-align: center;">198<br>
       </td>
-      <td style="vertical-align: top;">Total Column-Integrated
-Condensate</td>
+      <td style="vertical-align: top;">Total Column-Integrated Condensate</td>
       <td style="vertical-align: top;">kg m<sup>-2</sup></td>
-      <td style="vertical-align: top;">TCOLC </td>
+      <td style="vertical-align: top;">TCOLC</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center;">199<br>
-      </td>
+      <td style="vertical-align: top; text-align: center;">199<br></td>
       <td style="vertical-align: top;">Ice fraction of total condensate</td>
       <td style="vertical-align: top;">non-dim</td>
       <td style="vertical-align: top;">FICE </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">200<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Convective Cloud Mass Flux</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Pa s<sup>-1</sup></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">MFLUX</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">255<br>

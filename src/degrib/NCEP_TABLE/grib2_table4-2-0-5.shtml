@@ -19,9 +19,9 @@ long-wave radiation category)</small><br>
 </small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 5<br>
 </big></big></center>
 <br>
-<center><b>Revised 03/13/2006</b><br>
+<center><b>Revised 08/23/2007</b><br>
 <span style="color: red; font-size: 10pt;"><b>Red text depicts changes
-made since 02/21/2006</b></span></center>
+made since 03/13/2006</b></span></center>
 <br>
 <br>
 <center>
@@ -108,11 +108,34 @@ for Local Use<br>
       <td style="vertical-align: top;">DLWRF </td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center;">193<br>
-      </td>
+      <td style="vertical-align: top; text-align: center;">193<br></td>
       <td style="vertical-align: top;">Upward Long-Wave Rad. Flux</td>
       <td style="vertical-align: top;">W m<sup>-2</sup></td>
       <td style="vertical-align: top;">ULWRF</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">194<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Long-Wave Radiative Heating Rate</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">W m<sup>-2</sup></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">LWHRF</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">195<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Clear Sky Upward Long Wave Flux</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">W m<sup>-2</sup></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">CSULF</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">196<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Clear Sky Downward Long Wave Flux</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">W m<sup>-2</sup></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">CSDLF</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">197<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Cloud Forcing Net Long Wave Flux</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">W m<sup>-2</sup></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">CFNLF</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">255<br>
