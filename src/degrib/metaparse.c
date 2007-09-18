@@ -1041,9 +1041,11 @@ int ParseSect4Time2secV1 (sInt4 time, int unit, double *ans)
  * seconds.
  *
  * ARGUMENTS
- * time = The delta time to convert. (Input)
- * unit = The unit to convert. (Input)
- *  ans = The converted answer. (Output)
+ * refTime = To add "years / centuries / decades and normals", we need a
+ *           refrence time.
+ *    delt = The delta time to convert. (Input)
+ *    unit = The unit to convert. (Input)
+ *     ans = The converted answer. (Output)
  *
  * FILES/DATABASES: None
  *
@@ -1059,7 +1061,7 @@ int ParseSect4Time2secV1 (sInt4 time, int unit, double *ans)
  * NOTES
  *****************************************************************************
  */
-int ParseSect4Time2sec (sInt4 time, int unit, double *ans)
+int ParseSect4Time2sec (double refTime, sInt4 delt, int unit, double *ans)
 {
    /* Following is a lookup table for unit conversion (see code table 4.4). */
    static sInt4 unit2sec[] = {
@@ -1067,10 +1069,30 @@ int ParseSect4Time2sec (sInt4 time, int unit, double *ans)
       0, 0, 0, 0, 0,
       10800, 21600L, 43200L, 1
    };
-   if ((unit >= 0) && (unit < 14)) {
+   if ((unit >= 0) && (unit < 13)) {
       if (unit2sec[unit] != 0) {
-         *ans = (double) (time * unit2sec[unit]);
+         *ans = (double) (delt * unit2sec[unit]);
          return 0;
+      } else {
+         /* The procedure returns number of seconds to adjust by, rather
+          * than the new time, which is why we subtract refTime */
+         switch (unit) {
+            case 3: /* month */
+               *ans = Clock_AddMonthYear (refTime, delt, 0) - refTime;
+               return 0;
+            case 4: /* year */
+               *ans = Clock_AddMonthYear (refTime, 0, delt) - refTime;
+               return 0;
+            case 5: /* decade */
+               *ans = Clock_AddMonthYear (refTime, 0, delt * 10) - refTime;
+               return 0;
+            case 6: /* normal (30 year) */
+               *ans = Clock_AddMonthYear (refTime, 0, delt * 30) - refTime;
+               return 0;
+            case 7: /* century (100 year) */
+               *ans = Clock_AddMonthYear (refTime, 0, delt * 100) - refTime;
+               return 0;
+         }
       }
    }
    *ans = 0;
@@ -1210,7 +1232,7 @@ static int ParseSect4 (sInt4 *is4, sInt4 ns4, grib_MetaData *meta)
       errSprintf ("Missing 'forecast' time?\n");
       return -5;
    }
-   if (ParseSect4Time2sec (is4[18], is4[17],
+   if (ParseSect4Time2sec (meta->pds2.refTime, is4[18], is4[17],
                            &(meta->pds2.sect4.foreSec)) != 0) {
       errSprintf ("Unable to convert this TimeUnit: %ld\n", is4[17]);
       return -5;
@@ -1698,6 +1720,7 @@ int MetaParse (grib_MetaData *meta, sInt4 *is0, sInt4 ns0,
    double upperProb;    /* The upper limit on probability forecast if
                          * template 4.5 or 4.9 */
    sInt4 lenTime;       /* Length of time for element (see 4.8 and 4.9) */
+   uChar timeRangeUnit;
 
    if ((ierr = ParseSect0 (is0, ns0, grib_len, meta)) != 0) {
       preErrSprintf ("Parse error Section 0\n");
@@ -1763,24 +1786,67 @@ int MetaParse (grib_MetaData *meta, sInt4 *is0, sInt4 ns0,
    }
    if (meta->pds2.sect4.numInterval > 0) {
       /* Try to convert lenTime to hourly. */
+      timeRangeUnit = meta->pds2.sect4.Interval[0].timeRangeUnit;
       if (meta->pds2.sect4.Interval[0].timeRangeUnit == 255) {
          lenTime = (sInt4) ((meta->pds2.sect4.validTime -
                              meta->pds2.sect4.foreSec -
                              meta->pds2.refTime) / 3600);
       } else if (meta->pds2.sect4.Interval[0].timeRangeUnit == 0) {
          lenTime = meta->pds2.sect4.Interval[0].lenTime / 60.;
+         timeRangeUnit = 1;
       } else if (meta->pds2.sect4.Interval[0].timeRangeUnit == 1) {
          lenTime = meta->pds2.sect4.Interval[0].lenTime;
+         timeRangeUnit = 1;
       } else if (meta->pds2.sect4.Interval[0].timeRangeUnit == 2) {
          lenTime = meta->pds2.sect4.Interval[0].lenTime * 24;
+         timeRangeUnit = 1;
       } else if (meta->pds2.sect4.Interval[0].timeRangeUnit == 10) {
          lenTime = meta->pds2.sect4.Interval[0].lenTime * 3;
+         timeRangeUnit = 1;
       } else if (meta->pds2.sect4.Interval[0].timeRangeUnit == 11) {
          lenTime = meta->pds2.sect4.Interval[0].lenTime * 6;
+         timeRangeUnit = 1;
       } else if (meta->pds2.sect4.Interval[0].timeRangeUnit == 12) {
          lenTime = meta->pds2.sect4.Interval[0].lenTime * 12;
+         timeRangeUnit = 1;
       } else if (meta->pds2.sect4.Interval[0].timeRangeUnit == 13) {
          lenTime = meta->pds2.sect4.Interval[0].lenTime / 3600.;
+         timeRangeUnit = 1;
+      } else if (meta->pds2.sect4.Interval[0].timeRangeUnit == 3) {  /* month */
+         lenTime = meta->pds2.sect4.Interval[0].lenTime;
+         timeRangeUnit = 3;
+/*
+         lenTime = (meta->pds2.sect4.validTime - Clock_AddMonthYear (meta->pds2.sect4.validTime,
+                                        -1 * meta->pds2.sect4.Interval[0].lenTime, 0)) / 3600.;
+*/
+      } else if (meta->pds2.sect4.Interval[0].timeRangeUnit == 4) {  /* year */
+         lenTime = meta->pds2.sect4.Interval[0].lenTime;
+         timeRangeUnit = 4;
+/*
+         lenTime = (meta->pds2.sect4.validTime - Clock_AddMonthYear (meta->pds2.sect4.validTime, 0,
+                                        -1 * meta->pds2.sect4.Interval[0].lenTime)) / 3600.;
+*/
+      } else if (meta->pds2.sect4.Interval[0].timeRangeUnit == 5) {  /* decade */
+         lenTime = meta->pds2.sect4.Interval[0].lenTime * 10;
+         timeRangeUnit = 4;
+/*
+         lenTime = (meta->pds2.sect4.validTime - Clock_AddMonthYear (meta->pds2.sect4.validTime, 0,
+                                        -10 * meta->pds2.sect4.Interval[0].lenTime)) / 3600.;
+*/
+      } else if (meta->pds2.sect4.Interval[0].timeRangeUnit == 6) {  /* normal */
+         lenTime = meta->pds2.sect4.Interval[0].lenTime * 30;
+         timeRangeUnit = 4;
+/*
+         lenTime = (meta->pds2.sect4.validTime - Clock_AddMonthYear (meta->pds2.sect4.validTime, 0,
+                                        -30 * meta->pds2.sect4.Interval[0].lenTime)) / 3600.;
+*/
+      } else if (meta->pds2.sect4.Interval[0].timeRangeUnit == 7) {  /* century */
+         lenTime = meta->pds2.sect4.Interval[0].lenTime * 100;
+         timeRangeUnit = 4;
+/*
+         lenTime = (meta->pds2.sect4.validTime - Clock_AddMonthYear (meta->pds2.sect4.validTime, 0,
+                                        -100 * meta->pds2.sect4.Interval[0].lenTime)) / 3600.;
+*/
       } else {
          lenTime = 0;
          printf ("Can't handle this timeRangeUnit\n");
@@ -1801,7 +1867,7 @@ int MetaParse (grib_MetaData *meta, sInt4 *is0, sInt4 ns0,
       ParseElemName (meta->center, meta->subcenter,
                      meta->pds2.prodType, meta->pds2.sect4.templat,
                      meta->pds2.sect4.cat, meta->pds2.sect4.subcat,
-                     lenTime, meta->pds2.sect4.Interval[0].incrType,
+                     lenTime, timeRangeUnit, meta->pds2.sect4.Interval[0].incrType,
                      meta->pds2.sect4.genID, probType, lowerProb,
                      upperProb, &(meta->element), &(meta->comment),
                      &(meta->unitName), &(meta->convert),
@@ -1809,7 +1875,7 @@ int MetaParse (grib_MetaData *meta, sInt4 *is0, sInt4 ns0,
    } else {
       ParseElemName (meta->center, meta->subcenter,
                      meta->pds2.prodType, meta->pds2.sect4.templat,
-                     meta->pds2.sect4.cat, meta->pds2.sect4.subcat, 0, 255,
+                     meta->pds2.sect4.cat, meta->pds2.sect4.subcat, 0, 1, 255,
                      meta->pds2.sect4.genID, probType, lowerProb, upperProb,
                      &(meta->element), &(meta->comment), &(meta->unitName),
                      &(meta->convert), meta->pds2.sect4.percentile, meta->pds2.sect4.genProcess);

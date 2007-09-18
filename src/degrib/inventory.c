@@ -497,7 +497,7 @@ enum { GS4_ANALYSIS, GS4_ENSEMBLE, GS4_DERIVED, GS4_PROBABIL_PNT = 5,
       /* Compute forecast time. */
       foreTimeUnit = (*buffer)[18 - 5];
       MEMCPY_BIG (&foreTime, *buffer + 19 - 5, sizeof (sInt4));
-      if (ParseSect4Time2sec (foreTime, foreTimeUnit, &(inv->foreSec)) != 0) {
+      if (ParseSect4Time2sec (inv->refTime, foreTime, foreTimeUnit, &(inv->foreSec)) != 0) {
          errSprintf ("unable to convert TimeUnit: %d \n", foreTimeUnit);
          return -8;
       }
@@ -616,12 +616,11 @@ enum { GS4_ANALYSIS, GS4_ENSEMBLE, GS4_DERIVED, GS4_PROBABIL_PNT = 5,
             break;
       }
    }
-
    if (timeRangeUnit == 255) {
       timeRangeUnit = 1;
       lenTime = (sInt4) ((inv->validTime - inv->foreSec - inv->refTime) /
                          3600);
-   }
+   } 
 /*   myAssert (timeRangeUnit == 1);*/
    /* Try to convert lenTime to hourly. */
    if (timeRangeUnit == 0) {
@@ -643,6 +642,39 @@ enum { GS4_ANALYSIS, GS4_ENSEMBLE, GS4_DERIVED, GS4_PROBABIL_PNT = 5,
    } else if (timeRangeUnit == 13) {
       lenTime = lenTime / 3600.;
       timeRangeUnit = 1;
+   } else if (timeRangeUnit == 3) {  /* month */
+      /* Actually use the timeRangeUnit == 3 */
+/*
+      lenTime = (inv->validTime - Clock_AddMonthYear (inv->validTime, -1 * lenTime, 0)) / 3600.;
+      timeRangeUnit = 1;
+*/
+   } else if (timeRangeUnit == 4) {  /* month */
+      /* Actually use the timeRangeUnit == 4 */
+/*
+      lenTime = (inv->validTime - Clock_AddMonthYear (inv->validTime, 0, -1 * lenTime)) / 3600.;
+      timeRangeUnit = 1;
+*/
+   } else if (timeRangeUnit == 5) {  /* decade */
+      lenTime = lenTime * 10;
+      timeRangeUnit = 4;
+/*
+      lenTime = (inv->validTime - Clock_AddMonthYear (inv->validTime, 0, -10 * lenTime)) / 3600.;
+      timeRangeUnit = 1;
+*/
+   } else if (timeRangeUnit == 6) {  /* normal */
+      lenTime = lenTime * 30;
+      timeRangeUnit = 4;
+/*
+      lenTime = (inv->validTime - Clock_AddMonthYear (inv->validTime, 0, -30 * lenTime)) / 3600.;
+      timeRangeUnit = 1;
+*/
+   } else if (timeRangeUnit == 7) {  /* century */
+      lenTime = lenTime * 100;
+      timeRangeUnit = 4;
+/*
+      lenTime = (inv->validTime - Clock_AddMonthYear (inv->validTime, 0, -100 * lenTime)) / 3600.;
+      timeRangeUnit = 1;
+*/
    } else {
       printf ("Can't handle this timeRangeUnit\n");
       myAssert (timeRangeUnit == 1);
@@ -652,7 +684,7 @@ enum { GS4_ANALYSIS, GS4_ENSEMBLE, GS4_DERIVED, GS4_PROBABIL_PNT = 5,
    }
    /* Find out what the name of this variable is. */
    ParseElemName (center, subcenter, prodType, templat, cat, subcat,
-                  lenTime, timeIncrType, genID, probType, lowerProb,
+                  lenTime, timeRangeUnit, timeIncrType, genID, probType, lowerProb,
                   upperProb, &(inv->element), &(inv->comment),
                   &(inv->unitName), &convert, percentile, genProcess);
 /*

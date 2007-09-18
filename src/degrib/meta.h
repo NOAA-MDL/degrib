@@ -510,7 +510,7 @@ int ParseTime (double * AnsTime, int year, uChar mon, uChar day, uChar hour,
 
 int ParseSect4Time2secV1 (sInt4 time, int unit, double *ans);
 
-int ParseSect4Time2sec (sInt4 time, int unit, double *ans);
+int ParseSect4Time2sec (double refTime, sInt4 delt, int unit, double *ans);
 
 /* Possible error messages left in errSprintf() */
 int MetaParse (grib_MetaData * meta, sInt4 *is0, sInt4 ns0,

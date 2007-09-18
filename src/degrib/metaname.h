@@ -13,7 +13,8 @@ char * processLookup (unsigned short int center, unsigned char process);
 
 void ParseElemName (unsigned short int center, unsigned short int subcenter,
                     int prodType, int templat, int cat, int subcat,
-                    sInt4 lenTime, uChar timeIncrType, uChar genID,
+                    sInt4 lenTime, uChar timeRangeUnit, uChar timeIncrType,
+                    uChar genID,
                     uChar probType, double lowerProb, double upperProb,
                     char **name, char **comment, char **unit, int *convert,
                     sChar percentile, uChar genProcess);

@@ -1594,6 +1594,7 @@ static GRIB2LocalTable *Choose_LocalParmTable (unsigned short int center,
 /* Deal with probability templates 2/16/2006 */
 static void ElemNameProb (uShort2 center, uShort2 subcenter, int prodType,
                           int templat, uChar cat, uChar subcat, sInt4 lenTime,
+                          uChar timeRangeUnit,
                           uChar timeIncrType, uChar genID, uChar probType,
                           double lowerProb, double upperProb, char **name,
                           char **comment, char **unit, int *convert)
@@ -1613,8 +1614,16 @@ static void ElemNameProb (uShort2 center, uShort2 subcenter, int prodType,
       if ((prodType == 0) && (cat == 1) && (subcat == 8)) {
          if (probType == 0) {
             if (lenTime > 0) {
-               mallocSprintf (name, "ProbPrcpBlw%02d", lenTime);
-               mallocSprintf (comment, "%02d hr Prob of Precip below average", lenTime);
+               if (timeRangeUnit == 3) {
+                  mallocSprintf (name, "ProbPrcpBlw%02dm", lenTime);
+                  mallocSprintf (comment, "%02d mon Prob of Precip below average", lenTime);
+               } else if (timeRangeUnit == 4) {
+                  mallocSprintf (name, "ProbPrcpBlw%02dy", lenTime);
+                  mallocSprintf (comment, "%02d yr Prob of Precip below average", lenTime);
+               } else {
+                  mallocSprintf (name, "ProbPrcpBlw%02d", lenTime);
+                  mallocSprintf (comment, "%02d hr Prob of Precip below average", lenTime);
+               }
             } else {
                mallocSprintf (name, "ProbPrcpBlw");
                mallocSprintf (comment, "Prob of precip below average");
@@ -1622,8 +1631,16 @@ static void ElemNameProb (uShort2 center, uShort2 subcenter, int prodType,
             *convert = UC_NONE;
          } else if (probType == 3) {
             if (lenTime > 0) {
-               mallocSprintf (name, "ProbPrcpAbv%02d", lenTime);
-               mallocSprintf (comment, "%02d hr Prob of Precip above average", lenTime);
+               if (timeRangeUnit == 3) {
+                  mallocSprintf (name, "ProbPrcpAbv%02dm", lenTime);
+                  mallocSprintf (comment, "%02d mon Prob of Precip above average", lenTime);
+               } else if (timeRangeUnit == 4) {
+                  mallocSprintf (name, "ProbPrcpAbv%02dy", lenTime);
+                  mallocSprintf (comment, "%02d yr Prob of Precip above average", lenTime);
+               } else {
+                  mallocSprintf (name, "ProbPrcpAbv%02d", lenTime);
+                  mallocSprintf (comment, "%02d hr Prob of Precip above average", lenTime);
+               }
             } else {
                mallocSprintf (name, "ProbPrcpAbv");
                mallocSprintf (comment, "Prob of precip above average");
@@ -1632,9 +1649,19 @@ static void ElemNameProb (uShort2 center, uShort2 subcenter, int prodType,
          } else {
             myAssert (probType == 1);
             if (lenTime > 0) {
-               mallocSprintf (name, "PoP%02d", lenTime);
-               mallocSprintf (comment, "%02d hr Prob of Precip > 0.01 "
-                              "In.", lenTime);
+               if (timeRangeUnit == 3) {
+                  mallocSprintf (name, "PoP%02dm", lenTime);
+                  mallocSprintf (comment, "%02d mon Prob of Precip > 0.01 "
+                                 "In.", lenTime);
+               } else if (timeRangeUnit == 4) {
+                  mallocSprintf (name, "PoP%02dy", lenTime);
+                  mallocSprintf (comment, "%02d yr Prob of Precip > 0.01 "
+                                 "In.", lenTime);
+               } else {
+                  mallocSprintf (name, "PoP%02d", lenTime);
+                  mallocSprintf (comment, "%02d hr Prob of Precip > 0.01 "
+                                 "In.", lenTime);
+               }
             } else {
                *name = (char *) malloc (strlen ("PoP") + 1);
                strcpy (*name, "PoP");
@@ -1665,8 +1692,16 @@ static void ElemNameProb (uShort2 center, uShort2 subcenter, int prodType,
             mallocSprintf (name, "ProbSurge%02dc",
                            (int) ((upperProb / 0.3048) + .5));
          }
-         mallocSprintf (comment, "%02d hr Prob of Hurricane Storm Surge > %g "
-                        "m", lenTime, upperProb);
+         if (timeRangeUnit == 3) {
+            mallocSprintf (comment, "%02d mon Prob of Hurricane Storm Surge > %g "
+                           "m", lenTime, upperProb);
+         } else if (timeRangeUnit == 4) {
+            mallocSprintf (comment, "%02d yr Prob of Hurricane Storm Surge > %g "
+                           "m", lenTime, upperProb);
+         } else {
+            mallocSprintf (comment, "%02d hr Prob of Hurricane Storm Surge > %g "
+                           "m", lenTime, upperProb);
+         }
          *convert = UC_NONE;
          return;
       }
@@ -1695,8 +1730,16 @@ static void ElemNameProb (uShort2 center, uShort2 subcenter, int prodType,
             mallocSprintf (name, "ProbWindSpd%02dc",
                            (int) ((upperProb * 3600. / 1852.) + .5));
          }
-         mallocSprintf (comment, "%02d hr Prob of Wind speed > %g m/s",
-                        lenTime, upperProb);
+         if (timeRangeUnit == 3) {
+            mallocSprintf (comment, "%02d mon Prob of Wind speed > %g m/s",
+                           lenTime, upperProb);
+         } else if (timeRangeUnit == 4) {
+            mallocSprintf (comment, "%02d yr Prob of Wind speed > %g m/s",
+                           lenTime, upperProb);
+         } else {
+            mallocSprintf (comment, "%02d hr Prob of Wind speed > %g m/s",
+                           lenTime, upperProb);
+         }
          *convert = UC_NONE;
          return;
       }
@@ -1710,9 +1753,19 @@ static void ElemNameProb (uShort2 center, uShort2 subcenter, int prodType,
          /* The NDFD over-rides for probability templates have already been
           * handled. */
          if (lenTime > 0) {
-            mallocSprintf (name, "Prob%s%02d", table[subcat].name, lenTime);
-            mallocSprintf (comment, "%02d hr Prob of %s ", lenTime,
-                           table[subcat].comment);
+            if (timeRangeUnit == 3) {
+               mallocSprintf (name, "Prob%s%02dm", table[subcat].name, lenTime);
+               mallocSprintf (comment, "%02d mon Prob of %s ", lenTime,
+                              table[subcat].comment);
+            } else if (timeRangeUnit == 4) {
+               mallocSprintf (name, "Prob%s%02dy", table[subcat].name, lenTime);
+               mallocSprintf (comment, "%02d yr Prob of %s ", lenTime,
+                              table[subcat].comment);
+            } else {
+               mallocSprintf (name, "Prob%s%02d", table[subcat].name, lenTime);
+               mallocSprintf (comment, "%02d hr Prob of %s ", lenTime,
+                              table[subcat].comment);
+            }
          } else {
             mallocSprintf (name, "Prob%s", table[subcat].name);
             mallocSprintf (comment, "Prob of %s ", table[subcat].comment);
@@ -1726,7 +1779,13 @@ static void ElemNameProb (uShort2 center, uShort2 subcenter, int prodType,
                reallocSprintf (comment, "below average");
                free (*name);
                if (lenTime > 0) {
-                  mallocSprintf (name, "Prob%sBlw%02d", table[subcat].name, lenTime);
+                  if (timeRangeUnit == 3) {
+                     mallocSprintf (name, "Prob%sBlw%02dm", table[subcat].name, lenTime);
+                  } else if (timeRangeUnit == 4) {
+                     mallocSprintf (name, "Prob%sBlw%02dy", table[subcat].name, lenTime);
+                  } else {
+                     mallocSprintf (name, "Prob%sBlw%02d", table[subcat].name, lenTime);
+                  }
                } else {
                   mallocSprintf (name, "Prob%sBlw", table[subcat].name);
                }
@@ -1738,7 +1797,13 @@ static void ElemNameProb (uShort2 center, uShort2 subcenter, int prodType,
                reallocSprintf (comment, "above average");
                free (*name);
                if (lenTime > 0) {
-                  mallocSprintf (name, "Prob%sAbv%02d", table[subcat].name, lenTime);
+                  if (timeRangeUnit == 3) {
+                     mallocSprintf (name, "Prob%sAbv%02dm", table[subcat].name, lenTime);
+                  } else if (timeRangeUnit == 4) {
+                     mallocSprintf (name, "Prob%sAbv%02dy", table[subcat].name, lenTime);
+                  } else {
+                     mallocSprintf (name, "Prob%sAbv%02d", table[subcat].name, lenTime);
+                  }
                } else {
                   mallocSprintf (name, "Prob%sAbv", table[subcat].name);
                }
@@ -1753,7 +1818,13 @@ static void ElemNameProb (uShort2 center, uShort2 subcenter, int prodType,
                reallocSprintf (comment, "above average");
                free (*name);
                if (lenTime > 0) {
-                  mallocSprintf (name, "Prob%sAbv%02d", table[subcat].name, lenTime);
+                  if (timeRangeUnit == 3) {
+                     mallocSprintf (name, "Prob%sAbv%02dm", table[subcat].name, lenTime);
+                  } else if (timeRangeUnit == 4) {
+                     mallocSprintf (name, "Prob%sAbv%02dy", table[subcat].name, lenTime);
+                  } else {
+                     mallocSprintf (name, "Prob%sAbv%02d", table[subcat].name, lenTime);
+                  }
                } else {
                   mallocSprintf (name, "Prob%sAbv", table[subcat].name);
                }
@@ -1765,7 +1836,13 @@ static void ElemNameProb (uShort2 center, uShort2 subcenter, int prodType,
                reallocSprintf (comment, "below average");
                free (*name);
                if (lenTime > 0) {
-                  mallocSprintf (name, "Prob%sBlw%02d", table[subcat].name, lenTime);
+                  if (timeRangeUnit == 3) {
+                     mallocSprintf (name, "Prob%sBlw%02dm", table[subcat].name, lenTime);
+                  } else if (timeRangeUnit == 4) {
+                     mallocSprintf (name, "Prob%sBlw%02dy", table[subcat].name, lenTime);
+                  } else {
+                     mallocSprintf (name, "Prob%sBlw%02d", table[subcat].name, lenTime);
+                  }
                } else {
                   mallocSprintf (name, "Prob%sBlw", table[subcat].name);
                }
@@ -1788,9 +1865,19 @@ static void ElemNameProb (uShort2 center, uShort2 subcenter, int prodType,
             /* Ignore adding Prob prefix and "Probability of" to NDFD SPC prob
              * products. */
             if (lenTime > 0) {
-               mallocSprintf (name, "Prob%s%02d", local[i].name, lenTime);
-               mallocSprintf (comment, "%02d hr Prob of %s ", lenTime,
-                              local[i].comment);
+               if (timeRangeUnit == 3) {
+                  mallocSprintf (name, "Prob%s%02dm", local[i].name, lenTime);
+                  mallocSprintf (comment, "%02d mon Prob of %s ", lenTime,
+                                 local[i].comment);
+               } else if (timeRangeUnit == 4) {
+                  mallocSprintf (name, "Prob%s%02dy", local[i].name, lenTime);
+                  mallocSprintf (comment, "%02d yr Prob of %s ", lenTime,
+                                 local[i].comment);
+               } else {
+                  mallocSprintf (name, "Prob%s%02d", local[i].name, lenTime);
+                  mallocSprintf (comment, "%02d hr Prob of %s ", lenTime,
+                                 local[i].comment);
+               }
             } else {
                mallocSprintf (name, "Prob%s", local[i].name);
                mallocSprintf (comment, "Prob of %s ", local[i].comment);
@@ -1830,6 +1917,7 @@ static void ElemNameProb (uShort2 center, uShort2 subcenter, int prodType,
 /* Deal with percentile templates 5/1/2006 */
 static void ElemNamePerc (uShort2 center, uShort2 subcenter, int prodType,
                           int templat, uChar cat, uChar subcat, sInt4 lenTime,
+                          uChar timeRangeUnit,
                           sChar percentile, char **name, char **comment,
                           char **unit, int *convert)
 {
@@ -1852,9 +1940,19 @@ static void ElemNamePerc (uShort2 center, uShort2 subcenter, int prodType,
                   mallocSprintf (name, "%s%02d", NDFD_Overide[i].NDFDname,
                                  percentile);
                   if (lenTime > 0) {
-                     mallocSprintf (comment, "%02d hr %s Percentile(%d)",
-                                    lenTime, table[subcat].comment,
-                                    percentile);
+                     if (timeRangeUnit == 3) {
+                        mallocSprintf (comment, "%02d mon %s Percentile(%d)",
+                                       lenTime, table[subcat].comment,
+                                       percentile);
+                     } else if (timeRangeUnit == 4) {
+                        mallocSprintf (comment, "%02d yr %s Percentile(%d)",
+                                       lenTime, table[subcat].comment,
+                                       percentile);
+                     } else {
+                        mallocSprintf (comment, "%02d hr %s Percentile(%d)",
+                                       lenTime, table[subcat].comment,
+                                       percentile);
+                     }
                   } else {
                      mallocSprintf (comment, "%s Percentile(%d)",
                                     table[subcat].comment, percentile);
@@ -1867,8 +1965,16 @@ static void ElemNamePerc (uShort2 center, uShort2 subcenter, int prodType,
          }
          mallocSprintf (name, "%s%02d", table[subcat].name, percentile);
          if (lenTime > 0) {
-            mallocSprintf (comment, "%02d hr %s Percentile(%d)",
-                           lenTime, table[subcat].comment, percentile);
+            if (timeRangeUnit == 3) {
+               mallocSprintf (comment, "%02d mon %s Percentile(%d)",
+                              lenTime, table[subcat].comment, percentile);
+            } else if (timeRangeUnit == 4) {
+               mallocSprintf (comment, "%02d yr %s Percentile(%d)",
+                              lenTime, table[subcat].comment, percentile);
+            } else {
+               mallocSprintf (comment, "%02d hr %s Percentile(%d)",
+                              lenTime, table[subcat].comment, percentile);
+            }
          } else {
             mallocSprintf (comment, "%s Percentile(%d)",
                            table[subcat].comment, percentile);
@@ -1887,8 +1993,16 @@ static void ElemNamePerc (uShort2 center, uShort2 subcenter, int prodType,
              (subcat == local[i].subcat)) {
             mallocSprintf (name, "%s%02d", local[i].name, percentile);
             if (lenTime > 0) {
-               mallocSprintf (comment, "%02d hr %s Percentile(%d)",
-                              lenTime, local[i].comment, percentile);
+               if (timeRangeUnit == 3) {
+                  mallocSprintf (comment, "%02d mon %s Percentile(%d)",
+                                 lenTime, local[i].comment, percentile);
+               } else if (timeRangeUnit == 4) {
+                  mallocSprintf (comment, "%02d yr %s Percentile(%d)",
+                                 lenTime, local[i].comment, percentile);
+               } else {
+                  mallocSprintf (comment, "%02d hr %s Percentile(%d)",
+                                 lenTime, local[i].comment, percentile);
+               }
             } else {
                mallocSprintf (comment, "%s Percentile(%d)",
                               local[i].comment, percentile);
@@ -1913,6 +2027,7 @@ static void ElemNamePerc (uShort2 center, uShort2 subcenter, int prodType,
 /* Deal with non-prob templates 2/16/2006 */
 static void ElemNameNorm (uShort2 center, uShort2 subcenter, int prodType,
                           int templat, uChar cat, uChar subcat, sInt4 lenTime,
+                          uChar timeRangeUnit,
                           uChar timeIncrType, uChar genID, uChar probType,
                           double lowerProb, double upperProb, char **name,
                           char **comment, char **unit, int *convert)
@@ -1927,8 +2042,16 @@ static void ElemNameNorm (uShort2 center, uShort2 subcenter, int prodType,
     * think it is useful for ozone data that originated elsewhere. */
    if ((prodType == 0) && (templat == 8) && (cat == 14) && (subcat == 193)) {
       if (lenTime > 0) {
-         mallocSprintf (name, "Ozone%02d", lenTime);
-         mallocSprintf (comment, "%d hr Average Ozone Concentration", lenTime);
+         if (timeRangeUnit == 3) {
+            mallocSprintf (name, "Ozone%02dm", lenTime);
+            mallocSprintf (comment, "%d mon Average Ozone Concentration", lenTime);
+         } else if (timeRangeUnit == 4) {
+            mallocSprintf (name, "Ozone%02dy", lenTime);
+            mallocSprintf (comment, "%d yr Average Ozone Concentration", lenTime);
+         } else {
+            mallocSprintf (name, "Ozone%02d", lenTime);
+            mallocSprintf (comment, "%d hr Average Ozone Concentration", lenTime);
+         }
       } else {
          *name = (char *) malloc (strlen ("AVGOZCON") + 1);
          strcpy (*name, "AVGOZCON");
@@ -1949,17 +2072,37 @@ static void ElemNameNorm (uShort2 center, uShort2 subcenter, int prodType,
          /* Check for NDFD over-rides. */
          if (IsData_MOS (center, subcenter)) {
             if (strcmp (table[subcat].name, "APCP") == 0) {
-               mallocSprintf (name, "%s%02d", "QPF", lenTime);
-               mallocSprintf (comment, "%02d hr %s", lenTime,
-                              table[subcat].comment);
+               if (timeRangeUnit == 3) {
+                  mallocSprintf (name, "%s%02dm", "QPF", lenTime);
+                  mallocSprintf (comment, "%02d mon %s", lenTime,
+                                 table[subcat].comment);
+               } else if (timeRangeUnit == 4) {
+                  mallocSprintf (name, "%s%02dy", "QPF", lenTime);
+                  mallocSprintf (comment, "%02d yr %s", lenTime,
+                                 table[subcat].comment);
+               } else {
+                  mallocSprintf (name, "%s%02d", "QPF", lenTime);
+                  mallocSprintf (comment, "%02d hr %s", lenTime,
+                                 table[subcat].comment);
+               }
                mallocSprintf (unit, "[%s]", table[subcat].unit);
                *convert = table[subcat].convert;
                return;
             }
             if (strcmp (table[subcat].name, "ASNOW") == 0) {
-               mallocSprintf (name, "%s%02d", "SnowAmt", lenTime);
-               mallocSprintf (comment, "%02d hr %s", lenTime,
-                              table[subcat].comment);
+               if (timeRangeUnit == 3) {
+                  mallocSprintf (name, "%s%02dm", "SnowAmt", lenTime);
+                  mallocSprintf (comment, "%02d mon %s", lenTime,
+                                 table[subcat].comment);
+               } else if (timeRangeUnit == 4) {
+                  mallocSprintf (name, "%s%02dy", "SnowAmt", lenTime);
+                  mallocSprintf (comment, "%02d yr %s", lenTime,
+                                 table[subcat].comment);
+               } else {
+                  mallocSprintf (name, "%s%02d", "SnowAmt", lenTime);
+                  mallocSprintf (comment, "%02d hr %s", lenTime,
+                                 table[subcat].comment);
+               }
                mallocSprintf (unit, "[%s]", table[subcat].unit);
                *convert = table[subcat].convert;
                return;
@@ -1987,9 +2130,19 @@ static void ElemNameNorm (uShort2 center, uShort2 subcenter, int prodType,
                     ((prodType == 0) && (cat == 1) && (subcat == 8)) ||
                     ((prodType == 0) && (cat == 19) && (subcat == 203)));
          if (f_accum && (lenTime > 0)) {
-            mallocSprintf (name, "%s%02d", table[subcat].name, lenTime);
-            mallocSprintf (comment, "%02d hr %s", lenTime,
-                           table[subcat].comment);
+            if (timeRangeUnit == 3) {
+               mallocSprintf (name, "%s%02dm", table[subcat].name, lenTime);
+               mallocSprintf (comment, "%02d mon %s", lenTime,
+                              table[subcat].comment);
+            } else if (timeRangeUnit == 4) {
+               mallocSprintf (name, "%s%02dy", table[subcat].name, lenTime);
+               mallocSprintf (comment, "%02d yr %s", lenTime,
+                              table[subcat].comment);
+            } else {
+               mallocSprintf (name, "%s%02d", table[subcat].name, lenTime);
+               mallocSprintf (comment, "%02d hr %s", lenTime,
+                              table[subcat].comment);
+            }
          } else {
             *name = (char *) malloc (strlen (table[subcat].name) + 1);
             strcpy (*name, table[subcat].name);
@@ -2012,9 +2165,19 @@ static void ElemNameNorm (uShort2 center, uShort2 subcenter, int prodType,
              */
             f_accum = 0;
             if (f_accum && (lenTime > 0)) {
-               mallocSprintf (name, "%s%02d", local[i].name, lenTime);
-               mallocSprintf (comment, "%02d hr %s", lenTime,
-                              local[i].comment);
+               if (timeRangeUnit == 3) {
+                  mallocSprintf (name, "%s%02dm", local[i].name, lenTime);
+                  mallocSprintf (comment, "%02d mon %s", lenTime,
+                                 local[i].comment);
+               } else if (timeRangeUnit == 4) {
+                  mallocSprintf (name, "%s%02dy", local[i].name, lenTime);
+                  mallocSprintf (comment, "%02d yr %s", lenTime,
+                                 local[i].comment);
+               } else {
+                  mallocSprintf (name, "%s%02d", local[i].name, lenTime);
+                  mallocSprintf (comment, "%02d hr %s", lenTime,
+                                 local[i].comment);
+               }
             } else {
                *name = (char *) malloc (strlen (local[i].name) + 1);
                strcpy (*name, local[i].name);
@@ -2040,6 +2203,7 @@ static void ElemNameNorm (uShort2 center, uShort2 subcenter, int prodType,
 
 void ParseElemName (uShort2 center, uShort2 subcenter, int prodType,
                     int templat, int cat, int subcat, sInt4 lenTime,
+                    uChar timeRangeUnit,
                     uChar timeIncrType, uChar genID, uChar probType,
                     double lowerProb, double upperProb, char **name,
                     char **comment, char **unit, int *convert,
@@ -2055,19 +2219,19 @@ void ParseElemName (uShort2 center, uShort2 subcenter, int prodType,
       if (f_isNdfd && (prodType == 0) && (cat == 19)) {
          /* don't use ElemNameProb. */
          ElemNameNorm (center, subcenter, prodType, templat, cat, subcat,
-                       lenTime, timeIncrType, genID, probType, lowerProb,
+                       lenTime, timeRangeUnit, timeIncrType, genID, probType, lowerProb,
                        upperProb, name, comment, unit, convert);
       } else {
          ElemNameProb (center, subcenter, prodType, templat, cat, subcat,
-                       lenTime, timeIncrType, genID, probType, lowerProb,
+                       lenTime, timeRangeUnit, timeIncrType, genID, probType, lowerProb,
                        upperProb, name, comment, unit, convert);
       }
    } else if (templat == GS4_PERCENTILE) {
       ElemNamePerc (center, subcenter, prodType, templat, cat, subcat,
-                    lenTime, percentile, name, comment, unit, convert);
+                    lenTime, timeRangeUnit, percentile, name, comment, unit, convert);
    } else {
       ElemNameNorm (center, subcenter, prodType, templat, cat, subcat,
-                    lenTime, timeIncrType, genID, probType, lowerProb,
+                    lenTime, timeRangeUnit, timeIncrType, genID, probType, lowerProb,
                     upperProb, name, comment, unit, convert);
    }
    if ((genProcess == 6) || (genProcess == 7)) {

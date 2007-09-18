@@ -2442,6 +2442,49 @@ int Clock_Scan (double *clock, char *buffer, char f_gmt)
    return -1;
 }
 
+double Clock_AddMonthYear (double refTime, int incrMonth, int incrYear)
+{
+   sInt4 totDay;
+   int day;
+   sInt4 year;
+   int month;
+   double d_remain;
+   int i;
+
+   totDay = (sInt4) floor (refTime / SEC_DAY);
+   Clock_Epoch2YearDay (totDay, &day, &year);
+   month = Clock_MonthNum (day, year);
+   day = day - Clock_NumDay (month, 1, year, 1) + 1;
+   d_remain = refTime - totDay * 3600 * 24.0;
+
+   /* Add the month */
+   if (incrMonth != 0) {
+      month += incrMonth;
+      while (month > 12) {
+         year++;
+         month -= 12;
+      }
+      while (month < 1) {
+         year--;
+         month += 12;
+      }
+   }
+   /* Add the year. */
+   if (incrYear != 0) {
+      year += incrYear;
+   }
+
+   /* Recompose the date */
+   i = Clock_NumDay (month, 1, year, 0);
+   if (day > i) {
+      day = i;
+   }
+   refTime = 0;
+   Clock_ScanDate (&refTime, year, month, day);
+   refTime += d_remain;
+   return refTime;
+}
+
 #ifdef CLOCK_PROGRAM
 /* See clockstart.c */
 #endif
