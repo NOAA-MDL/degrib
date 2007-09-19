@@ -1623,7 +1623,7 @@ static void DrawLattice(layerType *layer, maparam *map, gdImagePtr im,
 {
    double i, j, k;
    double X, Y;
-   sInt4 x, y;
+   sInt4 x = 0, y = 0;
    sInt4 x0, y0, x1, y1, x2, y2, x3, y3;
    char buffer[100];
    sInt4 minX, maxX, minY, maxY;
@@ -1740,6 +1740,8 @@ static void DrawLattice(layerType *layer, maparam *map, gdImagePtr im,
 
    if (strchr (labelSite, 'L') != NULL) {
       for (j = minLat; j <= maxLat; j += space) {
+         /* The following loop should be run once, but just in case, init x */
+         x = 0;
          for (i = minLon; i <= maxLon; i += subspace) {
             cll2xy (map, j, i, &X, &Y);
             x = (sInt4) (Bx + (X - projX1) / A);
@@ -1758,6 +1760,8 @@ static void DrawLattice(layerType *layer, maparam *map, gdImagePtr im,
    }
    if (strchr (labelSite, 'R') != NULL) {
       for (j = minLat; j <= maxLat; j += space) {
+         /* The following loop should be run once, but just in case, init x */
+         x = 0;
          for (i = maxLon; i >= minLon; i -= subspace) {
             cll2xy (map, j, i, &X, &Y);
             x = (sInt4) (Bx + (X - projX1) / A);
@@ -1776,6 +1780,8 @@ static void DrawLattice(layerType *layer, maparam *map, gdImagePtr im,
    }
    if (strchr (labelSite, 'T') != NULL) {
       for (i = minLon; i <= maxLon; i += space) {
+         /* The following loop should be run once, but just in case, init y */
+         y = 0;
          for (j = maxLat; j >= minLat; j -= subspace) {
             cll2xy (map, j, i, &X, &Y);
             x = (sInt4) (Bx + (X - projX1) / A);
@@ -1801,6 +1807,8 @@ static void DrawLattice(layerType *layer, maparam *map, gdImagePtr im,
    }
    if (strchr (labelSite, 'B') != NULL) {
       for (i = minLon; i <= maxLon; i += space) {
+         /* The following loop should be run once, but just in case, init y */
+         y = 0;
          for (j = minLat; j <= maxLat; j += subspace) {
             cll2xy (map, j, i, &X, &Y);
             x = (sInt4) (Bx + (X - projX1) / A);
