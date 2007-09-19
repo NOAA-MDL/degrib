@@ -68,8 +68,9 @@ static const genElemDescript NdfdElements[] = {
    {NDFD_PXTORN,2, 8,MISSING_2,0, 9,0,19,200,24, 1,0.0,0.0 },
    {NDFD_PXHAIL,2, 8,MISSING_2,0, 9,0,19,201,24, 1,0.0,0.0 },
    {NDFD_PXTSTMWIND,2, 8,MISSING_2,0, 9,0,19,202,24, 1,0.0,0.0 },
-   {NDFD_PSTORM,2, 8,MISSING_2,0, 9,0,19,203,24, 1,0.0,0.0 },
-   {NDFD_PXSTORM,2, 8,MISSING_2,0, 9,0,19,204,24, 1,0.0,0.0 },
+/* Following two lines changed from 203->215 and 204->216 9/19/2007 */
+   {NDFD_PSTORM,2, 8,MISSING_2,0, 9,0,19,215,24, 1,0.0,0.0 },
+   {NDFD_PXSTORM,2, 8,MISSING_2,0, 9,0,19,216,24, 1,0.0,0.0 },
 
 #endif
    {NDFD_UNDEF,2, MISSING_2,MISSING_2,MISSING_1,
