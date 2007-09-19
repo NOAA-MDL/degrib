@@ -26,6 +26,7 @@ OPT_AIXSIZE()
 
 case "$host" in
   *-*-aix*) STRIP_FLAGS="-X32_64";;
+  *-*-darwin*) STRIP_FLAGS="-SxX";;
   *) STRIP_FLAGS="-s";;
 esac
 

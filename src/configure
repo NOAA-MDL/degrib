@@ -4152,6 +4152,7 @@ echo "$as_me: WARNING: Invalid aixsize value- ${aixsize}" >&2;}
 
 case "$host" in
   *-*-aix*) STRIP_FLAGS="-X32_64";;
+  *-*-darwin*) STRIP_FLAGS="-SxX";;
   *) STRIP_FLAGS="-s";;
 esac
 
@@ -6670,6 +6671,7 @@ echo $ECHO_N "checking Tcl/Tk Libraries... $ECHO_C" >&6; }
        tcl_lib_dotso=$adtval;;
       esac
     done
+    at_temp2="not_found"
     if test $tcl_lib_dota != not_found
     then
   if test "at_temp" != ""; then
@@ -6719,7 +6721,11 @@ fi
         esac
       fi
     fi
-    TCL_LIBS="-L$at_temp -l${at_temp2##*/lib}"
+    TCL_LIBS="-L$at_temp"
+    if test $at_temp2 != not_found
+    then
+       TCL_LIBS="${TCL_LIBS} -l${at_temp2##*/lib}"
+    fi
     if test $tcl_lib_stubs != not_found
     then
        at_temp2=${tcl_lib_stubs%*.a}
