@@ -629,7 +629,7 @@ static int CreateShpPnt (char *filename, myMaparam *map, gdsType *gds,
             }
          }
       }
-      numRec = curRec[0] - 1;
+      numRec = gds->Nx * gds->Ny;
    } else {
       curRec[0] = 1;
       for (y = 0; y < gds->Ny; y++) {
