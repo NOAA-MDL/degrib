@@ -1,1 +1,0 @@
-autoconf -I./config
