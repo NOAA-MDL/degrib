@@ -269,7 +269,7 @@ proc DirBrowser {frame rayName path height} {
               -text $path -height $height -width 20 -selectmode single]
     $ray($frame,tree) bind <Key-Return> "SelectTree $rayName $frame"
     set ray($frame,ibox) [iconbox $cur1.ibox -columns {{Name l 280} {Size r} {Modified}} \
-              -height $height -view small]
+              -height $height -view list]
     $ray($frame,ibox) bind <Key-Return> "SelectIcon $rayName $frame"
     Pane_Create $ray($frame,tree) $ray($frame,ibox) -in $cur1 \
               -orient horizontal -percent .3
