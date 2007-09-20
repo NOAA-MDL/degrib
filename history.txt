@@ -1,6 +1,45 @@
 #
-#----- Release: Version 1.87a 07/06/2007 -----
+#----- Release: Version 1.87 09/20/2007 -----
 #
+ 9/20 AAT Changed the defaulf view from "small" to "list" in the GIS tab
+ 9/20 AAT Fixing IconBox to handle selecting icons with . in their names, and
+          making it so 'sort' is selected more readily when clicking on left
+          aligned column headers. (r567)
+ 9/20 AAT Fixed a missing quote in gis.tcl affecting "Key-return" events in
+          file browse window
+ 9/19 AAT Enhanced the configuration scripts to better handle macosx
+ 9/19 AAT Fixed a bug in write .pnt shapefile (probably created when I stopped
+          allocating lat/lon for the write) (r564)
+ 9/19 AAT Modified code to handle the 203,204 -> 215,216 issues for Tot Prob
+          Sev T-Storm, and Tot Prob Ext Sev T-Storm
+ 9/19 AAT Updated ndfd.ini to have operational wind gusts
+ 9/18 AAT Added ability to handle time unit of "month, year, decade, normal,
+          century" (r550)
+ 9/17 AAT Updated NCEP Tables and metaname.c
+ 9/7  AAT Updated use of f_interp.  Had been 0=no coverage grid, 1=nearest
+          neighbor, 2=bi-linear.  Probe code assumed boolean (no interp vs
+          bi-linear).  Now use f_interp and f_coverageGrid.
+          0: <none> -> f_interp = 0, f_coverageGrid = 0
+          2: -Interp -> f_interp = 1, f_coverageGrid = 1
+          1: -Interp 1 (or near) -> f_interp = 0, f_coverageGrid = 1
+          2: -Interp 2 (or bilinear) -> f_interp = 1, f_coverageGrid = 1
+ 8/30 AAT Fixed a bug where the computed offset into the cube file was
+          incorrect given a negative X value. (r546)
+ 8/29 AAT Made it so focus doesn't change when cursor moves through listboxes.
+ 8/15 AAT updating writeshp.c to NOT allocate a grids worth of lat/lon when
+          creating point shapefiles. (r544)
+ 8/15 AAT Now provide a README.config file to help with configure
+ 8/15 AAT For .dbf files we only have 11 characters, but the short name
+          particularly for probabilities can be longer.  I now replace
+          "Prob" with "P" for the purpose of saving to .dbf only (r539)
+ 8/14 AAT Updated NDGD set to have more MOS elements, specifically qpf06,
+          qpf12, sky, snw24, and wgust. (r537)
+ 8/10 AAT Tested version 1.87b (r536)
+ 8/10 AAT Enhanced the labels for the color ramp in drawshp and started a
+          lat/lon lattice option (r534)
+ 7/6  AAT Tested version 1.87a (r532)
+ 7/6  AAT Made some platform tests of the configure system (aix32, cyg, linux,
+          windows) (r523)
  7/3  AAT Fixed writeshp.c since ESRI 9.2 doesn't like a ' ' in dbf column
           headers. (r513)
  6/29 AAT Updated the release list based on configure/make system (r512)
