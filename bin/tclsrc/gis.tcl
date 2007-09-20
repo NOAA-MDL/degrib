@@ -273,7 +273,7 @@ proc SelectIcon {rayName frame} {
     if {$type == "pTXT"} {
       set $ray($frame,path) $sPath
       DisplayTxt $rayName $sPath
-    } elseif {($type == "pGRIB2") || ($type == "pGRIB1") || ($type == "pTDLP)} {
+    } elseif {($type == "pGRIB2") || ($type == "pGRIB1") || ($type == "pTDLP")} {
       set $ray($frame,path) $sPath
       InventoryGRIB2 $rayName $sPath 0
     } else {
