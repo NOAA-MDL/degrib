@@ -231,7 +231,8 @@ metawidget proc Iconbox _clipHeader { sColumn } {
   $this.cols insert $sI1+1ch [_clipText $sColumn $sColumn]
 
   mkw.lassign [$this.cols tag ranges $sColumn] sI1 sI2
-  $this.cols tag add tText $sI1 $sI2-2ch
+#  $this.cols tag add tText $sI1 $sI2-2ch
+  $this.cols tag add tText $sI1 $sI2-1ch
 }
 
 # name: _clipColumn
@@ -590,7 +591,10 @@ metawidget proc Iconbox _setListmodeTags {} {
 
   # add all the individual bindings to the icons.
   foreach lBinds [myinfo vars lBind.*] {
-    mkw.lassign [split $lBinds .] x sIcon sBind
+#    mkw.lassign [split $lBinds .] x sIcon sBind
+    set lst [split $lBinds .]
+    set sBind [lindex $lst [expr [llength $lst] -1]]
+    set sIcon [join [lrange $lst 1 [expr [llength $lst] -2]] .]
     foreach sScript [my $lBinds] {
       $this.text tag bind $sIcon $sBind $sScript
     }
