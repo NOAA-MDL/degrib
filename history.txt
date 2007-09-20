@@ -1,7 +1,7 @@
 #
 #----- Release: Version 1.87 09/20/2007 -----
 #
- 9/20 AAT Changed the defaulf view from "small" to "list" in the GIS tab
+ 9/20 AAT Changed the default view from "small" to "list" in the GIS tab
  9/20 AAT Fixing IconBox to handle selecting icons with . in their names, and
           making it so 'sort' is selected more readily when clicking on left
           aligned column headers. (r567)
