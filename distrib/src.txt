@@ -45,13 +45,13 @@ S:degrib/src/configure
 S:degrib/src/Makefile.in
 S:degrib/src/scripts/makefile.*
 
-# g2clib-1.0.4 source
-S:degrib/src/mdl_g2c/g2clib-1.0.4/make*
-S:degrib/src/mdl_g2c/g2clib-1.0.4/*.c
-S:degrib/src/mdl_g2c/g2clib-1.0.4/*.h
-S:degrib/src/mdl_g2c/g2clib-1.0.4/README
-S:degrib/src/mdl_g2c/g2clib-1.0.4/CHANGES
-S:degrib/src/mdl_g2c/g2clib-1.0.4/grib2c.doc
+# g2clib-1.0.5 source
+S:degrib/src/mdl_g2c/g2clib-1.0.5/make*
+S:degrib/src/mdl_g2c/g2clib-1.0.5/*.c
+S:degrib/src/mdl_g2c/g2clib-1.0.5/*.h
+S:degrib/src/mdl_g2c/g2clib-1.0.5/README
+S:degrib/src/mdl_g2c/g2clib-1.0.5/CHANGES
+S:degrib/src/mdl_g2c/g2clib-1.0.5/grib2c.doc
 
 # mdl_g2c source
 S:degrib/src/mdl_g2c/configure.ac
