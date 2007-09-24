@@ -1,5 +1,5 @@
 emapf-c -r134 http://slosh.nws.noaa.gov/svn/libpub/emapf-20070323
-mdl_g2c -r134 http://slosh.nws.noaa.gov/svn/libpub/mdl_g2c/mdl_g2c
+mdl_g2c -r149 http://slosh.nws.noaa.gov/svn/libpub/mdl_g2c/mdl_g2c
 libaat -r138 http://slosh.nws.noaa.gov/svn/libpub/libaat/libaat
 aclocal -r137 http://slosh.nws.noaa.gov/svn/libpub/aclocal/aclocal
 memwatch-2.71 -r134 http://slosh.nws.noaa.gov/svn/libpub/memwatch-2.71
