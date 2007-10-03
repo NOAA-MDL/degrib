@@ -535,4 +535,8 @@ int MetaPrintGDS (gdsType * gds, int version, char **ans);
 /* Possible error messages left in errSprintf() */
 int MetaPrint (grib_MetaData *meta, char **ans, sChar decimal, sChar f_unit);
 
+sInt4 sbit_2Comp_fourByte(sInt4 data);
+
+sChar sbit_2Comp_oneByte(sChar data);
+
 #endif

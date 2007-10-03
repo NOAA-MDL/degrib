@@ -1100,6 +1100,106 @@ int ParseSect4Time2sec (double refTime, sInt4 delt, int unit, double *ans)
 }
 
 /*****************************************************************************
+ * sbit_2Comp_fourByte() -- Arthur Taylor / MDL
+ *
+ * PURPOSE
+ *    The NCEP g2clib-1.0.2 library stored the lower limits and upper limits
+ * of probabilities using unsigned ints, whereas version 1.0.4 used signed
+ * ints.  The reason for the change is because some thresholds were negative.
+ *    To encode a negative value using an unsigned int, 1.0.2 used "2's
+ * complement + 1".  To encode a negative value using signed an int, 1.0.4
+ * used a "sign bit".  Example -2 => FFFFFFFE (1.0.2) => 80000002 (1.0.4).
+ * The problem (for backward compatibility sake) is to be able to read both
+ * encodings and get -2.  If one only read the new encoding method, then
+ * archived data would not be handled.
+ *    The algorithm is: If the number is positive or missing, leave it alone.
+ * If the number is negative, look at the 2's complement method, and the sign
+ * bit method, and use the method which results in a smaller absolute value.
+ *
+ * ARGUMENTS
+ * data = The number read by NCEP's library. (Input)
+ *
+ * RETURNS: sInt4
+ *    The value of treating the number as read by either method
+ *
+ * HISTORY
+ * 10/2007 Arthur Taylor (MDL): Created.
+ *
+ * NOTES
+ * 1) This algorithm will impact the possible range of values, by reducing it
+ *    from -2^31..(2^31-1) to -2^30..(2^31-1).
+ * 2) The NCEP change also impacted large positive values.  One originally
+ *    could encode 0..2^32-1.  Some confusion could arrise if the value was
+ *    originally encoded by 1.0.2 was in the range of 2^31..2^32-1.
+ ****************************************************************************/
+sInt4 sbit_2Comp_fourByte(sInt4 data)
+{
+   sInt4 x;             /* The pos. 2's complement interpretation of data */
+   sInt4 y;             /* The pos. sign bit interpretation of data */
+
+   if ((data == GRIB2MISSING_s4) || (data >= 0)) {
+      return data;
+   }
+   x = ~data + 1;
+   y = data & 0x7fffffff;
+   if (x < y) {
+      return -1 * x;
+   } else {
+      return -1 * y;
+   }
+}
+
+/*****************************************************************************
+ * sbit_2Comp_oneByte() -- Arthur Taylor / MDL
+ *
+ * PURPOSE
+ *    The NCEP g2clib-1.0.2 library stored the lower limits and upper limits
+ * of probabilities using unsigned ints, whereas version 1.0.4 used signed
+ * ints.  The reason for the change is because some thresholds were negative.
+ *    To encode a negative value using an unsigned int, 1.0.2 used "2's
+ * complement + 1".  To encode a negative value using signed an int, 1.0.4
+ * used a "sign bit".  Example -2 => 11111110 (1.0.2) => 10000010 (1.0.4).
+ * The problem (for backward compatibility sake) is to be able to read both
+ * encodings and get -2.  If one only read the new encoding method, then
+ * archived data would not be handled.
+ *    The algorithm is: If the number is positive or missing, leave it alone.
+ * If the number is negative, look at the 2's complement method, and the sign
+ * bit method, and use the method which results in a smaller absolute value.
+ *
+ * ARGUMENTS
+ * data = The number read by NCEP's library. (Input)
+ *
+ * RETURNS: sChar
+ *    The value of treating the number as read by either method
+ *
+ * HISTORY
+ * 10/2007 Arthur Taylor (MDL): Created.
+ *
+ * NOTES
+ * 1) This algorithm will impact the possible range of values, by reducing it
+ *    from -128..127 to -64...127.
+ * 2) The NCEP change also impacted large positive values.  One originally
+ *    could encode 0..255.  Some confusion could arrise if the value was
+ *    originally encoded by 1.0.2 was in the range of 128..255.
+ ****************************************************************************/
+sChar sbit_2Comp_oneByte(sChar data)
+{
+   sChar x;             /* The pos. 2's complement interpretation of data */
+   sChar y;             /* The pos. sign bit interpretation of data */
+
+   if ((data == GRIB2MISSING_s1) || (data >= 0)) {
+      return data;
+   }
+   x = ~data + 1;
+   y = data & 0x7f;
+   if (x < y) {
+      return -1 * x;
+   } else {
+      return -1 * y;
+   }
+}
+
+/*****************************************************************************
  * ParseSect4() --
  *
  * Arthur Taylor / MDL
@@ -1506,19 +1606,23 @@ static int ParseSect4 (sInt4 *is4, sInt4 ns4, grib_MetaData *meta)
          meta->pds2.sect4.foreProbNum = (uChar) is4[34];
          meta->pds2.sect4.numForeProbs = (uChar) is4[35];
          meta->pds2.sect4.probType = (uChar) is4[36];
-         meta->pds2.sect4.lowerLimit.factor = (sChar) is4[37];
-         meta->pds2.sect4.lowerLimit.value = is4[38];
-         meta->pds2.sect4.upperLimit.factor = (sChar) is4[42];
-         meta->pds2.sect4.upperLimit.value = is4[43];
+         meta->pds2.sect4.lowerLimit.factor =
+               sbit_2Comp_oneByte((sChar) is4[37]);
+         meta->pds2.sect4.lowerLimit.value = sbit_2Comp_fourByte(is4[38]);
+         meta->pds2.sect4.upperLimit.factor =
+               sbit_2Comp_oneByte((sChar) is4[42]);
+         meta->pds2.sect4.upperLimit.value = sbit_2Comp_fourByte(is4[43]);
          break;
       case GS4_PROBABIL_TIME: /* 4.9 */
          meta->pds2.sect4.foreProbNum = (uChar) is4[34];
          meta->pds2.sect4.numForeProbs = (uChar) is4[35];
          meta->pds2.sect4.probType = (uChar) is4[36];
-         meta->pds2.sect4.lowerLimit.factor = (sChar) is4[37];
-         meta->pds2.sect4.lowerLimit.value = is4[38];
-         meta->pds2.sect4.upperLimit.factor = (sChar) is4[42];
-         meta->pds2.sect4.upperLimit.value = is4[43];
+         meta->pds2.sect4.lowerLimit.factor =
+               sbit_2Comp_oneByte((sChar) is4[37]);
+         meta->pds2.sect4.lowerLimit.value = sbit_2Comp_fourByte(is4[38]);
+         meta->pds2.sect4.upperLimit.factor =
+               sbit_2Comp_oneByte((sChar) is4[42]);
+         meta->pds2.sect4.upperLimit.value = sbit_2Comp_fourByte(is4[43]);
          if (ParseTime (&(meta->pds2.sect4.validTime), is4[47], is4[49],
                         is4[50], is4[51], is4[52], is4[53]) != 0) {
             msg = errSprintf (NULL);

@@ -509,11 +509,13 @@ enum { GS4_ANALYSIS, GS4_ENSEMBLE, GS4_DERIVED, GS4_PROBABIL_PNT = 5,
       switch (templat) {
          case GS4_PROBABIL_PNT: /* 4.5 */
             probType = (*buffer)[37 - 5];
-            factor = (sChar) (*buffer)[38 - 5];
+            factor = sbit_2Comp_oneByte((sChar) (*buffer)[38 - 5]);
             MEMCPY_BIG (&value, *buffer + 39 - 5, sizeof (sInt4));
+            value = sbit_2Comp_fourByte(value);
             lowerProb = value * pow (10, -1 * factor);
-            factor = (sChar) (*buffer)[43 - 5];
+            factor = sbit_2Comp_oneByte((sChar) (*buffer)[43 - 5]);
             MEMCPY_BIG (&value, *buffer + 44 - 5, sizeof (sInt4));
+            value = sbit_2Comp_fourByte(value);
             upperProb = value * pow (10, -1 * factor);
             break;
          case GS4_DERIVED_INTERVAL: /* 4.12 */
@@ -583,20 +585,13 @@ enum { GS4_ANALYSIS, GS4_ENSEMBLE, GS4_DERIVED, GS4_PROBABIL_PNT = 5,
             break;
          case GS4_PROBABIL_TIME: /* 4.9 */
             probType = (*buffer)[37 - 5];
-            if ((uChar) (*buffer)[38 - 5] > 128) {
-               factor = 128 - (uChar) (*buffer)[38 - 5];
-            } else {
-               factor = (*buffer)[38 - 5];
-            }
+            factor = sbit_2Comp_oneByte((sChar) (*buffer)[38 - 5]);
             MEMCPY_BIG (&value, *buffer + 39 - 5, sizeof (sInt4));
+            value = sbit_2Comp_fourByte(value);
             lowerProb = value * pow (10, -1 * factor);
-
-            if ((uChar) (*buffer)[43 - 5] > 128) {
-               factor = 128 - (uChar) (*buffer)[43 - 5];
-            } else {
-               factor = (*buffer)[43 - 5];
-            }
+            factor = sbit_2Comp_oneByte((sChar) (*buffer)[43 - 5]);
             MEMCPY_BIG (&value, *buffer + 44 - 5, sizeof (sInt4));
+            value = sbit_2Comp_fourByte(value);
             upperProb = value * pow (10, -1 * factor);
 
             if (InventoryParseTime (*buffer + 48 - 5, &(inv->validTime)) != 0) {
