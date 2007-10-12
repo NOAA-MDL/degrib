@@ -223,6 +223,18 @@ static void Usage (char *argv0, userType *usr)
          printf ("      xtrmwindprob pxtstmwinds xw 'Extreme Thunderstorm Wind Probability'\n");
          printf ("      totalsvrprob ptotsvrtstm ps 'Total Probability of Severe Thunderstorms'\n");
          printf ("      totalxtrmprob ptotxsvrtstm xs 'Total Probability of Extreme Severe Thunderstorms'\n");
+         printf ("      probtmpabv144 tmpabv14d ta6d 'Probability of 8-14 Day Average Temperature Above Normal'\n");
+         printf ("      probtmpblw144 tmpblw14d tb6d 'Probability of 8-14 Day Average Temperature Below Normal'\n");
+         printf ("      probprcpabv144 prcpabv14d pa6d 'Probability of 8-14 Day Average Precipitation Above Normal'\n");
+         printf ("      probprcpblw144 prcpblw14d pb6d 'Probability of 8-14 Day Average Precipitatin Below Normal'\n");
+         printf ("      probtmpabv01m tmpabv30d ta1m 'Probability of One-Month Average Temperature Above Normal'\n");
+         printf ("      probtmpblw01m tmpblw30d tb1m 'Probability of One-Month Average Temperature Below Normal'\n");
+         printf ("      probprcpabv01m prcpabv30d pa1m 'Probability of One-Month Average Precipitation Above Normal'\n");
+         printf ("      probprcpblw01m prcpblw30d pb1m 'Probability of One-Month Average Precipitation Below Normal'\n");
+         printf ("      probtmpabv03m tmpabv90d ta3m 'Probability of Three-Month Average Temperature Above Normal'\n");
+         printf ("      probtmpblw03m tmpblw90d tb3m 'Probability of Three-Month Average Temperature Below Normal'\n");
+         printf ("      probprcpabv03m prcpabv90d pa3m 'Probability of Three-Month Average Precipitation Above Normal'\n");
+         printf ("      probprcpblw03m prcpblw90d pb3m 'Probability of Three-Month Average Precipitation Below Normal'\n");
          printf ("   Example:  -ndfdConven 1\n");
          printf ("   -gribFilter [string]\n");
          printf ("      By default when expanding a directory to find GRIB files or database\n");
