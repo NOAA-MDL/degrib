@@ -20,28 +20,35 @@ typedef struct {
    sChar version;            /* 1 GRIB1, 2 GRIB2, -1 Tdlp, 0 undef */
 
 /* Who produced it */
-   uShort2 center;           /* Who produced it. */
-   uShort2 subcenter;        /* Who produced it. */
+   uShort2 center;           /* Who produced it. (PDS-S1 Originating ..) */
+   uShort2 subcenter;        /* Who produced it. (PDS-S1) */
    uChar genID;              /* More info on what what produced it */
+                             /* PDS-S4 | Forecast generating process ID */
 
 /* What is it? */
    uShort2 templat;          /* The section 4 template number. */
+                             /* PDS-S4 | Product type */
    uChar prodType;           /* 0 is meteo product, 1 is hydro, 2 is land
                                 3 is space, 10 is oceanographic. */
+                             /* PDS-S0 | DataType */
    uChar cat;                /* General category of Meteo Product. */
+                             /* PDS-S4 | Category Description */
    uChar subcat;             /* Specific subcategory of Meteo Product. */
+                             /* PDS-S4 | Category Sub-Description */
 
               /* NOTE: lenTime may be more trouble than it is worth. */
    sInt4 lenTime;            /* duration of event (APCP06 vs APCP12) */
+                             /* PDS-S4 | Time range for processing */
 
    /* Where is it? */
-   uChar surfType;
-   double value;
+   uChar surfType;           /* PDS-S4 | Type of first fixed surface */
+   double value;             /* PDS-S4 | Value of first fixed surface */
    double sndValue;
 
+   uChar probType;           /* PDS-S4 | Probability type */
+                             /* (3 is above) (0 is below) */
 /* Probability info. */
-/* uChar probType,
-   double lowerProb,
+/* double lowerProb,
    double upperProb,
 */
 } genElemDescript;

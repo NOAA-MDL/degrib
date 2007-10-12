@@ -38,41 +38,55 @@
 /* Problems using MISSING to denote all possible, since subcenter = Missing
  * is defined for NDFD. */
 static const genElemDescript NdfdElements[] = {
-   {NDFD_MAX,2, 8,MISSING_2,0, 8,0,0,4,12, 1,0.0,0.0 },
-   {NDFD_MIN,2, 8,MISSING_2,0, 8,0,0,5,12, 1,0.0,0.0 },
-   {NDFD_POP,2, 8,MISSING_2,0, 9,0,1,8,12, 1,0.0,0.0 },
-   {NDFD_TEMP,2, 8,MISSING_2,0, 0,0,0,0,0, 1,0.0,0.0 },
-   {NDFD_WD,2, 8,MISSING_2,0, 0,0,2,0,0, 1,0.0,0.0 },
-   {NDFD_WS,2, 8,MISSING_2,0, 0,0,2,1,0, 1,0.0,0.0 },
-   {NDFD_TD,2, 8,MISSING_2,0, 0,0,0,6,0, 1,0.0,0.0 },
-   {NDFD_SKY,2, 8,MISSING_2,0, 0,0,6,1,0, 1,0.0,0.0 },
-   {NDFD_QPF,2, 8,MISSING_2,0, 8,0,1,8,6, 1,0.0,0.0 },
-   {NDFD_SNOW,2, 8,MISSING_2,0, 8,0,1,29,6, 1,0.0,0.0 },
-   {NDFD_WX,2, 8,MISSING_2,0, 0,0,1,192,0, 1,0.0,0.0 },
-   {NDFD_WH,2, 8,MISSING_2,0, 0,10,0,5,0, 1,0.0,0.0 },
-   {NDFD_AT,2, 8,MISSING_2,0, 0,0,0,193,0, 1,0.0,0.0 },
-   {NDFD_RH,2, 8,MISSING_2,0, 0,0,1,1,0, 1,0.0,0.0 },
-#ifndef UNDEF_NDFD_WG
-   {NDFD_WG,2, 8,MISSING_2,0, 0,0,2,22,0, 1,0.0,0.0 },
-   {NDFD_INC34,2, 8,MISSING_2,0, 9,0,2,1,6, 103,10.0,0.0 },
-   {NDFD_INC50,2, 8,MISSING_2,0, 9,0,2,1,6, 103,10.0,0.0 },
-   {NDFD_INC64,2, 8,MISSING_2,0, 9,0,2,1,6, 103,10.0,0.0 },
-   {NDFD_CUM34,2, 8,MISSING_2,0, 9,0,2,1,6, 103,10.0,0.0 },
-   {NDFD_CUM50,2, 8,MISSING_2,0, 9,0,2,1,6, 103,10.0,0.0 },
-   {NDFD_CUM64,2, 8,MISSING_2,0, 9,0,2,1,6, 103,10.0,0.0 },
+   {NDFD_MAX,2, 8,MISSING_2,0, 8,0,0,4,12, 1,0.0,0.0 ,0},
+   {NDFD_MIN,2, 8,MISSING_2,0, 8,0,0,5,12, 1,0.0,0.0 ,0},
+   {NDFD_POP,2, 8,MISSING_2,0, 9,0,1,8,12, 1,0.0,0.0 ,1},  
+   {NDFD_TEMP,2, 8,MISSING_2,0, 0,0,0,0,0, 1,0.0,0.0 ,0},
+   {NDFD_WD,2, 8,MISSING_2,0, 0,0,2,0,0, 1,0.0,0.0 ,0},
+   {NDFD_WS,2, 8,MISSING_2,0, 0,0,2,1,0, 1,0.0,0.0 ,0},
+   {NDFD_TD,2, 8,MISSING_2,0, 0,0,0,6,0, 1,0.0,0.0 ,0},
+   {NDFD_SKY,2, 8,MISSING_2,0, 0,0,6,1,0, 1,0.0,0.0 ,0},
+   {NDFD_QPF,2, 8,MISSING_2,0, 8,0,1,8,6, 1,0.0,0.0 ,0},
+   {NDFD_SNOW,2, 8,MISSING_2,0, 8,0,1,29,6, 1,0.0,0.0 ,0},
+   {NDFD_WX,2, 8,MISSING_2,0, 0,0,1,192,0, 1,0.0,0.0 ,0},
+   {NDFD_WH,2, 8,MISSING_2,0, 0,10,0,5,0, 1,0.0,0.0 ,0},
+   {NDFD_AT,2, 8,MISSING_2,0, 0,0,0,193,0, 1,0.0,0.0 ,0},
+   {NDFD_RH,2, 8,MISSING_2,0, 0,0,1,1,0, 1,0.0,0.0 ,0},
+   {NDFD_WG,2, 8,MISSING_2,0, 0,0,2,22,0, 1,0.0,0.0 ,0},
+   {NDFD_INC34,2, 8,MISSING_2,0, 9,0,2,1,6, 103,10.0,0.0 ,1}, /* */
+   {NDFD_INC50,2, 8,MISSING_2,0, 9,0,2,1,6, 103,10.0,0.0 ,1}, /* */
+   {NDFD_INC64,2, 8,MISSING_2,0, 9,0,2,1,6, 103,10.0,0.0 ,1}, /* */
+   {NDFD_CUM34,2, 8,MISSING_2,0, 9,0,2,1,6, 103,10.0,0.0 ,1}, /* */
+   {NDFD_CUM50,2, 8,MISSING_2,0, 9,0,2,1,6, 103,10.0,0.0 ,1}, /* */
+   {NDFD_CUM64,2, 8,MISSING_2,0, 9,0,2,1,6, 103,10.0,0.0 ,1}, /* */
 
-   {NDFD_CONHAZ,2, 8,MISSING_2,0, 8,0,19,194,24, 1,0.0,0.0 },
-   {NDFD_PTORN,2, 8,MISSING_2,0, 9,0,19,197,24, 1,0.0,0.0 },
-   {NDFD_PHAIL,2, 8,MISSING_2,0, 9,0,19,198,24, 1,0.0,0.0 },
-   {NDFD_PTSTMWIND,2, 8,MISSING_2,0, 9,0,19,199,24, 1,0.0,0.0 },
-   {NDFD_PXTORN,2, 8,MISSING_2,0, 9,0,19,200,24, 1,0.0,0.0 },
-   {NDFD_PXHAIL,2, 8,MISSING_2,0, 9,0,19,201,24, 1,0.0,0.0 },
-   {NDFD_PXTSTMWIND,2, 8,MISSING_2,0, 9,0,19,202,24, 1,0.0,0.0 },
+   {NDFD_CONHAZ,2, 8,MISSING_2,0, 8,0,19,194,24, 1,0.0,0.0 ,0},
+   {NDFD_PTORN,2, 8,MISSING_2,0, 9,0,19,197,24, 1,0.0,0.0 ,1},
+   {NDFD_PHAIL,2, 8,MISSING_2,0, 9,0,19,198,24, 1,0.0,0.0 ,1},
+   {NDFD_PTSTMWIND,2, 8,MISSING_2,0, 9,0,19,199,24, 1,0.0,0.0 ,1},
+   {NDFD_PXTORN,2, 8,MISSING_2,0, 9,0,19,200,24, 1,0.0,0.0 ,1},
+   {NDFD_PXHAIL,2, 8,MISSING_2,0, 9,0,19,201,24, 1,0.0,0.0 ,1},
+   {NDFD_PXTSTMWIND,2, 8,MISSING_2,0, 9,0,19,202,24, 1,0.0,0.0 ,1},
 /* Following two lines changed from 203->215 and 204->216 9/19/2007 */
-   {NDFD_PSTORM,2, 8,MISSING_2,0, 9,0,19,215,24, 1,0.0,0.0 },
-   {NDFD_PXSTORM,2, 8,MISSING_2,0, 9,0,19,216,24, 1,0.0,0.0 },
+   {NDFD_PSTORM,2, 8,MISSING_2,0, 9,0,19,215,24, 1,0.0,0.0 ,1},
+   {NDFD_PXSTORM,2, 8,MISSING_2,0, 9,0,19,216,24, 1,0.0,0.0 ,1},
 
-#endif
+   /* the 6 in the length of time column stands for 6 days... */
+   {NDFD_TEMP814ABV,2, 8,MISSING_2,0, 9,0,0,0,6, 1,0.0,0.0, 3},
+   {NDFD_TEMP814BEL,2, 8,MISSING_2,0, 9,0,0,0,6, 1,0.0,0.0, 0},
+   {NDFD_PRECIP814ABV,2, 8,MISSING_2,0, 9,0,1,8,6, 1,0.0,0.0, 3},
+   {NDFD_PRECIP814BEL,2, 8,MISSING_2,0, 9,0,1,8,6, 1,0.0,0.0, 0},
+   /* the 1 in the length of time column stands for 1 month... */
+   {NDFD_TEMPMONTHABV,2, 8,MISSING_2,0, 9,0,0,0,1, 1,0.0,0.0, 3},
+   {NDFD_TEMPMONTHBEL,2, 8,MISSING_2,0, 9,0,0,0,1, 1,0.0,0.0, 0},
+   {NDFD_PRECIPMONTHABV,2, 8,MISSING_2,0, 9,0,1,8,1, 1,0.0,0.0, 3},
+   {NDFD_PRECIPMONTHBEL,2, 8,MISSING_2,0, 9,0,1,8,1, 1,0.0,0.0, 0},
+   /* the 3 in the length of time column stands for 3 months... */
+   {NDFD_TEMP3MONTHABV,2, 8,MISSING_2,0, 9,0,0,0,3, 1,0.0,0.0, 3},
+   {NDFD_TEMP3MONTHBEL,2, 8,MISSING_2,0, 9,0,0,0,3, 1,0.0,0.0, 0},
+   {NDFD_PRECIP3MONTHABV,2, 8,MISSING_2,0, 9,0,1,8,3, 1,0.0,0.0, 3},
+   {NDFD_PRECIP3MONTHBEL,2, 8,MISSING_2,0, 9,0,1,8,3, 1,0.0,0.0, 0},
+
    {NDFD_UNDEF,2, MISSING_2,MISSING_2,MISSING_1,
                   MISSING_2,MISSING_1,MISSING_1,MISSING_1,0,
                   MISSING_1,0.0,0.0 },
@@ -111,7 +125,6 @@ static const uChar NdfdElementsLen = (sizeof (NdfdElements) /
  *          NDFD_AT, NDFD_RH, NDFD_UNDEF, NDFD_MATCHALL };
  *****************************************************************************
  */
-#ifndef UNDEF_NDFD_WG
 /* these are a string tolower on the short name of each NDFD element */
 static char *NDFD_Type[] = { "maxt", "mint", "pop12", "t", "winddir",
    "windspd", "td", "sky", "qpf", "snowamt", "wx", "waveheight",
@@ -119,6 +132,9 @@ static char *NDFD_Type[] = { "maxt", "mint", "pop12", "t", "winddir",
    "probwindspd64i", "probwindspd34c", "probwindspd50c", "probwindspd64c",
    "convoutlook", "tornadoprob", "hailprob", "windprob", "xtrmtornprob",
    "xtrmhailprob", "xtrmwindprob", "totalsvrprob", "totalxtrmprob",
+   "probtmpabv144", "probtmpblw144", "probprcpabv144", "probprcpblw144",
+   "probtmpabv01m", "probtmpblw01m", "probprcpabv01m", "probprcpblw01m",
+   "probtmpabv03m", "probtmpblw03m", "probprcpabv03m", "probprcpblw03m",
    NULL
 };
 /* These match the convention on official download pages. */
@@ -127,26 +143,19 @@ static char *NDFD_File[] = { "maxt", "mint", "pop12", "temp", "wdir",
    "wgust", "tcwspdabv34i", "tcwspdabv50i", "tcwspdabv64i",
    "tcwspdabv34c", "tcwspdabv50c", "tcwspdabv64c", "conhazo", "ptornado",
    "phail", "ptstmwinds", "pxtornado", "pxhail", "pxtstmwinds",
-   "ptotsvrtstm", "ptotxsvrtstm", NULL
+   "ptotsvrtstm", "ptotxsvrtstm", "tmpabv14d", "tmpblw14d", "prcpabv14d",
+   "prcpblw14d", "tmpabv30d", "tmpblw30d", "prcpabv30d", "prcpblw30d",
+   "tmpabv90d", "tmpblw90d", "prcpabv90d", "prcpblw90d", NULL
 };
-/* A 2 letter abreviation scheme created with/for the verification group */
+/* A (mostly) 2 letter abreviation scheme created with/for the verification
+   group */
 static char *NDFD_File2[] = { "mx", "mn", "po", "tt", "wd",
    "ws", "dp", "cl", "qp", "sn", "wx", "wh", "at", "rh", "wg", "i3",
    "i5", "i6", "c3", "c5", "c6", "ch", "pt", "ph", "pw", "xt", "xh", "xw",
-   "ps", "xs", NULL
+   "ps", "xs", "ta6d", "tb6d", "pa6d", "pb6d",
+   "ta1m", "tb1m", "pa1m", "pb1m", "ta3m", "tb3m", "pa3m", "pb3m",
+   NULL
 };
-#else
-static char *NDFD_Type[] = { "maxt", "mint", "pop12", "t", "winddir",
-   "windspd", "td", "sky", "qpf", "snowamt", "wx", "waveheight",
-   "apparentt", "rh", NULL
-};
-static char *NDFD_File[] = { "maxt", "mint", "pop12", "temp", "wdir",
-   "wspd", "td", "sky", "qpf", "snow", "wx", "waveh", "apt", "rhm", NULL
-};
-static char *NDFD_File2[] = { "mx", "mn", "po", "tt", "wd",
-   "ws", "dp", "cl", "qp", "sn", "wx", "wh", "at", "rh", NULL
-};
-#endif
 
 uChar genNdfdVar_Lookup (char *str, char f_toLower, char f_ndfdConven)
 {
@@ -511,6 +520,24 @@ void genMatchFree (genMatchType * match)
 static int genElemMatchMeta (const genElemDescript * elem,
                              const grib_MetaData *meta)
 {
+#ifdef DEBUG
+   if (((meta->pds2.sect4.templat == 8) ||
+        (meta->pds2.sect4.templat == 9)) &&
+       (meta->pds2.sect4.numInterval == 1)) {
+   printf ("%d %d %d %d %d %d %d %d %ld %d %f %f %d: %d %d %d %d\n", meta->GribVersion,
+           meta->center, meta->subcenter, meta->pds2.sect4.genID, meta->pds2.prodType,
+           meta->pds2.sect4.templat, meta->pds2.sect4.cat, meta->pds2.sect4.subcat, meta->pds2.sect4.Interval[0].lenTime,
+           meta->pds2.sect4.fstSurfType, meta->pds2.sect4.fstSurfValue, meta->pds2.sect4.sndSurfValue,
+           meta->pds2.sect4.probType, meta->pds2.sect4.lowerLimit.value, meta->pds2.sect4.lowerLimit.factor,
+           meta->pds2.sect4.upperLimit.value, meta->pds2.sect4.upperLimit.factor);
+   } else {
+   printf ("%d %d %d %d %d %d %d %d %ld %d %f %f %d\n", meta->GribVersion,
+           meta->center, meta->subcenter, meta->pds2.sect4.genID, meta->pds2.prodType,
+           meta->pds2.sect4.templat, meta->pds2.sect4.cat, meta->pds2.sect4.subcat, (sInt4) 0,
+           meta->pds2.sect4.fstSurfType, meta->pds2.sect4.fstSurfValue, meta->pds2.sect4.sndSurfValue,
+           meta->pds2.sect4.probType);
+   }
+#endif
    if ((elem->center != MISSING_2) && (elem->center != meta->center))
       return 0;
    if ((elem->subcenter != MISSING_2) && (elem->subcenter != meta->subcenter))
@@ -549,6 +576,11 @@ static int genElemMatchMeta (const genElemDescript * elem,
       if (elem->sndValue != meta->pds2.sect4.sndSurfValue)
          return 0;
    }
+   if (meta->pds2.sect4.templat == 9) {
+      if (elem->probType != meta->pds2.sect4.probType) {
+         return 0;
+      }
+   }
    return 1;
 }
 #endif
@@ -557,6 +589,7 @@ static int genElemMatchMeta (const genElemDescript * elem,
 uChar genNdfdEnum_fromMeta (const grib_MetaData *meta) {
    uShort2 i;           /* Used to help find the ndfdEnum value. */
    sInt4 lenTime;
+   uChar probType;
 
    if (meta->GribVersion != 2)
       return NDFD_UNDEF;
@@ -567,6 +600,11 @@ uChar genNdfdEnum_fromMeta (const grib_MetaData *meta) {
       lenTime = meta->pds2.sect4.Interval[0].lenTime;
    } else {
       lenTime = 0;
+   }
+   if ((meta->pds2.sect4.templat == 9)) {
+      probType = meta->pds2.sect4.probType;
+   } else {
+      probType = 0;
    }
 
    /* Determine the ndfdEnum for this element. Note, ndfdEnum is already
@@ -583,15 +621,17 @@ uChar genNdfdEnum_fromMeta (const grib_MetaData *meta) {
           (NdfdElements[i].lenTime == lenTime) &&
           (NdfdElements[i].surfType == meta->pds2.sect4.fstSurfType) &&
           (NdfdElements[i].value == meta->pds2.sect4.fstSurfValue) &&
-          (NdfdElements[i].sndValue == meta->pds2.sect4.sndSurfValue)) {
+          (NdfdElements[i].sndValue == meta->pds2.sect4.sndSurfValue) &&
+          (NdfdElements[i].probType == meta->pds2.sect4.probType)) {
          return NdfdElements[i].ndfdEnum;
       }
    }
 #ifdef DEBUG
-   printf ("%d %d %d %d %d %d %d %d %ld %d %f %f\n", meta->GribVersion,
+   printf ("%d %d %d %d %d %d %d %d %ld %d %f %f %d\n", meta->GribVersion,
            meta->center, meta->subcenter, meta->pds2.sect4.genID, meta->pds2.prodType,
            meta->pds2.sect4.templat, meta->pds2.sect4.cat, meta->pds2.sect4.subcat, lenTime,
-           meta->pds2.sect4.fstSurfType, meta->pds2.sect4.fstSurfValue, meta->pds2.sect4.sndSurfValue);
+           meta->pds2.sect4.fstSurfType, meta->pds2.sect4.fstSurfValue, meta->pds2.sect4.sndSurfValue,
+           meta->pds2.sect4.probType);
 #endif
    return NDFD_UNDEF;
 }
