@@ -21,7 +21,7 @@ Version=3.0
 Date=3/23/2007
 Web=http://www.arl.noaa.gov/ss/models/cmapf.html
 
-[g2clib-1.0.4]
+[g2clib]
 Version=1.0.4
 Date=11/2/2006
 LastLocalMod=5/30/2007
