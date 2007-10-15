@@ -14,6 +14,7 @@
 #include "write.h"
 #include "metaname.h"
 #include "cube.h"
+#include "clock.h"
 
 /*****************************************************************************
  * Grib2Database() --
@@ -355,13 +356,19 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
       "HailProb", "WindProb", "XtrmTornProb", "XtrmHailProb", "XtrmWindProb",
       "TotalSvrProb", "TotalXtrmProb", "ProbWindSpd34c", "ProbWindSpd34i",
       "ProbWindSpd50c", "ProbWindSpd50i", "ProbWindSpd64c", "ProbWindSpd64i",
+      "ProbTMPAbv144", "ProbTMPBlw144", "ProbPrcpAbv144", "ProbPrcpBlw144",
+      "ProbTMPAbv01m", "ProbTMPBlw01m", "ProbPrcpAbv01m", "ProbPrcpBlw01m",
+      "ProbTMPAbv03m", "ProbTMPBlw03m", "ProbPrcpAbv03m", "ProbPrcpBlw03m",
       NULL
    };
    enum { TEMP, MAXT, MINT, TD, QPF, SNOW, WINDDIR, WINDSPD, SKY,
       WAVEHEIGHT, WX, POP12, APPARENTT, RH, WINDGUST, CONVOUTLOOK, PTORN,
       PHAIL, PWIND, PXTRMTORN, PXTRMHAIL, PXTRMWIND, PTOTSVR, PTOTXTRM,
       PROBWINDSPD34C, PROBWINDSPD34I, PROBWINDSPD50C, PROBWINDSPD50I,
-      PROBWINDSPD64C, PROBWINDSPD64I, DEFAULT_NUM
+      PROBWINDSPD64C, PROBWINDSPD64I, PROBTMPABV144, PROBTMPBLW144,
+      PROBPRCPABV144, PROBPRCPBLW144, PROBTMPABV01M, PROBTMPBLW01M,
+      PROBPRCPABV01M, PROBPRCPBLW01M, PROBTMPABV03M, PROBTMPBLW03M,
+      PROBPRCPABV03M, PROBPRCPBLW03M, DEFAULT_NUM
    };
 /* *INDENT-OFF* */
    static NDFD_ValuesTable NDFD_Values[] = {
@@ -396,6 +403,20 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
    /* PWndSpd50i */ { 0, 2,   1, 9, 0, 0, 2},
    /* PWndSpd64c */ { 0, 2,   1, 9, 0, 0, 2},
    /* PWndSpd64i */ { 0, 2,   1, 9, 0, 0, 2},
+
+   /* PTmpAbv144 */ { 0, 0,   0, 9, 0, 0, 3},
+   /* PTmpBlw144 */ { 0, 0,   0, 9, 0, 0, 3},
+   /* PPrcpAbv144 */{ 0, 1,   8, 9, 0, 0, 3},
+   /* PPrcpAbv144 */{ 0, 1,   8, 9, 0, 0, 3},
+   /* PTmpAbv01m */ { 0, 0,   0, 9, 0, 0, 3},
+   /* PTmpBlw01m */ { 0, 0,   0, 9, 0, 0, 3},
+   /* PPrcpAbv01m */{ 0, 1,   8, 9, 0, 0, 3},
+   /* PPrcpAbv01m */{ 0, 1,   8, 9, 0, 0, 3},
+   /* PTmpAbv03m */ { 0, 0,   0, 9, 0, 0, 3},
+   /* PTmpBlw03m */ { 0, 0,   0, 9, 0, 0, 3},
+   /* PPrcpAbv03m */{ 0, 1,   8, 9, 0, 0, 3},
+   /* PPrcpAbv03m */{ 0, 1,   8, 9, 0, 0, 3},
+
       /* Default */ { 0, 0,   0, 0, 0, 0, 3},
    };
 /* *INDENT-ON* */
@@ -404,6 +425,12 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
    char longFstLevel[] = "0[SFC] Ground or water surface (-)";
    int elemNum;         /* "elem"'s index into NDFD_Type */
    time_t tempTime;     /* Used when printing out a "double" time_t value. */
+
+   sInt4 totDay;
+   int day;
+   sInt4 year;
+   int month;
+   double d_tempTime;
 
 /*
    if (!IsData_NDFD (center, subCenter)) {
@@ -461,7 +488,13 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
        (elemNum == PROBWINDSPD50C) || (elemNum == PROBWINDSPD50I) ||
        (elemNum == PROBWINDSPD64C) || (elemNum == PROBWINDSPD64I) ||
        (elemNum == QPF) || (elemNum == SKY) || (elemNum == SNOW) ||
-       (elemNum == WAVEHEIGHT) || (elemNum == WINDGUST)) {
+       (elemNum == WAVEHEIGHT) || (elemNum == WINDGUST) ||
+       (elemNum == PROBTMPABV144) || (elemNum == PROBTMPBLW144) ||
+       (elemNum == PROBPRCPABV144) || (elemNum == PROBPRCPBLW144) ||
+       (elemNum == PROBTMPABV01M) || (elemNum == PROBTMPBLW01M) ||
+       (elemNum == PROBPRCPABV01M) || (elemNum == PROBPRCPBLW01M) ||
+       (elemNum == PROBTMPABV03M) || (elemNum == PROBTMPBLW03M) ||
+       (elemNum == PROBPRCPABV03M) || (elemNum == PROBPRCPBLW03M)) {
       meta->pds2.operStatus = 1;
    } else {
       meta->pds2.operStatus = 0; /* Pretend NDFD is operational. */
@@ -491,6 +524,29 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
    } else if ((elemNum == PROBWINDSPD34I) || (elemNum == PROBWINDSPD50I) ||
        (elemNum == PROBWINDSPD64I)) {
       meta->pds2.sect4.foreSec = meta->deltTime - 6 * 3600;
+   } else if ((elemNum == PROBTMPABV144) || (elemNum == PROBTMPBLW144) ||
+          (elemNum == PROBPRCPABV144) || (elemNum == PROBPRCPBLW144)) {
+      meta->pds2.sect4.foreSec = 8 * 24 * 3600;
+   } else if ((elemNum == PROBTMPABV01M) || (elemNum == PROBTMPBLW01M) ||
+          (elemNum == PROBPRCPABV01M) || (elemNum == PROBPRCPBLW01M)) {
+      /* Find first day of month of refTime. */
+      totDay = (sInt4) floor (refTime / SEC_DAY);
+      Clock_Epoch2YearDay (totDay, &day, &year);
+      month = Clock_MonthNum (day, year);
+      d_tempTime = 0;
+      Clock_ScanDate (&d_tempTime, year, month, 1);
+      /* ForeSec is 1 month before valTime - first day of month of refTime */
+      meta->pds2.sect4.foreSec = Clock_AddMonthYear (valTime, -1, 0) - d_tempTime;
+   } else if ((elemNum == PROBTMPABV03M) || (elemNum == PROBTMPBLW03M) ||
+          (elemNum == PROBPRCPABV03M) || (elemNum == PROBPRCPBLW03M)) {
+      /* Find first day of month of refTime. */
+      totDay = (sInt4) floor (refTime / SEC_DAY);
+      Clock_Epoch2YearDay (totDay, &day, &year);
+      month = Clock_MonthNum (day, year);
+      d_tempTime = 0;
+      Clock_ScanDate (&d_tempTime, year, month, 1);
+      /* ForeSec is 3 month before valTime - first day of month of refTime */
+      meta->pds2.sect4.foreSec = Clock_AddMonthYear (valTime, -3, 0) - d_tempTime;
    } else {
       meta->pds2.sect4.foreSec = meta->deltTime;
    }
@@ -544,12 +600,37 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
 
    } else if (meta->pds2.sect4.templat == 9) {
       meta->pds2.sect4.foreProbNum = GRIB2MISSING_u1;
-      meta->pds2.sect4.numForeProbs = GRIB2MISSING_u1;
-      meta->pds2.sect4.probType = 1;
+      if ((elemNum == PROBTMPABV144) || (elemNum == PROBTMPBLW144) ||
+          (elemNum == PROBPRCPABV144) || (elemNum == PROBPRCPBLW144) ||
+          (elemNum == PROBTMPABV01M) || (elemNum == PROBTMPBLW01M) ||
+          (elemNum == PROBPRCPABV01M) || (elemNum == PROBPRCPBLW01M) ||
+          (elemNum == PROBTMPABV03M) || (elemNum == PROBTMPBLW03M) ||
+          (elemNum == PROBPRCPABV03M) || (elemNum == PROBPRCPBLW03M)) {
+         meta->pds2.sect4.numForeProbs = 2;
+      } else {
+         meta->pds2.sect4.numForeProbs = GRIB2MISSING_u1;
+      }
+      if ((elemNum == PROBTMPABV144) || (elemNum == PROBPRCPABV144) ||
+          (elemNum == PROBTMPABV01M) || (elemNum == PROBPRCPABV01M) ||
+          (elemNum == PROBTMPABV03M) || (elemNum == PROBPRCPABV03M)) {
+         meta->pds2.sect4.probType = 3;
+      } else if ((elemNum == PROBTMPBLW144) || (elemNum == PROBPRCPBLW144) ||
+          (elemNum == PROBTMPBLW01M) || (elemNum == PROBPRCPBLW01M) ||
+          (elemNum == PROBTMPBLW03M) || (elemNum == PROBPRCPBLW03M)) {
+         meta->pds2.sect4.probType = 0;
+      } else {
+         meta->pds2.sect4.probType = 1;
+      }
 
       if ((elemNum == PROBWINDSPD34C) || (elemNum == PROBWINDSPD34I) ||
           (elemNum == PROBWINDSPD50C) || (elemNum == PROBWINDSPD50I) ||
-          (elemNum == PROBWINDSPD64C) || (elemNum == PROBWINDSPD64I)) {
+          (elemNum == PROBWINDSPD64C) || (elemNum == PROBWINDSPD64I) ||
+          (elemNum == PROBTMPABV144) || (elemNum == PROBTMPBLW144) ||
+          (elemNum == PROBPRCPABV144) || (elemNum == PROBPRCPBLW144) ||
+          (elemNum == PROBTMPABV01M) || (elemNum == PROBTMPBLW01M) ||
+          (elemNum == PROBPRCPABV01M) || (elemNum == PROBPRCPBLW01M) ||
+          (elemNum == PROBTMPABV03M) || (elemNum == PROBTMPBLW03M) ||
+          (elemNum == PROBPRCPABV03M) || (elemNum == PROBPRCPBLW03M)) {
          meta->pds2.sect4.lowerLimit.factor = 0;
          meta->pds2.sect4.lowerLimit.value = 0;
       } else {
@@ -564,7 +645,13 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
          meta->pds2.sect4.upperLimit.value = 254;
       } else if ((elemNum == PHAIL) || (elemNum == PTORN) || (elemNum == PWIND) ||
                  (elemNum == PXTRMTORN) || (elemNum == PXTRMHAIL) || (elemNum == PXTRMWIND) ||
-                 (elemNum == PTOTSVR) || (elemNum == PTOTXTRM)) {
+                 (elemNum == PTOTSVR) || (elemNum == PTOTXTRM) ||
+                 (elemNum == PROBTMPABV144) || (elemNum == PROBTMPBLW144) ||
+                 (elemNum == PROBPRCPABV144) || (elemNum == PROBPRCPBLW144) ||
+                 (elemNum == PROBTMPABV01M) || (elemNum == PROBTMPBLW01M) ||
+                 (elemNum == PROBPRCPABV01M) || (elemNum == PROBPRCPBLW01M) ||
+                 (elemNum == PROBTMPABV03M) || (elemNum == PROBTMPBLW03M) ||
+                 (elemNum == PROBPRCPABV03M) || (elemNum == PROBPRCPBLW03M)) {
          meta->pds2.sect4.upperLimit.factor = 0; /* Defin of scale factor. */
          meta->pds2.sect4.upperLimit.value = 0;
       } else if ((elemNum == PROBWINDSPD34C) || (elemNum == PROBWINDSPD34I)) {
@@ -590,7 +677,13 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
          meta->pds2.sect4.Interval[0].processID = 1; /* For Accumulation */
       } else if ((elemNum == PHAIL) || (elemNum == PTORN) || (elemNum == PWIND) ||
                  (elemNum == PXTRMTORN) || (elemNum == PXTRMHAIL) || (elemNum == PXTRMWIND) ||
-                 (elemNum == PTOTSVR) || (elemNum == PTOTXTRM)) {
+                 (elemNum == PTOTSVR) || (elemNum == PTOTXTRM) ||
+                 (elemNum == PROBTMPABV144) || (elemNum == PROBTMPBLW144) ||
+                 (elemNum == PROBPRCPABV144) || (elemNum == PROBPRCPBLW144) ||
+                 (elemNum == PROBTMPABV01M) || (elemNum == PROBTMPBLW01M) ||
+                 (elemNum == PROBPRCPABV01M) || (elemNum == PROBPRCPBLW01M) ||
+                 (elemNum == PROBTMPABV03M) || (elemNum == PROBTMPBLW03M) ||
+                 (elemNum == PROBPRCPABV03M) || (elemNum == PROBPRCPBLW03M)) {
          meta->pds2.sect4.Interval[0].processID = 0; /* For Average */
       }
       if ((elemNum == PROBWINDSPD34C) || (elemNum == PROBWINDSPD50C) ||
@@ -602,7 +695,17 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
       } else {
          meta->pds2.sect4.Interval[0].incrType = GRIB2MISSING_u1;
       }
-      meta->pds2.sect4.Interval[0].timeRangeUnit = 1;
+      if ((elemNum == PROBTMPABV144) || (elemNum == PROBTMPBLW144) ||
+          (elemNum == PROBPRCPABV144) || (elemNum == PROBPRCPBLW144)) {
+         meta->pds2.sect4.Interval[0].timeRangeUnit = 2;
+      } else if ((elemNum == PROBTMPABV01M) || (elemNum == PROBTMPBLW01M) ||
+          (elemNum == PROBPRCPABV01M) || (elemNum == PROBPRCPBLW01M) ||
+          (elemNum == PROBTMPABV03M) || (elemNum == PROBTMPBLW03M) ||
+          (elemNum == PROBPRCPABV03M) || (elemNum == PROBPRCPBLW03M)) {
+         meta->pds2.sect4.Interval[0].timeRangeUnit = 3;
+      } else {
+         meta->pds2.sect4.Interval[0].timeRangeUnit = 1;
+      }
       if (elemNum == POP12) {
          meta->pds2.sect4.Interval[0].lenTime = 12;
       } else if ((elemNum == PHAIL) || (elemNum == PTORN) || (elemNum == PWIND) ||
@@ -615,6 +718,15 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
       } else if ((elemNum == PROBWINDSPD34C) || (elemNum == PROBWINDSPD50C) ||
                  (elemNum == PROBWINDSPD64C)) {
          meta->pds2.sect4.Interval[0].lenTime = (valTime - refTime) / 3600;
+      } else if ((elemNum == PROBTMPABV144) || (elemNum == PROBTMPBLW144) ||
+                 (elemNum == PROBPRCPABV144) || (elemNum == PROBPRCPBLW144)) {
+         meta->pds2.sect4.Interval[0].lenTime = 6;
+      } else if ((elemNum == PROBTMPABV01M) || (elemNum == PROBTMPBLW01M) ||
+                 (elemNum == PROBPRCPABV01M) || (elemNum == PROBPRCPBLW01M)) {
+         meta->pds2.sect4.Interval[0].lenTime = 1;
+      } else if ((elemNum == PROBTMPABV03M) || (elemNum == PROBTMPBLW03M) ||
+                 (elemNum == PROBPRCPABV03M) || (elemNum == PROBPRCPBLW03M)) {
+         meta->pds2.sect4.Interval[0].lenTime = 3;
       }
       meta->pds2.sect4.Interval[0].incrUnit = 1;
       meta->pds2.sect4.Interval[0].timeIncr = 0;
