@@ -36,6 +36,8 @@ typedef struct {
    uChar subcat;             /* Specific subcategory of Meteo Product. */
                              /* PDS-S4 | Category Sub-Description */
 
+
+   double foreSec;           /* PDS-S4 | Forecast time in hours */
               /* NOTE: lenTime may be more trouble than it is worth. */
               /* Note: Problem with lenTime and TPC grids */
    sInt4 lenTime;            /* duration of event (APCP06 vs APCP12) */

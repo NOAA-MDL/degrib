@@ -38,65 +38,63 @@
 /* Problems using MISSING to denote all possible, since subcenter = Missing
  * is defined for NDFD. */
 static const genElemDescript NdfdElements[] = {
-   {NDFD_MAX,2, 8,MISSING_2,0, 8,0,0,4,12, 1,0.0,0.0 ,0,-1,-1,-1,-1},
-   {NDFD_MIN,2, 8,MISSING_2,0, 8,0,0,5,12, 1,0.0,0.0 ,0,-1,-1,-1,-1},
-   {NDFD_POP,2, 8,MISSING_2,0, 9,0,1,8,12, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,254,3},
-   {NDFD_TEMP,2, 8,MISSING_2,0, 0,0,0,0,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
-   {NDFD_WD,2, 8,MISSING_2,0, 0,0,2,0,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
-   {NDFD_WS,2, 8,MISSING_2,0, 0,0,2,1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
-   {NDFD_TD,2, 8,MISSING_2,0, 0,0,0,6,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
-   {NDFD_SKY,2, 8,MISSING_2,0, 0,0,6,1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
-   {NDFD_QPF,2, 8,MISSING_2,0, 8,0,1,8,6, 1,0.0,0.0 ,0,-1,-1,-1,-1},
-   {NDFD_SNOW,2, 8,MISSING_2,0, 8,0,1,29,6, 1,0.0,0.0 ,0,-1,-1,-1,-1},
-   {NDFD_WX,2, 8,MISSING_2,0, 0,0,1,192,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
-   {NDFD_WH,2, 8,MISSING_2,0, 0,10,0,5,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
-   {NDFD_AT,2, 8,MISSING_2,0, 0,0,0,193,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
-   {NDFD_RH,2, 8,MISSING_2,0, 0,0,1,1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
-   {NDFD_WG,2, 8,MISSING_2,0, 0,0,2,22,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
-   {NDFD_INC34,2, 8,MISSING_2,0, 9,0,2,1,6, 103,10.0,0.0 ,1,0,0,17491,3},
-   {NDFD_INC50,2, 8,MISSING_2,0, 9,0,2,1,6, 103,10.0,0.0 ,1,0,0,25722,3},
-   {NDFD_INC64,2, 8,MISSING_2,0, 9,0,2,1,6, 103,10.0,0.0 ,1,0,0,32924,3},
-/* Need better handling of time range: changes 6,12,18, but forecast time in hour is constant */
-   {NDFD_CUM34,2, 8,MISSING_2,0, 9,0,2,1,6, 103,10.0,0.0 ,1,0,0,17491,3},
-/* Need better handling of time range: changes 6,12,18, but forecast time in hour is constant */
-   {NDFD_CUM50,2, 8,MISSING_2,0, 9,0,2,1,6, 103,10.0,0.0 ,1,0,0,25722,3},
-/* Need better handling of time range: changes 6,12,18, but forecast time in hour is constant */
-   {NDFD_CUM64,2, 8,MISSING_2,0, 9,0,2,1,6, 103,10.0,0.0 ,1,0,0,32924,3},
+/* 0 */   {NDFD_MAX,2, 8,MISSING_2,0, 8,0,0,4,-1,12, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+/* 1 */   {NDFD_MIN,2, 8,MISSING_2,0, 8,0,0,5,-1,12, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+/* 2 */   {NDFD_POP,2, 8,MISSING_2,0, 9,0,1,8,-1,12, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,254,3},
+/* 3 */   {NDFD_TEMP,2, 8,MISSING_2,0, 0,0,0,0,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+/* 4 */   {NDFD_WD,2, 8,MISSING_2,0, 0,0,2,0,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+/* 5 */   {NDFD_WS,2, 8,MISSING_2,0, 0,0,2,1,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+/* 6 */   {NDFD_TD,2, 8,MISSING_2,0, 0,0,0,6,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+/* 7 */   {NDFD_SKY,2, 8,MISSING_2,0, 0,0,6,1,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+/* 8 */   {NDFD_QPF,2, 8,MISSING_2,0, 8,0,1,8,-1,6, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+/* 9 */   {NDFD_SNOW,2, 8,MISSING_2,0, 8,0,1,29,-1,6, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+/* 10 */   {NDFD_WX,2, 8,MISSING_2,0, 0,0,1,192,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+/* 11 */   {NDFD_WH,2, 8,MISSING_2,0, 0,10,0,5,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+/* 12 */   {NDFD_AT,2, 8,MISSING_2,0, 0,0,0,193,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+/* 13 */   {NDFD_RH,2, 8,MISSING_2,0, 0,0,1,1,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+/* 14 */   {NDFD_WG,2, 8,MISSING_2,0, 0,0,2,22,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
 
-   {NDFD_CONHAZ,2, 8,MISSING_2,0, 8,0,19,194,24, 1,0.0,0.0 ,0,-1,-1,-1,-1},
-   {NDFD_PTORN,2, 8,MISSING_2,0, 9,0,19,197,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
-   {NDFD_PHAIL,2, 8,MISSING_2,0, 9,0,19,198,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
-   {NDFD_PTSTMWIND,2, 8,MISSING_2,0, 9,0,19,199,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
-   {NDFD_PXTORN,2, 8,MISSING_2,0, 9,0,19,200,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
-   {NDFD_PXHAIL,2, 8,MISSING_2,0, 9,0,19,201,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
-   {NDFD_PXTSTMWIND,2, 8,MISSING_2,0, 9,0,19,202,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+/* 15 */   {NDFD_INC34,2, 8,MISSING_2,0, 9,0,2,1,-1,6, 103,10.0,0.0 ,1,0,0,17491,3},
+/* 16 */   {NDFD_INC50,2, 8,MISSING_2,0, 9,0,2,1,-1,6, 103,10.0,0.0 ,1,0,0,25722,3},
+/* 17 */   {NDFD_INC64,2, 8,MISSING_2,0, 9,0,2,1,-1,6, 103,10.0,0.0 ,1,0,0,32924,3},
+/* 18 */   {NDFD_CUM34,2, 8,MISSING_2,0, 9,0,2,1,0,0, 103,10.0,0.0 ,1,0,0,17491,3},
+/* 19 */   {NDFD_CUM50,2, 8,MISSING_2,0, 9,0,2,1,0,0, 103,10.0,0.0 ,1,0,0,25722,3},
+/* 20 */   {NDFD_CUM64,2, 8,MISSING_2,0, 9,0,2,1,0,0, 103,10.0,0.0 ,1,0,0,32924,3},
+
+/* 21 */   {NDFD_CONHAZ,2, 8,MISSING_2,0, 8,0,19,194,-1,24, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+/* 22 */   {NDFD_PTORN,2, 8,MISSING_2,0, 9,0,19,197,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+/* 23 */   {NDFD_PHAIL,2, 8,MISSING_2,0, 9,0,19,198,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+/* 24 */   {NDFD_PTSTMWIND,2, 8,MISSING_2,0, 9,0,19,199,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+/* 25 */   {NDFD_PXTORN,2, 8,MISSING_2,0, 9,0,19,200,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+/* 26 */   {NDFD_PXHAIL,2, 8,MISSING_2,0, 9,0,19,201,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+/* 27 */   {NDFD_PXTSTMWIND,2, 8,MISSING_2,0, 9,0,19,202,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
 /* Following two lines changed from 203->215 and 204->216 9/19/2007 */
-   {NDFD_PSTORM,2, 8,MISSING_2,0, 9,0,19,215,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
-   {NDFD_PXSTORM,2, 8,MISSING_2,0, 9,0,19,216,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+/* 0 */   {NDFD_PSTORM,2, 8,MISSING_2,0, 9,0,19,215,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+/* 0 */   {NDFD_PXSTORM,2, 8,MISSING_2,0, 9,0,19,216,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
 
 /* If we have to change the 0,0,0,0 for lower/upper Value/Factor, also update
  * cube.c :: line 634, 655 */
    /* the 6 in the length of time column stands for 6 days... */
-   {NDFD_TMPABV14D,2, 8,MISSING_2,0, 9,0,0,0,6, 1,0.0,0.0, 3,0,0,0,0},
-   {NDFD_TMPBLW14D,2, 8,MISSING_2,0, 9,0,0,0,6, 1,0.0,0.0, 0,0,0,0,0},
-   {NDFD_PRCPABV14D,2, 8,MISSING_2,0, 9,0,1,8,6, 1,0.0,0.0, 3,0,0,0,0},
-   {NDFD_PRCPBLW14D,2, 8,MISSING_2,0, 9,0,1,8,6, 1,0.0,0.0, 0,0,0,0,0},
+/* 0 */   {NDFD_TMPABV14D,2, 8,MISSING_2,0, 9,0,0,0,-1,6, 1,0.0,0.0, 3,0,0,0,0},
+/* 0 */   {NDFD_TMPBLW14D,2, 8,MISSING_2,0, 9,0,0,0,-1,6, 1,0.0,0.0, 0,0,0,0,0},
+/* 0 */   {NDFD_PRCPABV14D,2, 8,MISSING_2,0, 9,0,1,8,-1,6, 1,0.0,0.0, 3,0,0,0,0},
+/* 0 */   {NDFD_PRCPBLW14D,2, 8,MISSING_2,0, 9,0,1,8,-1,6, 1,0.0,0.0, 0,0,0,0,0},
    /* the 1 in the length of time column stands for 1 month... */
-   {NDFD_TMPABV30D,2, 8,MISSING_2,0, 9,0,0,0,1, 1,0.0,0.0, 3,0,0,0,0},
-   {NDFD_TMPBLW30D,2, 8,MISSING_2,0, 9,0,0,0,1, 1,0.0,0.0, 0,0,0,0,0},
-   {NDFD_PRCPABV30D,2, 8,MISSING_2,0, 9,0,1,8,1, 1,0.0,0.0, 3,0,0,0,0},
-   {NDFD_PRCPBLW30D,2, 8,MISSING_2,0, 9,0,1,8,1, 1,0.0,0.0, 0,0,0,0,0},
+/* 0 */   {NDFD_TMPABV30D,2, 8,MISSING_2,0, 9,0,0,0,-1,1, 1,0.0,0.0, 3,0,0,0,0},
+/* 0 */   {NDFD_TMPBLW30D,2, 8,MISSING_2,0, 9,0,0,0,-1,1, 1,0.0,0.0, 0,0,0,0,0},
+/* 0 */   {NDFD_PRCPABV30D,2, 8,MISSING_2,0, 9,0,1,8,-1,1, 1,0.0,0.0, 3,0,0,0,0},
+/* 0 */   {NDFD_PRCPBLW30D,2, 8,MISSING_2,0, 9,0,1,8,-1,1, 1,0.0,0.0, 0,0,0,0,0},
    /* the 3 in the length of time column stands for 3 months... */
-   {NDFD_TMPABV90D,2, 8,MISSING_2,0, 9,0,0,0,3, 1,0.0,0.0, 3,0,0,0,0},
-   {NDFD_TMPBLW90D,2, 8,MISSING_2,0, 9,0,0,0,3, 1,0.0,0.0, 0,0,0,0,0},
-   {NDFD_PRCPABV90D,2, 8,MISSING_2,0, 9,0,1,8,3, 1,0.0,0.0, 3,0,0,0,0},
-   {NDFD_PRCPBLW90D,2, 8,MISSING_2,0, 9,0,1,8,3, 1,0.0,0.0, 0,0,0,0,0},
+/* 0 */   {NDFD_TMPABV90D,2, 8,MISSING_2,0, 9,0,0,0,-1,3, 1,0.0,0.0, 3,0,0,0,0},
+/* 0 */   {NDFD_TMPBLW90D,2, 8,MISSING_2,0, 9,0,0,0,-1,3, 1,0.0,0.0, 0,0,0,0,0},
+/* 0 */   {NDFD_PRCPABV90D,2, 8,MISSING_2,0, 9,0,1,8,-1,3, 1,0.0,0.0, 3,0,0,0,0},
+/* 0 */   {NDFD_PRCPBLW90D,2, 8,MISSING_2,0, 9,0,1,8,-1,3, 1,0.0,0.0, 0,0,0,0,0},
 
    {NDFD_UNDEF,2, MISSING_2,MISSING_2,MISSING_1,
-                  MISSING_2,MISSING_1,MISSING_1,MISSING_1,0,
+                  MISSING_2,MISSING_1,MISSING_1,MISSING_1,-1,0,
                   MISSING_1,0.0,0.0, 0,-1,-1,-1,-1},
    {NDFD_MATCHALL,0, MISSING_2,MISSING_2,MISSING_1,
-                     MISSING_2,MISSING_1,MISSING_1,MISSING_1,0,
+                     MISSING_2,MISSING_1,MISSING_1,MISSING_1,-1,0,
                      MISSING_1,0.0,0.0, 0,-1,-1,-1,-1}
 };
 
@@ -529,9 +527,10 @@ static int genElemMatchMeta (const genElemDescript * elem,
    if (((meta->pds2.sect4.templat == 8) ||
         (meta->pds2.sect4.templat == 9)) &&
        (meta->pds2.sect4.numInterval == 1)) {
-   printf ("%d %d %d %d %d %d %d %d %ld %d %f %f %d: %ld %d %ld %d\n", meta->GribVersion,
+   printf ("%d %d %d %d %d %d %d %d %f %ld %d %f %f %d: %ld %d %ld %d\n", meta->GribVersion,
            meta->center, meta->subcenter, meta->pds2.sect4.genID, meta->pds2.prodType,
-           meta->pds2.sect4.templat, meta->pds2.sect4.cat, meta->pds2.sect4.subcat, meta->pds2.sect4.Interval[0].lenTime,
+           meta->pds2.sect4.templat, meta->pds2.sect4.cat, meta->pds2.sect4.subcat, meta->pds2.sect4.foreSec,
+           meta->pds2.sect4.Interval[0].lenTime,
            meta->pds2.sect4.fstSurfType, meta->pds2.sect4.fstSurfValue, meta->pds2.sect4.sndSurfValue,
            meta->pds2.sect4.probType, meta->pds2.sect4.lowerLimit.value, meta->pds2.sect4.lowerLimit.factor,
            meta->pds2.sect4.upperLimit.value, meta->pds2.sect4.upperLimit.factor);
@@ -570,9 +569,15 @@ static int genElemMatchMeta (const genElemDescript * elem,
         (meta->pds2.sect4.templat == 9)) &&
        (meta->pds2.sect4.numInterval == 1)) {
       if ((elem->lenTime != 0) &&
-          (elem->lenTime != meta->pds2.sect4.Interval[0].lenTime))
+          (elem->lenTime != meta->pds2.sect4.Interval[0].lenTime)) {
          return 0;
+      }
+      if ((elem->foreSec != -1) &&
+          (elem->foreSec != meta->pds2.sect4.foreSec)) {
+         return 0;
+      }
    }
+
    if (elem->surfType != MISSING_1) {
       if (elem->surfType != meta->pds2.sect4.fstSurfType)
          return 0;
@@ -581,6 +586,7 @@ static int genElemMatchMeta (const genElemDescript * elem,
       if (elem->sndValue != meta->pds2.sect4.sndSurfValue)
          return 0;
    }
+
    if (meta->pds2.sect4.templat == 9) {
       if (elem->probType != meta->pds2.sect4.probType) {
          return 0;
@@ -603,6 +609,9 @@ static int genElemMatchMeta (const genElemDescript * elem,
 uChar genNdfdEnum_fromMeta (const grib_MetaData *meta) {
    uShort2 i;           /* Used to help find the ndfdEnum value. */
    sInt4 lenTime;
+   sInt4 lcl_lenTime;
+   double foreSec;
+   double lcl_foreSec;
    uChar probType;
    sInt4 lowerVal;
    sChar lowerFact;
@@ -616,8 +625,10 @@ uChar genNdfdEnum_fromMeta (const grib_MetaData *meta) {
         (meta->pds2.sect4.templat == 9)) &&
        (meta->pds2.sect4.numInterval == 1)) {
       lenTime = meta->pds2.sect4.Interval[0].lenTime;
+      foreSec = meta->pds2.sect4.foreSec;
    } else {
       lenTime = 0;
+      foreSec = -1;
    }
    if ((meta->pds2.sect4.templat == 9)) {
       probType = meta->pds2.sect4.probType;
@@ -636,6 +647,16 @@ uChar genNdfdEnum_fromMeta (const grib_MetaData *meta) {
    /* Determine the ndfdEnum for this element. Note, ndfdEnum is already
     * initialized to NDFD_UNDEF. */
    for (i = 0; i < NdfdElementsLen; i++) {
+      if (NdfdElements[i].foreSec == -1) {
+         lcl_foreSec = -1;
+      } else {
+         lcl_foreSec = foreSec;
+      }
+      if (NdfdElements[i].lenTime == 0) {
+         lcl_lenTime = 0;
+      } else {
+         lcl_lenTime = lenTime;
+      }
       if ((NdfdElements[i].version == meta->GribVersion) &&
           (NdfdElements[i].center == meta->center) &&
           (NdfdElements[i].subcenter == meta->subcenter) &&
@@ -644,7 +665,7 @@ uChar genNdfdEnum_fromMeta (const grib_MetaData *meta) {
           (NdfdElements[i].templat == meta->pds2.sect4.templat) &&
           (NdfdElements[i].cat == meta->pds2.sect4.cat) &&
           (NdfdElements[i].subcat == meta->pds2.sect4.subcat) &&
-          (NdfdElements[i].lenTime == lenTime) &&
+          (NdfdElements[i].lenTime == lcl_lenTime) && (NdfdElements[i].foreSec == lcl_foreSec) &&
           (NdfdElements[i].surfType == meta->pds2.sect4.fstSurfType) &&
           (NdfdElements[i].value == meta->pds2.sect4.fstSurfValue) &&
           (NdfdElements[i].sndValue == meta->pds2.sect4.sndSurfValue) &&
@@ -703,8 +724,14 @@ static void setGenElem (genElemDescript * elem, const grib_MetaData *meta)
         (meta->pds2.sect4.templat == 9)) &&
        (meta->pds2.sect4.numInterval == 1)) {
       elem->lenTime = meta->pds2.sect4.Interval[0].lenTime;
+      if (NdfdElements[elem->ndfdEnum].foreSec != -1) {
+         elem->foreSec = meta->pds2.sect4.foreSec;
+      } else {
+         elem->foreSec = -1;
+      }
    } else {
       elem->lenTime = 0;
+      elem->foreSec = -1;
    }
    if ((meta->pds2.sect4.templat == 9)) {
       elem->probType = meta->pds2.sect4.probType;
@@ -1446,6 +1473,13 @@ static int genProbeGrib (FILE *fp, size_t numPnts, const Point * pnts,
          MetaFree (&meta);
          continue;
       }
+
+#ifdef DEBUG
+/*
+      elemEnum = genNdfdEnum_fromMeta (&meta);
+      printf ("Element is entry %d\n", elemEnum);
+*/
+#endif
 
       /* Check if we're interested in this data based on an element match. */
       for (i = 0; i < numElem; i++) {
