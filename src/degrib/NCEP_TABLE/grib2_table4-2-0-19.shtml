@@ -527,7 +527,7 @@ Probability of Extreme Severe Thunderstorms (Days 2,3)</td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">Mean
 Icing Potential<br>
       </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">kg m<sup>-2</sup></td>
       </td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">MEIP<br>
       </td>
@@ -538,7 +538,7 @@ Icing Potential<br>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">Maximum
 Icing Potential<br>
       </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">kg m<sup>-2</sup></td>
       </td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">MAIP<br>
       </td>
@@ -549,7 +549,7 @@ Icing Potential<br>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">Mean
 in-Cloud Turbulence Potential<br>
       </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">kg m<sup>-2</sup></td>
       </td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">MECTP<br>
       </td>
@@ -560,7 +560,7 @@ in-Cloud Turbulence Potential<br>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">Max
 in-Cloud Turbulence Potential<br>
       </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">kg m<sup>-2</sup></td>
       </td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">MACTP<br>
       </td>
@@ -569,9 +569,9 @@ in-Cloud Turbulence Potential<br>
       <td
  style="text-align: center; vertical-align: top; color: rgb(255, 0, 0);">221</td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">Mean
-Cloud Air Turbulence Potentia<br>
+Cloud Air Turbulence Potential<br>
       </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">kg m<sup>-2</sup></td>
       </td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">MECAT<br>
       </td>
@@ -580,9 +580,9 @@ Cloud Air Turbulence Potentia<br>
       <td
  style="text-align: center; vertical-align: top; color: rgb(255, 0, 0);">222</td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">Maximum
-Cloud Air Turbulence Potentia<br>
+Cloud Air Turbulence Potential<br>
       </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">kg m<sup>-2</sup></td>
       </td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">MACAT<br>
       </td>
@@ -692,7 +692,7 @@ Height at Embedded Cumulonimbus Top<br>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">Volcanic
 Ash Forecast Transport and Dispersion<br>
       </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">log10(kg/m<sup>3</sup>)<br>
       </td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">VAFTD<br>
       </td>

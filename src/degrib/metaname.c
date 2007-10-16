@@ -814,7 +814,7 @@ GRIB2ParmTable MeteoAtmos[] = {
    /* 0 */ {"VIS", "Visibility", "m", UC_NONE},
    /* 1 */ {"ALBDO", "Albedo", "%", UC_NONE},
    /* 2 */ {"TSTM", "Thunderstorm probability", "%", UC_NONE},
-   /* 3 */ {"MIXHT", "mixed layer depth", "m", UC_NONE},
+   /* 3 */ {"MIXHT", "Mixed layer depth", "m", UC_NONE},
    /* 4 */ {"", "Volcanic ash", "0=not present; 1=present; 255=missing", UC_NONE},
    /* 5 */ {"", "Icing top", "m", UC_NONE},
    /* 6 */ {"", "Icing base", "m", UC_NONE},
@@ -825,7 +825,7 @@ GRIB2ParmTable MeteoAtmos[] = {
    /* 10 */ {"", "Turbulance", "0=None(smooth); 1=Light; 2=Moderate; "
              "3=Severe; 4=Extreme; 255=missing", UC_NONE},
    /* 11 */ {"TKE", "Turbulent kinetic energy", "J/kg", UC_NONE},
-   /* 12 */ {"", "Planetary boundary layer regime", "0=Reserved; 1=Stable; "
+   /* 12 */ {"PBLREG", "Planetary boundary layer regime", "0=Reserved; 1=Stable; "
              "2=Mechanically driven turbulence; 3=Forced convection; "
              "4=Free convection; 255=missing", UC_NONE},
    /* 13 */ {"", "Contrail intensity", "0=Contrail not present; "
@@ -1290,9 +1290,9 @@ GRIB2LocalTable NCEP_LclTable[] = {
             {0, 2, 202, "LAPP", "Latitude of Presure Point", "deg", UC_NONE},
             {0, 2, 203, "LOPP", "Longitude of Presure Point", "deg", UC_NONE},
             {0, 2, 204, "VEDH", "Vertical Eddy Diffusivity Heat exchange", "m^2/s", UC_NONE},
-            {0, 2, 205, "COVMZ", "Covariance between Meridional and Zonal Components of the wind", "k*m/s", UC_NONE},
-            {0, 2, 206, "COVTZ", "Covariance between Temperature and Zonal Components of the wind", "k*m/s", UC_NONE},
-            {0, 2, 207, "COVTM", "Covariance between Temperature and Meridional Components of the wind", "k*m/s", UC_NONE},
+            {0, 2, 205, "COVMZ", "Covariance between Meridional and Zonal Components of the wind", "m^2/s^2", UC_NONE},
+            {0, 2, 206, "COVTZ", "Covariance between Temperature and Zonal Components of the wind", "K*m/s", UC_NONE},
+            {0, 2, 207, "COVTM", "Covariance between Temperature and Meridional Components of the wind", "K*m/s", UC_NONE},
             {0, 2, 208, "VDFUA", "Vertical Diffusion Zonal Acceleration", "m/s^2", UC_NONE},
             {0, 2, 209, "VDFVA", "Vertical Diffusion Meridional Acceleration", "m/s^2", UC_NONE},
 
@@ -1382,10 +1382,10 @@ GRIB2LocalTable NCEP_LclTable[] = {
             {0, 19, 202, "", "Significant Wind probability", "%", UC_NONE},
             {0, 19, 203, "TSTMC", "Categorical Thunderstorm", "0=no; 1=yes", UC_NONE},
             {0, 19, 204, "MIXLY", "Number of mixed layers next to surface", "integer", UC_NONE},
-            {0, 19, 205, "CIFLT", "Confidence Flight Category", "-", UC_NONE},
-            {0, 19, 206, "CIVIS", "Confidence Visibility", "-", UC_NONE},
-            {0, 19, 207, "CICEL", "Confidence Ceiling", "-", UC_NONE},
-            {0, 19, 208, "FLGHT", "Flight Category", "-", UC_NONE},
+            {0, 19, 205, "FLGHT", "Flight Category", "-", UC_NONE},
+            {0, 19, 206, "CICEL", "Confidence Ceiling", "-", UC_NONE},
+            {0, 19, 207, "CIVIS", "Confidence Visibility", "-", UC_NONE},
+            {0, 19, 208, "CIFLT", "Confidence Flight Category", "-", UC_NONE},
             {0, 19, 209, "LAVNI", "Low Level aviation interest", "-", UC_NONE},
             {0, 19, 210, "HAVNI", "High Level aviation interest", "-", UC_NONE},
             {0, 19, 211, "SBSALB", "Visible; Black Sky Albedo", "%", UC_NONE},
@@ -1394,12 +1394,12 @@ GRIB2LocalTable NCEP_LclTable[] = {
             {0, 19, 214, "NWSALB", "Near IR; White Sky Albedo", "%", UC_NONE},
             {0, 19, 215, "PRSVR", "Total Probability of Severe Thunderstorms (Days 2,3)", "%", UC_NONE},
             {0, 19, 216, "PRSIGSVR", "Total Probability of Extreme Severe Thunderstorms (Days 2,3)", "%", UC_NONE},
-            {0, 19, 217, "MEIP", "Mean Icing Potential", "-", UC_NONE},
-            {0, 19, 218, "MAIP", "Maximum Icing Potential", "-", UC_NONE},
-            {0, 19, 219, "MECTP", "Mean in-Cloud Turbulence Potential", "-", UC_NONE},
-            {0, 19, 220, "MACTP", "Max in-Cloud Turbulence Potential", "-", UC_NONE},
-            {0, 19, 221, "MECAT", "Mean Cloud Air Turbulence Potential", "-", UC_NONE},
-            {0, 19, 222, "MACAT", "Maximum Cloud Air Turbulence Potential", "-", UC_NONE},
+            {0, 19, 217, "MEIP", "Mean Icing Potential", "kg/m^2", UC_NONE},
+            {0, 19, 218, "MAIP", "Maximum Icing Potential", "kg/m^2", UC_NONE},
+            {0, 19, 219, "MECTP", "Mean in-Cloud Turbulence Potential", "kg/m^2", UC_NONE},
+            {0, 19, 220, "MACTP", "Max in-Cloud Turbulence Potential", "kg/m^2", UC_NONE},
+            {0, 19, 221, "MECAT", "Mean Cloud Air Turbulence Potential", "kg/m^2", UC_NONE},
+            {0, 19, 222, "MACAT", "Maximum Cloud Air Turbulence Potential", "kg/m^2", UC_NONE},
             {0, 19, 223, "CBHE", "Cumulonimbus Horizontal Extent", "%", UC_NONE},
             {0, 19, 224, "PCBB", "Pressure at Cumulonimbus Base", "Pa", UC_NONE},
             {0, 19, 225, "PCBT", "Pressure at Cumulonimbus Top", "Pa", UC_NONE},
@@ -1409,7 +1409,7 @@ GRIB2LocalTable NCEP_LclTable[] = {
             {0, 19, 229, "HCBT", "ICAO Height at Cumulonimbus Top", "m", UC_NONE},
             {0, 19, 230, "HECBB", "ICAO Height at Embedded Cumulonimbus Base", "m", UC_NONE},
             {0, 19, 231, "HECBT", "ICAO Height at Embedded Cumulonimbus Top", "m", UC_NONE},
-            {0, 19, 232, "VAFTD", "Volcanic Ash Forecast Transport and Dispersion", "-", UC_NONE},
+            {0, 19, 232, "VAFTD", "Volcanic Ash Forecast Transport and Dispersion", "log10(kg/m^3)", UC_NONE},
 
    /* 47 */ {0, 191, 192, "NLAT", "Latitude (-90 to 90)", "deg", UC_NONE},
    /* 48 */ {0, 191, 193, "ELON", "East Longitude (0 to 360)", "deg", UC_NONE},
@@ -1473,7 +1473,7 @@ GRIB2LocalTable NCEP_LclTable[] = {
            {10, 3, 194, "ELEV", "Ocean Surface Elevation Relative to Geoid", "m", UC_NONE},
            {10, 3, 195, "SSHG", "Sea Surface Height Relative to Geoid", "m", UC_NONE},
            {10, 3, 196, "WTMPC", "3-D Temperature", "deg C", UC_NONE},
-           {10, 3, 197, "SALIN", "3-D Salinity", "psu", UC_NONE},
+           {10, 3, 197, "SALIN", "3-D Salinity", "", UC_NONE},
 };
 /* *INDENT-ON* */
 

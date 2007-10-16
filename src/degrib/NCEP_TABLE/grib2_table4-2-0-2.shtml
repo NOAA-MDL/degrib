@@ -420,14 +420,14 @@ for Local Use<br>
       <td style="vertical-align: top; text-align: center; color: red ;">206<br></td>
       <td style="vertical-align: top; color: red ;">Covariance between Temperature and Zonal<br>
        Components of the wind.</td>
-      <td style="vertical-align: top; color: red ;">k*m s<sup>-1</sup></td>
+      <td style="vertical-align: top; color: red ;">K*m s<sup>-1</sup></td>
       <td style="vertical-align: top; color: red ;">COVTZ</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center; color: red ;">207<br></td>
       <td style="vertical-align: top; color: red ;">Covariance between Temperature and Meridional<br>
        Components of the wind.</td>
-      <td style="vertical-align: top; color: red ;">k*m s<sup>-1</sup></td>
+      <td style="vertical-align: top; color: red ;">K*m s<sup>-1</sup></td>
       <td style="vertical-align: top; color: red ;">COVTM</td>
     </tr>
     <tr>
