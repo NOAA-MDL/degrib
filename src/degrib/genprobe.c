@@ -77,20 +77,20 @@ static const genElemDescript NdfdElements[] = {
 /* If we have to change the 0,0,0,0 for lower/upper Value/Factor, also update
  * cube.c :: line 634, 655 */
    /* the 6 in the length of time column stands for 6 days... */
-   {NDFD_TEMP814ABV,2, 8,MISSING_2,0, 9,0,0,0,6, 1,0.0,0.0, 3,0,0,0,0},
-   {NDFD_TEMP814BEL,2, 8,MISSING_2,0, 9,0,0,0,6, 1,0.0,0.0, 0,0,0,0,0},
-   {NDFD_PRECIP814ABV,2, 8,MISSING_2,0, 9,0,1,8,6, 1,0.0,0.0, 3,0,0,0,0},
-   {NDFD_PRECIP814BEL,2, 8,MISSING_2,0, 9,0,1,8,6, 1,0.0,0.0, 0,0,0,0,0},
+   {NDFD_TMPABV14D,2, 8,MISSING_2,0, 9,0,0,0,6, 1,0.0,0.0, 3,0,0,0,0},
+   {NDFD_TMPBLW14D,2, 8,MISSING_2,0, 9,0,0,0,6, 1,0.0,0.0, 0,0,0,0,0},
+   {NDFD_PRCPABV14D,2, 8,MISSING_2,0, 9,0,1,8,6, 1,0.0,0.0, 3,0,0,0,0},
+   {NDFD_PRCPBLW14D,2, 8,MISSING_2,0, 9,0,1,8,6, 1,0.0,0.0, 0,0,0,0,0},
    /* the 1 in the length of time column stands for 1 month... */
-   {NDFD_TEMPMONTHABV,2, 8,MISSING_2,0, 9,0,0,0,1, 1,0.0,0.0, 3,0,0,0,0},
-   {NDFD_TEMPMONTHBEL,2, 8,MISSING_2,0, 9,0,0,0,1, 1,0.0,0.0, 0,0,0,0,0},
-   {NDFD_PRECIPMONTHABV,2, 8,MISSING_2,0, 9,0,1,8,1, 1,0.0,0.0, 3,0,0,0,0},
-   {NDFD_PRECIPMONTHBEL,2, 8,MISSING_2,0, 9,0,1,8,1, 1,0.0,0.0, 0,0,0,0,0},
+   {NDFD_TMPABV30D,2, 8,MISSING_2,0, 9,0,0,0,1, 1,0.0,0.0, 3,0,0,0,0},
+   {NDFD_TMPBLW30D,2, 8,MISSING_2,0, 9,0,0,0,1, 1,0.0,0.0, 0,0,0,0,0},
+   {NDFD_PRCPABV30D,2, 8,MISSING_2,0, 9,0,1,8,1, 1,0.0,0.0, 3,0,0,0,0},
+   {NDFD_PRCPBLW30D,2, 8,MISSING_2,0, 9,0,1,8,1, 1,0.0,0.0, 0,0,0,0,0},
    /* the 3 in the length of time column stands for 3 months... */
-   {NDFD_TEMP3MONTHABV,2, 8,MISSING_2,0, 9,0,0,0,3, 1,0.0,0.0, 3,0,0,0,0},
-   {NDFD_TEMP3MONTHBEL,2, 8,MISSING_2,0, 9,0,0,0,3, 1,0.0,0.0, 0,0,0,0,0},
-   {NDFD_PRECIP3MONTHABV,2, 8,MISSING_2,0, 9,0,1,8,3, 1,0.0,0.0, 3,0,0,0,0},
-   {NDFD_PRECIP3MONTHBEL,2, 8,MISSING_2,0, 9,0,1,8,3, 1,0.0,0.0, 0,0,0,0,0},
+   {NDFD_TMPABV90D,2, 8,MISSING_2,0, 9,0,0,0,3, 1,0.0,0.0, 3,0,0,0,0},
+   {NDFD_TMPBLW90D,2, 8,MISSING_2,0, 9,0,0,0,3, 1,0.0,0.0, 0,0,0,0,0},
+   {NDFD_PRCPABV90D,2, 8,MISSING_2,0, 9,0,1,8,3, 1,0.0,0.0, 3,0,0,0,0},
+   {NDFD_PRCPBLW90D,2, 8,MISSING_2,0, 9,0,1,8,3, 1,0.0,0.0, 0,0,0,0,0},
 
    {NDFD_UNDEF,2, MISSING_2,MISSING_2,MISSING_1,
                   MISSING_2,MISSING_1,MISSING_1,MISSING_1,0,
