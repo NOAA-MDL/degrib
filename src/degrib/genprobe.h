@@ -37,6 +37,7 @@ typedef struct {
                              /* PDS-S4 | Category Sub-Description */
 
               /* NOTE: lenTime may be more trouble than it is worth. */
+              /* Note: Problem with lenTime and TPC grids */
    sInt4 lenTime;            /* duration of event (APCP06 vs APCP12) */
                              /* PDS-S4 | Time range for processing */
 
@@ -47,10 +48,10 @@ typedef struct {
 
    uChar probType;           /* PDS-S4 | Probability type */
                              /* (3 is above) (0 is below) */
-/* Probability info. */
-/* double lowerProb,
-   double upperProb,
-*/
+   sInt4 lowerVal;           /* PDS-S4 | Lower limit | -1 is missing */
+   sChar lowerFact;
+   sInt4 upperVal;           /* PDS-S4 | Lower limit | -1 is missing */
+   sChar upperFact;
 } genElemDescript;
 
 /* What about missing values? */

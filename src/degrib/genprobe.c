@@ -38,61 +38,66 @@
 /* Problems using MISSING to denote all possible, since subcenter = Missing
  * is defined for NDFD. */
 static const genElemDescript NdfdElements[] = {
-   {NDFD_MAX,2, 8,MISSING_2,0, 8,0,0,4,12, 1,0.0,0.0 ,0},
-   {NDFD_MIN,2, 8,MISSING_2,0, 8,0,0,5,12, 1,0.0,0.0 ,0},
-   {NDFD_POP,2, 8,MISSING_2,0, 9,0,1,8,12, 1,0.0,0.0 ,1},  
-   {NDFD_TEMP,2, 8,MISSING_2,0, 0,0,0,0,0, 1,0.0,0.0 ,0},
-   {NDFD_WD,2, 8,MISSING_2,0, 0,0,2,0,0, 1,0.0,0.0 ,0},
-   {NDFD_WS,2, 8,MISSING_2,0, 0,0,2,1,0, 1,0.0,0.0 ,0},
-   {NDFD_TD,2, 8,MISSING_2,0, 0,0,0,6,0, 1,0.0,0.0 ,0},
-   {NDFD_SKY,2, 8,MISSING_2,0, 0,0,6,1,0, 1,0.0,0.0 ,0},
-   {NDFD_QPF,2, 8,MISSING_2,0, 8,0,1,8,6, 1,0.0,0.0 ,0},
-   {NDFD_SNOW,2, 8,MISSING_2,0, 8,0,1,29,6, 1,0.0,0.0 ,0},
-   {NDFD_WX,2, 8,MISSING_2,0, 0,0,1,192,0, 1,0.0,0.0 ,0},
-   {NDFD_WH,2, 8,MISSING_2,0, 0,10,0,5,0, 1,0.0,0.0 ,0},
-   {NDFD_AT,2, 8,MISSING_2,0, 0,0,0,193,0, 1,0.0,0.0 ,0},
-   {NDFD_RH,2, 8,MISSING_2,0, 0,0,1,1,0, 1,0.0,0.0 ,0},
-   {NDFD_WG,2, 8,MISSING_2,0, 0,0,2,22,0, 1,0.0,0.0 ,0},
-   {NDFD_INC34,2, 8,MISSING_2,0, 9,0,2,1,6, 103,10.0,0.0 ,1}, /* */
-   {NDFD_INC50,2, 8,MISSING_2,0, 9,0,2,1,6, 103,10.0,0.0 ,1}, /* */
-   {NDFD_INC64,2, 8,MISSING_2,0, 9,0,2,1,6, 103,10.0,0.0 ,1}, /* */
-   {NDFD_CUM34,2, 8,MISSING_2,0, 9,0,2,1,6, 103,10.0,0.0 ,1}, /* */
-   {NDFD_CUM50,2, 8,MISSING_2,0, 9,0,2,1,6, 103,10.0,0.0 ,1}, /* */
-   {NDFD_CUM64,2, 8,MISSING_2,0, 9,0,2,1,6, 103,10.0,0.0 ,1}, /* */
+   {NDFD_MAX,2, 8,MISSING_2,0, 8,0,0,4,12, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+   {NDFD_MIN,2, 8,MISSING_2,0, 8,0,0,5,12, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+   {NDFD_POP,2, 8,MISSING_2,0, 9,0,1,8,12, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,254,3},
+   {NDFD_TEMP,2, 8,MISSING_2,0, 0,0,0,0,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+   {NDFD_WD,2, 8,MISSING_2,0, 0,0,2,0,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+   {NDFD_WS,2, 8,MISSING_2,0, 0,0,2,1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+   {NDFD_TD,2, 8,MISSING_2,0, 0,0,0,6,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+   {NDFD_SKY,2, 8,MISSING_2,0, 0,0,6,1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+   {NDFD_QPF,2, 8,MISSING_2,0, 8,0,1,8,6, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+   {NDFD_SNOW,2, 8,MISSING_2,0, 8,0,1,29,6, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+   {NDFD_WX,2, 8,MISSING_2,0, 0,0,1,192,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+   {NDFD_WH,2, 8,MISSING_2,0, 0,10,0,5,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+   {NDFD_AT,2, 8,MISSING_2,0, 0,0,0,193,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+   {NDFD_RH,2, 8,MISSING_2,0, 0,0,1,1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+   {NDFD_WG,2, 8,MISSING_2,0, 0,0,2,22,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+   {NDFD_INC34,2, 8,MISSING_2,0, 9,0,2,1,6, 103,10.0,0.0 ,1,0,0,17491,3},
+   {NDFD_INC50,2, 8,MISSING_2,0, 9,0,2,1,6, 103,10.0,0.0 ,1,0,0,25722,3},
+   {NDFD_INC64,2, 8,MISSING_2,0, 9,0,2,1,6, 103,10.0,0.0 ,1,0,0,32924,3},
+/* Need better handling of time range: changes 6,12,18, but forecast time in hour is constant */
+   {NDFD_CUM34,2, 8,MISSING_2,0, 9,0,2,1,6, 103,10.0,0.0 ,1,0,0,17491,3},
+/* Need better handling of time range: changes 6,12,18, but forecast time in hour is constant */
+   {NDFD_CUM50,2, 8,MISSING_2,0, 9,0,2,1,6, 103,10.0,0.0 ,1,0,0,25722,3},
+/* Need better handling of time range: changes 6,12,18, but forecast time in hour is constant */
+   {NDFD_CUM64,2, 8,MISSING_2,0, 9,0,2,1,6, 103,10.0,0.0 ,1,0,0,32924,3},
 
-   {NDFD_CONHAZ,2, 8,MISSING_2,0, 8,0,19,194,24, 1,0.0,0.0 ,0},
-   {NDFD_PTORN,2, 8,MISSING_2,0, 9,0,19,197,24, 1,0.0,0.0 ,1},
-   {NDFD_PHAIL,2, 8,MISSING_2,0, 9,0,19,198,24, 1,0.0,0.0 ,1},
-   {NDFD_PTSTMWIND,2, 8,MISSING_2,0, 9,0,19,199,24, 1,0.0,0.0 ,1},
-   {NDFD_PXTORN,2, 8,MISSING_2,0, 9,0,19,200,24, 1,0.0,0.0 ,1},
-   {NDFD_PXHAIL,2, 8,MISSING_2,0, 9,0,19,201,24, 1,0.0,0.0 ,1},
-   {NDFD_PXTSTMWIND,2, 8,MISSING_2,0, 9,0,19,202,24, 1,0.0,0.0 ,1},
+   {NDFD_CONHAZ,2, 8,MISSING_2,0, 8,0,19,194,24, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+   {NDFD_PTORN,2, 8,MISSING_2,0, 9,0,19,197,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+   {NDFD_PHAIL,2, 8,MISSING_2,0, 9,0,19,198,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+   {NDFD_PTSTMWIND,2, 8,MISSING_2,0, 9,0,19,199,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+   {NDFD_PXTORN,2, 8,MISSING_2,0, 9,0,19,200,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+   {NDFD_PXHAIL,2, 8,MISSING_2,0, 9,0,19,201,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+   {NDFD_PXTSTMWIND,2, 8,MISSING_2,0, 9,0,19,202,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
 /* Following two lines changed from 203->215 and 204->216 9/19/2007 */
-   {NDFD_PSTORM,2, 8,MISSING_2,0, 9,0,19,215,24, 1,0.0,0.0 ,1},
-   {NDFD_PXSTORM,2, 8,MISSING_2,0, 9,0,19,216,24, 1,0.0,0.0 ,1},
+   {NDFD_PSTORM,2, 8,MISSING_2,0, 9,0,19,215,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+   {NDFD_PXSTORM,2, 8,MISSING_2,0, 9,0,19,216,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
 
+/* If we have to change the 0,0,0,0 for lower/upper Value/Factor, also update
+ * cube.c :: line 634, 655 */
    /* the 6 in the length of time column stands for 6 days... */
-   {NDFD_TEMP814ABV,2, 8,MISSING_2,0, 9,0,0,0,6, 1,0.0,0.0, 3},
-   {NDFD_TEMP814BEL,2, 8,MISSING_2,0, 9,0,0,0,6, 1,0.0,0.0, 0},
-   {NDFD_PRECIP814ABV,2, 8,MISSING_2,0, 9,0,1,8,6, 1,0.0,0.0, 3},
-   {NDFD_PRECIP814BEL,2, 8,MISSING_2,0, 9,0,1,8,6, 1,0.0,0.0, 0},
+   {NDFD_TEMP814ABV,2, 8,MISSING_2,0, 9,0,0,0,6, 1,0.0,0.0, 3,0,0,0,0},
+   {NDFD_TEMP814BEL,2, 8,MISSING_2,0, 9,0,0,0,6, 1,0.0,0.0, 0,0,0,0,0},
+   {NDFD_PRECIP814ABV,2, 8,MISSING_2,0, 9,0,1,8,6, 1,0.0,0.0, 3,0,0,0,0},
+   {NDFD_PRECIP814BEL,2, 8,MISSING_2,0, 9,0,1,8,6, 1,0.0,0.0, 0,0,0,0,0},
    /* the 1 in the length of time column stands for 1 month... */
-   {NDFD_TEMPMONTHABV,2, 8,MISSING_2,0, 9,0,0,0,1, 1,0.0,0.0, 3},
-   {NDFD_TEMPMONTHBEL,2, 8,MISSING_2,0, 9,0,0,0,1, 1,0.0,0.0, 0},
-   {NDFD_PRECIPMONTHABV,2, 8,MISSING_2,0, 9,0,1,8,1, 1,0.0,0.0, 3},
-   {NDFD_PRECIPMONTHBEL,2, 8,MISSING_2,0, 9,0,1,8,1, 1,0.0,0.0, 0},
+   {NDFD_TEMPMONTHABV,2, 8,MISSING_2,0, 9,0,0,0,1, 1,0.0,0.0, 3,0,0,0,0},
+   {NDFD_TEMPMONTHBEL,2, 8,MISSING_2,0, 9,0,0,0,1, 1,0.0,0.0, 0,0,0,0,0},
+   {NDFD_PRECIPMONTHABV,2, 8,MISSING_2,0, 9,0,1,8,1, 1,0.0,0.0, 3,0,0,0,0},
+   {NDFD_PRECIPMONTHBEL,2, 8,MISSING_2,0, 9,0,1,8,1, 1,0.0,0.0, 0,0,0,0,0},
    /* the 3 in the length of time column stands for 3 months... */
-   {NDFD_TEMP3MONTHABV,2, 8,MISSING_2,0, 9,0,0,0,3, 1,0.0,0.0, 3},
-   {NDFD_TEMP3MONTHBEL,2, 8,MISSING_2,0, 9,0,0,0,3, 1,0.0,0.0, 0},
-   {NDFD_PRECIP3MONTHABV,2, 8,MISSING_2,0, 9,0,1,8,3, 1,0.0,0.0, 3},
-   {NDFD_PRECIP3MONTHBEL,2, 8,MISSING_2,0, 9,0,1,8,3, 1,0.0,0.0, 0},
+   {NDFD_TEMP3MONTHABV,2, 8,MISSING_2,0, 9,0,0,0,3, 1,0.0,0.0, 3,0,0,0,0},
+   {NDFD_TEMP3MONTHBEL,2, 8,MISSING_2,0, 9,0,0,0,3, 1,0.0,0.0, 0,0,0,0,0},
+   {NDFD_PRECIP3MONTHABV,2, 8,MISSING_2,0, 9,0,1,8,3, 1,0.0,0.0, 3,0,0,0,0},
+   {NDFD_PRECIP3MONTHBEL,2, 8,MISSING_2,0, 9,0,1,8,3, 1,0.0,0.0, 0,0,0,0,0},
 
    {NDFD_UNDEF,2, MISSING_2,MISSING_2,MISSING_1,
                   MISSING_2,MISSING_1,MISSING_1,MISSING_1,0,
-                  MISSING_1,0.0,0.0 },
+                  MISSING_1,0.0,0.0, 0,-1,-1,-1,-1},
    {NDFD_MATCHALL,0, MISSING_2,MISSING_2,MISSING_1,
                      MISSING_2,MISSING_1,MISSING_1,MISSING_1,0,
-                     MISSING_1,0.0,0.0 },
+                     MISSING_1,0.0,0.0, 0,-1,-1,-1,-1}
 };
 
 static const uChar NdfdElementsLen = (sizeof (NdfdElements) /
@@ -524,7 +529,7 @@ static int genElemMatchMeta (const genElemDescript * elem,
    if (((meta->pds2.sect4.templat == 8) ||
         (meta->pds2.sect4.templat == 9)) &&
        (meta->pds2.sect4.numInterval == 1)) {
-   printf ("%d %d %d %d %d %d %d %d %ld %d %f %f %d: %d %d %d %d\n", meta->GribVersion,
+   printf ("%d %d %d %d %d %d %d %d %ld %d %f %f %d: %ld %d %ld %d\n", meta->GribVersion,
            meta->center, meta->subcenter, meta->pds2.sect4.genID, meta->pds2.prodType,
            meta->pds2.sect4.templat, meta->pds2.sect4.cat, meta->pds2.sect4.subcat, meta->pds2.sect4.Interval[0].lenTime,
            meta->pds2.sect4.fstSurfType, meta->pds2.sect4.fstSurfValue, meta->pds2.sect4.sndSurfValue,
@@ -580,6 +585,15 @@ static int genElemMatchMeta (const genElemDescript * elem,
       if (elem->probType != meta->pds2.sect4.probType) {
          return 0;
       }
+
+      if ((elem->lowerVal != meta->pds2.sect4.lowerLimit.value) ||
+          (elem->lowerFact != meta->pds2.sect4.lowerLimit.factor)) {
+         return 0;
+      }
+      if ((elem->upperVal != meta->pds2.sect4.upperLimit.value) ||
+          (elem->upperFact != meta->pds2.sect4.upperLimit.factor)) {
+         return 0;
+      }
    }
    return 1;
 }
@@ -590,6 +604,10 @@ uChar genNdfdEnum_fromMeta (const grib_MetaData *meta) {
    uShort2 i;           /* Used to help find the ndfdEnum value. */
    sInt4 lenTime;
    uChar probType;
+   sInt4 lowerVal;
+   sChar lowerFact;
+   sInt4 upperVal;
+   sChar upperFact;
 
    if (meta->GribVersion != 2)
       return NDFD_UNDEF;
@@ -603,8 +621,16 @@ uChar genNdfdEnum_fromMeta (const grib_MetaData *meta) {
    }
    if ((meta->pds2.sect4.templat == 9)) {
       probType = meta->pds2.sect4.probType;
+      lowerVal = meta->pds2.sect4.lowerLimit.value;
+      lowerFact = meta->pds2.sect4.lowerLimit.factor;
+      upperVal = meta->pds2.sect4.upperLimit.value;
+      upperFact = meta->pds2.sect4.upperLimit.factor;
    } else {
       probType = 0;
+      lowerVal = -1;
+      lowerFact = -1;
+      upperVal = -1;
+      upperFact = -1;
    }
 
    /* Determine the ndfdEnum for this element. Note, ndfdEnum is already
@@ -622,7 +648,9 @@ uChar genNdfdEnum_fromMeta (const grib_MetaData *meta) {
           (NdfdElements[i].surfType == meta->pds2.sect4.fstSurfType) &&
           (NdfdElements[i].value == meta->pds2.sect4.fstSurfValue) &&
           (NdfdElements[i].sndValue == meta->pds2.sect4.sndSurfValue) &&
-          (NdfdElements[i].probType == meta->pds2.sect4.probType)) {
+          (NdfdElements[i].probType == probType) &&
+          (NdfdElements[i].lowerVal == lowerVal) && (NdfdElements[i].lowerFact == lowerFact) &&
+          (NdfdElements[i].upperVal == upperVal) && (NdfdElements[i].upperFact == upperFact)) {
          return NdfdElements[i].ndfdEnum;
       }
    }
@@ -677,6 +705,19 @@ static void setGenElem (genElemDescript * elem, const grib_MetaData *meta)
       elem->lenTime = meta->pds2.sect4.Interval[0].lenTime;
    } else {
       elem->lenTime = 0;
+   }
+   if ((meta->pds2.sect4.templat == 9)) {
+      elem->probType = meta->pds2.sect4.probType;
+      elem->lowerVal = meta->pds2.sect4.lowerLimit.value;
+      elem->lowerFact = meta->pds2.sect4.lowerLimit.factor;
+      elem->upperVal = meta->pds2.sect4.upperLimit.value;
+      elem->upperFact = meta->pds2.sect4.upperLimit.factor;
+   } else {
+      elem->probType = 0;
+      elem->lowerVal = -1;
+      elem->lowerFact = -1;
+      elem->upperVal = -1;
+      elem->upperFact = -1;
    }
    elem->surfType = meta->pds2.sect4.fstSurfType;
    elem->value = meta->pds2.sect4.fstSurfValue;
