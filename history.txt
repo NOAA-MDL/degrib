@@ -1,4 +1,27 @@
 #
+#----- Release: Version 1.88 10/18/2007 -----
+#
+10/17 AAT Added genProcess to genElemDescript structure (r594)
+10/17 AAT Added checks to make sure save to .shp (poly and point) are not
+          larger than format will allow.  Limits are: Max num of records for
+          small poly: 23,860,928, for point: 153,391,685
+10/16 AAT Added foreSec to genElemDescript structure (r592)
+10/16 AAT Updated NCEP local use tables. (r590)
+10/16 AAT Added lower/upper limits to genElemDescript structure
+10/15 AAT Enabled cube to be able to encode CPC elements (r587)
+10/15 AAT Added CPC elements to ndfd.ini
+10/12 AAT Added probType to genElemDescript structure
+10/12 AAT Introducing 12 new CPC (Temp / precip) (above / below) avg types
+          for the XML to work with. (r584)
+10/3  AAT The NCEP library 1.0.2 stored the lower / upper limits of
+          probabilities using unsigned ints, whereas version 1.0.4 used signed
+          ints.  This was so 1.0.4 could store negative thresholds using a
+          "sign bit".  The problem is that NCEP already stored neg values in
+          1.0.2 using "2's complement + 1".  For backward compatibility, we
+          can now read either method of storing a neg value. (r579)
+10/1  AAT Fixed the new GMOS element listings in ndfd.ini (r578)
+ 9/24 AAT Switched from g2clib-1.0.4 to g2clib-1.0.5
+#
 #----- Release: Version 1.87 09/20/2007 -----
 #
  9/20 AAT Changed the default view from "small" to "list" in the GIS tab

@@ -7,8 +7,8 @@
 #   +1 is for a large set of new features
 
 [degrib]
-Version=1.87
-Date=09/20/2007
+Version=1.88
+Date=10/18/2007
 Web=http://www.nws.noaa.gov/NDFD_GRIB2Decoder/index.htm
 
 [emapf]
@@ -22,8 +22,8 @@ Date=3/23/2007
 Web=http://www.arl.noaa.gov/ss/models/cmapf.html
 
 [g2clib]
-Version=1.0.4
-Date=11/2/2006
+Version=1.0.5
+Date=9/24/2007
 LastLocalMod=5/30/2007
 Web=http://www.nco.ncep.noaa.gov/pmb/codes/GRIB2/
 
