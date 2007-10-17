@@ -37,64 +37,76 @@
 /* *INDENT-OFF* */
 /* Problems using MISSING to denote all possible, since subcenter = Missing
  * is defined for NDFD. */
+/* A good way to get these numbers is (in debug mode) "-P -MOTD 1 -pnt 36,-78" */
 static const genElemDescript NdfdElements[] = {
-/* 0 */   {NDFD_MAX,2, 8,MISSING_2,0, 8,0,0,4,-1,12, 1,0.0,0.0 ,0,-1,-1,-1,-1},
-/* 1 */   {NDFD_MIN,2, 8,MISSING_2,0, 8,0,0,5,-1,12, 1,0.0,0.0 ,0,-1,-1,-1,-1},
-/* 2 */   {NDFD_POP,2, 8,MISSING_2,0, 9,0,1,8,-1,12, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,254,3},
-/* 3 */   {NDFD_TEMP,2, 8,MISSING_2,0, 0,0,0,0,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
-/* 4 */   {NDFD_WD,2, 8,MISSING_2,0, 0,0,2,0,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
-/* 5 */   {NDFD_WS,2, 8,MISSING_2,0, 0,0,2,1,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
-/* 6 */   {NDFD_TD,2, 8,MISSING_2,0, 0,0,0,6,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
-/* 7 */   {NDFD_SKY,2, 8,MISSING_2,0, 0,0,6,1,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
-/* 8 */   {NDFD_QPF,2, 8,MISSING_2,0, 8,0,1,8,-1,6, 1,0.0,0.0 ,0,-1,-1,-1,-1},
-/* 9 */   {NDFD_SNOW,2, 8,MISSING_2,0, 8,0,1,29,-1,6, 1,0.0,0.0 ,0,-1,-1,-1,-1},
-/* 10 */   {NDFD_WX,2, 8,MISSING_2,0, 0,0,1,192,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
-/* 11 */   {NDFD_WH,2, 8,MISSING_2,0, 0,10,0,5,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
-/* 12 */   {NDFD_AT,2, 8,MISSING_2,0, 0,0,0,193,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
-/* 13 */   {NDFD_RH,2, 8,MISSING_2,0, 0,0,1,1,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
-/* 14 */   {NDFD_WG,2, 8,MISSING_2,0, 0,0,2,22,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+/* 0 */   {NDFD_MAX,2, 8,MISSING_2,2,0, 0,8,0,4,-1,12, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+/* 1 */   {NDFD_MIN,2, 8,MISSING_2,2,0, 0,8,0,5,-1,12, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+/* 2 */   {NDFD_POP,2, 8,MISSING_2,2,0, 0,9,1,8,-1,12, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,254,3},
+/* 3 */   {NDFD_TEMP,2, 8,MISSING_2,2,0, 0,0,0,0,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+/* 4 */   {NDFD_WD,2, 8,MISSING_2,2,0, 0,0,2,0,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+/* 5 */   {NDFD_WS,2, 8,MISSING_2,2,0, 0,0,2,1,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+/* 6 */   {NDFD_TD,2, 8,MISSING_2,2,0, 0,0,0,6,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+/* 7 */   {NDFD_SKY,2, 8,MISSING_2,2,0, 0,0,6,1,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+/* 8 */   {NDFD_QPF,2, 8,MISSING_2,2,0, 0,8,1,8,-1,6, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+/* 9 */   {NDFD_SNOW,2, 8,MISSING_2,2,0, 0,8,1,29,-1,6, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+/* 10 */  {NDFD_WX,2, 8,MISSING_2,2,0, 0,0,1,192,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+/* 11 */  {NDFD_WH,2, 8,MISSING_2,2,0, 10,0,0,5,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+/* 12 */  {NDFD_AT,2, 8,MISSING_2,2,0, 0,0,0,193,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+/* 13 */  {NDFD_RH,2, 8,MISSING_2,2,0, 0,0,1,1,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+/* 14 */  {NDFD_WG,2, 8,MISSING_2,2,0, 0,0,2,22,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
 
-/* 15 */   {NDFD_INC34,2, 8,MISSING_2,0, 9,0,2,1,-1,6, 103,10.0,0.0 ,1,0,0,17491,3},
-/* 16 */   {NDFD_INC50,2, 8,MISSING_2,0, 9,0,2,1,-1,6, 103,10.0,0.0 ,1,0,0,25722,3},
-/* 17 */   {NDFD_INC64,2, 8,MISSING_2,0, 9,0,2,1,-1,6, 103,10.0,0.0 ,1,0,0,32924,3},
-/* 18 */   {NDFD_CUM34,2, 8,MISSING_2,0, 9,0,2,1,0,0, 103,10.0,0.0 ,1,0,0,17491,3},
-/* 19 */   {NDFD_CUM50,2, 8,MISSING_2,0, 9,0,2,1,0,0, 103,10.0,0.0 ,1,0,0,25722,3},
-/* 20 */   {NDFD_CUM64,2, 8,MISSING_2,0, 9,0,2,1,0,0, 103,10.0,0.0 ,1,0,0,32924,3},
+/* 15 */  {NDFD_INC34,2, 8,MISSING_2,2,0, 0,9,2,1,-1,6, 103,10.0,0.0 ,1,0,0,17491,3},
+/* 16 */  {NDFD_INC50,2, 8,MISSING_2,2,0, 0,9,2,1,-1,6, 103,10.0,0.0 ,1,0,0,25722,3},
+/* 17 */  {NDFD_INC64,2, 8,MISSING_2,2,0, 0,9,2,1,-1,6, 103,10.0,0.0 ,1,0,0,32924,3},
+/* 18 */  {NDFD_CUM34,2, 8,MISSING_2,2,0, 0,9,2,1,0,0, 103,10.0,0.0 ,1,0,0,17491,3},
+/* 19 */  {NDFD_CUM50,2, 8,MISSING_2,2,0, 0,9,2,1,0,0, 103,10.0,0.0 ,1,0,0,25722,3},
+/* 20 */  {NDFD_CUM64,2, 8,MISSING_2,2,0, 0,9,2,1,0,0, 103,10.0,0.0 ,1,0,0,32924,3},
 
-/* 21 */   {NDFD_CONHAZ,2, 8,MISSING_2,0, 8,0,19,194,-1,24, 1,0.0,0.0 ,0,-1,-1,-1,-1},
-/* 22 */   {NDFD_PTORN,2, 8,MISSING_2,0, 9,0,19,197,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
-/* 23 */   {NDFD_PHAIL,2, 8,MISSING_2,0, 9,0,19,198,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
-/* 24 */   {NDFD_PTSTMWIND,2, 8,MISSING_2,0, 9,0,19,199,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
-/* 25 */   {NDFD_PXTORN,2, 8,MISSING_2,0, 9,0,19,200,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
-/* 26 */   {NDFD_PXHAIL,2, 8,MISSING_2,0, 9,0,19,201,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
-/* 27 */   {NDFD_PXTSTMWIND,2, 8,MISSING_2,0, 9,0,19,202,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+/* 21 */  {NDFD_CONHAZ,2, 8,MISSING_2,2,0, 0,8,19,194,-1,24, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+/* 22 */  {NDFD_PTORN,2, 8,MISSING_2,2,0, 0,9,19,197,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+/* 23 */  {NDFD_PHAIL,2, 8,MISSING_2,2,0, 0,9,19,198,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+/* 24 */  {NDFD_PTSTMWIND,2, 8,MISSING_2,2,0, 0,9,19,199,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+/* 25 */  {NDFD_PXTORN,2, 8,MISSING_2,2,0, 0,9,19,200,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+/* 26 */  {NDFD_PXHAIL,2, 8,MISSING_2,2,0, 0,9,19,201,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+/* 27 */  {NDFD_PXTSTMWIND,2, 8,MISSING_2,2,0, 0,9,19,202,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
 /* Following two lines changed from 203->215 and 204->216 9/19/2007 */
-/* 0 */   {NDFD_PSTORM,2, 8,MISSING_2,0, 9,0,19,215,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
-/* 0 */   {NDFD_PXSTORM,2, 8,MISSING_2,0, 9,0,19,216,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+/* 28 */  {NDFD_PSTORM,2, 8,MISSING_2,2,0, 0,9,19,215,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+/* 29 */  {NDFD_PXSTORM,2, 8,MISSING_2,2,0, 0,9,19,216,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
 
 /* If we have to change the 0,0,0,0 for lower/upper Value/Factor, also update
  * cube.c :: line 634, 655 */
    /* the 6 in the length of time column stands for 6 days... */
-/* 0 */   {NDFD_TMPABV14D,2, 8,MISSING_2,0, 9,0,0,0,-1,6, 1,0.0,0.0, 3,0,0,0,0},
-/* 0 */   {NDFD_TMPBLW14D,2, 8,MISSING_2,0, 9,0,0,0,-1,6, 1,0.0,0.0, 0,0,0,0,0},
-/* 0 */   {NDFD_PRCPABV14D,2, 8,MISSING_2,0, 9,0,1,8,-1,6, 1,0.0,0.0, 3,0,0,0,0},
-/* 0 */   {NDFD_PRCPBLW14D,2, 8,MISSING_2,0, 9,0,1,8,-1,6, 1,0.0,0.0, 0,0,0,0,0},
+/* 0 */   {NDFD_TMPABV14D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,6, 1,0.0,0.0, 3,0,0,0,0},
+/* 0 */   {NDFD_TMPBLW14D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,6, 1,0.0,0.0, 0,0,0,0,0},
+/* 0 */   {NDFD_PRCPABV14D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,6, 1,0.0,0.0, 3,0,0,0,0},
+/* 0 */   {NDFD_PRCPBLW14D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,6, 1,0.0,0.0, 0,0,0,0,0},
    /* the 1 in the length of time column stands for 1 month... */
-/* 0 */   {NDFD_TMPABV30D,2, 8,MISSING_2,0, 9,0,0,0,-1,1, 1,0.0,0.0, 3,0,0,0,0},
-/* 0 */   {NDFD_TMPBLW30D,2, 8,MISSING_2,0, 9,0,0,0,-1,1, 1,0.0,0.0, 0,0,0,0,0},
-/* 0 */   {NDFD_PRCPABV30D,2, 8,MISSING_2,0, 9,0,1,8,-1,1, 1,0.0,0.0, 3,0,0,0,0},
-/* 0 */   {NDFD_PRCPBLW30D,2, 8,MISSING_2,0, 9,0,1,8,-1,1, 1,0.0,0.0, 0,0,0,0,0},
+/* 0 */   {NDFD_TMPABV30D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,1, 1,0.0,0.0, 3,0,0,0,0},
+/* 0 */   {NDFD_TMPBLW30D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,1, 1,0.0,0.0, 0,0,0,0,0},
+/* 0 */   {NDFD_PRCPABV30D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,1, 1,0.0,0.0, 3,0,0,0,0},
+/* 0 */   {NDFD_PRCPBLW30D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,1, 1,0.0,0.0, 0,0,0,0,0},
    /* the 3 in the length of time column stands for 3 months... */
-/* 0 */   {NDFD_TMPABV90D,2, 8,MISSING_2,0, 9,0,0,0,-1,3, 1,0.0,0.0, 3,0,0,0,0},
-/* 0 */   {NDFD_TMPBLW90D,2, 8,MISSING_2,0, 9,0,0,0,-1,3, 1,0.0,0.0, 0,0,0,0,0},
-/* 0 */   {NDFD_PRCPABV90D,2, 8,MISSING_2,0, 9,0,1,8,-1,3, 1,0.0,0.0, 3,0,0,0,0},
-/* 0 */   {NDFD_PRCPBLW90D,2, 8,MISSING_2,0, 9,0,1,8,-1,3, 1,0.0,0.0, 0,0,0,0,0},
+/* 0 */   {NDFD_TMPABV90D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,3, 1,0.0,0.0, 3,0,0,0,0},
+/* 0 */   {NDFD_TMPBLW90D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,3, 1,0.0,0.0, 0,0,0,0,0},
+/* 0 */   {NDFD_PRCPABV90D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,3, 1,0.0,0.0, 3,0,0,0,0},
+/* 0 */   {NDFD_PRCPBLW90D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,3, 1,0.0,0.0, 0,0,0,0,0},
 
-   {NDFD_UNDEF,2, MISSING_2,MISSING_2,MISSING_1,
-                  MISSING_2,MISSING_1,MISSING_1,MISSING_1,-1,0,
+/* 42 */  {RTMA_PRECIPA,2, 7,0,2,109, 0,8,1,8,-1,1, 1,0.0,0.0, 0,-1,-1,-1,-1}, /* genProcess = 2 forecast? */
+/* 43 */  {RTMA_SKY,2, 7,0,8,109, 0,0,6,1,-1,0, 200,0.0,0.0, 0,-1,-1,-1,-1},  /* genProcess = 8 observation */
+/* 44 */  {RTMA_TD,2,  7,4,0,109, 0,0,0,6,-1,0, 103,2.0,0.0, 0,-1,-1,-1,-1},
+/* 45 */  {RTMA_TEMP,2, 7,4,0,109, 0,0,0,0,-1,0, 103,2.0,0.0, 0,-1,-1,-1,-1},
+/* 46 */  {RTMA_UTD,2, 7,4,7,109, 0,0,0,6,-1,0, 103,2.0,0.0, 0,-1,-1,-1,-1},
+/* 47 */  {RTMA_UTEMP,2, 7,4,7,109, 0,0,0,0,-1,0, 103,2.0,0.0, 0,-1,-1,-1,-1},
+/* 48 */  {RTMA_UWDIR,2, 7,4,7,109, 0,0,2,0,-1,0, 103,10.0,0.0, 0,-1,-1,-1,-1},
+/* 49 */  {RTMA_UWSPD,2, 7,4,7,109, 0,0,2,1,-1,0, 103,10.0,0.0, 0,-1,-1,-1,-1},
+/* 50 */  {RTMA_WDIR,2, 7,4,0,109, 0,0,2,0,-1,0, 103,10.0,0.0, 0,-1,-1,-1,-1},
+/* 51 */  {RTMA_WSPD,2, 7,4,0,109, 0,0,2,1,-1,0, 103,10.0,0.0, 0,-1,-1,-1,-1},
+
+   {NDFD_UNDEF,2, MISSING_2,MISSING_2,MISSING_1,MISSING_1,
+                  MISSING_1,MISSING_2,MISSING_1,MISSING_1,-1,0,
                   MISSING_1,0.0,0.0, 0,-1,-1,-1,-1},
-   {NDFD_MATCHALL,0, MISSING_2,MISSING_2,MISSING_1,
-                     MISSING_2,MISSING_1,MISSING_1,MISSING_1,-1,0,
+   {NDFD_MATCHALL,0, MISSING_2,MISSING_2,MISSING_1,MISSING_1,
+                     MISSING_1,MISSING_2,MISSING_1,MISSING_1,-1,0,
                      MISSING_1,0.0,0.0, 0,-1,-1,-1,-1}
 };
 
@@ -138,7 +150,8 @@ static char *NDFD_Type[] = { "maxt", "mint", "pop12", "t", "winddir",
    "probtmpabv144", "probtmpblw144", "probprcpabv144", "probprcpblw144",
    "probtmpabv01m", "probtmpblw01m", "probprcpabv01m", "probprcpblw01m",
    "probtmpabv03m", "probtmpblw03m", "probprcpabv03m", "probprcpblw03m",
-   NULL
+   "apcp01", "tcdc", "dpt", "tmp", "dpterr", "tmperr", "wdirerr", "winderr",
+   "wdir", "wind", NULL
 };
 /* These match the convention on official download pages. */
 static char *NDFD_File[] = { "maxt", "mint", "pop12", "temp", "wdir",
@@ -148,7 +161,9 @@ static char *NDFD_File[] = { "maxt", "mint", "pop12", "temp", "wdir",
    "phail", "ptstmwinds", "pxtornado", "pxhail", "pxtstmwinds",
    "ptotsvrtstm", "ptotxsvrtstm", "tmpabv14d", "tmpblw14d", "prcpabv14d",
    "prcpblw14d", "tmpabv30d", "tmpblw30d", "prcpabv30d", "prcpblw30d",
-   "tmpabv90d", "tmpblw90d", "prcpabv90d", "prcpblw90d", NULL
+   "tmpabv90d", "tmpblw90d", "prcpabv90d", "prcpblw90d", "precipa",
+   "sky", "td", "temp", "utd", "utemp", "uwdir", "uwspd", "wdir", "wspd",
+   NULL
 };
 /* A (mostly) 2 letter abreviation scheme created with/for the verification
    group */
@@ -157,7 +172,8 @@ static char *NDFD_File2[] = { "mx", "mn", "po", "tt", "wd",
    "i5", "i6", "c3", "c5", "c6", "ch", "pt", "ph", "pw", "xt", "xh", "xw",
    "ps", "xs", "ta6d", "tb6d", "pa6d", "pb6d",
    "ta1m", "tb1m", "pa1m", "pb1m", "ta3m", "tb3m", "pa3m", "pb3m",
-   NULL
+   "apcp01", "tcdc", "dpt", "tmp", "dpterr", "tmperr", "wdirerr", "winderr",
+   "wdir", "wind", NULL
 };
 
 uChar genNdfdVar_Lookup (char *str, char f_toLower, char f_ndfdConven)
@@ -527,16 +543,16 @@ static int genElemMatchMeta (const genElemDescript * elem,
    if (((meta->pds2.sect4.templat == 8) ||
         (meta->pds2.sect4.templat == 9)) &&
        (meta->pds2.sect4.numInterval == 1)) {
-   printf ("%d %d %d %d %d %d %d %d %f %ld %d %f %f %d: %ld %d %ld %d\n", meta->GribVersion,
-           meta->center, meta->subcenter, meta->pds2.sect4.genID, meta->pds2.prodType,
+   printf ("PI1 %d %d,%d,%d,%d %d,%d,%d,%d,%f,%ld %d,%f,%f %d,%ld,%d,%ld,%d\n", meta->GribVersion,
+           meta->center, meta->subcenter, meta->pds2.sect4.genProcess, meta->pds2.sect4.genID, meta->pds2.prodType,
            meta->pds2.sect4.templat, meta->pds2.sect4.cat, meta->pds2.sect4.subcat, meta->pds2.sect4.foreSec,
            meta->pds2.sect4.Interval[0].lenTime,
            meta->pds2.sect4.fstSurfType, meta->pds2.sect4.fstSurfValue, meta->pds2.sect4.sndSurfValue,
            meta->pds2.sect4.probType, meta->pds2.sect4.lowerLimit.value, meta->pds2.sect4.lowerLimit.factor,
            meta->pds2.sect4.upperLimit.value, meta->pds2.sect4.upperLimit.factor);
    } else {
-   printf ("%d %d %d %d %d %d %d %d %ld %d %f %f %d\n", meta->GribVersion,
-           meta->center, meta->subcenter, meta->pds2.sect4.genID, meta->pds2.prodType,
+   printf ("PI2 %d %d,%d,%d,%d %d,%d,%d,%d,-1,%ld %d,%f,%f %d,-1,-1,-1,-1\n", meta->GribVersion,
+           meta->center, meta->subcenter, meta->pds2.sect4.genProcess, meta->pds2.sect4.genID, meta->pds2.prodType,
            meta->pds2.sect4.templat, meta->pds2.sect4.cat, meta->pds2.sect4.subcat, (sInt4) 0,
            meta->pds2.sect4.fstSurfType, meta->pds2.sect4.fstSurfValue, meta->pds2.sect4.sndSurfValue,
            meta->pds2.sect4.probType);
@@ -552,6 +568,8 @@ static int genElemMatchMeta (const genElemDescript * elem,
    if (meta->GribVersion != 2)
       return 1;
 
+   if ((elem->genProcess != MISSING_1) && (elem->genProcess != meta->pds2.sect4.genProcess))
+      return 0;
    if ((elem->genID != MISSING_1) && (elem->genID != meta->pds2.sect4.genID))
       return 0;
    if ((elem->prodType != MISSING_1) &&
@@ -660,6 +678,7 @@ uChar genNdfdEnum_fromMeta (const grib_MetaData *meta) {
       if ((NdfdElements[i].version == meta->GribVersion) &&
           (NdfdElements[i].center == meta->center) &&
           (NdfdElements[i].subcenter == meta->subcenter) &&
+          (NdfdElements[i].genProcess == meta->pds2.sect4.genProcess) &&
           (NdfdElements[i].genID == meta->pds2.sect4.genID) &&
           (NdfdElements[i].prodType == meta->pds2.prodType) &&
           (NdfdElements[i].templat == meta->pds2.sect4.templat) &&
@@ -676,8 +695,8 @@ uChar genNdfdEnum_fromMeta (const grib_MetaData *meta) {
       }
    }
 #ifdef DEBUG
-   printf ("%d %d %d %d %d %d %d %d %ld %d %f %f %d\n", meta->GribVersion,
-           meta->center, meta->subcenter, meta->pds2.sect4.genID, meta->pds2.prodType,
+   printf ("PI3 %d %d,%d,%d,%d %d,%d,%d,%d,-1,%ld %d,%f,%f %d,-1,-1,-1,-1\n", meta->GribVersion,
+           meta->center, meta->subcenter, meta->pds2.sect4.genProcess, meta->pds2.sect4.genID, meta->pds2.prodType,
            meta->pds2.sect4.templat, meta->pds2.sect4.cat, meta->pds2.sect4.subcat, lenTime,
            meta->pds2.sect4.fstSurfType, meta->pds2.sect4.fstSurfValue, meta->pds2.sect4.sndSurfValue,
            meta->pds2.sect4.probType);
@@ -715,6 +734,7 @@ static void setGenElem (genElemDescript * elem, const grib_MetaData *meta)
    if (meta->GribVersion != 2)
       return;
 
+   elem->genProcess = meta->pds2.sect4.genProcess;
    elem->genID = meta->pds2.sect4.genID;
    elem->prodType = meta->pds2.prodType;
    elem->templat = meta->pds2.sect4.templat;
@@ -1475,10 +1495,8 @@ static int genProbeGrib (FILE *fp, size_t numPnts, const Point * pnts,
       }
 
 #ifdef DEBUG
-/*
       elemEnum = genNdfdEnum_fromMeta (&meta);
       printf ("Element is entry %d\n", elemEnum);
-*/
 #endif
 
       /* Check if we're interested in this data based on an element match. */
@@ -1694,16 +1712,20 @@ static int genProbeCube (const char *filename, size_t numPnts,
    for (i = 0; i < numSupPDS; i++) {
       ReadSupPDSBuff (sPtr, elemName, &refTime, unit, comment, &gdsNum,
                       &center, &subCenter, &numPDS, &pdsPtr, &lenTotPds);
+/*
       if (center != 8) {
          sPtr += lenTotPds;
          continue;
       }
+*/
       elemEnum = genNdfdVar_Lookup (elemName, 1, 0);
       if (elemEnum == NDFD_UNDEF) {
          sPtr += lenTotPds;
          continue;
       }
-
+#ifdef DEBUG
+printf ("element is %d\n", elemEnum);
+#endif
       /* Check if we're interested in this data based on an element match. */
       for (jj = 0; jj < numElem; jj++) {
          if (elem[jj].ndfdEnum == elemEnum) {

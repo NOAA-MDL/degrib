@@ -22,15 +22,18 @@ typedef struct {
 /* Who produced it */
    uShort2 center;           /* Who produced it. (PDS-S1 Originating ..) */
    uShort2 subcenter;        /* Who produced it. (PDS-S1) */
+   uChar genProcess;         /* What type of generate process (Analysis,
+                                Forecast, Probability Forecast, etc). */
+                             /* PDS-S4 | Generation process | */
    uChar genID;              /* More info on what what produced it */
                              /* PDS-S4 | Forecast generating process ID */
 
 /* What is it? */
-   uShort2 templat;          /* The section 4 template number. */
-                             /* PDS-S4 | Product type */
    uChar prodType;           /* 0 is meteo product, 1 is hydro, 2 is land
                                 3 is space, 10 is oceanographic. */
                              /* PDS-S0 | DataType */
+   uShort2 templat;          /* The section 4 template number. */
+                             /* PDS-S4 | Product type */
    uChar cat;                /* General category of Meteo Product. */
                              /* PDS-S4 | Category Description */
    uChar subcat;             /* Specific subcategory of Meteo Product. */
