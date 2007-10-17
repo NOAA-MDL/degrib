@@ -247,6 +247,20 @@ static int CreateShpPoly (char *filename, LatLon *dp, int Nx, int Ny,
       return -1;
    }
    dpLen = Nx * Ny;
+   /* Perform a simple file size check.  File has to be less than
+    * 4,294,967,294 bytes. (2^31-1) * 2.  Reasoning: file size in 2 byte words
+    * is stored as a sInt4 */
+   if (!f_nMissing) {
+      /* If include all cells (assuming no dateline issues), the size of the
+       * .shp file is: 100 + dpLen * (8 +4 +4*8 +3*4 +10*8= 180bytes)
+       * So dpLen <= (2^31-1) * 2 - 100 / 180 = 23,860,928.8 */
+      if (dpLen > 23860928L) {
+         errSprintf ("Trying to create a small poly shp file with %d cells.\n"
+                     "This is > small polygon maximum of 23,860,928\n",
+                     dpLen);
+         return -1;
+      }
+   }
 
    /* Start Writing header in first 100 bytes. */
    Head1[0] = 9994;     /* ArcView identifier. */
@@ -437,6 +451,16 @@ static int CreateShpPoly (char *filename, LatLon *dp, int Nx, int Ny,
                FWRITE_LIT (pts, sizeof (double), 10, sfp);
             }
             curRec[0]++;
+            /* Assuming no dateline issues, the size of the .shp file is:
+             * 100 + dpLen * (8 +4 +4*8 +3*4 +10*8= 180bytes)
+             * So the max number of records allowed is <=
+             * (2^31-1) * 2 - 100 / 180 = 23,860,928.8 */
+            if (curRec[0] > 23860928) {
+               errSprintf ("Trying to create a small poly shp file with %d cells.\n"
+                           "This is > small polygon maximum of 23,860,928\n",
+                           curRec[0]);
+               return -1;
+            }
          }
          curData++;
          curDp++;
@@ -582,6 +606,20 @@ static int CreateShpPnt (char *filename, myMaparam *map, gdsType *gds,
       errSprintf ("ERROR: Problems opening %s for write.", filename);
       return -1;
    }
+   /* Perform a simple file size check.  File has to be less than
+    * 4,294,967,294 bytes. (2^31-1) * 2.  Reasoning: file size in 2 byte words
+    * is stored as a sInt4 */
+   if ((!f_nMissing) || (attrib->f_miss == 0)) {
+      /* If include all cells, the size of the
+       * .shp file is: 100 + dpLen * (8 +4 +2*8= 28bytes)
+       * So gds->Ny * gds->Nx <= (2^31-1) * 2 - 100 / 28 = 153,391,685.5 */
+      if (gds->Ny * gds->Nx > 153391685) {
+         errSprintf ("Trying to create a point shp file with %d cells.\n"
+                     "This is > point maximum of 153,391,685\n",
+                     gds->Ny * gds->Nx);
+         return -1;
+      }
+   }
 
    /* Start Writing header in first 100 bytes. */
    Head1[0] = 9994;     /* ArcView identifier. */
@@ -662,6 +700,15 @@ static int CreateShpPnt (char *filename, myMaparam *map, gdsType *gds,
                   }
                }
                curRec[0]++;
+               /* The size of the .shp file is:
+                * 100 + dpLen * (8 +4 +2*8= 28bytes)
+                * So curRec[0] <= (2^31-1) * 2 - 100 / 28 = 153,391,685.5 */
+               if (curRec[0] > 153391685) {
+                  errSprintf ("Trying to create a point shp file with %d cells.\n"
+                              "This is > point maximum of 153,391,685\n",
+                              curRec[0]);
+                  return -1;
+               }
             }
             curData++;
 /*            curDp++;*/
