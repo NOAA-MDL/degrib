@@ -1747,7 +1747,6 @@ static void ElemNameProb (uShort2 center, uShort2 subcenter, int prodType,
          return;
       }
    }
-
    /* Generic tables. */
    table = Choose_GRIB2ParmTable (prodType, cat, &tableLen);
    if (table != NULL) {
@@ -1774,11 +1773,7 @@ static void ElemNameProb (uShort2 center, uShort2 subcenter, int prodType,
             mallocSprintf (comment, "Prob of %s ", table[subcat].comment);
          }
          if (probType == 0) {
-            /* 2550 is 255, scale -1 = missing (would prefer to use
-             * GRIB_MISSING code */
-            if (lowerProb != 2550) {
-               reallocSprintf (comment, "< %g %s", lowerProb, table[subcat].unit);
-            } else {
+            if ((f_isNdfd || f_isMos) && (strcmp (table[subcat].name, "TMP") == 0)) {
                reallocSprintf (comment, "below average");
                free (*name);
                if (lenTime > 0) {
@@ -1792,11 +1787,11 @@ static void ElemNameProb (uShort2 center, uShort2 subcenter, int prodType,
                } else {
                   mallocSprintf (name, "Prob%sBlw", table[subcat].name);
                }
+            } else {
+               reallocSprintf (comment, "< %g %s", lowerProb, table[subcat].unit);
             }
          } else if (probType == 1) {
-            if (upperProb != 2550) {
-               reallocSprintf (comment, "> %g %s", upperProb, table[subcat].unit);
-            } else {
+            if ((f_isNdfd || f_isMos) && (strcmp (table[subcat].name, "TMP") == 0)) {
                reallocSprintf (comment, "above average");
                free (*name);
                if (lenTime > 0) {
@@ -1810,14 +1805,14 @@ static void ElemNameProb (uShort2 center, uShort2 subcenter, int prodType,
                } else {
                   mallocSprintf (name, "Prob%sAbv", table[subcat].name);
                }
+            } else {
+               reallocSprintf (comment, "> %g %s", upperProb, table[subcat].unit);
             }
          } else if (probType == 2) {
             reallocSprintf (comment, ">= %g, < %g %s", lowerProb, upperProb,
                             table[subcat].unit);
          } else if (probType == 3) {
-            if (lowerProb != 2550) {
-               reallocSprintf (comment, "> %g %s", lowerProb, table[subcat].unit);
-            } else {
+            if ((f_isNdfd || f_isMos) && (strcmp (table[subcat].name, "TMP") == 0)) {
                reallocSprintf (comment, "above average");
                free (*name);
                if (lenTime > 0) {
@@ -1831,11 +1826,11 @@ static void ElemNameProb (uShort2 center, uShort2 subcenter, int prodType,
                } else {
                   mallocSprintf (name, "Prob%sAbv", table[subcat].name);
                }
+            } else {
+               reallocSprintf (comment, "> %g %s", lowerProb, table[subcat].unit);
             }
          } else if (probType == 4) {
-            if (upperProb != 2550) {
-               reallocSprintf (comment, "< %g %s", upperProb, table[subcat].unit);
-            } else {
+            if ((f_isNdfd || f_isMos) && (strcmp (table[subcat].name, "TMP") == 0)) {
                reallocSprintf (comment, "below average");
                free (*name);
                if (lenTime > 0) {
@@ -1849,6 +1844,8 @@ static void ElemNameProb (uShort2 center, uShort2 subcenter, int prodType,
                } else {
                   mallocSprintf (name, "Prob%sBlw", table[subcat].name);
                }
+            } else {
+               reallocSprintf (comment, "< %g %s", upperProb, table[subcat].unit);
             }
          } else {
             reallocSprintf (comment, "%s", table[subcat].unit);
