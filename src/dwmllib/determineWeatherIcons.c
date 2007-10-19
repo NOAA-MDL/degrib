@@ -76,6 +76,9 @@
  *   3/2006 Paul Hershberg (MDL): Created
  *   9/2006 Paul Hershberg (MDL): Added functionality to add Pops to the icons
  *                                (i.e., ra.jpg --> ra50.jpg)
+ *   9/2007 Paul Hershberg (MDL): Changed sky threshold to 50% from 60% to align
+ *                                with top of partly cloudy range as this was 
+ *                                changed to align with NWSI 10-503.
  *
  * NOTES:
  ******************************************************************************
@@ -171,7 +174,7 @@ void determineWeatherIcons(icon_def *iconInfo, int numGroups, char **wxType,
     */
    if (f_noIcon)
    {
-      /* Determine the conditions icon element ased on sky cover. */
+      /* Determine the conditions icon element based on sky cover. */
       determineSkyIcons(skyCoverTimeEqualsWeatherTime, itIsNightTime, skyIndex,
                         wxIndex, skyInfo, &(iconInfo[0]), baseURL, numRowsSKY);
 
@@ -211,7 +214,7 @@ void determineWeatherIcons(icon_def *iconInfo, int numGroups, char **wxType,
 	  */
          if (f_isRainShowers && skyCoverTimeEqualsWeatherTime)
          {
-            if (skyInfo[skyIndex].data > 60)
+            if (skyInfo[skyIndex].data > 50)
 	       determineIconUsingPop(iconInfo[wxIndex].str, "nra", ".jpg", 
 			             POP12ValToPOP3, baseURL);       
             else
@@ -225,7 +228,7 @@ void determineWeatherIcons(icon_def *iconInfo, int numGroups, char **wxType,
          if (f_isRainShowers && skyCoverTimeEqualsWeatherTime != 1 &&
              skyIndex > 0)
          {
-            if (skyInfo[skyIndex - 1].data > 60)
+            if (skyInfo[skyIndex - 1].data > 50)
        	       determineIconUsingPop(iconInfo[wxIndex].str, "nra", ".jpg", 
 			             POP12ValToPOP3, baseURL);  
             else
@@ -263,7 +266,7 @@ void determineWeatherIcons(icon_def *iconInfo, int numGroups, char **wxType,
 	  */
          if (f_isThunderstorm && skyCoverTimeEqualsWeatherTime)
          {
-            if (skyInfo[skyIndex].data > 60)
+            if (skyInfo[skyIndex].data > 50)
                determineIconUsingPop(iconInfo[wxIndex].str, "ntsra", ".jpg", 
 			             POP12ValToPOP3, baseURL);
             else
@@ -277,7 +280,7 @@ void determineWeatherIcons(icon_def *iconInfo, int numGroups, char **wxType,
          if (f_isThunderstorm && skyCoverTimeEqualsWeatherTime != 1 &&
              skyIndex > 0)
          {
-            if (skyInfo[skyIndex - 1].data > 60)
+            if (skyInfo[skyIndex - 1].data > 50)
                determineIconUsingPop(iconInfo[wxIndex].str, "ntsra", ".jpg", 
 			             POP12ValToPOP3, baseURL);
             else
@@ -308,7 +311,7 @@ void determineWeatherIcons(icon_def *iconInfo, int numGroups, char **wxType,
 	  */
          if (f_isRainShowers && skyCoverTimeEqualsWeatherTime)
          {
-            if (skyInfo[skyIndex].data > 60)
+            if (skyInfo[skyIndex].data > 50)
                determineIconUsingPop(iconInfo[wxIndex].str, "shra", ".jpg", 
 			             POP12ValToPOP3, baseURL);
             else
@@ -322,7 +325,7 @@ void determineWeatherIcons(icon_def *iconInfo, int numGroups, char **wxType,
          if (f_isRainShowers && skyCoverTimeEqualsWeatherTime != 1 &&
              skyIndex > 0)
          {
-            if (skyInfo[skyIndex - 1].data > 60)
+            if (skyInfo[skyIndex - 1].data > 50)
                determineIconUsingPop(iconInfo[wxIndex].str, "ra", ".jpg", 
 			             POP12ValToPOP3, baseURL);
             else
@@ -360,7 +363,7 @@ void determineWeatherIcons(icon_def *iconInfo, int numGroups, char **wxType,
 	  */
          if (f_isThunderstorm && skyCoverTimeEqualsWeatherTime)
          {
-            if (skyInfo[skyIndex].data > 60)
+            if (skyInfo[skyIndex].data > 50)
                determineIconUsingPop(iconInfo[wxIndex].str, "tsra", ".jpg", 
 			             POP12ValToPOP3, baseURL);
             else
@@ -374,7 +377,7 @@ void determineWeatherIcons(icon_def *iconInfo, int numGroups, char **wxType,
          if (f_isThunderstorm && skyCoverTimeEqualsWeatherTime != 1 &&
              skyIndex > 0)
          {
-            if (skyInfo[skyIndex - 1].data > 60)
+            if (skyInfo[skyIndex - 1].data > 50)
                determineIconUsingPop(iconInfo[wxIndex].str, "tsra", ".jpg", 
 			             POP12ValToPOP3, baseURL);
             else

@@ -100,7 +100,12 @@ typedef struct                /* Denotes structure of sector info for use in a
    int enumNum;
 } sectInfo;
  
-/* Declare XMLParse() interface. */
+/* Declare XMLParse() interfaces. */
+
+void blizzardCheck (int blizzCnt, double periodStartTime, double periodEndTime,
+                    double *blizzardTime, int numRowsWS, int numRowsWG,
+                    elem_def *wsInfo, elem_def *wgInfo, int dayIndex,
+                    int *_iconToBlizz, char **phrase);
 
 int checkNeedForEndTime(uChar parameterName);
 
@@ -150,8 +155,10 @@ void determineWeatherIcons(icon_def *iconInfo, int numGroups, char **wxType,
 
 void formatLocationInfo(size_t numPnts, Point * pnts, xmlNodePtr data);
 
-void formatMetaDWML(uChar f_XML, xmlDocPtr * doc, xmlNodePtr * data,
+void formatMetaDWML(uChar f_XML, xmlDocPtr * doc, xmlNodePtr * data, 
                     xmlNodePtr * dwml);
+
+void formatMoreWxInfo(size_t numPnts, Point * pnts, xmlNodePtr data);
  
 int formatValidTime(double validTime, char *timeBuff, int size_timeBuff, 
                     sChar pntZoneOffSet, sChar f_dayCheck);
@@ -159,6 +166,11 @@ int formatValidTime(double validTime, char *timeBuff, int size_timeBuff,
 void genAppTempValues(size_t pnt, char *layoutKey, genMatchType *match,
                       xmlNodePtr parameters, numRowsInfo numRows, int startNum,
 		      int endNum);
+
+void genClimateOutlookValues(size_t pnt, char *layoutKey, uChar parameterName, 
+                             genMatchType *match, char *climateOutlookType, 
+                             char *climateOutlookName, xmlNodePtr parameters, 
+                             numRowsInfo numRows, int startNum, int endNum);
 
 void genConvOutlookValues(size_t pnt, char *layoutKey, genMatchType *match, 
                           xmlNodePtr parameters, numRowsInfo numRows, 
@@ -209,8 +221,8 @@ void genSkyCoverValues(size_t pnt, char *layoutKey, genMatchType * match,
                        numRowsInfo numRows, uChar f_XML, int *maxSkyNum,
                        int *minSkyNum, int *startPositions, int *endPositions, 
                        int *SKYintegerTime, char *currentHour, 
-                       double timeUserStart, int f_6CycleFirst, 
-                       double startTime, int startNum, int endNum);
+                       double timeUserStart, double startTime, int startNum, 
+                       int endNum);
 
 void genSnowValues(size_t pnt, char *layoutKey, genMatchType *match,
                    xmlNodePtr parameters, numRowsInfo numRows, int startNum, 
@@ -234,7 +246,8 @@ void genWeatherValues(size_t pnt, char *layoutKey, genMatchType *match,
 
 void genWeatherValuesByDay(size_t pnt, char *layoutKey, 
 		           genMatchType *match, size_t numMatch,
-                           numRowsInfo numRowsWS, numRowsInfo numRowsPOP, 
+                           numRowsInfo numRowsWG, numRowsInfo numRowsWS, 
+                           numRowsInfo numRowsPOP, 
                            numRowsInfo numRowsMAX, numRowsInfo numRowsMIN, 
                            numRowsInfo numRowsWX, xmlNodePtr parameters, 
                            int *numDays, sChar TZoffset,
@@ -246,8 +259,8 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
 			   int *startPositions, int *endPositions, 
 			   int *maxWindSpeed, int *maxWindDirection, 
 			   int integerTime, int integerStartUserTime, 
-			   double startTime_cml, int f_6CycleFirst, 
-                           int format_value, int startNum, int endNum);
+			   double startTime_cml, int format_value, int startNum, 
+                           int endNum);
 
 void genWindDirectionValues(size_t pnt, char *layoutKey, genMatchType * match,
                             xmlNodePtr parameters, int *maxWindDirection,
@@ -270,8 +283,8 @@ void genWindSpeedValues(double timeUserStart, double timeUserEnd, size_t pnt,
                         int *maxWindSpeed, int *numOutputLines, int timeInterval,
                         sChar TZoffset, sChar f_observeDST, uChar parameterName,
                         numRowsInfo numRows, uChar f_XML,
-                        double *valTimeForWindDirMatch, int f_6CycleFirst, 
-                        double startTime, int startNum, int endNum);
+                        double *valTimeForWindDirMatch, double startTime, 
+                        int startNum, int endNum);
 
 void generatePhraseAndIcons (int dayIndex, char *frequency, 
                              int timeLayoutHour, char *dominantWeather[4],
@@ -288,8 +301,12 @@ void generatePhraseAndIcons (int dayIndex, char *frequency,
 			     int f_isIcePellets, int f_isSnow, 
 			     int f_isSnowShowers, int f_isFreezingDrizzle, 
 			     int f_isFreezingRain, int f_isBlowingSnow, 
+                             elem_def *wgInfo, elem_def *wsInfo, 
+                             double *blizzardTime, int blizzCnt, 
+                             double periodStartTime, double periodEndTime, 
                              icon_def *iconInfo, char **phrase, 
-                             int *f_popIsNotAnIssue);
+                             int *f_popIsNotAnIssue, int numRowsWS, 
+                             int numRowsWG, int percentTimeWithFog);
 
 void generateTimeLayout(numRowsInfo numRows, uChar parameterName,
                         char *layoutKey, const char *timeCoordinate,
@@ -319,8 +336,8 @@ void getNumRows(numRowsInfo *numRowsForPoint, double *timeUserStart,
                 sChar f_observeDST, int startNum, int endNum, char *startDate, 
                 int *numDays, double startTime, double endTime, 
                 char currentHour[3], double *firstValidTime_pop, 
-                int *f_6CycleFirst, double *firstValidTimeMatch, 
-                int *f_formatIconForPnt, int *f_formatSummarizations, int pnt);
+                double *firstValidTimeMatch, int *f_formatIconForPnt, 
+                int *f_formatSummarizations, int pnt);
 
 void getPeriodInfo(uChar parameterName, char *firstValidTime, char *currentHour, 
                    char *currentDay, uChar * issuanceType, 
@@ -350,7 +367,7 @@ void getTranslatedVisibility(char *uglyStr, char *transStr);
 void getUserTimes(double **timeUserStart, double **timeUserEnd, 
                   int *f_POPUserStart, char *startDate, sChar TZ, 
                   double startTime, sChar f_observeDST, int *numDays, 
-                  double *firstValidTime_pop, int **f_6CycleFirst, sChar f_XML, 
+                  double *firstValidTime_pop, sChar f_XML, 
                   double *firstValidTimeMatch);
 
 int isDominant(char *arg1, char *arg2, char *argType);
@@ -394,8 +411,7 @@ void prepareWeatherValuesByDay (genMatchType *match, sChar TZoffset,
 				double *periodEndTimes,
 				double *springDoubleDate, 
                                 double *fallDoubleDate, 
-				int *timeLayoutHour, int f_6CycleFirst, 
-                                int startNum, int endNum);
+				int *timeLayoutHour, int startNum, int endNum);
 
 void PrintDay1(genMatchType * match, size_t pntIndex, collateType *collate, 
                size_t numCollate, sChar pntTimeZone, sChar f_dayCheck);

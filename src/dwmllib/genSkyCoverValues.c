@@ -78,8 +78,6 @@
  *  timeUserStart = The beginning of the first forecast period (06 hr
  *                  or 18hr) based on the user supplied startTime argument. 
  *                  (Input)
- *  f_6CycleFirst = Denotes if first forecast cycle relative to current time 
- *                  is the 06hr or 18hr forecast cycle. (Input)
  *      startTime = Incoming argument set by user as a double in seconds 
  *                  since 1970 denoting the starting time data is to be 
  *                  retrieved for from NDFD. (Set to 0.0 if not entered.)
@@ -95,6 +93,8 @@
  *
  * HISTORY
  *   3/2006 Paul Hershberg (MDL): Created
+ *  10/2007 Paul Hershberg (MDL): Removed code that shifted data back by 1/2
+ *                                the period length (bug from php code)
  *
  * NOTES
  ******************************************************************************
@@ -108,8 +108,8 @@ void genSkyCoverValues(size_t pnt, char *layoutKey, genMatchType * match,
                        numRowsInfo numRows, uChar f_XML, int *maxSkyNum,
                        int *minSkyNum, int *startPositions, int *endPositions, 
                        int *SKYintegerTime, char *currentHour, 
-                       double timeUserStart, int f_6CycleFirst, 
-                       double startTime, int startNum, int endNum)
+                       double timeUserStart, double startTime, int startNum, 
+                       int endNum)
 {
    int i;                     /* Counter thru match structure. */
    int numNils = 0;           /* Denotes diff between number of data rows and 
@@ -214,25 +214,6 @@ void genSkyCoverValues(size_t pnt, char *layoutKey, genMatchType * match,
             Clock_Scan(&SKYdoubleTime, SKYstr, 0);
             *SKYintegerTime = SKYdoubleTime;
 
-            /* Now we have to account for data that is just in the time
-             * period i.e. if data is valid from 4PM-7PM and time period is
-             * from 6AM-6PM. We shift data by one half the data's period in
-             * seconds. 
-	     */
-	    if ((i - (priorElemCount + startNum)) < 1)
-               period = determinePeriodLength(match[i].validTime,
-                               match[i + 1].validTime, 
-			       (numRows.total-numRows.skipBeg-numRows.skipEnd),
-                               parameterName);
-            else
-               period = determinePeriodLength(match[i - 1].validTime,
-                               match[i].validTime,
-                               (numRows.total-numRows.skipBeg-numRows.skipEnd), 
-			       parameterName);
-
-            if ((f_6CycleFirst) || (!f_6CycleFirst && startTime != 0.0))
-      	       *SKYintegerTime = *SKYintegerTime - (((double)period * 0.5) * 3600);
-
             /* Determine if this time is within the current day (period) being
              * processed. 
 	     */
@@ -293,10 +274,9 @@ void genSkyCoverValues(size_t pnt, char *layoutKey, genMatchType * match,
                   if (numSkyCoverValues > 0)
                      averageSkyCover[currentDay] = (int)myRound((totalSkyCover / numSkyCoverValues), 0);
 	          else
-	          {
-		     averageSkyCover[currentDay] = 0;
-		  }
+		     averageSkyCover[currentDay] = -999;
 
+                  /* Re-initialize some things for next iteration of summary period. */
                   totalSkyCover = 0;
                   numSkyCoverValues = 0;
 	          endPositions[currentDay] = (i - priorElemCount) - startNum;
@@ -317,8 +297,9 @@ void genSkyCoverValues(size_t pnt, char *layoutKey, genMatchType * match,
                   if (numSkyCoverValues > 0)
                      averageSkyCover[currentDay] = (int)myRound((totalSkyCover / numSkyCoverValues), 0);
 	          else
-		     averageSkyCover[currentDay] = 0;
+		     averageSkyCover[currentDay] = -999;
 
+                  /* Re-initialize some things for next iteration of summary period. */
 	          totalSkyCover = 0;
                   numSkyCoverValues = 0;
 	          endPositions[currentDay] = (i - priorElemCount) - startNum;
@@ -350,7 +331,7 @@ void genSkyCoverValues(size_t pnt, char *layoutKey, genMatchType * match,
       {
          for (i = currentDay; i < *numOutputLines; i++)
 	 {
-            averageSkyCover[currentDay] = 0;
+            averageSkyCover[currentDay] = -999;
 	 }
       }
    }

@@ -125,6 +125,9 @@ void generateTimeLayout(numRowsInfo numRows, uChar parameterName,
                                * layout being processed. */
    int period = 0;            /* Length between an elements successive
                                * validTimes. */
+   int periodClimate = 0;      /* Length between an elements successive 
+                                * validTimes in days or months (for climate
+                                * outlook products). */
    int numActualRows; /* (numRows - those skipped) due to user shortening time
                        * data was retrieved for. */
    double startTime_doub = 0.0; /* Holds startTimes as a double. */
@@ -181,7 +184,7 @@ void generateTimeLayout(numRowsInfo numRows, uChar parameterName,
       period = 12;
    else /* Calculate it */
       period = determinePeriodLength(firstValidTime, secondValidTime, 
-		                     numActualRows, parameterName);
+		                     numActualRows, parameterName); 
    
    /* Fill the rest of the time layout array with current data. */
    currentTimeLayout.period = period;
@@ -191,9 +194,27 @@ void generateTimeLayout(numRowsInfo numRows, uChar parameterName,
    if (isNewLayout(currentTimeLayout, numLayoutSoFar, numCurrentLayout,
                    f_finalTimeLayout) == 1)
    {
-      /* Create the new key and then bump up the number of layouts by one. */
-      sprintf(layoutKey, "k-p%dh-n%d-%d", period, *numFmtdRows, 
-	      *numLayoutSoFar);
+      /* Create the new key and then bump up the number of layouts by one.
+       * We'll use days and not hours as period unit for climate products with
+       * a period between 48 hours and 672 hours (28 days). Use months for
+       * those climate products with period > 672 hours (28 days).
+       */
+      if (period >= 672)
+      {
+         periodClimate = (int)(myRound((period/24/30), 0));
+         sprintf(layoutKey, "k-p%dm-n%d-%d", periodClimate, *numFmtdRows, 
+	         *numLayoutSoFar);
+      }
+      else if (period > 48)
+      {
+         periodClimate = (int)(myRound((period/24), 0));
+         sprintf(layoutKey, "k-p%dd-n%d-%d", periodClimate, *numFmtdRows, 
+	         *numLayoutSoFar);
+      }
+      else
+         sprintf(layoutKey, "k-p%dh-n%d-%d", period, *numFmtdRows, 
+	         *numLayoutSoFar);
+
       *numLayoutSoFar += 1;
       
       /* See if we need to format an <end-valid-time> tag . */
@@ -232,7 +253,8 @@ void generateTimeLayout(numRowsInfo numRows, uChar parameterName,
                                BAD_CAST layoutKey);
 
       /* Before looping throught the valid times determine the period
-       * information "issuanceType" and "numPeriodNames". */
+       * information "issuanceType" and "numPeriodNames". 
+       */
       if (f_formatPeriodName && period >= 12)
          getPeriodInfo(parameterName, startTimes[0], currentHour, currentDay,
                        &issuanceType, &numPeriodNames, period, frequency);
@@ -368,7 +390,21 @@ void generateTimeLayout(numRowsInfo numRows, uChar parameterName,
    }
    else /* Not a new key so just return the key name */
    {
-      sprintf(layoutKey, "k-p%dh-n%d-%d", period, *numFmtdRows, *numCurrentLayout);
+      if (period >= 672)
+      {
+         periodClimate = (int)(myRound((period/24/30), 0));
+         sprintf(layoutKey, "k-p%dm-n%d-%d", periodClimate, *numFmtdRows, 
+	         *numCurrentLayout);
+      }
+      else if (period > 48)
+      {
+         periodClimate = (int)(myRound((period/24), 0));
+         sprintf(layoutKey, "k-p%dd-n%d-%d", periodClimate, *numFmtdRows, 
+	         *numCurrentLayout);
+      }
+      else
+         sprintf(layoutKey, "k-p%dh-n%d-%d", period, *numFmtdRows, 
+	         *numCurrentLayout);
    }
    
    return;

@@ -179,13 +179,14 @@ void prepareDWMLgenByDay(genMatchType *match, uChar f_XML,
       wxParameters[j][NDFD_POP] = 1;
       wxParameters[j][NDFD_WX] = 1;
 
-      /* We need to collect data for the following three elements too. They are
+      /* We need to collect data for the following four elements too. They are
        * not formatted in the output XML, but are used in icon determination.
        * Set these values to = 2. 
        */
       wxParameters[j][NDFD_SKY] = 2;
       wxParameters[j][NDFD_WS] = 2;
       wxParameters[j][NDFD_WD] = 2;
+      wxParameters[j][NDFD_WG] = 2;
  
       /* Assign the number of output lines, if DWMLgenByDay product. */
       if (f_XML == 3)

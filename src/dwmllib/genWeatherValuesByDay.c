@@ -22,6 +22,8 @@
  *               derive icons, if icons are to be formatted. (Input)
  *  numRowsMIN = The number of data rows for min temps. These data are used to
  *               derive icons, if icons are to be formatted. (Input)
+ *   numRowsWG = The number of data rows for wind gust values. These data are 
+ *               used to derive the weather phrase "Blizzard". (Input)
  *   numRowsWX = The number of data rows for weather. These data can be 
  *               formatted if f_wx = 1, and/or used to derive icons if f_icon 
  *               = 1.  (Input)
@@ -92,8 +94,6 @@
  *                   weather as a spring/fall signifier. (Input)
  * integerStartUserTime = The beginning of the first forecast period (06 hr or 18hr) 
  *                        based on the user supplied startTime argument. (Input)                          
- *   f_6CycleFirst = Denotes if first forecast cycle relative to current time 
- *                  is the 06hr or 18hr forecast cycle. (Input)
  *   startTime_cml = Incoming argument set by user as a double in seconds 
  *                   since 1970 denoting the starting time data is to be 
  *                   retrieved for from NDFD. (Set to 0.0 if not entered.)
@@ -111,6 +111,11 @@
  * RETURNS: void
  *
  *  6/2006 Paul Hershberg (MDL): Created.
+ *  4/2007 Paul Hershberg (MDL): Added capability to find Wind Gust validtimes.
+ *  6/2007 Paul Hershberg (MDL): Added capability to determine Blizzard Conditions.
+ *  7/2007 Paul Hershberg (MDL): Added capability of new T-storm dominance algorithm.
+ * 10/2007 Paul Hershberg (MDL): Removed code that shifted data back by 1/2
+ *                               the period length (bug from php code)
  *
  * NOTES:
  *****************************************************************************
@@ -118,10 +123,10 @@
 #include "xmlparse.h"
 void genWeatherValuesByDay(size_t pnt, char *layoutKey, 
 		           genMatchType *match, size_t numMatch,
-                           numRowsInfo numRowsWS, numRowsInfo numRowsPOP, 
-                           numRowsInfo numRowsMAX, numRowsInfo numRowsMIN, 
-                           numRowsInfo numRowsWX, xmlNodePtr parameters, 
-                           int *numDays, sChar TZoffset,
+                           numRowsInfo numRowsWG, numRowsInfo numRowsWS, 
+                           numRowsInfo numRowsPOP, numRowsInfo numRowsMAX, 
+                           numRowsInfo numRowsMIN, numRowsInfo numRowsWX, 
+                           xmlNodePtr parameters, int *numDays, sChar TZoffset,
 			   sChar f_observeDST, char *frequency,
 			   int f_useMinTempTimes, uChar f_XML,
 			   int *numOutputLines, int *maxDailyPop, 
@@ -130,8 +135,8 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
 			   int *startPositions, int *endPositions, 
 			   int *maxWindSpeed, int *maxWindDirection, 
 			   int integerTime, int integerStartUserTime, 
-			   double startTime_cml, int f_6CycleFirst, 
-                           int format_value, int startNum, int endNum)
+			   double startTime_cml, int format_value, int startNum,
+                           int endNum)
 {
    double springDoubleDate = 0.0; /* The end date of next cold season expressed
                                      in double form. */
@@ -165,29 +170,31 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
    
    /* Initialize # of rows of data processed for a given day. */
    int numDataRows = 0;  /* The # of rows of data processed for a given day. */
-   char *dominantWeather[4]; /* This array stores the weather type [0], 
-                              * intensity [1], coverage [2], and qualifier [3],
-                              * for each day that is considered the dominant 
-                              * one. This is the summarized weather for the 
-                              * 24/12 hour period.
-			      */
-   char *tempDom[4]; /* Holds the latest weather information which is then 
+   char *dominantWeather[5]; /* This array stores the weather type [0], 
+                              * intensity [1], coverage [2], visibility[3] and 
+                              * qualifier [4], for each day that is considered 
+                              * the dominant one. This is the summarized weather
+                              * for the 24/12 hour summarization period. */
+   char *tempDom[5]; /* Holds the latest weather information which is then 
 		      * compared to the dominantWeather array to see if a new 
-		      * dominant weather condition has been found.
-		      */
-   char *dominantRowsWeather[4][5]; /* Array containing the other 3 weather 
+		      * dominant weather condition has been found. */
+   char *dominantRowsWeather[5][5]; /* Array containing the other 4 weather 
 				     * values (out of coverage, intensity,
-				     * type, and qualifier) of a row once the 
-				     * dominant weather was found.
+				     * type, visibility, and qualifier) of a 
+				     * row once the dominant weather was found.
 				     */
    char WxGroups[5][100];    /* An array holding up to 5 weather groups for
-                               * any one valid time. */
+                              * any one valid time. */
    char WxValues[5][50];      /* An associative array holding the current
-                               * groups type, coverage, intensity, vis, &
-                               * qualifier. */
+                               * groups type[1], coverage[0], intensity[2], 
+                               * visibility[3], & qualifier[4]. */
    int numGroups = 0;        /* Number of Weather Groups per one row of Weather
                               * data (# of groups in ugly string) */
    WX *wxInfo = NULL;         /* All Weather data taken from the match array. */
+   elem_def *wgInfo = NULL;   /* Wind Speed Gust data taken from the match 
+                               * array. */
+   elem_def *wsInfo = NULL;   /* Wind Speed data taken from the match 
+                               * array. */
    int priorElemCount = 0;     /* Counter used to find elements' location in
                                   match. */
    char *pstr = NULL;         /* Pointer to "ugly string" delimited by '>'
@@ -215,6 +222,7 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
    char **wxCoverage = NULL;  /* An individual weather groups coverage. */
    char **wxIntensity = NULL; /* An individual weather groups intensity. */
    char **wxType = NULL;      /* An individual weather groups type. */
+   char **wxVisibility = NULL; /* An individual weather groups visibility. */
    char ***wxQualifier = NULL; /* An individual weather groups qualifiers.
 				* Char array holding up to 5 weather qualifiers 
 			        * for up to 5 wx groups. */
@@ -255,6 +263,28 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
                          * a user supplied shortened time period. */
    int numActualRowsPOP; /* Pop12 # of rows interested in taking into accordance 
                           * a user supplied shortened time period. */
+   int numActualRowsWG; /* # of Wind Gust rows interested in taking into
+                         * accordance a user supplied shortened time
+                         * period. */
+   int numActualRowsWS; /* # of Wind Speed rows interested in taking into
+                         * accordance a user supplied shortened time
+                         * period. */
+   int f_blizzardType = 0; /* Denotes if weather type for "blizzard"
+                            * determination was met. */
+   int f_blizzardVisibility = 0; /* Denotes if weather visibility for "blizzard" 
+                                  * determination was met. */
+   int f_blizzardIntensity = 0; /* Denotes if weather intensity for "blizzard" 
+                                 * determination was met. */
+   double *blizzardTime = NULL; /* If all blizzard conditions are met in the
+                                 * ugly weather string, the time is recorded. */
+   int blizzCnt = 0; /* Counter thru blizzard Times array. */
+   char timeStr[30]; /* Temporary string holding formatted validTimes. */
+   char tempPriorIntensity[10]; /* Temporary holder for intensity due to T-storm 
+                                 * dominance check. Holds the prior group's 
+                                 * intensity string. */
+   char tempCurrentIntensity[10]; /* Temporary holder for intensity due to T-storm 
+                                   * dominance check. Holds the current group's 
+                                   * intensity string. */
    
    /* Initialize the location where the weather icons are found. */
    char baseURL[] = "http://www.nws.noaa.gov/weather/images/fcicons/";
@@ -267,14 +297,72 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
    numActualRowsMIN = numRowsMIN.total-numRowsMIN.skipBeg-numRowsMIN.skipEnd;
    numActualRowsWX = numRowsWX.total-numRowsWX.skipBeg-numRowsWX.skipEnd;
    numActualRowsPOP = numRowsPOP.total-numRowsPOP.skipBeg-numRowsPOP.skipEnd;
- 
+   numActualRowsWG = numRowsWG.total-numRowsWG.skipBeg-numRowsWG.skipEnd;
+   numActualRowsWS = numRowsWS.total-numRowsWS.skipBeg-numRowsWS.skipEnd;
+
    /* Firstly, format the weather and display name elements. */
    weather = xmlNewChild(parameters, NULL, BAD_CAST "weather", NULL);
    xmlNewProp(weather, BAD_CAST "time-layout", BAD_CAST layoutKey);
 
    xmlNewChild(weather, NULL, BAD_CAST "name", BAD_CAST
                "Weather Type, Coverage, and Intensity");
-   
+	 
+   /* Create an array of structures holding the wind speed gust data
+    * and time info from the match structure. These data will be used
+    * in blizzard determination. 
+    */
+   wgInfo = malloc(numActualRowsWG * sizeof(elem_def));
+
+   /* Fill Wind Speed Gust Array (every 3 hours). */
+   priorElemCount = 0;
+   for (i = startNum; i < endNum; i++)
+   {
+      if (match[i].elem.ndfdEnum == NDFD_WG && 
+         match[i].validTime >= numRowsWG.firstUserTime &&
+         match[i].validTime <= numRowsWG.lastUserTime)
+      {
+         timeStr[0] = '\0';	 
+         formatValidTime(match[i].validTime, timeStr, 30, TZoffset,
+                         f_observeDST);
+         Clock_Scan (&wgInfo[i-priorElemCount-startNum].validTime, timeStr, 0);
+
+         wgInfo[i-priorElemCount-startNum].data =
+                (int)myRound(match[i].value[pnt].data, 0);
+         wgInfo[i-priorElemCount-startNum].valueType =
+                match[i].value[pnt].valueType;
+      }
+      else
+         priorElemCount++;
+   }
+		 
+   /* Create an array of structures holding the wind speed data
+    * and time info from the match structure. These data will be used
+    * in blizzard determination.
+    */
+   wsInfo = malloc(numActualRowsWS * sizeof(elem_def));
+
+  /* Fill Wind Speed Array (every 3 hours). */
+   priorElemCount = 0;
+   for (i = startNum; i < endNum; i++)
+   {
+      if (match[i].elem.ndfdEnum == NDFD_WS && 
+         match[i].validTime >= numRowsWS.firstUserTime &&
+         match[i].validTime <= numRowsWS.lastUserTime)
+      {
+	 timeStr[0] = '\0'; 
+         formatValidTime(match[i].validTime, timeStr, 30, TZoffset,
+                         f_observeDST);
+         Clock_Scan (&wsInfo[i-priorElemCount-startNum].validTime, timeStr, 0);
+
+         wsInfo[i-priorElemCount-startNum].data =
+                (int)myRound(match[i].value[pnt].data, 0);
+         wsInfo[i-priorElemCount-startNum].valueType =
+                match[i].value[pnt].valueType;
+      }
+      else
+         priorElemCount++;
+   }
+    
    /* Create an array of structures holding the weather element's
     * data info and time info from the match structure. 
     */
@@ -318,12 +406,11 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
    weatherDataTimes = (double *) malloc(numActualRowsWX * sizeof(double));
    prepareWeatherValuesByDay (match, TZoffset, f_observeDST, frequency, 
 		              numDays, numOutputLines, numRowsWS, numRowsMIN,  
-			      numRowsMAX, f_XML, numRowsPOP, numRowsWX, pnt, 
-			      f_useMinTempTimes, startTime_cml, 
-                              weatherDataTimes, periodMaxTemp, 
-                              periodStartTimes, periodEndTimes,
-			      &springDoubleDate, &fallDoubleDate, 
-			      &timeLayoutHour, f_6CycleFirst, startNum, 
+			      numRowsMAX, f_XML, numRowsPOP, numRowsWX, 
+                              pnt, f_useMinTempTimes, startTime_cml, 
+                              weatherDataTimes, periodMaxTemp, periodStartTimes, 
+                              periodEndTimes, &springDoubleDate, 
+                              &fallDoubleDate, &timeLayoutHour, startNum, 
                               endNum);
 
    /* This is a big loop to format each day's weather. First, make appropriate
@@ -340,7 +427,6 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
    /* A big loop to format each summarization period's weather. */
    for (dayIndex = 0; dayIndex < *numOutputLines; dayIndex++)
    {
-    
       /* Initialize the icon for this period to "none". */
       strcpy (iconInfo[dayIndex].str, "none"); 	 
       
@@ -371,8 +457,8 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
       /* Initialize both the dominantWeather (per period) and the day's Weather
        * to lowest possible values. 
        */
-      for (i = 0; i < 4; i++) /* 4 wx categories interested in (coverage, 
-			       * intensity, type, qualifier). */
+      for (i = 0; i < 5; i++) /* 5 wx categories interested in (coverage, 
+			       * intensity, type, visibility, qualifier). */
       {
          dominantWeather[i] = (char *) malloc(5 * sizeof(char));
          strcpy (dominantWeather[i], "none");
@@ -392,6 +478,11 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
          memset(WxValues, '\0', 5 * 50);
          memset(WxGroups, '\0', 5 * 100);
          numGroups = 0;
+
+         /* Flags for Blizzard Determination. */
+         f_blizzardType = 0;
+         f_blizzardIntensity = 0;
+         f_blizzardVisibility = 0;
 	 
          /* First, determine if this row of weather has valid data. */
 	 if (wxInfo[wxIndex].valueType != 2)
@@ -407,12 +498,14 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
                weatherDataTimes[wxIndex] < periodEndTimes[dayIndex])	 
             {
                isDataAvailable[dayIndex] = 1;
-                 
+
                /* We found a data row to process, so count it. */
 	       numDataRows++;
 	    
-               /* Lets remove the <> that surround the weather data coming from
-                * NDFD (type, intensity, coverge, visibility, and qualifier). */
+               /* Lets remove the <> that surround the fields (type, intensity, 
+                * coverge, visibility, and qualifier) that make up each weather 
+                * group coming from NDFD. 
+                */
                pstr = strchr(wxInfo[wxIndex].str, '<');
                while (pstr != NULL)
                {
@@ -497,26 +590,32 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
 	        * values. This array tracks which of the possible 5 groups per one
 	        * row of data (one weather ugly string) is the dominant one. 
                 */
-               for (j = 0; j < 4; j++)
+               for (j = 0; j < 5; j++)
                {
                   tempDom[j] = (char *) malloc(5 * sizeof(char));
                   strcpy (tempDom[j], "none");
                }
 	    
                /* For each group, process its weather information (i.e.
-	        * coverage, intensity, type, and qualifier (visibility is not processed
-	        * for the DWMLgenByDay products) all which are denoted by a ":". 
+	        * coverage, intensity, type, and qualifier and visibility for 
+                * use in "Blizzard" determination) all which are denoted 
+                * by a ":". 
 	        */
                wxCoverage = (char **)calloc(numGroups + 1, sizeof(char *));
                wxIntensity = (char **)calloc(numGroups + 1, sizeof(char *));
 	       wxType = (char **)calloc(numGroups + 1, sizeof(char *));
+               wxVisibility = (char **)calloc(numGroups + 1, sizeof(char *));
 	       Qualifier = (char **)calloc(numGroups + 1, sizeof(char *));
                wxQualifier = (char ***)calloc(numGroups + 1, sizeof(char **));
 	       
-	       /* Loop over each group. */
+	       /* Now that we know numGroups per weather string (up to 5 per 
+                * ugly weather string), loop over each group. 
+                */
                for (groupIndex = 0; groupIndex < numGroups + 1; groupIndex++)
                {
-                  numValues = 0;
+                  numValues = 0; /* Number of values (up to 5 -- type, 
+                                  * intensity, coverage, visibility, and 
+                                  * qualifier(s)) per 1 group. */
 		  
 	          /* Initialize the 5 wxQualifier possibilities to "none". */
 	          wxQualifier[groupIndex] = (char **) malloc (5 * sizeof(char *));
@@ -527,8 +626,9 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
 	             strcpy(wxQualifier[groupIndex][wqIndex], "none");
 	          }
 
-                  /* Create the associative array holding the weather info
-                   * fields. */
+                  /* Create the associative array holding the (up to 5)  
+                   * weather info fields. 
+                   */
                   pstr = WxGroups[groupIndex];
                   valueIndex = 0;
 
@@ -584,8 +684,9 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
                      strcpy(wxCoverage[groupIndex], "none");
 	          }
 	          else /* Populate weather value arrays for 'coverage',
-		        * 'intensity', 'type', and 'qualifier' (if exists).
-		        */
+		        * 'intensity', 'type', 'visibility' and 'qualifier(s)'
+                        * (if they exist). Flag conditions for "Blizzard".
+                        */
 	          {
 		       
                      /* Weather Coverage */
@@ -612,6 +713,11 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
                         strTrim(WxValues[1]);
                         wxType[groupIndex] = (char *) malloc((strlen(WxValues[1]) + 1) * sizeof(char));
                         strcpy(wxType[groupIndex], WxValues[1]);
+                          
+                        /* Check for Blizzard condition Type. */
+                        if (strcmp (wxType[groupIndex], "S") == 0 || 
+                            strcmp (wxType[groupIndex], "BS") == 0)
+                           f_blizzardType = 1;
                      }
 
                      /* Weather Intensity */
@@ -625,12 +731,37 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
                         strTrim(WxValues[2]);
                         wxIntensity[groupIndex] = (char *) malloc((strlen(WxValues[2]) + 1) * sizeof(char));
                         strcpy(wxIntensity[groupIndex], WxValues[2]);
+                          
+                        /* Check for Blizzard condition Intensity. */
+                        if (strcmp (wxIntensity[groupIndex], "+") == 0 || 
+                            strcmp (wxIntensity[groupIndex], "m") == 0)
+                           f_blizzardIntensity = 1;
                      }
 	       
                      /* Note, we are not processing the visibility WxValue field, 
 	      	      * which is denoted by WxValues[3] element, for the DWMLgenByDay
-	   	      * products.
+	   	      * products. NOTE! -- started processing Visibility for generation of
+                      * "Blizzard" as a weather phrase (April 2007).
 	              */
+
+                     /* Weather Visibility */
+                     if (WxValues[3][1] == 'N' && WxValues[3][2] == 'o')
+                     {
+                        wxVisibility[groupIndex] = (char *) malloc((strlen("none") + 1) * sizeof(char));
+                        strcpy(wxVisibility[groupIndex], "none");
+                     }
+                     else
+                     {
+                        strTrim(WxValues[3]);
+                        wxVisibility[groupIndex] = (char *) malloc((strlen(WxValues[3]) + 1) * sizeof(char));
+                        strcpy(wxVisibility[groupIndex], WxValues[3]);
+                          
+                        /* Check for Blizzard condition Visibility (as of 6/2007,
+                         * visibility is NOT used in Blizzard determination.
+                         */
+                        if (strcmp (wxVisibility[groupIndex], "1/4SM") == 0)
+                           f_blizzardVisibility = 1;
+                     }
 	       
                      /* Weather Qualifier(s) */
 	       
@@ -720,6 +851,27 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
                   /* Re-initialize the WxValues array for next group iteration. */
                   memset(WxValues, '\0', 5 * 50);
 
+                  /* See if all "Blizzard" conditions were met. If so, denote the
+                   * time these conditions were met. (NOTE, as of 2007, we are 
+                   * not using the visibility part of the weather string (<1/4M)
+                   * to determine Blizzard). We are assuming Both snow, and blowing 
+                   * snow begin at 1/4 mile visibility. Thus, the occurrence of 
+                   * snow or blowing snow should be enough to guarantee that 
+                   * visibility is 1/4 mile or less.
+                   */
+                  if (f_blizzardType && f_blizzardIntensity)
+/*                  if (f_blizzardType && f_blizzardIntensity && 
+                        f_blizzardVisibility)
+*/
+                  {
+                     blizzardTime = (double *) realloc(blizzardTime,
+                                    (blizzCnt+1) * sizeof(double));
+                     blizzardTime[blizzCnt] = weatherDataTimes[wxIndex];
+                     blizzCnt++;
+                  }
+
+                  /***********BEGIN TESTING FOR DOMINANCE OF WEATHER************/
+
                   /* If coverage is dominant, set new tempDom to the current group. */
 	          if (isDominant(wxCoverage[groupIndex], tempDom[0], "coverage"))
 	          {
@@ -735,31 +887,59 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
                      tempDom[2] = (char *) realloc(tempDom[2], (strlen(wxType[groupIndex]) + 1) * sizeof(char));
 		     strcpy (tempDom[2], wxType[groupIndex]);
 
+                     /* Copy over the 'visibility' to the temporary array. */
+                     tempDom[3] = (char *) realloc(tempDom[3], (strlen(wxVisibility[groupIndex]) + 1) * sizeof(char));
+		     strcpy (tempDom[3], wxVisibility[groupIndex]);
+
                      /* Copy over the 'qualifier' to the temporary array. */
-                     tempDom[3] = (char *) realloc(tempDom[3], (strlen(transQualifierStr) + 1) * sizeof(char));
-		     strcpy (tempDom[3], transQualifierStr);
+                     tempDom[4] = (char *) realloc(tempDom[4], (strlen(transQualifierStr) + 1) * sizeof(char));
+		     strcpy (tempDom[4], transQualifierStr);
 	          }
 	          else if (strcmp(wxCoverage[groupIndex], tempDom[0]) == 0)   
 	          {		       
+	             strcpy (tempPriorIntensity, tempDom[1]);
+                     strcpy (tempCurrentIntensity, wxIntensity[groupIndex]);
+
 	             /* If coverage is equal, test for dominant intensity. */
-                     if (isDominant(wxIntensity[groupIndex], tempDom[1], "intensity"))
+                    
+                     /* Take care of special case scenario where there is more than 1 group in the ugly weather
+                      * string. If the prior group or current group's "type" is thunderstorms ("T") and the 
+                      * coverages of the two groups in comparison are equal, set the intensity of the thunderstorm 
+                      * group temporarily to "+". This will force thunderstorms to dominate as the weather summary 
+                      * phrase of the day over precipitation.
+                      */                                
+                     if (numGroups > 0)
+                     {
+                        if (strcmp(wxType[groupIndex], "T") == 0)  
+                           strcpy (tempCurrentIntensity, "+");
+                        else if (strcmp(tempDom[2], "T") == 0)
+                           strcpy (tempPriorIntensity, "+");
+                     }
+ 
+                     if (isDominant(tempCurrentIntensity, tempPriorIntensity, "intensity"))
 	             {
                         /* Copy over the 'coverage' to the temporary array. */
                         tempDom[0] = (char *) realloc(tempDom[0], (strlen(wxCoverage[groupIndex]) + 1) * sizeof(char));
 		        strcpy (tempDom[0], wxCoverage[groupIndex]);
-
-                        /* Copy over the 'intensity' to the temporary array. */
+                     
+                        /* Copy over the actual 'intensity' to the temporary array (not a "+" if altered above in 
+                         * Tstorm priority, as that is temporary).
+                         */ 
                         tempDom[1] = (char *) realloc(tempDom[1], (strlen(wxIntensity[groupIndex]) + 1) * sizeof(char));
 		        strcpy (tempDom[1], wxIntensity[groupIndex]);
-			
+
                         /* Copy over the 'type' to the temporary array. */
                         tempDom[2] = (char *) realloc(tempDom[2], (strlen(wxType[groupIndex]) + 1) * sizeof(char));
 		        strcpy (tempDom[2], wxType[groupIndex]);
 
+                        /* Copy over the 'visibility' to the temporary array. */
+                        tempDom[3] = (char *) realloc(tempDom[3], (strlen(wxVisibility[groupIndex]) + 1) * sizeof(char));
+		        strcpy (tempDom[3], wxVisibility[groupIndex]);
+
                         /* Copy over the 'qualifier' to the temporary array. */
-                        tempDom[3] = (char *) realloc(tempDom[3], (strlen(transQualifierStr) + 1) * sizeof(char));
-	   	        strcpy (tempDom[3], transQualifierStr);
-		     }
+                        tempDom[4] = (char *) realloc(tempDom[4], (strlen(transQualifierStr) + 1) * sizeof(char));
+	   	        strcpy (tempDom[4], transQualifierStr);
+ 		     }
 		     else if (strcmp(wxIntensity[groupIndex], tempDom[1]) == 0)
 	             {		       
 	                /* If intensity is equal, test for dominant type. */
@@ -777,9 +957,13 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
                            tempDom[2] = (char *) realloc(tempDom[2], (strlen(wxType[groupIndex]) + 1) * sizeof(char));
 		           strcpy (tempDom[2], wxType[groupIndex]);
 
+                           /* Copy over the 'visibility' to the temporary array. */
+                           tempDom[3] = (char *) realloc(tempDom[3], (strlen(wxVisibility[groupIndex]) + 1) * sizeof(char));
+		           strcpy (tempDom[3], wxVisibility[groupIndex]);
+
                            /* Copy over the 'qualifier' to the temporary array. */
-                           tempDom[3] = (char *) realloc(tempDom[3], (strlen(transQualifierStr) + 1) * sizeof(char));
-		           strcpy (tempDom[3], transQualifierStr);
+                           tempDom[4] = (char *) realloc(tempDom[4], (strlen(transQualifierStr) + 1) * sizeof(char));
+		           strcpy (tempDom[4], transQualifierStr);
 		        }
 	   	     }
 	          }
@@ -808,9 +992,13 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
                   dominantWeather[2] = (char *) realloc(dominantWeather[2], (strlen(tempDom[2]) + 1) * sizeof(char));
 	          strcpy (dominantWeather[2], tempDom[2]);
 
-                  /* Copy over the 'qualifier' to the dominant weather array. */
+                  /* Copy over the 'visibility' to the dominant weather array. */
                   dominantWeather[3] = (char *) realloc(dominantWeather[3], (strlen(tempDom[3]) + 1) * sizeof(char));
 	          strcpy (dominantWeather[3], tempDom[3]);
+
+                  /* Copy over the 'qualifier' to the dominant weather array. */
+                  dominantWeather[4] = (char *) realloc(dominantWeather[4], (strlen(tempDom[4]) + 1) * sizeof(char));
+	          strcpy (dominantWeather[4], tempDom[4]);
 	       
                   for (groupIndex = 0; groupIndex < numGroups + 1; groupIndex++)
 	          {
@@ -822,7 +1010,6 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
 		     /* Copy over the 'coverage'. */     
 		     dominantRowsWeather[0][groupIndex] = (char *)
 			     realloc(dominantRowsWeather[0][groupIndex], (strlen(wxCoverage[groupIndex]) + 1) * sizeof(char));     
-
 	   	     strcpy (dominantRowsWeather[0][groupIndex], 
 		             wxCoverage[groupIndex]);
 		     
@@ -837,11 +1024,17 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
 			     realloc(dominantRowsWeather[2][groupIndex], (strlen(wxType[groupIndex]) + 1) * sizeof(char));     
 	             strcpy (dominantRowsWeather[2][groupIndex], 
 		             wxType[groupIndex]);
-		     
+
+                     /* Copy over the 'visibility'. */
+	             dominantRowsWeather[3][groupIndex] = (char *)
+			     realloc(dominantRowsWeather[3][groupIndex], (strlen(wxVisibility[groupIndex]) + 1) * sizeof(char));     
+	             strcpy (dominantRowsWeather[3][groupIndex], 
+		             wxVisibility[groupIndex]);
+			     
 	             /* Copy over the 'qualifier'. */     
-		     dominantRowsWeather[3][groupIndex] = (char *)
-			  realloc(dominantRowsWeather[3][groupIndex], (strlen(Qualifier[groupIndex]) + 1) * sizeof(char));     
-		     strcpy (dominantRowsWeather[3][groupIndex], 
+		     dominantRowsWeather[4][groupIndex] = (char *)
+			  realloc(dominantRowsWeather[4][groupIndex], (strlen(Qualifier[groupIndex]) + 1) * sizeof(char));     
+		     strcpy (dominantRowsWeather[4][groupIndex], 
 		          Qualifier[groupIndex]);
 	          }
 	        
@@ -849,7 +1042,23 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
 	       }
 	       else if (strcmp(tempDom[0], dominantWeather[0]) == 0)
                {
-	          if (isDominant(tempDom[1], dominantWeather[1], "intensity")) 
+	          strcpy (tempPriorIntensity, dominantWeather[1]);
+                  strcpy (tempCurrentIntensity, tempDom[1]);
+
+	          /* If coverage is equal, test for dominant intensity. */
+                    
+                  /* Take care of special case scenario where there is more than 1 group in the ugly weather
+                   * string. If the prior group or current group's "type" is thunderstorms ("T") and the 
+                   * coverages of the two groups in comparison are equal, set the intensity of the thunderstorm 
+                   * group temporarily to "+". This will force thunderstorms to dominate as the weather summary 
+                   * phrase of the day over precipitation.
+                   */                                
+                  if (strcmp(tempDom[2], "T") == 0)  
+                     strcpy (tempCurrentIntensity, "+");
+                  else if (strcmp(dominantWeather[2], "T") == 0)
+                     strcpy (tempPriorIntensity, "+");
+
+	          if (isDominant(tempCurrentIntensity, tempPriorIntensity, "intensity")) 
 	          {
                      /* Copy over the 'coverage' to the dominant weather array. */
                      dominantWeather[0] = (char *) realloc(dominantWeather[0], (strlen(tempDom[0]) + 1) * sizeof(char));
@@ -859,18 +1068,21 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
                      dominantWeather[1] = (char *) realloc(dominantWeather[1], (strlen(tempDom[1]) + 1) * sizeof(char));
 	             strcpy (dominantWeather[1], tempDom[1]);
 
-
                      /* Copy over the 'type' to the dominant weather array. */
                      dominantWeather[2] = (char *) realloc(dominantWeather[2], (strlen(tempDom[2]) + 1) * sizeof(char));
 	             strcpy (dominantWeather[2], tempDom[2]);
 
-                     /* Copy over the 'qualifier' to the dominant weather array. */
+                     /* Copy over the 'visibility' to the dominant weather array. */
                      dominantWeather[3] = (char *) realloc(dominantWeather[3], (strlen(tempDom[3]) + 1) * sizeof(char));
 	             strcpy (dominantWeather[3], tempDom[3]);
+
+                     /* Copy over the 'qualifier' to the dominant weather array. */
+                     dominantWeather[4] = (char *) realloc(dominantWeather[4], (strlen(tempDom[4]) + 1) * sizeof(char));
+	             strcpy (dominantWeather[4], tempDom[4]);
 	       
                      for (groupIndex = 0; groupIndex < numGroups + 1; groupIndex++)
 	             {
-                       /* Save the contents of this row so if it turns out to be the
+                        /* Save the contents of this row so if it turns out to be the
                          * the dominate row, we will know what all the weather was,
                          * not just the row's dominant member.
 		         */
@@ -890,10 +1102,17 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
 			        realloc(dominantRowsWeather[2][groupIndex], (strlen(wxType[groupIndex]) + 1) * sizeof(char));     
 		        strcpy (dominantRowsWeather[2][groupIndex], 
 		               wxType[groupIndex]);
+
+                        /* Copy over the 'visibility'. */
+	                dominantRowsWeather[3][groupIndex] = (char *)
+			        realloc(dominantRowsWeather[3][groupIndex], (strlen(wxVisibility[groupIndex]) + 1) * sizeof(char));     
+	                strcpy (dominantRowsWeather[3][groupIndex], 
+		                wxVisibility[groupIndex]);
+
 		        /* Copy over the 'qualifier'. */     
-		        dominantRowsWeather[3][groupIndex] = (char *)
-		 	        realloc(dominantRowsWeather[3][groupIndex], (strlen(Qualifier[groupIndex]) + 1) * sizeof(char));     
-		        strcpy (dominantRowsWeather[3][groupIndex], 
+		        dominantRowsWeather[4][groupIndex] = (char *)
+		 	        realloc(dominantRowsWeather[4][groupIndex], (strlen(Qualifier[groupIndex]) + 1) * sizeof(char));     
+		        strcpy (dominantRowsWeather[4][groupIndex], 
 		                Qualifier[groupIndex]);
 	             }
 	       
@@ -916,9 +1135,13 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
                         dominantWeather[2] = (char *) realloc(dominantWeather[2], (strlen(tempDom[2]) + 1) * sizeof(char));
 	                strcpy (dominantWeather[2], tempDom[2]);
 
-                        /* Copy over the 'qualifier' to the dominant weather array. */
+                        /* Copy over the 'visibility' to the dominant weather array. */
                         dominantWeather[3] = (char *) realloc(dominantWeather[3], (strlen(tempDom[3]) + 1) * sizeof(char));
 	                strcpy (dominantWeather[3], tempDom[3]);
+
+                        /* Copy over the 'qualifier' to the dominant weather array. */
+                        dominantWeather[4] = (char *) realloc(dominantWeather[4], (strlen(tempDom[4]) + 1) * sizeof(char));
+	                strcpy (dominantWeather[4], tempDom[4]);
 	       
                         for (groupIndex = 0; groupIndex < numGroups + 1; groupIndex++)
 	                {
@@ -942,10 +1165,17 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
 			           realloc(dominantRowsWeather[2][groupIndex], (strlen(wxType[groupIndex]) + 1) * sizeof(char));     
 		           strcpy (dominantRowsWeather[2][groupIndex], 
 		                   wxType[groupIndex]);
+
+                           /* Copy over the 'visibility'. */
+	                   dominantRowsWeather[3][groupIndex] = (char *)
+			           realloc(dominantRowsWeather[3][groupIndex], (strlen(wxVisibility[groupIndex]) + 1) * sizeof(char));     
+	                   strcpy (dominantRowsWeather[3][groupIndex], 
+		                   wxVisibility[groupIndex]);
+
 		           /* Copy over the 'qualifier'. */     
-		           dominantRowsWeather[3][groupIndex] = (char *)
-			           realloc(dominantRowsWeather[3][groupIndex], (strlen(Qualifier[groupIndex]) + 1) * sizeof(char));     
-		           strcpy (dominantRowsWeather[3][groupIndex], 
+		           dominantRowsWeather[4][groupIndex] = (char *)
+			           realloc(dominantRowsWeather[4][groupIndex], (strlen(Qualifier[groupIndex]) + 1) * sizeof(char));     
+		           strcpy (dominantRowsWeather[4][groupIndex], 
 		                   Qualifier[groupIndex]);
 	                }
 	       
@@ -974,9 +1204,13 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
                            dominantWeather[2] = (char *) realloc(dominantWeather[2], (strlen(tempDom[2]) + 1) * sizeof(char));
 	                   strcpy (dominantWeather[2], tempDom[2]);
 
-                           /* Copy over the 'qualifier' to the dominant weather array. */
+                           /* Copy over the 'visibility' to the dominant weather array. */
                            dominantWeather[3] = (char *) realloc(dominantWeather[3], (strlen(tempDom[3]) + 1) * sizeof(char));
 	                   strcpy (dominantWeather[3], tempDom[3]);
+
+                           /* Copy over the 'qualifier' to the dominant weather array. */
+                           dominantWeather[4] = (char *) realloc(dominantWeather[4], (strlen(tempDom[4]) + 1) * sizeof(char));
+	                   strcpy (dominantWeather[4], tempDom[4]);
 			   
                            for (groupIndex = 0; groupIndex < numGroups + 1; groupIndex++)
 	                   {
@@ -995,15 +1229,23 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
 		   	           realloc(dominantRowsWeather[1][groupIndex], (strlen(wxIntensity[groupIndex]) + 1) * sizeof(char));     
 		              strcpy (dominantRowsWeather[1][groupIndex], 
 		                      wxIntensity[groupIndex]);
+
 		              /* Copy over the 'type'. */     
 		              dominantRowsWeather[2][groupIndex] = (char *)
 			              realloc(dominantRowsWeather[2][groupIndex], (strlen(wxType[groupIndex]) + 1) * sizeof(char));     
 		              strcpy (dominantRowsWeather[2][groupIndex], 
 		                      wxType[groupIndex]);
+
+                              /* Copy over the 'visibility'. */
+	                      dominantRowsWeather[3][groupIndex] = (char *)
+			              realloc(dominantRowsWeather[3][groupIndex], (strlen(wxVisibility[groupIndex]) + 1) * sizeof(char));     
+	                      strcpy (dominantRowsWeather[3][groupIndex], 
+		                      wxVisibility[groupIndex]);
+
 		              /* Copy over the 'qualifier'. */     
-		              dominantRowsWeather[3][groupIndex] = (char *)
-			              realloc(dominantRowsWeather[3][groupIndex], (strlen(Qualifier[groupIndex]) + 1) * sizeof(char));     
-		              strcpy (dominantRowsWeather[3][groupIndex], 
+		              dominantRowsWeather[4][groupIndex] = (char *)
+			              realloc(dominantRowsWeather[4][groupIndex], (strlen(Qualifier[groupIndex]) + 1) * sizeof(char));     
+		              strcpy (dominantRowsWeather[4][groupIndex], 
 		                      Qualifier[groupIndex]);
                            }
 	                   numDominantTypes = numGroups;
@@ -1013,17 +1255,18 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
 	       }
 	    
 	       /* Free up the temp dominance array. */
-               for (j = 0; j < 4; j++)
+               for (j = 0; j < 5; j++)
                   free (tempDom[j]);
 	    
-	       /* Free up the coverage, intensity, type, and qualifiers that can
-	        * make up each weather group. 
+	       /* Free up the coverage, intensity, type, visibility, 
+                * and qualifiers that can make up each weather group. 
 	        */
                for (groupIndex = 0; groupIndex < numGroups + 1; groupIndex++)
                {
                   free(wxCoverage[groupIndex]);
                   free(wxType[groupIndex]);
                   free(wxIntensity[groupIndex]);
+                  free(wxVisibility[groupIndex]);
 		  free(Qualifier[groupIndex]);
 		  
 	          for (wqIndex = 0; wqIndex < 5; wqIndex++)
@@ -1035,6 +1278,7 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
                free(wxCoverage);
                free(wxType);
                free(wxIntensity);
+               free(wxVisibility);
                free(wxQualifier);
                free(Qualifier);	       
 	    	    
@@ -1093,7 +1337,7 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
           * to deterine the icon and weather phrase.
           */
          if (fogCount > 0)  
-            percentTimeWithFog = fogCount/numDataRows;
+            percentTimeWithFog = (100*fogCount)/numDataRows;
          else
             percentTimeWithFog = 0;
 
@@ -1112,87 +1356,104 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
 				endPositions, f_isDrizzle, f_isRain, 
 				f_isRainShowers, f_isIcePellets, f_isSnow, 
 				f_isSnowShowers, f_isFreezingDrizzle, 
-				f_isFreezingRain, f_isBlowingSnow, iconInfo,
-				phrase, &f_popIsNotAnIssue);
+				f_isFreezingRain, f_isBlowingSnow, wgInfo,
+                                wsInfo, blizzardTime, blizzCnt, 
+                                periodStartTimes[dayIndex], 
+                                periodEndTimes[dayIndex], iconInfo, phrase, 
+                                &f_popIsNotAnIssue, numActualRowsWS, 
+                                numActualRowsWG, percentTimeWithFog);
 
-	 /* Need to get weather phrase by this point. We will insert the 
-	  * weather phrase as "weather-summary", an attribute of the 
-	  * <weather-conditions> element.  
-	  */
-	 xmlNewProp(weather_conditions, BAD_CAST "weather-summary", BAD_CAST
-	            phrase[dayIndex]);
-	 if (strcmp(dominantWeather[0], "none") != 0 && f_popIsNotAnIssue)
-         {
-            /* Format the XML. */
-		    	 
-            /* Loop over each group and format the <value> element (if wanted)
-             * and each of it's four attributes (coverage, type, intensity, and
-             * qualifier(s). 
+         if (strcmp(phrase[dayIndex],"none") == 0)
+         { 
+            /* We didn't find weather data and there was no sky information 
+             * in this summary period, so format the nil attribute for the 
+             * <weather-conditions> element.
+             */
+            xmlNewProp(weather_conditions, BAD_CAST "xsi:nil", BAD_CAST "true");
+         }
+         else
+         {   
+
+	    /* Need to get weather phrase by this point. We will insert the 
+	     * weather phrase as "weather-summary", an attribute of the 
+	     * <weather-conditions> element.  
 	     */
-            if (format_value)
+	    xmlNewProp(weather_conditions, BAD_CAST "weather-summary", BAD_CAST
+	               phrase[dayIndex]);
+	    if (strcmp(dominantWeather[0], "none") != 0 && f_popIsNotAnIssue)
             {
-               for (i = 0; i < numDominantTypes + 1; i++)
-	       {
-                  value = xmlNewChild(weather_conditions, NULL, BAD_CAST
-                                      "value", NULL);
-                  getTranslatedCoverage(dominantRowsWeather[0][i], 
-			                transCoverageStr);
-                  getTranslatedType(dominantRowsWeather[2][i], transTypeStr);
-                  getTranslatedIntensity(dominantRowsWeather[1][i], 
-                                         transIntensityStr);
-
-                  xmlNewProp(value, BAD_CAST "coverage", BAD_CAST
-                             transCoverageStr);
-                  xmlNewProp(value, BAD_CAST "intensity", BAD_CAST
-                             transIntensityStr);
-
-                  if (i > 0) /* Groups other than first require additive 
-                              * attribute. Check if this attribute is "or" or 
-                              * "and".
-			      */
+               /* Format the XML. */
+		    	 
+               /* Loop over each group and format the <value> element (if wanted)
+                * and each of it's four attributes (coverage, type, intensity, and
+                * qualifier(s) (NOTE -- visibility is not formatted, but only used 
+                * in generating "Blizzard" as the weather phrase). 
+	        */
+               if (format_value)
+               {
+                  for (i = 0; i < numDominantTypes + 1; i++)
 	          {
-	             strcpy(additive_value, "and");
-		  
-		     strcpy (tempstore, dominantRowsWeather[3][i]);
-		     token = strtok(tempstore, " ,");
-		     if (token != NULL)
+                     value = xmlNewChild(weather_conditions, NULL, BAD_CAST
+                                         "value", NULL);
+                     getTranslatedCoverage(dominantRowsWeather[0][i], 
+		    	                   transCoverageStr);
+                     getTranslatedType(dominantRowsWeather[2][i], transTypeStr);
+                     getTranslatedIntensity(dominantRowsWeather[1][i], 
+                                            transIntensityStr);
+
+                     xmlNewProp(value, BAD_CAST "coverage", BAD_CAST
+                                transCoverageStr);
+                     xmlNewProp(value, BAD_CAST "intensity", BAD_CAST
+                                transIntensityStr);
+
+                     if (i > 0) /* Groups other than first require additive 
+                                 * attribute. Check if this attribute is "or" or 
+                                 * "and".
+			         */
 	             {
-	                if (strcmp(token, "or") == 0)
-		           strcpy(additive_value, "or");
-	                else
-		        {
-		           while (token != NULL)
+	                strcpy(additive_value, "and");
+		  
+		        strcpy (tempstore, dominantRowsWeather[4][i]);
+		        token = strtok(tempstore, " ,");
+		        if (token != NULL)
+	                {
+	                   if (strcmp(token, "or") == 0)
+		              strcpy(additive_value, "or");
+	                   else
 		           {
-		              token = strtok (NULL, " ,");
-			   
-			      if (token != NULL)
+		              while (token != NULL)
 		              {
-	                         if (strcmp(token, "or") == 0)
-		                 {		   
-		                    strcpy(additive_value, "or");
-			            break;
+		                 token = strtok (NULL, " ,");
+			   
+			         if (token != NULL)
+		                 {
+	                            if (strcmp(token, "or") == 0)
+		                    {		   
+		                       strcpy(additive_value, "or");
+			               break;
+			            }
 			         }
 			      }
-			   }
-	                }
-		     }
+	                   }
+		        }
 		              
-                     xmlNewProp(value, BAD_CAST "additive", BAD_CAST
-                                additive_value);
+                        xmlNewProp(value, BAD_CAST "additive", BAD_CAST
+                                   additive_value);
 
-                     /* Set all characters of tempstore to blanks */
-                     memset(tempstore,' ',sizeof(tempstore)); 
+                        /* Set all characters of tempstore to blanks */
+                        memset(tempstore,' ',sizeof(tempstore)); 
 
-                     /* Set the last character of tempstore to a NULL */
-                     memset(tempstore+199,'\0',1);	       }
+                        /* Set the last character of tempstore to a NULL */
+                        memset(tempstore+199,'\0',1);	       }
 
-                  xmlNewProp(value, BAD_CAST "weather-type", BAD_CAST
-                             transTypeStr);
-                  xmlNewProp(value, BAD_CAST "qualifier", BAD_CAST
-                             dominantRowsWeather[3][i]);
+                     xmlNewProp(value, BAD_CAST "weather-type", BAD_CAST
+                                transTypeStr);
+                     xmlNewProp(value, BAD_CAST "qualifier", BAD_CAST
+                                dominantRowsWeather[4][i]);
 
+	          }
 	       }
-	    }
+            }
          }
       }
       else /* We didn't find data, so format the nil attribute for the <weather-
@@ -1201,7 +1462,7 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
          xmlNewProp(weather_conditions, BAD_CAST "xsi:nil", BAD_CAST "true");
     
       /* Free the dominantRowsWeather and dominantWeather arrays. */
-      for (i = 0; i < 4; i++) 
+      for (i = 0; i < 5; i++) 
       {
 	 free (dominantWeather[i]);
 
@@ -1230,6 +1491,8 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
    free(periodStartTimes);
    free(periodEndTimes);
    free(weatherDataTimes);
+   if (blizzCnt > 0)
+      free(blizzardTime);
 
    return;
    

@@ -64,8 +64,6 @@
  *                          to the same times when the wind speeds are the 
  *			    highest. Only used for DWMLgenByDay products. 
  *                          (Output)
- *  f_6CycleFirst = Denotes if first forecast cycle relative to current time 
- *                  is the 06hr or 18hr forecast cycle. (Input)
  *      startTime = Incoming argument set by user as a double in seconds 
  *                  since 1970 denoting the starting time data is to be 
  *                  retrieved for from NDFD. (Set to 0.0 if not entered.)
@@ -81,6 +79,8 @@
  *
  * HISTORY
  *   3/2006 Paul Hershberg (MDL): Created
+ *  10/2007 Paul Hershberg (MDL): Removed code that shifted data back by 1/2
+ *                                the period length (bug from php code)
  *
  * NOTES
  ******************************************************************************
@@ -92,8 +92,8 @@ void genWindSpeedValues(double timeUserStart, double timeUserEnd, size_t pnt,
                         int *maxWindSpeed, int *numOutputLines, int timeInterval,
                         sChar TZoffset, sChar f_observeDST, uChar parameterName,
                         numRowsInfo numRows, uChar f_XML,
-                        double *valTimeForWindDirMatch, int f_6CycleFirst, 
-                        double startTime, int startNum, int endNum)
+                        double *valTimeForWindDirMatch, double startTime, 
+                        int startNum, int endNum)
 {
    int i; /* Counter thru match structure. */
    int period = 0; /* Length between an elements successive validTimes. */
@@ -116,7 +116,7 @@ void genWindSpeedValues(double timeUserStart, double timeUserEnd, size_t pnt,
                                * data. */
    char WSstr[30];            /* Temporary string holding formatted time
                                * value of wind speed. */
-
+   
    /* Set the first iteration to the incoming user supplied startTime if 
     * product is a summarization.
     */
@@ -138,7 +138,7 @@ void genWindSpeedValues(double timeUserStart, double timeUserEnd, size_t pnt,
    /* Loop over all the Wind Speed values. Format them if the product is of
     * type DWMLgen. Collect them in the maxWindSpeed array if the product is
     * of type DWMLgenByDay. 
-    */
+    * */
    for (i = startNum; i < endNum; i++)
    {
       if (match[i].elem.ndfdEnum == NDFD_WS && 
@@ -183,24 +183,6 @@ void genWindSpeedValues(double timeUserStart, double timeUserEnd, size_t pnt,
                             f_observeDST);
             Clock_Scan(&WSdoubleTime, WSstr, 0);
             WSintegerTime = WSdoubleTime;
-
-            /* Now we have to account for data that is just in the time
-             * period i.e. if data is valid from 4PM - 7PM and time period is
-             * from 6AM - 6PM. We shift data by one half the data's period in
-             * seconds. 
-	     */
-	    if ((i - (priorElemCount + startNum)) < 1)
-               period = determinePeriodLength(match[i].validTime,
-                               match[i + 1].validTime, 
-			       (numRows.total-numRows.skipBeg-numRows.skipEnd),
-                               parameterName);
-            else
-               period = determinePeriodLength(match[i - 1].validTime,
-                               match[i].validTime,
-                               (numRows.total-numRows.skipBeg-numRows.skipEnd),
-			       parameterName);
-            if ((f_6CycleFirst) || (!f_6CycleFirst && startTime != 0.0))
-	       WSintegerTime = WSintegerTime - (((double)period * 0.5) * 3600);
 
             /* Determine if this time is within the current day being
              * processed. */

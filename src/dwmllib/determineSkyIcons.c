@@ -58,28 +58,28 @@ void determineSkyIcons(int skyCoverTimeEqualsWeatherTime, int itIsNightTime,
    {
       if (itIsNightTime)
       {
-         if (skyInfo[skyIndex].data <= 6)
+         if (skyInfo[skyIndex].data <= 5)
             sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "nskc.jpg");
-         if (skyInfo[skyIndex].data > 6 && skyInfo[skyIndex].data <= 31)
+         if (skyInfo[skyIndex].data > 5 && skyInfo[skyIndex].data <= 25)
             sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "nfew.jpg");
-         if (skyInfo[skyIndex].data > 31 && skyInfo[skyIndex].data <= 69)
+         if (skyInfo[skyIndex].data > 25 && skyInfo[skyIndex].data <= 50)
             sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "nsct.jpg");
-         if (skyInfo[skyIndex].data > 69 && skyInfo[skyIndex].data <= 94)
+         if (skyInfo[skyIndex].data > 50 && skyInfo[skyIndex].data <= 87)
             sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "nbkn.jpg");
-         if (skyInfo[skyIndex].data > 94)
+         if (skyInfo[skyIndex].data > 87)
             sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "novc.jpg");
       }
       else
       {
-         if (skyInfo[skyIndex].data <= 6)
+         if (skyInfo[skyIndex].data <= 5)
             sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "skc.jpg");
-         if (skyInfo[skyIndex].data > 6 && skyInfo[skyIndex].data <= 31)
+         if (skyInfo[skyIndex].data > 5 && skyInfo[skyIndex].data <= 25)
             sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "few.jpg");
-         if (skyInfo[skyIndex].data > 31 && skyInfo[skyIndex].data <= 69)
+         if (skyInfo[skyIndex].data > 25 && skyInfo[skyIndex].data <= 50)
             sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "sct.jpg");
-         if (skyInfo[skyIndex].data > 69 && skyInfo[skyIndex].data <= 94)
+         if (skyInfo[skyIndex].data > 50 && skyInfo[skyIndex].data <= 87)
             sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "bkn.jpg");
-         if (skyInfo[skyIndex].data > 94)
+         if (skyInfo[skyIndex].data > 87)
             sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "ovc.jpg");
       }
       if (skyIndex < numRowsSKY)
@@ -96,32 +96,32 @@ void determineSkyIcons(int skyCoverTimeEqualsWeatherTime, int itIsNightTime,
        */
       if (itIsNightTime && skyIndex > 0)
       {
-         if (skyInfo[skyIndex - 1].data <= 6)
+         if (skyInfo[skyIndex - 1].data <= 5)
             sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "nskc.jpg");
-         if (skyInfo[skyIndex - 1].data > 6 && skyInfo[skyIndex - 1].data <= 31)
+         if (skyInfo[skyIndex - 1].data > 5 && skyInfo[skyIndex - 1].data <= 25)
             sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "nfew.jpg");
-         if (skyInfo[skyIndex - 1].data > 31
-             && skyInfo[skyIndex - 1].data <= 69)
+         if (skyInfo[skyIndex - 1].data > 25
+             && skyInfo[skyIndex - 1].data <= 50)
             sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "nsct.jpg");
-         if (skyInfo[skyIndex - 1].data > 69
-             && skyInfo[skyIndex - 1].data <= 94)
+         if (skyInfo[skyIndex - 1].data > 50
+             && skyInfo[skyIndex - 1].data <= 87)
             sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "nbkn.jpg");
-         if (skyInfo[skyIndex - 1].data > 94)
+         if (skyInfo[skyIndex - 1].data > 87)
             sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "novc.jpg");
       }
       else if (itIsNightTime != 1 && skyIndex > 0)
       {
-         if (skyInfo[skyIndex - 1].data <= 6)
+         if (skyInfo[skyIndex - 1].data <= 5)
             sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "skc.jpg");
-         if (skyInfo[skyIndex - 1].data > 6 && skyInfo[skyIndex - 1].data <= 31)
+         if (skyInfo[skyIndex - 1].data > 5 && skyInfo[skyIndex - 1].data <= 25)
             sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "few.jpg");
-         if (skyInfo[skyIndex - 1].data > 31
-             && skyInfo[skyIndex - 1].data <= 69)
+         if (skyInfo[skyIndex - 1].data > 25
+             && skyInfo[skyIndex - 1].data <= 50)
             sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "sct.jpg");
-         if (skyInfo[skyIndex - 1].data > 69
-             && skyInfo[skyIndex - 1].data <= 94)
+         if (skyInfo[skyIndex - 1].data > 50
+             && skyInfo[skyIndex - 1].data <= 87)
             sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "bkn.jpg");
-         if (skyInfo[skyIndex - 1].data > 94)
+         if (skyInfo[skyIndex - 1].data > 87)
             sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "ovc.jpg");
       }
    }

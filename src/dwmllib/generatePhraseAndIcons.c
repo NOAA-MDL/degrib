@@ -27,9 +27,10 @@
  *                      to determine if it is night or day (should = 6 or 18).
  *                      (Input)                   
  *    dominantWeather = This array stores the weather type [0], intensity [1], 
- *                      coverage [2], and qualifier [3], for each day that is 
- *                      considered the dominant one. This is the summarized 
- *                      weather for the 24 or 12 hour period. (Input)
+ *                      coverage [2], visibility[3] and qualifier [4], for each 
+ *                      day that is considered the dominant one. This is the 
+ *                      summarized weather for the 24/12 hour summarization 
+ *                      period. (Input)
  *            baseURL = String value holding the path to the icons.  The
  *                      URL looks like http://www.crh.noaa.gov/weather/
  *                      images/fcicons/. (Input) 
@@ -95,23 +96,43 @@
  *   f_isFreezingRain = Flag denoting if weather is frz rain. (Input)
  *     f_isIcePellets = Flag denoting if weather is ice pellets. (Input)
  *    f_isBlowingSnow = Flag denoting if weather is blowing snow. (Input)
+ *           blizzCnt = Counter thru blizzard Times array. For each time 
+ *                      blizzard conditions are met, the weather time is saved.
+ *                      This is the counter thru that array of weather times.
+ *                      (Input)
+ *       blizzardTime = If all blizzard conditions are met in the ugly weather 
+ *                      string (weather type = "S" or "BS" with a corresponding
+ *                      weather intensity = "m" or "+"), the time is recorded 
+ *                      in this array. (Input)
+ *          numRowsWS = The number of data rows for wind speed. These data are 
+ *                      used to figure if blizzard is to be formatted as the 
+ *                      weather phrase. Wind speeds must be > 35 concurrent with
+ *                      the blizzard (weather) time. (Input)
+ *          numRowsWG = The number of data rows for wind gusts. These data are 
+ *                      used to figure if blizzard is to be formatted as the 
+ *                      weather phrase. Wind gusts must be > 35 concurrent with
+ *                      the blizzard (weather) time. (Input)
  *
  * FILES/DATABASES: None
  *                
  * RETURNS: void
  *
- *  HISTORY:
- *  6/2006 Paul Hershberg (MDL): Created.
- *  9/2006 Paul Hershberg (MDL): Added functionality to add Pops to the icons
+ * HISTORY:
+ * 6/2006 Paul Hershberg (MDL): Created.
+ * 9/2006 Paul Hershberg (MDL): Added functionality to add Pops to the icons
  *                               (i.e., ra.jpg --> ra50.jpg)
- *  
+ * 6/2007 Paul Hershberg (MDL): Added a blizzard check for formatting 
+ *                              "blizzard" as the weather phrase.  
+ * 9/2007 Paul Hershberg (MDL): Changed sky threshold to 50% from 60% to align
+ *                              with top of partly cloudy range as this was 
+ *                              changed to align with NWSI 10-503.
  *
  * NOTES:
  *****************************************************************************
  */
 #include "xmlparse.h"
 void generatePhraseAndIcons (int dayIndex, char *frequency, 
-                             int timeLayoutHour, char *dominantWeather[4],
+                             int timeLayoutHour, char *dominantWeather[5],
 			     char *baseURL, int *maxDailyPop, 
 			     int *averageSkyCover, int *maxSkyCover,
 			     int *minSkyCover, int *maxSkyNum, 
@@ -125,16 +146,21 @@ void generatePhraseAndIcons (int dayIndex, char *frequency,
 			     int f_isIcePellets, int f_isSnow, 
 			     int f_isSnowShowers, int f_isFreezingDrizzle, 
 			     int f_isFreezingRain, int f_isBlowingSnow, 
+                             elem_def *wgInfo, elem_def *wsInfo,
+                             double *blizzardTime, int blizzCnt, 
+                             double periodStartTime, double periodEndTime, 
                              icon_def *iconInfo, char **phrase, 
-                             int *f_popIsNotAnIssue)
+                             int *f_popIsNotAnIssue, int numRowsWS, 
+                             int numRowsWG, int percentTimeWithFog)
 {
-    int f_noIcon = 1; /* Flag used to track if a weather icon is possible. */
-    int lowPopThreshold = 20; /* Threshold below which weather values are not 
-				 formatted. */
-    int lowPopThunder = 10; /* Threshold below which weather values are not
-			       formatted. */
-    int f_isDayTime = 0; /* Flag denoting if period is in day time. */
-    int f_isNightTime = 0; /* Flag denoting if period is in day time. */
+   int f_noIcon = 1; /* Flag used to track if a weather icon is possible. */
+   int lowPopThreshold = 20; /* Threshold below which weather values are not 
+				formatted. */
+   int lowPopThunder = 10; /* Threshold below which weather values are not
+			      formatted. */
+   int f_isDayTime = 0; /* Flag denoting if period is in day time. */
+   int f_isNightTime = 0; /* Flag denoting if period is in day time. */
+   int f_iconToBlizz = 0;
 
    /* If we have two 12-hour periods, we need to deterine which periods 
     * correspond to the day and which correspond to night time.  Then we use 
@@ -147,7 +173,7 @@ void generatePhraseAndIcons (int dayIndex, char *frequency,
        */
       if (timeLayoutHour == 6)
       {
-         /* Day periods are ones divisible by 2. */
+         /* Day periods are those divisible by 2. */
 	 if (dayIndex % 2 == 0)
          {
             f_isDayTime = 1;
@@ -161,7 +187,7 @@ void generatePhraseAndIcons (int dayIndex, char *frequency,
       }
       else if (timeLayoutHour == 18)
       {
-         /* Night periods are ones divisible by 2. */
+         /* Night periods are those divisible by 2. */
 	 if (dayIndex % 2 == 0)
          {
             f_isDayTime = 0;
@@ -185,16 +211,26 @@ void generatePhraseAndIcons (int dayIndex, char *frequency,
    else
       printf ("ERROR: format is not 12 hourly or 24 hourly. \n");
 
-   /* Check for the differnt types of weather, and generate the corresponding
+   /* Check for the different types of weather, and generate the corresponding
     * icon links and weather phrases. 
     */
    /* Check for FOG. */   
-   if (strcmp(dominantWeather[2], "F") == 0)
+   if (strcmp(dominantWeather[2], "F") == 0 && (percentTimeWithFog >= 50))
    {
-      if (f_isDayTime) 
-         sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "fg.jpg"); 
-      else if (f_isNightTime) 
-         sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "nfg.jpg"); 
+      if (f_isDayTime)
+      {
+         if (averageSkyCover[dayIndex] > 50) 
+            sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "fg.jpg");
+         else
+            sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "sctfg.jpg");
+      }             
+      else if (f_isNightTime)
+      {
+         if (averageSkyCover[dayIndex] > 50)
+            sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "nfg.jpg");
+         else
+            sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "nbknfg.jpg");
+      }         
       
       /* This type has an icon. */
       f_noIcon = 0;
@@ -221,8 +257,20 @@ void generatePhraseAndIcons (int dayIndex, char *frequency,
       /* Snow Words. */
       determineIconUsingPop(iconInfo[dayIndex].str, "blizzard", ".jpg", 
 			    maxDailyPop[dayIndex], baseURL);
+
       strcpy (phrase[dayIndex], "Blowing Snow");
-      
+
+      /* Since dominant weather type is "BS", check to see if all conditions
+       * needed to determine "Blizzard" occurred simaltaneously some time in the 
+       * summarization period. "Blizzard" will then become weather phrase.
+       */
+      if (blizzCnt > 0)
+      {
+         blizzardCheck(blizzCnt, periodStartTime, periodEndTime, 
+                       blizzardTime, numRowsWS, numRowsWG, wsInfo, 
+                       wgInfo, dayIndex, &f_iconToBlizz, phrase);
+      }
+ 
       /* This type has an icon. */
       f_noIcon = 0;
       
@@ -233,7 +281,7 @@ void generatePhraseAndIcons (int dayIndex, char *frequency,
    /* Check for DUST. */   
    if (strcmp(dominantWeather[2], "BD") == 0)
    {
-      /* Snow Words. */
+      /* Dust Words. */
       sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "du.jpg");      
       strcpy (phrase[dayIndex], "Blowing Dust");
       
@@ -247,7 +295,7 @@ void generatePhraseAndIcons (int dayIndex, char *frequency,
    /* Check for SAND. */   
    if (strcmp(dominantWeather[2], "BN") == 0)
    {
-      /* Snow Words. */
+      /* Sand Words. */
       sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "du.jpg");      
       strcpy (phrase[dayIndex], "Blowing Sand");
       
@@ -426,7 +474,7 @@ void generatePhraseAndIcons (int dayIndex, char *frequency,
    {
       if (f_isDayTime)
       {
-         if (averageSkyCover[dayIndex] > 60)
+         if (averageSkyCover[dayIndex] > 50)
             determineIconUsingPop(iconInfo[dayIndex].str, "hi_shwrs", ".jpg", 
 			          maxDailyPop[dayIndex], baseURL);
 	 else
@@ -435,7 +483,7 @@ void generatePhraseAndIcons (int dayIndex, char *frequency,
       }
       else if (f_isNightTime)
       {
-         if (averageSkyCover[dayIndex] > 60)
+         if (averageSkyCover[dayIndex] > 50)
             determineIconUsingPop(iconInfo[dayIndex].str, "hi_nshwrs", ".jpg", 
 			          maxDailyPop[dayIndex], baseURL);
 	 else
@@ -476,8 +524,8 @@ void generatePhraseAndIcons (int dayIndex, char *frequency,
       else
          strcpy (phrase[dayIndex], "Rain");
 
-      if (strcmp(dominantWeather[3], "HvyRn") == 0)
-         strcpy (phrase[dayIndex], "Heavy Rain");	
+     if ((strstr(dominantWeather[4], "heavy rain") != '\0'))       
+        strcpy (phrase[dayIndex], "Heavy Rain");	
       
       /* This type has an icon. */
       f_noIcon = 0;
@@ -519,7 +567,7 @@ void generatePhraseAndIcons (int dayIndex, char *frequency,
    {
       if (f_isDayTime)
       {
-         if (averageSkyCover[dayIndex] > 60)
+         if (averageSkyCover[dayIndex] > 50)
             determineIconUsingPop(iconInfo[dayIndex].str, "sn", ".jpg", 
 			          maxDailyPop[dayIndex], baseURL);
 	 else
@@ -528,7 +576,7 @@ void generatePhraseAndIcons (int dayIndex, char *frequency,
       }
       else if (f_isNightTime)
       {
-         if (averageSkyCover[dayIndex] > 60)
+         if (averageSkyCover[dayIndex] > 50)
             determineIconUsingPop(iconInfo[dayIndex].str, "nsn", ".jpg", 
 			          maxDailyPop[dayIndex], baseURL);
 	 else
@@ -577,7 +625,7 @@ void generatePhraseAndIcons (int dayIndex, char *frequency,
       *f_popIsNotAnIssue = 1; 
    }
 
-   /* Check for SNOW. */
+   /* Check for SNOW/BLIZZARD. */
    else if (strcmp(dominantWeather[2], "S") == 0 &&
 	    maxDailyPop[dayIndex] >= lowPopThreshold)
    {
@@ -594,7 +642,21 @@ void generatePhraseAndIcons (int dayIndex, char *frequency,
          strcpy (phrase[dayIndex], "Snow Likely");        
       else
          strcpy (phrase[dayIndex], "Snow");
-      
+
+      /* Since dominant weather type is "S", check to see if all conditions
+       * needed to determine "Blizzard" occurred simaltaneously some time in the 
+       * summarization period. "Blizzard" will then become weather phrase.
+       */
+      if (blizzCnt > 0)
+      {
+         blizzardCheck(blizzCnt, periodStartTime, periodEndTime, 
+                       blizzardTime, numRowsWS, numRowsWG, wsInfo, 
+                       wgInfo, dayIndex, &f_iconToBlizz, phrase);
+      } 
+      if (f_iconToBlizz) /* Make icon "blizzard" too. */
+         determineIconUsingPop(iconInfo[dayIndex].str, "blizzard", ".jpg", 
+			       maxDailyPop[dayIndex], baseURL);
+         
       /* This type has an icon. */
       f_noIcon = 0;
       
@@ -768,7 +830,7 @@ void generatePhraseAndIcons (int dayIndex, char *frequency,
    {
       if (f_isDayTime)
       {
-         if (averageSkyCover[dayIndex] > 60)
+         if (averageSkyCover[dayIndex] > 50)
             determineIconUsingPop(iconInfo[dayIndex].str, "tsra", ".jpg", 
 			          maxDailyPop[dayIndex], baseURL);
          else
@@ -777,26 +839,32 @@ void generatePhraseAndIcons (int dayIndex, char *frequency,
       }	      	 
       else if (f_isNightTime)
       {
-         if (averageSkyCover[dayIndex] > 60)
+         if (averageSkyCover[dayIndex] > 50)
             determineIconUsingPop(iconInfo[dayIndex].str, "ntsra", ".jpg", 
 			          maxDailyPop[dayIndex], baseURL);
          else
             determineIconUsingPop(iconInfo[dayIndex].str, "nscttsra", ".jpg", 
 			          maxDailyPop[dayIndex], baseURL);
-      }	      	 
-
+      }
+	      	 
       if (strcmp(dominantWeather[0], "Chc") == 0 || strcmp(dominantWeather[0], "SChc") == 0)
          strcpy (phrase[dayIndex], "Chance Thunderstorms");
       else if (strcmp(dominantWeather[0], "Lkly") == 0)
          strcpy (phrase[dayIndex], "Thunderstorms Likely");        
       else
          strcpy (phrase[dayIndex], "Thunderstorms");
-			 
-      if ((strcmp(dominantWeather[3], "DmgW") == 0) || 
-         (strcmp(dominantWeather[3], "LgA") == 0) ||
-         (strcmp(dominantWeather[3], "TOR") == 0)) 
-         strcpy (phrase[dayIndex], "Severe Tstms");     
       
+      /* Override the thunderstorm phrase to "Severe Tstms" if the wx qualifier
+       * justifies it (we have already translated the ugly string qualifier, so
+       * use regular English terms). Also, override the thunderstorm phrase to 
+       * "Severe Tstms" if the wx intensity justifies it. 
+       */
+      if ((strstr(dominantWeather[4], "damaging winds") != '\0') || 
+          (strstr(dominantWeather[4], "large hail") != '\0') || 
+          (strstr(dominantWeather[4], "tornado") != '\0') ||
+          (strcmp(dominantWeather[1], "+") == 0))
+             strcpy (phrase[dayIndex], "Severe Tstms");            
+
       /* This type has an icon. */
       f_noIcon = 0;
       
@@ -823,11 +891,19 @@ void generatePhraseAndIcons (int dayIndex, char *frequency,
     */
    if (f_noIcon)
    {
-      skyPhrase(maxSkyCover, minSkyCover, averageSkyCover, dayIndex, 
-		f_isDayTime, f_isNightTime, maxSkyNum, minSkyNum, 
-		startPositions, endPositions, baseURL, &(iconInfo[0]), 
-		phrase);
-      
+      if (averageSkyCover[dayIndex] < 0)
+      { 
+          strcpy (iconInfo[dayIndex].str, "none");
+          strcpy (phrase[dayIndex], "none");
+      }
+      else
+      {
+         skyPhrase(maxSkyCover, minSkyCover, averageSkyCover, dayIndex, 
+	   	   f_isDayTime, f_isNightTime, maxSkyNum, minSkyNum, 
+		   startPositions, endPositions, baseURL, &(iconInfo[0]), 
+		   phrase);
+      }
+
       tempExtremePhrase(f_isDayTime, periodMaxTemp, dayIndex, baseURL, 
 		        &(iconInfo[0]), phrase);
 

@@ -59,8 +59,6 @@
  * timeLayoutHour = The time period's hour for the 12 hourly product. Used to 
  *                  determine if it is night or day in the 
  *                  generatePhraseAndIcons routine (should = 6 or 18). (Output)                 
- *  f_6CycleFirst = Denotes if first forecast cycle relative to current time 
- *                  is the 06hr or 18hr forecast cycle. (Input)
  *       startNum = First index in match structure an individual point's data 
  *                  matches can be found. (Input)
  *         endNum = Last index in match structure an individual point's data
@@ -92,15 +90,13 @@ void prepareWeatherValuesByDay (genMatchType *match, sChar TZoffset,
 				double *periodEndTimes,
 				double *springDoubleDate, 
                                 double *fallDoubleDate, 
-				int *timeLayoutHour, int f_6CycleFirst, 
-                                int startNum, int endNum)
+				int *timeLayoutHour, int startNum, int endNum)
 {
    int i;                     /* Index through the match structure. */
    int j;                     /* Period Counter. */   	
    int limit;   
    int priorElemCount = 0;        /* Counter used to find elements' location in
                                    * match. */
-   int period = 0; /* Length between an elements successive validTimes. */
    double currentDoubTime;
    char **startTimesMinTemp = NULL; /* Array holding startTimes for MinT. */ 
    char **endTimesMinTemp = NULL;    /* 7-13T18:00:00-06:00 mx:9Array holding the end Times for MinT. */
@@ -184,8 +180,8 @@ void prepareWeatherValuesByDay (genMatchType *match, sChar TZoffset,
 	 
 	 for (i = 0; i < limit; i++)
          {
-            Clock_Scan (&periodStartTimes[i], startTimesMinTemp[i], 1);
-	    Clock_Scan (&periodEndTimes[i], endTimesMinTemp[i], 1);
+            Clock_Scan (&periodStartTimes[i], startTimesMinTemp[i], 0);
+	    Clock_Scan (&periodEndTimes[i], endTimesMinTemp[i], 0);
          }
 
          /* See if there is an extra day tacked on the end weather can fall into,
@@ -195,9 +191,9 @@ void prepareWeatherValuesByDay (genMatchType *match, sChar TZoffset,
          {
             for (i = numActualRowsMIN; i < *numDays; i++)
             {
-               Clock_Scan(&periodStartTimes[i], startTimesMinTemp[i-1], 1);
+               Clock_Scan(&periodStartTimes[i], startTimesMinTemp[i-1], 0);
                periodStartTimes[i] = periodStartTimes[i] + (24 * 3600);              
-               Clock_Scan(&periodEndTimes[i], endTimesMinTemp[i-1], 1);
+               Clock_Scan(&periodEndTimes[i], endTimesMinTemp[i-1], 0);
                periodEndTimes[i] = periodEndTimes[i] + (24 * 3600);
             }
          }
@@ -218,8 +214,8 @@ void prepareWeatherValuesByDay (genMatchType *match, sChar TZoffset,
 	 
 	 for (i = 0; i < limit; i++)
          {
-            Clock_Scan (&periodStartTimes[i], startTimesMaxTemp[i], 1);
-	    Clock_Scan (&periodEndTimes[i], endTimesMaxTemp[i], 1);
+            Clock_Scan (&periodStartTimes[i], startTimesMaxTemp[i], 0);
+	    Clock_Scan (&periodEndTimes[i], endTimesMaxTemp[i], 0);
          }
          /* See if there is an extra day tacked on the end weather can fall into,
           * even if there are less MaxT or MinT "days".
@@ -228,9 +224,9 @@ void prepareWeatherValuesByDay (genMatchType *match, sChar TZoffset,
          {
             for (i = numActualRowsMAX; i < *numDays; i++)
             {
-               Clock_Scan(&periodStartTimes[i], startTimesMaxTemp[i-1], 1);
+               Clock_Scan(&periodStartTimes[i], startTimesMaxTemp[i-1], 0);
                periodStartTimes[i] = periodStartTimes[i] + (24 * 3600);
-               Clock_Scan(&periodEndTimes[i], endTimesMaxTemp[i-1], 1);
+               Clock_Scan(&periodEndTimes[i], endTimesMaxTemp[i-1], 0);
                periodEndTimes[i] = periodEndTimes[i] + (24 * 3600);
             }
          }
@@ -382,8 +378,8 @@ void prepareWeatherValuesByDay (genMatchType *match, sChar TZoffset,
 	 
       for (i = 0; i < limit; i++)
       {
-	 Clock_Scan (&periodStartTimes[i], startTimesPop[i], 1);
- 	 Clock_Scan (&periodEndTimes[i], endTimesPop[i], 1);
+	 Clock_Scan (&periodStartTimes[i], startTimesPop[i], 0);
+ 	 Clock_Scan (&periodEndTimes[i], endTimesPop[i], 0);
       }
 
       /* Is there an extra period or two tacked on the end weather can fall into, even
@@ -393,9 +389,9 @@ void prepareWeatherValuesByDay (genMatchType *match, sChar TZoffset,
       {
          for (i = numActualRowsPOP; i < (*numDays)*2; i++)
          {
-            Clock_Scan(&periodStartTimes[i], startTimesPop[i-1], 1);
+            Clock_Scan(&periodStartTimes[i], startTimesPop[i-1], 0);
             periodStartTimes[i] = periodStartTimes[i] + (12 * 3600);
-            Clock_Scan(&periodEndTimes[i], endTimesPop[i-1], 1);
+            Clock_Scan(&periodEndTimes[i], endTimesPop[i-1], 0);
             periodEndTimes[i] = periodEndTimes[i] + (12 * 3600);
          }
       }
@@ -416,26 +412,7 @@ void prepareWeatherValuesByDay (genMatchType *match, sChar TZoffset,
 	 
          formatValidTime(match[i].validTime, WXtimeStr, 30, TZoffset,
                          f_observeDST);
-         Clock_Scan (&weatherDataTimes[i-priorElemCount-startNum], WXtimeStr, 1);
-	 
-         /* Now we have to account for data that is just in the time
-          * period i.e. if data is valid from 4PM - 7PM and time period is
-          * from 6AM - 6PM. We shift data by one half the data's period in
-          * seconds. */
-         if ((f_6CycleFirst) || (!f_6CycleFirst && startTime_cml != 0.0))
-         {
-  	    if ((i-priorElemCount-startNum) < 1)
-               period = determinePeriodLength(match[i].validTime,
-                                              match[i + 1].validTime, 
-					      numActualRowsWX, NDFD_WX);
-            else
-               period = determinePeriodLength(match[i - 1].validTime,
-                                              match[i].validTime,
-                                              numActualRowsWX, NDFD_WX);
-            weatherDataTimes[i-priorElemCount-startNum] = 
-		      weatherDataTimes[i-priorElemCount-startNum]
-		      - (((double)period * 0.5) * 3600);
-	 }
+         Clock_Scan (&weatherDataTimes[i-priorElemCount-startNum], WXtimeStr, 0);
       }   
       else
          priorElemCount++;

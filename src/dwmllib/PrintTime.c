@@ -134,6 +134,30 @@ void PrintTime(genMatchType * match, size_t pntIndex, int *allElem,
       printf("tcs64i:%.0f ", match[allElem[NDFD_INC64]].value[pntIndex].data);
       printf ("match[%d].f_sector = %d\n",allElem[NDFD_INC64],match[allElem[NDFD_INC64]].f_sector);
    }
+   if ((allElem[NDFD_TMPABV14D] != -1) &&
+       (match[allElem[NDFD_TMPABV14D]].value[pntIndex].valueType != 2))
+   {
+      printf("tmpabv14d:%.0f ", match[allElem[NDFD_TMPABV14D]].value[pntIndex].data);
+      printf ("match[%d].f_sector = %d\n",allElem[NDFD_TMPABV14D],match[allElem[NDFD_TMPABV14D]].f_sector);
+   }
+   if ((allElem[NDFD_TMPBLW14D] != -1) &&
+       (match[allElem[NDFD_TMPBLW14D]].value[pntIndex].valueType != 2))
+   {
+      printf("tmpblw14d:%.0f ", match[allElem[NDFD_TMPBLW14D]].value[pntIndex].data);
+      printf ("match[%d].f_sector = %d\n",allElem[NDFD_TMPBLW14D],match[allElem[NDFD_TMPBLW14D]].f_sector);
+   }
+   if ((allElem[NDFD_PRCPABV14D] != -1) &&
+       (match[allElem[NDFD_PRCPABV14D]].value[pntIndex].valueType != 2))
+   {
+      printf("prcpabv14d:%.0f ", match[allElem[NDFD_PRCPABV14D]].value[pntIndex].data);
+      printf ("match[%d].f_sector = %d\n",allElem[NDFD_PRCPABV14D],match[allElem[NDFD_PRCPABV14D]].f_sector);
+   }
+   if ((allElem[NDFD_PRCPBLW14D] != -1) &&
+       (match[allElem[NDFD_PRCPBLW14D]].value[pntIndex].valueType != 2))
+   {
+      printf("prcpblw14d:%.0f ", match[allElem[NDFD_PRCPBLW14D]].value[pntIndex].data);
+      printf ("match[%d].f_sector = %d\n",allElem[NDFD_PRCPBLW14D],match[allElem[NDFD_PRCPBLW14D]].f_sector);
+   }
    if ((allElem[NDFD_SKY] != -1) &&
        (match[allElem[NDFD_SKY]].value[pntIndex].valueType != 2))
    {

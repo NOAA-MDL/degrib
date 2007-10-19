@@ -39,8 +39,6 @@
  *                       from the gird probe for current point. (Input) 
  *  firstValidTime_pop = The very first validTime for POP12hr returned from the
  *                       grid probe for current point. (Input) 
- *    *f_6CycleFirst = Denotes if first forecast cycle relative to current time 
- *                     is the 06 or 18 forecast cycle. (Output)
  *                TZ = # of hours to add to current time to get GMT time.
  *                     (Input) 
  *      f_observeDST = Flag determining if current point observes Daylight 
@@ -51,7 +49,9 @@
  * RETURNS: void
  *
  * HISTORY
- *   10/2006  Paul Hershberg (MDL): Created
+ *   10/2006 Paul Hershberg (MDL): Created
+ *   10/2007 Paul Hershberg (MDL): Removed code that shifted data back by 1/2
+ *                                 the period length (bug from php code)
  *
  * NOTES
  ******************************************************************************
@@ -60,7 +60,7 @@
 void getUserTimes(double **timeUserStart, double **timeUserEnd, 
                   int *f_POPUserStart, char *startDate, sChar TZ, 
                   double startTime, sChar f_observeDST, int *numDays, 
-                  double *firstValidTime_pop, int **f_6CycleFirst, sChar f_XML, 
+                  double *firstValidTime_pop, sChar f_XML,
                   double *firstValidTimeMatch)
 {
    sChar DST; /* Temporary storage for time zone offset if daylight savings is
@@ -225,7 +225,6 @@ void getUserTimes(double **timeUserStart, double **timeUserEnd,
     */
    if (beginningHour < 0 && startTime == 0.0 && f_XML == 3)
    {
-      **f_6CycleFirst = 0;
       formatValidTime(*firstValidTime_pop - oneDay, POPstrLess1Day, 30, TZ, f_observeDST); 
       userStart_year[0] = POPstrLess1Day[0];
       userStart_year[1] = POPstrLess1Day[1];

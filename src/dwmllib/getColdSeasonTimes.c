@@ -105,8 +105,8 @@ void getColdSeasonTimes(genMatchType *match, numRowsInfo numRowsWS,
    sprintf (fallDate, "%s-10-01%s", fallYear, time_adj);
 
    /* And in double form... */
-   Clock_Scan(*springDoubleDate, springDate, 1);
-   Clock_Scan(*fallDoubleDate, fallDate, 1);
+   Clock_Scan(*springDoubleDate, springDate, 0);
+   Clock_Scan(*fallDoubleDate, fallDate, 0);
 
    return;
 }

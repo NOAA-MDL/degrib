@@ -31,6 +31,7 @@
  * RETURNS: void
  *
  *  3/2007 Paul Hershberg (MDL): Created.
+ *  8/2007 Paul Hershberg (MDL): Added 12 NDFD Climate Outlook Elements.
  *
  * NOTES:
  *****************************************************************************
@@ -40,6 +41,7 @@ void setVarFilter(sChar f_XML, sChar f_icon, uChar *varFilter)
 {
    memset(varFilter, 0, NDFD_MATCHALL + 1);
 
+   /* Initialize all elements to 1. */
    varFilter[NDFD_MAX] = 1;
    varFilter[NDFD_MIN] = 1;
    varFilter[NDFD_POP] = 1;
@@ -55,6 +57,8 @@ void setVarFilter(sChar f_XML, sChar f_icon, uChar *varFilter)
    varFilter[NDFD_AT] = 1;
    varFilter[NDFD_RH] = 1;
    varFilter[NDFD_WG] = 1;
+
+   /* 6 Tropical Wind Threshold elements. */
    varFilter[NDFD_INC34] = 1;
    varFilter[NDFD_INC50] = 1;
    varFilter[NDFD_INC64] = 1;
@@ -62,6 +66,8 @@ void setVarFilter(sChar f_XML, sChar f_icon, uChar *varFilter)
    varFilter[NDFD_CUM50] = 1;
    varFilter[NDFD_CUM64] = 1;
    varFilter[NDFD_CONHAZ] = 1;
+
+   /* 9 Surface Prediction Center elements. */
    varFilter[NDFD_PTORN] = 1;
    varFilter[NDFD_PHAIL] = 1;
    varFilter[NDFD_PTSTMWIND] = 1;
@@ -70,6 +76,20 @@ void setVarFilter(sChar f_XML, sChar f_icon, uChar *varFilter)
    varFilter[NDFD_PXTSTMWIND] = 1;
    varFilter[NDFD_PSTORM] = 1;
    varFilter[NDFD_PXSTORM] = 1;
+
+   /* 12 Climate Outlook Elements. */
+   varFilter[NDFD_TMPABV14D] = 1;
+   varFilter[NDFD_TMPBLW14D] = 1;
+   varFilter[NDFD_PRCPABV14D] = 1;
+   varFilter[NDFD_PRCPBLW14D] = 1;
+   varFilter[NDFD_TMPABV30D] = 1;
+   varFilter[NDFD_TMPBLW30D] = 1;
+   varFilter[NDFD_PRCPABV30D] = 1;
+   varFilter[NDFD_PRCPBLW30D] = 1;
+   varFilter[NDFD_TMPABV90D] = 1;
+   varFilter[NDFD_TMPBLW90D] = 1;
+   varFilter[NDFD_PRCPABV90D] = 1;
+   varFilter[NDFD_PRCPBLW90D] = 1;
 
    /* Force genprobe() to return required NDFD element(s). */
    if (f_XML == 2)
@@ -97,6 +117,7 @@ void setVarFilter(sChar f_XML, sChar f_icon, uChar *varFilter)
       varFilter[NDFD_POP] = 2;
       varFilter[NDFD_WD] = 2;
       varFilter[NDFD_WS] = 2;
+      varFilter[NDFD_WG] = 2;
       varFilter[NDFD_SKY] = 2;
       varFilter[NDFD_WX] = 2;
    }

@@ -48,8 +48,8 @@ void getFirstSecondValidTimes(double *firstValidTime, double *secondValidTime,
    int i; /* Counter thru match structure. */
    int elemCount = 0; /* Counter tracking different elements thru match 
                        * structure. */
-   
-   for (i = (startNum+1); i < endNum; i++)
+
+   for (i = (startNum+1); i < (endNum+1); i++)
    {
       if (match[i - 1].elem.ndfdEnum == parameterName)
       {

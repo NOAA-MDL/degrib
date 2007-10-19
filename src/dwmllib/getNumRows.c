@@ -53,8 +53,6 @@
  *     currentHour = Current hour = in 2 digit form. (Input)
  *  firstValidTime_pop = The very first validTime for POP12hr returned from the
  *                       grid probe for this point. (Input) 
- *  *f_6CycleFirst = Denotes if first forecast cycle relative to current time 
- *                   is the 06 or 18 forecast cycle. (Input/Output)
  * firstValidTimeMatch = The very first validTime for all matches returned 
  *                       from the grid probe for this point. (Input) 
  *        numSector = Number of sectors that points were found in. (Input)
@@ -72,6 +70,8 @@
  *
  * HISTORY
  *   3/2006 Paul Hershberg (MDL): Created
+ *  10/2007 Paul Hershberg (MDL): Removed code that shifted data back by 1/2
+ *                                the period length (bug from php code)
  *
  * NOTES
  ******************************************************************************
@@ -83,15 +83,11 @@ void getNumRows(numRowsInfo *numRowsForPoint, double *timeUserStart,
                 sChar f_observeDST, int startNum, int endNum, char *startDate, 
                 int *numDays, double startTime, double endTime, 
                 char currentHour[3], double *firstValidTime_pop, 
-                int *f_6CycleFirst, double *firstValidTimeMatch, 
-                int *f_formatIconForPnt, int *f_formatSummarizations, int pnt)
+                double *firstValidTimeMatch, int *f_formatIconForPnt, 
+                int *f_formatSummarizations, int pnt)
 {
    int i; /* Counter thru match structure. */
    int k; /* Counter thru elements */
-   int firstWx = 1; /* Flag used to determine if first forecast cycle is 
-                     * 06th hour. */
-   double firstWxDiffFromBase = 0.0; /* Used to determine if first forecast
-                                      * cycle is 06th hour. */
    double period = 3; /* Element's periods (initialize to 3 hrs). */
    double timeDataEnd; /* End of time data is valid for (in secs since 1970). */
    double timeDataStart;/* Start of time data is valid for (in secs since 1970). */
@@ -160,8 +156,7 @@ void getNumRows(numRowsInfo *numRowsForPoint, double *timeUserStart,
    {
       getUserTimes(&timeUserStart, &timeUserEnd, &f_POPUserStart, startDate, 
                    TZoffset, startTime, f_observeDST, numDays, 
-                   firstValidTime_pop, &f_6CycleFirst, f_XML, 
-                   firstValidTimeMatch);
+                   firstValidTime_pop, f_XML, firstValidTimeMatch);
    }
    else /* For DWMLgen products, simply assign startTime and endTime. */
    {
@@ -245,26 +240,10 @@ void getNumRows(numRowsInfo *numRowsForPoint, double *timeUserStart,
 	    if (match[i].elem.ndfdEnum == k)
 	    {
 	       timeDataEnd = match[i].validTime;
-               timeDataStart = match[i].validTime - (3600 * (period - 1));
+               timeDataStart = match[i].validTime - (3600 * period);
        	       if (*timeUserStart != 0.0) /* Rule out DWMLgen cases where no startTime entered. */
 
 	       {
-                  if (match[i].elem.ndfdEnum == NDFD_WX && firstWx == 1)
-                  {   
-                     firstWxDiffFromBase = (timeDataEnd - timeUserStartPerElement)/3600;
-                     if (f_XML == 3)
-                     {
-                        if (firstWxDiffFromBase >= 12.0)
-                           *f_6CycleFirst = 1;
-                     }
-                     else if (f_XML == 4)
-                     {
-                        if (firstWxDiffFromBase >= 24.0)
-                           *f_6CycleFirst = 1;
-                     }
-                     firstWx = 0;
-                  }
-                  
 	          if (match[i].elem.ndfdEnum != NDFD_POP)
                   {
                      if (timeDataEnd < timeUserStartPerElement)

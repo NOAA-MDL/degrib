@@ -51,6 +51,18 @@ int checkNeedForEndTime(uChar parameterName)
       case NDFD_PXTSTMWIND:
       case NDFD_PSTORM: 
       case NDFD_PXSTORM:
+      case NDFD_TMPABV14D:
+      case NDFD_TMPBLW14D:
+      case NDFD_PRCPABV14D:
+      case NDFD_PRCPBLW14D:
+      case NDFD_TMPABV30D:
+      case NDFD_TMPBLW30D:
+      case NDFD_PRCPABV30D:
+      case NDFD_PRCPBLW30D:
+      case NDFD_TMPABV90D:
+      case NDFD_TMPBLW90D:
+      case NDFD_PRCPABV90D:
+      case NDFD_PRCPBLW90D:
 
          return 1;
          break;

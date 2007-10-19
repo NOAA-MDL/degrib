@@ -70,6 +70,7 @@
  *  3/2007 Paul Hershberg (MDL): -- Added 9 SPC elements 
  *                               -- Added 6 Tropical Wind Threshold elements
  *                               -- Added startNum/endNum arguments.
+ *  8/2007 Paul Hershberg (MDL): -- Added 12 Climate Outlook elements 
  *
  * NOTES:
  *****************************************************************************
@@ -104,7 +105,10 @@ void computeStartEndTimes(uChar parameterName, uChar numFmtdRows,
    int priorElemCount;        /* Counter used to find elements' location in
                                * match structure. */
    double Time_doub = 0.0;    /* Holds startTime as a double. */
-   
+   double startClimatePeriod = 0.0; /* The start of the Climate Outlook
+                                       1-monthly and 3-monthly products in secs
+                                       since 1970. */
+
    if (f_XML == 1 || f_XML == 2) /* For DWMLgen products. */
    {
       switch (parameterName)
@@ -320,7 +324,7 @@ void computeStartEndTimes(uChar parameterName, uChar numFmtdRows,
                   temp[1] = str1[12];
                   temp[2] = '\0';
                   beginningHour = atoi(temp);
-                  beginningHour = beginningHour - periodLength - 1;
+                  beginningHour = beginningHour - periodLength;
 
                   /* If the hour is negative, we moved to the previous day so
                    * determine what the new date and time are. 
@@ -412,9 +416,9 @@ void computeStartEndTimes(uChar parameterName, uChar numFmtdRows,
                   strncpy(pstr, temp2, 3);
 
                   /* Now, before we assign the startTime based off of the 
-                   * validTime, check to see if the refTime is later than the
-                   * newly created startTime. If so, simply use the refTime as 
-                   * the startTime (this will occur on day 1 of some of these
+                   * validTime, check to see if the base refTime is later than
+                   * the newly created startTime. If so, simply use the refTime
+                   * as the startTime (this will occur on day 1 of some of these
                    * SPC elements). Get the newly created startTime in double 
                    * form for the comparison.
                    */
@@ -422,6 +426,137 @@ void computeStartEndTimes(uChar parameterName, uChar numFmtdRows,
                   if (startTime_validTime < match[i].refTime)
                      formatValidTime(match[i].refTime, str1, 30, TZoffset,
                                      f_observeDST);
+                  strcpy(startTimes[i - priorElemCount], str1);
+               }
+               else
+                  priorElemCount++;
+            }
+            break;
+
+         case NDFD_TMPABV14D:
+         case NDFD_TMPBLW14D:
+         case NDFD_PRCPABV14D:
+         case NDFD_PRCPBLW14D:
+
+            /* Loop over matches of the data. */
+            priorElemCount = startNum;
+            for (i = startNum; i < endNum; i++)
+            {
+               if (match[i].elem.ndfdEnum == parameterName && 
+	           match[i].validTime >= numRows.firstUserTime &&
+		   match[i].validTime <= numRows.lastUserTime)
+               {
+                  formatValidTime(match[i].validTime, str1, 30, TZoffset,
+                                  f_observeDST);		  
+		  if (useEndTimes)
+		  {
+                     endTimes[i - priorElemCount] = malloc(strlen(str1)+1);
+
+                     /* For the NDFD, the valid time is at the end of the
+                      * valid period. So end time equal to the "valid time"
+                      * and calculate the start time. The start time for 
+                      * these 8-14 day outlook products will be 6 days
+                      * earlier than the endTime (validTime). 
+                      */
+                     strcpy(endTimes[i - priorElemCount], str1);
+		  }
+                  startTimes[i - priorElemCount] = malloc(strlen(str1)+1);
+
+                  /* periodLength is in hours. Need to subract # of days in secs. */
+                  Time_doub = match[i].validTime - (periodLength*3600);
+                  formatValidTime(Time_doub, str1, 30, TZoffset, 
+                                  f_observeDST);
+                  strcpy(startTimes[i - priorElemCount], str1);
+               }
+               else
+                  priorElemCount++;
+            }
+            break;
+
+         case NDFD_TMPABV30D:
+         case NDFD_TMPBLW30D:
+         case NDFD_PRCPABV30D:
+         case NDFD_PRCPBLW30D:
+
+            /* Loop over matches of the data. */
+            priorElemCount = startNum;
+            for (i = startNum; i < endNum; i++)
+            {
+               if (match[i].elem.ndfdEnum == parameterName && 
+	           match[i].validTime >= numRows.firstUserTime &&
+		   match[i].validTime <= numRows.lastUserTime)
+               {
+                  formatValidTime(match[i].validTime, str1, 30, TZoffset,
+                                  f_observeDST);		  
+		  if (useEndTimes)
+		  {
+                     endTimes[i - priorElemCount] = malloc(strlen(str1)+1);
+
+                     /* For the NDFD, the valid time is at the end of the
+                      * valid period. So end time equal to the "valid time"
+                      * and calculate the start time.
+                      *
+                      * The start time for the One-monthly outlook products 
+                      * will be the beginning of the month (1st) which can
+                      * vary between 28 and 31 days earlier than the endTime. 
+                      */
+                     strcpy(endTimes[i - priorElemCount], str1);
+		  }
+                  startTimes[i - priorElemCount] = malloc(strlen(str1)+1);
+
+                  /* periodLength is in hours and is varying (between 28-31 days
+                   * worth of hours for monthly products, and 88-93 days worth of
+                   * hours for the three-monthly products. We need to find 
+                   * the exact period for each data value (row of data). 
+                   */
+                  startClimatePeriod = Clock_AddMonthYear(match[i].validTime, -1, 0);
+                  formatValidTime(startClimatePeriod, str1, 30, TZoffset, f_observeDST);
+                  strcpy(startTimes[i - priorElemCount], str1);
+               }
+               else
+                  priorElemCount++;
+            }
+            break;
+
+         case NDFD_TMPABV90D:
+         case NDFD_TMPBLW90D:
+         case NDFD_PRCPABV90D:
+         case NDFD_PRCPBLW90D:
+
+            /* Loop over matches of the data. */
+            priorElemCount = startNum;
+            for (i = startNum; i < endNum; i++)
+            {
+               if (match[i].elem.ndfdEnum == parameterName && 
+	           match[i].validTime >= numRows.firstUserTime &&
+		   match[i].validTime <= numRows.lastUserTime)
+               {
+                  formatValidTime(match[i].validTime, str1, 30, TZoffset,
+                                  f_observeDST);		  
+		  if (useEndTimes)
+		  {
+                     endTimes[i - priorElemCount] = malloc(strlen(str1)+1);
+
+                     /* For the NDFD, the valid time is at the end of the
+                      * valid period. So end time equal to the "valid time"
+                      * and calculate the start time.
+                      * 
+                      * The start time for the Three-monthly outlook products 
+                      * will be the beginning of the month (1st) three months 
+                      * prior. This is not always exactly 90 days prior, but 
+                      * the actual number of days in those three months.
+                      */
+                     strcpy(endTimes[i - priorElemCount], str1);
+		  }
+                  startTimes[i - priorElemCount] = malloc(strlen(str1)+1);
+
+                  /* periodLength is in hours and is varying (between 28-31 days
+                   * worth of hours for monthly products, and 88-93 days worth of
+                   * hours for the three-monthly products. We need to find 
+                   * the exact period for each data value (row of data). 
+                   */
+                  startClimatePeriod = Clock_AddMonthYear(match[i].validTime, -3, 0);
+                  formatValidTime(startClimatePeriod, str1, 30, TZoffset, f_observeDST);
                   strcpy(startTimes[i - priorElemCount], str1);
                }
                else

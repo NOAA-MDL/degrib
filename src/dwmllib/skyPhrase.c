@@ -65,6 +65,11 @@
  * RETURNS: void
  *
  *  6/2006 Paul Hershberg (MDL): Created.
+ * 10/2007 Paul Hershberg (MDL): Fixed bug in which tread speeds were set to 
+ *                               a 4, which erroneously was not denoting 4 hours
+ *                               but 4 index or category differences. We changed 
+ *                               the 4 to 1 index or category difference, which
+ *                               signifies a 3 hour difference.
  *
  * NOTES:
  *****************************************************************************
@@ -166,27 +171,27 @@ void skyPhrase(int *maxSkyCover, int *minSkyCover, int *averageSkyCover,
     * (skyChange never used in JohnS's code??). */
 
    /* Deterimine Maximum Cloud Categories. */
-   if (maxSkyCover[dayIndex] <= 15)
+   if (maxSkyCover[dayIndex] <= 5)
       maxCategory = 0;
-   else if (maxSkyCover[dayIndex] <= 39)
+   else if (maxSkyCover[dayIndex] <= 25)
       maxCategory = 1;
-   else if (maxSkyCover[dayIndex] <= 69)
+   else if (maxSkyCover[dayIndex] <= 50)
       maxCategory = 2;
-   else if (maxSkyCover[dayIndex] <= 90)
+   else if (maxSkyCover[dayIndex] <= 87)
       maxCategory = 3;
-   else if (maxSkyCover[dayIndex] <= 100)
+   else if (maxSkyCover[dayIndex] <= 101)
       maxCategory = 4;
 
    /* Deterimine Minimum Cloud Categories. */
-   if (minSkyCover[dayIndex] <= 15)
+   if (minSkyCover[dayIndex] <= 5)
       minCategory = 0;
-   else if (minSkyCover[dayIndex] <= 39)
+   else if (minSkyCover[dayIndex] <= 25)
       minCategory = 1;
-   else if (minSkyCover[dayIndex] <= 69)
+   else if (minSkyCover[dayIndex] <= 50)
       minCategory = 2;
-   else if (minSkyCover[dayIndex] <= 90)
+   else if (minSkyCover[dayIndex] <= 87)
       minCategory = 3;
-   else if (minSkyCover[dayIndex] <= 100)
+   else if (minSkyCover[dayIndex] <= 101)
       minCategory = 4;
 
    /* Calculate the change in cloud categories and the average cloud amount
@@ -198,42 +203,42 @@ void skyPhrase(int *maxSkyCover, int *minSkyCover, int *averageSkyCover,
    
    if ((dayIndex > skyTrend_Periods) || (categoryChange < 2))
    {
-      if ((averageSkyCover[dayIndex] <= 15) && f_isDayTime)
+      if ((averageSkyCover[dayIndex] <= 5) && f_isDayTime)
       {
           sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "skc.jpg");        
 	  strcpy (phrase[dayIndex], "Sunny");
       }
-      else if ((averageSkyCover[dayIndex] <= 15) && f_isNightTime)     
+      else if ((averageSkyCover[dayIndex] <= 5) && f_isNightTime)     
       {
           sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "nskc.jpg");        
 	  strcpy (phrase[dayIndex], "Clear");
       }
-      else if ((averageSkyCover[dayIndex] < 40) && f_isDayTime)     
+      else if ((averageSkyCover[dayIndex] <= 25) && f_isDayTime)     
       {
           sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "few.jpg");        
 	  strcpy (phrase[dayIndex], "Mostly Sunny");
       }
-      else if ((averageSkyCover[dayIndex] < 40) && f_isNightTime)     
+      else if ((averageSkyCover[dayIndex] <= 25) && f_isNightTime)     
       {
           sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "nfew.jpg");        
 	  strcpy (phrase[dayIndex], "Mostly Clear");
       }
-      else if ((averageSkyCover[dayIndex] < 70) && f_isDayTime)     
+      else if ((averageSkyCover[dayIndex] <= 50) && f_isDayTime)     
       {
           sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "sct.jpg");        
           strcpy (phrase[dayIndex], "Partly Cloudy");
       }
-      else if ((averageSkyCover[dayIndex] < 70) && f_isNightTime)     
+      else if ((averageSkyCover[dayIndex] <= 50) && f_isNightTime)     
       {
           sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "nsct.jpg");        
 	  strcpy (phrase[dayIndex], "Partly Cloudy");
       }
-      else if ((averageSkyCover[dayIndex] <= 90) && f_isDayTime)     
+      else if ((averageSkyCover[dayIndex] <= 87) && f_isDayTime)     
       {
           sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "bkn.jpg");        
 	  strcpy (phrase[dayIndex], "Mostly Cloudy");
       }
-      else if ((averageSkyCover[dayIndex] <= 90) && f_isNightTime)     
+      else if ((averageSkyCover[dayIndex] <= 87) && f_isNightTime)     
       {
           sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "nbkn.jpg");        
 	  strcpy (phrase[dayIndex], "Mostly Cloudy");
@@ -264,8 +269,10 @@ void skyPhrase(int *maxSkyCover, int *minSkyCover, int *averageSkyCover,
 	 if (trend_inc_early < 0)
             trend_inc_early = 0;
 	 
-         /* Clouds increasing over a duration of 4 or more hours. */
-	 if (trend_speed >= 4)
+         /* Clouds increasing over a duration of 3 or more hours (1 index or 
+          * category diff). 
+          */
+	 if (trend_speed >= 1)
 	 {
             if (maxCategory > 2)
 	    {
@@ -279,49 +286,49 @@ void skyPhrase(int *maxSkyCover, int *minSkyCover, int *averageSkyCover,
 	    }
 	    else
 	    {
-	       if ((averageSkyCover[dayIndex] <= 15) && f_isDayTime)
+	       if ((averageSkyCover[dayIndex] <= 5) && f_isDayTime)
 	       {
                   sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, 
 		          "skc.jpg");
 	          strcpy (phrase[dayIndex], "Sunny");
 	       }
-	       else if ((averageSkyCover[dayIndex] <= 15) && f_isNightTime)
+	       else if ((averageSkyCover[dayIndex] <= 5) && f_isNightTime)
 	       {
                   sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, 
 		          "nskc.jpg");
 	          strcpy (phrase[dayIndex], "Clear");
 	       }
-	       else if ((averageSkyCover[dayIndex] < 40) && f_isDayTime)
+	       else if ((averageSkyCover[dayIndex] <= 25) && f_isDayTime)
 	       {
                   sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, 
 		          "few.jpg");
 	          strcpy (phrase[dayIndex], "Mostly Sunny");
 	       }
-	       else if ((averageSkyCover[dayIndex] < 40) && f_isNightTime)
+	       else if ((averageSkyCover[dayIndex] <= 25) && f_isNightTime)
 	       {
                   sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, 
 		          "nfew.jpg");
 	          strcpy (phrase[dayIndex], "Mostly Clear");
 	       }
- 	       else if ((averageSkyCover[dayIndex] < 70) && f_isDayTime)
+ 	       else if ((averageSkyCover[dayIndex] <= 50) && f_isDayTime)
 	       {
                   sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, 
 		          "sct.jpg");
 	          strcpy (phrase[dayIndex], "Partly Cloudy");
 	       }
-	       else if ((averageSkyCover[dayIndex] < 70) && f_isNightTime)
+	       else if ((averageSkyCover[dayIndex] <= 50) && f_isNightTime)
 	       {
                   sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, 
 		          "nsct.jpg");
 	          strcpy (phrase[dayIndex], "Partly Cloudy");
 	       }
- 	       else if ((averageSkyCover[dayIndex] <= 90) && f_isDayTime)
+ 	       else if ((averageSkyCover[dayIndex] <= 87) && f_isDayTime)
 	       { 
                   sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, 
 		          "bkn.jpg");
 	          strcpy (phrase[dayIndex], "Mostly Cloudy");
 	       }
-	       else if ((averageSkyCover[dayIndex] <= 90) && f_isNightTime)
+	       else if ((averageSkyCover[dayIndex] <= 87) && f_isNightTime)
 	       {
                   sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, 
 		          "nbkn.jpg");
@@ -341,11 +348,13 @@ void skyPhrase(int *maxSkyCover, int *minSkyCover, int *averageSkyCover,
 	       }
 	    }
 	 }
-	 else if (trend_speed < 4)
+	 else if (trend_speed < 1)
          {
 		 
-            /* Clouds increasing over a duration of less than 4 hours. */
-            if (trend_inc_early < 4)
+            /* Clouds increasing over a duration of less than 3 hours (1 index 
+             * or category diff). 
+             */
+            if (trend_inc_early < 1)
             {
                if (f_isDayTime)
                {
@@ -360,7 +369,7 @@ void skyPhrase(int *maxSkyCover, int *minSkyCover, int *averageSkyCover,
 	          strcpy (phrase[dayIndex], nightSkyPhrase[maxCategory]);
                }
 	    }
-            else if (trend_inc_late < 4)
+            else if (trend_inc_late < 1)
             {
                if (f_isDayTime)
                {
@@ -395,7 +404,9 @@ void skyPhrase(int *maxSkyCover, int *minSkyCover, int *averageSkyCover,
             if (maxCategory == 4)
 	       strcpy (phrase[dayIndex], "Becoming Cloudy");
 	       
-	 } /* Close "increasing over a duration of less than 4 hours". */
+	 } /* Close "increasing over a duration of less than 3 hours (1 index 
+             * or category diff). 
+             */
 
       } /* Close "Increasing Clouds" bracket. */
       else if (maxSkyNum[dayIndex] < minSkyNum[dayIndex])	      
@@ -415,10 +426,10 @@ void skyPhrase(int *maxSkyCover, int *minSkyCover, int *averageSkyCover,
 	    /* Decrease of 3 or more categories in sky condition. Use 
 	     * clearing/gradual clearing wording.
 	     */
-            if (trend_dec_early < 4) 
+            if (trend_dec_early < 1) 
 	    {	    
                /* Cloudy/MoCloudy...then clearing early. */
-               if (trend_speed < 4) 
+               if (trend_speed < 1) 
 	       {
 		  if (f_isDayTime)
                      sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, 
@@ -429,7 +440,7 @@ void skyPhrase(int *maxSkyCover, int *minSkyCover, int *averageSkyCover,
 			  
 	          strcpy (phrase[dayIndex], "Clearing");
 	       }
-	       else if (trend_speed >= 4)
+	       else if (trend_speed >= 1)
 	       {
 	          if (f_isDayTime)
                      sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, 
@@ -441,7 +452,7 @@ void skyPhrase(int *maxSkyCover, int *minSkyCover, int *averageSkyCover,
 	          strcpy (phrase[dayIndex], "Gradual Clearing");
 	       }
 	    }
-	    else if (trend_dec_late < 4)
+	    else if (trend_dec_late < 1)
 	    {
                /* Cloudy...then clearing late. */
 	       if (f_isDayTime)
@@ -456,7 +467,7 @@ void skyPhrase(int *maxSkyCover, int *minSkyCover, int *averageSkyCover,
 	    else
 	    {
                /* Cloudy...then clearing mid-period. */
-               if (trend_speed < 4) 
+               if (trend_speed < 1) 
                {
                   if (f_isDayTime)
                      sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, 
@@ -467,7 +478,7 @@ void skyPhrase(int *maxSkyCover, int *minSkyCover, int *averageSkyCover,
 
 	          strcpy (phrase[dayIndex], "Clearing");
 	       }
-	       else if (trend_speed >= 4)
+	       else if (trend_speed >= 1)
 	       {
                   if (f_isDayTime)
                      sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, 
@@ -482,9 +493,11 @@ void skyPhrase(int *maxSkyCover, int *minSkyCover, int *averageSkyCover,
 	    }
 
 	 }
-	 else if (trend_speed >= 4)
+	 else if (trend_speed >= 1)
          {
-            /* Clouds decreasing over a duration of 4 or more hours. */
+            /* Clouds decreasing over a duration of 3 or more hours (1 index or 
+             * category diff). 
+             */
             if (f_isDayTime)
             {
 	       strcpy (phrase[dayIndex], "Decreasing Clouds");
@@ -498,10 +511,12 @@ void skyPhrase(int *maxSkyCover, int *minSkyCover, int *averageSkyCover,
                        nightSkyImage[avgCategory]);
 	    } 
 	 }
-	 else if (trend_speed < 4)
+	 else if (trend_speed < 1)
          {
-            /* Clouds decreasing over a duration of less than 4 hours. */
-            if (trend_dec_early < 4) 
+            /* Clouds decreasing over a duration of less than 3 hours (1 index or 
+             * category diff). 
+             */
+            if (trend_dec_early < 1) 
             {         
                if (f_isDayTime)
                { 

@@ -38,6 +38,7 @@
  * RETURNS: void
  *
  *  2/2006 Paul Hershberg (MDL): Created.
+ *  9/2007 Paul Hershberg (MDL): Added 12 Climate Outlook Products
  *
  * NOTES:
  *****************************************************************************
@@ -119,7 +120,31 @@ void prepareDWMLgen(uChar f_XML, uChar * f_formatPeriodName,
             wxParameters[j][NDFD_PSTORM] = 1;
          if (varFilter[NDFD_PXSTORM] == 2)
             wxParameters[j][NDFD_PXSTORM] = 1;
-      
+         if (varFilter[NDFD_TMPABV14D] == 2)
+            wxParameters[j][NDFD_TMPABV14D] = 1;
+         if (varFilter[NDFD_TMPBLW14D] == 2)
+            wxParameters[j][NDFD_TMPBLW14D] = 1;
+         if (varFilter[NDFD_TMPABV30D] == 2)
+            wxParameters[j][NDFD_TMPABV30D] = 1;
+         if (varFilter[NDFD_TMPBLW30D] == 2)
+            wxParameters[j][NDFD_TMPBLW30D] = 1;
+         if (varFilter[NDFD_TMPABV90D] == 2)
+            wxParameters[j][NDFD_TMPABV90D] = 1;
+         if (varFilter[NDFD_TMPBLW90D] == 2)
+            wxParameters[j][NDFD_TMPBLW90D] = 1;
+         if (varFilter[NDFD_PRCPABV14D] == 2)
+            wxParameters[j][NDFD_PRCPABV14D] = 1;
+         if (varFilter[NDFD_PRCPBLW14D] == 2)
+            wxParameters[j][NDFD_PRCPBLW14D] = 1;
+         if (varFilter[NDFD_PRCPABV30D] == 2)
+            wxParameters[j][NDFD_PRCPABV30D] = 1;
+         if (varFilter[NDFD_PRCPBLW30D] == 2)
+            wxParameters[j][NDFD_PRCPBLW30D] = 1;
+         if (varFilter[NDFD_PRCPABV90D] == 2)
+            wxParameters[j][NDFD_PRCPABV90D] = 1;
+         if (varFilter[NDFD_PRCPBLW90D] == 2)
+            wxParameters[j][NDFD_PRCPBLW90D] = 1;
+
          /* We need to create a time layout for the icons in the case that only
           * icons is to be formatted. When this occurs, make Icons use the
           * weather's time layout. Set the wxParameters flag for WX to = 3. 

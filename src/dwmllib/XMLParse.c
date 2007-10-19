@@ -54,8 +54,10 @@
  * RETURNS: int
  *         
  * HISTORY
- *   12/2005 Arthur Taylor/Paul Hershberg (MDL): Created.
+ *  12/2005 Arthur Taylor/Paul Hershberg (MDL): Created.
  *   5/2006 Bailing Li, Arthur Taylor, John Schattel: Code Review 1.
+ *  10/2007 Paul Hershberg (MDL): Removed code that shifted data back by 1/2
+ *                                the period length (bug from php code)
  *
  * NOTES: The NDFD element list is below.
  *
@@ -64,7 +66,10 @@
  *        NDFD_AT, NDFD_RH, NDFD_WG, NDFD_INC34, NDFD_INC50, NDFD_INC64,
  *        NDFD_CUM34, NDFD_CUM50, NDFD_CUM64, NDFD_CONHAZ, NDFD_PTORN,
  *        NDFD_PHAIL, NDFD_PTSTMWIND, NDFD_PXTORN, NDFD_PXHAIL, NDFD_PXTSTMWIND,
- *        NDFD_PSTORM, NDFD_PXSTORM, NDFD_UNDEF, NDFD_MATCHALL
+ *        NDFD_PSTORM, NDFD_PXSTORM, NDFD_TMPABV14D, NDFD_TMPBLW14D, 
+ *        NDFD_PRCPABV14D, NDFD_PRCPBLW14D, NDFD_TMPABV30D, NDFD_TMPBLW30D,
+ *        NDFD_PRCPABV30D, NDFD_PRCPBLW30D, NDFD_TMPABV90D, NDFD_TMPBLW90D, 
+ *        NDFD_PRCPABV90D, NDFD_PRCPBLW90D, NDFD_UNDEF, NDFD_MATCHALL
  *      };
  * 
  ****************************************************************************** 
@@ -115,8 +120,6 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                                                  * the output XML (=1), or
                                                  * used in deriving another
                                                  * formatted element (=2). */
-   int *f_6CycleFirst = NULL; /* Denotes if first forecast cycle relative to 
-				 current time is the 06 or 18 forecast cycle.*/
    int *f_formatIconForPnt = NULL; /* Determines wether there is enough data to 
                                       icons for the particular point being 
                                       processed. */
@@ -453,7 +456,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
       return 0;
 /*      #endif */
    }
-	      
+
    /* Sort the matches by sector, element, and then by valid time. */
    qsort(match, numMatch, sizeof(match[0]), XMLmatchCompare);
 
@@ -583,9 +586,9 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
 			  &timeInterval, numOutputLines, whatSummarization,
 			  currentDoubTime, numPnts, pntInfo);
 
-   /*************************  LOCATION INFO  ******************************/
+   /*************************  DATA INFO  ******************************/
 
-   /* Format the Location Information into the XML/DWML. */
+   /* Format the <LOCATION> ELEMENT in the XML/DWML. */
    formatLocationInfo(numPnts, pnts, data);
 
    /* Run through matches to find numRows returned per element for each
@@ -593,17 +596,16 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
     * update the weatherParameters array accordingly to reflect what is
     * actually returned from the NDFD. 
     */
-   numRowsForPoint = (numRowsInfo **) malloc(numPnts * sizeof(numRowsInfo *));
+   numRowsForPoint = (numRowsInfo **)malloc(numPnts * sizeof(numRowsInfo *));
    startDate = (char **)malloc(numPnts * sizeof(char *));
    currentDay = (char **)malloc(numPnts * sizeof(char *));
    currentHour = (char **)malloc(numPnts * sizeof(char *));
    timeUserStart = (double *)malloc(numPnts * sizeof(double));
    timeUserEnd = (double *)malloc(numPnts * sizeof(double));
-   f_6CycleFirst = (int *)malloc(numPnts * sizeof(int));
    f_formatNIL = (int *)malloc(numPnts * sizeof(int));
    f_useMinTempTimes = (int *)malloc(numPnts * sizeof(int));
-   f_formatIconForPnt = (int *) malloc(numPnts * sizeof(int));
-   f_formatSummarizations = (int *) malloc(numPnts * sizeof(int));
+   f_formatIconForPnt = (int *)malloc(numPnts * sizeof(int));
+   f_formatSummarizations = (int *)malloc(numPnts * sizeof(int));
 
    for (j = 0; j < numPnts; j++)
    {
@@ -644,15 +646,13 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
          currentHour[j][1] = currentLocalTime[12];
          currentHour[j][2] = '\0';
 
-         f_6CycleFirst[j] = 1;
          getNumRows(numRowsForPoint[j], &timeUserStart[j], &timeUserEnd[j], 
                     numMatch, match, weatherParameters[j], f_XML, &f_icon,
                     pntInfo[j].timeZone, pntInfo[j].f_dayLight,
                     pntInfo[j].startNum, pntInfo[j].endNum, startDate[j], 
                     &numDays[j], startTime, endTime, currentHour[j], 
-		    &firstValidTime_pop[j], &f_6CycleFirst[j], 
-                    &firstValidTimeMatch[j], &f_formatIconForPnt[j], 
-                    &f_formatSummarizations[j], j);
+		    &firstValidTime_pop[j], &firstValidTimeMatch[j], 
+                    &f_formatIconForPnt[j], &f_formatSummarizations[j], j);
       }
    }
 
@@ -677,7 +677,10 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
    }
 #endif
 
-   /***********************  TIME LAYOUT INFO  *****************************/
+   /*******Format the <MOREWEATHERINFORMATION> ELEMENT in the XML/DWML********/
+   formatMoreWxInfo(numPnts, pnts, data);
+   
+   /***********Format the <TIME-LAYOUT> ELEMENT in the XML/DWML***************/
 
    /* Allocate the time zone information and the layoutKeys to the number
     * of points. The layout-keys will only be generated once, UNLESS,
@@ -745,7 +748,6 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                                         currentDay[j], "boggus", data, startTime,
                                         currentDoubTime, &numDays[j], f_XML, 
                                         startNum, endNum);
-
                      layoutKeys[j][k] = malloc(strlen(layoutKey) + 1);
                      strcpy(layoutKeys[j][k], layoutKey);
                   }
@@ -908,7 +910,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
       }  /* End of "is Point in Sector" check. */
    }  /* End "Point Loop" for Time-Layouts. */
 
-   /***********************  PARAMETER INFO  *******************************/
+   /*********************** PARAMETER <ELEMENT> *****************************/
 
    /* Format the Parameter Information into the XML/DWML. */
    /* Begin new Point Loop to format the Data/Weather Parameter values. The 
@@ -950,7 +952,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
          /* Format Dew Point Temperature Values, if applicable. */
          if (weatherParameters[j][NDFD_TD] == 1)
             genDewPointTempValues(j, layoutKeys[j][NDFD_TD], match,
-                                  parameters, numRowsForPoint[j][NDFD_TEMP], 
+                                  parameters, numRowsForPoint[j][NDFD_TD], 
                                   pntInfo[j].startNum, pntInfo[j].endNum);
 
          /* Format Apparent Temperature Values, if applicable. */
@@ -995,6 +997,17 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
 			 pntInfo[j].startNum, pntInfo[j].endNum);
 	 }
 
+         /****************************RTMA ELEMENTS***************************/
+         /********************************************************************/
+         /* Format the Real Time Mesoscale Analyses elements for the rtma 
+          * product, if applicable. 
+	  */
+
+
+
+
+         /*****************9 SPC CONVECTIVE HAZARDS ELEMENTS******************/
+         /********************************************************************/
          /* Format the Categorical Convective Hazard Outlook for DWMLgen 
           * time-series product, for days 1-3, if applicable. 
 	  */
@@ -1009,7 +1022,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
          if (weatherParameters[j][NDFD_PTORN] == 1)
             genConvSevereCompValues(j, layoutKeys[j][NDFD_PTORN], NDFD_PTORN, 
                                     match, "tornadoes", 
-                                    "Probability of Tornadoes", parameters,
+                                    "Probability of Tornadoes", parameters, 
                                     numRowsForPoint[j][NDFD_PTORN], 
                                     pntInfo[j].startNum, pntInfo[j].endNum);
 
@@ -1083,6 +1096,130 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                                     parameters, numRowsForPoint[j][NDFD_PXSTORM],
                                     pntInfo[j].startNum, pntInfo[j].endNum);
 
+         /*****************12 CLIMATE ANOMALY PROBABILITIES ******************/
+         /********************************************************************/
+         /* Format 8-14 Average Temperature, Above Normal Values, if 
+          * applicable. 
+          */
+         if (weatherParameters[j][NDFD_TMPABV14D] == 1)
+            genClimateOutlookValues(j, layoutKeys[j][NDFD_TMPABV14D], 
+                         NDFD_TMPABV14D, match, "average temperature above normal",
+                         "Probability of 8-14 Day Average Temperature Above Normal",
+                         parameters, numRowsForPoint[j][NDFD_TMPABV14D], 
+                         pntInfo[j].startNum, pntInfo[j].endNum);
+
+         /* Format 8-14 Average Temperature, Below Normal Values, if 
+          * applicable. 
+          */
+         if (weatherParameters[j][NDFD_TMPBLW14D] == 1)
+            genClimateOutlookValues(j, layoutKeys[j][NDFD_TMPBLW14D], 
+                         NDFD_TMPBLW14D, match, "average temperature below normal", 
+                         "Probability of 8-14 Day Average Temperature Below Normal",
+                         parameters, numRowsForPoint[j][NDFD_TMPBLW14D], 
+                         pntInfo[j].startNum, pntInfo[j].endNum);
+
+         /* Format 8-14 Average Precipitation, Above Normal Values, if 
+          * applicable. 
+          */
+         if (weatherParameters[j][NDFD_PRCPABV14D] == 1)
+            genClimateOutlookValues(j, layoutKeys[j][NDFD_PRCPABV14D], 
+                         NDFD_PRCPABV14D, match, "average precipitation above normal", 
+                         "Probability of 8-14 Day Average Precipitation Above Normal",
+                         parameters, numRowsForPoint[j][NDFD_PRCPABV14D], 
+                         pntInfo[j].startNum, pntInfo[j].endNum);
+
+         /* Format 8-14 Average Precipitation, Below Normal Values, if 
+          * applicable. 
+          */
+         if (weatherParameters[j][NDFD_PRCPBLW14D] == 1)
+            genClimateOutlookValues(j, layoutKeys[j][NDFD_PRCPBLW14D], 
+                         NDFD_PRCPBLW14D, match, "average precipitation below normal", 
+                         "Probability of 8-14 Day Average Precipitation Below Normal",
+                         parameters, numRowsForPoint[j][NDFD_PRCPBLW14D], 
+                         pntInfo[j].startNum, pntInfo[j].endNum);
+
+         /* Format Monthly Average Temperature, Above Normal Values, if 
+          * applicable. 
+          */
+         if (weatherParameters[j][NDFD_TMPABV30D] == 1)
+            genClimateOutlookValues(j, layoutKeys[j][NDFD_TMPABV30D], 
+                         NDFD_TMPABV30D, match, "average temperature above normal", 
+                         "Probability of One-Month Average Temperature Above Normal",
+                         parameters, numRowsForPoint[j][NDFD_TMPABV30D], 
+                         pntInfo[j].startNum, pntInfo[j].endNum);
+
+         /* Format Monthly Average Temperature, Below Normal Values, if 
+          * applicable. 
+          */
+         if (weatherParameters[j][NDFD_TMPBLW30D] == 1)
+            genClimateOutlookValues(j, layoutKeys[j][NDFD_TMPBLW30D],
+                         NDFD_TMPBLW30D, match, "average temperature below normal", 
+                         "Probability of One-Month Average Temperature Below Normal",
+                         parameters, numRowsForPoint[j][NDFD_TMPBLW30D], 
+                         pntInfo[j].startNum, pntInfo[j].endNum);
+
+         /* Format Monthly Average Precipitation, Above Normal Values, if 
+          * applicable. 
+          */
+         if (weatherParameters[j][NDFD_PRCPABV30D] == 1)
+            genClimateOutlookValues(j, layoutKeys[j][NDFD_PRCPABV30D], 
+                         NDFD_PRCPABV30D, match, "average precipitation above normal", 
+                         "Probability of One-Month Average Precipitation Above Normal",
+                         parameters, numRowsForPoint[j][NDFD_PRCPABV30D], 
+                         pntInfo[j].startNum, pntInfo[j].endNum);
+
+         /* Format Monthly Average Precipitation, Below Normal Values, if 
+          * applicable. 
+          */
+         if (weatherParameters[j][NDFD_PRCPBLW30D] == 1)
+            genClimateOutlookValues(j, layoutKeys[j][NDFD_PRCPBLW30D],
+                         NDFD_PRCPBLW30D, match, "average precipitation below normal", 
+                         "Probability of One-Month Average Precipitation Below Normal",
+                         parameters, numRowsForPoint[j][NDFD_PRCPBLW30D], 
+                         pntInfo[j].startNum, pntInfo[j].endNum);
+
+         /* Format 3-Monthly Average Temperature, Above Normal Values, if
+          * applicable. 
+          */
+         if (weatherParameters[j][NDFD_TMPABV90D] == 1)
+            genClimateOutlookValues(j, layoutKeys[j][NDFD_TMPABV90D], 
+                         NDFD_TMPABV90D, match, "average temperature above normal", 
+                         "Probability of Three-Month Average Temperature Above Normal",
+                         parameters, numRowsForPoint[j][NDFD_TMPABV90D], 
+                         pntInfo[j].startNum, pntInfo[j].endNum);
+
+         /* Format 3-Monthly Average Temperature, Below Normal Values, if
+          * applicable. 
+          */
+         if (weatherParameters[j][NDFD_TMPBLW90D] == 1)
+            genClimateOutlookValues(j, layoutKeys[j][NDFD_TMPBLW90D], 
+                         NDFD_TMPBLW90D, match, "average temperature below normal", 
+                         "Probability of Three-Month Average Temperature Below Normal",
+                         parameters, numRowsForPoint[j][NDFD_TMPBLW90D], 
+                         pntInfo[j].startNum, pntInfo[j].endNum);
+
+         /* Format 3-Monthly Average Precipitation, Above Normal Values, if 
+          * applicable. 
+          */
+         if (weatherParameters[j][NDFD_PRCPABV90D] == 1)
+            genClimateOutlookValues(j, layoutKeys[j][NDFD_PRCPABV90D], 
+                         NDFD_PRCPABV90D, match, "average precipitation above normal", 
+                         "Probability of Three-Month Average Precipitation Above Normal",
+                         parameters, numRowsForPoint[j][NDFD_PRCPABV90D], 
+                         pntInfo[j].startNum, pntInfo[j].endNum);
+
+         /* Format 3-Monthly Average Precipitation, Below Normal Values, if 
+          * applicable. 
+          */
+         if (weatherParameters[j][NDFD_PRCPBLW90D] == 1)
+            genClimateOutlookValues(j, layoutKeys[j][NDFD_PRCPBLW90D], 
+                         NDFD_PRCPBLW90D, match, "average precipitation below normal", 
+                         "Probability of Three-Month Average Precipitation Below Normal",
+                         parameters, numRowsForPoint[j][NDFD_PRCPBLW90D], 
+                         pntInfo[j].startNum, pntInfo[j].endNum);
+
+         /*****************6 TROPICAL WIND THRESHOLD PROBABILITIES ***********/
+         /********************************************************************/
          /* Format Incremental Probability of 34 Knt Wind Values for DWMLgen 
 	  * product, if applicable. 
 	  */
@@ -1143,6 +1280,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
 	                        parameters, numRowsForPoint[j][NDFD_CUM64],
                                 pntInfo[j].startNum, pntInfo[j].endNum);
 
+         /********************************************************************/
          /* Format Wind Speed Values for DWMLgen products, if applicable.
           * Collect Max Wind Speed values if product is of type DWMLgenByDay. 
           */
@@ -1172,9 +1310,8 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                                startDate[j], maxWindSpeed, &numOutputLines[j],
                                timeInterval, TZoffset[j], pntInfo[j].f_dayLight,
                                NDFD_WS, numRowsForPoint[j][NDFD_WS], f_XML,
-                               valTimeForWindDirMatch, f_6CycleFirst[j],
-                               startTime, pntInfo[j].startNum, 
-                               pntInfo[j].endNum);
+                               valTimeForWindDirMatch, startTime, 
+                               pntInfo[j].startNum, pntInfo[j].endNum);
          }
 
          /* Format Wind Speed Gust Values for DWMLgen products, if applicable. */
@@ -1248,8 +1385,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                               numRowsForPoint[j][NDFD_SKY], f_XML, maxSkyNum, 
 			      minSkyNum, startPositions, endPositions,
 			      &integerTime, currentHour[j], timeUserStart[j], 
-			      f_6CycleFirst[j], startTime, pntInfo[j].startNum, 
-                              pntInfo[j].endNum);
+			      startTime, pntInfo[j].startNum, pntInfo[j].endNum);
          }
 
          /* Format Relative Humidity Values, if applicable. */
@@ -1280,7 +1416,8 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
             if (f_formatSummarizations[j])
             {
 	       genWeatherValuesByDay(j, layoutKeys[j][NDFD_WX], match, numMatch,
-	                             numRowsForPoint[j][NDFD_WS],
+	                             numRowsForPoint[j][NDFD_WG],
+                                     numRowsForPoint[j][NDFD_WS],
 			             numRowsForPoint[j][NDFD_POP],
 			             numRowsForPoint[j][NDFD_MAX],
 			             numRowsForPoint[j][NDFD_MIN],
@@ -1291,9 +1428,8 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                                      maxSkyCover, minSkyCover, maxSkyNum, minSkyNum, 
 			             startPositions, endPositions, maxWindSpeed,
 			             maxWindDirection, integerTime, 
-			             timeUserStart[j], startTime, f_6CycleFirst[j], 
-                                     format_value, pntInfo[j].startNum, 
-                                     pntInfo[j].endNum);
+			             timeUserStart[j], startTime, format_value, 
+                                     pntInfo[j].startNum, pntInfo[j].endNum);
             }
             else
             {
@@ -1394,7 +1530,6 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
    free(currentDay);
    free(timeUserStart);	 
    free(timeUserEnd);
-   free(f_6CycleFirst);
    free(f_formatNIL);
    free(firstValidTimeMatch);
    free(firstValidTime_pop);
