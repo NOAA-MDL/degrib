@@ -1064,12 +1064,13 @@ int ParseSect4Time2secV1 (sInt4 time, int unit, double *ans)
 int ParseSect4Time2sec (double refTime, sInt4 delt, int unit, double *ans)
 {
    /* Following is a lookup table for unit conversion (see code table 4.4). */
-   static sInt4 unit2sec[] = {
+   static sInt4 unit2sec[14] = {
       60, 3600, 86400L, 0, 0,
       0, 0, 0, 0, 0,
       10800, 21600L, 43200L, 1
    };
-   if ((unit >= 0) && (unit < 13)) {
+   /* following should be a 14 (see i.gooch emails on 20071019) */
+   if ((unit >= 0) && (unit < 14)) {
       if (unit2sec[unit] != 0) {
          *ans = (double) (delt * unit2sec[unit]);
          return 0;
