@@ -889,7 +889,7 @@ int gribInterpFloat (const char *Filename, double *grib_Data,
       return -3;
    }
    /* Set up the map projection. */
-   SetMapParam (&map, &(meta->gds));
+   SetMapParamGDS (&map, &(meta->gds));
 
    /* For ESRI Ascii grids, scan mode is 0. */
    if (f_AscGrid) {

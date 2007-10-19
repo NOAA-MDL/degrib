@@ -34,7 +34,7 @@ int gribWriteCsv (FILE *out_fp, double *grib_Data, grib_MetaData *meta,
       return -4;
    }
    /* Set up the map projection. */
-   SetMapParam (&map, &(meta->gds));
+   SetMapParamGDS (&map, &(meta->gds));
 
    /* Figure out a missing value, if there isn't one, so that when we
     * interpolate and we are out of bounds, we can return something. */

@@ -910,7 +910,7 @@ int GRIB2Probe (userType *usr, int numPnts, Point * pnts, char **labels,
          return -4;
       }
       /* Set up the map projection. */
-      SetMapParam (&map, &(meta.gds));
+      SetMapParamGDS (&map, &(meta.gds));
 
       /* Figure out a missing value, if there isn't one, so that when we
        * interpolate and we are out of bounds, we can return something. */
@@ -1111,7 +1111,7 @@ int GenericProbe (char *filename, int numPnts, double *lat, double *lon,
          goto error;
       }
       /* Set up the map projection. */
-      SetMapParam (&map, &(meta.gds));
+      SetMapParamGDS (&map, &(meta.gds));
 
       /* Figure out a missing value, if there isn't one, so that when we
        * interpolate and we are out of bounds, we can return something. */

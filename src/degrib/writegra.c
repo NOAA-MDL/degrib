@@ -149,7 +149,7 @@ void gribWriteGradsCTL (char *CLTFile, char *DataFile, grib_MetaData *meta,
                gds->scaleLat1, gds->scaleLat2, orient, gds->Dx, gds->Dy);
    } else if (gds->projType == GS3_POLAR) {
       /* Set up a map projection so I can compute the poleI, poleJ. */
-      SetMapParam (&map, gds);
+      SetMapParamGDS (&map, gds);
 
       /* Find the poleI, poleJ */
       myCll2xy (&map, 90, orient, &poleI, &poleJ);

@@ -1520,7 +1520,7 @@ static int genProbeGrib (FILE *fp, size_t numPnts, const Point * pnts,
          MetaFree (&meta);
          return -2;
       }
-      SetMapParam (&map, &(meta.gds));
+      SetMapParamGDS (&map, &(meta.gds));
       f_sector = SectorFindGDS (&(meta.gds));
       if (f_sector == -1) {
          f_sector = NDFD_OCONUS_UNDEF;
@@ -1765,7 +1765,7 @@ printf ("element is %d\n", elemEnum);
                errSprintf ("ERROR: Sect3 was not Valid.\n");
                goto error;
             }
-            SetMapParam (&map, &gds);
+            SetMapParamGDS (&map, &gds);
             f_sector = SectorFindGDS (&gds);
             if (f_sector == -1) {
                f_sector = NDFD_OCONUS_UNDEF;
@@ -2468,7 +2468,7 @@ int Grib2DataProbe (userType *usr, int numPnts, Point * pnts, char **labels,
                goto error;
             }
             /* Set up the map projection. */
-            SetMapParam (&map, &gds);
+            SetMapParamGDS (&map, &gds);
 
             for (k = 0; k < numPnts; k++) {
                myCll2xy (&map, pnts[k].Y, pnts[k].X, &newX, &newY);

@@ -195,7 +195,7 @@ int GDSValid (const gdsType *gds)
  * NOTES
  *****************************************************************************
  */
-void SetMapParam (myMaparam *map, const gdsType *gds)
+void SetMapParamGDS (myMaparam *map, const gdsType *gds)
 {
    double orient;       /* Orientation longitude of projection (where N is
                          * up.) (between -180 and 180) */
@@ -335,7 +335,7 @@ int computeSubGrid (LatLon *lwlf, int *x1, int *y1, LatLon *uprt, int *x2,
    }
 
    /* Set up the map projection. */
-   SetMapParam (&map, gds);
+   SetMapParamGDS (&map, gds);
    myCll2xy (&map, lwlf->lat, lwlf->lon, &x, &y);
    *x1 = (int) floor (x);
    *y1 = (int) floor (y);

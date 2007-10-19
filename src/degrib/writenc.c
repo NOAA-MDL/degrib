@@ -1512,7 +1512,7 @@ static int netCDF_V1 (char *filename, double *grib_Data,
       preErrSprintf ("ERROR: Grid Definition Section was not Valid.\n");
       return -1;
    }
-   SetMapParam (&map, &(meta->gds));
+   SetMapParamGDS (&map, &(meta->gds));
 
    /* Begin the creation of the NetCDF dataset (enter define mode) */
    stat = nc_create (filename, NC_CLOBBER, &ncid);
@@ -2069,7 +2069,7 @@ static int netCDF_V2 (char *filename, double *grib_Data,
       preErrSprintf ("ERROR: Grid Definition Section was not Valid.\n");
       return -1;
    }
-   SetMapParam (&map, &(meta->gds));
+   SetMapParamGDS (&map, &(meta->gds));
 
    /* Get the Main Data Field's Name */
    level = meta->shortFstLevel;

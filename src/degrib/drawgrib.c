@@ -145,7 +145,7 @@ int drawGrib (const char *Filename, double *grib_Data,
       preErrSprintf ("ERROR: Grid Definition Section was not Valid.\n");
       return -1;
    }
-   SetMapParam (&map, gds);
+   SetMapParamGDS (&map, gds);
 
    InitMapIni (&mapIni);
    if (mapIniFile != NULL) {
@@ -169,49 +169,55 @@ int drawGrib (const char *Filename, double *grib_Data,
 
    /* Set defaults for zoom. */
    if (mapIni.zoom.f_flag == 0) {
-      cxy2ll (&(map.stcprm), .5, .5, &(mapIni.zoom.lat1),
-              &(mapIni.zoom.lon1));
-      cxy2ll (&(map.stcprm), gds->Nx + .5, gds->Ny + .5,
-              &(mapIni.zoom.lat2), &(mapIni.zoom.lon2));
+      if (map.f_latlon == 1) {
+         mapIni.zoom.lat1 = map.lat1;
+         mapIni.zoom.lon1 = map.lon1;
+         mapIni.zoom.lat2 = map.latN;
+         mapIni.zoom.lon2 = map.lonN;
+      } else {
+         myCxy2ll (&map, .5, .5, &(mapIni.zoom.lat1), &(mapIni.zoom.lon1));
+         myCxy2ll (&map, gds->Nx + .5, gds->Ny + .5, &(mapIni.zoom.lat2),
+                   &(mapIni.zoom.lon2));
 #ifdef TESTING
-      cxy2ll (&(map.stcprm), .5, .5, &lat, &lon);
-      printf ("%f %f\n", lat, lon);
-      mapIni.zoom.lat1 = mapIni.zoom.lat2 = lat;
-      mapIni.zoom.lon1 = mapIni.zoom.lon2 = lon;
-      cxy2ll (&(map.stcprm), .5, gds->Ny + .5, &lat, &lon);
-      printf ("%f %f\n", lat, lon);
-      if (lat < mapIni.zoom.lat1)
-         mapIni.zoom.lat1 = lat;
-      if (lat > mapIni.zoom.lat2)
-         mapIni.zoom.lat2 = lat;
-      if (lon < mapIni.zoom.lon1)
-         mapIni.zoom.lon1 = lon;
-      if (lon > mapIni.zoom.lon2)
-         mapIni.zoom.lon2 = lon;
-      cxy2ll (&(map.stcprm), gds->Nx + .5, gds->Ny + .5, &lat, &lon);
-      printf ("%f %f\n", lat, lon);
-      if (lat < mapIni.zoom.lat1)
-         mapIni.zoom.lat1 = lat;
-      if (lat > mapIni.zoom.lat2)
-         mapIni.zoom.lat2 = lat;
-      if (lon < mapIni.zoom.lon1)
-         mapIni.zoom.lon1 = lon;
-      if (lon > mapIni.zoom.lon2)
-         mapIni.zoom.lon2 = lon;
-      cxy2ll (&(map.stcprm), gds->Nx + .5, .5, &lat, &lon);
-      printf ("%f %f\n", lat, lon);
-      if (lat < mapIni.zoom.lat1)
-         mapIni.zoom.lat1 = lat;
-      if (lat > mapIni.zoom.lat2)
-         mapIni.zoom.lat2 = lat;
-      if (lon < mapIni.zoom.lon1)
-         mapIni.zoom.lon1 = lon;
-      if (lon > mapIni.zoom.lon2)
-         mapIni.zoom.lon2 = lon;
-      printf ("%f %f\n", lat, lon);
-      printf ("%f %f %f %f\n", mapIni.zoom.lat1, mapIni.zoom.lon1,
-              mapIni.zoom.lat2, mapIni.zoom.lon2);
+         myCxy2ll (&map, .5, .5, &lat, &lon);
+         printf ("%f %f\n", lat, lon);
+         mapIni.zoom.lat1 = mapIni.zoom.lat2 = lat;
+         mapIni.zoom.lon1 = mapIni.zoom.lon2 = lon;
+         myCxy2ll (&map, .5, gds->Ny + .5, &lat, &lon);
+         printf ("%f %f\n", lat, lon);
+         if (lat < mapIni.zoom.lat1)
+            mapIni.zoom.lat1 = lat;
+         if (lat > mapIni.zoom.lat2)
+            mapIni.zoom.lat2 = lat;
+         if (lon < mapIni.zoom.lon1)
+            mapIni.zoom.lon1 = lon;
+         if (lon > mapIni.zoom.lon2)
+            mapIni.zoom.lon2 = lon;
+         myCxy2ll (&map, gds->Nx + .5, gds->Ny + .5, &lat, &lon);
+         printf ("%f %f\n", lat, lon);
+         if (lat < mapIni.zoom.lat1)
+            mapIni.zoom.lat1 = lat;
+         if (lat > mapIni.zoom.lat2)
+            mapIni.zoom.lat2 = lat;
+         if (lon < mapIni.zoom.lon1)
+            mapIni.zoom.lon1 = lon;
+         if (lon > mapIni.zoom.lon2)
+            mapIni.zoom.lon2 = lon;
+         myCxy2ll (&map, gds->Nx + .5, .5, &lat, &lon);
+         printf ("%f %f\n", lat, lon);
+         if (lat < mapIni.zoom.lat1)
+            mapIni.zoom.lat1 = lat;
+         if (lat > mapIni.zoom.lat2)
+            mapIni.zoom.lat2 = lat;
+         if (lon < mapIni.zoom.lon1)
+            mapIni.zoom.lon1 = lon;
+         if (lon > mapIni.zoom.lon2)
+            mapIni.zoom.lon2 = lon;
+         printf ("%f %f\n", lat, lon);
+         printf ("%f %f %f %f\n", mapIni.zoom.lat1, mapIni.zoom.lon1,
+                 mapIni.zoom.lat2, mapIni.zoom.lon2);
 #endif
+      }
       mapIni.zoom.f_flag = 15;
    }
 

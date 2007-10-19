@@ -240,7 +240,7 @@ int isPntInASector (Point pnt)
          return -3;
       }
 #endif
-      SetMapParam (&map, gdsPtr);
+      SetMapParamGDS (&map, gdsPtr);
       myCll2xy (&map, pnt.Y, pnt.X, &x, &y);
       x -= .5;
       y -= .5;
@@ -318,7 +318,7 @@ int WhichSector (char *sectFile, Point pnt, sChar f_cells)
             return -3;
          }
 #endif
-         SetMapParam (&map, gdsPtr);
+         SetMapParamGDS (&map, gdsPtr);
          if (f_cells == 0) {
             myCll2xy (&map, pnt.Y, pnt.X, &x, &y);
             x -= .5;
@@ -374,7 +374,7 @@ int WhichSector (char *sectFile, Point pnt, sChar f_cells)
          goto error;
       }
 
-      SetMapParam (&map, &gds);
+      SetMapParamGDS (&map, &gds);
       if (f_cells == 0) {
          myCll2xy (&map, pnt.Y, pnt.X, &x, &y);
          x -= .5;
@@ -444,7 +444,7 @@ static int FillOutInfo (const gdsType *gds, const char *sectName,
    f_foundOne = 0;
    /* Don't need map set up for f_cells = 1. */
    if (f_cells != 1) {
-      SetMapParam (&map, gds);
+      SetMapParamGDS (&map, gds);
    }
 
    for (j = 0; j < numPnts; j++) {

@@ -1520,7 +1520,7 @@ int gribWriteShp (const char *Filename, double *grib_Data,
       return -3;
    }
    /* Set up the map projection. */
-   SetMapParam (&map, gds);
+   SetMapParamGDS (&map, gds);
    /* Create the .shp/.shx files */
    if (f_poly == 1) {   /* Small poly */
       dp = (LatLon *) malloc ((gds->Nx + 1) * (gds->Ny + 1) *

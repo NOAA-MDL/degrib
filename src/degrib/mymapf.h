@@ -26,7 +26,7 @@ void myCll2xy (myMaparam * map, double lat, double lon, double *x, double *y);
 
 int GDSValid (const gdsType * gds);
 
-void SetMapParam (myMaparam * map, const gdsType *gds);
+void SetMapParamGDS (myMaparam * map, const gdsType *gds);
 
 int computeSubGrid (LatLon *lwlf, int *x1, int *y1, LatLon *uprt, int *x2,
                     int *y2, gdsType *gds, gdsType *newGds);
