@@ -1,4 +1,21 @@
 #
+#----- Release: Version 1.89 10/22/2007 -----
+#
+10/22 AAT Fixed a bug in writeshp.c introduced in 1.87 where a missing '\0'
+          resulted in failure of -Grib2 on some linux installs (r604) 
+10/19 AAT Began adding logic to allow draws of lat/lon grids.
+10/19 AAT Fixed a bug with ParseSect4TimeSec() introduced in 1.87 which didn't
+          recognize a unit of "seconds" (element 13 in a table of 13 units).
+10/19 AAT Updated to the latest version of dwmllib.
+10/18 AAT Fixed a bug recognizing CPC ProbTMP products.  Had been keying off
+          a specific value (2550) in the lower/upper probability thresholds.
+          This value was changed to 0, so I didn't label it above / below
+          average.  (Note it worked for Precip because that was handled in a
+          different section of code). Longer term solution is to have WMO /
+          NCEP add elements to the ProbType, since in this case the prob above
+          or below 0 isn't really applicable to the grid (should be above or
+          below average grid cell height).
+#
 #----- Release: Version 1.88 10/18/2007 -----
 #
 10/17 AAT Added genProcess to genElemDescript structure (r594)
