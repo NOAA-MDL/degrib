@@ -1583,6 +1583,7 @@ int gribWriteShp (const char *Filename, double *grib_Data,
    }
 
    strncpy (EsriName, meta->element, 11);
+   EsriName[11] = '\0';
    if (strlen (meta->element) > 11) {
       if (strncmp (meta->element, "Prob", 4) == 0) {
          EsriName[0] = 'P';
