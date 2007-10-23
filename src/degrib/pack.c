@@ -1012,12 +1012,15 @@ int WriteGrib2Record2 (grib_MetaData *meta, double *Grib_Data,
    } else {
       f_boustify = 0;
    }
+   /* angle and subdivision are not tracked in metaparse.c.
+    * This should not be angleRotate because that has a different
+    * meaning entirely. */
    ans = fillSect3 (&en, meta->gds.projType, meta->gds.majEarth,
                     meta->gds.minEarth, meta->gds.Nx, meta->gds.Ny,
                     meta->gds.lat1, meta->gds.lon1, meta->gds.lat2,
                     meta->gds.lon2, meta->gds.Dx, meta->gds.Dy,
                     meta->gds.resFlag, scanFlag, meta->gds.center,
-                    meta->gds.angleRotate, 0, meta->gds.meshLat,
+                    0, 0, meta->gds.meshLat,
                     meta->gds.orientLon, meta->gds.scaleLat1,
                     meta->gds.scaleLat2, meta->gds.southLat,
                     meta->gds.southLon);
