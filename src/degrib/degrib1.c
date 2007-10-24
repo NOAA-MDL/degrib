@@ -45,6 +45,7 @@
 #define DWD 78
 #define ECMWF 98
 #define ATHENS 96
+#define NORWAY 88
 
 /* various subcenters */
 #define SUBCENTER_MDL 14
@@ -91,6 +92,8 @@ extern GRIB1ParmTable parm_table_ecmwf_170[256];
 extern GRIB1ParmTable parm_table_ecmwf_180[256];
 
 extern GRIB1ParmTable parm_table_athens[256];
+
+extern GRIB1ParmTable parm_table_norway128[256];
 
 extern GRIB1ParmTable parm_table_cmc[256];
 
@@ -241,6 +244,11 @@ static GRIB1ParmTable *Choose_ParmTable (pdsG1Type *pdsMeta,
          break;
       case ATHENS:
          return &parm_table_athens[0];
+         break;
+      case NORWAY:
+         if (pdsMeta->mstrVersion == 128) {
+            return &parm_table_norway128[0];
+         }
          break;
       case CMC:
          return &parm_table_cmc[0];
@@ -876,6 +884,8 @@ static int ReadGrib1Sect2 (uChar *gds, uInt4 gribLen, uInt4 *curLoc,
    gridType = *(gds++);
    switch (gridType) {
       case GB1S2_LATLON:
+      case GB1S2_ROTATED:
+         /* Rotated appears to be 42 bytes long and packed by norway. */
          if ((sectLen != 32) && (sectLen != 42) && (sectLen != 52)) {
             errSprintf ("For LatLon GDS, should have 32 or 42 or 52 bytes "
                         "of data\n");
