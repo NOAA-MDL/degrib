@@ -177,7 +177,9 @@ void generateTimeLayout(numRowsInfo numRows, uChar parameterName,
    formatValidTime(firstValidTime, currentTimeLayout.fmtdStartTime, 30, 
 		   TZoffset, f_observeDST);
 
-   /* Get the period length using either the period name or the valid times. */
+   /* Get the period length in hours using either the period name or the valid 
+    * times. 
+    */
    if (parameterName == NDFD_MAX || parameterName == NDFD_MIN)
       period = 24;
    else if (parameterName == NDFD_POP)
@@ -223,7 +225,8 @@ void generateTimeLayout(numRowsInfo numRows, uChar parameterName,
       /* Some parameters like max and min temp don't have valid times that
        * match the real start time.  So make the adjustment. 
        */
-      if (*numFmtdRows > numActualRows)
+      if (*numFmtdRows > numActualRows) /* For summary products with a set 
+                                         * number of rows to format. */
       {
          startTimes = (char **)malloc(*numFmtdRows * sizeof(char *));
          if (useEndTimes)

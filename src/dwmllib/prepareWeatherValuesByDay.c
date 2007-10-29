@@ -25,9 +25,6 @@
  *  numRowsPOP = The number of data rows for PoP12hr. (Input)
  *  numRowsMIN = The number of data rows for MinT. (Input)
  *  numRowsMAX = The number of data rows for MaxT.  (Input)
- *   numRowsWX = The number of data rows for weather. These data can be 
- *               formatted if f_wx = 1, and/or used to derive icons if f_icon 
- *               = 1.  (Input)
  *       f_XML = Flag for 1 of the 4 DWML products:
  *                     1 = DWMLgen's "time-series" product. 
  *                     2 = DWMLgen's "glance" product.
@@ -45,8 +42,6 @@
  *               (Input)
  * f_observeDST = Flag determining if current point observes Daylight 
  *                Savings Time. (Input)  
- * weatherDataTimes = In double form, the validTimes of all the weather values.
- *                    (Output)
  * periodMaxTemp = For each forecast period, the "max" temperature occuring in
  *                 the period, based off of the MaxT and MinT elements. If night, 
  *                 (f_XML = 3) the period could have a "max" MinT. (Output)
@@ -81,11 +76,8 @@ void prepareWeatherValuesByDay (genMatchType *match, sChar TZoffset,
 				numRowsInfo numRowsMIN,
  			        numRowsInfo numRowsMAX, uChar f_XML, 
                                 numRowsInfo numRowsPOP, 
-				numRowsInfo numRowsWX, size_t pnt, 
-				int f_useMinTempTimes, 
-				double startTime_cml,
-				double *weatherDataTimes,
-				int *periodMaxTemp, 
+				size_t pnt, int f_useMinTempTimes, 
+				double startTime_cml, int *periodMaxTemp,
 				double *periodStartTimes, 
 				double *periodEndTimes,
 				double *springDoubleDate, 
@@ -108,8 +100,6 @@ void prepareWeatherValuesByDay (genMatchType *match, sChar TZoffset,
 				   elements). */
    char maxTempDay[3]; /* 2-digit day first MaxT falls in. */
    char minTempDay[3]; /* 2-digit day first MinT falls in. */
-   char WXtimeStr[30]; /* Temporary string holding formatted time
-                        * value of weather. */
    char layoutHour[3]; /* Used to retrieve the timeLayoutHour. */
    int numActualRowsMAX; /* MaxT # of rows interested in taking into accordance 
                           * a user supplied shortened time period. */
@@ -117,14 +107,11 @@ void prepareWeatherValuesByDay (genMatchType *match, sChar TZoffset,
                           * a user supplied shortened time period. */
    int numActualRowsPOP; /* Pop12 # of rows interested in taking into accordance 
                           * a user supplied shortened time period. */
-   int numActualRowsWX; /* Wx # of rows interested in taking into accordance 
-                         * a user supplied shortened time period. */
    
    /* Initialize a few things. */
    numActualRowsMIN = numRowsMIN.total-numRowsMIN.skipBeg-numRowsMIN.skipEnd;   
    numActualRowsMAX = numRowsMAX.total-numRowsMAX.skipBeg-numRowsMAX.skipEnd;   
    numActualRowsPOP = numRowsPOP.total-numRowsPOP.skipBeg-numRowsPOP.skipEnd; 
-   numActualRowsWX = numRowsWX.total-numRowsWX.skipBeg-numRowsWX.skipEnd; 
    
    /* Get the current time in seconds. */
    currentDoubTime = Clock_Seconds();
@@ -395,27 +382,6 @@ void prepareWeatherValuesByDay (genMatchType *match, sChar TZoffset,
             periodEndTimes[i] = periodEndTimes[i] + (12 * 3600);
          }
       }
-   }
-
-   /* Create the double representation of the weather data valid times (this is
-    * an element without "end" times).
-    */
-   priorElemCount = 0;
-   for (i = startNum; i < endNum; i++)
-   {
-      if (match[i].elem.ndfdEnum == NDFD_WX && 
-	  match[i].validTime >= numRowsWX.firstUserTime &&
-	  match[i].validTime <= numRowsWX.lastUserTime)
-      {
-         weatherDataTimes[i-priorElemCount-startNum] = 0.0;
-	 WXtimeStr[0] = '\0';
-	 
-         formatValidTime(match[i].validTime, WXtimeStr, 30, TZoffset,
-                         f_observeDST);
-         Clock_Scan (&weatherDataTimes[i-priorElemCount-startNum], WXtimeStr, 0);
-      }   
-      else
-         priorElemCount++;
    }
    
    /* Free Max Temp Time arrays. */

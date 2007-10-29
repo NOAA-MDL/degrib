@@ -81,6 +81,8 @@
  *   3/2006 Paul Hershberg (MDL): Created
  *  10/2007 Paul Hershberg (MDL): Removed code that shifted data back by 1/2
  *                                the period length (bug from php code)
+ *  10/2007 Paul Hershberg (MDL): Added back code that shifted data back by 1/2
+ *                                the period length. It was erroneously removed.
  *
  * NOTES
  ******************************************************************************
@@ -96,7 +98,7 @@ void genWindSpeedValues(double timeUserStart, double timeUserEnd, size_t pnt,
                         int startNum, int endNum)
 {
    int i; /* Counter thru match structure. */
-   int period = 0; /* Length between an elements successive validTimes. */
+   int period = 3; /* Length between an elements successive validTimes. */
    int forecastPeriod = 0; /* Used as a counter thru the summarization (forecast) 
                             * period used to determine if current data being 
                             * processed belongs in current forecast period. */ 
@@ -106,7 +108,6 @@ void genWindSpeedValues(double timeUserStart, double timeUserEnd, size_t pnt,
                          * summarization (forecast) periods.*/      
    double timeUserStartStep = 0; /* Used to denote each forecast period, as
                                   * an incrementer thru all the periods. */
-   double WSdoubleTime = 0.0; /* Data's valid Time in double form. */
    int WSintegerTime = 0; /* Data's valid Time in integer form. */
    int roundedWindSpeedData;  /* Returned rounded data. */
    xmlNodePtr wind_speed = NULL;  /* Xml Node Pointer for <wind-speed>
@@ -114,8 +115,6 @@ void genWindSpeedValues(double timeUserStart, double timeUserEnd, size_t pnt,
    xmlNodePtr value = NULL;   /* Xml Node Pointer for <value> element. */
    char strBuff[30];          /* Temporary string buffer holding rounded
                                * data. */
-   char WSstr[30];            /* Temporary string holding formatted time
-                               * value of wind speed. */
    
    /* Set the first iteration to the incoming user supplied startTime if 
     * product is a summarization.
@@ -176,13 +175,25 @@ void genWindSpeedValues(double timeUserStart, double timeUserEnd, size_t pnt,
              * use a time interval in which the number of seconds in either a
              * 24 or 12 hour period determines the integer start time. 
 	     */
-            WSintegerTime = 0;
-            WSstr[0] = '\0';
+            WSintegerTime = match[i].validTime;
 
-            formatValidTime(match[i].validTime, WSstr, 30, TZoffset,
-                            f_observeDST);
-            Clock_Scan(&WSdoubleTime, WSstr, 0);
-            WSintegerTime = WSdoubleTime;
+            /* Now we have to account for data that is just in the time
+             * period i.e. if data is valid from 4PM - 7PM and time period is
+             * from 6AM - 6PM. We shift data by one half the data's period in
+             * seconds. 
+	     */
+	    if ((i - (priorElemCount + startNum)) < 1)
+               period = determinePeriodLength(match[i].validTime,
+                               match[i + 1].validTime, 
+			       (numRows.total-numRows.skipBeg-numRows.skipEnd),
+                               parameterName);
+            else
+               period = determinePeriodLength(match[i - 1].validTime,
+                               match[i].validTime,
+                               (numRows.total-numRows.skipBeg-numRows.skipEnd),
+			       parameterName);
+
+	    WSintegerTime = WSintegerTime - (((double)period * 0.5) * 3600);
 
             /* Determine if this time is within the current day being
              * processed. */

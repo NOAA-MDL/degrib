@@ -315,7 +315,7 @@ void getUserTimes(double **timeUserStart, double **timeUserEnd,
       firstPOP_month[3] = '\0';
 
       firstPOP_day[0] = POPstr[8];
-      firstPOP_day[1] = POPstr[9];
+      firstPOP_day[1] = POPstr[9]; 
       firstPOP_day[2] = '\0';
       
       strcpy(firstPOPStartDate, firstPOP_year);

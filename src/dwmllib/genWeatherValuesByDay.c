@@ -142,7 +142,7 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
                                      in double form. */
    double fallDoubleDate = 0.0; /* The start date of next cold season expressed
                                    in double form. */
-   double *weatherDataTimes = NULL; /* Array holding double startTimes for Wx. */ 
+   int period = 3;      /* Length between an elements successive validTimes. */
    int *periodMaxTemp = NULL; /* Array holding maximum temp values for 
 			         designated forecast periods. */ 
    double *periodStartTimes = NULL; /* Array holding start Times for designated
@@ -278,7 +278,6 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
    double *blizzardTime = NULL; /* If all blizzard conditions are met in the
                                  * ugly weather string, the time is recorded. */
    int blizzCnt = 0; /* Counter thru blizzard Times array. */
-   char timeStr[30]; /* Temporary string holding formatted validTimes. */
    char tempPriorIntensity[10]; /* Temporary holder for intensity due to T-storm 
                                  * dominance check. Holds the prior group's 
                                  * intensity string. */
@@ -321,10 +320,21 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
          match[i].validTime >= numRowsWG.firstUserTime &&
          match[i].validTime <= numRowsWG.lastUserTime)
       {
-         timeStr[0] = '\0';	 
-         formatValidTime(match[i].validTime, timeStr, 30, TZoffset,
-                         f_observeDST);
-         Clock_Scan (&wgInfo[i-priorElemCount-startNum].validTime, timeStr, 0);
+         wgInfo[i -priorElemCount-startNum].validTime = match[i].validTime;
+
+         /* Subtract half the period. */
+  	 if ((i-priorElemCount-startNum) < 1)
+            period = determinePeriodLength(match[i].validTime,
+                                           match[i + 1].validTime, 
+					   numActualRowsWG, NDFD_WG);
+         else
+            period = determinePeriodLength(match[i - 1].validTime,
+                                           match[i].validTime,
+                                           numActualRowsWG, NDFD_WG);
+
+         wgInfo[i -priorElemCount-startNum].validTime = 
+         wgInfo[i -priorElemCount-startNum].validTime - 
+                       (((double)period * 0.5) * 3600);
 
          wgInfo[i-priorElemCount-startNum].data =
                 (int)myRound(match[i].value[pnt].data, 0);
@@ -349,10 +359,21 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
          match[i].validTime >= numRowsWS.firstUserTime &&
          match[i].validTime <= numRowsWS.lastUserTime)
       {
-	 timeStr[0] = '\0'; 
-         formatValidTime(match[i].validTime, timeStr, 30, TZoffset,
-                         f_observeDST);
-         Clock_Scan (&wsInfo[i-priorElemCount-startNum].validTime, timeStr, 0);
+         wsInfo[i -priorElemCount-startNum].validTime = match[i].validTime;
+
+         /* Subtract half the period. */
+  	 if ((i-priorElemCount-startNum) < 1)
+            period = determinePeriodLength(match[i].validTime,
+                                           match[i + 1].validTime, 
+					   numActualRowsWS, NDFD_WS);
+         else
+            period = determinePeriodLength(match[i - 1].validTime,
+                                           match[i].validTime,
+                                           numActualRowsWS, NDFD_WS);
+
+         wsInfo[i -priorElemCount-startNum].validTime = 
+         wsInfo[i -priorElemCount-startNum].validTime - 
+                       (((double)period * 0.5) * 3600);
 
          wsInfo[i-priorElemCount-startNum].data =
                 (int)myRound(match[i].value[pnt].data, 0);
@@ -377,6 +398,21 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
 	  match[i].validTime <= numRowsWX.lastUserTime)
       {
          wxInfo[i -priorElemCount-startNum].validTime = match[i].validTime;
+
+         /* Subtract half the period. */
+  	 if ((i-priorElemCount-startNum) < 1)
+            period = determinePeriodLength(match[i].validTime,
+                                           match[i + 1].validTime, 
+					   numActualRowsWX, NDFD_WX);
+         else
+            period = determinePeriodLength(match[i - 1].validTime,
+                                           match[i].validTime,
+                                           numActualRowsWX, NDFD_WX);
+
+         wxInfo[i -priorElemCount-startNum].validTime = 
+         wxInfo[i -priorElemCount-startNum].validTime - 
+                       (((double)period * 0.5) * 3600);
+
          if (match[i].value[pnt].valueType != 0 &&
              match[i].value[pnt].valueType != 2)
          {
@@ -403,12 +439,11 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
       periodMaxTemp[i]    = 999;
    }
      
-   weatherDataTimes = (double *) malloc(numActualRowsWX * sizeof(double));
    prepareWeatherValuesByDay (match, TZoffset, f_observeDST, frequency, 
 		              numDays, numOutputLines, numRowsWS, numRowsMIN,  
-			      numRowsMAX, f_XML, numRowsPOP, numRowsWX, 
-                              pnt, f_useMinTempTimes, startTime_cml, 
-                              weatherDataTimes, periodMaxTemp, periodStartTimes, 
+			      numRowsMAX, f_XML, numRowsPOP, pnt, 
+                              f_useMinTempTimes, startTime_cml, 
+                              periodMaxTemp, periodStartTimes, 
                               periodEndTimes, &springDoubleDate, 
                               &fallDoubleDate, &timeLayoutHour, startNum, 
                               endNum);
@@ -494,8 +529,8 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
 	     * weather rows being processed fall within the current period of 
    	     * interest).
              */
-	    if (periodStartTimes[dayIndex] <= weatherDataTimes[wxIndex] && 
-               weatherDataTimes[wxIndex] < periodEndTimes[dayIndex])	 
+	    if (periodStartTimes[dayIndex] <= wxInfo[wxIndex].validTime && 
+               wxInfo[wxIndex].validTime < periodEndTimes[dayIndex])	 
             {
                isDataAvailable[dayIndex] = 1;
 
@@ -866,7 +901,7 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
                   {
                      blizzardTime = (double *) realloc(blizzardTime,
                                     (blizzCnt+1) * sizeof(double));
-                     blizzardTime[blizzCnt] = weatherDataTimes[wxIndex];
+                     blizzardTime[blizzCnt] = wxInfo[wxIndex].validTime;
                      blizzCnt++;
                   }
 
@@ -1490,7 +1525,6 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
    free(periodMaxTemp);
    free(periodStartTimes);
    free(periodEndTimes);
-   free(weatherDataTimes);
    if (blizzCnt > 0)
       free(blizzardTime);
 

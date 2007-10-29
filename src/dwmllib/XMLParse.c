@@ -326,6 +326,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                                  found in one sector (this can occur if there
                                  is a call for tropical wind thresholds for
                                  a call with puertori and conus points. */
+
    /* XML Document pointer */
    xmlDocPtr doc = NULL;      /* An xml Node Pointer denoting the top-level
                                * document node. */
@@ -570,7 +571,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
             firstValidTime_pop[j] = match[i].validTime;
             break;
          }
-      } 
+      }
    }
 
    /* Prepare some data for DWMLgen's "time-series" product. */
@@ -598,14 +599,14 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
     */
    numRowsForPoint = (numRowsInfo **)malloc(numPnts * sizeof(numRowsInfo *));
    startDate = (char **)malloc(numPnts * sizeof(char *));
-   currentDay = (char **)malloc(numPnts * sizeof(char *));
-   currentHour = (char **)malloc(numPnts * sizeof(char *));
    timeUserStart = (double *)malloc(numPnts * sizeof(double));
    timeUserEnd = (double *)malloc(numPnts * sizeof(double));
    f_formatNIL = (int *)malloc(numPnts * sizeof(int));
    f_useMinTempTimes = (int *)malloc(numPnts * sizeof(int));
    f_formatIconForPnt = (int *)malloc(numPnts * sizeof(int));
    f_formatSummarizations = (int *)malloc(numPnts * sizeof(int));
+   currentDay = (char **)malloc(numPnts * sizeof(char *));
+   currentHour = (char **)malloc(numPnts * sizeof(char *));
 
    for (j = 0; j < numPnts; j++)
    {
@@ -630,22 +631,22 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
 
          /* Convert the system time to a formatted local time
           * (i.e. 2006-02-02T17:00:00-05:00) to get the current Hour and Day
-	  * for the point location. 
-	  */
+          * for the point location. 
+          */
          Clock_Print2(currentLocalTime, 30, currentDoubTime,
                       "%Y-%m-%dT%H:%M:%S", pntInfo[j].timeZone, 1);
 
          /* Now get the current day's date and hour. */
-	 currentDay[j] = (char *) malloc(3 * sizeof(char));
+         currentDay[j] = (char *) malloc(3 * sizeof(char));
          currentDay[j][0] = currentLocalTime[8];
          currentDay[j][1] = currentLocalTime[9];
          currentDay[j][2] = '\0';
-	 
-	 currentHour[j] = (char *) malloc(3 * sizeof(char));
+
+         currentHour[j] = (char *) malloc(3 * sizeof(char));
          currentHour[j][0] = currentLocalTime[11];
          currentHour[j][1] = currentLocalTime[12];
          currentHour[j][2] = '\0';
-
+ 
          getNumRows(numRowsForPoint[j], &timeUserStart[j], &timeUserEnd[j], 
                     numMatch, match, weatherParameters[j], f_XML, &f_icon,
                     pntInfo[j].timeZone, pntInfo[j].f_dayLight,
@@ -748,6 +749,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                                         currentDay[j], "boggus", data, startTime,
                                         currentDoubTime, &numDays[j], f_XML, 
                                         startNum, endNum);
+
                      layoutKeys[j][k] = malloc(strlen(layoutKey) + 1);
                      strcpy(layoutKeys[j][k], layoutKey);
                   }
