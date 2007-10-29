@@ -123,10 +123,10 @@ int ReadSECT0 (FILE *fp, char **buff, uInt4 *buffLen, sInt4 limit,
    wordType word;       /* Used to check that the edition is correct. */
    uInt4 curLen;        /* Where we currently are in buff. */
    uInt4 i;             /* Used to loop over the first few char's */
-   uInt4 stillNeed;     /* Number of bytes still needed to get 1st 8 bytes of 
+   uInt4 stillNeed;     /* Number of bytes still needed to get 1st 8 bytes of
                          * message into memory. */
 
-   /* Get first 8 bytes.  If GRIB we don't care.  If TDLP, this is the length 
+   /* Get first 8 bytes.  If GRIB we don't care.  If TDLP, this is the length
     * of record.  Read at least 1 record (length + 2 * 8) + 8 (next record
     * length) + 8 bytes before giving up. */
    curLen = 8;
@@ -147,12 +147,15 @@ int ReadSECT0 (FILE *fp, char **buff, uInt4 *buffLen, sInt4 limit,
    }
 */
    while ((tdlpMatch != 4) && (gribMatch != 4)) {
-      for (i = curLen - 8; i + 3 < curLen; i++) {
+      for (i = curLen - 8; i + 7 < curLen; i++) {
          if ((*buff)[i] == 'G') {
             if (((*buff)[i + 1] == 'R') && ((*buff)[i + 2] == 'I') &&
                 ((*buff)[i + 3] == 'B')) {
-               gribMatch = 4;
-               break;
+               if (((*buff)[i + 7] == 1) ||
+                   ((*buff)[i + 7] == 2)) {
+                  gribMatch = 4;
+                  break;
+               }
             }
          } else if ((*buff)[i] == 'T') {
             if (((*buff)[i + 1] == 'D') && ((*buff)[i + 2] == 'L') &&
