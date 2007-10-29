@@ -76,20 +76,20 @@ static const genElemDescript NdfdElements[] = {
 /* If we have to change the 0,0,0,0 for lower/upper Value/Factor, also update
  * cube.c :: line 634, 655 */
    /* the 6 in the length of time column stands for 6 days... */
-/* 0 */   {NDFD_TMPABV14D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,6, 1,0.0,0.0, 3,0,0,0,0},
-/* 0 */   {NDFD_TMPBLW14D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,6, 1,0.0,0.0, 0,0,0,0,0},
-/* 0 */   {NDFD_PRCPABV14D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,6, 1,0.0,0.0, 3,0,0,0,0},
-/* 0 */   {NDFD_PRCPBLW14D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,6, 1,0.0,0.0, 0,0,0,0,0},
+/* 30 */  {NDFD_TMPABV14D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,6, 1,0.0,0.0, 3,0,0,0,0},
+/* 31 */  {NDFD_TMPBLW14D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,6, 1,0.0,0.0, 0,0,0,0,0},
+/* 32 */  {NDFD_PRCPABV14D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,6, 1,0.0,0.0, 3,0,0,0,0},
+/* 33 */  {NDFD_PRCPBLW14D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,6, 1,0.0,0.0, 0,0,0,0,0},
    /* the 1 in the length of time column stands for 1 month... */
-/* 0 */   {NDFD_TMPABV30D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,1, 1,0.0,0.0, 3,0,0,0,0},
-/* 0 */   {NDFD_TMPBLW30D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,1, 1,0.0,0.0, 0,0,0,0,0},
-/* 0 */   {NDFD_PRCPABV30D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,1, 1,0.0,0.0, 3,0,0,0,0},
-/* 0 */   {NDFD_PRCPBLW30D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,1, 1,0.0,0.0, 0,0,0,0,0},
+/* 34 */  {NDFD_TMPABV30D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,1, 1,0.0,0.0, 3,0,0,0,0},
+/* 35 */  {NDFD_TMPBLW30D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,1, 1,0.0,0.0, 0,0,0,0,0},
+/* 36 */  {NDFD_PRCPABV30D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,1, 1,0.0,0.0, 3,0,0,0,0},
+/* 37 */  {NDFD_PRCPBLW30D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,1, 1,0.0,0.0, 0,0,0,0,0},
    /* the 3 in the length of time column stands for 3 months... */
-/* 0 */   {NDFD_TMPABV90D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,3, 1,0.0,0.0, 3,0,0,0,0},
-/* 0 */   {NDFD_TMPBLW90D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,3, 1,0.0,0.0, 0,0,0,0,0},
-/* 0 */   {NDFD_PRCPABV90D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,3, 1,0.0,0.0, 3,0,0,0,0},
-/* 0 */   {NDFD_PRCPBLW90D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,3, 1,0.0,0.0, 0,0,0,0,0},
+/* 38 */  {NDFD_TMPABV90D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,3, 1,0.0,0.0, 3,0,0,0,0},
+/* 39 */  {NDFD_TMPBLW90D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,3, 1,0.0,0.0, 0,0,0,0,0},
+/* 40 */  {NDFD_PRCPABV90D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,3, 1,0.0,0.0, 3,0,0,0,0},
+/* 41 */  {NDFD_PRCPBLW90D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,3, 1,0.0,0.0, 0,0,0,0,0},
 
 /* 42 */  {RTMA_PRECIPA,2, 7,0,2,109, 0,8,1,8,-1,1, 1,0.0,0.0, 0,-1,-1,-1,-1}, /* genProcess = 2 forecast? */
 /* 43 */  {RTMA_SKY,2, 7,0,8,109, 0,0,6,1,-1,0, 200,0.0,0.0, 0,-1,-1,-1,-1},  /* genProcess = 8 observation */
@@ -805,7 +805,7 @@ static void getValAtPnt (sInt4 gribDataLen, const double *gribData,
                          myMaparam *map, sChar f_pntType, double pntX,
                          double pntY, sInt4 Nx, sInt4 Ny, uChar f_miss,
                          double missPri, double missSec, uChar f_interp,
-                         double *ans)
+                         double *ans, sChar f_avgInterp)
 {
    double newX, newY;   /* The location of point on the grid. */
    sInt4 x1, y1;        /* f_interp=0, The nearest grid point, Otherwise
@@ -857,7 +857,7 @@ static void getValAtPnt (sInt4 gribDataLen, const double *gribData,
       if (map->f_latlon) {
          /* Find out if we can do a border interpolation. */
          *ans = BiLinearBorder (gribData, map, newX, newY, Nx, Ny, f_miss,
-                                missPri, missSec);
+                                missPri, missSec, f_avgInterp);
       } else {
          *ans = missPri;
       }
@@ -1182,7 +1182,8 @@ static void genFillValue (sInt4 gribDataLen, const double *gribData,
                           sInt4 Nx, sInt4 Ny, uChar f_interp,
                           const sect2_WxType *wx, sChar f_WxParse,
                           size_t numPnts, const Point * pnts,
-                          sChar f_pntType, genValueType * value)
+                          sChar f_pntType, genValueType * value,
+                          sChar f_avgInterp)
 {
    double missing;      /* Missing value to use. */
    size_t i;            /* loop counter over number of points. */
@@ -1209,7 +1210,7 @@ static void genFillValue (sInt4 gribDataLen, const double *gribData,
       myAssert ((!f_interp) || (wx == NULL));
       getValAtPnt (gribDataLen, gribData, map, f_pntType, pnts[i].X,
                    pnts[i].Y, Nx, Ny, grdAtt->f_miss, missing,
-                   grdAtt->missSec, f_interp, &ans);
+                   grdAtt->missSec, f_interp, &ans, f_avgInterp);
       if (ans == missing) {
          value[i].valueType = 2;
          value[i].data = ans;
@@ -1408,7 +1409,8 @@ static int genProbeGrib (FILE *fp, size_t numPnts, const Point * pnts,
                          double startTime, double endTime, uChar f_interp,
                          sChar f_unit, double majEarth, double minEarth,
                          sChar f_WxParse, sChar f_SimpleVer,
-                         size_t *numMatch, genMatchType ** match)
+                         size_t *numMatch, genMatchType ** match,
+                         sChar f_avgInterp)
 {
    IS_dataType is;      /* Un-parsed meta data for this GRIB2 message. As
                          * well as some memory used by the unpacker. */
@@ -1576,12 +1578,13 @@ static int genProbeGrib (FILE *fp, size_t numPnts, const Point * pnts,
       if ((meta.GribVersion != 2) || (strcmp (meta.element, "Wx") != 0)) {
          genFillValue (gribDataLen, gribData, &(meta.gridAttrib), &map,
                        meta.gds.Nx, meta.gds.Ny, f_interp, NULL, f_WxParse,
-                       numPnts, pnts, f_pntType, curMatch->value);
+                       numPnts, pnts, f_pntType, curMatch->value,
+                       f_avgInterp);
       } else {
          genFillValue (gribDataLen, gribData, &(meta.gridAttrib), &map,
                        meta.gds.Nx, meta.gds.Ny, f_interp,
                        &(meta.pds2.sect2.wx), f_WxParse, numPnts, pnts,
-                       f_pntType, curMatch->value);
+                       f_pntType, curMatch->value, f_avgInterp);
       }
 
       MetaFree (&meta);
@@ -1969,7 +1972,7 @@ int genProbe (size_t numPnts, Point * pnts, sChar f_pntType,
               genElemDescript * elem, sChar f_valTime, double startTime,
               double endTime, size_t *numMatch, genMatchType ** match,
               char *f_inTypes, char *gribFilter, size_t numSector,
-              char **sector, sChar f_ndfdConven)
+              char **sector, sChar f_ndfdConven, sChar f_avgInterp)
 {
 #ifndef DP_ONLY
    FILE *fp;
@@ -2064,7 +2067,7 @@ int genProbe (size_t numPnts, Point * pnts, sChar f_pntType,
          if (genProbeGrib (fp, numPnts, pnts, f_pntType, numElem, elem,
                            f_valTime, startTime, endTime, f_interp, f_unit,
                            majEarth, minEarth, f_WxParse, f_SimpleVer,
-                           numMatch, match) != 0) {
+                           numMatch, match, f_avgInterp) != 0) {
 #ifdef DEBUG
             msg = errSprintf (NULL);
             printf ("Error message was: '%s'\n", msg);
@@ -2844,7 +2847,7 @@ int ProbeCmd (sChar f_Command, userType *usr)
                          usr->f_valTime, usr->startTime, usr->endTime,
                          usr->numNdfdVars, usr->ndfdVars, usr->f_inTypes,
                          usr->gribFilter, numSector, sector,
-                         usr->f_ndfdConven);
+                         usr->f_ndfdConven, usr->f_avgInterp);
 #endif
       }
       if (usr->f_Graph != 0) {
@@ -2855,7 +2858,9 @@ int ProbeCmd (sChar f_Command, userType *usr)
                             usr->f_WxParse, usr->f_SimpleVer, usr->f_valTime,
                             usr->startTime, usr->endTime, usr->numNdfdVars,
                             usr->ndfdVars, usr->f_inTypes, usr->gribFilter,
-                            numSector, sector, usr->f_ndfdConven);
+                            numSector, sector, usr->f_ndfdConven,
+                            usr->f_avgInterp);
+
          if (ans == 0)
             ans = ans2;
       }
@@ -2867,7 +2872,8 @@ int ProbeCmd (sChar f_Command, userType *usr)
                            usr->f_WxParse, usr->f_SimpleVer, usr->f_valTime,
                            usr->startTime, usr->endTime, usr->numNdfdVars,
                            usr->ndfdVars, usr->f_inTypes, usr->gribFilter,
-                           numSector, sector, usr->f_ndfdConven);
+                           numSector, sector, usr->f_ndfdConven,
+                           usr->f_avgInterp);
          if (ans == 0)
             ans = ans2;
       }

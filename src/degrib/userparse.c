@@ -110,6 +110,7 @@ void UserInit (userType *usr)
    usr->f_surface = -1;
    usr->f_nLabel = -1;
    usr->f_interp = -1;
+   usr->f_avgInterp = -1;
    usr->f_coverageGrid = -1;
    usr->f_AscGrid = -1;
    usr->f_GrADS = -1;
@@ -436,6 +437,8 @@ int UserValidate (userType *usr)
       usr->f_GrADS = 0;
    if (usr->f_interp == -1)
       usr->f_interp = 0;
+   if (usr->f_avgInterp == -1)
+      usr->f_avgInterp = 0;
    if (usr->f_coverageGrid == -1)
       usr->f_coverageGrid = 0;
    if (usr->f_revFlt == -1)
@@ -646,7 +649,7 @@ static char *UsrOpt[] = { "-cfg", "-in", "-I", "-C", "-P", "-V", "-Flt",
    "-sectFile", "-NC", "-AscGrid", "-Map", "-MapIni", "-MapIniOptions",
    "-XML", "-MOTD", "-Graph", "-startTime", "-endTime", "-startDate",
    "-numDays", "-ndfdVars", "-geoData", "-gribFilter", "-ndfdConven",
-   "-Freq", "-Icon", "-curTime",
+   "-Freq", "-Icon", "-curTime", "-avgInterp",
    NULL
 };
 
@@ -669,7 +672,7 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
       VALIDMIN, TDL, NO_TDL, SECTOR, SECTFILE, NCCONVERT, ASCGRID, MAP,
       MAPINIFILE, MAPINIOPTIONS, XML, MOTD, GRAPH, STARTTIME, ENDTIME,
       STARTDATE, NUMDAYS, NDFDVARS, GEODATA, GRIBFILTER, NDFDCONVEN,
-      FREQUENCY, ICON, CURTIME
+      FREQUENCY, ICON, CURTIME, AVGINTERP
    };
    int index;           /* "cur"'s index into Opt, which matches enum val. */
    double lat, lon;     /* Used to check on the -pnt option. */
@@ -898,6 +901,10 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
       case ASCGRID:
          if (usr->f_AscGrid == -1)
             usr->f_AscGrid = 1;
+         return 1;
+      case AVGINTERP:
+         if (usr->f_avgInterp == -1)
+            usr->f_avgInterp = 1;
          return 1;
    }
    /* It is possibly a 2 argument option, so check if next is NULL, or

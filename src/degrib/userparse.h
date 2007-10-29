@@ -71,6 +71,8 @@ typedef struct {
    sChar f_stdout;      /* true if outName is "stdout" */
    char *logName;       /* logName = -log or NULL (for error messages.) */
    sChar f_interp;      /* true = bilinear, false = Nearest Neighbor */
+   sChar f_avgInterp;   /* true = if bilinear has missings, dist weight
+                         *        average them, false (default) */
    sChar f_coverageGrid; /* (true if -Interp is provided on command line...
                          * This tells if we are calling gribInterpFloat()
                          * or gribWriteFloat() */

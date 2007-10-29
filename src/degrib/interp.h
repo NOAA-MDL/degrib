@@ -22,11 +22,11 @@
 
 double BiLinearBorder (const double *gribData, myMaparam * map, double newX,
                        double newY, sInt4 Nx, sInt4 Ny, uChar f_miss,
-                       double missPri, double missSec);
+                       double missPri, double missSec, sChar f_avgInterp);
 
 double BiLinearCompute (double *grib_Data, myMaparam * map, double lat,
                         double lon, sInt4 Nx, sInt4 Ny, uChar f_miss,
-                        double missPri, double missSec);
+                        double missPri, double missSec, sChar f_avgInterp);
 
 
 #endif

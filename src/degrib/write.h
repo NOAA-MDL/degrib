@@ -65,7 +65,8 @@ int gribWriteNetCDF (char *filename, double *grib_Data, grib_MetaData * meta,
 int gribInterpFloat (const char *Filename, double *grib_Data,
                      grib_MetaData * meta, gridAttribType * attrib,
                      uChar scan, sChar f_MSB, sChar decimal, sChar f_GrADS,
-                     sChar f_SimpleWx, sChar f_interp, sChar f_AscGrid);
+                     sChar f_SimpleWx, sChar f_interp, sChar f_AscGrid,
+                     sChar f_avgInterp);
 
 int gribReadNetCDF (char *filename);
 

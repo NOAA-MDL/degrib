@@ -62,15 +62,21 @@ extern double POWERS_ONE[];
  */
 double BiLinearBorder (const double *gribData, myMaparam *map, double newX,
                        double newY, sInt4 Nx, sInt4 Ny, uChar f_miss,
-                       double missPri, double missSec)
+                       double missPri, double missSec, sChar f_avgInterp)
 {
-   sInt4 row;           /* The index into gribData for a given x,y pair using 
+   sInt4 row;           /* The index into gribData for a given x,y pair using
                          * scan-mode = 0100 = GRIB2BIT_2 */
    sInt4 x1, x2, y1, y2; /* Corners of bounding box lat/lon is in. */
    double d11, d12, d21, d22; /* grib values of bounding box corners. */
    sInt4 numPts = Nx * Ny; /* Total number of points. */
    double d_temp1, d_temp2; /* Temp storage during interpolation. */
    double testLon;      /* Used to test if we should call BiLinearBorder() */
+   double sumDist;      /* The total sum of the distances. */
+   double dist11 = 0;   /* Distance from point to 11 cell */
+   double dist12 = 0;   /* Distance from point to 12 cell */
+   double dist21 = 0;   /* Distance from point to 21 cell */
+   double dist22 = 0;   /* Distance from point to 22 cell */
+   double val;          /* sum of the distance weighted values. */
 
    myAssert (map->f_latlon);
 
@@ -100,7 +106,7 @@ double BiLinearBorder (const double *gribData, myMaparam *map, double newX,
       d11 = gribData[row];
       if (f_miss == 2) {
          if (d11 == missSec) {
-            return missPri;
+            d11 = missPri;
          }
       }
    } else {
@@ -115,7 +121,7 @@ double BiLinearBorder (const double *gribData, myMaparam *map, double newX,
       d12 = gribData[row];
       if (f_miss == 2) {
          if (d12 == missSec) {
-            return missPri;
+            d12 = missPri;
          }
       }
    } else {
@@ -130,7 +136,7 @@ double BiLinearBorder (const double *gribData, myMaparam *map, double newX,
       d21 = gribData[row];
       if (f_miss == 2) {
          if (d21 == missSec) {
-            return missPri;
+            d21 = missPri;
          }
       }
    } else {
@@ -145,7 +151,7 @@ double BiLinearBorder (const double *gribData, myMaparam *map, double newX,
       d22 = gribData[row];
       if (f_miss == 2) {
          if (d22 == missSec) {
-            return missPri;
+            d22 = missPri;
          }
       }
    } else {
@@ -170,6 +176,66 @@ double BiLinearBorder (const double *gribData, myMaparam *map, double newX,
          return (float) (d_temp1 + (newY - y1) *
                          (d_temp1 - d_temp2) / (y1 - y2));
       }
+   } else if (f_avgInterp) {
+      /* Calculate sum of distances... */
+      sumDist = 0;
+      if (fabs (newX - x1) <= map->Dx) {
+         if (d11 != missPri) {
+            dist11 = sqrt ((x1 - newX) * (x1 - newX) + (y1 - newY) * (y1 - newY));
+            sumDist += dist11;
+         }
+         if (d12 != missPri) {
+            dist12 = sqrt ((x1 - newX) * (x1 - newX) + (y2 - newY) * (y2 - newY));
+            sumDist += dist12;
+         }
+         if (d21 != missPri) {
+            dist21 = sqrt ((map->Dx - (newX - x1)) * (map->Dx - (newX - x1)) +
+                           (y1 - newY) * (y1 - newY));
+            sumDist += dist21;
+         }
+         if (d22 != missPri) {
+            dist22 = sqrt ((map->Dx - (newX - x1)) * (map->Dx - (newX - x1)) +
+                           (y2 - newY) * (y2 - newY));
+            sumDist += dist22;
+         }
+      } else {
+         if (d11 != missPri) {
+            dist11 = sqrt ((map->Dx - (newX - x2)) * (map->Dx - (newX - x2)) +
+                           (y1 - newY) * (y1 - newY));
+            sumDist += dist11;
+         }
+         if (d12 != missPri) {
+            dist12 = sqrt ((map->Dx - (newX - x2)) * (map->Dx - (newX - x2)) +
+                           (y2 - newY) * (y2 - newY));
+            sumDist += dist12;
+         }
+         if (d21 != missPri) {
+            dist21 = sqrt ((x2 - newX) * (x2 - newX) + (y1 - newY) * (y1 - newY));
+            sumDist += dist21;
+         }
+         if (d22 != missPri) {
+            dist22 = sqrt ((x2 - newX) * (x2 - newX) + (y2 - newY) * (y2 - newY));
+            sumDist += dist22;
+         }
+      }
+      if (sumDist == 0) {
+         return missPri;
+      }
+      /* Calculate inverse distance weighted value */
+      val = 0;
+      if (d11 != missPri) {
+         val += (dist11 / sumDist) * d11;
+      }
+      if (d12 != missPri) {
+         val += (dist12 / sumDist) * d12;
+      }
+      if (d21 != missPri) {
+         val += (dist21 / sumDist) * d21;
+      }
+      if (d22 != missPri) {
+         val += (dist22 / sumDist) * d22;
+      }
+      return (float) (val);
    } else {
       return missPri;
    }
@@ -197,6 +263,8 @@ double BiLinearBorder (const double *gribData, myMaparam *map, double newX,
  *     Nx, Ny = Dimensions of input grid (Input)
  * f_miss = How missing values are handled in grib_Data (Input)
  *    missSec = Secondary missing value if there is one. (Input)
+ * f_avgInterp = 1 if some of corners are missing, we should dist weight
+ *               average the values, 0 return missing. (Input)
  *
  * FILES/DATABASES: None
  *
@@ -207,6 +275,7 @@ double BiLinearBorder (const double *gribData, myMaparam *map, double newX,
  *  11/2002 Arthur Taylor (MDL/RSIS): Created.
  *  12/2002 (RY,FC,MA,&TB): Code Review.
  *   4/2004 AAT: Added call to BiLinearBorder()
+ *  10/2007 AAT: Added f_avgInterp option. 
  *
  * NOTES
  *    Could speed this up a bit, since we know scan is GRIB2BIT_2
@@ -215,7 +284,7 @@ double BiLinearBorder (const double *gribData, myMaparam *map, double newX,
  */
 double BiLinearCompute (double *grib_Data, myMaparam *map, double lat,
                         double lon, sInt4 Nx, sInt4 Ny, uChar f_miss,
-                        double missPri, double missSec)
+                        double missPri, double missSec, sChar f_avgInterp)
 {
    double newX, newY;   /* The location of lat/lon on the input grid. */
    sInt4 row;           /* The index into grib_Data for a given x,y pair
@@ -224,14 +293,19 @@ double BiLinearCompute (double *grib_Data, myMaparam *map, double lat,
    double d11, d12, d21, d22; /* grib values of bounding box corners. */
    sInt4 numPts = Nx * Ny; /* Total number of points. */
    double d_temp1, d_temp2; /* Temp storage during interpolation. */
+   double sumDist;      /* The total sum of the distances. */
+   double dist11 = 0;   /* Distance from point to 11 cell */
+   double dist12 = 0;   /* Distance from point to 12 cell */
+   double dist21 = 0;   /* Distance from point to 21 cell */
+   double dist22 = 0;   /* Distance from point to 22 cell */
+   double val;          /* sum of the distance weighted values. */
 
    myCll2xy (map, lat, lon, &newX, &newY);
-
    if ((newX < 1) || (newX > Nx) || (newY < 1) || (newY > Ny)) {
       if (map->f_latlon) {
          /* Find out if we can do a border interpolation. */
          return BiLinearBorder (grib_Data, map, newX, newY, Nx, Ny, f_miss,
-                                missPri, missSec);
+                                missPri, missSec, f_avgInterp);
       }
       return missPri;
    }
@@ -249,7 +323,7 @@ double BiLinearCompute (double *grib_Data, myMaparam *map, double lat,
       d11 = grib_Data[row];
       if (f_miss == 2) {
          if (d11 == missSec) {
-            return missPri;
+            d11 = missPri;
          }
       }
    } else {
@@ -264,7 +338,7 @@ double BiLinearCompute (double *grib_Data, myMaparam *map, double lat,
       d12 = grib_Data[row];
       if (f_miss == 2) {
          if (d12 == missSec) {
-            return missPri;
+            d12 = missPri;
          }
       }
    } else {
@@ -279,7 +353,7 @@ double BiLinearCompute (double *grib_Data, myMaparam *map, double lat,
       d21 = grib_Data[row];
       if (f_miss == 2) {
          if (d21 == missSec) {
-            return missPri;
+            d21 = missPri;
          }
       }
    } else {
@@ -294,7 +368,7 @@ double BiLinearCompute (double *grib_Data, myMaparam *map, double lat,
       d22 = grib_Data[row];
       if (f_miss == 2) {
          if (d22 == missSec) {
-            return missPri;
+            d22 = missPri;
          }
       }
    } else {
@@ -311,6 +385,43 @@ double BiLinearCompute (double *grib_Data, myMaparam *map, double lat,
       d_temp2 = d12 + (newX - x1) * (d12 - d22) / (x1 - x2);
       return (float) (d_temp1 + (newY - y1) *
                       (d_temp1 - d_temp2) / (y1 - y2));
+   } else if (f_avgInterp) {
+      /* Calculate sum of distances... */
+      sumDist = 0;
+      if (d11 != missPri) {
+         dist11 = sqrt ((x1 - newX) * (x1 - newX) + (y1 - newY) * (y1 - newY));
+         sumDist += dist11;
+      }
+      if (d12 != missPri) {
+         dist12 = sqrt ((x1 - newX) * (x1 - newX) + (y2 - newY) * (y2 - newY));
+         sumDist += dist12;
+      }
+      if (d21 != missPri) {
+         dist21 = sqrt ((x2 - newX) * (x2 - newX) + (y1 - newY) * (y1 - newY));
+         sumDist += dist21;
+      }
+      if (d22 != missPri) {
+         dist22 = sqrt ((x2 - newX) * (x2 - newX) + (y2 - newY) * (y2 - newY));
+         sumDist += dist22;
+      }
+      if (sumDist == 0) {
+         return missPri;
+      }
+      /* Calculate inverse distance weighted value */
+      val = 0;
+      if (d11 != missPri) {
+         val += (dist11 / sumDist) * d11;
+      }
+      if (d12 != missPri) {
+         val += (dist12 / sumDist) * d12;
+      }
+      if (d21 != missPri) {
+         val += (dist21 / sumDist) * d21;
+      }
+      if (d22 != missPri) {
+         val += (dist22 / sumDist) * d22;
+      }
+      return (float) (val);
    } else {
       return missPri;
    }

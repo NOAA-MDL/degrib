@@ -850,7 +850,8 @@ static sInt4 IndexNearest (myMaparam *map, double lat, double lon, sInt4 Nx,
 int gribInterpFloat (const char *Filename, double *grib_Data,
                      grib_MetaData *meta, gridAttribType *attrib,
                      uChar scan, sChar f_MSB, sChar decimal, sChar f_GrADS,
-                     sChar f_SimpleWx, sChar f_interp, sChar f_AscGrid)
+                     sChar f_SimpleWx, sChar f_interp, sChar f_AscGrid,
+                     sChar f_avgInterp)
 {
    FILE *fp;            /* The current open file pointer. */
    float *floatPtr;     /* Temporary storage of double data to float for
@@ -1082,7 +1083,7 @@ int gribInterpFloat (const char *Filename, double *grib_Data,
          } else {
             val = BiLinearCompute (grib_Data, &map, lat, lon, meta->gds.Nx,
                                    meta->gds.Ny, attrib->f_miss, missing,
-                                   attrib->missSec);
+                                   attrib->missSec, f_avgInterp);
          }
          floatPtr[x] = (float) ((floor (val * shift + .5)) / shift);
       }

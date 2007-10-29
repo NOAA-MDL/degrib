@@ -292,7 +292,7 @@ static void GRIB2ProbeStyle0 (FILE **pnt_fps, char *f_firstFps,
          ans = BiLinearCompute (grib_Data, map, pnts[i].Y, pnts[i].X,
                                 meta->gds.Nx, meta->gds.Ny,
                                 meta->gridAttrib.f_miss, missing,
-                                meta->gridAttrib.missSec);
+                                meta->gridAttrib.missSec, usr->f_avgInterp);
       }
       if (strcmp (meta->element, "Wx") != 0) {
          fprintf (pnt_fps[i], format, myRound (ans, usr->decimal));
@@ -506,7 +506,7 @@ static void GRIB2ProbeStyle1 (FILE **pnt_fps,
             ans = BiLinearCompute (grib_Data, map, pnts[i].Y, pnts[i].X,
                                    meta->gds.Nx, meta->gds.Ny,
                                    meta->gridAttrib.f_miss, missing,
-                                   meta->gridAttrib.missSec);
+                                   meta->gridAttrib.missSec, usr->f_avgInterp);
          }
       }
 
@@ -1171,10 +1171,11 @@ int GenericProbe (char *filename, int numPnts, double *lat, double *lon,
             }
          } else {
             /* Figure out data value at this lat/lon */
+            /* Generic probe... don't perform "AvgInterp" option */
             ans = BiLinearCompute (grib_Data, &map, lat[i], lon[i],
                                    meta.gds.Nx, meta.gds.Ny,
                                    meta.gridAttrib.f_miss, missing,
-                                   meta.gridAttrib.missSec);
+                                   meta.gridAttrib.missSec, 0);
          }
          if (strcmp (meta.element, "Wx") != 0) {
             (*data)[*lenTime - 1][i] = ans;

@@ -417,7 +417,8 @@ int MainConvert (userType *usr, IS_dataType *is, grib_MetaData *meta,
          if (gribInterpFloat (outName, Data, meta, &(meta->gridAttrib),
                               FltScan, usr->f_MSB, usr->decimal,
                               usr->f_GrADS, usr->f_SimpleWx,
-                              usr->f_interp, usr->f_AscGrid) != 0) {
+                              usr->f_interp, usr->f_AscGrid,
+                              usr->f_avgInterp) != 0) {
             free (outName);
             return 1;
          }
