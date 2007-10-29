@@ -450,5 +450,5 @@ int XMLParse (uChar f_XML, size_t numPnts, Point * pnts, PntSectInfo *pntInfo,
               sChar f_SimpleVer, sChar f_valTime, double startTime,
               double endTime, size_t numNdfdVars, uChar *ndfdVars,
               char *f_inTypes, char *gribFilter, size_t numSector,
-              char ** sector, sChar f_ndfdConven);
+              char ** sector, sChar f_ndfdConven, sChar f_avgInterp);
 #endif

@@ -82,7 +82,8 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
              sChar f_icon, sChar f_SimpleVer, sChar f_valTime,
              double startTime, double endTime, size_t numNdfdVars,
              uChar * ndfdVars, char *f_inTypes, char *gribFilter,
-             size_t numSector, char **sector, sChar f_ndfdConven)
+             size_t numSector, char **sector, sChar f_ndfdConven,
+             sChar f_avgInterp)
 {
    size_t numElem = 0;        /* Num of elements returned by degrib. */
    genElemDescript *elem = NULL;  /* Structure with info about the element. */
@@ -399,7 +400,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
       #endif
    }
 
-   /* If the product is one of the summarizations (f_XML = 3 or 4) and a 
+   /* If the product is one of the summarizations (f_XML = 3 or 4) and a
     * startTime and/or endTime command line argument is entered, we need to 
     * shorten the time window the grid probe returns data for so not all data
     * is returned. The time frame needs to start at 05 hours on the date of 
@@ -434,7 +435,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                 f_interp, f_unit, majEarth, minEarth, f_WxParse,
                 f_SimpleVer, numElem, elem, f_valTime, startTime, endTime,
                 &numMatch, &match, f_inTypes, gribFilter, numSector,
-                sector, f_ndfdConven) != 0)
+                sector, f_ndfdConven, f_avgInterp) != 0)
    {
       for (i = 0; i < numElem; i++)
       {
