@@ -223,7 +223,7 @@ void getUserTimes(double **timeUserStart, double **timeUserEnd,
     * 18th hour. This can only occur if the summarization is 12 hourly and 
     * there is no startTime (startDate) entered.
     */
-   if (beginningHour < 0 && startTime == 0.0 && f_XML == 3)
+   if (beginningHour < 0 && f_XML == 3)
    {
       formatValidTime(*firstValidTime_pop - oneDay, POPstrLess1Day, 30, TZ, f_observeDST); 
       userStart_year[0] = POPstrLess1Day[0];

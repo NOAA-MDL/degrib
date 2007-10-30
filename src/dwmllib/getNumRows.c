@@ -72,6 +72,9 @@
  *   3/2006 Paul Hershberg (MDL): Created
  *  10/2007 Paul Hershberg (MDL): Removed code that shifted data back by 1/2
  *                                the period length (bug from php code)
+ *  10/2007 Paul Hershberg (MDL): Added if statement that only shortens 
+ *                                timeUserStart and timeUserEnd by deltaSecs
+ *                                if product is of summary type.
  *
  * NOTES
  ******************************************************************************
@@ -193,40 +196,43 @@ void getNumRows(numRowsInfo *numRowsForPoint, double *timeUserStart,
 	  * reduce the window by 1/4th of the data's period length at each 
 	  * end. We will only do this after 6 AM to allow for the overnight 
 	  * minimum temperature to continue to be formatted from midnight to 
-	  * 6 AM.
-          */		    
-         if (atoi(currentHour) >= 6 && (k != NDFD_MIN || k != NDFD_POP))
-         {
-            timeUserStartPerElement = *timeUserStart + deltaSecs;
-            timeUserEndPerElement = *timeUserEnd - deltaSecs;      
-         }
-         if (k == NDFD_POP)
-         {
-            if (!f_POPUserStart && startTime == 0.0 &&
-            (atoi(currentHour) > 20 || atoi(currentHour) < 6))
+	  * 6 AM. Do this for summary products only.
+          */
+         if (f_XML == 3 || f_XML == 4)
+         {	    
+            if (atoi(currentHour) >= 6 && (k != NDFD_MIN || k != NDFD_POP))
             {
-               timeUserStartPerElement = *timeUserStart;
-               timeUserEndPerElement = *timeUserEnd;  
+               timeUserStartPerElement = *timeUserStart + deltaSecs;
+               timeUserEndPerElement = *timeUserEnd - deltaSecs;      
             }
-            else
+            if (k == NDFD_POP)
             {
-               timeUserStartPerElement = *timeUserStart + deltaSecs;
-               timeUserEndPerElement = *timeUserEnd - deltaSecs;
-            } 
-         }
-         if (k == NDFD_MIN)
-         {
-            if (startTime == 0.0  && 
-            (atoi(currentHour) > 18 || atoi(currentHour) < 6)) 
+               if (!f_POPUserStart && startTime == 0.0 &&
+               (atoi(currentHour) > 20 || atoi(currentHour) < 6))
+               {
+                  timeUserStartPerElement = *timeUserStart;
+                  timeUserEndPerElement = *timeUserEnd;  
+               }
+               else
+               {
+                  timeUserStartPerElement = *timeUserStart + deltaSecs;
+                  timeUserEndPerElement = *timeUserEnd - deltaSecs;
+               } 
+            }
+            if (k == NDFD_MIN)
             {
-               timeUserStartPerElement = *timeUserStart;
-               timeUserEndPerElement = *timeUserEnd;
-            } 
-            else
-            {
-               timeUserStartPerElement = *timeUserStart + deltaSecs;
-               timeUserEndPerElement = *timeUserEnd - deltaSecs;
-            } 
+               if (startTime == 0.0  && 
+               (atoi(currentHour) > 18 || atoi(currentHour) < 6)) 
+               {
+                  timeUserStartPerElement = *timeUserStart;
+                  timeUserEndPerElement = *timeUserEnd;
+               } 
+               else
+               {
+                  timeUserStartPerElement = *timeUserStart + deltaSecs;
+                  timeUserEndPerElement = *timeUserEnd - deltaSecs;
+               } 
+            }
          }
 
 	 /* Loop thru and make the adjustments to the number of rows interested
@@ -241,8 +247,8 @@ void getNumRows(numRowsInfo *numRowsForPoint, double *timeUserStart,
 	    {
 	       timeDataEnd = match[i].validTime;
                timeDataStart = match[i].validTime - (3600 * period);
-       	       if (*timeUserStart != 0.0) /* Rule out DWMLgen cases where no startTime entered. */
 
+       	       if (*timeUserStart != 0.0) /* Rule out DWMLgen cases where no startTime entered. */
 	       {
 	          if (match[i].elem.ndfdEnum != NDFD_POP)
                   {
