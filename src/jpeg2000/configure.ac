@@ -357,23 +357,23 @@ AM_CONFIG_HEADER(src/libjasper/include/jasper/jas_config.h)
 # Generate the makefiles.
 ############################################################
 
+#src/appl/Makefile
+#src/libjasper/bmp/Makefile
+#src/libjasper/jp2/Makefile
+#src/libjasper/jpg/Makefile
+#src/libjasper/mif/Makefile
+#src/libjasper/pgx/Makefile
+#src/libjasper/pnm/Makefile
+#src/libjasper/ras/Makefile
+#src/msvc/Makefile
 AC_OUTPUT([
 Makefile
 src/Makefile
-src/appl/Makefile
 src/libjasper/Makefile
 src/libjasper/base/Makefile
-src/libjasper/bmp/Makefile
 src/libjasper/include/Makefile
 src/libjasper/include/jasper/Makefile
-src/libjasper/jp2/Makefile
 src/libjasper/jpc/Makefile
-src/libjasper/jpg/Makefile
-src/libjasper/mif/Makefile
-src/libjasper/pgx/Makefile
-src/libjasper/pnm/Makefile
-src/libjasper/ras/Makefile
-src/msvc/Makefile
 jasper.spec
 ])
 
