@@ -186,6 +186,25 @@ double BiLinearBorder (const double *gribData, myMaparam *map, double newX,
    } else if (f_avgInterp) {
       /* Calculate sum of distances... */
       sumDist = 0;
+      x1 = 0;
+      if (d11 != missPri) {
+         dist11 = sqrt ((x1 - newX) * (x1 - newX) + (y1 - newY) * (y1 - newY));
+         sumDist += dist11;
+      }
+      if (d12 != missPri) {
+         dist12 = sqrt ((x1 - newX) * (x1 - newX) + (y2 - newY) * (y2 - newY));
+         sumDist += dist12;
+      }
+      if (d21 != missPri) {
+         dist21 = sqrt ((x2 - newX) * (x2 - newX) + (y1 - newY) * (y1 - newY));
+         sumDist += dist21;
+      }
+      if (d22 != missPri) {
+         dist22 = sqrt ((x2 - newX) * (x2 - newX) + (y2 - newY) * (y2 - newY));
+         sumDist += dist22;
+      }
+
+#ifdef JUNK
       if (fabs (newX - x1) <= map->Dx) {
          if (d11 != missPri) {
             dist11 = sqrt ((x1 - newX) * (x1 - newX) + (y1 - newY) * (y1 - newY));
@@ -225,6 +244,7 @@ double BiLinearBorder (const double *gribData, myMaparam *map, double newX,
             sumDist += dist22;
          }
       }
+#endif
       if (sumDist == 0) {
          return missPri;
       }
