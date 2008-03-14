@@ -158,6 +158,54 @@ void PrintTime(genMatchType * match, size_t pntIndex, int *allElem,
       printf("prcpblw14d:%.0f ", match[allElem[NDFD_PRCPBLW14D]].value[pntIndex].data);
       printf ("match[%d].f_sector = %d\n",allElem[NDFD_PRCPBLW14D],match[allElem[NDFD_PRCPBLW14D]].f_sector);
    }
+   if ((allElem[NDFD_TMPABV30D] != -1) &&
+       (match[allElem[NDFD_TMPABV30D]].value[pntIndex].valueType != 2))
+   {
+      printf("tmpabv30d:%.0f ", match[allElem[NDFD_TMPABV30D]].value[pntIndex].data);
+      printf ("match[%d].f_sector = %d\n",allElem[NDFD_TMPABV30D],match[allElem[NDFD_TMPABV30D]].f_sector);
+   }
+   if ((allElem[NDFD_TMPBLW30D] != -1) &&
+       (match[allElem[NDFD_TMPBLW30D]].value[pntIndex].valueType != 2))
+   {
+      printf("tmpblw30d:%.0f ", match[allElem[NDFD_TMPBLW30D]].value[pntIndex].data);
+      printf ("match[%d].f_sector = %d\n",allElem[NDFD_TMPBLW30D],match[allElem[NDFD_TMPBLW30D]].f_sector);
+   }
+   if ((allElem[NDFD_PRCPABV30D] != -1) &&
+       (match[allElem[NDFD_PRCPABV30D]].value[pntIndex].valueType != 2))
+   {
+      printf("prcpabv30d:%.0f ", match[allElem[NDFD_PRCPABV30D]].value[pntIndex].data);
+      printf ("match[%d].f_sector = %d\n",allElem[NDFD_PRCPABV30D],match[allElem[NDFD_PRCPABV30D]].f_sector);
+   }
+   if ((allElem[NDFD_PRCPBLW30D] != -1) &&
+       (match[allElem[NDFD_PRCPBLW30D]].value[pntIndex].valueType != 2))
+   {
+      printf("prcpblw30d:%.0f ", match[allElem[NDFD_PRCPBLW30D]].value[pntIndex].data);
+      printf ("match[%d].f_sector = %d\n",allElem[NDFD_PRCPBLW30D],match[allElem[NDFD_PRCPBLW30D]].f_sector);
+   }
+   if ((allElem[NDFD_TMPABV90D] != -1) &&
+       (match[allElem[NDFD_TMPABV90D]].value[pntIndex].valueType != 2))
+   {
+      printf("tmpabv90d:%.0f ", match[allElem[NDFD_TMPABV90D]].value[pntIndex].data);
+      printf ("match[%d].f_sector = %d\n",allElem[NDFD_TMPABV90D],match[allElem[NDFD_TMPABV90D]].f_sector);
+   }
+   if ((allElem[NDFD_TMPBLW90D] != -1) &&
+       (match[allElem[NDFD_TMPBLW90D]].value[pntIndex].valueType != 2))
+   {
+      printf("tmpblw90d:%.0f ", match[allElem[NDFD_TMPBLW90D]].value[pntIndex].data);
+      printf ("match[%d].f_sector = %d\n",allElem[NDFD_TMPBLW90D],match[allElem[NDFD_TMPBLW90D]].f_sector);
+   }
+   if ((allElem[NDFD_PRCPABV90D] != -1) &&
+       (match[allElem[NDFD_PRCPABV90D]].value[pntIndex].valueType != 2))
+   {
+      printf("prcpabv90d:%.0f ", match[allElem[NDFD_PRCPABV90D]].value[pntIndex].data);
+      printf ("match[%d].f_sector = %d\n",allElem[NDFD_PRCPABV90D],match[allElem[NDFD_PRCPABV90D]].f_sector);
+   }
+   if ((allElem[NDFD_PRCPBLW90D] != -1) &&
+       (match[allElem[NDFD_PRCPBLW90D]].value[pntIndex].valueType != 2))
+   {
+      printf("prcpblw90d:%.0f ", match[allElem[NDFD_PRCPBLW90D]].value[pntIndex].data);
+      printf ("match[%d].f_sector = %d\n",allElem[NDFD_PRCPBLW90D],match[allElem[NDFD_PRCPBLW90D]].f_sector);
+   }
    if ((allElem[NDFD_SKY] != -1) &&
        (match[allElem[NDFD_SKY]].value[pntIndex].valueType != 2))
    {
@@ -170,6 +218,69 @@ void PrintTime(genMatchType * match, size_t pntIndex, int *allElem,
       printf("qp:%5.2f ", match[allElem[NDFD_QPF]].value[pntIndex].data);
       printf ("match[%d].f_sector = %d\n",allElem[NDFD_QPF],match[allElem[NDFD_QPF]].f_sector);
    }
+
+   /* RTMA Elements. */
+   if ((allElem[RTMA_TEMP] != -1) &&
+       (match[allElem[RTMA_TEMP]].value[pntIndex].valueType != 2))
+   {
+      printf("rtma_temp:%.0f ", match[allElem[RTMA_TEMP]].value[pntIndex].data);
+      printf ("match[%d].f_sector = %d\n",allElem[RTMA_TEMP],match[allElem[RTMA_TEMP]].f_sector);
+   }
+   if ((allElem[RTMA_UTEMP] != -1) &&
+       (match[allElem[RTMA_UTEMP]].value[pntIndex].valueType != 2))
+   {
+      printf("rtma_utemp:%.0f ", match[allElem[RTMA_UTEMP]].value[pntIndex].data);
+      printf ("match[%d].f_sector = %d\n",allElem[RTMA_UTEMP],match[allElem[RTMA_UTEMP]].f_sector);
+   }
+   if ((allElem[RTMA_TD] != -1) &&
+       (match[allElem[RTMA_TD]].value[pntIndex].valueType != 2))
+   {
+      printf("rtma_td:%.0f ", match[allElem[RTMA_TD]].value[pntIndex].data);
+      printf ("match[%d].f_sector = %d\n",allElem[RTMA_TD],match[allElem[RTMA_TD]].f_sector);
+   }
+   if ((allElem[RTMA_UTD] != -1) &&
+       (match[allElem[RTMA_UTD]].value[pntIndex].valueType != 2))
+   {
+      printf("rtma_utd:%.0f ", match[allElem[RTMA_UTD]].value[pntIndex].data);
+      printf ("match[%d].f_sector = %d\n",allElem[RTMA_UTD],match[allElem[RTMA_UTD]].f_sector);
+   }
+   if ((allElem[RTMA_WDIR] != -1) &&
+       (match[allElem[RTMA_WDIR]].value[pntIndex].valueType != 2))
+   {
+      printf("rtma_wdir:%.0f ", match[allElem[RTMA_WDIR]].value[pntIndex].data);
+      printf ("match[%d].f_sector = %d\n",allElem[RTMA_WDIR],match[allElem[RTMA_WDIR]].f_sector);
+   }
+   if ((allElem[RTMA_UWDIR] != -1) &&
+       (match[allElem[RTMA_UWDIR]].value[pntIndex].valueType != 2))
+   {
+      printf("rtma_uwdir:%.0f ", match[allElem[RTMA_UWDIR]].value[pntIndex].data);
+      printf ("match[%d].f_sector = %d\n",allElem[RTMA_UWDIR],match[allElem[RTMA_UWDIR]].f_sector);
+   }
+   if ((allElem[RTMA_WSPD] != -1) &&
+       (match[allElem[RTMA_WSPD]].value[pntIndex].valueType != 2))
+   {
+      printf("rtma_wspd:%.0f ", match[allElem[RTMA_WSPD]].value[pntIndex].data);
+      printf ("match[%d].f_sector = %d\n",allElem[RTMA_WSPD],match[allElem[RTMA_WSPD]].f_sector);
+   }
+   if ((allElem[RTMA_UWSPD] != -1) &&
+       (match[allElem[RTMA_UWSPD]].value[pntIndex].valueType != 2))
+   {
+      printf("rtma_uwspd:%.0f ", match[allElem[RTMA_UWSPD]].value[pntIndex].data);
+      printf ("match[%d].f_sector = %d\n",allElem[RTMA_UWSPD],match[allElem[RTMA_UWSPD]].f_sector);
+   }   
+   if ((allElem[RTMA_SKY] != -1) &&
+       (match[allElem[RTMA_SKY]].value[pntIndex].valueType != 2))
+   {
+      printf("rtma_sky:%.0f ", match[allElem[RTMA_SKY]].value[pntIndex].data);
+      printf ("match[%d].f_sector = %d\n",allElem[RTMA_SKY],match[allElem[RTMA_SKY]].f_sector);
+   }
+   if ((allElem[RTMA_PRECIPA] != -1) &&
+       (match[allElem[RTMA_PRECIPA]].value[pntIndex].valueType != 2))
+   {
+      printf("rtma_precipa:%.0f ", match[allElem[RTMA_PRECIPA]].value[pntIndex].data);
+      printf ("match[%d].f_sector = %d\n",allElem[RTMA_PRECIPA],match[allElem[RTMA_PRECIPA]].f_sector);
+   }
+
    else
    {
       printf("  :      ");

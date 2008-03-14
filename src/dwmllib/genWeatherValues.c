@@ -144,7 +144,7 @@ void genWeatherValues(size_t pnt, char *layoutKey, genMatchType *match,
    icon_def *iconInfo = NULL; /* Array holding the icon information. */
 
 /* Initialize the location where the weather icons are found. */
-   char baseURL[] = "http://www.nws.noaa.gov/weather/images/fcicons/";
+   char baseURL[] = "http://forecast.weather.gov/images/wtf/";
 
    /* Initialize a few things. */
    int numActualRowsSKY;   

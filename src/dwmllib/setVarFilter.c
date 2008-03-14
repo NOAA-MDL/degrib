@@ -16,6 +16,8 @@
  *               2 = DWMLgen's "glance" product.
  *               3 = DWMLgenByDay's "12 hourly" format product.
  *               4 = DWMLgenByDay's "24 hourly" format product. (Input)
+ *               5 = DWMLgen's RTMA "time-series" product.
+ *               6 = DWMLgen's mix of "RTMA & NDFD time-series" product. 
  *      f_icon = Flag denoting whether icons are to be derived and formatted.
  *               If this flag is chosen, the other 4 elements' data used to 
  *               derive the icons must be retrieved/derived too (WS, SKY, 
@@ -25,6 +27,10 @@
  *               2, then the variable wasn't set on the command line as an 
  *               argument, but the call needs this element to derive others. 
  *               (Output)
+ * numNdfdVars = Number of ndfd elements chosen on the command line arg to
+ *               format. (Input)
+ *    ndfdVars = Array holding the enum numbers of the ndfd elements chosen on 
+ *               the command line arg to format. (Input)
  *        
  * FILES/DATABASES: None
  *                
@@ -32,16 +38,22 @@
  *
  *  3/2007 Paul Hershberg (MDL): Created.
  *  8/2007 Paul Hershberg (MDL): Added 12 NDFD Climate Outlook Elements.
+ * 11/2007 Paul Hershberg (MDL): Added 10 RTMA Elements.
+ *  8/2007 Paul Hershberg (MDL): Added 6 RTMA+NDFD Concatenated Elements.
  *
- * NOTES:
+ * NOTES:dfdf
  *****************************************************************************
  */
 #include "xmlparse.h"
-void setVarFilter(sChar f_XML, sChar f_icon, uChar *varFilter)
+void setVarFilter(sChar f_XML, sChar f_icon, size_t numNdfdVars, 
+                  const uChar *ndfdVars, uChar varFilter[NDFD_MATCHALL + 1])
 {
+   int i;
    memset(varFilter, 0, NDFD_MATCHALL + 1);
 
    /* Initialize all elements to 1. */
+
+   /* NDFD Forecast elements. */
    varFilter[NDFD_MAX] = 1;
    varFilter[NDFD_MIN] = 1;
    varFilter[NDFD_POP] = 1;
@@ -91,6 +103,26 @@ void setVarFilter(sChar f_XML, sChar f_icon, uChar *varFilter)
    varFilter[NDFD_PRCPABV90D] = 1;
    varFilter[NDFD_PRCPBLW90D] = 1;
 
+   /* 10 RTMA Elements. */
+   varFilter[RTMA_PRECIPA] = 1;
+   varFilter[RTMA_SKY] = 1;
+   varFilter[RTMA_TD] = 1;
+   varFilter[RTMA_TEMP] = 1;
+   varFilter[RTMA_UTD] = 1;
+   varFilter[RTMA_UTEMP] = 1;
+   varFilter[RTMA_UWDIR] = 1;
+   varFilter[RTMA_UWSPD] = 1;
+   varFilter[RTMA_WDIR] = 1;
+   varFilter[RTMA_WSPD] = 1;
+
+   /* 6 Combined RTMA+NDFD Elements. */
+   varFilter[RTMA_NDFD_PRECIPA] = 1;
+   varFilter[RTMA_NDFD_SKY] = 1;
+   varFilter[RTMA_NDFD_TD] = 1;
+   varFilter[RTMA_NDFD_TEMP] = 1;
+   varFilter[RTMA_NDFD_WDIR] = 1;
+   varFilter[RTMA_NDFD_WSPD] = 1;
+
    /* Force genprobe() to return required NDFD element(s). */
    if (f_XML == 2)
    {
@@ -102,7 +134,7 @@ void setVarFilter(sChar f_XML, sChar f_icon, uChar *varFilter)
       varFilter[NDFD_WX] = 2;
       varFilter[NDFD_POP] = 2;
    }
-   else if (f_XML == 1 && f_icon == 1)
+   else if ((f_XML == 1 || f_XML == 6 ) && f_icon == 1)
    {
       varFilter[NDFD_TEMP] = 2;
       varFilter[NDFD_WS] = 2;
@@ -120,6 +152,36 @@ void setVarFilter(sChar f_XML, sChar f_icon, uChar *varFilter)
       varFilter[NDFD_WG] = 2;
       varFilter[NDFD_SKY] = 2;
       varFilter[NDFD_WX] = 2;
+   }
+
+   /* Force genprobe() to return required RTMA uncertainty element(s), if 
+    * applicable.
+    */
+   if (f_XML == 5 || f_XML == 6)
+   {
+      for (i = 0; i < numNdfdVars; i++)
+      {
+         if (ndfdVars[i] == RTMA_TEMP)
+         {
+            varFilter[RTMA_UTEMP] = 2;
+            continue;
+         }
+         if (ndfdVars[i] == RTMA_TD)
+         {
+            varFilter[RTMA_UTD] = 2;
+            continue;
+         }
+         if (ndfdVars[i] == RTMA_WDIR)
+         {
+            varFilter[RTMA_UWDIR] = 2;
+            continue;
+         }
+         if (ndfdVars[i] == RTMA_WSPD)
+         {
+            varFilter[RTMA_UWSPD] = 2;
+            continue;
+         }
+      }
    }
 
    return;

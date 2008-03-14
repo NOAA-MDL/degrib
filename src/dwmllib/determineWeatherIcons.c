@@ -79,6 +79,11 @@
  *   9/2007 Paul Hershberg (MDL): Changed sky threshold to 50% from 60% to align
  *                                with top of partly cloudy range as this was 
  *                                changed to align with NWSI 10-503.
+ *   1/2008 Paul Hershberg (MDL): Added night component .jpg images for nfu.jpg,
+ *                                and ndu.jpg.
+ *   1/2008 Paul Hershberg (MDL): Removed f_isHaze flag. If Haze occurs as a 
+ *                                weather type, there is no longer an icon
+ *                                associated with it (defaults to cloud/wind).
  *
  * NOTES:
  ******************************************************************************
@@ -101,7 +106,6 @@ void determineWeatherIcons(icon_def *iconInfo, int numGroups, char **wxType,
    int f_isFreezingFog = 0;
    int f_isIceFog = 0;
    int f_isSmoke = 0;
-   int f_isHaze = 0;
    int f_isBlowingDust = 0;
    int f_isBlowingSnow = 0;
    int f_isDrizzle = 0;
@@ -124,8 +128,6 @@ void determineWeatherIcons(icon_def *iconInfo, int numGroups, char **wxType,
          f_isFog = 1;
       else if (strcmp(wxType[groupIndex], "K") == 0)
          f_isSmoke = 1;
-      else if (strcmp(wxType[groupIndex], "H") == 0)
-         f_isHaze = 1;
       else if (strcmp(wxType[groupIndex], "BD") == 0)
          f_isBlowingDust = 1;
       else if (strcmp(wxType[groupIndex], "BS") == 0)
@@ -162,6 +164,8 @@ void determineWeatherIcons(icon_def *iconInfo, int numGroups, char **wxType,
          f_isIceFog = 1;
       else if (strcmp(wxType[groupIndex], "ZY") == 0)
          f_noIcon = 1;
+      else if (strcmp(wxType[groupIndex], "H") == 0)
+         f_noIcon = 1;
       else if (strcmp(wxType[groupIndex], "FR") == 0)
          f_noIcon = 1;
       else
@@ -197,11 +201,9 @@ void determineWeatherIcons(icon_def *iconInfo, int numGroups, char **wxType,
          if (f_isFog || f_isFreezingFog || f_isIceFog)
             sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "nfg.jpg");
          if (f_isSmoke)
-            sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "fu.jpg");
-         if (f_isHaze)
-            sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "hazy.jpg");
+            sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "nfu.jpg");
          if (f_isBlowingDust || f_isBlowingSand)
-            sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "du.jpg");
+            sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "ndu.jpg");
          if (f_isBlowingSnow || f_isBlowingSand)
             sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "blizzard.jpg");
          if (f_isDrizzle || f_isRain)
@@ -295,8 +297,6 @@ void determineWeatherIcons(icon_def *iconInfo, int numGroups, char **wxType,
             sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "fg.jpg");
          if (f_isSmoke)
             sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "fu.jpg");
-         if (f_isHaze)
-            sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "hazy.jpg");
          if (f_isBlowingDust || f_isBlowingSand)
             sprintf(iconInfo[wxIndex].str, "%s%s", baseURL, "du.jpg");
          if (f_isBlowingSnow || f_isBlowingSand)

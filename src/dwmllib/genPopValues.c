@@ -7,7 +7,7 @@
  * PURPOSE
  *  This code performs two functions: 
  *            1) Formats the Pop12hr element in the "time-series" DWMLgen 
- *               product (f_XML = 1). 
+ *               products (f_XML = 1 or 6). 
  *            2) Collects the Max Pop values per summarization (12 or 24 hr 
  *               period) for icon determination in the DWMLgenByDay products
  *               (f_XML = 3 or f_XML =4).
@@ -42,7 +42,9 @@
  *                           (rows) skipped at end of time duration.
  *       f_XML = Flag denoting type of XML product (1 = DWMLgen's "time-series"
  *               product, 2 = DWMLgen's "glance" product, 3 = DWMLgenByDay's 
- *               "12 hourly" product, 4 = DWMLgenByDay's "24 hourly" product.
+ *               "12 hourly" product, 4 = DWMLgenByDay's "24 hourly" product, 
+ *               5 = DWMLgen's "RTMA time-series" product, 6 = DWMLgen's mix of
+ *               "RTMA & NDFD time-series" product.
  *               (Input) 
  * maxDailyPop = Array containing the max pop values corresponding to a day (24 
  *               hour summarization) or 12 hour period (12 hour summarization). 
@@ -110,7 +112,7 @@ void genPopValues(size_t pnt, char *layoutKey, genMatchType *match,
    /* If DWMLgen product, set numFmtdRows = to numRows because we don't have 
     * a set number of rows we are ultimately formatting.
     */
-   if (f_XML == 1 || f_XML == 2)
+   if (f_XML == 1 || f_XML == 2 || f_XML == 6)
       numFmtdRows = numRows.total-numRows.skipBeg-numRows.skipEnd;
    else if (f_XML == 3 || f_XML == 4) 
       numFmtdRows = (*numDays)*2;
@@ -168,7 +170,7 @@ void genPopValues(size_t pnt, char *layoutKey, genMatchType *match,
 	          }
                }
             }   
-            else if (f_XML == 1 || f_XML == 2)
+            else if (f_XML == 1 || f_XML == 2 || f_XML == 6)
             {
                /* If the data is missing, so indicate in the XML (nil=true). */
                if (match[i].value[pnt].valueType == 2)

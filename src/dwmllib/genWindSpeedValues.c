@@ -6,8 +6,8 @@
  *
  * PURPOSE
  *  This code performs two functions: 
- *            1) Formats the Wind Speed element in the "time-series" (f_XML = 1)
- *               and "glance" (f_XML = 2) DWMLgen products. 
+ *            1) Formats the Wind Speed element in the "time-series" (f_XML = 1
+ *               or 6) and "glance" (f_XML = 2) DWMLgen products. 
  *            2) Collects the Max Wind Speed values per day for icon 
  *               determination in the DWMLgenByDay products. It also denotes
  *               the wind direction occurred at the time of max wind speed.
@@ -57,7 +57,9 @@
  *                     1 = DWMLgen's "time-series" product. 
  *                     2 = DWMLgen's "glance" product.
  *                     3 = DWMLgenByDay's "12 hourly" format product.
- *                     4 = DWMLgenByDay's "24 hourly" format product. (Input)
+ *                     4 = DWMLgenByDay's "24 hourly" format product.
+ *                     5 = DWMLgen's RTMA "time-series" product.
+ *                     6 = DWMLgen's RTMA + NDFD "time-series" product. (Input)
  * valTimeForWindDirMatch = Array with the validTimes that corresponds to the 
  *                          times when the max wind speeds are the highest.  We 
  *                          then collect the wind directions that correspond
@@ -72,6 +74,11 @@
  *                  matches can be found. (Input)
  *         endNum = Last index in match structure an individual point's data
  *                  matches can be found. (Input) 
+ *    f_shiftData = Flag used to determine whether we shift data back by 1/2
+ *                  it's period to denote the duration of time the data is 
+ *                  valid for (Soap Service), or to not shift, and simply use
+ *                  the data's endTime (validTime) (JimC's TPEX, FOX, products
+ *                  etc) (Input)
  *
  * FILES/DATABASES: None
  *
@@ -83,6 +90,12 @@
  *                                the period length (bug from php code)
  *  10/2007 Paul Hershberg (MDL): Added back code that shifted data back by 1/2
  *                                the period length. It was erroneously removed.
+ *  11/2007 Paul Hershberg (MDL): Added flag that determines whether to shift data 
+ *                                back by 1/2 the period length (Soap Service) or 
+ *                                not (JimC's TPEX, SSC, etc). 
+ *   2/2008 Paul Hershberg (MDL): Added code to detect if change from DST to 
+ *                                Standard Time (or vice versa) occurred sometime 
+ *                                in the forecast. 
  *
  * NOTES
  ******************************************************************************
@@ -95,7 +108,7 @@ void genWindSpeedValues(double timeUserStart, double timeUserEnd, size_t pnt,
                         sChar TZoffset, sChar f_observeDST, uChar parameterName,
                         numRowsInfo numRows, uChar f_XML,
                         double *valTimeForWindDirMatch, double startTime, 
-                        int startNum, int endNum)
+                        int startNum, int endNum, int f_shiftData)
 {
    int i; /* Counter thru match structure. */
    int period = 3; /* Length between an elements successive validTimes. */
@@ -115,7 +128,16 @@ void genWindSpeedValues(double timeUserStart, double timeUserEnd, size_t pnt,
    xmlNodePtr value = NULL;   /* Xml Node Pointer for <value> element. */
    char strBuff[30];          /* Temporary string buffer holding rounded
                                * data. */
-   
+   char month[3];             /* String holding formatted month to see if a 
+                                 change from standard to daylight savings time
+                                 (or vice versa) occurs within forecast period
+                                 in question. */
+   int interval = timeInterval; /* Used in case DST to Standard time (or vice 
+                                 * versa) occurs sometime in the forecast. */
+   int f_DSTswitchFound = 0; /* Used to detect of there was a switch from  
+                              * Standard to DST in Spring or vice versa in 
+                              * Fall. */
+
    /* Set the first iteration to the incoming user supplied startTime if 
     * product is a summarization.
     */
@@ -123,7 +145,7 @@ void genWindSpeedValues(double timeUserStart, double timeUserEnd, size_t pnt,
       timeUserStartStep = timeUserStart;
 
    /* If the product is of type DWMLgen, format the <wind_speed> element. */
-   if (f_XML == 1 || f_XML == 2)
+   if (f_XML == 1 || f_XML == 2 || f_XML == 6)
    {
       wind_speed = xmlNewChild(parameters, NULL, BAD_CAST "wind-speed", NULL);
       xmlNewProp(wind_speed, BAD_CAST "type", BAD_CAST "sustained");
@@ -144,7 +166,7 @@ void genWindSpeedValues(double timeUserStart, double timeUserEnd, size_t pnt,
 	  match[i].validTime >= numRows.firstUserTime &&
           match[i].validTime <= numRows.lastUserTime)
       {
-         if (f_XML == 1 || f_XML == 2)  /* DWMLgen products. */
+         if (f_XML == 1 || f_XML == 2 || f_XML == 6)  /* DWMLgen products. */
          {
             /* If the data is missing, so indicate in the XML (nil=true). */
             if (match[i].value[pnt].valueType == 2)
@@ -182,23 +204,56 @@ void genWindSpeedValues(double timeUserStart, double timeUserEnd, size_t pnt,
              * from 6AM - 6PM. We shift data by one half the data's period in
              * seconds. 
 	     */
-	    if ((i - (priorElemCount + startNum)) < 1)
-               period = determinePeriodLength(match[i].validTime,
+            if (f_shiftData)
+            {
+	       if ((i - (priorElemCount + startNum)) < 1)
+                  period = determinePeriodLength(match[i].validTime,
                                match[i + 1].validTime, 
 			       (numRows.total-numRows.skipBeg-numRows.skipEnd),
                                parameterName);
-            else
-               period = determinePeriodLength(match[i - 1].validTime,
+               else
+                  period = determinePeriodLength(match[i - 1].validTime,
                                match[i].validTime,
                                (numRows.total-numRows.skipBeg-numRows.skipEnd),
 			       parameterName);
 
-	    WSintegerTime = WSintegerTime - (((double)period * 0.5) * 3600);
+	       WSintegerTime = WSintegerTime - (((double)period * 0.5) * 3600);
+            }
+
+            /* See if the forecast period time interval is not quite 12 
+             * (f_XML = 3) or 24 (f_XML = 4) hours due to a change in DST 
+             * occurring in a specific forecast period. In the Spring, 
+             * "spring" forward in time resulting in a reduction in 1 hour in 
+             * the forecast period. Do the opposite if in Fall.
+             */
+            if (!f_DSTswitchFound)
+            {
+               formatValidTime(timeUserStartStep, strBuff, 30, TZoffset, 
+                               f_observeDST);
+               month[0] = strBuff[5];
+               month[1] = strBuff[6];
+               month[2] = '\0';
+
+               if (atoi(month) < 6) 
+               {
+                  if ((Clock_IsDaylightSaving2(timeUserStartStep, TZoffset) != 1) 
+                     && (Clock_IsDaylightSaving2(timeUserStartStep + interval, 
+                     TZoffset) == 1))
+                     interval = interval - 3600;
+               }
+               else
+               { 
+                  if ((Clock_IsDaylightSaving2(timeUserStartStep, TZoffset) == 1) 
+                     && (Clock_IsDaylightSaving2(timeUserStartStep + interval, 
+                     TZoffset) != 1))
+                     interval = interval + 3600;
+               }
+            }
 
             /* Determine if this time is within the current day being
              * processed. */
             if ((timeUserStartStep <= WSintegerTime) &&
-                (WSintegerTime < (timeUserStartStep + timeInterval)))
+                (WSintegerTime < (timeUserStartStep + interval)))
             {
                /* We need the max windspeed for weather phrase/icon
                 * determination later on. Also, collect the valid times in
@@ -218,17 +273,53 @@ void genWindSpeedValues(double timeUserStart, double timeUserEnd, size_t pnt,
             }
             forecastPeriod = ((WSintegerTime - timeUserStartStep) / 3600);
 
-            if (f_XML == 3 && (forecastPeriod + period) >= 12)
+            if (f_XML == 3 && ((forecastPeriod + period) >= (interval/3600)))
             {
                currentDay++;
-               timeUserStartStep = timeUserStart + (currentDay *
-                                   timeInterval);
+
+               /* If there was a change from Standard to DST (or vice versa),
+                * detect this and add accordingly to get the time of the 
+                * next forecast period. 
+                */
+               if (f_DSTswitchFound)
+               {                  
+                  if (atoi(month) < 6) /* Spring. */
+                     timeUserStartStep = timeUserStart + 
+                                         (currentDay * timeInterval) - 3600;
+                  else /* Fall. */
+                     timeUserStartStep = timeUserStart + 
+                                         (currentDay * timeInterval) + 3600;
+               }
+               else
+                  timeUserStartStep = timeUserStart +
+                                      (currentDay * timeInterval);
+
+               interval = timeInterval;
                forecastPeriod = 0;
             }
-            else if (f_XML == 4 && (forecastPeriod + period) >= 24)
+            else if (f_XML == 4 && ((forecastPeriod + period) >= 
+                    (interval/3600)))
             {
                currentDay++;
-               timeUserStartStep = timeUserStart + (currentDay * timeInterval);
+
+               /* If there was a change from Standard to DST (or vice versa),
+                * detect this and add accordingly to get the time of the 
+                * next forecast period. 
+                */
+               if (f_DSTswitchFound)
+               {                  
+                  if (atoi(month) < 6) /* Spring. */
+                     timeUserStartStep = timeUserStart + 
+                                         (currentDay * timeInterval) - 3600;
+                  else /* Fall. */
+                     timeUserStartStep = timeUserStart + 
+                                         (currentDay * timeInterval) + 3600;
+               }
+               else
+                  timeUserStartStep = timeUserStart +
+                                      (currentDay * timeInterval);
+
+               interval = timeInterval;
                forecastPeriod = 0;
             }
          }

@@ -88,12 +88,6 @@
  *                    speed values were found per forecast period.  These values
  *                    are used in deriving the weather and/or icon values. 
  *                    (Input) 
- *     integerTime = Number of seconds since 1970 to when the data is valid.
- *                   Allows the code to know if this data belongs in the current
- *                   period being processed. Info is used in the generation of 
- *                   weather as a spring/fall signifier. (Input)
- * integerStartUserTime = The beginning of the first forecast period (06 hr or 18hr) 
- *                        based on the user supplied startTime argument. (Input)                          
  *   startTime_cml = Incoming argument set by user as a double in seconds 
  *                   since 1970 denoting the starting time data is to be 
  *                   retrieved for from NDFD. (Set to 0.0 if not entered.)
@@ -105,6 +99,13 @@
  *                   matches can be found. (Input)
  *          endNum = Last index in match structure an individual point's data
  *                   matches can be found. (Input)
+ *     f_shiftData = Flag used to determine whether we shift data back by 1/2
+ *                   it's period to denote the duration of time the data is 
+ *                   valid for (Soap Service), or to not shift, and simply use
+ *                   the data's endTime (validTime) (JimC's TPEX, FOX, products
+ *                   etc) (Input)
+ * maxWindSpeedValTimes = Array holding valid Time of max Wind Speed per 
+ *                        forecast period (Input). 
  *
  * FILES/DATABASES: None
  *                
@@ -116,6 +117,12 @@
  *  7/2007 Paul Hershberg (MDL): Added capability of new T-storm dominance algorithm.
  * 10/2007 Paul Hershberg (MDL): Removed code that shifted data back by 1/2
  *                               the period length (bug from php code)
+ * 11/2007 Paul Hershberg (MDL): Added flag that determines whether to shift data 
+ *                               back by 1/2 the period length (Soap Service) or 
+ *                               not (JimC's TPEX, SSC, etc). 
+ *  3/2008 Paul Hershberg (MDL): Added maxWindSpeedValTimes for determination 
+ *                               of Cold vs Warm season in windExtremePhrase.c 
+ *                               routine.
  *
  * NOTES:
  *****************************************************************************
@@ -134,9 +141,9 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
 			   int *minSkyCover, int *maxSkyNum, int *minSkyNum, 
 			   int *startPositions, int *endPositions, 
 			   int *maxWindSpeed, int *maxWindDirection, 
-			   int integerTime, int integerStartUserTime, 
 			   double startTime_cml, int format_value, int startNum,
-                           int endNum)
+                           int endNum, int f_shiftData, 
+                           double *maxWindSpeedValTimes)
 {
    double springDoubleDate = 0.0; /* The end date of next cold season expressed
                                      in double form. */
@@ -287,7 +294,7 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
    
    /* Initialize the location where the weather icons are found. */
    char baseURL[] = "http://www.nws.noaa.gov/weather/images/fcicons/";
-  
+
    /************************************************************************/
    /* Initialize the actual number of rows we are working with for the 5
     * elements of interest. 
@@ -323,19 +330,21 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
          wgInfo[i -priorElemCount-startNum].validTime = match[i].validTime;
 
          /* Subtract half the period. */
-  	 if ((i-priorElemCount-startNum) < 1)
-            period = determinePeriodLength(match[i].validTime,
-                                           match[i + 1].validTime, 
-					   numActualRowsWG, NDFD_WG);
-         else
-            period = determinePeriodLength(match[i - 1].validTime,
-                                           match[i].validTime,
-                                           numActualRowsWG, NDFD_WG);
+         if (f_shiftData)
+         {
+  	    if ((i-priorElemCount-startNum) < 1)
+               period = determinePeriodLength(match[i].validTime,
+                                              match[i + 1].validTime, 
+   					      numActualRowsWG, NDFD_WG);
+            else
+               period = determinePeriodLength(match[i - 1].validTime,
+                                              match[i].validTime,
+                                              numActualRowsWG, NDFD_WG);
 
-         wgInfo[i -priorElemCount-startNum].validTime = 
-         wgInfo[i -priorElemCount-startNum].validTime - 
-                       (((double)period * 0.5) * 3600);
-
+            wgInfo[i -priorElemCount-startNum].validTime = 
+            wgInfo[i -priorElemCount-startNum].validTime - 
+                           (((double)period * 0.5) * 3600);
+         }
          wgInfo[i-priorElemCount-startNum].data =
                 (int)myRound(match[i].value[pnt].data, 0);
          wgInfo[i-priorElemCount-startNum].valueType =
@@ -362,19 +371,21 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
          wsInfo[i -priorElemCount-startNum].validTime = match[i].validTime;
 
          /* Subtract half the period. */
-  	 if ((i-priorElemCount-startNum) < 1)
-            period = determinePeriodLength(match[i].validTime,
-                                           match[i + 1].validTime, 
-					   numActualRowsWS, NDFD_WS);
-         else
-            period = determinePeriodLength(match[i - 1].validTime,
-                                           match[i].validTime,
-                                           numActualRowsWS, NDFD_WS);
+         if (f_shiftData)
+         {
+  	    if ((i-priorElemCount-startNum) < 1)
+               period = determinePeriodLength(match[i].validTime,
+                                              match[i + 1].validTime, 
+					      numActualRowsWS, NDFD_WS);
+            else
+               period = determinePeriodLength(match[i - 1].validTime,
+                                              match[i].validTime,
+                                              numActualRowsWS, NDFD_WS);
 
-         wsInfo[i -priorElemCount-startNum].validTime = 
-         wsInfo[i -priorElemCount-startNum].validTime - 
-                       (((double)period * 0.5) * 3600);
-
+            wsInfo[i -priorElemCount-startNum].validTime = 
+            wsInfo[i -priorElemCount-startNum].validTime - 
+                          (((double)period * 0.5) * 3600);
+         }
          wsInfo[i-priorElemCount-startNum].data =
                 (int)myRound(match[i].value[pnt].data, 0);
          wsInfo[i-priorElemCount-startNum].valueType =
@@ -400,18 +411,21 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
          wxInfo[i -priorElemCount-startNum].validTime = match[i].validTime;
 
          /* Subtract half the period. */
-  	 if ((i-priorElemCount-startNum) < 1)
-            period = determinePeriodLength(match[i].validTime,
-                                           match[i + 1].validTime, 
-					   numActualRowsWX, NDFD_WX);
-         else
-            period = determinePeriodLength(match[i - 1].validTime,
-                                           match[i].validTime,
-                                           numActualRowsWX, NDFD_WX);
+         if (f_shiftData)
+         {
+  	    if ((i-priorElemCount-startNum) < 1)
+               period = determinePeriodLength(match[i].validTime,
+                                              match[i + 1].validTime, 
+					      numActualRowsWX, NDFD_WX);
+            else
+               period = determinePeriodLength(match[i - 1].validTime,
+                                              match[i].validTime,
+                                              numActualRowsWX, NDFD_WX);
 
-         wxInfo[i -priorElemCount-startNum].validTime = 
-         wxInfo[i -priorElemCount-startNum].validTime - 
-                       (((double)period * 0.5) * 3600);
+            wxInfo[i -priorElemCount-startNum].validTime = 
+            wxInfo[i -priorElemCount-startNum].validTime - 
+                          (((double)period * 0.5) * 3600);
+         }
 
          if (match[i].value[pnt].valueType != 0 &&
              match[i].value[pnt].valueType != 2)
@@ -1386,8 +1400,7 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
 				averageSkyCover, maxSkyCover, minSkyCover, 
 				maxSkyNum, minSkyNum, periodMaxTemp, 
 				springDoubleDate, fallDoubleDate, 
-				maxWindSpeed, maxWindDirection, integerTime, 
-				integerStartUserTime, startPositions, 
+				maxWindSpeed, maxWindDirection, startPositions, 
 				endPositions, f_isDrizzle, f_isRain, 
 				f_isRainShowers, f_isIcePellets, f_isSnow, 
 				f_isSnowShowers, f_isFreezingDrizzle, 
@@ -1396,7 +1409,8 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
                                 periodStartTimes[dayIndex], 
                                 periodEndTimes[dayIndex], iconInfo, phrase, 
                                 &f_popIsNotAnIssue, numActualRowsWS, 
-                                numActualRowsWG, percentTimeWithFog);
+                                numActualRowsWG, percentTimeWithFog, 
+                                maxWindSpeedValTimes);
 
          if (strcmp(phrase[dayIndex],"none") == 0)
          { 
@@ -1518,6 +1532,8 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
    /* Free some things. */
    for (i = 0; i < *numOutputLines; i++)
       free(phrase[i]);
+   free(wsInfo);
+   free(wgInfo);
    free(wxInfo);
    free(iconInfo);
    free(isDataAvailable);

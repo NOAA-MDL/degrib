@@ -30,7 +30,9 @@
  *                    1 = DWMLgen's "time-series" product. 
  *                    2 = DWMLgen's "glance" product.
  *                    3 = DWMLgenByDay's "12 hourly" format product.
- *                    4 = DWMLgenByDay's "24 hourly" format product. (Input)
+ *                    4 = DWMLgenByDay's "24 hourly" format product.
+ *                    5 = DWMLgen's RTMA "time-series" product.
+ *                    6 = DWMLgen's RTMA + NDFD "time-series" product. (Input)
  * numOutputLines = The number of data values output/formatted for each element. 
  *                  (Input)
  * valTimeForWindDirMatch = Array with the validTimes that corresponds to the 
@@ -92,7 +94,7 @@ void genWindDirectionValues(size_t pnt, char *layoutKey, genMatchType * match,
       
    /* If the product is of type DWMLgen, format the <wind_direction> element. 
     */
-   if (f_XML == 1 || f_XML == 2)
+   if (f_XML == 1 || f_XML == 2|| f_XML == 6)
    {
       direction = xmlNewChild(parameters, NULL, BAD_CAST "direction", NULL);
       xmlNewProp(direction, BAD_CAST "type", BAD_CAST "wind");
@@ -114,7 +116,7 @@ void genWindDirectionValues(size_t pnt, char *layoutKey, genMatchType * match,
 	  match[i].validTime >= numRows.firstUserTime &&
 	  match[i].validTime <= numRows.lastUserTime)
       {
-         if (f_XML == 1 || f_XML == 2)  /* DWMLgen products. */
+         if (f_XML == 1 || f_XML == 2|| f_XML == 6)  /* DWMLgen products. */
          {
             /* If the data is missing, so indicate in the XML (nil=true). */
             if (match[i].value[pnt].valueType == 2)

@@ -101,13 +101,19 @@ typedef struct                /* Denotes structure of sector info for use in a
 } sectInfo;
  
 /* Declare XMLParse() interfaces. */
+void anyRtmaElements(uChar *f_XML, size_t *numInFiles, char ***inFiles, 
+                     size_t numNdfdVars, uChar *ndfdVars, 
+                     char *rtmaDataDir, int f_icon, size_t numSector, 
+                     char **sector, int *f_rtmaNdfdTemp, int *f_rtmaNdfdTd, 
+                     int *f_rtmaNdfdWdir, int *f_rtmaNdfdWspd,
+                     int *f_rtmaNdfdPrecipa,int *f_rtmaNdfdSky);
 
 void blizzardCheck (int blizzCnt, double periodStartTime, double periodEndTime,
                     double *blizzardTime, int numRowsWS, int numRowsWG,
                     elem_def *wsInfo, elem_def *wgInfo, int dayIndex,
                     int *_iconToBlizz, char **phrase);
 
-int checkNeedForEndTime(uChar parameterName);
+int checkNeedForEndTime(uChar parameterName, uChar f_XML);
 
 void checkNeedForPeriodName(int index, uChar * numPeriodNames,
                             sChar timeZoneOffset, uChar parameterName,
@@ -115,7 +121,7 @@ void checkNeedForPeriodName(int index, uChar * numPeriodNames,
                             uChar issuanceType, char *periodName, 
                             char *currentHour, char *currentDay, 
                             double startTime_cml, double currentDoubTime,
-                            double firstValidTime, int period);
+                            double firstValidTime);
 
 void computeStartEndTimes(uChar parameterName, uChar numFmtdRows,
                           int periodLength, sChar TZoffset,
@@ -124,6 +130,12 @@ void computeStartEndTimes(uChar parameterName, uChar numFmtdRows,
                           char *frequency, uChar f_XML, double startTime_cml, 
 			  double currentDoubTime, numRowsInfo numRows, 
                           int startNum, int endNum);
+
+void concatRtmaNdfdValues(size_t pnt, char *layoutKey, genMatchType *match, 
+                          uChar NDFDname, uChar RTMAname, char *name, 
+                          char *metElement, char *type, char *units, 
+                          xmlNodePtr parameters, numRowsInfo numRowsNDFD, 
+                          numRowsInfo numRowsRTMA, int startNum, int endNum);
 
 void determineIconUsingPop(char *iconString, char *wxStrSection, 
 		           char *jpgStrSection, int POP12ValToPOP3, 
@@ -213,6 +225,12 @@ void genRelHumidityValues(size_t pnt, char *layoutKey, genMatchType * match,
                            xmlNodePtr parameters, numRowsInfo numRows, 
                            int startNum, int endNum);
 
+void genRtmaValues(size_t pnt, char *layoutKey, uChar parameterName,
+                   int errorName, genMatchType *match, char *rtmaName, 
+                   char *rtmaElement, char *rtmaType, char *rtmaUnits, 
+                   xmlNodePtr parameters, numRowsInfo numRows, int startNum, 
+                   int endNum);
+
 void genSkyCoverValues(size_t pnt, char *layoutKey, genMatchType * match,
                        xmlNodePtr parameters, char *startDate, int *maxSkyCover,
                        int *minSkyCover, int *averageSkyCover, 
@@ -220,9 +238,9 @@ void genSkyCoverValues(size_t pnt, char *layoutKey, genMatchType * match,
                        sChar f_observeDST, uChar parameterName,
                        numRowsInfo numRows, uChar f_XML, int *maxSkyNum,
                        int *minSkyNum, int *startPositions, int *endPositions, 
-                       int *SKYintegerTime, char *currentHour, 
-                       double timeUserStart, double startTime, int startNum, 
-                       int endNum);
+                       char *currentHour, double timeUserStart, 
+                       double startTime, int startNum, int endNum, 
+                       int f_shiftData);
 
 void genSnowValues(size_t pnt, char *layoutKey, genMatchType *match,
                    xmlNodePtr parameters, numRowsInfo numRows, int startNum, 
@@ -258,9 +276,9 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
 			   int *minSkyCover, int *maxSkyNum, int *minSkyNum, 
 			   int *startPositions, int *endPositions, 
 			   int *maxWindSpeed, int *maxWindDirection, 
-			   int integerTime, int integerStartUserTime, 
 			   double startTime_cml, int format_value, int startNum, 
-                           int endNum);
+                           int endNum, int f_shiftData, 
+                           double *maxWindSpeedValTimes);
 
 void genWindDirectionValues(size_t pnt, char *layoutKey, genMatchType * match,
                             xmlNodePtr parameters, int *maxWindDirection,
@@ -284,7 +302,19 @@ void genWindSpeedValues(double timeUserStart, double timeUserEnd, size_t pnt,
                         sChar TZoffset, sChar f_observeDST, uChar parameterName,
                         numRowsInfo numRows, uChar f_XML,
                         double *valTimeForWindDirMatch, double startTime, 
-                        int startNum, int endNum);
+                        int startNum, int endNum, int f_shiftData);
+
+void generateConcatTimeLayout(numRowsInfo *numRows, uChar concatElem,
+                              char *layoutKey, const char *timeCoordinate,
+                              char *summarization, genMatchType *match,
+                              size_t numMatch, uChar f_formatPeriodName,
+                              sChar TZoffset, sChar f_observeDST,
+                              size_t *numLayoutSoFar,
+                              uChar *numCurrentLayout, char *currentHour,
+                              char *currentDay, char *frequency,
+                              xmlNodePtr data, double startTime_cml,
+                              double currentDoubTime,
+		      	      uChar f_XML, int startNum, int endNum);
 
 void generatePhraseAndIcons (int dayIndex, char *frequency, 
                              int timeLayoutHour, char *dominantWeather[4],
@@ -294,8 +324,7 @@ void generatePhraseAndIcons (int dayIndex, char *frequency,
 			     int *minSkyNum, int *periodMaxTemp, 
 			     double springDoubleDate, 
 			     double fallDoubleDate,  int *maxWindSpeed, 
-			     int *maxWindDirection, int integerTime, 
-			     int integerStartUserTime, int *startPositions, 
+			     int *maxWindDirection, int *startPositions, 
 			     int *endPositions, int f_isDrizzle, 
 			     int f_isRain, int f_isRainShowers, 
 			     int f_isIcePellets, int f_isSnow, 
@@ -306,7 +335,8 @@ void generatePhraseAndIcons (int dayIndex, char *frequency,
                              double periodStartTime, double periodEndTime, 
                              icon_def *iconInfo, char **phrase, 
                              int *f_popIsNotAnIssue, int numRowsWS, 
-                             int numRowsWG, int percentTimeWithFog);
+                             int numRowsWG, int percentTimeWithFog, 
+                             double *maxWindSpeedValTimes);
 
 void generateTimeLayout(numRowsInfo numRows, uChar parameterName,
                         char *layoutKey, const char *timeCoordinate,
@@ -337,7 +367,10 @@ void getNumRows(numRowsInfo *numRowsForPoint, double *timeUserStart,
                 int *numDays, double startTime, double endTime, 
                 char currentHour[3], double *firstValidTime_pop, 
                 double *firstValidTimeMatch, int *f_formatIconForPnt, 
-                int *f_formatSummarizations, int pnt);
+                int *f_formatSummarizations, int pnt, int *pnt_rtmaNdfdTemp, 
+                int *pnt_rtmaNdfdTd, int *pnt_rtmaNdfdWdir, 
+                int *pnt_rtmaNdfdWspd, int *pnt_rtmaNdfdPrecipa, 
+                int *pnt_rtmaNdfdSky, double currentDoubTime);
 
 void getPeriodInfo(uChar parameterName, char *firstValidTime, char *currentHour, 
                    char *currentDay, uChar * issuanceType, 
@@ -393,7 +426,11 @@ void prepareDWMLgenByDay(genMatchType *match, uChar f_XML,
                          uChar **wxParameters, int *timeInterval,
                          int *numOutputLines, char *summarization,
 			 double currDoubTime, size_t numPnts, 
-                         PntSectInfo *pntInfo);
+                         PntSectInfo *pntInfo, char **currentLocalDate);
+
+void prepareVarFilter(sChar f_XML, sChar f_icon, size_t numNdfdVars, 
+                      uChar *ndfdVars, uChar varFilter[NDFD_MATCHALL + 1], 
+                      size_t *numElem, genElemDescript **elem);
 
 void prepareWeatherValuesByDay (genMatchType *match, sChar TZoffset,
 		                sChar f_observeDST, char *frequency,
@@ -419,7 +456,11 @@ void PrintTime(genMatchType * match, size_t pntIndex, int *allElem,
 
 int roundPopNearestTen(int num);
 
-void setVarFilter(sChar f_XML, sChar f_icon, uChar *varFilter);
+void rtmaFileNames(size_t *numInFiles, char ***inFiles, char *directoryTail, 
+                   char *rtmaSetDir);
+
+void setVarFilter(sChar f_XML, sChar f_icon, size_t numNdfdVars, 
+                  const uChar *ndfdVars, uChar varFilter[NDFD_MATCHALL + 1]);
 
 void skyPhrase(int *maxSkyCover, int *minSkyCover, int *averageSkyCover, 
 	       int dayIndex, int f_isDayTime, int f_isNightTime, int *maxSkyNum,  
@@ -437,18 +478,20 @@ int useNightPeriodName(char *dataTime);
 void windExtremePhrase(int f_isDayTime, int f_isNightTime, int dayIndex, 
                        char *baseURL, double springDoubleDate, 
 		       double fallDoubleDate, int *maxWindSpeed, 
-		       int *maxWindDirection, int integerTime, 
-		       int integerStartUserTime, int *periodMaxTemp, 
-		       icon_def *iconInfo, char **phrase);
+	               int *maxWindDirection, int *periodMaxTemp, 
+		       icon_def *iconInfo, char **phrase, 
+                       double *maxWindSpeedValTimes);
 
 int XMLmatchCompare(const void *A, const void *B);
 
-int XMLParse (uChar f_XML, size_t numPnts, Point * pnts, PntSectInfo *pntInfo,
-              sChar f_pntType, char **labels, size_t numInFiles,
-              char **inFiles, uChar f_fileType, sChar f_interp, sChar f_unit,
-              double majEarth, double minEarth, sChar f_icon,
-              sChar f_SimpleVer, sChar f_valTime, double startTime,
-              double endTime, size_t numNdfdVars, uChar *ndfdVars,
-              char *f_inTypes, char *gribFilter, size_t numSector,
-              char ** sector, sChar f_ndfdConven, sChar f_avgInterp);
+int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
+             PntSectInfo * pntInfo, sChar f_pntType, char **labels,
+             size_t *numInFiles, char ***inFiles, uChar f_fileType,
+             sChar f_interp, sChar f_unit, double majEarth, double minEarth,
+             sChar f_icon, sChar f_SimpleVer, sChar f_valTime,
+             double startTime, double endTime, size_t numNdfdVars, 
+             uChar *ndfdVars, char *f_inTypes, char *gribFilter, 
+             size_t numSector, char **sector, sChar f_ndfdConven, 
+             char *rtmaDataDir);
+
 #endif

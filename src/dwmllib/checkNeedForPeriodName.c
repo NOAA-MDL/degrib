@@ -35,13 +35,14 @@
  *   firstValidTime = First valid time of element. (Input)
  *      currentHour = Today's hour. Used to determine if POP value should be 
  *                    called "overnight" or "later today". (Input)
- *           period = Length between an elements successive validTimes (Input).
  * 
  * FILES/DATABASES: None
  *                
  * RETURNS: void
  *
  *  2/2006 Paul Hershberg (MDL): Created.
+ *  2/2008 Paul Hershberg (MDL): Removed "period" as incoming argument to 
+ *                               routine.
  *
  * NOTES:
  *****************************************************************************
@@ -53,7 +54,7 @@ void checkNeedForPeriodName(int index, uChar * numPeriodNames,
                             uChar issuanceType, char *periodName, 
                             char *currentHour, char *currentDay, 
                             double startTime_cml, double currentDoubTime,
-                            double firstValidTime, int period)
+                            double firstValidTime)
 {
    static char TDay[3];       /* String holding 2-dig date. */
    uChar whichPeriodName = 3; /* An index (dimension #2 of periodData array)

@@ -59,10 +59,10 @@
  *
  * HISTORY:
  *  2/2006 Paul Hershberg (MDL): Created.
- * 10/2007 Paul Hershberg (MDL): Put in "if (atoi(currHour[j]) < 8)" 
- *                               statement to decipher if current hour
- *                               is between 5Z and 12Z.
- *
+ * 11/2007 Paul Hershberg (MDL): Put in "if statement to decipher if current 
+ *                               hour is between 5Z and 12Z.
+ * 11/2007 Paul Hershberg (MDL): Added code to make startDate work as local 
+ *                               time.
  * NOTES:
  *****************************************************************************
  */
@@ -74,39 +74,43 @@ void prepareDWMLgenByDay(genMatchType *match, uChar f_XML,
                          uChar **wxParameters, int *timeInterval,
                          int *numOutputLines, char *summarization,
 			 double currDoubTime, size_t numPnts, 
-                         PntSectInfo *pntInfo)
+                         PntSectInfo *pntInfo, char **currentLocalDate)
 {
    int i; /* Counter through the match structure. */
    int j; /* Counter through points. */
+   int f_startTimeToZero = 0; /* After the point loop and upon exiting routine,
+                               * flag denotes whether to turn incoming user
+                               * supplied startTime to zero. */
+   int f_endTimeToZero = 0; /* After the point loop and upon exiting routine,
+                             * flag denotes whether to turn incoming user
+                             * supplied endTime to zero. */
    int startNum; /* First index in match structure an individual point's data
                   * matches can be found. */
    int endNum;/* Last index in match structure an individual point's data
                * matches can be found. */
    double lastValidTimeMatch = 0.0; /* Time of last valid data value. Used in 
                                      * determining numDays value. */
-   char **currHour = NULL; /* Current hour's 2-digit hour. */
-   char currLocalTime[30]; /* Current Local Time in
-                            * "2006-14-29T00:00:00-00:00" format. */
+   char currUTCHour[3];  /* Current UTC hour in 2-digit form. */
+   char currUTCTime[30]; /* Current UTC Time in
+                          * "2006-12-29T00:00:00-00:00" format. */
+   char currUTCDate[3];  /* Current UTC date in 2-digit form. */
 
-   currHour = (char **)malloc(numPnts * sizeof(char *));
+   /* Find the current hour in UTC form. */
+   Clock_Print2(currUTCTime, 30, currDoubTime,
+                "%Y-%m-%dT%H:%M:%S", 0, 0);
+   currUTCHour[0] = currUTCTime[11];
+   currUTCHour[1] = currUTCTime[12];
+   currUTCHour[2] = '\0';
+   currUTCDate[0] = currUTCTime[8];
+   currUTCDate[1] = currUTCTime[9];
+   currUTCDate[2] = '\0';
+
 
    /* Get the validTime of the first match and last match of the match 
     * structure. We'll need these to calculate numDays. 
     */
    for (j = 0; j < numPnts; j++)
    {
-      /* Convert the system time to a formatted local time
-       * (i.e. 2006-02-02T17:00:00-05:00) to get the current Hour
-       * for the point location. 
-       */
-      Clock_Print2(currLocalTime, 30, currDoubTime,
-                   "%Y-%m-%dT%H:%M:%S", pntInfo[j].timeZone, 1);
-
-      /* Now get the current day's hour. */
-      currHour[j] = (char *) malloc(3 * sizeof(char));
-      currHour[j][0] = currLocalTime[11];
-      currHour[j][1] = currLocalTime[12];
-      currHour[j][2] = '\0';
 
 /*      printf ("pntInfo[%d].startNum = %d\n",j,pntInfo[j].startNum);
         printf ("pntInfo[%d].endNum = %d\n",j,pntInfo[j].endNum);
@@ -134,21 +138,22 @@ void prepareDWMLgenByDay(genMatchType *match, uChar f_XML,
           */	   
          if (*endTime_cml < currDoubTime || *endTime_cml > lastValidTimeMatch)
          {
-            *endTime_cml = 0.0;
-            numDays[j] = ceil(((lastValidTimeMatch - currDoubTime) / 3600) / 24);
+            f_endTimeToZero = 1;
+            numDays[j] = ceil(((lastValidTimeMatch - currDoubTime) / 3600) / 24);\
          }
          else
             numDays[j] = (int)myRound(((*endTime_cml - currDoubTime) / 3600) / 24, 0);
       }
       else if (*startTime_cml != 0.0 && *endTime_cml == 0.0)
       {
+
          /* Then startTime was entered as a command line argument. First, see if 
           * the startTime occurs before current system time. If so, simply treat 
           * it as if no startTime was entered (set startTime = 0.0).
           */
          if (*startTime_cml < currDoubTime || *startTime_cml > lastValidTimeMatch)
          {
-            *startTime_cml = 0.0;
+            f_startTimeToZero = 1;
             numDays[j] = ceil(((lastValidTimeMatch - currDoubTime) / 3600) / 24);
          }      
          else
@@ -165,17 +170,17 @@ void prepareDWMLgenByDay(genMatchType *match, uChar f_XML,
           if (*startTime_cml < currDoubTime || *startTime_cml > lastValidTimeMatch)
           { 
              /* startTime not valid. */
-             *startTime_cml = 0.0;
+             f_startTimeToZero = 1;
              if (*endTime_cml < currDoubTime || *endTime_cml > lastValidTimeMatch)
              {
                 /* endTime is not valid. */
-                *endTime_cml = 0.0;
+                f_endTimeToZero = 1;
                 numDays[j] = ceil(((lastValidTimeMatch - currDoubTime) / 3600) / 24);
              }
              else /* startTime is not valid (before current time), but endTime is valid, 
                      shortening the time period data is retrieved for. */
              {
-                if (atoi(currHour[j]) < 8)
+                if (atoi(currUTCHour) >= 5 && atoi(currUTCHour) < 12)
                 /* This if statement is needed because we set the startTime at 5Z on
                  * the date specified by startDate. For example, if startDate is set
                  * on command line to "2007-10-29" then the startTime is converted to
@@ -186,11 +191,17 @@ void prepareDWMLgenByDay(genMatchType *match, uChar f_XML,
                  * this with either the floor or ceil command when determining numDays.
                  */
                 {
-                   numDays[j] = floor((*endTime_cml - currDoubTime) / (3600 * 24));
+                   if (strcmp(currentLocalDate[j], currUTCDate) != 0)
+                      numDays[j] = floor((*endTime_cml - (currDoubTime-(3600*24))) / (3600 * 24));
+                   else
+                      numDays[j] = ceil((*endTime_cml - currDoubTime) / (3600 * 24));
                 }
                 else
                 {
-                   numDays[j] = ceil((*endTime_cml - currDoubTime) / (3600 * 24));
+                   if (strcmp(currentLocalDate[j], currUTCDate) != 0)
+                      numDays[j] = floor((*endTime_cml - (currDoubTime-(3600*24))) / (3600 * 24));
+                   else
+                      numDays[j] = ceil((*endTime_cml - currDoubTime) / (3600 * 24));   
                 }
              }
           }
@@ -199,14 +210,12 @@ void prepareDWMLgenByDay(genMatchType *match, uChar f_XML,
              if (*endTime_cml < currDoubTime || *endTime_cml > lastValidTimeMatch)
              { 
                 /* endTime is not valid. */
-                *endTime_cml = 0.0; 
+                f_endTimeToZero = 1;
                 numDays[j] = ceil(((lastValidTimeMatch - *startTime_cml) / 3600) / 24);
              }
              else /* Both are valid, shortening the time period data is returned for. */
-             {
                 numDays[j] = floor((*endTime_cml - *startTime_cml) / (3600 * 24));
-             }
-          }   
+          }
       }
 
       /* Flag the below four elements for formatting in the ouput XML (icons
@@ -235,8 +244,6 @@ void prepareDWMLgenByDay(genMatchType *match, uChar f_XML,
       else if (f_XML == 4)
          numOutputLines[j] = numDays[j];
 
-      free(currHour[j]);
-
    } /* End Point Loop. */
 
    /* DWMLgenByDay, both formats, have pre-defined sets of NDFD parameters. */	   
@@ -255,7 +262,10 @@ void prepareDWMLgenByDay(genMatchType *match, uChar f_XML,
       strcpy(format, "24 hourly");
    }
 
-   free(currHour);
+   if (f_startTimeToZero)
+      *startTime_cml = 0.0;      
+   if (f_endTimeToZero)
+      *endTime_cml = 0.0; 
 
    return;
 }

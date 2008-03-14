@@ -6,7 +6,7 @@
  *
  * PURPOSE
  *  This code formats the Sky Cover element in the "time-series" and "glance" 
- *  products if product type is DWMLgen (f_XML = 1 or 2). If the product type
+ *  products if product type is DWMLgen (f_XML = 1 or 2 or 6). If the product
  *  is DWMLgenByDay, with formats of "12 hourly" (f_XML = 3) or "24 hourly" 
  *  (f_XML = 4), then the code will fill 7 arrays holding sky information that
  *  will be used in determining the weather/icons.
@@ -68,16 +68,10 @@
  *                     1 = DWMLgen's "time-series" product. 
  *                     2 = DWMLgen's "glance" product.
  *                     3 = DWMLgenByDay's "12 hourly" format product.
- *                     4 = DWMLgenByDay's "24 hourly" format product. (Input)
- * SKYintegerTime = Number of seconds since 1970 to when each of the data times
- *                  is valid. Allows the code to know if this data belongs in 
- *                  the current period being processed. Info is sent out and 
- *                  used in the generation of weather as a spring/fall 
- *                  signifier. (Output)
+ *                     4 = DWMLgenByDay's "24 hourly" format product.
+ *                     5 = DWMLgen's RTMA "time-series" product.
+ *                     6 = DWMLgen's RTMA + NDFD "time-series" product. (Input)
  *    currentHour = Current hour. (Input)
- *  timeUserStart = The beginning of the first forecast period (06 hr
- *                  or 18hr) based on the user supplied startTime argument. 
- *                  (Input)
  *      startTime = Incoming argument set by user as a double in seconds 
  *                  since 1970 denoting the starting time data is to be 
  *                  retrieved for from NDFD. (Set to 0.0 if not entered.)
@@ -86,6 +80,11 @@
  *               matches can be found. (Input)
  *      endNum = Last index in match structure an individual point's data
  *               matches can be found. (Input)
+ * f_shiftData = Flag used to determine whether we shift data back by 1/2
+ *               it's period to denote the duration of time the data is 
+ *               valid for (Soap Service), or to not shift, and simply use
+ *               the data's endTime (validTime) (JimC's TPEX, FOX, products
+ *               etc) (Input)
  *
  * FILES/DATABASES: None
  *
@@ -97,6 +96,12 @@
  *                                the period length (bug from php code)
  *  10/2007 Paul Hershberg (MDL): Added back code that shifted data back by 1/2
  *                                the period length. It was erroneously removed.
+ *  11/2007 Paul Hershberg (MDL): Added flag that determines whether to shift data 
+ *                                back by 1/2 the period length (Soap Service) or 
+ *                                not (JimC's TPEX, SSC, etc). 
+ *   2/2008 Paul Hershberg (MDL): Added code to detect if change from DST to 
+ *                                Standard Time (or vice versa) occurred sometime 
+ *                                in the forecast. 
  *
  * NOTES
  ******************************************************************************
@@ -109,9 +114,9 @@ void genSkyCoverValues(size_t pnt, char *layoutKey, genMatchType * match,
                        sChar f_observeDST, uChar parameterName,
                        numRowsInfo numRows, uChar f_XML, int *maxSkyNum,
                        int *minSkyNum, int *startPositions, int *endPositions, 
-                       int *SKYintegerTime, char *currentHour, 
-                       double timeUserStart, double startTime, int startNum, 
-                       int endNum)
+                       char *currentHour, double timeUserStart, 
+                       double startTime, int startNum, int endNum, 
+                       int f_shiftData)
 {
    int i;                     /* Counter thru match structure. */
    int numNils = 0;           /* Denotes diff between number of data rows and 
@@ -142,7 +147,17 @@ void genSkyCoverValues(size_t pnt, char *layoutKey, genMatchType * match,
    xmlNodePtr value = NULL;   /* Xml Node Pointer for <value> element. */
    char strBuff[30];          /* Temporary string buffer holding rounded
                                * data. */
-   
+   char month[3];             /* String holding formatted month to see if a 
+                                 change from standard to daylight savings time
+                                 (or vice versa) occurs within forecast period
+                                 in question. */
+   int interval = timeInterval; /* Used in case DST to Standard time (or vice 
+                                 * versa) occurs sometime in the forecast. */
+   int f_DSTswitchFound = 0; /* Used to detect of there was a switch from  
+                              * Standard to DST in Spring or vice versa in 
+                              * Fall. */
+   int SKYintegerTime = 0;
+
    /* Set the first iteration to the incoming user supplied startTime if 
     * product is a summarization.
     */
@@ -150,7 +165,7 @@ void genSkyCoverValues(size_t pnt, char *layoutKey, genMatchType * match,
       timeUserStartStep = timeUserStart;
 
    /* If the product is of type DWMLgen, format the <cloud_amount> element. */
-   if (f_XML == 1 || f_XML == 2)
+   if (f_XML == 1 || f_XML == 2 || f_XML == 6)
    {
       cloud_amount = xmlNewChild(parameters, NULL, BAD_CAST "cloud-amount",
                                  NULL);
@@ -176,7 +191,7 @@ void genSkyCoverValues(size_t pnt, char *layoutKey, genMatchType * match,
 	  match[i].validTime >= numRows.firstUserTime &&
 	  match[i].validTime <= numRows.lastUserTime)
       {
-         if (f_XML == 1 || f_XML == 2)  /* DWMLgen products. */
+         if (f_XML == 1 || f_XML == 2 || f_XML == 6)  /* DWMLgen products. */
          {
             /* If the data is missing, so indicate in the XML (nil=true). */
             if (match[i].value[pnt].valueType == 2)
@@ -206,31 +221,68 @@ void genSkyCoverValues(size_t pnt, char *layoutKey, genMatchType * match,
              * use a time interval in which the number of seconds in either a
              * 24 or 12 hour period determines the integer start time. 
 	     */
-            *SKYintegerTime = match[i].validTime;
+            SKYintegerTime = match[i].validTime;
 
             /* Now we have to account for data that is just in the time
              * period i.e. if data is valid from 4PM-7PM and time period is
              * from 6AM-6PM. We shift data by one half the data's period in
              * seconds. 
 	     */
-	    if ((i - (priorElemCount + startNum)) < 1)
-               period = determinePeriodLength(match[i].validTime,
+            if (f_shiftData)
+            {
+	       if ((i - (priorElemCount + startNum)) < 1)
+                  period = determinePeriodLength(match[i].validTime,
                                match[i + 1].validTime, 
-			       (numRows.total-numRows.skipBeg-numRows.skipEnd),
+		   	       (numRows.total-numRows.skipBeg-numRows.skipEnd),
                                parameterName);
-            else
-               period = determinePeriodLength(match[i - 1].validTime,
+               else
+                  period = determinePeriodLength(match[i - 1].validTime,
                                match[i].validTime,
                                (numRows.total-numRows.skipBeg-numRows.skipEnd), 
 			       parameterName);
 
-      	       *SKYintegerTime = *SKYintegerTime - (((double)period * 0.5) * 3600);
+      	       SKYintegerTime = SKYintegerTime - (((double)period * 0.5) * 3600);
+            }
+            
+            /* See if the forecast period time interval is not quite 12 
+             * (f_XML = 3) or 24 (f_XML = 4) hours due to a change in DST 
+             * occurring in a specific forecast period. In the Spring, 
+             * "spring" forward in time resulting in a reduction in 1 hour in 
+             * the forecast period. Do the opposite if in Fall.
+             */
+            if (!f_DSTswitchFound)
+            {
+               formatValidTime(timeUserStartStep, strBuff, 30, TZoffset, 
+                               f_observeDST);
+               month[0] = strBuff[5];
+               month[1] = strBuff[6];
+               month[2] = '\0';
 
-            /* Determine if this time is within the current day (period) being
+               if (atoi(month) < 6) 
+               {
+                  if ((Clock_IsDaylightSaving2(timeUserStartStep, TZoffset) != 1) 
+                     && (Clock_IsDaylightSaving2(timeUserStartStep + interval, 
+                     TZoffset) == 1))
+                  {
+                     interval = interval - 3600;
+                     f_DSTswitchFound = 1;
+                  }
+               }
+               else
+               { 
+                  if ((Clock_IsDaylightSaving2(timeUserStartStep, TZoffset) == 1) 
+                     && (Clock_IsDaylightSaving2(timeUserStartStep + interval, 
+                     TZoffset) != 1))
+                     interval = interval + 3600;
+                     f_DSTswitchFound = 1;
+               }
+            }
+
+            /* Determine if this time is within the current forecast period being
              * processed. 
 	     */
-            if ((timeUserStartStep <= *SKYintegerTime)
-                && (*SKYintegerTime < timeUserStartStep + timeInterval))
+            if ((timeUserStartStep <= SKYintegerTime)
+                && (SKYintegerTime < timeUserStartStep + interval))
             {
                /* We need the max, min, and average sky covers for each
                 * forecast period (12 or 24 hours) for weather phrase/icon
@@ -270,15 +322,14 @@ void genSkyCoverValues(size_t pnt, char *layoutKey, genMatchType * match,
                   numSkyCoverValues++;
 	       }
             }
-	    
-            forecastPeriod = ((*SKYintegerTime - timeUserStartStep) / 3600);
-    
+            forecastPeriod = ((SKYintegerTime - timeUserStartStep) / 3600);
+
             /* Calculate the average sky cover for use in phrase algorithm. First,
              * check to see if we need to jump into the next forecast period. 
              */
             if (f_XML == 3)
             {
-	       if ((forecastPeriod + period >= 12) ||  
+	       if ((forecastPeriod + period >= (interval/3600)) ||  
 		  (((i - priorElemCount) - startNum) == 
 		  (numRows.total-numRows.skipBeg-numRows.skipEnd) - 1)) 
 		   /* Accounts for last data row. */
@@ -294,14 +345,31 @@ void genSkyCoverValues(size_t pnt, char *layoutKey, genMatchType * match,
 	          endPositions[currentDay] = (i - priorElemCount) - startNum;
 	          firstTime = 1;
                   currentDay++;
-                  timeUserStartStep = timeUserStart + (currentDay *
-                                      timeInterval);
+                  
+                  /* If there was a change from Standard to DST (or vice versa),
+                   * detect this and add accordingly to get the time of the 
+                   * next forecast period. 
+                   */
+                  if (f_DSTswitchFound)
+                  {                  
+                     if (atoi(month) < 6) /* Spring. */
+                        timeUserStartStep = timeUserStart + 
+                                            (currentDay * timeInterval) - 3600;
+                     else /* Fall. */
+                        timeUserStartStep = timeUserStart + 
+                                            (currentDay * timeInterval) + 3600;
+                  }
+                  else
+                     timeUserStartStep = timeUserStart +
+                                         (currentDay * timeInterval);
+
+                  interval = timeInterval;
                   forecastPeriod = 0;
 	       }
             }
             else if (f_XML == 4)
 	    {
-               if ((forecastPeriod + period >= 24) || 
+               if ((forecastPeriod + period >= (interval/3600)) || 
 	          (((i - priorElemCount) - startNum) == 
 		  (numRows.total-numRows.skipBeg-numRows.skipEnd) - 1))
 		  /* Accounts for last data row. */
@@ -317,8 +385,25 @@ void genSkyCoverValues(size_t pnt, char *layoutKey, genMatchType * match,
 	          endPositions[currentDay] = (i - priorElemCount) - startNum;
 	          firstTime = 1;
                   currentDay++;
-                  timeUserStartStep = timeUserStart + (currentDay *
-                                      timeInterval);
+                  
+                  /* If there was a change from Standard to DST (or vice versa),
+                   * detect this and add accordingly to get the time of the 
+                   * next forecast period. 
+                   */
+                  if (f_DSTswitchFound)
+                  {                  
+                     if (atoi(month) < 6) /* Spring. */
+                        timeUserStartStep = timeUserStart + 
+                                            (currentDay * timeInterval) - 3600;
+                     else /* Fall. */
+                        timeUserStartStep = timeUserStart + 
+                                            (currentDay * timeInterval) + 3600;
+                  }
+                  else
+                     timeUserStartStep = timeUserStart +
+                                         (currentDay * timeInterval);
+
+                  interval = timeInterval;
                   forecastPeriod = 0;
 	       }
             }

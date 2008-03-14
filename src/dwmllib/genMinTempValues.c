@@ -17,7 +17,9 @@
  *                these values will be attached (child node). (Output)
  *        f_XML = Flag denoting type of XML product (1 = DWMLgen's "time-series"
  *                product, 2 = DWMLgen's "glance" product, 3 = DWMLgenByDay's 
- *                "12 hourly" product, 4 = DWMLgenByDay's "24 hourly" product.
+ *                "12 hourly" product, 4 = DWMLgenByDay's "24 hourly" product, 
+ *                5 = DWMLgen's "RTMA time-series" product, 6 = DWMLgen's mix 
+ *                of "RTMA & NDFD time-series" product.
  *                (Input) 
  *     numRows = Structure containing members: (Input)
  *                    total: Total number of rows data is formatted for in the 
@@ -110,7 +112,7 @@ void genMinTempValues(size_t pnt, char *layoutKey, genMatchType *match,
     * the number of rows to be formatted. If so, set numRows = numFmtdRows 
     * (will result in a "nil" being formatted).
     */
-   if (f_XML == 1 || f_XML == 2)
+   if (f_XML == 1 || f_XML == 2 || f_XML == 6)
       numFmtdRows = numRows.total-numRows.skipBeg-numRows.skipEnd;
 
    /* Loop over all the data values and format them. */
@@ -186,8 +188,9 @@ void genMinTempValues(size_t pnt, char *layoutKey, genMatchType *match,
                                  strBuff);
                   }
                }
-            }
-            else if (f_XML == 1 || f_XML == 2) /* DWMLgen products. */
+            } 
+            /* DWMLgen products: */
+            else if (f_XML == 1 || f_XML == 2 || f_XML == 6)
             {
                /* If the data is missing, so indicate in the XML (nil=true). */
                if (match[i].value[pnt].valueType == 2)

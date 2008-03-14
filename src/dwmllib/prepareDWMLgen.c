@@ -12,10 +12,14 @@
  *  layout generation.
  *
  * ARGUMENTS
- *            f_XML = Flag denoting type of XML product (1 = DWMLgen's 
- *                    "time-series"product, 2 = DWMLgen's "glance" product, 3 
- *                    = DWMLgenByDay's "12 hourly" product, 4 = DWMLgenByDay's 
- *                    "24 hourly" product. (Input) 
+ *           f_XML = Flag denoting type of XML product. 
+ *                   1 = DWMLgen's "time-series" product,
+ *                   2 = DWMLgen's "glance" product, 
+ *                   3 = DWMLgenByDay's "12 hourly" product, 
+ *                   4 = DWMLgenByDay's "24 hourly" product, 
+ *                   5 = DWMLgen's "RTMA time-series" product,
+ *                   6 = DWMLgen's mix of "RTMA & NDFD time-series" product. 
+ *                   (Input) 
  *     wxParameters = Array containing the flags denoting whether a certain 
  *                    element is formatted in the output XML (= 1), or used in 
  *                    deriving another formatted element (= 2). (Input/Output) 
@@ -38,7 +42,8 @@
  * RETURNS: void
  *
  *  2/2006 Paul Hershberg (MDL): Created.
- *  9/2007 Paul Hershberg (MDL): Added 12 Climate Outlook Products
+ *  9/2007 Paul Hershberg (MDL): Added 12 Climate Outlook Elements
+ * 12/2007 Paul Hershberg (MDL): Added 10 RTMA Elements
  *
  * NOTES:
  *****************************************************************************
@@ -46,7 +51,7 @@
 #include "xmlparse.h"
 void prepareDWMLgen(uChar f_XML, uChar * f_formatPeriodName, 
                     uChar **wxParameters, char *summarization,
-                    uChar varFilter[NDFD_MATCHALL + 1], sChar * f_icon, 
+                    uChar varFilter[NDFD_MATCHALL + 1], sChar *f_icon, 
                     size_t numPnts)
 {
    int j; /* Counter thru points. */
@@ -58,7 +63,7 @@ void prepareDWMLgen(uChar f_XML, uChar * f_formatPeriodName,
       /* Flag those elements in the "time-series" product to be formatted in the 
        * output XML. 
        */
-      if (f_XML == 1)
+      if (f_XML == 1 || f_XML == 6)
       {
          if (varFilter[NDFD_MAX] == 2)
             wxParameters[j][NDFD_MAX] = 1;
@@ -161,7 +166,7 @@ void prepareDWMLgen(uChar f_XML, uChar * f_formatPeriodName,
        * Two other elements not formatted (temp and wind speed) are used to
        * derive the 5th element formatted: Icons. 
        */
-      else if (f_XML == 2)
+      if (f_XML == 2)
       {
          *f_formatPeriodName = 1;
          if (varFilter[NDFD_MAX] >= 2)
@@ -172,6 +177,48 @@ void prepareDWMLgen(uChar f_XML, uChar * f_formatPeriodName,
             wxParameters[j][NDFD_SKY] = 1;
          if (varFilter[NDFD_MAX] >= 2)
             wxParameters[j][NDFD_WX] = 1;
+      }
+
+      /* RTMA elements. */
+      if (f_XML == 5 || f_XML == 6)
+      {
+         if (varFilter[RTMA_PRECIPA] == 2)
+            wxParameters[j][RTMA_PRECIPA] = 1;
+         if (varFilter[RTMA_SKY] == 2)
+            wxParameters[j][RTMA_SKY] = 1;
+         if (varFilter[RTMA_TD] == 2)
+            wxParameters[j][RTMA_TD] = 1;
+         if (varFilter[RTMA_TEMP] == 2)
+            wxParameters[j][RTMA_TEMP] = 1;
+         if (varFilter[RTMA_UTD] == 2)
+            wxParameters[j][RTMA_UTD] = 1;
+         if (varFilter[RTMA_UTEMP] == 2)
+            wxParameters[j][RTMA_UTEMP] = 1;
+         if (varFilter[RTMA_UWDIR] == 2)
+            wxParameters[j][RTMA_UWDIR] = 1;
+         if (varFilter[RTMA_UWSPD] == 2)
+            wxParameters[j][RTMA_UWSPD] = 1;
+         if (varFilter[RTMA_WDIR] == 2)
+            wxParameters[j][RTMA_WDIR] = 1;
+         if (varFilter[RTMA_WSPD] == 2)
+            wxParameters[j][RTMA_WSPD] = 1;
+      }
+
+      /* Turn on the concatenated elements, if warranted. */
+      if  (f_XML == 6)
+      {
+         if (wxParameters[j][NDFD_TEMP]==1 && wxParameters[j][RTMA_TEMP]==1)
+            wxParameters[j][RTMA_NDFD_TEMP] = 1;
+         if (wxParameters[j][NDFD_TD] == 1 && wxParameters[j][RTMA_TD] == 1)
+            wxParameters[j][RTMA_NDFD_TD] = 1;
+         if (wxParameters[j][NDFD_WS]==1 && wxParameters[j][RTMA_WSPD]==1)
+            wxParameters[j][RTMA_NDFD_WSPD] = 1;
+         if (wxParameters[j][NDFD_WD]==1 && wxParameters[j][RTMA_WDIR]==1)
+            wxParameters[j][RTMA_NDFD_WDIR] = 1;
+         if (wxParameters[j][NDFD_QPF]==1 && wxParameters[j][RTMA_PRECIPA]==1)
+            wxParameters[j][RTMA_NDFD_PRECIPA] = 1;
+         if (wxParameters[j][NDFD_SKY]==1 && wxParameters[j][RTMA_SKY]==1)
+            wxParameters[j][RTMA_NDFD_SKY] = 1;
       }
    }
 

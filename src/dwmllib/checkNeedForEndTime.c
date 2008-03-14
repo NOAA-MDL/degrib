@@ -11,18 +11,27 @@
  * ARGUMENTS
  *   parameterName = Number denoting the NDFD element currently processed. 
  *                   (Input) 
+ *           f_XML = Flag for 1 of the 4 DWML products:
+ *                     1 = DWMLgen's NDFD "time-series" product. 
+ *                     2 = DWMLgen's "glance" product.
+ *                     3 = DWMLgenByDay's "12 hourly" format product.
+ *                     4 = DWMLgenByDay's "24 hourly" format product. (Input)
+ *                     5 = DWMLgen's RTMA "time-series" product. 
+ *                     6 = DWMLgen's RTMA & NDFD "time-series" product. 
+ *                     (Input) 
  *  
  * FILES/DATABASES: None
  *                
  * RETURNS: int (0 or 1)
  *
  *  2/2006 Paul Hershberg (MDL): Created.
+ *  2/2008 Paul Hershberg (MDL): Added f_XML argument.
  *
  * NOTES:
  *****************************************************************************
  */
 #include "xmlparse.h"
-int checkNeedForEndTime(uChar parameterName)
+int checkNeedForEndTime(uChar parameterName, uChar f_XML)
 {
 
    /* Determine which NDFD parameter we are processing and return TRUE if it
@@ -66,6 +75,17 @@ int checkNeedForEndTime(uChar parameterName)
 
          return 1;
          break;
+
+      case RTMA_PRECIPA:
+         if (f_XML == 6) /* Only use endTimes if RTMA Precip Amt is concatenated
+                          * to the NDFD QPF portion, for consistency sake. 
+                          */
+         {
+            return 1;
+            break;
+         }
+         else
+            return 0; 
 
       default:
 

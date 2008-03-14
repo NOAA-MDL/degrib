@@ -45,13 +45,15 @@
  *        frequency = Set to "boggus" for DWMLgen products, and to "12hourly" 
  *                    or "24hourly" for the DWMLgenByDay products.  
  *            f_XML = flag for 1 of the 4 DWML products (Input):
- *                    1 = DWMLgen's "time-series" product. 
- *                    2 = DWMLgen's "glance" product.
+ *                    1 = DWMLgen's NDFD "time-series" product. 
+ *                    2 = DWMLgen's NDFD "glance" product.
  *                    3 = DWMLgenByDay's "12 hourly" format product.
  *                    4 = DWMLgenByDay's "24 hourly" format product.
+ *                    5 = DWMLgen's RTMA "time-series" product. 
+ *                    6 = DWMLgen's RTMA & NDFD "time-series" product. 
  *            match = Pointer to the array of element matches from degrib. 
  *                    (Input) 
- *      useEndTimes = Flag denoting if element uses end times in the output XML 
+ *      useEndTimes =Flag denoting if element uses end times in the output XML 
  *                    (Input)
  *    startTime_cml = Incoming argument set by user as a double in seconds 
  *                    since 1970 denoting the starting time data was retrieved
@@ -71,7 +73,9 @@
  *                               -- Added 6 Tropical Wind Threshold elements
  *                               -- Added startNum/endNum arguments.
  *  8/2007 Paul Hershberg (MDL): -- Added 12 Climate Outlook elements 
- *
+ * 11/2007 Paul Hershberg (MDL): -- Added 10 RTMA elements 
+ *  2/2008 Paul Hershberg (MDL): -- Added special case of RTMA_PRECIPA when 
+ *                                  concatenated to NDFD_QPF
  * NOTES:
  *****************************************************************************
  */
@@ -109,7 +113,8 @@ void computeStartEndTimes(uChar parameterName, uChar numFmtdRows,
                                        1-monthly and 3-monthly products in secs
                                        since 1970. */
 
-   if (f_XML == 1 || f_XML == 2) /* For DWMLgen products. */
+   /* If DWMLgen products. */
+   if (f_XML == 1 || f_XML == 2 || f_XML == 5 || f_XML == 6)
    {
       switch (parameterName)
       {
@@ -564,7 +569,91 @@ void computeStartEndTimes(uChar parameterName, uChar numFmtdRows,
             }
             break;
 
-         default:
+         case RTMA_PRECIPA:
+
+            /* Only find endTimes if RTMA Precip Amt is concatenated
+             * to the NDFD QPF portion, for consistency sake. 
+             */
+            if (f_XML == 6) 
+            {
+               /* Loop over matches of the data. */
+               priorElemCount = startNum;
+               for (i = startNum; i < endNum; i++)
+               {
+                  if (match[i].elem.ndfdEnum == parameterName && 
+	              match[i].validTime >= numRows.firstUserTime &&
+		      match[i].validTime <= numRows.lastUserTime)
+                  {
+                     formatValidTime(match[i].validTime, str1, 30, TZoffset,
+                                     f_observeDST);
+		  
+                     startTimes[i - priorElemCount] = malloc(strlen(str1) + 1);
+		     if (useEndTimes)
+		     {
+                       endTimes[i - priorElemCount] = malloc(strlen(str1) + 1);
+
+                       /* For this RTMA element, the valid time is at the end of the valid
+                        * period. So end time equal to the "valid time" and calcuate
+                        * the start time by subtracting just one hour. 
+                        */
+                       strcpy(endTimes[i - priorElemCount], str1);
+		     }
+
+                     temp[0] = str1[11];
+                     temp[1] = str1[12];
+                     temp[2] = '\0';
+                     beginningHour = atoi(temp);
+                     beginningHour = beginningHour - periodLength;
+
+                     /* If the hour is negative, we moved to the previous day so
+                      * determine what the new date and time are. 
+                      */
+                     if (beginningHour < 0)
+                     {
+                        beginningHour += 24;
+                        formatValidTime((match[i].validTime - oneDay), str1, 30,
+                                        TZoffset, f_observeDST);
+                        sprintf(temp, "%d", beginningHour);
+                     }
+
+                     /* Now we assemble the start time. Need to make sure we have a 
+                      * two digit hour when number is less than 10. 
+                      */
+                     if (beginningHour < 10)
+                        sprintf(temp2, "%c%c%1d%c", 'T', '0', beginningHour, '\0');
+                     else
+                        sprintf(temp2, "%c%2d%c", 'T', beginningHour, '\0');
+
+                     pstr = strstr(str1, "T");
+                     strncpy(pstr, temp2, 3);
+                     strcpy(startTimes[i - priorElemCount], str1);
+                  }
+                  else
+                    priorElemCount++;
+               }
+            }
+            else /* Just use startTimes (f_XML == 5). */
+            {
+               priorElemCount = startNum;
+               for (i = startNum; i < endNum; i++)
+               {
+                  if (match[i].elem.ndfdEnum == parameterName && 
+	             match[i].validTime >= numRows.firstUserTime &&
+		     match[i].validTime <= numRows.lastUserTime)
+                  {
+                     str1[0] = '\0';
+                     formatValidTime(match[i].validTime, str1, 30, TZoffset,
+                                     f_observeDST);
+                     startTimes[i - priorElemCount] = malloc(strlen(str1) + 1);
+                     strcpy(startTimes[i - priorElemCount], str1);
+                  }
+                  else
+                     priorElemCount += 1;
+               }
+            }
+            break;
+
+         default: /* All RTMA elements are here other than above exception. */
 
             /* Loop over matches of the data. */
             priorElemCount = startNum;
@@ -574,7 +663,6 @@ void computeStartEndTimes(uChar parameterName, uChar numFmtdRows,
 	           match[i].validTime >= numRows.firstUserTime &&
 		   match[i].validTime <= numRows.lastUserTime)
                {
-
                   str1[0] = '\0';
                   formatValidTime(match[i].validTime, str1, 30, TZoffset,
                                   f_observeDST);

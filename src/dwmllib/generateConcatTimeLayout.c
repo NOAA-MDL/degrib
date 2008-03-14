@@ -1,36 +1,25 @@
 /*****************************************************************************
- * generateTimeLayout () -- 
+ * generateConcatTimeLayout () -- 
  *
  * Paul Hershberg / MDL
  * Linux
  *
  * PURPOSE
- *  This routine creates the XML time layout for NDFD parameters. There is
- *  one layout for each unique combination of data start time, period length, 
- *  and number of data values. The maximum temperature time layout would look 
- *  like the following:
+ *  This routine creates the XML time layouts for the 6 Concatenated RTMA + NDFD
+ *  elements in the DWMLgen RTMA+NDFD time-series product (f_XML = 6). The six 
+ *  elements are:
  *
- *      <time-layout time-coordinate="local" summarization="none">
- *          <layout-key>k-p24h-n7-1</layout-key>
- *              <start-valid-time>2004-04-12T08:00:00-04:00</start-valid-time>
- *                  <end-valid-time>2004-04-12T20:00:00-04:00</end-valid-time>
- *              <start-valid-time>2004-04-13T08:00:00-04:00</start-valid-time>
- *                  <end-valid-time>2004-04-13T20:00:00-04:00</end-valid-time>
- *              <start-valid-time>2004-04-14T08:00:00-04:00</start-valid-time>
- *                  <end-valid-time>2004-04-14T20:00:00-04:00</end-valid-time>
- *              <start-valid-time>2004-04-15T08:00:00-04:00</start-valid-time>
- *                  <end-valid-time>2004-04-15T20:00:00-04:00</end-valid-time>
- *              <start-valid-time>2004-04-16T08:00:00-04:00</start-valid-time>
- *                  <end-valid-time>2004-04-16T20:00:00-04:00</end-valid-time>
- *              <start-valid-time>2004-04-17T08:00:00-04:00</start-valid-time>
- *                  <end-valid-time>2004-04-17T20:00:00-04:00</end-valid-time>
- *             <start-valid-time>2004-04-18T08:00:00-04:00</start-valid-time>
- *                  <end-valid-time>2004-04-18T20:00:00-04:00</end-valid-time>
- *      </time-layout>              
+ *      RTMA Temp + NDFD Temp.
+ *      RTMA Dew Point + NDFD Dew Point.
+ *      RTMA Wind Speed + NDFD Wind Speed
+ *      RTMA Wind Direction + NDFD Direction
+ *      RTMA Sky Cover + NDFD Sky Cover
+ *      RTMA Precipitation Amount + NDFD QPF
+ *
+ *  Code first formats the RTMA Time Layout, then the NDFD portion of the
+ *  Time Layout. 
  *
  * ARGUMENTS
- *    parameterName = Number denoting the NDFD element currently processed. 
- *                    (Input) 
  *          numRows = Structure containing members: (Input)
  *                    total: Total number of rows data is formatted for in the 
  *                           output XML. Used in DWMLgenByDay's "12 hourly" and 
@@ -51,6 +40,8 @@
  *             lastUserTime: the last valid time interested per element, 
  *                           taking into consideration any data values 
  *                           (rows) skipped at end of time duration.
+ *       concatElem = Enumerated number of the concatenated RTMA+NDFD element
+ *                    (Input).
  *        layoutKey = The key to the time layout is of the form
  *                    k-p{periodLength}h-n{numRows}-{numLayouts}    
  *                    The "k" is for "key".  The "p" is for "period" "h" is for
@@ -104,36 +95,31 @@
  *                
  * RETURNS: void
  *
- *  2/2006 Paul Hershberg (MDL): Created.
- *  2/2008 Paul Hershberg (MDL): Removed "period" as argument to 
- *                               checkNeedForPeriodName() routine.
+ *  2/2008 Paul Hershberg (MDL): Created.
  *
  * NOTES:
  *****************************************************************************
  */
 #include "xmlparse.h"
-void generateTimeLayout(numRowsInfo numRows, uChar parameterName,
-                        char *layoutKey, const char *timeCoordinate,
-                        char *summarization, genMatchType * match,
-                        size_t numMatch, uChar f_formatPeriodName,
-                        sChar TZoffset, sChar f_observeDST,
-                        size_t * numLayoutSoFar,
-                        uChar * numCurrentLayout, char *currentHour,
-                        char *currentDay, char *frequency,
-                        xmlNodePtr data, double startTime_cml,
-                        double currentDoubTime, int *numFmtdRows,
-			uChar f_XML, int startNum, int endNum)
+void generateConcatTimeLayout(numRowsInfo *numRows, uChar concatElem,
+                              char *layoutKey, const char *timeCoordinate,
+                              char *summarization, genMatchType *match,
+                              size_t numMatch, uChar f_formatPeriodName,
+                              sChar TZoffset, sChar f_observeDST,
+                              size_t *numLayoutSoFar,
+                              uChar *numCurrentLayout, char *currentHour,
+                              char *currentDay, char *frequency,
+                              xmlNodePtr data, double startTime_cml,
+                              double currentDoubTime,
+		      	      uChar f_XML, int startNum, int endNum)
 {
    int i;                     /* Counter thru match structure. */
+   int j;                     /* Counter */
+   int k;                     /* Counter thru start and endTimes. */
    int f_finalTimeLayout = 0; /* Flag denoting if this is the last time
                                * layout being processed. */
-   int period = 0;            /* Length between an elements successive
+   int period = 1;            /* Length between an elements successive
                                * validTimes. */
-   int periodClimate = 0;      /* Length between an elements successive 
-                                * validTimes in days or months (for climate
-                                * outlook products). */
-   int numActualRows; /* (numRows - those skipped) due to user shortening time
-                       * data was retrieved for. */
    double startTime_doub = 0.0; /* Holds startTimes as a double. */
    double firstValidTime = 0.0; /* The validTime of the first match for the
                                  * element being processed. */
@@ -164,96 +150,76 @@ void generateTimeLayout(numRowsInfo numRows, uChar parameterName,
    char periodName[30];       /* Name of special period name (i.e.
                                * "Overnight"). */
    uChar issuanceType = MAX_PERIODS;  /* Max number of issuanceTypes. */
-   
-   /* Set the number of actual rows. */
-   numActualRows = numRows.total-numRows.skipBeg-numRows.skipEnd;
+   int ndfdElem = concatElem; /* The enumerated number of the NDFD portion of the 
+                                 concatenated element. */
+   int rtmaElem = concatElem; /* The enumerated number of the RTMA portion of the 
+                                 concatenated element. */
+   int concatNumRows = numRows[concatElem].total - numRows[concatElem].skipBeg -
+                       numRows[concatElem].skipEnd;
+   int elemNumRows = 0; /* Variable used when accessing the time layout loop 
+                           twice (once for the RTMA portion and once for the NDFD 
+                           portion). */
 
-   /* If DWMLgen product, set numFmtdRows = to numRows. */
-   if (f_XML == 1 || f_XML == 2 || f_XML == 5 || f_XML == 6)
-      *numFmtdRows = numActualRows;
+   /* Which of the 6 concatenated elements do we have? Set the number of actual
+    * rows and associated enumerated element numbers. 
+    */
+   if (concatElem == RTMA_NDFD_TEMP)
+   {
+      ndfdElem = NDFD_TEMP;
+      rtmaElem = RTMA_TEMP;
+   }
+   else if (concatElem == RTMA_NDFD_TD)
+   {
+      ndfdElem = NDFD_TD;
+      rtmaElem = RTMA_TD;
+   }
+   else if (concatElem == RTMA_NDFD_WSPD)
+   {
+      ndfdElem = NDFD_WS;
+      rtmaElem = RTMA_WSPD;
+   }
+   else if (concatElem == RTMA_NDFD_WDIR)
+   {
+      ndfdElem = NDFD_WD;
+      rtmaElem = RTMA_WDIR;
+   }
+   else if (concatElem == RTMA_NDFD_PRECIPA)
+   {
+      ndfdElem = NDFD_QPF;
+      rtmaElem = RTMA_PRECIPA;
+   }
+   else if (concatElem == RTMA_NDFD_SKY)
+   {
+      ndfdElem = NDFD_SKY;
+      rtmaElem = RTMA_SKY;
+   }
 
-   /* Find first and second validTime per element (if exists) interested in. */
-   getFirstSecondValidTimes(&firstValidTime, &secondValidTime, match, numMatch, 
-		            parameterName, startNum, endNum, numRows.total, 
-                            numRows.skipBeg, numRows.skipEnd);
+   /* Find first and second validTime per element (if exists) interested in. 
+    * This will involve the RTMA element since RTMA times start before NDFD
+    * times.
+    */
+   getFirstSecondValidTimes(&firstValidTime, &secondValidTime, match, 
+		            numMatch, rtmaElem, startNum, endNum,
+                            numRows[rtmaElem].total, numRows[rtmaElem].skipBeg, 
+                            numRows[rtmaElem].skipEnd);
 
-   /* Start filling in the time layout array's  with this current data. */
+   /* Start filling in the time layout array's with this current data. */
    formatValidTime(firstValidTime, currentTimeLayout.fmtdStartTime, 30, 
 		   TZoffset, f_observeDST);
 
-   /* Get the period length in hours using either the period name or the valid 
-    * times. 
-    */
-   if (parameterName == NDFD_MAX || parameterName == NDFD_MIN)
-      period = 24;
-   else if (parameterName == NDFD_POP)
-      period = 12;
-   else if (parameterName == RTMA_TEMP || parameterName == RTMA_TD || 
-            parameterName == RTMA_WSPD || parameterName == RTMA_WDIR || 
-            parameterName == RTMA_PRECIPA || parameterName == RTMA_SKY)
-      period = 1;
-   else /* Calculate it */
-      period = determinePeriodLength(firstValidTime, secondValidTime, 
-		                     numActualRows, parameterName); 
-   
    /* Fill the rest of the time layout array with current data. */
    currentTimeLayout.period = period;
-   currentTimeLayout.numRows = numActualRows;
+   currentTimeLayout.numRows = concatNumRows;
 
    /* Determine if this layout information has already been formatted. */
    if (isNewLayout(currentTimeLayout, numLayoutSoFar, numCurrentLayout,
                    f_finalTimeLayout) == 1)
    {
-      /* Create the new key and then bump up the number of layouts by one.
-       * We'll use days and not hours as period unit for climate products with
-       * a period between 48 hours and 672 hours (28 days). Use months for
-       * those climate products with period > 672 hours (28 days).
-       */
-      if (period >= 672)
-      {
-         periodClimate = (int)(myRound((period/24/30), 0));
-         sprintf(layoutKey, "k-p%dm-n%d-%d", periodClimate, *numFmtdRows, 
-	         *numLayoutSoFar);
-      }
-      else if (period > 48)
-      {
-         periodClimate = (int)(myRound((period/24), 0));
-         sprintf(layoutKey, "k-p%dd-n%d-%d", periodClimate, *numFmtdRows, 
-	         *numLayoutSoFar);
-      }
-      else
-         sprintf(layoutKey, "k-p%dh-n%d-%d", period, *numFmtdRows, 
-	         *numLayoutSoFar);
+      /* Create the new key and then bump up the number of layouts by one. */
+      sprintf(layoutKey, "k-p%dh-n%d-%d", period, concatNumRows,
+	      *numLayoutSoFar);
 
       *numLayoutSoFar += 1;
-      
-      /* See if we need to format an <end-valid-time> tag . */
-      useEndTimes = checkNeedForEndTime(parameterName, f_XML);
-
-      /* Some parameters like max and min temp don't have valid times that
-       * match the real start time.  So make the adjustment. 
-       */
-      if (*numFmtdRows > numActualRows) /* For summary products with a set 
-                                         * number of rows to format. */
-      {
-         startTimes = (char **)malloc(*numFmtdRows * sizeof(char *));
-         if (useEndTimes)
-             endTimes = (char **)malloc(*numFmtdRows * sizeof(char *));
-         computeStartEndTimes(parameterName, *numFmtdRows, period, TZoffset,
-                              f_observeDST, match, useEndTimes, startTimes, 
-                              endTimes, frequency, f_XML, startTime_cml, 
-                              currentDoubTime, numRows, startNum, endNum);
-      }
-      else
-      {
-         startTimes = (char **)malloc(numActualRows* sizeof(char *));
-         if (useEndTimes)
-            endTimes = (char **)malloc(numActualRows * sizeof(char *));
-         computeStartEndTimes(parameterName, *numFmtdRows, period, TZoffset,
-                              f_observeDST, match, useEndTimes, startTimes, 
-                              endTimes, frequency, f_XML, startTime_cml, 
-                              currentDoubTime, numRows, startNum, endNum);
-      }
 
       /* Format the XML time layout in the output string. */
       time_layout = xmlNewChild(data, NULL, BAD_CAST "time-layout", NULL);
@@ -263,36 +229,56 @@ void generateTimeLayout(numRowsInfo numRows, uChar parameterName,
       layout_key = xmlNewChild(time_layout, NULL, BAD_CAST "layout-key",
                                BAD_CAST layoutKey);
 
-      /* Before looping throught the valid times determine the period
-       * information "issuanceType" and "numPeriodNames". 
+      /* Loop thru the two elements making up the concatenated element and get
+       * each time layout. Start with the RTMA portion, and then the NDFD 
+       * portion. 
        */
-      if (f_formatPeriodName && period >= 12)
-         getPeriodInfo(parameterName, startTimes[0], currentHour, currentDay,
-                       &issuanceType, &numPeriodNames, period, frequency);
-      
-      /* Now we get the time values for this parameter and format the valid time
-       * tags. 
-       */
-      for (i = 0; i < *numFmtdRows; i++)
+      for (i = rtmaElem, j = 0; j < 2; j++)
       {
-         if (i < *numFmtdRows) /* Accounts for DWMLgenByDay. */
+         /* See if we need to format an <end-valid-time> tag . */
+         useEndTimes = checkNeedForEndTime(i, f_XML);
+
+         /* Gather the startTimes and/or endTimes. */
+         elemNumRows = numRows[i].total - numRows[i].skipBeg -
+                                                numRows[i].skipEnd;
+
+         startTimes = (char **)malloc(elemNumRows * sizeof(char *));
+         if (useEndTimes)
+            endTimes = (char **)malloc(elemNumRows * sizeof(char *));
+         computeStartEndTimes(i, elemNumRows, period, TZoffset,
+                              f_observeDST, match, useEndTimes, startTimes, 
+                              endTimes, frequency, f_XML, startTime_cml, 
+                              currentDoubTime, numRows[i], startNum, endNum);
+
+         /* Before looping through the valid times determine the period
+          * information "issuanceType" and "numPeriodNames". 
+          */
+         if (f_formatPeriodName && period >= 12)
+            getPeriodInfo(i, startTimes[0], currentHour, currentDay,
+                          &issuanceType, &numPeriodNames, period, frequency);
+      
+         /* Now we get the time values for this parameter and format the valid time
+          * tags. 
+          */
+         for (k = 0; k < elemNumRows; k++)
          {
-	    if (startTimes[i])
+	    if (startTimes[k])
             {
                startValTime = xmlNewChild(time_layout, NULL, BAD_CAST
                                           "start-valid-time", BAD_CAST
-                                          startTimes[i]);
+                                          startTimes[k]);
 
                /* We only format period names for parameters with period
                 * greater than 12 hours like (max and min temp, and pop12
-                * etc). */
+                * etc). 
+                */
                if (f_formatPeriodName && period >= 12)
                {
                   outputPeriodName = 0;
                   periodName[0] = '\0';
-                  Clock_Scan(&startTime_doub, startTimes[i], 1);
+                  Clock_Scan(&startTime_doub, startTimes[k], 1);
 		  Clock_Print2(dayName, 30, startTime_doub, "%v", 
-			       TZoffset, f_observeDST);
+		               TZoffset, f_observeDST);
 
 		  /* First see if one of these first special period names is
 		   * to be trumped by a holiday name. If so, don't get the 
@@ -306,13 +292,12 @@ void generateTimeLayout(numRowsInfo numRows, uChar parameterName,
 		      strcmp(dayName, "Friday") == 0 ||
 		      strcmp(dayName, "Saturday") == 0)
                   {
-                     checkNeedForPeriodName(i, &numPeriodNames,
-                                            TZoffset, parameterName,
-                                            startTimes[i],
+                     checkNeedForPeriodName(k, &numPeriodNames, TZoffset, 
+                                            i, startTimes[k],
                                             &outputPeriodName, issuanceType,
                                             periodName, currentHour, 
 					    currentDay, startTime_cml, 
-					    currentDoubTime, firstValidTime);
+			                    currentDoubTime, firstValidTime);
 		  }
 
                   /* Handle each special period name (up to 3 of them). */
@@ -332,14 +317,14 @@ void generateTimeLayout(numRowsInfo numRows, uChar parameterName,
                       * match.validTimes, we need to send the double version
                       * of the string startTimes into Clock_Print2 routine. 
 		      */
-                     if (useNightPeriodName(startTimes[i]) == 0)
+                     if (useNightPeriodName(startTimes[k]) == 0)
                      {
                         xmlNewProp(startValTime, BAD_CAST "period-name",
                                    BAD_CAST dayName);
                      }
                      else /* Night time period. Use the "%A" format to insure
 		           * that a holiday name isn't placed in a night 
-			   * period.
+		           * period.
 			   */
 		     {
 			Clock_Print2(dayName, 30, startTime_doub, "%A", 
@@ -352,10 +337,15 @@ void generateTimeLayout(numRowsInfo numRows, uChar parameterName,
                }   
                /* If this is a parameter needing an <end-valid-time> tag, we
                 * format it. 
-		*/
+	        */
                if (useEndTimes)
                   xmlNewChild(time_layout, NULL, BAD_CAST "end-valid-time",
-                              BAD_CAST endTimes[i]);
+                              BAD_CAST endTimes[k]);
+
+               /* Free up the individual startTime and endTime. */
+               free(startTimes[k]);
+               if (useEndTimes)
+                  free(endTimes[k]);
 
             }
             else /* No startTime or the first Pop Rows is skipped. */
@@ -368,53 +358,37 @@ void generateTimeLayout(numRowsInfo numRows, uChar parameterName,
                   endValTime = xmlNewChild(time_layout, NULL, BAD_CAST
                                            "end-valid-time", BAD_CAST NULL);
                   xmlNewProp(endValTime, BAD_CAST "xsi:nil", BAD_CAST "true");
-               }               
+               }
 	    }	       
 	 }
-      }
+         /* Set up some things for the second trip thru the loop. This will be 
+          * for the NDFD portion of the concatenated element. Find first and 
+          * second validTime for the NDFD Parent Element. Also, change the 
+          * index to the NDFD Parent Element.
+          */
+         i = ndfdElem;
+         getFirstSecondValidTimes(&firstValidTime, &secondValidTime, match, 
+		                  numMatch, i, startNum, endNum,
+                                  numRows[i].total, numRows[i].skipBeg, 
+                                  numRows[i].skipEnd);
 
-      /* Free some things. */
-      if (*numFmtdRows > numActualRows) 
-      {
-         for (i = 0; i < *numFmtdRows; i++)
-         {
-            free(startTimes[i]);
-            if (useEndTimes)
-               free(endTimes[i]);
-         }
-      }
-      else
-      {
-         for (i = 0; i < numActualRows; i++)
-         {
-            free(startTimes[i]);
-            if (useEndTimes)
-               free(endTimes[i]);
-         }
-      }
+         /* Change the period to that of the parent Element for second and last 
+          * iteration of loop. 
+          */
+         period = determinePeriodLength(firstValidTime, secondValidTime, 
+		                      (numRows[i].total-numRows[i].skipBeg-numRows[i].skipEnd), 
+                                      i); 
 
-      free(startTimes);
-      if (useEndTimes)
-         free(endTimes);
-
+         /* Free startTime & endTime arrays before next iteration of loop. */
+         free(startTimes);
+         if (useEndTimes)
+            free(endTimes);   
+      }
    }
    else /* Not a new key so just return the key name */
    {
-      if (period >= 672)
-      {
-         periodClimate = (int)(myRound((period/24/30), 0));
-         sprintf(layoutKey, "k-p%dm-n%d-%d", periodClimate, *numFmtdRows, 
-	         *numCurrentLayout);
-      }
-      else if (period > 48)
-      {
-         periodClimate = (int)(myRound((period/24), 0));
-         sprintf(layoutKey, "k-p%dd-n%d-%d", periodClimate, *numFmtdRows, 
-	         *numCurrentLayout);
-      }
-      else
-         sprintf(layoutKey, "k-p%dh-n%d-%d", period, *numFmtdRows, 
-	         *numCurrentLayout);
+      sprintf(layoutKey, "k-p%dh-n%d-%d", period, concatNumRows, 
+	      *numCurrentLayout);
    }
    
    return;

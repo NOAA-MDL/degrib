@@ -10,9 +10,13 @@
  *  hourly" formatted products.
  *
  * ARGUMENTS
- *       f_XML = Flag denoting type of XML product (1 = DWMLgen's "time-series"
- *               product, 2 = DWMLgen's "glance" product, 3 = DWMLgenByDay's 
- *               "12 hourly" product, 4 = DWMLgenByDay's "24 hourly" product.
+ *       f_XML = Flag denoting type of XML product. 
+ *               1 = DWMLgen's "time-series" product,
+ *               2 = DWMLgen's "glance" product, 
+ *               3 = DWMLgenByDay's "12 hourly" product, 
+ *               4 = DWMLgenByDay's "24 hourly" product, 
+ *               5 = DWMLgen's "RTMA time-series" product,
+ *               6 = DWMLgen's mix of "RTMA & NDFD time-series" product. 
  *               (Input) 
  *         doc = An xml Node Pointer denoting the top-level document node. 
  *               (Input)
@@ -28,6 +32,7 @@
  *  3/2007 Paul Hershberg (MDL): --Changed operational status to "official".
  *                               --Added the srsName attribute to <product> 
  *                                 element.
+ * 11/2007 Paul Hershberg (MDL): --Added RTMA info.
  *
  * NOTES:
  *****************************************************************************
@@ -53,6 +58,7 @@ void formatMetaDWML(uChar f_XML, xmlDocPtr * doc, xmlNodePtr * data,
                                * into XML. */
    char *sub_center = NULL;   /* Denotes the sub-place of development for
                                * output into XML. */
+   char *category = NULL;     /* Denotes category (forecast or analysis). */
    char currentTime[30];      /* Denotes current UTC time the product is
                                * created. */
    double currentDoubTime;    /* Denotes current UTC time (as a double), the
@@ -66,7 +72,7 @@ void formatMetaDWML(uChar f_XML, xmlDocPtr * doc, xmlNodePtr * data,
    /* Set up the header information depending on product. */
    switch (f_XML)
    {
-      case 1:
+      case 1: /* DWMLGen, NDFD elements only, time-series product. */
          spatialRefSystem = "WGS 1984";
          prodOrFormat = "time-series";
          productTitle = "NOAA's National Weather Service Forecast Data";
@@ -74,8 +80,9 @@ void formatMetaDWML(uChar f_XML, xmlDocPtr * doc, xmlNodePtr * data,
          moreInfo = "http://www.nws.noaa.gov/forecasts/xml/";
          prod_center = "Meteorological Development Laboratory";
          sub_center = "Product Generation Branch";
+         category = "forecast";
          break;
-      case 2:
+      case 2: /* DWMLGen, NDFD elements only, glance product. */
          spatialRefSystem = "WGS 1984";
          prodOrFormat = "glance";
          productTitle = "NOAA's National Weather Service Forecast at a Glance";
@@ -83,8 +90,9 @@ void formatMetaDWML(uChar f_XML, xmlDocPtr * doc, xmlNodePtr * data,
          moreInfo = "http://www.nws.noaa.gov/forecasts/xml/";
          prod_center = "Meteorological Development Laboratory";
          sub_center = "Product Generation Branch";
+         category = "forecast";
          break;
-      case 3:
+      case 3: /* DWMLGenByDay NDFD 12hr summary product. */
          spatialRefSystem = "WGS 1984";
          prodOrFormat = "dwmlByDay";
          productTitle =
@@ -93,8 +101,9 @@ void formatMetaDWML(uChar f_XML, xmlDocPtr * doc, xmlNodePtr * data,
          moreInfo = "http://www.nws.noaa.gov/forecasts/xml/";
          prod_center = "Meteorological Development Laboratory";
          sub_center = "Product Generation Branch";
+         category = "forecast";
          break;
-      case 4:
+      case 4: /* DWMLGenByDay NDFD 24hr summary product. */
          spatialRefSystem = "WGS 1984";
          prodOrFormat = "dwmlByDay";
          productTitle =
@@ -103,6 +112,29 @@ void formatMetaDWML(uChar f_XML, xmlDocPtr * doc, xmlNodePtr * data,
          moreInfo = "http://www.nws.noaa.gov/forecasts/xml/";
          prod_center = "Meteorological Development Laboratory";
          sub_center = "Product Generation Branch";
+         category = "forecast";
+         break;
+      case 5: /* DWMLGen, RTMA elements only, as a time-series. */
+         spatialRefSystem = "WGS 1984";
+         prodOrFormat = "time-series";
+         productTitle =
+               "NOAA's National Weather Service Real Time Mesoscale Analysis Data";
+         operationalMode = "official";
+         moreInfo = "http://www.emc.ncep.noaa.gov/mmb/rtma/";
+         prod_center = "Meteorological Development Laboratory";
+         sub_center = "Product Generation Branch";
+         category = "analysis";
+         break;
+      case 6: /* DWMLGen, mix of RTMA & NDFD elements, as a time-series. */
+         spatialRefSystem = "WGS 1984";
+         prodOrFormat = "time-series";
+         productTitle =
+               "NOAA's National Weather Service Real Time Mesoscale Analysis And Forecast Data";
+         operationalMode = "official";
+         moreInfo = "http://products.weather.gov/search.php";
+         prod_center = "Meteorological Development Laboratory";
+         sub_center = "Product Generation Branch";
+         category = "analysis and forecast";
          break;
    }
 
@@ -121,7 +153,7 @@ void formatMetaDWML(uChar f_XML, xmlDocPtr * doc, xmlNodePtr * data,
               "http://www.w3.org/2001/XMLSchema-instance");
    xmlNewProp(*dwml, BAD_CAST "xsi:noNamespaceSchemaLocation", BAD_CAST
               "http://www.nws.noaa.gov/forecasts/xml/DWMLgen/schema/DWML.xsd");
-  
+
    /* Set root element <dwml>. */
    xmlDocSetRootElement(*doc, *dwml);
 
@@ -139,7 +171,7 @@ void formatMetaDWML(uChar f_XML, xmlDocPtr * doc, xmlNodePtr * data,
     */
    xmlNewChild(node, NULL, BAD_CAST "title", BAD_CAST productTitle);
    xmlNewChild(node, NULL, BAD_CAST "field", BAD_CAST "meteorological");
-   xmlNewChild(node, NULL, BAD_CAST "category", BAD_CAST "forecast");
+   xmlNewChild(node, NULL, BAD_CAST "category", BAD_CAST category);
    node = xmlNewChild(node, NULL, BAD_CAST "creation-date", BAD_CAST
                       currentTime);
    xmlNewProp(node, BAD_CAST "refresh-frequency", BAD_CAST "PT1H");
@@ -161,7 +193,7 @@ void formatMetaDWML(uChar f_XML, xmlDocPtr * doc, xmlNodePtr * data,
    xmlNewChild(node, NULL, BAD_CAST "credit-logo", BAD_CAST
                "http://www.weather.gov/images/xml_logo.gif");
    xmlNewChild(node, NULL, BAD_CAST "feedback", BAD_CAST
-               "http://www.weather.gov/survey/nws-survey.php?code=xmlsoap");
+               "http://www.weather.gov/feedback.php");
 
    /* Set <source> element as child to <head> element and <head> element as child
     * to <dwml> element.

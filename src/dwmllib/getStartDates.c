@@ -18,7 +18,9 @@
  *                     1 = DWMLgen's "time-series" product. 
  *                     2 = DWMLgen's "glance" product.
  *                     3 = DWMLgenByDay's "12 hourly" format product.
- *                     4 = DWMLgenByDay's "24 hourly" format product. (Input)
+ *                     4 = DWMLgenByDay's "24 hourly" format product.
+ *                     5 = DWMLgen's RTMA "time-series" product. 
+ *                     6 = DWMLgen's RTMA + NDFD "time-series" product. (Input)
  *         startTime = Incoming argument set by user as a double in seconds 
  *                     since 1970 denoting the start time data is to be
  *                     retrieved for (set to 0.0 if not supplied). (Input)
@@ -85,7 +87,7 @@ void getStartDates(char **startDate, uChar f_XML, double startTime,
          strncpy(startDate[point], startDateBuff, pstr - startDateBuff);
       }
    }
-   else if (f_XML == 1 || f_XML == 2)
+   else
    {
 
       /* If the product's of type DWMLgen, simply set startDate to = NULL. */

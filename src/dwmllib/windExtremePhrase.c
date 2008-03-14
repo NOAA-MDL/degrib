@@ -39,13 +39,9 @@
  *      periodMaxTemp = For each forecast period, the "max" temperature occuring in
  *                      the period, based off of the MaxT and MinT elements. If night, 
  *                      the period could have a "max" MinT. (Input) 
- *        integerTime = Number of seconds since 1970 to when the data is valid.
- *                      Allows the code to know if this data belongs in the current
- *                      period being processed. Info is used in the generation of 
- *                      weather as a spring/fall signifier. (Input)
- * integerStartUserTime = The beginning of the first forecast period (06 hr or 18hr) 
- *                        based on the user supplied startTime argument. (Input)    
- *                                                                 
+ * maxWindSpeedValTimes = Array holding valid Time of max Wind Speed per 
+ *                        forecast period (Input). 
+ *                                                                
  * FILES/DATABASES: None
  *                
  * RETURNS: void
@@ -54,6 +50,8 @@
  *  6/2006 Paul Hershberg (MDL): Created.
  *  3/2007 Paul Hershberg (MDL): Upped the wind threshold from 25 to 30mph.
  *                               Upped the breezy threshold from 15 to 20mph.
+ *  3/2008 Paul Hershberg (MDL): Added maxWindSpeedValTimes for determination 
+ *                               of Cold vs Warm season.
  * NOTES:
  *****************************************************************************
  */
@@ -61,9 +59,9 @@
 void windExtremePhrase(int f_isDayTime, int f_isNightTime, int dayIndex, 
                        char *baseURL, double springDoubleDate, 
 		       double fallDoubleDate, int *maxWindSpeed, 
-		       int *maxWindDirection, int integerTime, 
-		       int integerStartUserTime, int *periodMaxTemp, 
-		       icon_def *iconInfo, char **phrase)
+		       int *maxWindDirection, int *periodMaxTemp, 
+		       icon_def *iconInfo, char **phrase, 
+                       double *maxWindSpeedValTimes)
 {
    int WINDY = 30; /* Windy threshold. */
    int BREEZY = 20; /* Breezy threshold. */
@@ -80,7 +78,6 @@ void windExtremePhrase(int f_isDayTime, int f_isNightTime, int dayIndex,
     */
    if (maxWindSpeed[dayIndex] != -999)
    {
-   	   
       if (maxWindSpeed[dayIndex] >= WINDY)
       {
          strcpy (phrase[dayIndex], "Windy");
@@ -88,8 +85,8 @@ void windExtremePhrase(int f_isDayTime, int f_isNightTime, int dayIndex,
       else if ((maxWindSpeed[dayIndex] >= BREEZY) &&
                (maxWindDirection[dayIndex] <= NORTHEAST || 
    	       maxWindDirection[dayIndex] >= NORTHWEST) &&
-               (integerStartUserTime <= springDoubleDate && 
-	       integerTime >= fallDoubleDate) &&
+               (maxWindSpeedValTimes[dayIndex] <= springDoubleDate && 
+	       maxWindSpeedValTimes[dayIndex] >= fallDoubleDate) &&
                (periodMaxTemp[dayIndex] < COLD))
       {
          strcpy (phrase[dayIndex], "Blustery");

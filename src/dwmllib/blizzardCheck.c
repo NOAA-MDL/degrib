@@ -44,6 +44,7 @@
  *
  * HISTORY:
  * 6/2007 Paul Hershberg (MDL): Created.
+ * 8/2007 Paul Hershberg (MDL): Split wind speed and wind gust loops up.
  *  
  * NOTES:
  *
@@ -56,8 +57,7 @@ void blizzardCheck (int blizzCnt, double periodStartTime, double periodEndTime,
                     int *f_iconToBlizz, char **phrase)
 {
    int i; /* Counter thru blizzardTime array of weather times. */
-   int j; /* Counter thru wind speed data. */
-   int k; /* Counter thru wind gust data. */
+   int j; /* Counter thru wind data. */
    int wxPeriod = 3; /* Period of weather data. */
 
    /* Override weather phrase with "Blizzard" if conditions warrant it. */
@@ -69,32 +69,42 @@ void blizzardCheck (int blizzCnt, double periodStartTime, double periodEndTime,
       if (blizzardTime[i] >= periodStartTime && 
           blizzardTime[i] <= periodEndTime)
       {
+         /* Check for Wind Speed values >= 35. */
          for (j = 0; j < numRowsWS; j++)
          {
-            for (k = 0; k < numRowsWG; k++)
+            /* Make sure Wind Speed Conditions are met. */
+            if (wsInfo[j].valueType != 2 && wsInfo[j].data >= 35)
             {
-               /* Make sure conditions are met. */
-               if ((wsInfo[j].valueType != 2 && wsInfo[j].data >= 35) ||
-                  (wgInfo[k].valueType != 2 && wgInfo[k].data >= 35))
+               /* If so, check to see if the wind speed time corresponds with
+                * the weather time containing blizzard conditions.
+                */ 
+               if ((wsInfo[j].validTime >= blizzardTime[i]-(0.5*wxPeriod*3600)) 
+                  && (wsInfo[j].validTime <= (blizzardTime[i] + (wxPeriod*3600)
+                  + (0.5*wxPeriod*3600)))) 
                {
-                  /* If so, check to see if either wind speed or wind gust time 
-                   * corresponds with the weather time containing blizzard
-                   * conditions.
-                   */ 
-                  if ((wsInfo[j].validTime >= blizzardTime[i]-(0.5*wxPeriod*3600)
-                     && wsInfo[j].validTime <= (blizzardTime[i] 
-                     + (wxPeriod*3600) + (0.5*wxPeriod*3600))) || 
-                     (wgInfo[k].validTime >= blizzardTime[i]-(0.5*wxPeriod*3600)
-                     && wgInfo[k].validTime <= (blizzardTime[i] 
-                     + (wxPeriod*3600) + (0.5*wxPeriod*3600))))
-                  {
-                     strcpy (phrase[dayIndex], "Blizzard");
-                     *f_iconToBlizz = 1;
-                     break;
-                  }
+                  strcpy (phrase[dayIndex], "Blizzard");
+                  *f_iconToBlizz = 1;
                }
             }
-            continue;
+         }
+
+         /* Check for Wind Gust values >= 35. */
+         for (j = 0; j < numRowsWG; j++)
+         {
+            /* Make sure Wind Gust Conditions are met. */
+            if (wgInfo[j].valueType != 2 && wgInfo[j].data >= 35)
+            {
+               /* If so, check to see if the wind gust time corresponds with
+                * the weather time containing blizzard conditions.
+                */ 
+               if ((wgInfo[j].validTime >= blizzardTime[i]-(0.5*wxPeriod*3600)) 
+                  && (wgInfo[j].validTime <= (blizzardTime[i] + (wxPeriod*3600)
+                  + (0.5*wxPeriod*3600)))) 
+               {
+                  strcpy (phrase[dayIndex], "Blizzard");
+                  *f_iconToBlizz = 1;
+               }
+            }
          }
       }
    }
