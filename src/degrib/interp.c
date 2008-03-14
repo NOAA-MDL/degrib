@@ -161,6 +161,7 @@ double BiLinearBorder (const double *gribData, myMaparam *map, double newX,
    /* Do Bi-linear interpolation to get value. */
    if ((d11 != missPri) && (d12 != missPri) &&
        (d21 != missPri) && (d22 != missPri)) {
+#ifdef JUNK
       /* Note the use of fabs() and Dx and their implications for the sign. */
       /* Corrected 1/24/2007 due to email from jeff.sharkey */
       /* Was (d11 - d12) and (d21 - d22), but d12 is x1,y2 and d21 is x2,y1.
@@ -176,6 +177,12 @@ double BiLinearBorder (const double *gribData, myMaparam *map, double newX,
          return (float) (d_temp1 + (newY - y1) *
                          (d_temp1 - d_temp2) / (y1 - y2));
       }
+#endif
+      x1 = 0;
+      d_temp1 = d11 + (newX - x1) * (d21 - d11) / (x2 - x1);
+      d_temp2 = d12 + (newX - x1) * (d22 - d12) / (x2 - x1);
+      return (float) (d_temp1 + (newY - y1) * (d_temp2 - d_temp1) / (y2 - y1));
+
    } else if (f_avgInterp) {
       /* Calculate sum of distances... */
       sumDist = 0;
@@ -381,10 +388,15 @@ double BiLinearCompute (double *grib_Data, myMaparam *map, double lat,
       /* Corrected 1/24/2007 due to email from jeff.sharkey */
       /* Was (d11 - d12) and (d21 - d22), but d12 is x1,y2 and d21 is x2,y1.
        * d_temp1 is holding y1 constant so should be dealing with d?1 */
+/*
       d_temp1 = d11 + (newX - x1) * (d11 - d21) / (x1 - x2);
       d_temp2 = d12 + (newX - x1) * (d12 - d22) / (x1 - x2);
       return (float) (d_temp1 + (newY - y1) *
                       (d_temp1 - d_temp2) / (y1 - y2));
+*/
+      d_temp1 = d11 + (newX - x1) * (d21 - d11) / (x2 - x1);
+      d_temp2 = d12 + (newX - x1) * (d22 - d12) / (x2 - x1);
+      return (float) (d_temp1 + (newY - y1) * (d_temp2 - d_temp1) / (y2 - y1));
    } else if (f_avgInterp) {
       /* Calculate sum of distances... */
       sumDist = 0;
