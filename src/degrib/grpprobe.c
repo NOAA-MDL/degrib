@@ -647,7 +647,7 @@ int MOTDProbe (uChar f_MOTD, size_t numPnts, Point * pnts,
                sChar f_valTime, double startTime, double endTime,
                size_t numNdfdVars, uChar *ndfdVars, char *f_inTypes,
                char *gribFilter, size_t numSector, char **sector,
-               sChar f_ndfdConven, sChar f_avgInterp)
+               sChar f_ndfdConven, uChar f_XML, sChar f_avgInterp)
 {
    size_t numElem = 0;
    genElemDescript *elem = NULL;
@@ -696,7 +696,7 @@ int MOTDProbe (uChar f_MOTD, size_t numPnts, Point * pnts,
    if (genProbe (numPnts, pnts, f_pntType, numInFiles, inFiles, f_fileType,
                  f_interp, f_unit, majEarth, minEarth, f_WxParse,
                  f_SimpleVer, numElem, elem, f_valTime, startTime, endTime,
-                 &numMatch, &match, f_inTypes, gribFilter, numSector,
+                 f_XML, &numMatch, &match, f_inTypes, gribFilter, numSector,
                  sector, f_ndfdConven, f_avgInterp) != 0) {
       for (i = 0; i < numElem; i++) {
          genElemFree (elem + i);
@@ -838,7 +838,7 @@ int GraphProbe (uChar f_XML, size_t numPnts, Point * pnts,
    if (genProbe (numPnts, pnts, f_pntType, numInFiles, inFiles, f_fileType,
                  f_interp, f_unit, majEarth, minEarth, f_WxParse,
                  f_SimpleVer, numElem, elem, f_valTime, startTime, endTime,
-                 &numMatch, &match, f_inTypes, gribFilter, numSector,
+                 f_XML, &numMatch, &match, f_inTypes, gribFilter, numSector,
                  sector, f_ndfdConven, f_avgInterp) != 0) {
       for (i = 0; i < numElem; i++) {
          genElemFree (elem + i);

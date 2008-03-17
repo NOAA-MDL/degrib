@@ -76,20 +76,20 @@ static const genElemDescript NdfdElements[] = {
 /* If we have to change the 0,0,0,0 for lower/upper Value/Factor, also update
  * cube.c :: line 634, 655 */
    /* the 6 in the length of time column stands for 6 days... */
-/* 30 */  {NDFD_TMPABV14D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,6, 1,0.0,0.0, 3,0,0,0,0},
-/* 31 */  {NDFD_TMPBLW14D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,6, 1,0.0,0.0, 0,0,0,0,0},
-/* 32 */  {NDFD_PRCPABV14D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,6, 1,0.0,0.0, 3,0,0,0,0},
-/* 33 */  {NDFD_PRCPBLW14D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,6, 1,0.0,0.0, 0,0,0,0,0},
+/* 30 */   {NDFD_TMPABV14D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,6, 1,0.0,0.0, 3,0,0,0,0},
+/* 31 */   {NDFD_TMPBLW14D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,6, 1,0.0,0.0, 0,0,0,0,0},
+/* 32 */   {NDFD_PRCPABV14D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,6, 1,0.0,0.0, 3,0,0,0,0},
+/* 33 */   {NDFD_PRCPBLW14D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,6, 1,0.0,0.0, 0,0,0,0,0},
    /* the 1 in the length of time column stands for 1 month... */
-/* 34 */  {NDFD_TMPABV30D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,1, 1,0.0,0.0, 3,0,0,0,0},
-/* 35 */  {NDFD_TMPBLW30D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,1, 1,0.0,0.0, 0,0,0,0,0},
-/* 36 */  {NDFD_PRCPABV30D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,1, 1,0.0,0.0, 3,0,0,0,0},
-/* 37 */  {NDFD_PRCPBLW30D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,1, 1,0.0,0.0, 0,0,0,0,0},
+/* 34 */   {NDFD_TMPABV30D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,1, 1,0.0,0.0, 3,0,0,0,0},
+/* 35 */   {NDFD_TMPBLW30D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,1, 1,0.0,0.0, 0,0,0,0,0},
+/* 36 */   {NDFD_PRCPABV30D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,1, 1,0.0,0.0, 3,0,0,0,0},
+/* 37 */   {NDFD_PRCPBLW30D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,1, 1,0.0,0.0, 0,0,0,0,0},
    /* the 3 in the length of time column stands for 3 months... */
-/* 38 */  {NDFD_TMPABV90D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,3, 1,0.0,0.0, 3,0,0,0,0},
-/* 39 */  {NDFD_TMPBLW90D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,3, 1,0.0,0.0, 0,0,0,0,0},
-/* 40 */  {NDFD_PRCPABV90D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,3, 1,0.0,0.0, 3,0,0,0,0},
-/* 41 */  {NDFD_PRCPBLW90D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,3, 1,0.0,0.0, 0,0,0,0,0},
+/* 38 */   {NDFD_TMPABV90D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,3, 1,0.0,0.0, 3,0,0,0,0},
+/* 39 */   {NDFD_TMPBLW90D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,3, 1,0.0,0.0, 0,0,0,0,0},
+/* 40 */   {NDFD_PRCPABV90D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,3, 1,0.0,0.0, 3,0,0,0,0},
+/* 41 */   {NDFD_PRCPBLW90D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,3, 1,0.0,0.0, 0,0,0,0,0},
 
 /* 42 */  {RTMA_PRECIPA,2, 7,0,2,109, 0,8,1,8,-1,1, 1,0.0,0.0, 0,-1,-1,-1,-1}, /* genProcess = 2 forecast? */
 /* 43 */  {RTMA_SKY,2, 7,0,8,109, 0,0,6,1,-1,0, 200,0.0,0.0, 0,-1,-1,-1,-1},  /* genProcess = 8 observation */
@@ -101,6 +101,25 @@ static const genElemDescript NdfdElements[] = {
 /* 49 */  {RTMA_UWSPD,2, 7,4,7,109, 0,0,2,1,-1,0, 103,10.0,0.0, 0,-1,-1,-1,-1},
 /* 50 */  {RTMA_WDIR,2, 7,4,0,109, 0,0,2,0,-1,0, 103,10.0,0.0, 0,-1,-1,-1,-1},
 /* 51 */  {RTMA_WSPD,2, 7,4,0,109, 0,0,2,1,-1,0, 103,10.0,0.0, 0,-1,-1,-1,-1},
+
+   {RTMA_NDFD_SKY,2, MISSING_2,MISSING_2,MISSING_1,MISSING_1,
+                  MISSING_1,MISSING_2,MISSING_1,MISSING_1,-1,0,
+                  MISSING_1,0.0,0.0, 0,-1,-1,-1,-1},
+   {RTMA_NDFD_PRECIPA,2, MISSING_2,MISSING_2,MISSING_1,MISSING_1,
+                  MISSING_1,MISSING_2,MISSING_1,MISSING_1,-1,0,
+                  MISSING_1,0.0,0.0, 0,-1,-1,-1,-1},
+   {RTMA_NDFD_TD,2, MISSING_2,MISSING_2,MISSING_1,MISSING_1,
+                  MISSING_1,MISSING_2,MISSING_1,MISSING_1,-1,0,
+                  MISSING_1,0.0,0.0, 0,-1,-1,-1,-1},
+   {RTMA_NDFD_TEMP,2, MISSING_2,MISSING_2,MISSING_1,MISSING_1,
+                  MISSING_1,MISSING_2,MISSING_1,MISSING_1,-1,0,
+                  MISSING_1,0.0,0.0, 0,-1,-1,-1,-1},
+   {RTMA_NDFD_WDIR,2, MISSING_2,MISSING_2,MISSING_1,MISSING_1,
+                  MISSING_1,MISSING_2,MISSING_1,MISSING_1,-1,0,
+                  MISSING_1,0.0,0.0, 0,-1,-1,-1,-1},
+   {RTMA_NDFD_WSPD,2, MISSING_2,MISSING_2,MISSING_1,MISSING_1,
+                  MISSING_1,MISSING_2,MISSING_1,MISSING_1,-1,0,
+                  MISSING_1,0.0,0.0, 0,-1,-1,-1,-1},
 
    {NDFD_UNDEF,2, MISSING_2,MISSING_2,MISSING_1,MISSING_1,
                   MISSING_1,MISSING_2,MISSING_1,MISSING_1,-1,0,
@@ -116,7 +135,7 @@ static const uChar NdfdElementsLen = (sizeof (NdfdElements) /
 /* *INDENT-ON* */
 
 /*****************************************************************************
- * genNdfdVar_Lookup() -- Arthur Taylor / MDL
+ * gen_NDFD_NDGD_Lookup() -- Arthur Taylor / MDL
  *
  * PURPOSE
  *   Return the NDFD enumeration of the given character string (or UNDEF).
@@ -137,7 +156,17 @@ static const uChar NdfdElementsLen = (sizeof (NdfdElements) /
  *   see meta.h for the following:
  *   enum { NDFD_MAX, NDFD_MIN, NDFD_POP, NDFD_TEMP, NDFD_WD, NDFD_WS,
  *          NDFD_TD, NDFD_SKY, NDFD_QPF, NDFD_SNOW, NDFD_WX, NDFD_WH,
- *          NDFD_AT, NDFD_RH, NDFD_UNDEF, NDFD_MATCHALL };
+ *          NDFD_AT, NDFD_RH, NDFD_WG, NDFD_INC34, NDFD_INC50, NDFD_INC64,
+ *          NDFD_CUM34, NDFD_CUM50, NDFD_CUM64, NDFD_CONHAZ, NDFD_PTORN,
+ *          NDFD_PHAIL, NDFD_PTSTMWIND, NDFD_PXTORN, NDFD_PXHAIL, 
+ *          NDFD_TMPBLW14D, NDFD_PRCPABV14D, NDFD_PRCPBLW14D, NDFD_TMPABV30D, 
+ *          NDFD_TMPBLW30D, NDFD_PRCPABV30D, NDFD_PRCPBLW30D, NDFD_TMPABV90D, 
+ *          NDFD_TMPBLW90D, NDFD_PRCPABV90D, NDFD_PRCPBLW90D, RTMA_PRECIPA, 
+ *          RTMA_SKY, RTMA_TD, RTMA_TEMP, RTMA_UTD, RTMA_UTEMP, RTMA_UWDIR, 
+ *          RTMA_UWSPD, RTMA_WDIR, RTMA_WSPD, RTMA_NDFD_SKY, RTMA_NDFD_PRECIPA, 
+ *          RTMA_NDFD_TD, RTMA_NDFD_TEMP, RTMA_NDFD_WDIR, RTMA_NDFD_WSPD, 
+ *          NDFD_UNDEF, NDFD_MATCHALL };
+ *
  *****************************************************************************
  */
 /* these are a string tolower on the short name of each NDFD element */
@@ -153,7 +182,7 @@ static char *NDFD_Type[] = { "maxt", "mint", "pop12", "t", "winddir",
    "apcp01", "tcdc", "dpt", "tmp", "dpterr", "tmperr", "wdirerr", "winderr",
    "wdir", "wind", NULL
 };
-/* These match the convention on official download pages. */
+/* These match the convention on official download pages (cube names). */
 static char *NDFD_File[] = { "maxt", "mint", "pop12", "temp", "wdir",
    "wspd", "td", "sky", "qpf", "snow", "wx", "waveh", "apt", "rhm",
    "wgust", "tcwspdabv34i", "tcwspdabv50i", "tcwspdabv64i",
@@ -161,9 +190,9 @@ static char *NDFD_File[] = { "maxt", "mint", "pop12", "temp", "wdir",
    "phail", "ptstmwinds", "pxtornado", "pxhail", "pxtstmwinds",
    "ptotsvrtstm", "ptotxsvrtstm", "tmpabv14d", "tmpblw14d", "prcpabv14d",
    "prcpblw14d", "tmpabv30d", "tmpblw30d", "prcpabv30d", "prcpblw30d",
-   "tmpabv90d", "tmpblw90d", "prcpabv90d", "prcpblw90d", "precipa",
-   "sky", "td", "temp", "utd", "utemp", "uwdir", "uwspd", "wdir", "wspd",
-   NULL
+   "tmpabv90d", "tmpblw90d", "prcpabv90d", "prcpblw90d", "precipa_r",
+   "sky_r", "td_r", "temp_r", "utd", "utemp", "uwdir", "uwspd",
+   "wdir_r", "wspd_r", NULL
 };
 /* A (mostly) 2 letter abreviation scheme created with/for the verification
    group */
@@ -176,7 +205,7 @@ static char *NDFD_File2[] = { "mx", "mn", "po", "tt", "wd",
    "wdir", "wind", NULL
 };
 
-uChar genNdfdVar_Lookup (char *str, char f_toLower, char f_ndfdConven)
+uChar gen_NDFD_NDGD_Lookup (char *str, char f_toLower, char f_ndfdConven)
 {
    int index;
    uChar elemNum;       /* The index into the table that matches str. */
@@ -205,6 +234,155 @@ uChar genNdfdVar_Lookup (char *str, char f_toLower, char f_ndfdConven)
       elemNum = NDFD_UNDEF;
    }
    return elemNum;
+}
+
+/*****************************************************************************
+ * validMatch
+ *
+ * Paul Hershberg / MDL
+ * Linux
+ *
+ * PURPOSE
+ *  Determines whether or not an element's NDFD or RTMA match is to be returned 
+ *  by the grid probe. Detemined by comparing the both the element's starting and 
+ *  ending times with the user supplied startTime and endTime. 
+ *
+ * ARGUMENTS
+ *
+ * elemRefTime = Reference time of this element (Input).
+ * elemEndTime = The end time of the duration the element is valid for (Input).
+ * elemEnum    = Enum # (see meta.h) of element (Input). 
+ * f_valTime   = 0 false, 1 f_validStartTime, 2 f_validEndTime,
+ *               3 both f_validStartTime, and f_validEndTime (Input)
+ *   startTime = User supplied start time (Input).
+ *     endTime = User supplied end time (Input).
+ *
+ * FILES/DATABASES: None
+ *                
+ * RETURNS: int
+ 
+ * HISTORY:
+ * 11/2007 Paul Hershberg (MDL): Created.
+ * 11/2007 Paul Hershberg (MDL): Added RTMA elements.
+ *
+ * NOTES:
+ *****************************************************************************
+ */
+int validMatch(double elemEndTime, double elemRefTime, int elemEnum, 
+               sChar f_valTime, double startTime, double endTime)
+{
+   double elemStartTime = 0.0; /* Element's starting time. Calculated by
+                                * subtracting period from element's end time. */
+
+   /* MAXT, MINT, and the nine SPC convective hazard elements.
+    * 24-hour period.
+    */
+   if ((elemEnum == NDFD_MAX) || (elemEnum == NDFD_MIN) ||
+       (elemEnum == NDFD_CONHAZ) || (elemEnum == NDFD_PTORN) ||
+       (elemEnum == NDFD_PHAIL) || (elemEnum == NDFD_PTSTMWIND) ||
+       (elemEnum == NDFD_PXTORN) || (elemEnum == NDFD_PXHAIL) ||
+       (elemEnum == NDFD_PXTSTMWIND) || (elemEnum == NDFD_PSTORM) ||
+       (elemEnum == NDFD_PXSTORM)) {
+      elemStartTime = elemEndTime - (24*3600);
+      if (((f_valTime & 1) && (elemEndTime <= startTime)) ||
+          ((f_valTime & 2) && (elemStartTime >= endTime))) {
+         return 0;
+      }
+   }
+
+   /* POP12 and WaveHeight. 12-hour period. */
+   if ((elemEnum == NDFD_POP) || (elemEnum == NDFD_WH)) {
+      elemStartTime = elemEndTime - (12*3600);
+      if (((f_valTime & 1) && (elemEndTime <= startTime)) ||
+          ((f_valTime & 2) && (elemStartTime >= endTime))) {
+         return 0;
+      }
+   }
+
+   /* TEMP, WDIR, WSPD, TD, SKY, WX, AT, RH, and WG. 3-hour period.
+    * Deal with the change to a 6-hour period after day 3 (72 hrs).
+    */
+   if ((elemEnum == NDFD_TEMP) || (elemEnum == NDFD_WD) || (elemEnum == NDFD_WS) ||
+       (elemEnum == NDFD_TD) || (elemEnum == NDFD_SKY) || (elemEnum == NDFD_WX) ||
+       (elemEnum == NDFD_AT) || (elemEnum == NDFD_RH)) {
+      if (elemEndTime - elemRefTime > (72*3600)) {
+         elemStartTime = elemEndTime - (6*3600);
+      } else {
+         elemStartTime = elemEndTime - (3*3600);
+      }
+      if (((f_valTime & 1) && (elemEndTime <= startTime)) ||
+          ((f_valTime & 2) && (elemStartTime >= endTime))) {
+         return 0;
+      }
+   }
+
+   /* QPF, SNOW, and the six Tropical Wind Thresholds. 6-hour
+    * period.
+    */
+   if ((elemEnum == NDFD_QPF) || (elemEnum == NDFD_SNOW) ||
+       (elemEnum == NDFD_INC34) || (elemEnum == NDFD_INC50) ||
+       (elemEnum == NDFD_INC64) || (elemEnum == NDFD_CUM34) ||
+       (elemEnum == NDFD_CUM50) || (elemEnum == NDFD_CUM64)) {
+      elemStartTime = elemEndTime - (6*3600);
+      if (((f_valTime & 1) && (elemEndTime <= startTime)) ||
+          ((f_valTime & 2) && (elemStartTime >= endTime))) {
+         return 0;
+      }
+   }
+
+   /* The four climate outlooks 8-14 days out. 6-day (144 hr)
+    * period.
+    */
+   if ((elemEnum == NDFD_TMPABV14D) || (elemEnum == NDFD_TMPBLW14D) ||
+       (elemEnum == NDFD_PRCPABV14D) || (elemEnum == NDFD_PRCPBLW14D)) {
+      elemStartTime = elemEndTime - (6*24*3600);
+      if (((f_valTime & 1) && (elemEndTime <= startTime)) ||
+          ((f_valTime & 2) && (elemStartTime >= endTime))) {
+         return 0;
+      }
+   }
+
+   /* The four climate outlooks 30 days out. 30-day (720 hr)
+    * period.
+    */
+   if ((elemEnum == NDFD_TMPABV30D) || (elemEnum == NDFD_TMPBLW30D) ||
+       (elemEnum == NDFD_PRCPABV30D) || (elemEnum == NDFD_PRCPBLW30D)) {
+      elemStartTime = elemEndTime - (30*24*3600);
+      if (((f_valTime & 1) && (elemEndTime <= startTime)) ||
+          ((f_valTime & 2) && (elemStartTime >= endTime))) {
+         return 0;
+      }
+   }
+
+   /* The four climate outlooks 90 days out. 90-day (2160 hr)
+    * period.
+    */
+   if ((elemEnum == NDFD_TMPABV90D) || (elemEnum == NDFD_TMPBLW90D) ||
+       (elemEnum ==  NDFD_PRCPABV90D) || (elemEnum == NDFD_PRCPBLW90D)) {
+      elemStartTime = elemEndTime - (90*24*3600);
+      if (((f_valTime & 1) && (elemEndTime <= startTime)) ||
+          ((f_valTime & 2) && (elemStartTime >= endTime))) {
+         return 0;
+      }
+   }
+
+   /* 10 RTMA elements. 1-hour period.  */
+   if ((elemEnum == RTMA_PRECIPA) || (elemEnum == RTMA_SKY) ||
+       (elemEnum == RTMA_TD) || (elemEnum == RTMA_TEMP) ||
+       (elemEnum == RTMA_UTD) || (elemEnum == RTMA_UTEMP) ||
+       (elemEnum == RTMA_UWDIR) || (elemEnum == RTMA_UWSPD) ||
+       (elemEnum == RTMA_WDIR) || (elemEnum == RTMA_WSPD)) {
+      elemStartTime = elemEndTime - 3600;
+
+      /* Notice no "=" sign in first part of if statement below, which differs
+       * from NDFD element. This allows top of hour times to be chosen.
+       */
+      if (((f_valTime & 1) && (elemEndTime < startTime)) ||
+          ((f_valTime & 2) && (elemStartTime >= endTime))) {
+         return 0;
+      }
+   }
+   return 1;
 }
 
 /*****************************************************************************
@@ -540,6 +718,7 @@ static int genElemMatchMeta (const genElemDescript * elem,
                              const grib_MetaData *meta)
 {
 #ifdef DEBUG
+/*
    if (((meta->pds2.sect4.templat == 8) ||
         (meta->pds2.sect4.templat == 9)) &&
        (meta->pds2.sect4.numInterval == 1)) {
@@ -557,6 +736,7 @@ static int genElemMatchMeta (const genElemDescript * elem,
            meta->pds2.sect4.fstSurfType, meta->pds2.sect4.fstSurfValue, meta->pds2.sect4.sndSurfValue,
            meta->pds2.sect4.probType);
    }
+*/
 #endif
    if ((elem->center != MISSING_2) && (elem->center != meta->center))
       return 0;
@@ -1497,8 +1677,10 @@ static int genProbeGrib (FILE *fp, size_t numPnts, const Point * pnts,
       }
 
 #ifdef DEBUG
+/*
       elemEnum = genNdfdEnum_fromMeta (&meta);
       printf ("Element is entry %d\n", elemEnum);
+*/
 #endif
 
       /* Check if we're interested in this data based on an element match. */
@@ -1644,7 +1826,7 @@ static int genProbeCube (const char *filename, size_t numPnts,
                          const genElemDescript * elem, sChar f_valTime,
                          double startTime, double endTime, uChar f_interp,
                          sChar f_unit, double majEarth, double minEarth,
-                         sChar f_WxParse, sChar f_SimpleVer,
+                         sChar f_WxParse, uChar f_XML, sChar f_SimpleVer,
                          size_t *numMatch, genMatchType ** match)
 {
    char *flxArray = NULL; /* The index file in a char buffer. */
@@ -1689,6 +1871,9 @@ static int genProbeCube (const char *filename, size_t numPnts,
                          * this file */
    char f_interest;     /* used to help determine if we've already found
                          * this match so we don't need to do it again. */
+   int f_chooseMatch = 0; /* Flag used to determine if element's data is to be
+                          * returned as a match as determined by element's
+                          * starting and ending valid times. */
 
    if (ReadFLX (filename, &flxArray, &flxArrayLen) != 0) {
       errSprintf ("Problems Reading %s\n", filename);
@@ -1721,13 +1906,15 @@ static int genProbeCube (const char *filename, size_t numPnts,
          continue;
       }
 */
-      elemEnum = genNdfdVar_Lookup (elemName, 1, 0);
+      elemEnum = gen_NDFD_NDGD_Lookup (elemName, 1, 0);
       if (elemEnum == NDFD_UNDEF) {
          sPtr += lenTotPds;
          continue;
       }
 #ifdef DEBUG
+/*
 printf ("element is %d\n", elemEnum);
+*/
 #endif
       /* Check if we're interested in this data based on an element match. */
       for (jj = 0; jj < numElem; jj++) {
@@ -1744,9 +1931,26 @@ printf ("element is %d\n", elemEnum);
          ReadPDSBuff (pdsPtr, &validTime, dataFile, &dataOffset,
                       &f_bigEndian, &scan, &numTable, &table, &pdsPtr);
 
-         /* Check if we're interested in this data based on validTime. */
-         if (((f_valTime & 1) && (validTime < startTime)) ||
-             ((f_valTime & 2) && (validTime > endTime))) {
+         f_chooseMatch = 1;
+         /* Do we return data? */
+         if ((f_XML == 1) || (f_XML == 2) || (f_XML == 5) || (f_XML == 6)) {
+            /* Check if we're interested in this data based on validTime and
+             * user supplied startTime and/or endTime. If f_chooseMatch flag
+             * remains true, return match.
+             */
+            f_chooseMatch = validMatch(validTime, refTime, elemEnum, f_valTime,
+                                       startTime, endTime);
+         } else { /* If product is summary type (f_XML = 3 or 4). */
+            /* Check if we're interested in this data based on validTime. */
+            if (((f_valTime & 1) && (validTime < startTime)) ||
+                ((f_valTime & 2) && (validTime > endTime))) {
+               f_chooseMatch = 0;
+            }
+         }
+
+         /* Check flag to see if interested in data. */
+         if (!f_chooseMatch) {
+            /* Not interested in data. Free some things. */
             if (numTable != 0) {
                for (k = 0; k < numTable; k++) {
                   free (table[k]);
@@ -1755,124 +1959,124 @@ printf ("element is %d\n", elemEnum);
                numTable = 0;
                table = NULL;
             }
-            continue;
-         }
-
-         /* Interested in data. */
-         /* Set up gds. */
-         if (curGdsNum != gdsNum) {
-            ReadGDSBuffer (flxArray + HEADLEN + 2 + (gdsNum - 1) * GDSLEN,
-                           &gds);
-            /* Check that gds is valid before setting up map projection. */
-            if (GDSValid (&gds) != 0) {
-               errSprintf ("ERROR: Sect3 was not Valid.\n");
-               goto error;
-            }
-            SetMapParamGDS (&map, &gds);
-            f_sector = SectorFindGDS (&gds);
-            if (f_sector == -1) {
-               f_sector = NDFD_OCONUS_UNDEF;
-            }
-
-            /* Get points on the grid. */
-            myAssert ((f_pntType == 0) || (f_pntType == 1));
-            if (f_pntType == 0) {
-               for (ii = 0; ii < numPnts; ii++) {
-                  myCll2xy (&map, pnts[ii].Y, pnts[ii].X, &(gridPnts[ii].X),
-                            &(gridPnts[ii].Y));
-               }
-            }
-         }
-
-         /* Check if this f_sector, refTime, validTime, element has already
-          * been checked. */
-         f_interest = 1;
-         if (elemEnum != NDFD_UNDEF) {
-            for (k = 0; k < *numMatch; k++) {
-               if (((*match)[k].refTime == refTime) &&
-                   ((*match)[k].validTime == validTime) &&
-                   ((*match)[k].f_sector == f_sector) &&
-                   ((*match)[k].elem.ndfdEnum == elemEnum)) {
-                  f_interest = 0;
-                  break;
-               }
-            }
-         }
-         if (f_interest == 0) {
-            if (numTable != 0) {
-               for (k = 0; k < numTable; k++) {
-                  free (table[k]);
-               }
-               free (table);
-               numTable = 0;
-               table = NULL;
-            }
-            continue;
-         }
-
-         if (strcmp (curFile, dataFile) != 0) {
-            if (lastSlash == NULL) {
-               dataName = (char *) realloc (dataName, strlen (dataFile) + 1);
-               strcpy (dataName, dataFile);
-            } else {
-               dataName = (char *) realloc (dataName,
-                                            (lastSlash - filename) + 1 +
-                                            strlen (dataFile) + 1);
-               memcpy (dataName, filename, (lastSlash - filename) + 1);
-               dataName[(lastSlash - filename) + 1] = '\0';
-               strcat (dataName, dataFile);
-            }
-            strcpy (curFile, dataFile);
-            if (data != NULL) {
-               fclose (data);
-            }
-            if ((data = fopen (dataName, "rb")) == NULL) {
-               errSprintf ("Problems opening %s\n", dataName);
-               goto error;
-            }
-         }
-
-         /* Have determined that this is a good match, allocate memory */
-         *numMatch = *numMatch + 1;
-         *match = (genMatchType *) realloc (*match,
-                                            (*numMatch) *
-                                            sizeof (genMatchType));
-         curMatch = &((*match)[*numMatch - 1]);
-
-         /* Set Element info about the match */
-         memcpy (&(curMatch->elem), &(NdfdElements[elemEnum]),
-                 sizeof (genElemDescript));
-         /* Set other meta info about the match. */
-         curMatch->refTime = refTime;
-         curMatch->validTime = validTime;
-         curMatch->f_sector = f_sector;
-         curMatch->unit = (char *) malloc (strlen (unit) + 1);
-         strcpy (curMatch->unit, unit);
-
-         /* Fill the value structure. */
-         curMatch->numValue = numPnts;
-         curMatch->value = (genValueType *) malloc (numPnts *
-                                                    sizeof (genValueType));
-         /* Read from data, and fill in the value. */
-         if (f_pntType == 0) {
-            genCubeFillValue (data, dataOffset, scan, f_bigEndian, &map,
-                              numPnts, gridPnts, gds.Nx, gds.Ny, f_interp,
-                              elemEnum, numTable, table, f_WxParse,
-                              f_SimpleVer, curMatch->value);
+            continue /* To next "j" value (next validTime) */;
          } else {
-            genCubeFillValue (data, dataOffset, scan, f_bigEndian, &map,
-                              numPnts, pnts, gds.Nx, gds.Ny, f_interp,
-                              elemEnum, numTable, table, f_WxParse,
-                              f_SimpleVer, curMatch->value);
-         }
+            /* Interested in data. */
+            /* Set up gds. */
+            if (curGdsNum != gdsNum) {
+               ReadGDSBuffer (flxArray + HEADLEN + 2 + (gdsNum - 1) * GDSLEN,
+                              &gds);
+               /* Check that gds is valid before setting up map projection. */
+               if (GDSValid (&gds) != 0) {
+                  errSprintf ("ERROR: Sect3 was not Valid.\n");
+                  goto error;
+               }
+               SetMapParamGDS (&map, &gds);
+               f_sector = SectorFindGDS (&gds);
+               if (f_sector == -1) {
+                  f_sector = NDFD_OCONUS_UNDEF;
+               }
 
-         if (numTable != 0) {
-            for (k = 0; k < numTable; k++) {
-               free (table[k]);
+               /* Get points on the grid. */
+               myAssert ((f_pntType == 0) || (f_pntType == 1));
+               if (f_pntType == 0) {
+                  for (ii = 0; ii < numPnts; ii++) {
+                     myCll2xy (&map, pnts[ii].Y, pnts[ii].X, &(gridPnts[ii].X),
+                               &(gridPnts[ii].Y));
+                  }
+               }
             }
-            free (table);
-            numTable = 0;
-            table = NULL;
+
+            /* Check if this f_sector, refTime, validTime, element has already
+             * been checked. */
+            f_interest = 1;
+            if (elemEnum != NDFD_UNDEF) {
+               for (k = 0; k < *numMatch; k++) {
+                  if (((*match)[k].refTime == refTime) &&
+                      ((*match)[k].validTime == validTime) &&
+                      ((*match)[k].f_sector == f_sector) &&
+                      ((*match)[k].elem.ndfdEnum == elemEnum)) {
+                     f_interest = 0;
+                     break;
+                  }
+               }
+            }
+            if (f_interest == 0) {
+               if (numTable != 0) {
+                  for (k = 0; k < numTable; k++) {
+                     free (table[k]);
+                  }
+                  free (table);
+                  numTable = 0;
+                  table = NULL;
+               }
+               continue;
+            }
+
+            if (strcmp (curFile, dataFile) != 0) {
+               if (lastSlash == NULL) {
+                  dataName = (char *) realloc (dataName, strlen (dataFile) + 1);
+                  strcpy (dataName, dataFile);
+               } else {
+                  dataName = (char *) realloc (dataName,
+                                               (lastSlash - filename) + 1 +
+                                               strlen (dataFile) + 1);
+                  memcpy (dataName, filename, (lastSlash - filename) + 1);
+                  dataName[(lastSlash - filename) + 1] = '\0';
+                  strcat (dataName, dataFile);
+               }
+               strcpy (curFile, dataFile);
+               if (data != NULL) {
+                  fclose (data);
+               }
+               if ((data = fopen (dataName, "rb")) == NULL) {
+                  errSprintf ("Problems opening %s\n", dataName);
+                  goto error;
+               }
+            }
+
+            /* Have determined that this is a good match, allocate memory */
+            *numMatch = *numMatch + 1;
+            *match = (genMatchType *) realloc (*match,
+                                               (*numMatch) *
+                                               sizeof (genMatchType));
+            curMatch = &((*match)[*numMatch - 1]);
+
+            /* Set Element info about the match */
+            memcpy (&(curMatch->elem), &(NdfdElements[elemEnum]),
+                    sizeof (genElemDescript));
+            /* Set other meta info about the match. */
+            curMatch->refTime = refTime;
+            curMatch->validTime = validTime;
+            curMatch->f_sector = f_sector;
+            curMatch->unit = (char *) malloc (strlen (unit) + 1);
+            strcpy (curMatch->unit, unit);
+
+            /* Fill the value structure. */
+            curMatch->numValue = numPnts;
+            curMatch->value = (genValueType *) malloc (numPnts *
+                                                       sizeof (genValueType));
+            /* Read from data, and fill in the value. */
+            if (f_pntType == 0) {
+               genCubeFillValue (data, dataOffset, scan, f_bigEndian, &map,
+                                 numPnts, gridPnts, gds.Nx, gds.Ny, f_interp,
+                                 elemEnum, numTable, table, f_WxParse,
+                                 f_SimpleVer, curMatch->value);
+            } else {
+               genCubeFillValue (data, dataOffset, scan, f_bigEndian, &map,
+                                 numPnts, pnts, gds.Nx, gds.Ny, f_interp,
+                                 elemEnum, numTable, table, f_WxParse,
+                                 f_SimpleVer, curMatch->value);
+            }
+
+            if (numTable != 0) {
+               for (k = 0; k < numTable; k++) {
+                  free (table[k]);
+               }
+               free (table);
+               numTable = 0;
+               table = NULL;
+            }
          }
       }
       sPtr += lenTotPds;
@@ -1940,6 +2144,12 @@ printf ("element is %d\n", elemEnum);
  *                3 both f_validStartTime, and f_validEndTime (Input)
  *    startTime = first valid time that we are interested in. (Input)
  *      endTime = last valid time that we are interested in. (Input)
+ *        f_XML = Flag denoting type of XML product (1 = DWMLgen's
+ *                "time-series"product, 2 = DWMLgen's "glance" product, 3
+ *                = DWMLgenByDay's "12 hourly" product, 4 = DWMLgenByDay's
+ *                "24 hourly" product, 5 = DWMLgen's "RTMA time-series"
+ *                product, 6 = DWMLgen's mix of "RTMA & NDFD time-series"
+ *                product. (Input)
  *     numMatch = Number of matches found. (Output)
  *        match = Matches. (Output)
  *    f_inTypes = File types of InFiles array. (Input)
@@ -1970,7 +2180,7 @@ int genProbe (size_t numPnts, Point * pnts, sChar f_pntType,
               uChar f_interp, sChar f_unit, double majEarth, double minEarth,
               sChar f_WxParse, sChar f_SimpleVer, size_t numElem,
               genElemDescript * elem, sChar f_valTime, double startTime,
-              double endTime, size_t *numMatch, genMatchType ** match,
+              double endTime, uChar f_XML, size_t *numMatch, genMatchType ** match,
               char *f_inTypes, char *gribFilter, size_t numSector,
               char **sector, sChar f_ndfdConven, sChar f_avgInterp)
 {
@@ -2045,7 +2255,6 @@ int genProbe (size_t numPnts, Point * pnts, sChar f_pntType,
                     sector, f_ndfdConven, numElem, elem, &numOutNames,
                     &outNames);
    }
-
 #ifdef DEBUG
 /*
    for (i = 0; i < numOutNames; i++) {
@@ -2089,7 +2298,7 @@ int genProbe (size_t numPnts, Point * pnts, sChar f_pntType,
 #endif
          if (genProbeCube (outNames[i], numPnts, pnts, f_pntType, numElem,
                            elem, f_valTime, startTime, endTime, f_interp,
-                           f_unit, majEarth, minEarth, f_WxParse,
+                           f_unit, majEarth, minEarth, f_WxParse, f_XML,
                            f_SimpleVer, numMatch, match) != 0) {
 #ifdef DEBUG
             msg = errSprintf (NULL);
@@ -2841,13 +3050,13 @@ int ProbeCmd (sChar f_Command, userType *usr)
       if (usr->f_XML != 0) {
 #ifdef _DWML_
          ans = XMLParse (usr->f_XML, numPnts, pnts, pntInfo, usr->f_pntType,
-                         labels, usr->numInNames, usr->inNames, f_fileType,
-                         usr->f_interp, usr->f_unit, usr->majEarth,
+                         labels, &(usr->numInNames), &(usr->inNames),
+                         f_fileType, usr->f_interp, usr->f_unit, usr->majEarth,
                          usr->minEarth, usr->f_icon, usr->f_SimpleVer,
                          usr->f_valTime, usr->startTime, usr->endTime,
                          usr->numNdfdVars, usr->ndfdVars, usr->f_inTypes,
                          usr->gribFilter, numSector, sector,
-                         usr->f_ndfdConven, usr->f_avgInterp);
+                         usr->f_ndfdConven, usr->rtmaDataDir, usr->f_avgInterp);
 #endif
       }
       if (usr->f_Graph != 0) {
@@ -2872,7 +3081,7 @@ int ProbeCmd (sChar f_Command, userType *usr)
                            usr->f_WxParse, usr->f_SimpleVer, usr->f_valTime,
                            usr->startTime, usr->endTime, usr->numNdfdVars,
                            usr->ndfdVars, usr->f_inTypes, usr->gribFilter,
-                           numSector, sector, usr->f_ndfdConven,
+                           numSector, sector, usr->f_ndfdConven, usr->f_XML,
                            usr->f_avgInterp);
          if (ans == 0)
             ans = ans2;

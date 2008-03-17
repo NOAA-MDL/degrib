@@ -104,8 +104,11 @@ int SectorFindGDS (gdsType *gds)
          continue;
       if (fabs (gds->meshLat - NdfdDefGds[i].meshLat) > 0.1)
          continue;
+
+/*    Commented out due to RTMA data coming in with gds->resFlag = 8)
       if (gds->resFlag != NdfdDefGds[i].resFlag)
          continue;
+*/
       if (gds->center != NdfdDefGds[i].center)
          continue;
       if (gds->scan != NdfdDefGds[i].scan)
@@ -118,8 +121,11 @@ int SectorFindGDS (gdsType *gds)
          continue;
       if (fabs (gds->scaleLat2 - NdfdDefGds[i].scaleLat2) > 0.1)
          continue;
+
+/*    Commented out due to RTMA data coming in with the diff below = 90)
       if (fabs (gds->southLat - NdfdDefGds[i].southLat) > 0.1)
          continue;
+*/
       if (fabs (gds->southLon - NdfdDefGds[i].southLon) > 0.1)
          continue;
 
@@ -686,7 +692,6 @@ void expandInName (size_t numInNames, char **inNames, char *f_inTypes,
    char *buffer;
    size_t lenInName;
    char f_usedRoot; /* True if we've included looking in the root directory */
-
    numAns = numInNames;
    ans = (char **) malloc (numAns * sizeof (char *));
    valAns = 0;
@@ -717,7 +722,7 @@ void expandInName (size_t numInNames, char **inNames, char *f_inTypes,
             /* Create file name, and check if it exists. */
             for (ii = 0; ii < numElem; ii++) {
                ptr = genNdfdEnumToStr (elem[ii].ndfdEnum, f_ndfdConven);
-               myAssert (ptr != NULL);
+/*               myAssert (ptr != NULL);*/
                if (ptr != NULL) {
                   /* The extra + 3 is for the second test. */
                   buffer = (char *) malloc (strlen (rootname) + strlen (ptr) +
@@ -869,29 +874,13 @@ void sectExpandInName (size_t *NumInNames, char ***InNames,
                 * check if it exists.  Chose the second choice. */
                for (ii = 0; ii < numNdfdVars; ii++) {
                   ptr = genNdfdEnumToStr (ndfdVars[ii], f_ndfdConven);
-                  myAssert (ptr != NULL);
-                  /* The extra + 3 is for the second test. */
-                  buffer = malloc (strlen (rootname) + strlen (ptr) +
-                                   strlen (filter) + 3 - 2 + 3);
-                  sprintf (buffer, "%s/%s.%s", rootname, ptr, filter + 2);
-                  /* If it is a file... give memory control to ans */
-                  if (myStat (buffer, &perm, NULL, NULL) == MYSTAT_ISFILE) {
-                     /* check that it is readable */
-                     if (perm & 4) {
-                        if (valAns == numAns) {
-                           numAns++;
-                           ans = realloc (ans, numAns * sizeof (char *));
-                        }
-                        ans[valAns] = buffer;
-                        valAns++;
-                     } else {
-                        free (buffer);
-                     }
-                     /* If it doesn't exist, or it is a directory: check
-                      * second choice. */
-                  } else {
-                     sprintf (buffer, "%s/ds.%s.%s", rootname, ptr,
-                              filter + 2);
+/*                  myAssert (ptr != NULL);*/
+                  if (ptr != NULL) {
+                     /* The extra + 3 is for the second test. */
+                     buffer = malloc (strlen (rootname) + strlen (ptr) +
+                                      strlen (filter) + 3 - 2 + 3);
+                     sprintf (buffer, "%s/%s.%s", rootname, ptr, filter + 2);
+                     /* If it is a file... give memory control to ans */
                      if (myStat (buffer, &perm, NULL, NULL) == MYSTAT_ISFILE) {
                         /* check that it is readable */
                         if (perm & 4) {
@@ -904,9 +893,27 @@ void sectExpandInName (size_t *NumInNames, char ***InNames,
                         } else {
                            free (buffer);
                         }
+                        /* If it doesn't exist, or it is a directory: check
+                         * second choice. */
                      } else {
-                        /* If doesn't exist, or is a directory: free it */
-                        free (buffer);
+                        sprintf (buffer, "%s/ds.%s.%s", rootname, ptr,
+                                 filter + 2);
+                        if (myStat (buffer, &perm, NULL, NULL) == MYSTAT_ISFILE) {
+                           /* check that it is readable */
+                           if (perm & 4) {
+                              if (valAns == numAns) {
+                                 numAns++;
+                                 ans = realloc (ans, numAns * sizeof (char *));
+                              }
+                              ans[valAns] = buffer;
+                              valAns++;
+                           } else {
+                              free (buffer);
+                           }
+                        } else {
+                           /* If doesn't exist, or is a directory: free it */
+                           free (buffer);
+                        }
                      }
                   }
                }
