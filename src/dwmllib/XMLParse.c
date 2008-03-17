@@ -96,7 +96,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
              double startTime, double endTime, size_t numNdfdVars, 
              uChar *ndfdVars, char *f_inTypes, char *gribFilter, 
              size_t numSector, char **sector, sChar f_ndfdConven, 
-             char *rtmaDataDir)
+             char *rtmaDataDir, sChar f_avgInterp)
 {
    size_t numElem = 0;        /* Num of elements returned by degrib. */
    genElemDescript *elem = NULL;  /* Structure with info about the element. */
@@ -461,7 +461,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                 f_interp, f_unit, majEarth, minEarth, f_WxParse,
                 f_SimpleVer, numElem, elem, f_valTime, startTime, endTime,
                 f_XML, &numMatch, &match, f_inTypes, gribFilter, numSector,
-                sector, f_ndfdConven) != 0)
+                sector, f_ndfdConven, f_avgInterp) != 0)
    {
       for (i = 0; i < numElem; i++)
       {
