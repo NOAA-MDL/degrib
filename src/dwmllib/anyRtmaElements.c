@@ -102,6 +102,7 @@ void anyRtmaElements(uChar *f_XML, size_t *numInFiles, char ***inFiles,
    char rtmaSetDir[] = "/www/ndfd/public/database/cube/rtma"; /* Default
                        * directory RTMA data is found. Used if -rtmaDir was not
                        * entered as a command line argument. */
+   char perm;          /* The permissions on the rtmaSetDir folder */
 
    /* If numNdfdVars == 0, then -ndfdVars wasn't entered on the command line. 
     * Then format all elements (both RTMA & NDFD; set f_XML = 6).
@@ -216,6 +217,8 @@ void anyRtmaElements(uChar *f_XML, size_t *numInFiles, char ***inFiles,
        */
       if (rtmaDataDir != NULL)
          strcpy (rtmaSetDir, rtmaDataDir);
+      if (myStat (rtmaSetDir, &perm, NULL, NULL) != MYSTAT_ISDIR)
+         return;
 
       /* See which sector(s), the RTMA data was queried for. */
       for (i = 0; i < numSector; i++)
