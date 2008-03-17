@@ -139,7 +139,7 @@ typedef struct {
    sInt4 numDays;       /* numDays (used when working with XML 3,4 */
    sChar f_timeFlavor;  /* -1 (have not seen StartDay,XML,numHr,startTime,etc
                          * 0 have seen XML 3,4 or StartDay,numHour
-                         * 1 have seen XML 1,2 or StartTime,endTime
+                         * 1 have seen XML 1,2,5 or StartTime,endTime
                          * It is an error to see a type 1 thing if we have seen
                          * a type 0 thing.
                          */
@@ -152,6 +152,7 @@ typedef struct {
                          * (timezone,daylightsavings) */
    char *gribFilter;    /* -gribFilter *.bin (pattern to use when filtering
                          * files for grib files. */
+   char *rtmaDataDir;   /* Directory to look in for RTMA data. */
 /* filter... for *.bin or *.ind or .. */
 /*   sChar f_NDFDDir; */    /* If "input file" is a directory, then this describes
                          * the convention to use.

@@ -102,6 +102,7 @@ void UserInit (userType *usr)
    usr->numPnt = 0;
    usr->ndfdVars = NULL;
    usr->numNdfdVars = 0;
+   usr->rtmaDataDir = NULL;
    usr->geoDataDir = NULL;
    usr->gribFilter = NULL;
    usr->lwlf.lat = -100;
@@ -194,6 +195,8 @@ void UserFree (userType *usr)
       free (usr->pnt);
    if (usr->ndfdVars != NULL)
       free (usr->ndfdVars);
+   if (usr->rtmaDataDir != NULL)
+      free (usr->rtmaDataDir);
    if (usr->geoDataDir != NULL)
       free (usr->geoDataDir);
    if (usr->gribFilter != NULL)
@@ -369,7 +372,7 @@ int UserValidate (userType *usr)
       usr->ndfdVars = (uChar *) malloc (numCol * sizeof (uChar));
       valCol = 0;
       for (i = 0; i < numCol; i++) {
-         ans = genNdfdVar_Lookup (colList[i], 1, usr->f_ndfdConven);
+         ans = gen_NDFD_NDGD_Lookup (colList[i], 1, usr->f_ndfdConven);
          if (ans != NDFD_UNDEF) {
             /* Check if we already have this element */
             for (j = 0; j < valCol; j++) {
@@ -648,8 +651,8 @@ static char *UsrOpt[] = { "-cfg", "-in", "-I", "-C", "-P", "-V", "-Flt",
    "-stdout", "-validMax", "-validMin", "-Tdl", "-nTdl", "-Sector",
    "-sectFile", "-NC", "-AscGrid", "-Map", "-MapIni", "-MapIniOptions",
    "-XML", "-MOTD", "-Graph", "-startTime", "-endTime", "-startDate",
-   "-numDays", "-ndfdVars", "-geoData", "-gribFilter", "-ndfdConven",
-   "-Freq", "-Icon", "-curTime", "-avgInterp",
+   "-numDays", "-ndfdVars", "-geoData", "-gribFilter", "-ndfdConven", "-Freq",
+   "-Icon", "-curTime", "-rtmaDir", "-avgInterp",
    NULL
 };
 
@@ -672,7 +675,7 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
       VALIDMIN, TDL, NO_TDL, SECTOR, SECTFILE, NCCONVERT, ASCGRID, MAP,
       MAPINIFILE, MAPINIOPTIONS, XML, MOTD, GRAPH, STARTTIME, ENDTIME,
       STARTDATE, NUMDAYS, NDFDVARS, GEODATA, GRIBFILTER, NDFDCONVEN,
-      FREQUENCY, ICON, CURTIME, AVGINTERP
+      FREQUENCY, ICON, CURTIME, RTMADIR, AVGINTERP
    };
    int index;           /* "cur"'s index into Opt, which matches enum val. */
    double lat, lon;     /* Used to check on the -pnt option. */
@@ -1115,7 +1118,7 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
                usr->f_valTime = 3;
                usr->endTime = (totDay + usr->numDays) * SEC_DAY + 12 * 3600.;
             }
-/*            printf ("start Time '%s' %f\n", next, usr->startTime);*/
+/*            printf ("start Time '%s' %f\n", next, usr->startTime); */
             return 2;
          }
          return 2;
@@ -1188,6 +1191,8 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
             } else if ((strcmp (next, "24-hourly") == 0) ||
                        (strcmp (next, "24 hourly") == 0)) {
                usr->f_XML = 4;
+            } else if (strcmp (next, "rtma") == 0) {
+               usr->f_XML = 5;
             } else {
                if (myAtoI (next, &(li_temp)) != 1) {
                   errSprintf ("Bad value to '%s' of '%s'\n", cur, next);
@@ -1195,10 +1200,10 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
                }
                usr->f_XML = li_temp;
             }
-            if ((usr->f_XML == 1) || (usr->f_XML == 2)) {
+            if ((usr->f_XML == 1) || (usr->f_XML == 2) || (usr->f_XML == 5)) {
                if (usr->f_timeFlavor == 2) {
                   errSprintf ("Inconsistent time flavor.\n"
-                              "XML 1,2 use startTime, endTime\n"
+                              "XML 1,2,5 use startTime, endTime\n"
                               "XML 3,4 use startDate, numDays\n");
                   return -1;
                }
@@ -1206,7 +1211,7 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
             } else if ((usr->f_XML == 3) || (usr->f_XML == 4)) {
                if (usr->f_timeFlavor == 1) {
                   errSprintf ("Inconsistent time flavor.\n"
-                              "XML 1,2 use startTime, endTime\n"
+                              "XML 1,2,5 use startTime, endTime\n"
                               "XML 3,4 use startDate, numDays\n");
                   return -1;
                }
@@ -1257,6 +1262,24 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
             usr->geoDataDir = (char *) malloc ((strlen (next) + 1) *
                                                sizeof (char));
             strcpy (usr->geoDataDir, next);
+            return 2;
+         }
+      case RTMADIR:
+         if (usr->rtmaDataDir == NULL) {
+            type = myStat (next, &perm, NULL, NULL);
+            /* check if it is a directory */
+            if (type != MYSTAT_ISDIR) {
+               errSprintf ("'%s' is not a directory\n", next);
+               return -1;
+            }
+            /* check that it is readable */
+            if (!(perm & 4)) {
+               errSprintf ("No read permissions on '%s'\n", next);
+               return -1;
+            }
+            usr->rtmaDataDir = (char *) malloc ((strlen (next) + 1) *
+                                                 sizeof (char));
+            strcpy (usr->rtmaDataDir, next);
             return 2;
          }
       case GRIBFILTER:
