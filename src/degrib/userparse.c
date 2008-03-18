@@ -472,6 +472,20 @@ int UserValidate (userType *usr)
       usr->f_icon = 0;
    if (usr->f_valTime == -1)
       usr->f_valTime = 0;
+   if (usr->rtmaDataDir == NULL) {
+      char perm;
+      char *defDir = "/www/ndfd/public/database/cube/rtma";
+
+      /* check if it is a directory */
+      if (myStat (defDir, &perm, NULL, NULL) == MYSTAT_ISDIR) {
+         /* check that it is readable */
+         if ((perm & 4)) {
+            usr->rtmaDataDir = (char *) malloc ((strlen (defDir) + 1) *
+                                                 sizeof (char));
+            strcpy (usr->rtmaDataDir, defDir);
+         }
+      }
+   }
    if (usr->separator == NULL) {
       usr->separator = (char *) malloc (3 * sizeof (char));
       strcpy (usr->separator, ", ");

@@ -27,9 +27,9 @@
  *               arg to format. (Input)
  *    ndfdVars = Array holding the enum numbers of the ndfd/rtma elements chosen
  *               on the command line arg to format. (Input)
- * rtmaDataDir = Directory where RTMA data is located. If Null (not entered as a 
- *               command line argument, the default directory is used. 
- *               (Input/Output)
+ * rtmaDataDir = Directory where RTMA data is located.  If not provided by the
+ *               user, userparse.c has set this to the default value (if
+ *               possible) (Input)
  *      f_icon = Flag denoting whether NDFD element derived icons are to be
  *               formatted per point. If this flag is chosen, the other 4 NDFD
  *               elements' data used to derive the icons must be
@@ -67,7 +67,7 @@
  *****************************************************************************
  */
 #include "xmlparse.h"
-void anyRtmaElements(uChar *f_XML, size_t *numInFiles, char ***inFiles, 
+void anyRtmaElements(uChar *f_XML, size_t *numInFiles, char ***inFiles,
                      size_t numNdfdVars, uChar *ndfdVars, char *rtmaDataDir, 
                      int f_icon, size_t numSector, char **sector, 
                      int *f_rtmaNdfdTemp, int *f_rtmaNdfdTd, int *f_rtmaNdfdWdir,
@@ -99,15 +99,16 @@ void anyRtmaElements(uChar *f_XML, size_t *numInFiles, char ***inFiles,
                         * for points in the Guam sector. */
    int f_rtmaInHW = 0; /*Flag denoting if RTMA data in this query was found
                         * for points in the Hawaii sector. */
-   char rtmaSetDir[] = "/www/ndfd/public/database/cube/rtma"; /* Default
+/* Following 2 variables were moved to userparse.c 3/18/2008 */
+/*   char rtmaSetDir[] = "/www/ndfd/public/database/cube/rtma"; */ /* Default
                        * directory RTMA data is found. Used if -rtmaDir was not
                        * entered as a command line argument. */
-   char perm;          /* The permissions on the rtmaSetDir folder */
+/*   char perm; */         /* The permissions on the rtmaSetDir folder */
 
-   /* If numNdfdVars == 0, then -ndfdVars wasn't entered on the command line. 
+   /* If numNdfdVars == 0, then -ndfdVars wasn't entered on the command line.
     * Then format all elements (both RTMA & NDFD; set f_XML = 6).
     */
-   if (numNdfdVars != 0) 
+   if (numNdfdVars != 0)
    {
       for (i = 0; i < numNdfdVars; i++)
       {
@@ -204,9 +205,9 @@ void anyRtmaElements(uChar *f_XML, size_t *numInFiles, char ***inFiles,
       f_ndfdSky = 1;
    }
 
-   /* If this an exclusive RTMA query, or a query with a mix of both RTMA 
+   /* If this an exclusive RTMA query, or a query with a mix of both RTMA
     * and NDFD elements, add the RTMA files to the inFiles array (which will
-    * already hold NDFD files if the query contains both RTMA and NDFD 
+    * already hold NDFD files if the query contains both RTMA and NDFD
     * elements.)
     */
    if (*f_XML != 1)
@@ -215,14 +216,21 @@ void anyRtmaElements(uChar *f_XML, size_t *numInFiles, char ***inFiles,
       /* If rtmaDataDir is not entered as a command line argument (= NULL), but
        * is needed, set it to default value.
        */
+/* Moved logic for rtmaSetDir to userparse.c 3/18/2008
       if (rtmaDataDir != NULL)
          strcpy (rtmaSetDir, rtmaDataDir);
       if (myStat (rtmaSetDir, &perm, NULL, NULL) != MYSTAT_ISDIR)
          return;
+*/
+      /* 3/18/2008 -- added check to see if rtmaDataDir is null, if so, both
+       * the user supplied and default values for -rtmaDir are not directories
+       * so abort */
+      if (rtmaDataDir == NULL)
+         return;
 
       /* See which sector(s), the RTMA data was queried for. */
       for (i = 0; i < numSector; i++)
-      { 
+      {
          if (strcmp(sector[i], "conus") == 0)
          {
             f_rtmaInConus = 1;
@@ -261,28 +269,28 @@ void anyRtmaElements(uChar *f_XML, size_t *numInFiles, char ***inFiles,
       {
          if (f_rtmaInConus) 
          {
-            rtmaFileNames(numInFiles, inFiles, "/conus/temp_r", rtmaSetDir);
-            rtmaFileNames(numInFiles, inFiles, "/conus/utemp_r", rtmaSetDir);
+            rtmaFileNames(numInFiles, inFiles, "/conus/temp_r", rtmaDataDir);
+            rtmaFileNames(numInFiles, inFiles, "/conus/utemp_r", rtmaDataDir);
          }
          if (f_rtmaInAK)
          {
-            rtmaFileNames(numInFiles, inFiles, "/alaska/temp_r", rtmaSetDir);
-            rtmaFileNames(numInFiles, inFiles, "/alaska/utemp_r", rtmaSetDir);
+            rtmaFileNames(numInFiles, inFiles, "/alaska/temp_r", rtmaDataDir);
+            rtmaFileNames(numInFiles, inFiles, "/alaska/utemp_r", rtmaDataDir);
          }
          if (f_rtmaInPR) 
          {
-            rtmaFileNames(numInFiles, inFiles, "/puertori/temp_r", rtmaSetDir);
-            rtmaFileNames(numInFiles, inFiles, "/puertori/temp_r", rtmaSetDir);
+            rtmaFileNames(numInFiles, inFiles, "/puertori/temp_r", rtmaDataDir);
+            rtmaFileNames(numInFiles, inFiles, "/puertori/temp_r", rtmaDataDir);
          }
          if (f_rtmaInGM)
          {
-            rtmaFileNames(numInFiles, inFiles, "/guam/temp_r", rtmaSetDir);
-            rtmaFileNames(numInFiles, inFiles, "/guam/utemp_r", rtmaSetDir);
+            rtmaFileNames(numInFiles, inFiles, "/guam/temp_r", rtmaDataDir);
+            rtmaFileNames(numInFiles, inFiles, "/guam/utemp_r", rtmaDataDir);
          }
          if (f_rtmaInHW)
          {
-            rtmaFileNames(numInFiles, inFiles, "/hawaii/temp_r", rtmaSetDir);
-            rtmaFileNames(numInFiles, inFiles, "/hawaii/utemp_r", rtmaSetDir);
+            rtmaFileNames(numInFiles, inFiles, "/hawaii/temp_r", rtmaDataDir);
+            rtmaFileNames(numInFiles, inFiles, "/hawaii/utemp_r", rtmaDataDir);
          }
       }
 
@@ -297,28 +305,28 @@ void anyRtmaElements(uChar *f_XML, size_t *numInFiles, char ***inFiles,
       {
          if (f_rtmaInConus) 
          {
-            rtmaFileNames(numInFiles, inFiles, "/conus/td_r", rtmaSetDir);
-            rtmaFileNames(numInFiles, inFiles, "/conus/utd_r", rtmaSetDir);
+            rtmaFileNames(numInFiles, inFiles, "/conus/td_r", rtmaDataDir);
+            rtmaFileNames(numInFiles, inFiles, "/conus/utd_r", rtmaDataDir);
          }
          if (f_rtmaInAK)
          {
-            rtmaFileNames(numInFiles, inFiles, "/alaska/td_r", rtmaSetDir);
-            rtmaFileNames(numInFiles, inFiles, "/alaska/utd_r", rtmaSetDir);
+            rtmaFileNames(numInFiles, inFiles, "/alaska/td_r", rtmaDataDir);
+            rtmaFileNames(numInFiles, inFiles, "/alaska/utd_r", rtmaDataDir);
          }
          if (f_rtmaInPR) 
          {
-            rtmaFileNames(numInFiles, inFiles, "/puertori/td_r", rtmaSetDir);
-            rtmaFileNames(numInFiles, inFiles, "/puertori/utd_r", rtmaSetDir);
+            rtmaFileNames(numInFiles, inFiles, "/puertori/td_r", rtmaDataDir);
+            rtmaFileNames(numInFiles, inFiles, "/puertori/utd_r", rtmaDataDir);
          }
          if (f_rtmaInGM)
          {
-            rtmaFileNames(numInFiles, inFiles, "/guam/td_r", rtmaSetDir);
-            rtmaFileNames(numInFiles, inFiles, "/guam/utd_r", rtmaSetDir);
+            rtmaFileNames(numInFiles, inFiles, "/guam/td_r", rtmaDataDir);
+            rtmaFileNames(numInFiles, inFiles, "/guam/utd_r", rtmaDataDir);
          }
          if (f_rtmaInHW)
          {
-            rtmaFileNames(numInFiles, inFiles, "/hawaii/td_r", rtmaSetDir);
-            rtmaFileNames(numInFiles, inFiles, "/hawaii/utd_r", rtmaSetDir);
+            rtmaFileNames(numInFiles, inFiles, "/hawaii/td_r", rtmaDataDir);
+            rtmaFileNames(numInFiles, inFiles, "/hawaii/utd_r", rtmaDataDir);
          }
       }
 
@@ -333,28 +341,28 @@ void anyRtmaElements(uChar *f_XML, size_t *numInFiles, char ***inFiles,
       {
          if (f_rtmaInConus) 
          {
-            rtmaFileNames(numInFiles, inFiles, "/conus/wdir_r", rtmaSetDir);
-            rtmaFileNames(numInFiles, inFiles, "/conus/uwdir_r", rtmaSetDir);
+            rtmaFileNames(numInFiles, inFiles, "/conus/wdir_r", rtmaDataDir);
+            rtmaFileNames(numInFiles, inFiles, "/conus/uwdir_r", rtmaDataDir);
          }
          if (f_rtmaInAK)
          {
-            rtmaFileNames(numInFiles, inFiles, "/alaska/wdir_r", rtmaSetDir);
-            rtmaFileNames(numInFiles, inFiles, "/alaska/uwdir_r", rtmaSetDir);
+            rtmaFileNames(numInFiles, inFiles, "/alaska/wdir_r", rtmaDataDir);
+            rtmaFileNames(numInFiles, inFiles, "/alaska/uwdir_r", rtmaDataDir);
          }
          if (f_rtmaInPR) 
          {
-            rtmaFileNames(numInFiles, inFiles, "/puertori/wdir_r", rtmaSetDir);
-            rtmaFileNames(numInFiles, inFiles, "/puertori/uwdir_r", rtmaSetDir);
+            rtmaFileNames(numInFiles, inFiles, "/puertori/wdir_r", rtmaDataDir);
+            rtmaFileNames(numInFiles, inFiles, "/puertori/uwdir_r", rtmaDataDir);
          }
          if (f_rtmaInGM)
          {
-            rtmaFileNames(numInFiles, inFiles, "/guam/wdir_r", rtmaSetDir);
-            rtmaFileNames(numInFiles, inFiles, "/guam/uwdir_r", rtmaSetDir);
+            rtmaFileNames(numInFiles, inFiles, "/guam/wdir_r", rtmaDataDir);
+            rtmaFileNames(numInFiles, inFiles, "/guam/uwdir_r", rtmaDataDir);
          }
          if (f_rtmaInHW)
          {
-            rtmaFileNames(numInFiles, inFiles, "/hawaii/wdir_r", rtmaSetDir);
-            rtmaFileNames(numInFiles, inFiles, "/hawaii/uwdir_r", rtmaSetDir);
+            rtmaFileNames(numInFiles, inFiles, "/hawaii/wdir_r", rtmaDataDir);
+            rtmaFileNames(numInFiles, inFiles, "/hawaii/uwdir_r", rtmaDataDir);
          }
       }
 
@@ -369,28 +377,28 @@ void anyRtmaElements(uChar *f_XML, size_t *numInFiles, char ***inFiles,
       {
          if (f_rtmaInConus) 
          {
-            rtmaFileNames(numInFiles, inFiles, "/conus/wspd_r", rtmaSetDir);
-            rtmaFileNames(numInFiles, inFiles, "/conus/uwspd_r", rtmaSetDir);
+            rtmaFileNames(numInFiles, inFiles, "/conus/wspd_r", rtmaDataDir);
+            rtmaFileNames(numInFiles, inFiles, "/conus/uwspd_r", rtmaDataDir);
          }
          if (f_rtmaInAK)
          {
-            rtmaFileNames(numInFiles, inFiles, "/alaska/wspd_r", rtmaSetDir);
-            rtmaFileNames(numInFiles, inFiles, "/alaska/uwspd_r", rtmaSetDir);
+            rtmaFileNames(numInFiles, inFiles, "/alaska/wspd_r", rtmaDataDir);
+            rtmaFileNames(numInFiles, inFiles, "/alaska/uwspd_r", rtmaDataDir);
          }
          if (f_rtmaInPR) 
          {
-            rtmaFileNames(numInFiles, inFiles, "/puertori/wspd_r", rtmaSetDir);
-            rtmaFileNames(numInFiles, inFiles, "/puertori/uwspd_r", rtmaSetDir);
+            rtmaFileNames(numInFiles, inFiles, "/puertori/wspd_r", rtmaDataDir);
+            rtmaFileNames(numInFiles, inFiles, "/puertori/uwspd_r", rtmaDataDir);
          }
          if (f_rtmaInGM)
          {
-            rtmaFileNames(numInFiles, inFiles, "/guam/wspd_r", rtmaSetDir);
-            rtmaFileNames(numInFiles, inFiles, "/guam/uwspd_r", rtmaSetDir);
+            rtmaFileNames(numInFiles, inFiles, "/guam/wspd_r", rtmaDataDir);
+            rtmaFileNames(numInFiles, inFiles, "/guam/uwspd_r", rtmaDataDir);
          }
          if (f_rtmaInHW)
          {
-            rtmaFileNames(numInFiles, inFiles, "/hawaii/wspd_r", rtmaSetDir);
-            rtmaFileNames(numInFiles, inFiles, "/hawaii/uwspd_r", rtmaSetDir);
+            rtmaFileNames(numInFiles, inFiles, "/hawaii/wspd_r", rtmaDataDir);
+            rtmaFileNames(numInFiles, inFiles, "/hawaii/uwspd_r", rtmaDataDir);
          }
       }
 
@@ -403,15 +411,15 @@ void anyRtmaElements(uChar *f_XML, size_t *numInFiles, char ***inFiles,
       if (f_rtmaPrecipa)
       {
          if (f_rtmaInConus) 
-            rtmaFileNames(numInFiles, inFiles, "/conus/precipa_r", rtmaSetDir);
+            rtmaFileNames(numInFiles, inFiles, "/conus/precipa_r", rtmaDataDir);
          if (f_rtmaInAK)
-            rtmaFileNames(numInFiles, inFiles, "/alaska/precipa_r", rtmaSetDir);
+            rtmaFileNames(numInFiles, inFiles, "/alaska/precipa_r", rtmaDataDir);
          if (f_rtmaInPR) 
-            rtmaFileNames(numInFiles, inFiles, "/puertori/precipa_r", rtmaSetDir);
+            rtmaFileNames(numInFiles, inFiles, "/puertori/precipa_r", rtmaDataDir);
          if (f_rtmaInGM)
-            rtmaFileNames(numInFiles, inFiles, "/guam/precipa_r", rtmaSetDir);
+            rtmaFileNames(numInFiles, inFiles, "/guam/precipa_r", rtmaDataDir);
          if (f_rtmaInHW)
-            rtmaFileNames(numInFiles, inFiles, "/hawaii/precipa_r", rtmaSetDir);
+            rtmaFileNames(numInFiles, inFiles, "/hawaii/precipa_r", rtmaDataDir);
       }
 
       /**************************RTMA SKY COVER*******************************/
@@ -423,15 +431,15 @@ void anyRtmaElements(uChar *f_XML, size_t *numInFiles, char ***inFiles,
       if (f_rtmaSky)
       {
          if (f_rtmaInConus) 
-            rtmaFileNames(numInFiles, inFiles, "/conus/sky_r", rtmaSetDir);
+            rtmaFileNames(numInFiles, inFiles, "/conus/sky_r", rtmaDataDir);
          if (f_rtmaInAK)
-            rtmaFileNames(numInFiles, inFiles, "/alaska/sky_r", rtmaSetDir);
+            rtmaFileNames(numInFiles, inFiles, "/alaska/sky_r", rtmaDataDir);
          if (f_rtmaInPR) 
-            rtmaFileNames(numInFiles, inFiles, "/puertori/sky_r", rtmaSetDir);
+            rtmaFileNames(numInFiles, inFiles, "/puertori/sky_r", rtmaDataDir);
          if (f_rtmaInGM)
-            rtmaFileNames(numInFiles, inFiles, "/guam/sky_r", rtmaSetDir);
+            rtmaFileNames(numInFiles, inFiles, "/guam/sky_r", rtmaDataDir);
          if (f_rtmaInHW)
-            rtmaFileNames(numInFiles, inFiles, "/hawaii/sky_r", rtmaSetDir);
+            rtmaFileNames(numInFiles, inFiles, "/hawaii/sky_r", rtmaDataDir);
       }
 
       /* Turn on flags if concatenation of RTMA + NDFD element is warranted. */

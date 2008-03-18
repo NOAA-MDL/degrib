@@ -13,8 +13,9 @@
  *       InFiles = Pointer to character array holding the input files holding data
  *                 to be formatted. (Output)
  * directoryTail = Tail portion of directory RTMA data is found in. (Input)
- *    rtmaSetDir = Default directory RTMA data is found. Used if -rtmaDir was
- *                 not entered as a command line argument (Input).
+ *   rtmaDataDir = Directory where RTMA data is located.  If not provided by the
+ *                 user, userparse.c has set this to the default value (if
+ *                 possible) (Input)
  *
  * FILES/DATABASES: None
  *
@@ -28,7 +29,7 @@
  */
 #include "xmlparse.h"
 void rtmaFileNames(size_t *numInFiles, char ***inFiles, char *directoryTail, 
-                   char *rtmaSetDir)
+                   char *rtmaDataDir)
 {
    int i;                 /* Counter. */
    char rtmaStrBuff[200]; /* String holding complete directory and file RTMA 
@@ -40,10 +41,10 @@ void rtmaFileNames(size_t *numInFiles, char ***inFiles, char *directoryTail,
       *numInFiles  = *numInFiles + 1;
 
       if (i >= 10)
-         sprintf (rtmaStrBuff, "%s%s%d%s", rtmaSetDir, directoryTail, i, 
+         sprintf (rtmaStrBuff, "%s%s%d%s", rtmaDataDir, directoryTail, i, 
                   ".ind");
       else
-         sprintf (rtmaStrBuff, "%s%s%s%d%s", rtmaSetDir, directoryTail, "0", i,
+         sprintf (rtmaStrBuff, "%s%s%s%d%s", rtmaDataDir, directoryTail, "0", i,
                   ".ind");
 
       *inFiles = (char **) realloc(*inFiles, *numInFiles * sizeof (char *));
