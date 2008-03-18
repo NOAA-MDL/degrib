@@ -1265,8 +1265,9 @@ static int ParseSect4 (sInt4 *is4, sInt4 ns4, grib_MetaData *meta)
    }
    if ((is4[7] != GS4_ANALYSIS) && (is4[7] != GS4_ENSEMBLE) &&
        (is4[7] != GS4_DERIVED) && (is4[7] != GS4_PROBABIL_PNT) &&
+       (is4[7] != GS4_PERCENT_PNT) &&
        (is4[7] != GS4_STATISTIC) && (is4[7] != GS4_PROBABIL_TIME) &&
-       (is4[7] != GS4_PERCENTILE) && (is4[7] != GS4_ENSEMBLE_STAT) &&
+       (is4[7] != GS4_PERCENT_TIME) && (is4[7] != GS4_ENSEMBLE_STAT) &&
        (is4[7] != GS4_SATELLITE) && (is4[7] != GS4_DERIVED_INTERVAL)) {
 #ifdef DEBUG
       printf ("Un-supported Template. %ld\n", is4[7]);
@@ -1276,7 +1277,7 @@ static int ParseSect4 (sInt4 *is4, sInt4 ns4, grib_MetaData *meta)
    }
    meta->pds2.sect4.templat = (unsigned short int) is4[7];
 
-   /* 
+   /*
     * Handle variables common to the supported templates.
     */
    if (ns4 < 34) {
@@ -1547,7 +1548,10 @@ static int ParseSect4 (sInt4 *is4, sInt4 ns4, grib_MetaData *meta)
             meta->pds2.sect4.numMissing = is4[42];
          }
          break;
-      case GS4_PERCENTILE: /* 4.10 */
+      case GS4_PERCENT_PNT: /* 4.6 */
+         meta->pds2.sect4.percentile = is4[34];
+         break;
+      case GS4_PERCENT_TIME: /* 4.10 */
          meta->pds2.sect4.percentile = is4[34];
          if (ParseTime (&(meta->pds2.sect4.validTime), is4[35], is4[37],
                         is4[38], is4[39], is4[40], is4[41]) != 0) {
@@ -1557,7 +1561,7 @@ static int ParseSect4 (sInt4 *is4, sInt4 ns4, grib_MetaData *meta)
                errSprintf ("ERROR: in call to ParseTime from ParseSect4\n%s",
                            msg);
                errSprintf ("Most likely they didn't complete bytes 35-41 of "
-                           "Template 4.8\n");
+                           "Template 4.10\n");
                free (msg);
                return -1;
             }

@@ -2226,7 +2226,7 @@ void ParseElemName (uShort2 center, uShort2 subcenter, int prodType,
                        lenTime, timeRangeUnit, timeIncrType, genID, probType, lowerProb,
                        upperProb, name, comment, unit, convert);
       }
-   } else if (templat == GS4_PERCENTILE) {
+   } else if ((templat == GS4_PERCENT_TIME) || (templat == GS4_PERCENT_PNT)) {
       ElemNamePerc (center, subcenter, prodType, templat, cat, subcat,
                     lenTime, timeRangeUnit, percentile, name, comment, unit, convert);
    } else {

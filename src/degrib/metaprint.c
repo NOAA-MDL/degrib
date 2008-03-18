@@ -468,6 +468,8 @@ static int PrintSect4 (grib_MetaData *meta, sChar f_unit)
             " point in time",
       "Probability forecast at a horizontal layer or level at a point in "
             "time",
+      "Percentile forecasts at a horizontal layer or level at a point in "
+            "time",
       "Statistically processed data at a horizontal layer or level in a time"
             " interval",
       "Probability forecast at a horizontal layer or level in a time "
@@ -563,31 +565,34 @@ static int PrintSect4 (grib_MetaData *meta, sChar f_unit)
       case GS4_PROBABIL_PNT:
          Print ("PDS-S4", "Product type", Prt_DS, sect4->templat, tbl40[3]);
          break;
-      case GS4_STATISTIC:
+      case GS4_PERCENT_PNT:
          Print ("PDS-S4", "Product type", Prt_DS, sect4->templat, tbl40[4]);
          break;
-      case GS4_PROBABIL_TIME:
+      case GS4_STATISTIC:
          Print ("PDS-S4", "Product type", Prt_DS, sect4->templat, tbl40[5]);
          break;
-      case GS4_PERCENTILE:
+      case GS4_PROBABIL_TIME:
          Print ("PDS-S4", "Product type", Prt_DS, sect4->templat, tbl40[6]);
          break;
-      case GS4_ENSEMBLE_STAT:
+      case GS4_PERCENT_TIME:
          Print ("PDS-S4", "Product type", Prt_DS, sect4->templat, tbl40[7]);
          break;
-      case GS4_DERIVED_INTERVAL:
+      case GS4_ENSEMBLE_STAT:
          Print ("PDS-S4", "Product type", Prt_DS, sect4->templat, tbl40[8]);
+         break;
+      case GS4_DERIVED_INTERVAL:
+         Print ("PDS-S4", "Product type", Prt_DS, sect4->templat, tbl40[9]);
          break;
 /*
  * The following lines were removed until such time that the rest of this
  * procedure can properly handle this template type.
  *
       case GS4_RADAR:
-         Print ("PDS-S4", "Product type", Prt_DS, sect4->templat, tbl40[9]);
+         Print ("PDS-S4", "Product type", Prt_DS, sect4->templat, tbl40[10]);
          break;
 */
       case GS4_SATELLITE:
-         Print ("PDS-S4", "Product type", Prt_DS, sect4->templat, tbl40[10]);
+         Print ("PDS-S4", "Product type", Prt_DS, sect4->templat, tbl40[11]);
          break;
       default:
          Print ("PDS-S4", "Product type", Prt_D, sect4->templat);
@@ -771,7 +776,10 @@ static int PrintSect4 (grib_MetaData *meta, sChar f_unit)
                 pow (10, -1 * sect4->upperLimit.factor), buffer);
 /*         printf ("Hello world 1\n");*/
          break;
-      case GS4_PERCENTILE:
+      case GS4_PERCENT_PNT:
+         Print ("PDS-S4", "Percentile", Prt_DS, sect4->percentile, "[%]");
+         break;
+      case GS4_PERCENT_TIME:
          Print ("PDS-S4", "Percentile", Prt_DS, sect4->percentile, "[%]");
 /*         strftime (buffer, 100, "%m/%d/%Y %H:%M:%S UTC",
                    gmtime (&(sect4->validTime)));*/

@@ -461,20 +461,21 @@ static int GRIB2Inventory2to7 (sChar sectNum, FILE *fp, sInt4 gribLen,
    }
 /*
 enum { GS4_ANALYSIS, GS4_ENSEMBLE, GS4_DERIVED, GS4_PROBABIL_PNT = 5,
-   GS4_STATISTIC = 8, GS4_PROBABIL_TIME = 9, GS4_PERCENTILE = 10,
-   GS4_RADAR = 20, GS4_SATELLITE = 30
+   GS4_PERCENT_PNT, GS4_STATISTIC = 8, GS4_PROBABIL_TIME = 9,
+   GS4_PERCENT_TIME = 10, GS4_RADAR = 20, GS4_SATELLITE = 30
 };
 */
    /* Parse the interesting data out of sect 4. */
    MEMCPY_BIG (&templat, *buffer + 8 - 5, sizeof (short int));
    if ((templat != GS4_ANALYSIS) && (templat != GS4_ENSEMBLE)
        && (templat != GS4_DERIVED)
-       && (templat != GS4_PROBABIL_PNT) && (templat != GS4_STATISTIC)
-       && (templat != GS4_PROBABIL_TIME) && (templat != GS4_PERCENTILE)
+       && (templat != GS4_PROBABIL_PNT) && (templat != GS4_PERCENT_PNT)
+       && (templat != GS4_STATISTIC)
+       && (templat != GS4_PROBABIL_TIME) && (templat != GS4_PERCENT_TIME)
        && (templat != GS4_ENSEMBLE_STAT)
        && (templat != GS4_RADAR) && (templat != GS4_SATELLITE)
        && (templat != GS4_DERIVED_INTERVAL)) {
-      errSprintf ("This was only designed for templates 0, 1, 2, 5, 8, 9, "
+      errSprintf ("This was only designed for templates 0, 1, 2, 5, 6, 8, 9, "
                   "10, 11, 12, 20, 30\n");
       return -8;
    }
@@ -518,6 +519,11 @@ enum { GS4_ANALYSIS, GS4_ENSEMBLE, GS4_DERIVED, GS4_PROBABIL_PNT = 5,
             value = sbit_2Comp_fourByte(value);
             upperProb = value * pow (10, -1 * factor);
             break;
+
+         case GS4_PERCENT_PNT: /* 4.6 */
+            percentile = (*buffer)[35 - 5];
+            break;
+
          case GS4_DERIVED_INTERVAL: /* 4.12 */
             if (InventoryParseTime (*buffer + 37 - 5, &(inv->validTime)) != 0) {
                printf ("Warning: Investigate Template 4.12 bytes 37-43\n");
@@ -534,7 +540,8 @@ enum { GS4_ANALYSIS, GS4_ENSEMBLE, GS4_DERIVED, GS4_PROBABIL_PNT = 5,
             }
 */
             break;
-         case GS4_PERCENTILE: /* 4.10 */
+
+         case GS4_PERCENT_TIME: /* 4.10 */
             percentile = (*buffer)[35 - 5];
             if (InventoryParseTime (*buffer + 36 - 5, &(inv->validTime)) != 0) {
                printf ("Warning: Investigate Template 4.10 bytes 36-42\n");
