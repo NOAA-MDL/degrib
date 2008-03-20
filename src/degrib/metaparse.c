@@ -1830,6 +1830,15 @@ int MetaParse (grib_MetaData *meta, sInt4 *is0, sInt4 ns0,
                          * template 4.5 or 4.9 */
    sInt4 lenTime;       /* Length of time for element (see 4.8 and 4.9) */
    uChar timeRangeUnit;
+   uChar incrType;
+   uChar fstSurfType;   /* Type of the first fixed surface. */
+   sInt4 value;         /* The scaled value from GRIB2 file. */
+   sChar scale;         /* Surface scale as opposed to probility factor. */
+   double fstSurfValue; /* Value of first fixed surface. */
+   sChar f_fstValue;    /* flag if FstValue is valid. */
+   uChar sndSurfType;   /* Type of the second fixed surface. */
+   double sndSurfValue; /* Value of second fixed surface. */
+   sChar f_sndValue;    /* flag if SndValue is valid. */
 
    if ((ierr = ParseSect0 (is0, ns0, grib_len, meta)) != 0) {
       preErrSprintf ("Parse error Section 0\n");
@@ -1924,71 +1933,74 @@ int MetaParse (grib_MetaData *meta, sInt4 *is0, sInt4 ns0,
       } else if (meta->pds2.sect4.Interval[0].timeRangeUnit == 3) {  /* month */
          lenTime = meta->pds2.sect4.Interval[0].lenTime;
          timeRangeUnit = 3;
-/*
-         lenTime = (meta->pds2.sect4.validTime - Clock_AddMonthYear (meta->pds2.sect4.validTime,
-                                        -1 * meta->pds2.sect4.Interval[0].lenTime, 0)) / 3600.;
-*/
       } else if (meta->pds2.sect4.Interval[0].timeRangeUnit == 4) {  /* year */
          lenTime = meta->pds2.sect4.Interval[0].lenTime;
          timeRangeUnit = 4;
-/*
-         lenTime = (meta->pds2.sect4.validTime - Clock_AddMonthYear (meta->pds2.sect4.validTime, 0,
-                                        -1 * meta->pds2.sect4.Interval[0].lenTime)) / 3600.;
-*/
       } else if (meta->pds2.sect4.Interval[0].timeRangeUnit == 5) {  /* decade */
          lenTime = meta->pds2.sect4.Interval[0].lenTime * 10;
          timeRangeUnit = 4;
-/*
-         lenTime = (meta->pds2.sect4.validTime - Clock_AddMonthYear (meta->pds2.sect4.validTime, 0,
-                                        -10 * meta->pds2.sect4.Interval[0].lenTime)) / 3600.;
-*/
       } else if (meta->pds2.sect4.Interval[0].timeRangeUnit == 6) {  /* normal */
          lenTime = meta->pds2.sect4.Interval[0].lenTime * 30;
          timeRangeUnit = 4;
-/*
-         lenTime = (meta->pds2.sect4.validTime - Clock_AddMonthYear (meta->pds2.sect4.validTime, 0,
-                                        -30 * meta->pds2.sect4.Interval[0].lenTime)) / 3600.;
-*/
       } else if (meta->pds2.sect4.Interval[0].timeRangeUnit == 7) {  /* century */
          lenTime = meta->pds2.sect4.Interval[0].lenTime * 100;
          timeRangeUnit = 4;
-/*
-         lenTime = (meta->pds2.sect4.validTime - Clock_AddMonthYear (meta->pds2.sect4.validTime, 0,
-                                        -100 * meta->pds2.sect4.Interval[0].lenTime)) / 3600.;
-*/
       } else {
          lenTime = 0;
          printf ("Can't handle this timeRangeUnit\n");
          myAssert (meta->pds2.sect4.Interval[0].timeRangeUnit == 1);
       }
-/*
-      } else {
-         lenTime = 255;
-      }
-      if (lenTime == 255) {
-         lenTime = (meta->pds2.sect4.validTime - meta->pds2.sect4.foreSec -
-                    meta->pds2.refTime) / 3600;
-      }
-*/
       if (lenTime == GRIB2MISSING_s4) {
          lenTime = 0;
       }
-      ParseElemName (meta->center, meta->subcenter,
-                     meta->pds2.prodType, meta->pds2.sect4.templat,
-                     meta->pds2.sect4.cat, meta->pds2.sect4.subcat,
-                     lenTime, timeRangeUnit, meta->pds2.sect4.Interval[0].incrType,
-                     meta->pds2.sect4.genID, probType, lowerProb,
-                     upperProb, &(meta->element), &(meta->comment),
-                     &(meta->unitName), &(meta->convert),
-                     meta->pds2.sect4.percentile, meta->pds2.sect4.genProcess);
+      incrType = meta->pds2.sect4.Interval[0].incrType;
    } else {
-      ParseElemName (meta->center, meta->subcenter,
-                     meta->pds2.prodType, meta->pds2.sect4.templat,
-                     meta->pds2.sect4.cat, meta->pds2.sect4.subcat, 0, 1, 255,
-                     meta->pds2.sect4.genID, probType, lowerProb, upperProb,
-                     &(meta->element), &(meta->comment), &(meta->unitName),
-                     &(meta->convert), meta->pds2.sect4.percentile, meta->pds2.sect4.genProcess);
+      lenTime = 0;
+      timeRangeUnit = 1;
+      incrType = 255;
    }
+
+   if ((meta->pds2.sect4.templat == GS4_RADAR) || (meta->pds2.sect4.templat == GS4_SATELLITE)
+       || (meta->pds2.sect4.templat == 254) || (meta->pds2.sect4.templat == 1000) || (meta->pds2.sect4.templat == 1001)
+       || (meta->pds2.sect4.templat == 1002)) {
+      fstSurfValue = 0;
+      f_fstValue = 0;
+      fstSurfType = 0;
+      sndSurfValue = 0;
+      f_sndValue = 0;
+   } else {
+      fstSurfType = meta->pds2.sect4.fstSurfType;
+      scale = meta->pds2.sect4.fstSurfScale;
+      value = meta->pds2.sect4.fstSurfValue;
+      if ((value == GRIB2MISSING_s4) || (scale == GRIB2MISSING_s1) ||
+          (fstSurfType == GRIB2MISSING_u1)) {
+         fstSurfValue = 0;
+         f_fstValue = 1;
+      } else {
+         fstSurfValue = value * pow (10, (int) (-1 * scale));
+         f_fstValue = 1;
+      }
+      sndSurfType = meta->pds2.sect4.sndSurfType;
+      scale = meta->pds2.sect4.sndSurfScale;
+      value = meta->pds2.sect4.sndSurfValue;
+      if ((value == GRIB2MISSING_s4) || (scale == GRIB2MISSING_s1) ||
+          (sndSurfType == GRIB2MISSING_u1)) {
+         sndSurfValue = 0;
+         f_sndValue = 0;
+      } else {
+         sndSurfValue = value * pow (10, -1 * scale);
+         f_sndValue = 1;
+      }
+   }
+
+   ParseElemName (meta->center, meta->subcenter, meta->pds2.prodType,
+                  meta->pds2.sect4.templat, meta->pds2.sect4.cat,
+                  meta->pds2.sect4.subcat, lenTime, timeRangeUnit, incrType,
+                  meta->pds2.sect4.genID, probType, lowerProb, upperProb,
+                  &(meta->element), &(meta->comment), &(meta->unitName),
+                  &(meta->convert), meta->pds2.sect4.percentile,
+                  meta->pds2.sect4.genProcess,
+                  f_fstValue, fstSurfValue, f_sndValue, sndSurfValue);
 #ifdef DEBUG
 /*
    printf ("Element: %s\nunitName: %s\ncomment: %s\n", meta->element,
@@ -1996,66 +2008,13 @@ int MetaParse (grib_MetaData *meta, sInt4 *is0, sInt4 ns0,
 */
 #endif
 
-/*
-   if (strcmp (element, "") == 0) {
-      meta->element = (char *) realloc ((void *) (meta->element),
-                                        (1 + strlen ("unknown")) *
-                                        sizeof (char));
-      strcpy (meta->element, "unknown");
+   if (! f_fstValue) {
+      reallocSprintf (&(meta->shortFstLevel), "0 undefined");
+      reallocSprintf (&(meta->longFstLevel), "0.000[-] undefined ()");
    } else {
-      if (IsData_MOS (meta->pds2.center, meta->pds2.subcenter)) {
-         * See : http://www.nco.ncep.noaa.gov/pmb/docs/on388/tablea.html *
-         if (meta->pds2.sect4.genID == 96) {
-            meta->element = (char *) realloc ((void *) (meta->element),
-                                              (1 + 7 + strlen (element)) *
-                                              sizeof (char));
-            sprintf (meta->element, "MOSGFS-%s", element);
-         } else {
-            meta->element = (char *) realloc ((void *) (meta->element),
-                                              (1 + 4 + strlen (element)) *
-                                              sizeof (char));
-            sprintf (meta->element, "MOS-%s", element);
-         }
-      } else {
-         meta->element = (char *) realloc ((void *) (meta->element),
-                                           (1 + strlen (element)) *
-                                           sizeof (char));
-         strcpy (meta->element, element);
-      }
-   }
-   meta->unitName = (char *) realloc ((void *) (meta->unitName),
-                                      (1 + 2 + strlen (unitName)) *
-                                      sizeof (char));
-   sprintf (meta->unitName, "[%s]", unitName);
-   meta->comment = (char *) realloc ((void *) (meta->comment),
-                                     (1 + strlen (comment) +
-                                      strlen (unitName)
-                                      + 2 + 1) * sizeof (char));
-   sprintf (meta->comment, "%s [%s]", comment, unitName);
-*/
-   if ((meta->pds2.sect4.sndSurfScale == GRIB2MISSING_s1) ||
-       (meta->pds2.sect4.sndSurfType == GRIB2MISSING_u1)) {
-/*
-      if ((meta->pds2.sect4.fstSurfScale == GRIB2MISSING_s1) ||
-          (meta->pds2.sect4.fstSurfType == GRIB2MISSING_u1)) {
-         ParseLevelName (meta->center, meta->subcenter,
-                         meta->pds2.sect4.fstSurfType, 0, 0, 0,
-                         &(meta->shortFstLevel), &(meta->longFstLevel));
-      } else {
-*/
-         ParseLevelName (meta->center, meta->subcenter,
-                         meta->pds2.sect4.fstSurfType,
-                         meta->pds2.sect4.fstSurfValue, 0, 0,
-                         &(meta->shortFstLevel), &(meta->longFstLevel));
-/*
-      }
-*/
-   } else {
-      ParseLevelName (meta->center, meta->subcenter,
-                      meta->pds2.sect4.fstSurfType,
-                      meta->pds2.sect4.fstSurfValue, 1,
-                      meta->pds2.sect4.sndSurfValue, &(meta->shortFstLevel),
-                      &(meta->longFstLevel));
+      ParseLevelName (meta->center, meta->subcenter, fstSurfType,
+                      fstSurfValue, f_sndValue, sndSurfValue,
+                      &(meta->shortFstLevel), &(meta->longFstLevel));
    }
 
    /* Continue parsing section 2 data. */

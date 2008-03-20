@@ -421,6 +421,7 @@ static int GRIB2Inventory2to7 (sChar sectNum, FILE *fp, sInt4 gribLen,
    uChar sndSurfType;   /* Type of the second fixed surface. */
    double sndSurfValue; /* Value of second fixed surface. */
    sChar f_sndValue;    /* flag if SndValue is valid. */
+   sChar f_fstValue;    /* flag if FstValue is valid. */
    uChar timeRangeUnit;
    sInt4 lenTime;       /* Used by parseTime to tell difference betweeen 8hr
                          * average and 1hr average ozone. */
@@ -684,64 +685,26 @@ enum { GS4_ANALYSIS, GS4_ENSEMBLE, GS4_DERIVED, GS4_PROBABIL_PNT = 5,
    if (lenTime == GRIB2MISSING_s4) {
       lenTime = 0;
    }
-   /* Find out what the name of this variable is. */
-   ParseElemName (center, subcenter, prodType, templat, cat, subcat,
-                  lenTime, timeRangeUnit, timeIncrType, genID, probType, lowerProb,
-                  upperProb, &(inv->element), &(inv->comment),
-                  &(inv->unitName), &convert, percentile, genProcess);
-/*
-   if (strcmp (element, "") == 0) {
-      mallocSprintf (&(inv->element), "unknown");
-      mallocSprintf (&(inv->unitName), "[%s]", unitName);
-      if (strcmp (comment, "unknown") == 0) {
-         mallocSprintf (&(inv->comment), "(prodType %d, cat %d, subcat %d)"
-                        " [%s]", prodType, cat, subcat, unitName);
-      } else {
-         mallocSprintf (&(inv->comment), "%s [%s]", comment, unitName);
-      }
-   } else {
-      if (IsData_MOS (center, subcenter)) {
-         * See : http://www.nco.ncep.noaa.gov/pmb/docs/on388/tablea.html *
-         if (genID == 96) {
-            inv->element = (char *) malloc ((1 + 7 + strlen (element))
-                                            * sizeof (char));
-            sprintf (inv->element, "MOSGFS-%s", element);
-         } else {
-            inv->element = (char *) malloc ((1 + 4 + strlen (element))
-                                            * sizeof (char));
-            sprintf (inv->element, "MOS-%s", element);
-         }
-      } else {
-         inv->element = (char *) malloc ((1 + strlen (element))
-                                         * sizeof (char));
-         strcpy (inv->element, element);
-      }
-      mallocSprintf (&(inv->unitName), "[%s]", unitName);
-      mallocSprintf (&(inv->comment), "%s [%s]", comment, unitName);
-*
-      inv->unitName = (char *) malloc ((1 + 2 + strlen (unitName))
-                                       * sizeof (char));
-      sprintf (inv->unitName, "[%s]", unitName);
-      inv->comment = (char *) malloc ((1 + 3 + strlen (unitName) + strlen (comment))
-                                      * sizeof (char));
-      sprintf (inv->comment, "%s [%s]", comment, unitName);
-*
-   }
-*/
 
    if ((templat == GS4_RADAR) || (templat == GS4_SATELLITE)
        || (templat == 254) || (templat == 1000) || (templat == 1001)
        || (templat == 1002)) {
-      reallocSprintf (&(inv->shortFstLevel), "0 undefined");
-      reallocSprintf (&(inv->longFstLevel), "0.000[-] undefined ()");
+      fstSurfValue = 0;
+      f_fstValue = 0;
+      fstSurfType = 0;
+      sndSurfValue = 0;
+      f_sndValue = 0;
    } else {
       fstSurfType = (*buffer)[23 - 5];
       scale = (*buffer)[24 - 5];
       MEMCPY_BIG (&value, *buffer + 25 - 5, sizeof (sInt4));
-      if ((value == GRIB2MISSING_s4) || (scale == GRIB2MISSING_s1)) {
+      if ((value == GRIB2MISSING_s4) || (scale == GRIB2MISSING_s1) ||
+          (fstSurfType == GRIB2MISSING_u1)) {
          fstSurfValue = 0;
+         f_fstValue = 1;
       } else {
          fstSurfValue = value * pow (10, (int) (-1 * scale));
+         f_fstValue = 1;
       }
       sndSurfType = (*buffer)[29 - 5];
       scale = (*buffer)[30 - 5];
@@ -754,7 +717,19 @@ enum { GS4_ANALYSIS, GS4_ENSEMBLE, GS4_DERIVED, GS4_PROBABIL_PNT = 5,
          sndSurfValue = value * pow (10, -1 * scale);
          f_sndValue = 1;
       }
+   }
 
+   /* Find out what the name of this variable is. */
+   ParseElemName (center, subcenter, prodType, templat, cat, subcat,
+                  lenTime, timeRangeUnit, timeIncrType, genID, probType, lowerProb,
+                  upperProb, &(inv->element), &(inv->comment),
+                  &(inv->unitName), &convert, percentile, genProcess,
+                  f_fstValue, fstSurfValue, f_sndValue, sndSurfValue);
+
+   if (! f_fstValue) {
+      reallocSprintf (&(inv->shortFstLevel), "0 undefined");
+      reallocSprintf (&(inv->longFstLevel), "0.000[-] undefined ()");
+   } else {
       ParseLevelName (center, subcenter, fstSurfType, fstSurfValue,
                       f_sndValue, sndSurfValue, &(inv->shortFstLevel),
                       &(inv->longFstLevel));

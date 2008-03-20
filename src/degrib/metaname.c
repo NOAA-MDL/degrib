@@ -2030,13 +2030,16 @@ static void ElemNameNorm (uShort2 center, uShort2 subcenter, int prodType,
                           uChar timeRangeUnit,
                           uChar timeIncrType, uChar genID, uChar probType,
                           double lowerProb, double upperProb, char **name,
-                          char **comment, char **unit, int *convert)
+                          char **comment, char **unit, int *convert,
+                          sChar f_fstValue, double fstSurfValue,
+                          sChar f_sndValue, double sndSurfValue)
 {
    GRIB2ParmTable *table;
    GRIB2LocalTable *local;
    size_t tableLen;
    size_t i;
    sChar f_accum;
+   float delt;
 
    /* Check for over-ride case for ozone.  Originally just for NDFD, but I
     * think it is useful for ozone data that originated elsewhere. */
@@ -2063,6 +2066,33 @@ static void ElemNameNorm (uShort2 center, uShort2 subcenter, int prodType,
       strcpy (*unit, "[PPB]");
       *convert = UC_NONE;
       return;
+   }
+   /* Check for over-ride case for smokec / smokes. */
+   if (center == 7) {
+      if ((prodType == 0) && (cat == 13) && (subcat == 195)) {
+         if (f_fstValue && f_sndValue) {
+            delt = fstSurfValue - sndSurfValue;
+            if ((delt <= 100) && (delt >= -100)) {
+               *name = (char *) malloc (strlen ("smokes") + 1);
+               strcpy (*name, "smokes");
+               *comment = (char *) malloc (strlen ("Surface level smoke from fires") + 1);
+               strcpy (*comment, "Surface level smoke from fires");
+               *unit = (char *) malloc (strlen ("[log10(µg/m^3)]") + 1);
+               strcpy (*unit, "[log10(µg/m^3)]");
+               *convert = UC_LOG10;
+               return;
+            } else if ((delt <= 5000) && (delt >= -5000)) {
+               *name = (char *) malloc (strlen ("smokec") + 1);
+               strcpy (*name, "smokec");
+               *comment = (char *) malloc (strlen ("Average vertical column smoke from fires") + 1);
+               strcpy (*comment, "Average vertical column smoke from fires");
+               *unit = (char *) malloc (strlen ("[log10(µg/m^3)]") + 1);
+               strcpy (*unit, "[log10(µg/m^3)]");
+               *convert = UC_LOG10;
+               return;
+            }
+         }
+      }
    }
 
    /* Generic tables. */
@@ -2207,7 +2237,9 @@ void ParseElemName (uShort2 center, uShort2 subcenter, int prodType,
                     uChar timeIncrType, uChar genID, uChar probType,
                     double lowerProb, double upperProb, char **name,
                     char **comment, char **unit, int *convert,
-                    sChar percentile, uChar genProcess)
+                    sChar percentile, uChar genProcess,
+                    sChar f_fstValue, double fstSurfValue,
+                    sChar f_sndValue, double sndSurfValue)
 {
    char f_isNdfd = IsData_NDFD (center, subcenter);
    myAssert (*name == NULL);
@@ -2220,7 +2252,9 @@ void ParseElemName (uShort2 center, uShort2 subcenter, int prodType,
          /* don't use ElemNameProb. */
          ElemNameNorm (center, subcenter, prodType, templat, cat, subcat,
                        lenTime, timeRangeUnit, timeIncrType, genID, probType, lowerProb,
-                       upperProb, name, comment, unit, convert);
+                       upperProb, name, comment, unit, convert, f_fstValue, fstSurfValue,
+                       f_sndValue, sndSurfValue);
+
       } else {
          ElemNameProb (center, subcenter, prodType, templat, cat, subcat,
                        lenTime, timeRangeUnit, timeIncrType, genID, probType, lowerProb,
@@ -2232,7 +2266,8 @@ void ParseElemName (uShort2 center, uShort2 subcenter, int prodType,
    } else {
       ElemNameNorm (center, subcenter, prodType, templat, cat, subcat,
                     lenTime, timeRangeUnit, timeIncrType, genID, probType, lowerProb,
-                    upperProb, name, comment, unit, convert);
+                    upperProb, name, comment, unit, convert, f_fstValue, fstSurfValue,
+                       f_sndValue, sndSurfValue);
    }
    if ((genProcess == 6) || (genProcess == 7)) {
       *convert = UC_NONE;
