@@ -1354,7 +1354,7 @@ GRIB2LocalTable NCEP_LclTable[] = {
             {0, 13, 193, "PMTF", "Particulate matter (fine)", "µg/m^3", UC_NONE},
             {0, 13, 194, "LPMTF", "Particulate matter (fine)",
              "log10(µg/m^3)", UC_LOG10},
-            {0, 13, 195, "LIPMF", "Integrated column particulate matter "
+            {0, 13, 195, "LIPMF", "Integrated column particulate matter " /* over-ride in the code based on surface */
              "(fine)", "log10(µg/m^3)", UC_LOG10},
 
    /* 42 */ {0, 14, 192, "O3MR", "Ozone Mixing Ratio", "kg/kg", UC_NONE},
