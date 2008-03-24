@@ -34,10 +34,11 @@ static const gdsType NdfdDefGds[] = {
     5079.406000, 5079.406000, 25.000000,
     0, 0, 64, 0, 0,
     25.000000, 25.000000, -90, 0, 0, 0, 0, 0, 0},
-   {22833, 10, 1, 6371.2, 6371.2,
-    177, 129, 16.828691, 291.804687, 0.000000,
-    2500.000000, 2500.000000, 20.000000,
-    0, 0, 64, 19.747399, 296.027600,
+/* Finer resolution version Puertori. */
+   {76953, 10, 1, 6371.2, 6371.2,
+    339, 227, 16.977485, 291.972167, 0.000000,
+    1250.000000, 1250.000000, 20.000000,
+    0, 0, 64, 19.544499, 296.0156,
     0, 0, 0, 0, 0, 0, 0, 0, 0},
    {72225, 10, 1, 6371.2, 6371.2,
     321, 225, 18.066780, 198.374755, 0.000000,
@@ -58,11 +59,24 @@ static const gdsType NdfdDefGds[] = {
     1473, 1025, 12.1899999, 226.541, 265.000000,
     5079.406, 5079.406, 25.00,
     0, 0, 64, 0, 0,
-    25.000000, 25.000000, -90, 0, 0, 0, 0, 0, 0}
+    25.000000, 25.000000, -90, 0, 0, 0, 0, 0, 0},
+/* Original Puertori. */
+   {22833, 10, 1, 6371.2, 6371.2,
+    177, 129, 16.828691, 291.804687, 0.000000,
+    2500.000000, 2500.000000, 20.000000,
+    0, 0, 64, 19.747399, 296.027600,
+    0, 0, 0, 0, 0, 0, 0, 0, 0}
 };
 
+/* IF YOU ADD ANY SECTORS, MAKE SURE YOU UPDATE THIS IN META.H */
+/*
+enum { NDFD_OCONUS_CONUS, NDFD_OCONUS_PR, NDFD_OCONUS_HI, NDFD_OCONUS_GU,
+       NDFD_OCONUS_AK, NDFD_OCONUS_NHEMI, NDFD_OCONUS_UNDEF = 7
+};
+*/
+
 static const char *NdfdDefSect[] = {
-   "conus", "puertori", "hawaii", "guam", "alaska", "nhemi"
+   "conus", "puertori", "hawaii", "guam", "alaska", "nhemi", "puertori"
 };
 
 static size_t NumNdfdDefSect = sizeof (NdfdDefGds) / sizeof (NdfdDefGds[0]);
@@ -70,6 +84,7 @@ static size_t NumNdfdDefSect = sizeof (NdfdDefGds) / sizeof (NdfdDefGds[0]);
 int SectorFindGDS (gdsType *gds)
 {
    size_t i;            /* loop counter. */
+   double lon;
 
    for (i = 0; i < NumNdfdDefSect; i++) {
       if (gds->numPts != NdfdDefGds[i].numPts)
@@ -90,9 +105,23 @@ int SectorFindGDS (gdsType *gds)
       /* Guam uncertainty in the lat1 is high.  Trust only 5 decimals */
       if (fabs (gds->lat1 - NdfdDefGds[i].lat1) > 0.1) /* Only took out 1 zero */
          continue;
-      if (fabs (gds->lon1 - NdfdDefGds[i].lon1) > 0.1)
+      lon = gds->lon1;
+      if (lon < 0) {
+         lon += 360;
+      }
+      if (lon > 360) {
+         lon -= 360;
+      }
+      if (fabs (lon - NdfdDefGds[i].lon1) > 0.1)
          continue;
-      if (fabs (gds->orientLon - NdfdDefGds[i].orientLon) > 0.1)
+      lon = gds->orientLon;
+      if (lon < 0) {
+         lon += 360;
+      }
+      if (lon > 360) {
+         lon -= 360;
+      }
+      if (fabs (lon - NdfdDefGds[i].orientLon) > 0.1)
          continue;
 
       /* Alaska uncertainty in the DX is high.  Trust only 0 decimals */
@@ -115,7 +144,14 @@ int SectorFindGDS (gdsType *gds)
          continue;
       if (fabs (gds->lat2 - NdfdDefGds[i].lat2) > 0.1)
          continue;
-      if (fabs (gds->lon2 - NdfdDefGds[i].lon2) > 0.1)
+      lon = gds->lon2;
+      if (lon < 0) {
+         lon += 360;
+      }
+      if (lon > 360) {
+         lon -= 360;
+      }
+      if (fabs (lon - NdfdDefGds[i].lon2) > 0.1)
          continue;
       if (fabs (gds->scaleLat1 - NdfdDefGds[i].scaleLat1) > 0.1)
          continue;
@@ -126,7 +162,14 @@ int SectorFindGDS (gdsType *gds)
       if (fabs (gds->southLat - NdfdDefGds[i].southLat) > 0.1)
          continue;
 */
-      if (fabs (gds->southLon - NdfdDefGds[i].southLon) > 0.1)
+      lon = gds->southLon;
+      if (lon < 0) {
+         lon += 360;
+      }
+      if (lon > 360) {
+         lon -= 360;
+      }
+      if (fabs (lon - NdfdDefGds[i].southLon) > 0.1)
          continue;
 
 /* AngleRotate, poleLat, poleLon, stretchFactor, f_typeLatLon are
