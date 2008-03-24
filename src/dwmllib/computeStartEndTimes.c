@@ -80,7 +80,7 @@
  *****************************************************************************
  */
 #include "xmlparse.h"
-void computeStartEndTimes(uChar parameterName, uChar numFmtdRows,
+void computeStartEndTimes(uChar parameterName, int numFmtdRows,
                           int periodLength, sChar TZoffset,
                           sChar f_observeDST, genMatchType * match,
                           uChar useEndTimes, char **startTimes, char **endTimes,

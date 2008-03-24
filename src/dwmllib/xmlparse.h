@@ -129,7 +129,7 @@ void checkNeedForPeriodName(int index, uChar * numPeriodNames,
                             double startTime_cml, double currentDoubTime,
                             double firstValidTime);
 
-void computeStartEndTimes(uChar parameterName, uChar numFmtdRows,
+void computeStartEndTimes(uChar parameterName, int numFmtdRows,
                           int periodLength, sChar TZoffset,
                           sChar f_observeDST, genMatchType * match,
                           uChar useEndTimes, char **startTimes, char **endTimes,
