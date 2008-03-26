@@ -23,6 +23,7 @@
 #include "meta.h"
 #include "tendian.h"
 #include "genprobe.h"
+#include "database.h"
 /*#include "scan.h"*/
 #ifdef MEMWATCH
 #include "memwatch.h"
@@ -34,11 +35,20 @@ static const gdsType NdfdDefGds[] = {
     5079.406000, 5079.406000, 25.000000,
     0, 0, 64, 0, 0,
     25.000000, 25.000000, -90, 0, 0, 0, 0, 0, 0},
+/* Finer resolution version Puertori. */
+   {76953, 10, 1, 6371.2, 6371.2,
+    339, 227, 16.977485, 291.972167, 0.000000,
+    1250.000000, 1250.000000, 20.000000,
+    0, 0, 64, 19.544499, 296.0156,
+    0, 0, 0, 0, 0, 0, 0, 0, 0},
+/* Coarser resolution version of Puertori. */
+/*
    {22833, 10, 1, 6371.2, 6371.2,
     177, 129, 16.828691, 291.804687, 0.000000,
     2500.000000, 2500.000000, 20.000000,
     0, 0, 64, 19.747399, 296.027600,
     0, 0, 0, 0, 0, 0, 0, 0, 0},
+*/
    {72225, 10, 1, 6371.2, 6371.2,
     321, 225, 18.066780, 198.374755, 0.000000,
     2500.000000, 2500.000000, 20.000000,
@@ -63,6 +73,18 @@ static const gdsType NdfdDefGds[] = {
 
 static const char *NdfdDefSect[] = {
    "conus", "puertori", "hawaii", "guam", "alaska", "nhemi"
+};
+
+/* 9999 means look in "<sectorName>timezone.flt" file, otherwise value to
+ * adjust UTC clock by to get standard time */
+static const int NdfdDefTimeZone[] = {
+   9999, -4, -10, 10, 9999, 9999
+};
+
+/* 9999 means look in "<sectorName>daylight.flt" file, otherwise true/false
+ * does areas observes daylight savings. */
+static const int NdfdDefDayLight[] = {
+   9999, 0, 0, 0, 9999, 9999
 };
 
 static size_t NumNdfdDefSect = sizeof (NdfdDefGds) / sizeof (NdfdDefGds[0]);
@@ -425,143 +447,234 @@ int WhichSector (char *sectFile, Point pnt, sChar f_cells)
    return err;
 }
 
-/* f_first is first time through loop, so init "index" */
-static int FillOutInfo (const gdsType *gds, const char *sectName,
-                        sChar f_first, sChar f_sector, size_t numPnts,
-                        Point * pnts, sChar f_cells, const char *geoDataDir,
-                        PntSectInfo * pntInfo, size_t *NumSect, char ***Sect)
+/*****************************************************************************
+ * SectorFillPnt() -- Arthur Taylor / MDL
+ *
+ * PURPOSE
+ *   For a given sector, determine which points are in it, and fill out their
+ * sector information in the PntSectInfo structure.  Stays away from the
+ * timeZone or f_dayLight questions.
+ *
+ * ARGUMENTS
+ * f_sector = Enumerated value of this sector (Input)
+ *      gds = GDS Structure to fill. (Input)
+ *  f_first = Flag to init PntSect struct, since first time we've called
+ *            the routine (Input)
+ *  numPnts = number of input points (Input)
+ *     pnts = The points to look at (Input)
+ *  f_cells = flag as to whether pnts contains X,Y (false is lat/lon) (Input)
+ *  pntInfo = pointInfo structure we're updating with sector info [only] (Out)
+ *
+ * RETURNS: int
+ *  0 = no point in sector
+ *  1 = this was the first (primary) sector at least one point was found in.
+ *
+ * NOTES
+ *****************************************************************************
+ */
+static int SectorFillPnt (sChar f_sector, const gdsType *gds, sChar f_first,
+                          size_t numPnts, Point * pnts, sChar f_cells,
+                          PntSectInfo * pntInfo)
 {
-   int j;            /* loop counter. */
-   int k;
+   sChar f_foundOne = 0; /* flag containing return value */
    myMaparam map;       /* The map projection to use with this sector. */
-   sChar f_foundOne;
-   size_t curSect = 0;
-   char *fileName = NULL;
-   FILE *tzFP = NULL;
-   FILE *dayFP = NULL;
-   sInt4 size;
-   char perm;
-   sInt4 offset;
-   double x;            /* The converted X value. */
-   double y;            /* The converted Y value. */
-   sInt4 x1, y1;
-   float value;
+   int j;               /* loop counter over number of points. */
+   int k;               /* loop counter used to init the f_sector[] array. */
+   double x, y;         /* The converted X,Y value. */
+   sInt4 x1, y1;        /* nearest integer values of X,Y. */
 
-   f_foundOne = 0;
    /* Don't need map set up for f_cells = 1. */
    if (f_cells != 1) {
       SetMapParamGDS (&map, gds);
    }
 
    for (j = 0; j < numPnts; j++) {
-      /* Check if we've already found this point, or init it to -1 if this is
-       * the first sector we've looked at. */
+      /* If first sector we've looked at, init f_sector array to UNDEF. */
       if (f_first) {
          pntInfo[j].numSector = 0;
          for (k = 0; k < NDFD_OCONUS_UNDEF; k++) {
             pntInfo[j].f_sector[k] = NDFD_OCONUS_UNDEF;
          }
-/*
-      Don't need this continue here since we want to check all point in
-      all sectors to complete the pntInfo structure. 
-      } else if (pntInfo[j].numSector > 1) {
-      } else if (pntInfo[j].index != -1) {
-         continue;
-*/
       }
+      /* Find x1, y1 as integers in range of 1,NX 1,NY */
       if (f_cells != 1) {
          myCll2xy (&map, pnts[j].Y, pnts[j].X, &x, &y);
-         /* Get x1, y1 as integers in range of 1,NX 1,NY */
          x1 = (sInt4) (x + .5);
          y1 = (sInt4) (y + .5);
       } else {
-         /* Get x1, y1 in as integers in range of 1,NX 1,NY */
          x1 = (sInt4) (pnts[j].X + .5);
          y1 = (sInt4) (pnts[j].Y + .5);
       }
+      /* Determine if they are in the grid */
       if ((x1 >= 1) && (x1 <= (sInt4) gds->Nx) && (y1 >= 1)
           && (y1 <= (sInt4) gds->Ny)) {
+         /* Update f_sector[] and numSector */
          pntInfo[j].f_sector[pntInfo[j].numSector] = f_sector;
          pntInfo[j].numSector++;
-         /* The following if test forces a point to only count (when
-          * considering the Sector list) in the first sector it is found in.
-          * A point could fall in conus,nhemi,alaska, but we only want to add
-          * conus (the first one) to the list.
-          * This protects against conus/alaska confusion.
-          * For conus/nhemi, before we expand the file list, we
-          * automatically add nhemi if conus is there, and nhemi is not
-          * so it is handled there. */
-         if (pntInfo[j].numSector == 1) {
-            /* Check if we'd found any point in this sector before */
-            if (!f_foundOne) {
-               curSect = *NumSect;
-               *NumSect = *NumSect + 1;
-               *Sect = (char **) realloc (*Sect, *NumSect * sizeof (char *));
-               (*Sect)[curSect] = (char *) malloc (strlen (sectName) + 1);
-               strcpy ((*Sect)[curSect], sectName);
-               if (geoDataDir != NULL) {
-                  fileName =
-                        (char *) malloc (strlen (geoDataDir) + 1 +
-                                         strlen (sectName)
-                                         + strlen ("timezone.flt") + 1);
-                  sprintf (fileName, "%s/%stimezone.flt", geoDataDir, sectName);
-               /* Use myStat to check size / exists / file / perms */
-                  if (MYSTAT_ISFILE == myStat (fileName, &perm, &size, NULL)) {
-                     if ((size == (sInt4) (gds->Nx * gds->Ny * 4)) && (perm & 4)) {
-                        tzFP = fopen (fileName, "rb");
-                     } else {
-                        free (fileName);
-                        errSprintf ("timezone file '%s' is wrong size or "
-                                    "unreadable\n", fileName);
-                        return -4;
-                     }
-                  }
-                  sprintf (fileName, "%s/%sdaylight.flt", geoDataDir, sectName);
-               /* Use myStat to check size / exists / file / perms */
-                  if (MYSTAT_ISFILE == myStat (fileName, &perm, &size, NULL)) {
-                     if ((size == (sInt4) (gds->Nx * gds->Ny * 4)) && (perm & 4)) {
-                        dayFP = fopen (fileName, "rb");
-                     } else {
-                        free (fileName);
-                        fclose (tzFP);
-                        errSprintf ("daylight file '%s' is wrong size or "
-                                    "unreadable\n", fileName);
-                        return -4;
-                     }
-                  }
-                  free (fileName);
-               }
+
+         /* We update f_foundOne if this is the first (primary) sector a
+          * point was found in.  Example: a point falls in conus/alaska,
+          * we only want to add conus (the primary one) to the list. */
+         /* For conus/nhemi, we automatically expand the file list
+          * to included nhemi if conus is there, but nhemi is not. */
+         if (!f_foundOne) {
+            if (pntInfo[j].numSector == 1) {
                f_foundOne = 1;
-            }
-            if ((dayFP != NULL) && (tzFP != NULL)) {
-            /* GRIB2BIT_2 is because flt is stored in that scan mode */
-            /* XY2ScanIndex (&offset, x1, y1, GRIB2BIT_2, gds->Nx, gds->Ny); */
-               offset = (x1 - 1) + (y1 - 1) * gds->Nx;
-
-            /* because we're dealing in bytes, we need to multiply the row
-             * that we got out of ScanIndex by 4 */
-               offset = offset * sizeof (float);
-
-               fseek (tzFP, offset, SEEK_SET);
-               FREAD_LIT (&value, sizeof (float), 1, tzFP);
-            /* timezone contains # hours to add to UTC to get local time.  */
-            /* pntInfo contains # hours to add to local time to get UTC. */
-               pntInfo[j].timeZone = (sChar) (-1 * value);
-               fseek (dayFP, offset, SEEK_SET);
-               FREAD_LIT (&value, sizeof (float), 1, dayFP);
-               pntInfo[j].f_dayLight = (sChar) (value);
-            } else {
-               pntInfo[j].timeZone = 0;
-               pntInfo[j].f_dayLight = 0;
             }
          }
       }
    }
-   if (dayFP != NULL)
-      fclose (dayFP);
-   if (tzFP != NULL)
-      fclose (tzFP);
-   return 0;
+   return f_foundOne;
+}
+
+/*****************************************************************************
+ * SectorTimeZones() -- Arthur Taylor / MDL
+ *
+ * PURPOSE
+ *   For a given sector, determine which points have it as their "primary"
+ * sector, and determine those points timezone information, based either on
+ * the timezone grids, or on knowledge about the sector.
+ *
+ * ARGUMENTS
+ *   f_sector = Enumerated value of this sector (Input)
+ *   sectName = Sector name (For the file to look in) (Input)
+ *    numPnts = number of input points (Input)
+ *       pnts = The points to look at (Input)
+ *    f_cells = flag as to whether pnts contains X,Y (false is lat/lon) (In)
+ * geoDataDir = The user defined directory to look for geoData. (Input)
+ *   timeZone = 9999 (look in file) or what to set f_timeZone to. (Input)
+ * f_dayLight = 9999 (look in file) or what to set f_dayLight to. (Input)
+ *    pntInfo = pointInfo structure we're updating (Out)
+ *
+ * RETURNS: void
+ *
+ * NOTES
+ *   The timezone/daylight GDS sections can differ from the current default
+ * GDS for a sector (because the timezone ones are stale).
+ *   Assumes for speed sake that GDS section of daylight.ind = timezone.ind
+ *****************************************************************************
+ */
+static void SectorTimeZones (sChar f_sector, const char *sectName,
+                             size_t numPnts, Point * pnts, sChar f_cells,
+                             const char *geoDataDir, int timeZone,
+                             int f_dayLight, PntSectInfo * pntInfo)
+{
+   size_t i;            /* loop counter. */
+   char *fileName = NULL; /* used to create the timezone/daylight filename. */
+   FILE *DayFlt;        /* Open daylight file */
+   FILE *TZFlt;         /* Open timezone file */
+   char *flxArray;      /* Array containing contents of .ind file */
+   int flxArrayLen;     /* Length of flxArray */
+   double x, y;         /* The converted X,Y value. */
+   sInt4 x1, y1;        /* nearest integer values of X,Y. */
+   float value;         /* The current value from .flt file. */
+   sInt4 offset;        /* Where to read in the .flt file. */
+   gdsType gds;         /* GDS section associated with Flt/Ind files. */
+   myMaparam map;       /* The map projection associated with GDS. */
+
+   myAssert (((f_dayLight == 9999) && (timeZone == 9999)) ||
+             ((f_dayLight != 9999) && (timeZone != 9999)));
+
+   /* Handle trivial case. */
+   if (f_dayLight != 9999) {
+      for (i = 0; i < numPnts; i++) {
+         /* Don't need to look at numSector, because array is init to UNDEF. */
+         /* Only care if this is the "primary" sector for the point */
+         if (pntInfo[i].f_sector[0] == f_sector) {
+            pntInfo[i].f_dayLight = f_dayLight;
+            pntInfo[i].timeZone = timeZone;
+         }
+      }
+      return;
+   }
+
+   /* Open the files */
+   if (geoDataDir == NULL) {
+      f_dayLight = 0;
+      timeZone = 0;
+   } else if (f_dayLight == 9999) {
+      /* note len ("daylight.flt") = len ("timezone.flt") */
+      fileName = (char *) malloc (strlen (geoDataDir) + 1 + strlen (sectName)
+                                  + strlen ("timezone.flt") + 1);
+      /* Try to open dayLight files */
+      sprintf (fileName, "%s/%sdaylight.flt", geoDataDir, sectName);
+      if ((DayFlt = fopen (fileName, "rb")) == NULL) {
+         f_dayLight = 0;
+         timeZone = 0;
+         TZFlt = NULL;
+      } else {
+         sprintf (fileName, "%s/%stimezone.flt", geoDataDir, sectName);
+         if ((TZFlt = fopen (fileName, "rb")) == NULL) {
+            fclose (DayFlt);
+            f_dayLight = 0;
+            timeZone = 0;
+         } else {
+            sprintf (fileName, "%s/%stimezone.ind", geoDataDir, sectName);
+            if (ReadFLX (fileName, &flxArray, &flxArrayLen) != 0) {
+               f_dayLight = 0;
+               timeZone = 0;
+               fclose (DayFlt);
+               fclose (TZFlt);
+            } else {
+               /* Set up map projection. */
+               ReadGDSBuffer (flxArray, &gds);
+               free (flxArray);
+               /* Don't need map set up for f_cells = 1 (do need gds). */
+               if (f_cells != 1) {
+                  SetMapParamGDS (&map, &gds);
+               }
+            }
+         }
+      }
+      free (fileName);
+   }
+
+   /* Handle bad fileOpen case. */
+   if (f_dayLight != 9999) {
+      for (i = 0; i < numPnts; i++) {
+         /* Don't need to look at numSector, because array is init to UNDEF. */
+         /* Only care if this is the "primary" sector for the point */
+         if (pntInfo[i].f_sector[0] == f_sector) {
+            pntInfo[i].f_dayLight = f_dayLight;
+            pntInfo[i].timeZone = timeZone;
+         }
+      }
+      return;
+   }
+
+   /* Convert point, seek to correct location, read file, store value. */
+   for (i = 0; i < numPnts; i++) {
+      if (pntInfo[i].f_sector[0] == f_sector) {
+         if (f_cells != 1) {
+            myCll2xy (&map, pnts[i].Y, pnts[i].X, &x, &y);
+            /* Get x1, y1 as integers in range of 1,NX 1,NY */
+            x1 = (sInt4) (x + .5);
+            y1 = (sInt4) (y + .5);
+         } else {
+            /* Get x1, y1 in as integers in range of 1,NX 1,NY */
+            x1 = (sInt4) (pnts[i].X + .5);
+            y1 = (sInt4) (pnts[i].Y + .5);
+         }
+         /* Possible point could fall outside the timezone grid, but still
+          * be inside the NDFD grid (stale definition of timezone file). */
+         if ((x1 >= 1) && (x1 <= (sInt4) gds.Nx) && (y1 >= 1)
+             && (y1 <= (sInt4) gds.Ny)) {
+            offset = ((x1 - 1) + (y1 - 1) * gds.Nx) * sizeof (float);
+            fseek (TZFlt, offset, SEEK_SET);
+            FREAD_LIT (&value, sizeof (float), 1, TZFlt);
+            /* timezone contains # hours to add to UTC to get local time.  */
+            pntInfo[i].timeZone = (sChar) (-1 * value);
+            fseek (DayFlt, offset, SEEK_SET);
+            FREAD_LIT (&value, sizeof (float), 1, DayFlt);
+            pntInfo[i].f_dayLight = (sChar) (value);
+         } else {
+            pntInfo[i].f_dayLight = 0;
+            pntInfo[i].timeZone = 0;
+         }
+      }
+   }
+   fclose (DayFlt);
+   fclose (TZFlt);
 }
 
 int GetSectorList (char *sectFile, size_t numPnts, Point * pnts,
@@ -596,10 +709,15 @@ int GetSectorList (char *sectFile, size_t numPnts, Point * pnts,
             return -3;
          }
 #endif
-         if (FillOutInfo (&(NdfdDefGds[i]), NdfdDefSect[i], (i == 0), i,
-                          numPnts, pnts, f_cells, geoDataDir, pntInfo,
-                          NumSect, Sect) != 0) {
-            return -4;
+         if (SectorFillPnt (i, &(NdfdDefGds[i]), (i == 0), numPnts, pnts,
+                            f_cells, pntInfo)) {
+            /* update NumSect, Sect list */
+            *Sect = (char **) realloc (*Sect, (*NumSect + 1) * sizeof (char *));
+            (*Sect)[*NumSect] = (char *) malloc (strlen ( NdfdDefSect[i]) + 1);
+            strcpy ((*Sect)[*NumSect],  NdfdDefSect[i]);
+            *NumSect = *NumSect + 1;
+            SectorTimeZones (i, NdfdDefSect[i], numPnts, pnts, f_cells, geoDataDir,
+                             NdfdDefTimeZone[i], NdfdDefDayLight[i], pntInfo);
          }
       }
       return 0;
@@ -638,11 +756,17 @@ int GetSectorList (char *sectFile, size_t numPnts, Point * pnts,
       if (f_sector == -1) {
          f_sector = NDFD_OCONUS_UNDEF;
       }
-      if (FillOutInfo (&gds, list[0], (lineCnt == 1), f_sector, numPnts,
-                       pnts, f_cells, geoDataDir, pntInfo, NumSect,
-                       Sect) != 0) {
-         err = -4;
-         goto error;
+
+      if (SectorFillPnt (f_sector, &gds, (lineCnt == 0), numPnts, pnts,
+                         f_cells, pntInfo)) {
+         /* update NumSect, Sect list */
+         *Sect = (char **) realloc (*Sect, (*NumSect + 1) * sizeof (char *));
+         (*Sect)[*NumSect] = (char *) malloc (strlen (NdfdDefSect[f_sector]) + 1);
+         strcpy ((*Sect)[*NumSect],  NdfdDefSect[f_sector]);
+         *NumSect = *NumSect + 1;
+         SectorTimeZones (f_sector, NdfdDefSect[f_sector], numPnts, pnts, f_cells, geoDataDir,
+                          NdfdDefTimeZone[f_sector], NdfdDefDayLight[f_sector],
+                          pntInfo);
       }
 
       for (i = 0; i < numList; i++) {
