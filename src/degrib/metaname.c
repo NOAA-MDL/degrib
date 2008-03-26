@@ -945,7 +945,7 @@ GRIB2ParmTable HydroProb[] = {
             "overall period", "kg/(m^2)", UC_NONE},
    /* 1 */ {"", "Percent precipitation in a sub-period of an overall period",
             "%", UC_NONE},
-   /* 2 */ {"POP", "Probability of 0.01 inch of precipitation", "%", UC_NONE},
+   /* 2 */ {"PoP", "Probability of 0.01 inch of precipitation", "%", UC_NONE},
 };
 
 /* GRIB2 Code table 4.2 : 2.0 */
@@ -1348,6 +1348,7 @@ http://www.nco.ncep.noaa.gov/pmb/docs/on388/table2.html
 
 Updated again on 2/14/2006
 Updated again on 3/15/2006
+Updated again on 3/26/2008
 */
 GRIB2LocalTable NCEP_LclTable[] = {
    /*  0 */ {0, 0, 192, "SNOHF", "Snow Phase Change Heat Flux", "W/(m^2)", UC_NONE},
