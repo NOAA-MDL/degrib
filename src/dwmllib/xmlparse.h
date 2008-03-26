@@ -29,11 +29,13 @@ enum
   morning24, afternoon24, MAX_PERIODS
 };
 
-/*
-enum { RTMA_NDFD_SKY = NDFD_MATCHALL + 1, RTMA_NDFD_PRECIPA,
-RTMA_NDFD_TD, RTMA_NDFD_TEMP, RTMA_NDFD_WDIR, RTMA_NDFD_WSPD,
-XML_MAX };
-*/
+/* Set enumerations for the concatenated RTMA + NDFD elements. Append to NDFD 
+ * enumeration numbers 
+ */
+enum 
+{ RTMA_NDFD_SKY = NDFD_MATCHALL + 1, RTMA_NDFD_PRECIPA, RTMA_NDFD_TD, 
+  RTMA_NDFD_TEMP, RTMA_NDFD_WDIR, RTMA_NDFD_WSPD, XML_MAX 
+};
 
 typedef struct                /* Denotes structure of the time layouts. */
 {

@@ -8,7 +8,7 @@ void PrintTime(genMatchType * match, size_t pntIndex, int *allElem,
    size_t i;
    double localTime;
 
-   for (i = 0; i < NDFD_MATCHALL + 1; i++)
+   for (i = 0; i < NDFD_MATCHALL; i++)
    {
       if (allElem[i] != -1)
       {

@@ -141,7 +141,7 @@ void getNumRows(numRowsInfo *numRowsForPoint, double *timeUserStart,
                             * next day (from current day). */
 
    /* Initialize numRowsForPoint structure to all zeros. */
-   for (k = 0; k < (NDFD_MATCHALL + 1); k++)
+   for (k = 0; k < XML_MAX; k++)
    {
       numRowsForPoint[k].total = 0;
       numRowsForPoint[k].skipBeg = 0;
@@ -159,7 +159,7 @@ void getNumRows(numRowsInfo *numRowsForPoint, double *timeUserStart,
    /* Retrieve the first validTime and last validTime per element amongst all
     * matches for the point.
     */
-   for (k = 0; k < (NDFD_MATCHALL + 1); k++)
+   for (k = 0; k < XML_MAX; k++)
    {
       for (i = startNum; i < endNum; i++)
       {
@@ -200,7 +200,7 @@ void getNumRows(numRowsInfo *numRowsForPoint, double *timeUserStart,
    /* Adjust the number of rows per element and the first validTime and last 
     * validTime we're interested in. 
     */
-   for (k = 0; k < (NDFD_MATCHALL + 1); k++)
+   for (k = 0; k < XML_MAX; k++)
    {
       if (wxParameters[k] != 0)
       {
@@ -319,7 +319,7 @@ void getNumRows(numRowsInfo *numRowsForPoint, double *timeUserStart,
    /* Adjust the first validTime and last validTime interested in, per 
     * element. 
     */
-   for (k = 0; k < (NDFD_MATCHALL + 1); k++)
+   for (k = 0; k < XML_MAX; k++)
    {
       if ((wxParameters[k] != 0) && 
 	  (numRowsForPoint[k].skipBeg != 0 || numRowsForPoint[k].skipEnd != 0))
@@ -343,7 +343,7 @@ void getNumRows(numRowsInfo *numRowsForPoint, double *timeUserStart,
     * from NDFD, update the weatherParameters array accordingly to reflect
     * this. 
     */
-   for (k = 0; k < (NDFD_MATCHALL + 1); k++)
+   for (k = 0; k < XML_MAX; k++)
    {
       /* If a concatenated element, check numRows for both the RTMA and NDFD
        * portion. 

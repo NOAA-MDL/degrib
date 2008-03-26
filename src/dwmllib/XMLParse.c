@@ -79,10 +79,12 @@
  *        NDFD_TMPBLW90D(39), NDFD_PRCPABV90D(40), NDFD_PRCPBLW90D(41), 
  *        RTMA_PRECIPA(42), RTMA_SKY(43), RTMA_TD(44), RTMA_TEMP(45), 
  *        RTMA_UTD(46), RTMA_UTEMP(47), RTMA_UWDIR(48), RTMA_UWSPD(49), 
- *        RTMA_WDIR(50), RTMA_WSPD(51), RTMA_NDFD_SKY(52), 
- *        RTMA_NDFD_PRECIPA(53), RTMA_NDFD_TD(54), RTMA_NDFD_TEMP(55), 
- *        RTMA_NDFD_WDIR(56), RTMA_NDFD_WSPD(57), NDFD_UNDEF(58), 
- *        NDFD_MATCHALL(59)
+ *        RTMA_WDIR(50), RTMA_WSPD(51), NDFD_UNDEF(52), NDFD_MATCHALL(53)
+ *      };
+ *
+ * enum { RTMA_NDFD_SKY(54) = NDFD_MATCHALL + 1, RTMA_NDFD_PRECIPA(55), 
+ *        RTMA_NDFD_TD(56), RTMA_NDFD_TEMP(57), RTMA_NDFD_WDIR(58), 
+ *        RTMA_NDFD_WSPD(59), XML_MAX(60) 
  *      };
  * 
  ****************************************************************************** 
@@ -584,9 +586,8 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
        * be formatted (set to 1). Those retrieved from NDFD by degrib but used
        * only to derive other elements are set to 2.
        */
-      weatherParameters[j] = (uChar *) malloc((NDFD_MATCHALL + 1) *
-                                               sizeof(uChar));
-      for (i = 0; i < NDFD_MATCHALL + 1; i++)
+      weatherParameters[j] = (uChar *) malloc(XML_MAX * sizeof(uChar));
+      for (i = 0; i < XML_MAX; i++)
          weatherParameters[j][i] = 0;
 
       /* Get each point's first Valid times for MaxT and Pop. */
@@ -685,7 +686,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
       if (isPntInASector(pnts[j]))
       {
 	 /* Open up each point's # of Rows to an element allocation. */
-         numRowsForPoint[j] = (numRowsInfo *) malloc((NDFD_MATCHALL + 1) *
+         numRowsForPoint[j] = (numRowsInfo *) malloc(XML_MAX *
                                                sizeof(numRowsInfo));
 
 	 /* Fill/Get the startDate array. */
@@ -710,7 +711,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
 #ifdef PRINT_DIAG
    for (j = 0; j < numPnts; j++)
    {
-      for (i = 0; i < NDFD_MATCHALL + 1; i++)
+      for (i = 0; i < XML_MAX; i++)
       {
          if (isPntInASector(pnts[j]))
             printf("numRowsForPoint[%d][%d].total check = %d\n",j, i, 
@@ -719,7 +720,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
    }
    for (j = 0; j < numPnts; j++)
    {
-      for (i = 0; i < NDFD_MATCHALL + 1; i++)
+      for (i = 0; i < XML_MAX; i++)
       {
          if (isPntInASector(pnts[j]))
             printf("weatherParameters [%d][%d] = %d\n", j, i, 
@@ -778,12 +779,12 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                }     
             }
          }
-         layoutKeys[j] = (char **)malloc((NDFD_MATCHALL + 1) * sizeof(char *));
+         layoutKeys[j] = (char **)malloc(XML_MAX * sizeof(char *));
 
          if (f_firstPointLoopIteration || f_formatNewPointTimeLayouts)
          {
             /* Generate a new set of time-layouts for the point. */
-            for (k = 0; k < (NDFD_MATCHALL + 1); k++)
+            for (k = 0; k < XML_MAX; k++)
             {
                /* Pass on the RTMA errors. They'll share the time-layouts of 
                 * the corresponding parent element. Also, pass on the 
@@ -809,9 +810,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                {
                   if (weatherParameters[j][k] == 1 || weatherParameters[j][k] == 3)
                   {
-                     /* For DWMLgen "time-series" and "glance" and "RTMA-only" (no
-                      * concatenation with NDFD) products. 
-                      */
+                     /* For DWMLgen "time-series" and "glance" products.  */
                      if ((f_XML == 1 || f_XML == 2 || f_XML == 5 || f_XML == 6) 
                           && numRowsForPoint[j][k].total != 0)
                      {
@@ -869,20 +868,23 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                            /* The other element's (Wx and Icons) will share 
 		   	    * Pop's layout.
 			    */
-                           generateTimeLayout(numRowsForPoint[j][NDFD_POP],
-				              NDFD_POP, layoutKey,
-                                              whichTimeCoordinate,
-                                              whatSummarization, match,
-                                              numMatch, f_formatPeriodName,
-                                              TZoffset[j], f_observeDST,
-                                              &numLayoutSoFar, &numCurrentLayout, 
-                                              currentHour[j], currentDay[j], format, 
-                                              data, startTime, currentDoubTime, 
-					      &numOutputLines[j], f_XML, startNum, 
-                                              endNum);
+                           if (numRowsForPoint[j][NDFD_POP].total != 0)
+                           {
+                              generateTimeLayout(numRowsForPoint[j][NDFD_POP],
+				                 NDFD_POP, layoutKey,
+                                                 whichTimeCoordinate,
+                                                 whatSummarization, match,
+                                                 numMatch, f_formatPeriodName,
+                                                 TZoffset[j], f_observeDST,
+                                                 &numLayoutSoFar, &numCurrentLayout, 
+                                                 currentHour[j], currentDay[j], format, 
+                                                 data, startTime, currentDoubTime, 
+					         &numOutputLines[j], f_XML, startNum,
+                                                 endNum);
 
-                           layoutKeys[j][k] = malloc(strlen(layoutKey) + 1);
-                           strcpy(layoutKeys[j][k], layoutKey);
+                              layoutKeys[j][k] = malloc(strlen(layoutKey) + 1);
+                              strcpy(layoutKeys[j][k], layoutKey);
+                           }
                         }
                      }
                      else if (f_XML == 4 && numRowsForPoint[j][k].total != 0)
@@ -988,7 +990,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
             {
                if (isPntInASector(pnts[i]))
                {
-                  for (k = 0; k < (NDFD_MATCHALL + 1); k++)
+                  for (k = 0; k < XML_MAX; k++)
                   {
                      if (weatherParameters[j][k] == 1)
                      {
@@ -1726,7 +1728,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
 	 }
 
          /* Free layoutKeys element array, if allocated. */
-         for (k = 0; k < NDFD_MATCHALL + 1; k++)
+         for (k = 0; k < XML_MAX; k++)
          {
             if ((k == RTMA_UTEMP) || (k == RTMA_UTD) || (k == RTMA_UWSPD) || 
                 (k==RTMA_UWDIR) || (k==NDFD_TEMP && pnt_rtmaNdfdTemp[j]) ||
