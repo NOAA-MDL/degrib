@@ -71,6 +71,9 @@ static const gdsType NdfdDefGds[] = {
     25.000000, 25.000000, -90, 0, 0, 0, 0, 0, 0}
 };
 
+/* IF YOU ADD ANY SECTORS, MAKE SURE YOU UPDATE THIS IN META.H */
+/* enum { NDFD_OCONUS_CONUS, NDFD_OCONUS_PR, NDFD_OCONUS_HI, NDFD_OCONUS_GU,
+       NDFD_OCONUS_AK, NDFD_OCONUS_NHEMI, NDFD_OCONUS_UNDEF */
 static const char *NdfdDefSect[] = {
    "conus", "puertori", "hawaii", "guam", "alaska", "nhemi"
 };
@@ -78,7 +81,7 @@ static const char *NdfdDefSect[] = {
 /* 9999 means look in "<sectorName>timezone.flt" file, otherwise value to
  * adjust UTC clock by to get standard time */
 static const int NdfdDefTimeZone[] = {
-   9999, -4, -10, 10, 9999, 9999
+   9999, +4, +10, -10, 9999, 9999
 };
 
 /* 9999 means look in "<sectorName>daylight.flt" file, otherwise true/false
@@ -569,6 +572,7 @@ static void SectorTimeZones (sChar f_sector, const char *sectName,
    sInt4 x1, y1;        /* nearest integer values of X,Y. */
    float value;         /* The current value from .flt file. */
    sInt4 offset;        /* Where to read in the .flt file. */
+   int gdsIndex = 1;    /* Which gds to use in the .ind file. */
    gdsType gds;         /* GDS section associated with Flt/Ind files. */
    myMaparam map;       /* The map projection associated with GDS. */
 
@@ -617,7 +621,8 @@ static void SectorTimeZones (sChar f_sector, const char *sectName,
                fclose (TZFlt);
             } else {
                /* Set up map projection. */
-               ReadGDSBuffer (flxArray, &gds);
+               ReadGDSBuffer (flxArray + HEADLEN + 2 + (gdsIndex - 1) * 129,
+                              &gds);
                free (flxArray);
                /* Don't need map set up for f_cells = 1 (do need gds). */
                if (f_cells != 1) {
