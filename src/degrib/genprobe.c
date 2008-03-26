@@ -180,7 +180,7 @@ static char *NDFD_Type[] = { "maxt", "mint", "pop12", "t", "winddir",
    "probtmpabv01m", "probtmpblw01m", "probprcpabv01m", "probprcpblw01m",
    "probtmpabv03m", "probtmpblw03m", "probprcpabv03m", "probprcpblw03m",
    "apcp01", "tcdc", "dpt", "tmp", "dpterr", "tmperr", "wdirerr", "winderr",
-   "wdir", "wind", NULL
+   "wdir", "wind", "", "", "", "", "", "", NULL
 };
 /* These match the convention on official download pages (cube names). */
 static char *NDFD_File[] = { "maxt", "mint", "pop12", "temp", "wdir",
@@ -192,7 +192,7 @@ static char *NDFD_File[] = { "maxt", "mint", "pop12", "temp", "wdir",
    "prcpblw14d", "tmpabv30d", "tmpblw30d", "prcpabv30d", "prcpblw30d",
    "tmpabv90d", "tmpblw90d", "prcpabv90d", "prcpblw90d", "precipa_r",
    "sky_r", "td_r", "temp_r", "utd", "utemp", "uwdir", "uwspd",
-   "wdir_r", "wspd_r", NULL
+   "wdir_r", "wspd_r", "", "", "", "", "", "", NULL
 };
 /* A (mostly) 2 letter abreviation scheme created with/for the verification
    group */
@@ -202,7 +202,7 @@ static char *NDFD_File2[] = { "mx", "mn", "po", "tt", "wd",
    "ps", "xs", "ta6d", "tb6d", "pa6d", "pb6d",
    "ta1m", "tb1m", "pa1m", "pb1m", "ta3m", "tb3m", "pa3m", "pb3m",
    "apcp01", "tcdc", "dpt", "tmp", "dpterr", "tmperr", "wdirerr", "winderr",
-   "wdir", "wind", NULL
+   "wdir", "wind", "", "", "", "", "", "", NULL
 };
 
 uChar gen_NDFD_NDGD_Lookup (char *str, char f_toLower, char f_ndfdConven)
