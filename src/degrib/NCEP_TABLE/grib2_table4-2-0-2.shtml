@@ -21,9 +21,9 @@ momentum category)</small><br>
 <br>
 <center>
 <center>
-<center><b>Revised 08/23/2007</b><br>
+<center><b>Revised 03/12/2008</b><br>
 <span style="color: red; font-size: 10pt;"><b>Red text depicts changes
-made since 06/05/2007</b></span><b><br>
+made since 08/23/2007</b></span><b><br>
 </b></center>
 </center>
 <b></b></center>
@@ -368,7 +368,7 @@ for Local Use<br>
     <tr>
       <td style="vertical-align: top; text-align: center; color: red ;">199<br>
       </td>
-      <td style="vertical-align: top; color: red ;">Latitude of U Wind Component of 
+      <td style="vertical-align: top; color: red ;">Longitude of U Wind Component of 
           Velocity</td>
       <td style="vertical-align: top; color: red ;">deg</td>
       <td style="vertical-align: top; color: red ;">LOUV</td>
@@ -441,6 +441,54 @@ for Local Use<br>
       <td style="vertical-align: top; color: red ;">Vertical Diffusion Meridional Acceleration<br></td>
       <td style="vertical-align: top; color: red ;">m s<sup>-2</sup></td>
       <td style="vertical-align: top; color: red ;">VDFVA</td>
+    </tr>
+    <tr>
+      <td style="text-align: center; color: red;">210<br></td>
+      <td style="vertical-align: top; color: red;">Gravity wave drag zonal acceleration<br></td>
+      <td style="vertical-align: top; color: red;">m/s<sup>2</sup><br></td>
+      <td style="vertical-align: top; color: red;">GWDU<br></td>
+    </tr>
+    <tr>
+      <td style="text-align: center; color: red;">211<br></td>
+      <td style="vertical-align: top; color: red;">Gravity wave drag meridional acceleration<br></td>
+      <td style="vertical-align: top; color: red;">m/s<sup>2</sup><br></td>
+      <td style="vertical-align: top; color: red;">GWDV<br></td>
+    </tr>
+    <tr>
+      <td style="text-align: center; color: red;">212<br> </td>
+      <td style="vertical-align: top; color: red;">Convective zonal momentum mixing acceleration<br> </td>
+      <td style="vertical-align: top; color: red;">m/s<sup>2</sup><br> </td>
+      <td style="vertical-align: top; color: red;">CNVU<br> </td>
+    </tr>
+    <tr>
+      <td style="text-align: center; color: red;">213<br> </td>
+      <td style="vertical-align: top; color: red;">Convective meridional momentum mixing acceleration<br> </td>
+      <td style="vertical-align: top; color: red;">m/s<sup>2</sup><br> </td>
+      <td style="vertical-align: top; color: red;">CNVV<br> </td>
+    </tr>
+    <tr>
+      <td style="text-align: center; color: red;">214<br></td>
+      <td style="vertical-align: top; color: red;">Tendency of vertical velocity</td>
+      <td style="vertical-align: top; color: red;">m/s<sup>2</sup><br></td>
+      <td style="vertical-align: top; color: red;">WTEND<br>
+    </tr>
+    <tr>
+      <td style="text-align: center; color: red;">215<br></td>
+      <td style="vertical-align: top; color: red;">Omega (Dp/Dt) divide by density</td>
+      <td style="vertical-align: top; color: red;">K<br></td>
+      <td style="vertical-align: top; color: red;">OMGALF<br>
+    </tr>
+    <tr>
+      <td style="text-align: center; color: red;">216<br> </td>
+      <td style="vertical-align: top; color: red;">Convective Gravity wave drag zonal acceleration<br> </td>
+      <td style="vertical-align: top; color: red;">m/s<sup>2</sup><br> </td>
+      <td style="vertical-align: top; color: red;">CNGWDU<br> </td>
+    </tr>
+    <tr>
+      <td style="text-align: center; color: red;">217<br> </td>
+      <td style="vertical-align: top; color: red;">Convective Gravity wave drag meridional acceleration<br></td>
+      <td style="vertical-align: top; color: red;">m/s<sup>2</sup><br> </td>
+      <td style="vertical-align: top; color: red;">CNGWDV<br> </td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">255<br>

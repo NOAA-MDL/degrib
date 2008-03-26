@@ -19,9 +19,9 @@ temperature category)</small><br>
 </small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 0<br>
 </big></big></center>
 <br>
-<center><b>Revised 08/23/2007</b><br>
+<center><b>Revised 03/12/2008</b><br>
 <span style="color: red; font-size: 10pt;"><b>Red text depicts changes
-made since 08/14/2007</b></span><b><br>
+made since 10/30/2007</b></span><b><br>
 </b></center>
 <br>
 <br>
@@ -102,7 +102,7 @@ Temperature<br>
     <tr>
       <td style="vertical-align: top; text-align: center;">7<br>
       </td>
-      <td style="vertical-align: top;">Dew Point Depression<br>
+      <td style="vertical-align: top;">Dew Point Depression (or Deficit)<br>
       </td>
       <td style="vertical-align: top;">K<br>
       </td>
@@ -154,7 +154,7 @@ Temperature<br>
     <tr>
       <td style="vertical-align: top; text-align: center;">13<br>
       </td>
-      <td style="vertical-align: top;">Wind Chill Temperature</td>
+      <td style="vertical-align: top;">Wind Chill Factor</td>
       <td style="vertical-align: top;">K<br>
       </td>
       <td style="vertical-align: top;">-<br>
@@ -186,7 +186,14 @@ Temperature<br>
       <td style="vertical-align: top;">SNOHF </td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center;">17-191<br>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">17<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Skin Temperature</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">K<br>
+      </td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">SKINT</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">18-191<br>
       </td>
       <td style="vertical-align: top;">Reserved</td>
       <td style="vertical-align: top;"><br>
@@ -217,11 +224,9 @@ for Local Use<br>
       <td style="vertical-align: top;">SNOHF </td>
     </tr>
     <tr>
-      <td
- style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">193<br>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">193<br>
       </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Temperature
-tendency by all radiation</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Temperature tendency by all radiation</td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">K s<sup>-1</sup><br>
       </td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">TTRAD</td>
@@ -284,6 +289,18 @@ tendency by all radiation</td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">Vertical Diffusion Heating rate</td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">K/s<br></td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">VDFHR</td>
+    </tr>
+    <tr>
+      <td style="text-align: center; color: red;">203<br> </td>
+      <td style="vertical-align: top; color: red;">Potential temperature at top of viscous sublayer<br> </td>
+      <td style="vertical-align: top; color: red;">K<br> </td>
+      <td style="vertical-align: top; color: red;">THZ0<br> </td>
+    </tr>
+    <tr>
+      <td style="text-align: center; color: red;">204<br> </td>
+      <td style="vertical-align: top; color: red;">Tropical Cyclone Heat Potential<br></td>
+      <td style="vertical-align: top; color: red;">J/m<sup>2</sup>K<br></td>
+      <td style="vertical-align: top; color: red;">TCHP<br></td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">255<br>

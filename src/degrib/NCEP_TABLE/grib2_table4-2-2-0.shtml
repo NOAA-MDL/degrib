@@ -19,9 +19,9 @@ Vegetation/Biomass category)</small><br>
 </small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 0<br>
 </big></big></center>
 <br>
-<div style="text-align: center;"><b>Revised 03/13/2006</b><br>
+<div style="text-align: center;"><b>Revised 03/12/2008</b><br>
 <span style="color: red; font-size: 10pt;"><b>Red text depicts changes
-made since 02/21/2006</b></span><br>
+made since 11/01/2007</b></span><br>
 </div>
 <br>
 <center>
@@ -39,12 +39,9 @@ made since 02/21/2006</b></span><br>
  style="vertical-align: middle; font-weight: bold; text-align: center;">Abbrev</td>
     </tr>
     <tr>
-      <td style="text-align: center;">0<br>
-      </td>
-      <td>Land Cover (1=land, 0=sea)<br>
-      </td>
-      <td style="vertical-align: top;"><br>
-      </td>
+      <td style="text-align: center;">0<br></td>
+      <td>Land Cover (1=land, 0=sea)<br></td>
+      <td style="vertical-align: top;">Proportion</td>
       <td style="vertical-align: top;">LAND </td>
     </tr>
     <tr>
@@ -116,8 +113,7 @@ made since 02/21/2006</b></span><br>
       </td>
       <td style="vertical-align: top;">Land Use<br>
       </td>
-      <td style="vertical-align: top;">See <a
- href="grib2_table4-212.shtml">Table 4.212</a><br>
+      <td style="vertical-align: top;">See <a href="grib2_table4-212.shtml">Table 4.212</a><br>
       </td>
       <td style="vertical-align: top;">-<br>
       </td>
@@ -216,15 +212,49 @@ canopy conductance</td>
       <td style="vertical-align: top;">RCSOL </td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center;">21<br>
-      </td>
-      <td style="vertical-align: top;">Humidity parameter in canopy
-conductance</td>
+      <td style="vertical-align: top; text-align: center;">21</td>
+      <td style="vertical-align: top;">Humidity parameter in canopy conductance</td>
       <td style="vertical-align: top;">Proportion</td>
       <td style="vertical-align: top;">RCQ </td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center;">22-191<br>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">22</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Soil Moisture</td>
+      <td style="vertical-align: top;">kg m<sup>-3</sup> </td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">23</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Column-Integrated Soil Water</td>
+      <td style="vertical-align: top;">kg m<sup>-2</sup></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br></td>
+    </tr> 
+    <tr>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">24</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Heat Flux</td>
+      <td style="vertical-align: top;">W m<sup>-2</sup></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">25</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Volumetric Soil Moisture</td>
+      <td style="vertical-align: top;">m<sup>-3</sup>m<sup>-3</sup></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">26</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Wilting Point</td>
+      <td style="vertical-align: top;">kg m<sup>-3</sup></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">27</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Volumetric Wilting Moisture</td>
+      <td style="vertical-align: top;">m<sup>-3</sup>m<sup>-3</sup></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">28-191<br>
       </td>
       <td style="vertical-align: top;">Reserved</td>
       <td style="vertical-align: top;"><br>
@@ -362,24 +392,28 @@ canopy conductance</td>
       <td style="vertical-align: top;">RCSOL </td>
     </tr>
     <tr>
-      <td
- style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">206<br>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Rate of
-water dropping from canopy to ground</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br>
-      </td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">206<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Rate of water dropping from canopy to ground</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br></td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">RDRIP</td>
     </tr>
     <tr>
-      <td
- style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">207<br>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Ice-free
-water surface</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">%<br>
-      </td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">207<br> </td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Ice-free water surface</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">%<br> </td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">ICWAT</td>
+    </tr>
+    <tr>
+      <td style="text-align: center; color: red;">208<br> </td>
+      <td style="vertical-align: top; color: red;">Surface exchange coefficients for T and Q divided by delta z</td>
+      <td style="vertical-align: top; color: red;">m/s<br> </td>
+      <td style="vertical-align: top; color: red;">AKHS<br> </td>
+    </tr>
+    <tr>
+      <td style="text-align: center; color: red;">209<br> </td>
+      <td style="vertical-align: top; color: red;">Surface exchange coefficients for U and V divided by delta z<br> </td>
+      <td style="vertical-align: top; color: red;">m/s<br> </td>
+      <td style="vertical-align: top; color: red;">AKMS<br> </td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">255<br>

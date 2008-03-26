@@ -19,9 +19,9 @@ Physical Atmospheric category)</small><br>
 </small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 19<br>
 </big></big></center>
 <br>
-<center><b>Revised 08/24/2007</b><br>
+<center><b>Revised 03/12/2008</b><br>
 <span style="color: red; font-size: 10pt;"><b>Red text depicts changes
-made since 06/08/2007</b></span><span style="font-weight: bold;"><br>
+made since 03/05/2008</b></span><span style="font-weight: bold;"><br>
 <br>
 <br>
 </span></center>
@@ -111,8 +111,7 @@ made since 06/08/2007</b></span><span style="font-weight: bold;"><br>
       </td>
       <td style="vertical-align: top;">Icing<br>
       </td>
-      <td style="vertical-align: top;">See <a
- href="grib2_table4-207.shtml">Table 4.207</a></td>
+      <td style="vertical-align: top;">See <a href="grib2_table4-207.shtml">Table 4.207</a></td>
       <td style="vertical-align: top;">-<br>
       </td>
     </tr>
@@ -209,8 +208,7 @@ made since 06/08/2007</b></span><span style="font-weight: bold;"><br>
       <td
  style="vertical-align: top; text-align: center; color: rgb(0, 0, 0);">17<br>
       </td>
-      <td style="vertical-align: top; color: rgb(0, 0, 0);">Maximum
-Snow Albedo</td>
+      <td style="vertical-align: top; color: rgb(0, 0, 0);">Maximum Snow Albedo</td>
       <td style="vertical-align: top; color: rgb(0, 0, 0);">%</td>
       <td style="vertical-align: top; color: rgb(0, 0, 0);">MXSALB </td>
     </tr>
@@ -218,14 +216,18 @@ Snow Albedo</td>
       <td
  style="vertical-align: top; text-align: center; color: rgb(0, 0, 0);">18<br>
       </td>
-      <td style="vertical-align: top; color: rgb(0, 0, 0);">Snow-Free
-Albedo</td>
+      <td style="vertical-align: top; color: rgb(0, 0, 0);">Snow-Free Albedo</td>
       <td style="vertical-align: top; color: rgb(0, 0, 0);">%</td>
       <td style="vertical-align: top; color: rgb(0, 0, 0);">SNFALB </td>
     </tr>
     <tr>
-      <td
- style="vertical-align: top; text-align: center; color: rgb(0, 0, 0);">19-191<br>
+      <td style="text-align: center; color: rgb(255, 0, 0);">19</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Snow Albedo<br></td>
+      <td style="vertical-align: top;">%</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">SALBD</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: rgb(0, 0, 0);">20-191<br>
       </td>
       <td style="vertical-align: top; color: rgb(0, 0, 0);">Reserved</td>
       <td style="vertical-align: top; color: rgb(0, 0, 0);"><br>
@@ -257,8 +259,7 @@ for Local Use<br>
       <td style="vertical-align: top;">MXSALB </td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center;">193<br>
-      </td>
+      <td style="vertical-align: top; text-align: center;">193<br></td>
       <td style="vertical-align: top;">Snow-Free Albedo</td>
       <td style="vertical-align: top;">%<br>
       </td>
@@ -391,15 +392,10 @@ mixed layers next to surface</td>
       <td style="vertical-align: top; color: rgb(0, 0, 0);">MIXLY</td>
     </tr>
     <tr>
-      <td
- style="text-align: center; vertical-align: top; color: rgb(255, 0, 0);">205</td>
-      <td style="vertical-align: top;"><span
- style="color: rgb(255, 0, 0);">Flight Category</span><br>
-      </td>
-      <td style="vertical-align: top;"><br>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">FLGHT<br>
-      </td>
+      <td style="text-align: center; vertical-align: top; color: rgb(255, 0, 0);">205</td>
+      <td style="vertical-align: top;"><span style="color: rgb(255, 0, 0);">Flight Category</span><br></td>
+      <td style="vertical-align: top;"><br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">FLGHT<br></td>
     </tr>
     <tr>
       <td
@@ -522,168 +518,23 @@ Probability of Extreme Severe Thunderstorms (Days 2,3)</td>
       </td>
     </tr>
     <tr>
-      <td
- style="text-align: center; vertical-align: top; color: rgb(255, 0, 0);">217</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Mean
-Icing Potential<br>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">kg m<sup>-2</sup></td>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">MEIP<br>
-      </td>
+      <td style="text-align: center; vertical-align: top; color: rgb(255, 0, 0);">217</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Supercooled Large Droplet Icing</td>
+      <td style="vertical-align: top;">See <a href="grib2_table4-207.shtml">Table 4.207</a></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br></td>
     </tr>
     <tr>
-      <td
- style="text-align: center; vertical-align: top; color: rgb(255, 0, 0);">218</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Maximum
-Icing Potential<br>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">kg m<sup>-2</sup></td>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">MAIP<br>
-      </td>
+      <td style="text-align: center; color: red;">218<br> </td>
+      <td style="vertical-align: top; color: red;">Radiative emissivity<br> </td>
+      <td style="vertical-align: top; color: red;"><br> </td>
+      <td style="vertical-align: top; color: red;">EPSR<br> </td>
     </tr>
     <tr>
-      <td
- style="text-align: center; vertical-align: top; color: rgb(255, 0, 0);">219</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Mean
-in-Cloud Turbulence Potential<br>
+      <td style="vertical-align: top; text-align: center; color: rgb(0, 0, 0);">219-231<br>
       </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">kg m<sup>-2</sup></td>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">MECTP<br>
-      </td>
-    </tr>
-    <tr>
-      <td
- style="text-align: center; vertical-align: top; color: rgb(255, 0, 0);">220</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Max
-in-Cloud Turbulence Potential<br>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">kg m<sup>-2</sup></td>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">MACTP<br>
-      </td>
-    </tr>
-    <tr>
-      <td
- style="text-align: center; vertical-align: top; color: rgb(255, 0, 0);">221</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Mean
-Cloud Air Turbulence Potential<br>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">kg m<sup>-2</sup></td>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">MECAT<br>
-      </td>
-    </tr>
-    <tr>
-      <td
- style="text-align: center; vertical-align: top; color: rgb(255, 0, 0);">222</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Maximum
-Cloud Air Turbulence Potential<br>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">kg m<sup>-2</sup></td>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">MACAT<br>
-      </td>
-    </tr>
-    <tr>
-      <td
- style="text-align: center; vertical-align: top; color: rgb(255, 0, 0);">223</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Cumulonimbus
-Horizontal Extent<br>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">%<br>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">CBHE<br>
-      </td>
-    </tr>
-    <tr>
-      <td
- style="text-align: center; vertical-align: top; color: rgb(255, 0, 0);">224</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Pressure
-at Cumulonimbus Base<br>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Pa<br>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">PCBB<br>
-      </td>
-    </tr>
-    <tr>
-      <td
- style="text-align: center; vertical-align: top; color: rgb(255, 0, 0);">225</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Pressure
-at Cumulonimbus Top<br>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Pa<br>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">PCBT<br>
-      </td>
-    </tr>
-    <tr>
-      <td
- style="text-align: center; vertical-align: top; color: rgb(255, 0, 0);">226</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Pressure
-at Embedded Cumulonimbus Base<br>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Pa<br>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">PECBB<br>
-      </td>
-    </tr>
-    <tr>
-      <td
- style="text-align: center; vertical-align: top; color: rgb(255, 0, 0);">227</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Pressure
-at Embedded Cumulonimbus Top<br>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Pa<br>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">PECBT<br>
-      </td>
-    </tr>
-    <tr>
-      <td
- style="text-align: center; vertical-align: top; color: rgb(255, 0, 0);">228</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">ICAO
-Height at Cumulonimbus Base<br>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">m<br>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">HCBB<br>
-      </td>
-    </tr>
-    <tr>
-      <td
- style="text-align: center; vertical-align: top; color: rgb(255, 0, 0);">229</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">ICAO
-Height at Cumulonimbus Top<br>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">m<br>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">HCBT<br>
-      </td>
-    </tr>
-    <tr>
-      <td
- style="text-align: center; vertical-align: top; color: rgb(255, 0, 0);">230</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">ICAO
-Height at Embedded Cumulonimbus Base<br>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">m<br>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">HECBB<br>
-      </td>
-    </tr>
-    <tr>
-      <td
- style="text-align: center; vertical-align: top; color: rgb(255, 0, 0);">231</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">ICAO
-Height at Embedded Cumulonimbus Top<br>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">m<br>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">HECBT<br>
+      <td style="vertical-align: top; color: rgb(0, 0, 0);">Reserved</td>
+      <td style="vertical-align: top; color: rgb(0, 0, 0);"><br></td>
+      <td style="vertical-align: top;"><br>
       </td>
     </tr>
     <tr>

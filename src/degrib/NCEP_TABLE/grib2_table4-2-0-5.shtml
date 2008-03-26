@@ -19,9 +19,9 @@ long-wave radiation category)</small><br>
 </small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 5<br>
 </big></big></center>
 <br>
-<center><b>Revised 08/23/2007</b><br>
+<center><b>Revised 10/30/2007</b><br>
 <span style="color: red; font-size: 10pt;"><b>Red text depicts changes
-made since 03/13/2006</b></span></center>
+made since 08/23/2007</b></span></center>
 <br>
 <br>
 <center>
@@ -77,13 +77,23 @@ made since 03/13/2006</b></span></center>
       <td style="vertical-align: top;">ULWRF</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center;">5-191<br>
+      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">5<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Net Long-Wave Radiation Flux</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">W m<sup>-2</sup></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">6<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Net Long-Wave Radiation Flux, Clear Sky</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">W m<sup>-2</sup></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">7-191<br>
       </td>
       <td style="vertical-align: top;">Reserved</td>
-      <td style="vertical-align: top;"><br>
-      </td>
-      <td style="vertical-align: top;"><br>
-      </td>
+      <td style="vertical-align: top;"><br></td>
+      <td style="vertical-align: top;"><br></td>
     </tr>
     <tr>
       <td
@@ -93,19 +103,15 @@ made since 03/13/2006</b></span></center>
  style="vertical-align: top; background-color: rgb(204, 204, 204);">Reserved
 for Local Use<br>
       </td>
-      <td
- style="vertical-align: top; background-color: rgb(204, 204, 204);"><br>
-      </td>
-      <td
- style="vertical-align: top; background-color: rgb(204, 204, 204);"><br>
-      </td>
+      <td style="vertical-align: top; background-color: rgb(204, 204, 204);"><br></td>
+      <td style="vertical-align: top; background-color: rgb(204, 204, 204);"><br></td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">192<br>
       </td>
       <td style="vertical-align: top;">Downward Long-Wave Rad. Flux</td>
       <td style="vertical-align: top;">W m<sup>-2</sup></td>
-      <td style="vertical-align: top;">DLWRF </td>
+      <td style="vertical-align: top;">DLWRF</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">193<br></td>
@@ -138,14 +144,10 @@ for Local Use<br>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">CFNLF</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center;">255<br>
-      </td>
-      <td style="vertical-align: top;">Missing<br>
-      </td>
-      <td style="vertical-align: top;"><br>
-      </td>
-      <td style="vertical-align: top;"><br>
-      </td>
+      <td style="vertical-align: top; text-align: center;">255<br></td>
+      <td style="vertical-align: top;">Missing<br></td>
+      <td style="vertical-align: top;"><br></td>
+      <td style="vertical-align: top;"><br></td>
     </tr>
   </tbody>
 </table>

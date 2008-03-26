@@ -19,9 +19,9 @@ category)</small><br>
 </small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 3<br>
 </big></big></center>
 <br>
-<center><b>Revised 08/23/2007</b><br>
+<center><b>Revised 03/12/2008</b><br>
 <span style="color: red; font-size: 10pt;"><b>Red text depicts changes
-made since 06/05/2007</b></span><b></b></center>
+made since 10/30/2007</b></span><b></b></center>
 <br>
 <br>
 <center>
@@ -219,7 +219,37 @@ Anomaly</td>
       <td style="vertical-align: top;">5WAVA </td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center;">20-191<br>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">20<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Standard Deviation Of Sub-Grid Scale Orography</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">m<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">21<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Angle Of Sub-Grid Scale Orography</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Rad<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">22<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Slope Of Sub-Grid Scale Orography</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Numeric<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">23<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Gravity Of Sub-Grid Scale Orography</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">W m<sup>-2</sup></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">24<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Anisotropy Of Sub-Grid Scale Orography</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Numeric<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">25-191<br>
       </td>
       <td style="vertical-align: top;">Reserved</td>
       <td style="vertical-align: top;"><br>
@@ -322,15 +352,10 @@ parcel was lifted</td>
       </td>
     </tr>
     <tr>
-      <td
- style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">201<br>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">X-gradient of Log
-          Pressure</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">1/m<br>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">LPS X<br>
-      </td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">201<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">X-gradient of Log Pressure</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">1/m<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">LPS X<br></td>
     </tr>
     <tr>
       <td
@@ -374,8 +399,25 @@ parcel was lifted</td>
       <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">206<br></td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">Natural Log of Surface Pressure</td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">ln(kPa)<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">NLGSP<br>
-      </td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">NLGSP<br> </td>
+    </tr>
+    <tr>
+      <td style="text-align: center; color: red;">207<br> </td>
+      <td style="vertical-align: top; color: red;">Convective updraft mass flux<br> </td>
+      <td style="vertical-align: top; color: red;">kg/m<sup>2</sup>/s<br> </td>
+      <td style="vertical-align: top; color: red;">CNVUMF<br> </td>
+    </tr>
+    <tr>
+      <td style="text-align: center; color: red;">208<br> </td>
+      <td style="vertical-align: top; color: red;">Convective downdraft mass flux<br> </td>
+      <td style="vertical-align: top; color: red;">kg/m<sup>2</sup>/s<br> </td>
+      <td style="vertical-align: top; color: red;">CNVDMF<br> </td>
+    </tr>
+    <tr>
+      <td style="text-align: center; color: red;">209<br> </td>
+      <td style="vertical-align: top; color: red;">Convective detrainment mass flux<br> </td>
+      <td style="vertical-align: top; color: red;">kg/m<sup>2</sup>/s<br> </td>
+      <td style="vertical-align: top; color: red;">CNVDEMF<br> </td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">255<br></td>

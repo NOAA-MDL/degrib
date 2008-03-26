@@ -19,9 +19,9 @@ category)</small><br>
 </small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 6<br>
 </big></big></center>
 <br>
-<center><b>Revised 08/24/2007</b><br>
+<center><b>Revised 10/30/2007</b><br>
 <span style="color: red; font-size: 10pt;"><b>Red text depicts changes
-made since 04/23/2007</b></span></center>
+made since 08/24/2007</b></span></center>
 <br>
 <br>
 <center>
@@ -229,7 +229,25 @@ Condensate</td>
       <td style="vertical-align: top;">FICE </td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center;">22-191<br>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">22<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Cloud Cover</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">%<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">23<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Cloud Ice Mixing Ratio</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">kg kg<sup>-1</sup><br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">24<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">SunShine</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Numeric<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">25-191<br>
       </td>
       <td style="vertical-align: top;">Reserved</td>
       <td style="vertical-align: top;"><br>
