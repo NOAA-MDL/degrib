@@ -95,6 +95,10 @@ static size_t NumNdfdDefSect = sizeof (NdfdDefGds) / sizeof (NdfdDefGds[0]);
 int SectorFindGDS (gdsType *gds)
 {
    size_t i;            /* loop counter. */
+   double lon;          /* Used to adjust lon to a range of 0..360. */
+                        /* We still assume lon is an East longitude rather
+                         * than a West one, but if the value is 190E,
+                         * we'd also like to accept -170E. */
 
    for (i = 0; i < NumNdfdDefSect; i++) {
       if (gds->numPts != NdfdDefGds[i].numPts)
@@ -115,9 +119,13 @@ int SectorFindGDS (gdsType *gds)
       /* Guam uncertainty in the lat1 is high.  Trust only 5 decimals */
       if (fabs (gds->lat1 - NdfdDefGds[i].lat1) > 0.1) /* Only took out 1 zero */
          continue;
-      if (fabs (gds->lon1 - NdfdDefGds[i].lon1) > 0.1)
+      if ((lon = gds->lon1) < 0)
+         lon += 360;
+      if (fabs (lon - NdfdDefGds[i].lon1) > 0.1)
          continue;
-      if (fabs (gds->orientLon - NdfdDefGds[i].orientLon) > 0.1)
+      if ((lon = gds->orientLon) < 0)
+         lon += 360;
+      if (fabs (lon - NdfdDefGds[i].orientLon) > 0.1)
          continue;
 
       /* Alaska uncertainty in the DX is high.  Trust only 0 decimals */
@@ -140,7 +148,9 @@ int SectorFindGDS (gdsType *gds)
          continue;
       if (fabs (gds->lat2 - NdfdDefGds[i].lat2) > 0.1)
          continue;
-      if (fabs (gds->lon2 - NdfdDefGds[i].lon2) > 0.1)
+      if ((lon = gds->lon2) < 0)
+         lon += 360;
+      if (fabs (lon - NdfdDefGds[i].lon2) > 0.1)
          continue;
       if (fabs (gds->scaleLat1 - NdfdDefGds[i].scaleLat1) > 0.1)
          continue;
@@ -151,7 +161,9 @@ int SectorFindGDS (gdsType *gds)
       if (fabs (gds->southLat - NdfdDefGds[i].southLat) > 0.1)
          continue;
 */
-      if (fabs (gds->southLon - NdfdDefGds[i].southLon) > 0.1)
+      if ((lon = gds->southLon) < 0)
+         lon += 360;
+      if (fabs (lon - NdfdDefGds[i].southLon) > 0.1)
          continue;
 
 /* AngleRotate, poleLat, poleLon, stretchFactor, f_typeLatLon are
