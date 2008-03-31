@@ -88,16 +88,16 @@ void getSectorInfo(PntSectInfo *pntInfo, Point *pnts, size_t numPnts,
  
    sectorSplit *deltaSect = NULL; /* Temporary holder of structure described
                                    * above. */
-   sectorSplit conusSect; /* Temporary holder of conus sector information as 
+   sectorSplit conusSect; /* Temporary holder of conus sector information as
                            * the structure described above. */
-   sectorSplit puertoriSect; /* Temporary holder of puerto rico sector 
+   sectorSplit puertoriSect; /* Temporary holder of puerto rico sector
                               * information as the structure described above. */
-   int numSectInMatch = 0; /* Total number of sectors for matches returned in 
+   int numSectInMatch = 0; /* Total number of sectors for matches returned in
                             * match structure. */
    int numSectInPoint = 0; /* Number of sectors the original points queried for
                               fell into. */
    int numSectsInPointNotFoundInMatch = 0; /* Difference between number of
-                                              sectors original points queried 
+                                              sectors original points queried
                                               for fell into, and number of
                                               sectors matches fell into. */
    int f_sectInPointNotFoundInMatch = 0; /* Denotes if a sector was found in 
@@ -122,18 +122,18 @@ void getSectorInfo(PntSectInfo *pntInfo, Point *pnts, size_t numPnts,
     * there were only one point or all points in a multiple call come from one
     * sector. Also, initialize the conus and puertori SectorSPlit arrays.
     */
+   conusSect.startNum = 0;
+   conusSect.endNum = numMatch;  
+   conusSect.enumNum = conus;
+
+   puertoriSect.startNum = 0;
+   puertoriSect.endNum = numMatch;  
+   puertoriSect.enumNum = puertori;
+
    for (j = 0; j < numPnts; j++)
    {
       pntInfo[j].startNum = 0;
       pntInfo[j].endNum = numMatch;
-
-      conusSect.startNum = 0;
-      conusSect.endNum = numMatch;  
-      conusSect.enumNum = conus;
-
-      puertoriSect.startNum = 0;
-      puertoriSect.endNum = numMatch;  
-      puertoriSect.enumNum = puertori;
    }
 
    /* Detect condition of multiple sectors in a multiple point call. 
