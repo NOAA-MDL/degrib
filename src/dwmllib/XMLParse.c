@@ -398,7 +398,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
     * interest(1) or vital(2) to this procedure. Also, manipulate the varFilter
     * array depending on type of XML queried.
     */
-   prepareVarFilter(f_XML, f_icon, numNdfdVars, ndfdVars, varFilter, &numElem,
+   prepareVarFilter(f_XML, &f_icon, numNdfdVars, ndfdVars, varFilter, &numElem,
                     &elem);
 
    /* See if any points are outside the NDFD Sectors. Print error message to

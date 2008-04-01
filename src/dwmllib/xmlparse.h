@@ -436,7 +436,7 @@ void prepareDWMLgenByDay(genMatchType *match, uChar f_XML,
 			 double currDoubTime, size_t numPnts, 
                          PntSectInfo *pntInfo, char **currentLocalDate);
 
-void prepareVarFilter(sChar f_XML, sChar f_icon, size_t numNdfdVars, 
+void prepareVarFilter(sChar f_XML, sChar *f_icon, size_t numNdfdVars, 
                       uChar *ndfdVars, uChar varFilter[NDFD_MATCHALL + 1], 
                       size_t *numElem, genElemDescript **elem);
 
@@ -467,7 +467,7 @@ int roundPopNearestTen(int num);
 void rtmaFileNames(size_t *numInFiles, char ***inFiles, char *directoryTail, 
                    char *rtmaSetDir);
 
-void setVarFilter(sChar f_XML, sChar f_icon, size_t numNdfdVars, 
+void setVarFilter(sChar f_XML, sChar *f_icon, size_t numNdfdVars, 
                   const uChar *ndfdVars, uChar varFilter[NDFD_MATCHALL + 1]);
 
 void skyPhrase(int *maxSkyCover, int *minSkyCover, int *averageSkyCover, 

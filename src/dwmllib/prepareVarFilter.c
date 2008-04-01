@@ -45,7 +45,7 @@
  ******************************************************************************
  */
 #include "xmlparse.h"
-void prepareVarFilter(sChar f_XML, sChar f_icon, size_t numNdfdVars, 
+void prepareVarFilter(sChar f_XML, sChar *f_icon, size_t numNdfdVars, 
                       uChar *ndfdVars, uChar varFilter[NDFD_MATCHALL + 1], 
                       size_t *numElem, genElemDescript **elem)
 {
@@ -60,7 +60,7 @@ void prepareVarFilter(sChar f_XML, sChar f_icon, size_t numNdfdVars,
     * elements originating on the command line argument and those forced if
     * command line argument -Icon is set to 1 (turned on). 
     */
-   if ((f_XML == 1 || f_XML == 6) && f_icon == 1)
+   if ((f_XML == 1 || f_XML == 6) && *f_icon == 1)
    {
       varFilter[NDFD_TEMP]--;
       varFilter[NDFD_WS]--;
@@ -74,12 +74,12 @@ void prepareVarFilter(sChar f_XML, sChar f_icon, size_t numNdfdVars,
     * no forcing of elements. This will ensure Icons are formatted along
     * with all the NDFD elements. 
     */
-   if ((f_XML == 1 || f_XML == 6) && numNdfdVars == 0 && f_icon == 0)
-      f_icon = 1;
+   if ((f_XML == 1 || f_XML == 6) && numNdfdVars == 0 && *f_icon == 0)
+      *f_icon = 1;
 
    /* Force Icons to be formatted if DWMLgen "glance" product. */
    if (f_XML == 2)
-      f_icon = 1;
+      *f_icon = 1;
 
    return;
 }

@@ -45,7 +45,7 @@
  *****************************************************************************
  */
 #include "xmlparse.h"
-void setVarFilter(sChar f_XML, sChar f_icon, size_t numNdfdVars, 
+void setVarFilter(sChar f_XML, sChar *f_icon, size_t numNdfdVars, 
                   const uChar *ndfdVars, uChar varFilter[NDFD_MATCHALL + 1])
 {
    int i;
@@ -115,14 +115,6 @@ void setVarFilter(sChar f_XML, sChar f_icon, size_t numNdfdVars,
    varFilter[RTMA_WDIR] = 1;
    varFilter[RTMA_WSPD] = 1;
 
-   /* 6 Combined RTMA+NDFD Elements. */
-   varFilter[RTMA_NDFD_PRECIPA] = 1;
-   varFilter[RTMA_NDFD_SKY] = 1;
-   varFilter[RTMA_NDFD_TD] = 1;
-   varFilter[RTMA_NDFD_TEMP] = 1;
-   varFilter[RTMA_NDFD_WDIR] = 1;
-   varFilter[RTMA_NDFD_WSPD] = 1;
-
    /* Force genprobe() to return required NDFD element(s). */
    if (f_XML == 2)
    {
@@ -134,7 +126,7 @@ void setVarFilter(sChar f_XML, sChar f_icon, size_t numNdfdVars,
       varFilter[NDFD_WX] = 2;
       varFilter[NDFD_POP] = 2;
    }
-   else if ((f_XML == 1 || f_XML == 6 ) && f_icon == 1)
+   else if ((f_XML == 1 || f_XML == 6 ) && *f_icon == 1) 
    {
       varFilter[NDFD_TEMP] = 2;
       varFilter[NDFD_WS] = 2;
