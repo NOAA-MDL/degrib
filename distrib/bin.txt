@@ -454,7 +454,18 @@ AMS:degrib/output/web_pages/readme.txt
 AMS:degrib/output/web_data/*
 
 # General data
-A:degrib/geodata/*
+A:degrib/geodata/alaskatimezone.ind
+A:degrib/geodata/alaskatimezone.flt
+A:degrib/geodata/alaskadaylight.ind
+A:degrib/geodata/alaskadaylight.flt
+A:degrib/geodata/conustimezone.ind
+A:degrib/geodata/conustimezone.flt
+A:degrib/geodata/conusdaylight.ind
+A:degrib/geodata/conusdaylight.flt
+A:degrib/geodata/nhemitimezone.ind
+A:degrib/geodata/nhemitimezone.flt
+A:degrib/geodata/nhemidaylight.ind
+A:degrib/geodata/nhemidaylight.flt
 
 # Draw Shp Control files.
 A:degrib/MapIni/*
