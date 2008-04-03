@@ -1,8 +1,35 @@
 #
+#----- Release: Version 1.90 10/31/2007 -----
+#
+10/29 AAT Introduced a -avgInterp option which when doing bilinear
+          interpolation (see -Interp), if a point is surrounded by 1 or more
+          missings, it returns the inverse distance weighted average of the
+          non-missing corners, instead of missing. (r610)
+10/29 AAT Updated to 20071029 version of dwmllib
+      PH  dwmllib bug: in which number of days formatted in XML was 1 more day
+            than specified in -numDays command line argument. The bug occurred
+            from 05Z to 12Z.
+      PH  dwmllib bug: in which weather data was not falling into the correct
+            summary period.
+      PH  dwmllib bug: in which too much data was clipped when user specified
+            startTime and endTime arguments for time-series and glance products
+10/29 AAT Added a check to degrib2.c::ReadSECT0() to make sure the edition is
+          1 or 2 when detecting a "GRIB".  If not, it ignores the false
+          positive and keeps looking for "GRIB".  This should help people who
+          have wrapped GRIB messages with text which for example says "this
+          is a GRIB message". (r608).
+10/24 AAT Added a table for some support for Norway GRIB1 products.
+10/23 AAT In pack.c::fillSect3(), there is a request for angle, which is
+          intended to define the basic unit of angle (lat/lon) for lat/lon
+          grids when not the default value of 10^-6.  I accidentally used
+          "angleRotate" which was undefined instead.  This caused a failure
+          for -Grib2 on some linux machines.  Others randomly had a default
+          value of 0 which made it work sporadically.
+#
 #----- Release: Version 1.89 10/22/2007 -----
 #
 10/22 AAT Fixed a bug in writeshp.c introduced in 1.87 where a missing '\0'
-          resulted in failure of -Grib2 on some linux installs (r604) 
+          resulted in failure of -Grib2 on some linux installs (r604)
 10/19 AAT Began adding logic to allow draws of lat/lon grids.
 10/19 AAT Fixed a bug with ParseSect4TimeSec() introduced in 1.87 which didn't
           recognize a unit of "seconds" (element 13 in a table of 13 units).
