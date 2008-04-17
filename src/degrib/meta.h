@@ -125,7 +125,7 @@ typedef struct {
    sInt4 HazCode[NUM_UGLY_WORD]; /* A code to represent all the attributes. */
    int SimpleCode;         /* Simple weather code for this ugly string. */
    char *errors;           /* if STORE_ERRORS, then it contains any error
-                            * messages found while parsing this string. */ 
+                            * messages found while parsing this string. */
 } UglyStringType;
 
 typedef struct {
@@ -144,15 +144,28 @@ typedef struct {
    uInt4 dataLen;         /* Number of elements in data. */
 } sect2_UnknownType;
 
-enum { GS2_NONE, GS2_WXTYPE, GS2_UNKNOWN };
+typedef struct {
+   char **data;              /* Array of text strings */
+   uInt4 dataLen;            /* number of text strings in data. */
+   int maxLen;               /* Max Length of all of the "ugly strings"
+                              * It includes 1 for the \0 character. */
+/*   UglyStringType *ugly;  */   /* The parsed Ugly string. */
+/*   int maxEng[NUM_UGLY_WORD]; */ /* Max length of english phrases for all ugly
+                               * word number X. */
+} sect2_HazardType;
+
+
+enum { GS2_NONE, GS2_WXTYPE, GS2_UNKNOWN, GS2_HAZARD };
 
 typedef struct {
 /*   void *ptr;  */              /* Pointer to section 2 data. */
    sect2_WxType wx;          /* wx data. */
    sect2_UnknownType unknown; /* unknown type of section 2 data. */
+   sect2_HazardType hazard;  /* hazard data */
    uChar ptrType;            /* Which structure is valid.
                                 GS2_WXTYPE => wx
-                                GS2_UNKNOWN => unknown */
+                                GS2_UNKNOWN => unknown
+                                GS2_HAZARD => hazard */
 } sect2_type;
 
 enum { CAT_TEMP, CAT_MOIST, CAT_MOMENT, CAT_MASS, CAT_SW_RAD,

@@ -65,6 +65,9 @@ void MetaInit (grib_MetaData *meta)
    meta->pds2.sect2.wx.ugly = NULL;
    meta->pds2.sect2.unknown.data = NULL;
    meta->pds2.sect2.unknown.dataLen = 0;
+   meta->pds2.sect2.hazard.data = NULL;
+   meta->pds2.sect2.hazard.dataLen = 0;
+   meta->pds2.sect2.hazard.maxLen = 0;
 
    meta->pds2.sect4.numInterval = 0;
    meta->pds2.sect4.Interval = NULL;
@@ -109,11 +112,20 @@ void MetaSect2Free (grib_MetaData *meta)
    meta->pds2.sect2.wx.data = NULL;
    meta->pds2.sect2.wx.dataLen = 0;
    meta->pds2.sect2.wx.maxLen = 0;
-   meta->pds2.sect2.ptrType = GS2_NONE;
 
-   free (meta->pds2.sect2.wx.data);
+   free (meta->pds2.sect2.unknown.data);
    meta->pds2.sect2.unknown.data = NULL;
    meta->pds2.sect2.unknown.dataLen = 0;
+
+   for (i = 0; i < meta->pds2.sect2.hazard.dataLen; i++) {
+      free (meta->pds2.sect2.hazard.data[i]);
+   }
+   free (meta->pds2.sect2.hazard.data);
+   meta->pds2.sect2.hazard.data = NULL;
+   meta->pds2.sect2.hazard.dataLen = 0;
+   meta->pds2.sect2.hazard.maxLen = 0;
+
+   meta->pds2.sect2.ptrType = GS2_NONE;
 }
 
 /*****************************************************************************
@@ -503,6 +515,99 @@ static int ParseSect2_Wx (float *rdat, sInt4 nrdat, sInt4 *idat,
          }
       }
    }
+   return 0;
+}
+
+static int ParseSect2_Hazard (float *rdat, sInt4 nrdat, sInt4 *idat,
+                          uInt4 nidat, sect2_HazardType *Hazard)
+{
+   size_t loc;          /* Where we currently are in idat. */
+   size_t groupLen;     /* Length of current group in idat. */
+   size_t j;            /* Counter over the length of the current group. */
+   char *buffer;        /* Used to store the current Hazard string. */
+   int buffLen;         /* Length of current Hazard string. */
+
+   if (nrdat < 1) {
+      return -1;
+   }
+
+   if (rdat[0] != 0) {
+      errSprintf ("ERROR: Expected rdat to be empty when dealing with "
+                  "section 2 Weather data\n");
+      return -2;
+   }
+   Hazard->dataLen = 0;
+   Hazard->data = NULL;
+   Hazard->maxLen = 0;
+
+   loc = 0;
+   if (nidat <= loc) {
+      errSprintf ("ERROR: Ran out of idat data\n");
+      return -1;
+   }
+   groupLen = idat[loc++];
+
+   loc++;               /* Skip the decimal scale factor data. */
+   /* Note: This also assures that buffLen stays <= nidat. */
+   if (loc + groupLen >= nidat) {
+      errSprintf ("ERROR: Ran out of idat data\n");
+      return -1;
+   }
+
+   buffLen = 0;
+   buffer = (char *) malloc ((nidat + 1) * sizeof (char));
+   while (groupLen > 0) {
+      for (j = 0; j < groupLen; j++) {
+         buffer[buffLen] = (char) idat[loc];
+         buffLen++;
+         loc++;
+         if (buffer[buffLen - 1] == '\0') {
+            Hazard->dataLen++;
+            Hazard->data = (char **) realloc ((void *) Hazard->data,
+                                          Hazard->dataLen * sizeof (char *));
+            /* This is done after the realloc, just to make sure we have
+             * enough memory allocated.  */
+            /* Assert: buffLen is 1 more than strlen(buffer). */
+            Hazard->data[Hazard->dataLen - 1] = (char *)
+                  malloc (buffLen * sizeof (char));
+            strcpy (Hazard->data[Hazard->dataLen - 1], buffer);
+            if (Hazard->maxLen < buffLen) {
+               Hazard->maxLen = buffLen;
+            }
+            buffLen = 0;
+         }
+      }
+      if (loc >= nidat) {
+         groupLen = 0;
+      } else {
+         groupLen = idat[loc];
+         loc++;
+         if (groupLen != 0) {
+            loc++;      /* Skip the decimal scale factor data. */
+            /* Note: This also assures that buffLen stays <= nidat. */
+            if (loc + groupLen >= nidat) {
+               errSprintf ("ERROR: Ran out of idat data\n");
+               free (buffer);
+               return -1;
+            }
+         }
+      }
+   }
+   if (buffLen != 0) {
+      buffer[buffLen] = '\0';
+      Hazard->dataLen++;
+      Hazard->data = (char **) realloc ((void *) Hazard->data,
+                                    Hazard->dataLen * sizeof (char *));
+      /* Assert: buffLen is 1 more than strlen(buffer). -- FALSE -- */
+      buffLen = strlen (buffer) + 1;
+
+      Hazard->data[Hazard->dataLen - 1] = (char *) malloc (buffLen * sizeof (char));
+      if (Hazard->maxLen < buffLen) {
+         Hazard->maxLen = buffLen;
+      }
+      strcpy (Hazard->data[Hazard->dataLen - 1], buffer);
+   }
+   free (buffer);
    return 0;
 }
 
@@ -2024,6 +2129,13 @@ int MetaParse (grib_MetaData *meta, sInt4 *is0, sInt4 ns0,
          meta->pds2.sect2.ptrType = GS2_WXTYPE;
          if ((ierr = ParseSect2_Wx (rdat, nrdat, idat, nidat,
                                     &(meta->pds2.sect2.wx), simpVer)) != 0) {
+            preErrSprintf ("Parse error Section 2 : Weather Data\n");
+            return ierr;
+         }
+      } else if (strcmp (meta->element, "Hazard") == 0) {
+         meta->pds2.sect2.ptrType = GS2_HAZARD;
+         if ((ierr = ParseSect2_Hazard (rdat, nrdat, idat, nidat,
+                                    &(meta->pds2.sect2.hazard))) != 0) {
             preErrSprintf ("Parse error Section 2 : Weather Data\n");
             return ierr;
          }
