@@ -278,6 +278,21 @@ void SetMapParamGDS (myMaparam *map, const gdsType *gds)
 
       map->f_latlon = 0;
       orient = gds->orientLon;
+
+      /* Need to check that the branch cut for mercator grids is outside the
+       * grid.  The branch cut is 180 degree away from the arbitrary
+       * orientLon */
+      if (gds->projType == GS3_MERCATOR) {
+         /* Treat orient temporarily as the branch location. */
+         if (gds->lon1 < gds->lon2) {
+            orient = (gds->lon1 + (gds->lon2 - 360)) / 2.;
+         } else {
+            orient = (gds->lon1 + gds->lon2) / 2.;
+         }
+         /* add 180 to the temporary branch location to get orientLon. */
+         orient += 180;
+      }
+
       while (orient > 180) {
          orient -= 360;
       }
