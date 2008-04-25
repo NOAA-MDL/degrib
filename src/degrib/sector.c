@@ -68,14 +68,20 @@ static const gdsType NdfdDefGds[] = {
     1473, 1025, 12.1899999, 226.541, 265.000000,
     5079.406, 5079.406, 25.00,
     0, 0, 64, 0, 0,
-    25.000000, 25.000000, -90, 0, 0, 0, 0, 0, 0}
+    25.000000, 25.000000, -90, 0, 0, 0, 0, 0, 0},
+   {1580529, 10, 1, 6371.2, 6371.2,
+    1473, 1073, -25.0, 110.0, 0.0,
+    10000.0, 10000.0, 20.0,
+    0, 0, 64, 60.643999, 250.871000,
+    0.0, 0.0, 0, 0, 0, 0, 0, 0, 0}
 };
 
 /* IF YOU ADD ANY SECTORS, MAKE SURE YOU UPDATE THIS IN META.H */
 /* enum { NDFD_OCONUS_CONUS, NDFD_OCONUS_PR, NDFD_OCONUS_HI, NDFD_OCONUS_GU,
-       NDFD_OCONUS_AK, NDFD_OCONUS_NHEMI, NDFD_OCONUS_UNDEF */
+       NDFD_OCONUS_AK, NDFD_OCONUS_NHEMI, NDFD_OCONUS_NPACIFIC,
+       NDFD_OCONUS_UNDEF } */
 static const char *NdfdDefSect[] = {
-   "conus", "puertori", "hawaii", "guam", "alaska", "nhemi"
+   "conus", "puertori", "hawaii", "guam", "alaska", "nhemi", "npacocn"
 };
 
 /* 9999 means look in "<sectorName>timezone.flt" file, otherwise value to
