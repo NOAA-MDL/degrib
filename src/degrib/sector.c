@@ -78,8 +78,8 @@ static const gdsType NdfdDefGds[] = {
 
 /* IF YOU ADD ANY SECTORS, MAKE SURE YOU UPDATE THIS IN META.H */
 /* enum { NDFD_OCONUS_CONUS, NDFD_OCONUS_PR, NDFD_OCONUS_HI, NDFD_OCONUS_GU,
-       NDFD_OCONUS_AK, NDFD_OCONUS_NHEMI, NDFD_OCONUS_NPACIFIC,
-       NDFD_OCONUS_UNDEF } */
+          NDFD_OCONUS_AK, NDFD_OCONUS_NHEMI, NDFD_OCONUS_NPACIFIC,
+          NDFD_OCONUS_UNDEF } */
 static const char *NdfdDefSect[] = {
    "conus", "puertori", "hawaii", "guam", "alaska", "nhemi", "npacocn"
 };
@@ -87,13 +87,13 @@ static const char *NdfdDefSect[] = {
 /* 9999 means look in "<sectorName>timezone.flt" file, otherwise value to
  * adjust UTC clock by to get standard time */
 static const int NdfdDefTimeZone[] = {
-   9999, +4, +10, -10, 9999, 9999
+   9999, +4, +10, -10, 9999, 9999, 9999
 };
 
 /* 9999 means look in "<sectorName>daylight.flt" file, otherwise true/false
  * does areas observes daylight savings. */
 static const int NdfdDefDayLight[] = {
-   9999, 0, 0, 0, 9999, 9999
+   9999, 0, 0, 0, 9999, 9999, 9999
 };
 
 static size_t NumNdfdDefSect = sizeof (NdfdDefGds) / sizeof (NdfdDefGds[0]);
