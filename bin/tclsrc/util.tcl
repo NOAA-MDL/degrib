@@ -332,11 +332,11 @@ proc ::ns_Util::DrawXPerc {canv x} {
 #-----------------------------------------------------------------------------
 proc ::ns_Util::ReadIni {file section lstVars} {
   if {! [file isfile $file]} {
-    tk_messageBox -message "Unable to open $file"
+    puts "Unable to open $file"
     return ""
   }
   if {! [file readable $file]} {
-    tk_messageBox -message "Unable to read $file"
+    puts "Unable to read $file"
     return ""
   }
   set fp [open $file r]
@@ -352,7 +352,7 @@ proc ::ns_Util::ReadIni {file section lstVars} {
   }
   if {! $f_found} {
     close $fp
-    tk_messageBox -message "Unable to find \[$section\] section in $file"
+    puts "Unable to find \[$section\] section in $file"
     return ""
   }
 #####
