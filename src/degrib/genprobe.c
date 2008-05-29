@@ -2173,10 +2173,19 @@ int genProbe (size_t numPnts, Point * pnts, sChar f_pntType,
 #endif
    size_t numOutNames;
    char **outNames;
-   char f_conus;  /* whether conus was seen in sector list. */
-   char f_nhemi;  /* whether nhemi was seen in sector list. */
-   char f_pr;     /* whether pr was seen in sector list. */
-   char **sect2;  /* used to temporarily expand sector list. */
+   char f_conus;        /* whether conus was seen in sector list. */
+   char f_nhemi;        /* whether nhemi was seen in sector list. */
+   char f_pr;           /* whether pr was seen in sector list. */
+   char f_npacocn;      /* whether N Pacific was seen in sector list. */
+   char f_hawaii;       /* whether Hawaii was seen in sector list. */
+   char f_guam;         /* whether Guam was seen in sector list. */
+   char **sect2;        /* used to temporarily expand sector list. */
+   int numAddSect;      /* Number of additional sectors needed.  Handles the
+                         * case when we have either (Puerto Rico or Conus,
+                         * but not nhemi) or (Guam or Hawaii, but not npacocn)
+                         * The reason we need npacocn and nhemi in that case
+                         * is because Tropical Wind Threshold data is only
+                         * found in Nhemi/npacocn sectors. */
 
    myAssert (*numMatch == 0);
    myAssert (*match == NULL);
@@ -2206,6 +2215,9 @@ int genProbe (size_t numPnts, Point * pnts, sChar f_pntType,
    f_conus = 0;
    f_nhemi = 0;
    f_pr = 0;
+   f_npacocn = 0;
+   f_hawaii = 0;
+   f_guam = 0;
    for (i = 0; i < numSector; i++) {
       if (strcmp (sector[i], "conus") == 0) {
          f_conus = 1;
@@ -2213,20 +2225,49 @@ int genProbe (size_t numPnts, Point * pnts, sChar f_pntType,
          f_nhemi = 1;
       } else if (strcmp (sector[i], "puertori") == 0) {
          f_pr = 1;
+      } else if (strcmp (sector[i], "npacocn") == 0) {
+         f_npacocn = 1;
+      } else if (strcmp (sector[i], "hawaii") == 0) {
+         f_hawaii = 1;
+      } else if (strcmp (sector[i], "guam") == 0) {
+         f_guam = 1;
       }
    }
-   if (!f_nhemi && (f_conus || f_pr)) {
-      sect2 = (char **) malloc ((numSector + 1) * sizeof (char *));
+   if ((!f_nhemi && (f_conus || f_pr)) ||
+       (!f_npacocn && (f_hawaii || f_guam))) {
+      numAddSect = 0;
+      if (!f_nhemi && (f_conus || f_pr)) {
+         numAddSect++;
+      }
+      if (!f_npacocn && (f_hawaii || f_guam)) {
+         numAddSect++;
+      }
+      sect2 = (char **) malloc ((numSector + numAddSect) * sizeof (char *));
       for (i = 0; i < numSector; i++) {
          sect2[i] = sector[i];
       }
-      sect2[numSector] = (char *) malloc (6 * sizeof (char *));
-      strcpy (sect2[numSector], "nhemi");
+      if (!f_nhemi && (f_conus || f_pr)) {
+         sect2[numSector] = (char *) malloc (6 * sizeof (char *));
+         strcpy (sect2[numSector], "nhemi");
+      }
+      if (!f_npacocn && (f_hawaii || f_guam)) {
+         if (numAddSect == 1) {
+            sect2[numSector] = (char *) malloc (8 * sizeof (char *));
+            strcpy (sect2[numSector], "npacocn");
+         } else {
+            sect2[numSector + 1] = (char *) malloc (8 * sizeof (char *));
+            strcpy (sect2[numSector + 1], "npacocn");
+         }
+      }
+
       /* Expand the input files... */
-      expandInName (numInFiles, inFiles, f_inTypes, gribFilter, numSector + 1,
-                    sect2, f_ndfdConven, numElem, elem, &numOutNames,
-                    &outNames);
+      expandInName (numInFiles, inFiles, f_inTypes, gribFilter,
+                    numSector + numAddSect, sect2, f_ndfdConven, numElem,
+                    elem, &numOutNames, &outNames);
       free (sect2[numSector]);
+      if (numAddSect == 2) {
+         free (sect2[numSector + 1]);
+      }
       free (sect2);
    } else {
       /* Expand the input files... */
@@ -2237,7 +2278,7 @@ int genProbe (size_t numPnts, Point * pnts, sChar f_pntType,
 #ifdef DEBUG
 /*
    for (i = 0; i < numOutNames; i++) {
-      printf ("%s\n", outNames[i]);
+      printf ("outnames [%d] = %s\n",i, outNames[i]);
    }
 */
 #endif
