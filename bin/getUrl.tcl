@@ -68,15 +68,27 @@ namespace eval http {
 #*****************************************************************************
 #*****************************************************************************
 
-if {$argc != 2} {
-  puts "usage: $argv0 <URL> <destination>"
+if {($argc != 2) && ($argc != 3)} {
+  puts "usage: $argv0 <URL> <destination> <optional quiet>"
   exit
 }
 
 set URL [lindex $argv 0]
 set Dest [lindex $argv 1]
+set quiet 0
+if {$argc == 3} {
+  if {[lindex $argv 2] == "quiet"} {
+    set quiet 1
+  }
+}
 
-if {[http::copy $URL $Dest 1 20480] != 0} {
-  puts "problems downloading $URL... http lines full?"
+if {$quiet} {
+  if {[http::copy $URL $Dest 0 20480] != 0} {
+    puts "problems downloading $URL... http lines full?"
+  }
+} else {
+  if {[http::copy $URL $Dest 1 20480] != 0} {
+    puts "problems downloading $URL... http lines full?"
+  }
 }
 exit
