@@ -33,15 +33,27 @@ int XMLmatchCompare (const void *A, const void *B)
    
    /* Get the match structure in the sector enum order
     * (0 - conus, 5 - nhemi, 1 - peurtori, 2 - hawaii,
-    * 3 - guam, 4 - alaska, 6 - undefined for point 
-    * processing in XMLParse. Take note if there are
-    * any elements from Sector 5 (tropical winds are
-    * found in the nhemi sector).
+    * 6 - npacocn, 3 - guam, 4 - alaska, 7 - undefined 
+    * for point processing in XMLParse. Take note if 
+    * there are any elements from Sector 5 or Sector 6
+    * (tropical winds are found in these sectors).
+    */
+
+   /* Dummy up sector nhemi so it falls in between the two sectors, conus and 
+    * puertori, that it holds Tropical Wind Threshold data for.  
     */
    if (f_sectA == 5)
       f_sectA = 0.5;
    if (f_sectB == 5)
       f_sectB = 0.5;
+
+   /* Dummy up sector npacocn so it falls in between the two sectors, hawaii and 
+    * guam, that it holds Tropical Wind Threshold data for.  
+    */
+   if (f_sectA == 6)
+      f_sectA = 2.5;
+   if (f_sectB == 6)
+      f_sectB = 2.5;
 
    /* Sort */
    if (f_sectA < f_sectB)

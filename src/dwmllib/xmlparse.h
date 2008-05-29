@@ -387,7 +387,7 @@ void getPeriodInfo(uChar parameterName, char *firstValidTime, char *currentHour,
 void getSectorInfo(PntSectInfo *pntInfo, Point *pnts, size_t numPnts,
                    genMatchType *match, size_t numMatch, 
                    size_t numSector, char **sector, int f_nhemi, 
-                   int *f_puertori, int *f_conus, int numNhemi);
+                   int numNhemi, int f_npacocn, int numNpacocn);
 
 void getStartDates(char **startDate, uChar f_XML, double startTime, 
 		   double firstValidTimeMatch, double firstValidTime_maxt,

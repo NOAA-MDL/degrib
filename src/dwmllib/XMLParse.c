@@ -328,17 +328,20 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
    layouts dummyTimeLayout;   /* Dummy argument for call to isNewLayout() to
                                * free up static array
                                * "timeLayoutDefinitions". */
-   int f_puertori = 0;        /* Denotes a match was found in the puertori sector
-                               * (sector 1). */
-   int f_conus = 0;           /* Denotes a match was found in the conus sector
-                               * (sector 0). */
+   int f_npacocn = 0;         /* Denotes a match was found in the npacocn sector
+                               * (sector 6). */
+   int numNpacocn = 0;        /* Number of matches in npacocn sector. If this 
+                                 number is equal to numMatch, all matches are
+                                 found in one sector (this can occur if there
+                                 is a call for tropical wind thresholds for
+                                 a call with hawaii and/or guam points. */
    int f_nhemi = 0;           /* Denotes a match was found in the nhemi sector
                                * (sector 5). */
    int numNhemi = 0;          /* Number of matches in nhemi sector. If this 
                                  number is equal to numMatch, all matches are
                                  found in one sector (this can occur if there
                                  is a call for tropical wind thresholds for
-                                 a call with puertori and conus points. */
+                                 a call with puertori and/or conus points. */
    int f_shiftData = 1; /* Flag used to determine whether we shift data back by
                            1/2 it's period to denote the duration of time the 
                            data is valid for (Soap Service), or to not shift, 
@@ -403,7 +406,8 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
 
    /* See if any points are outside the NDFD Sectors. Print error message to
     * standard error if so. If all points selected are outside the NDFD
-    * Sectors, exit routine. */
+    * Sectors, exit routine. 
+    */
    for (j = 0; j < numPnts; j++)
    {
       if (isPntInASector(pnts[j]))
@@ -481,10 +485,20 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
    /* If no data is retrieved from NDFD (matches = zero), get out. */
    if (numMatch <= 0)
    {
-/*      #ifdef PRINT_DIAG */
+      #ifdef PRINT_DIAG
       printf("No data retrieved from NDFD (matches = 0).\n");
+      #endif
+      for (i = 0; i < numElem; i++)
+      {
+         genElemFree(elem + i);
+      }
+      free(elem);
+      for (i = 0; i < numMatch; i++)
+      {
+         genMatchFree(match + i);
+      }
+      free(match);
       return 0;
-/*      #endif */
    }
 
    /* Sort the matches by sector, element, and then by valid time. */
@@ -501,7 +515,8 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
    {
       if (match[i].f_sector == 5) /* Enumerated nhemi sector # equals 5. */
          numNhemi++;
-
+      if (match[i].f_sector == 6) /* Enumerated npacocn sector # equals 6. */
+         numNpacocn++;
       if (curTime != match[i].validTime)
       {
          j = numCollate;
@@ -552,11 +567,23 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
     */
    if (numNhemi > 0)
       f_nhemi = 1;
+    if (numNpacocn > 0)
+      f_npacocn = 1;
    getSectorInfo(pntInfo, pnts, numPnts, match, numMatch, numSector, sector,
-                 f_nhemi, &f_puertori, &f_conus, numNhemi);
-   
+                 f_nhemi, numNhemi, f_npacocn, numNpacocn);
+
+#ifdef PRINT_DIAG
+   for (i = 0; i < numPnts; i++)
+   {
+      printf ("pntInfo[%d].numSector = %d\n",i,pntInfo[i].numSector);
+      for (j = 0;j < pntInfo[i].numSector;j++)
+         printf ("pntInfo[%d].f_sector[%d] = %d \n",i,j,pntInfo[i].f_sector[j]);
+      printf ("pntInfo[%d].startNum, endNum = %d, %d\n",i,pntInfo[i].startNum,pntInfo[i].endNum);
+   }
+#endif
+
    /*************************************************************************** 
-    *                 START FORMATTING THE XML/DWML                           *
+    *                    START FORMATTING THE XML/DWML                        *
     *                                                                         * 
     ************************* FORMAT HEADER INFO ******************************/
 
@@ -727,6 +754,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                     weatherParameters[j][i]);
       }
    }
+   fflush (stdout);
 #endif
 
    /**********FORMAT <MOREWEATHERINFORMATION> ELEMENT IN XML/DWML*************/
@@ -1831,13 +1859,13 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
    {
       genElemFree(elem + i);
    }
-   free(elem);
+/*   free(elem); */
 
    for (i = 0; i < numMatch; i++)
    {
       genMatchFree(match + i);
    }
-   free(match);
+/*   free(match); */
 
    return 0;
 }

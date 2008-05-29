@@ -121,7 +121,7 @@ void checkNeedForPeriodName(int index, uChar * numPeriodNames,
       numHoursClippedBegin = ((startTime_doub + (0.5*12*3600)) - currentDoubTime) / 3600;
    else
       numHoursClippedBegin = (startTime_doub - currentDoubTime) / 3600;
-      
+
    /* Now we have to check and see if user supplied a shorter duration for
     * data formatting via the command line arguments startTime and endTime.
     * Then we need to see if period names are still applicable in this
