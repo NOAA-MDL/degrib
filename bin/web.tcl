@@ -10,6 +10,7 @@ exec ./tcldegrib "$0" "$@"
 # RENAMECONV 2 does: /co/mx/2005110700.mx.co
 # RENAMECONV 3 does: /co/mx/2005110700.bin
 # RENAMECONV 4 does: /mx.co
+# RENAMECONV 5 does: /conus/maxt/2005110700.maxt_d13.bin
 
 #*****************************************************************************
 # web.tcl
@@ -42,7 +43,7 @@ if {[file pathtype $src_dir] != "absolute"} {
 foreach script [list util.tcl] {
   set file [file join $src_dir tclsrc $script]
   if {! [file exists $file]} {
-    tk_messageBox -message "Fatal Error: Couldn't find required file '$file'"
+    puts "Fatal Error: Couldn't find required file '$file'"
     exit
   }
   source $file
@@ -200,24 +201,30 @@ proc ReadIni {rayName} {
     if {[llength $val] == 1} {
       set ray(dir,$var) $val
     } elseif {[llength $val] > 2} {
-      tk_messageBox -message "Didn't understand $pair, skipping"
+      puts "Didn't understand $pair, skipping"
     } elseif {[lindex $val 0] == "Parent"} {
       set ray(dir,$var) [file join $Parent [lindex $val 1]]
     } else {
-      tk_messageBox -message "Didn't understand $pair, skipping"
+      puts "Didn't understand $pair, skipping"
     }
     # Make sure the directories exist.
-    if {! [file exists $ray(dir,$var)]} {
-      file mkdir $ray(dir,$var)
-    }
+#    if {! [file exists $ray(dir,$var)]} {
+#      file mkdir $ray(dir,$var)
+#    }
   }
+
+# For web.tcl, only NDFD_Data and NDGD_Data are critical, and they are only
+# critical as default values of -renameRoot.  Their existance will be checked
+# only if they are needed (because -renameRoot was not provided).
+#
   # Check to make sure essential directories are set.
-  set critList [list Bin Mosaic GIS_IN Web_Data NDGD_Data NDFD_Data GIS_OUT]
+#  set critList [list Bin Mosaic GIS_IN Web_Data NDGD_Data NDFD_Data GIS_OUT]
+  set critList [list NDGD_Data NDFD_Data]
   foreach var $critList {
     if {! [info exists ray(dir,$var)]} {
-      tk_messageBox -message "One of the critical 'NDFD_Directories'\
+      puts "One of the critical 'NDFD_Directories'\
                               variables in $filename was not set"
-      tk_messageBox -message "NDFD_Directories should consist of $critList"
+      puts "NDFD_Directories should consist of $critList"
       exit
     }
   }
@@ -234,32 +241,32 @@ proc ReadIni {rayName} {
     if {[llength $val] == 1} {
       set ray(imgGen,$var) $val
     } elseif {[llength $val] > 2} {
-      tk_messageBox -message "Didn't understand $pair, skipping"
+      puts "Didn't understand $pair, skipping"
     } elseif {[lindex $val 0] == "Parent"} {
       set ray(imgGen,$var) [file join $Parent [lindex $val 1]]
     } else {
-      tk_messageBox -message "Didn't understand $pair, skipping"
+      puts "Didn't understand $pair, skipping"
     }
     # Make sure the directories exist.
     if {$var != "LOG_PREF"} {
-      if {! [file exists $ray(imgGen,$var)]} {
-        file mkdir $ray(imgGen,$var)
-      }
+#      if {! [file exists $ray(imgGen,$var)]} {
+#        file mkdir $ray(imgGen,$var)
+#      }
     }
     set env($var) $ray(imgGen,$var)
   }
   # Check to make sure essential directories are set.
-  set critList [list LOG_PREF LOG_DIR DATABASE NDFD_DATA NDFD_CITIES \
-                NDFD_COLOR NDFD_CONFIG NDFD_SHAPE WEB_IMAGE_PATH \
-                NDFD_WEBDATA HTML_DIR]
-  foreach var $critList {
-    if {! [info exists ray(imgGen,$var)]} {
-      tk_messageBox -message "One of the critical 'NDFD_ImageGen' variables\
-                              in $filename was not set"
-      tk_messageBox -message "NDFD_ImageGen should consist of $critList"
-      exit
-    }
-  }
+#  set critList [list LOG_PREF LOG_DIR DATABASE NDFD_DATA NDFD_CITIES \
+#                NDFD_COLOR NDFD_CONFIG NDFD_SHAPE WEB_IMAGE_PATH \
+#                NDFD_WEBDATA HTML_DIR]
+#  foreach var $critList {
+#    if {! [info exists ray(imgGen,$var)]} {
+#      puts "One of the critical 'NDFD_ImageGen' variables\
+#                              in $filename was not set"
+#      puts "NDFD_ImageGen should consist of $critList"
+#      exit
+#    }
+#  }
 
 ##### Load the "Custom" section (custom,) #####
   set ans [ns_Util::ReadIni $filename Custom_Sector *]
@@ -476,6 +483,7 @@ proc HttpTryOne {rayName usrName src0 dst} {
 #*****************************************************************************
 proc WebHandleTryList {rayName usrName tryList attempt f_first} {
   upvar #0 $rayName ray
+  upvar #0 $usrName usr
 
   for {set i 0} {$i < [expr $attempt - 1]} {incr i} {
     set tryList2 ""
@@ -497,7 +505,9 @@ proc WebHandleTryList {rayName usrName tryList attempt f_first} {
           set time [clock format $refClock -format "%Y%m%d%H" -gmt true]
         }
       }
-      puts ""
+      if {$usr(-quiet) <= 1} {
+        puts ""
+      }
       if {$f_fail} {
         puts "  Couldn't 'get' $shrtName... Will ReTry later.\n"
         file delete -force $dst
@@ -652,6 +662,8 @@ proc Download_Select {rayName usrName} {
           }
         } elseif {$usr(-renameConv) == 4} {
           set localName [file join $usr(-renameRoot) $var1.$sec0]
+        } elseif {$usr(-renameConv) == 5} {
+          set localName [file join $usr(-renameRoot) [lindex [split [file rootname $local] _] 0] TIME.[file tail $local]] 
         }
         set exprName "$Server1$foreExprDir[lindex $ray(foreVar,$var) 3]"
         set opnlName "$Server1$foreOpnlDir[lindex $ray(foreVar,$var) 3]"
@@ -754,6 +766,10 @@ proc Download_Select {rayName usrName} {
           } else {
              set localName [file join $usr(-renameRoot) $sec0 $var0 TIME.$var2.bin]
           }
+        } elseif {$usr(-renameConv) == 4} {
+          set localName [file join $usr(-renameRoot) $var1.$sec0]
+        } elseif {$usr(-renameConv) == 5} {
+          set localName [file join $usr(-renameRoot) [lindex [split [file rootname $local] _] 0] TIME.[file tail $local]] 
         }
         set remotePath [string replace [lindex $ray(foreVar,$var) 3] 3 7 $remote]
         set exprName "$Server1$foreExprDir$remotePath"
@@ -849,6 +865,10 @@ proc Download_Select {rayName usrName} {
           } else {
              set localName [file join $usr(-renameRoot) $sec0 $var0 TIME.$var2.bin]
           }
+        } elseif {$usr(-renameConv) == 4} {
+          set localName [file join $usr(-renameRoot) $var1.$sec0]
+        } elseif {$usr(-renameConv) == 5} {
+          set localName [file join $usr(-renameRoot) [lindex [split [file rootname $local] _] 0] TIME.[file tail $local]] 
         }
         set box [split $ray(custom,box) ,]
         set opnlName "$ray(custom,URL)?var=[lindex $ray(custom,$var) 3]&lat1=[lindex $box 0]&lon1=[lindex $box 1]&lat2=[lindex $box 2]&lon2=[lindex $box 3]"
@@ -922,6 +942,10 @@ proc Download_Select {rayName usrName} {
         } else {
            set localName [file join $usr(-renameRoot) $sec0 $var0 TIME.$var2.bin]
         }
+      } elseif {$usr(-renameConv) == 4} {
+        set localName [file join $usr(-renameRoot) $var1.$sec0]
+      } elseif {$usr(-renameConv) == 5} {
+        set localName [file join $usr(-renameRoot) [file tail [file dirname $local]] [file dirname [file dirname $local]] [lindex [split [file rootname [file tail $local]] _] 0] TIME.[file tail $local]] 
       }
 
       set exprName "$Server1$guidExprDir[lindex $ray(guidVar,$var) 3]"
@@ -1087,7 +1111,7 @@ if {$usr(-dataSet) == "ndfd"} {
     set usr(subSector) 1
   }
 } elseif {$usr(-dataSet) == "ndgd"} {
-  set valGroup [list "aq" "mosgfs" "lampgfs"]
+  set valGroup [list "aq" "mosgfs" "lampgfs" "rtma00" "rtma01" "rtma02" "rtma03" "rtma04" "rtma05" "rtma06" "rtma07" "rtma08" "rtma09" "rtma10" "rtma11" "rtma11" "rtma12" "rtma13" "rtma14" "rtma15" "rtma16" "rtma17" "rtma18" "rtma19" "rtma20" "rtma21" "rtma22" "rtma23"]
   if {(! [info exists usr(-group)]) ||
       ([lsearch $valGroup $usr(-group)] == -1)} {
     Usage $argv0
@@ -1127,6 +1151,19 @@ foreach {var1 var2} [list "maxt" mx "mint" mn "pop12" po "qpf" qp "sky" cl "snow
                "rhm" rh "pop06" p6 "ozone01o" z1 "ozone08o" z8 "wgust" wg] {
   set ray(renameVar,$var1) $var2
 }
+if {[file exists [file join $src_dir rename.txt]]} {
+  set fp [open [file join $src_dir rename.txt] r]
+  while {[gets $fp line] >= 0} {
+    set line [string trim $line]
+    if {[string index $line 0] != "#"} {
+      set line [split $line "="]
+      if {[llength $line] == 2} {
+        set ray(renameVar,[lindex $line 0]) [lindex $line 1]
+      }
+    }
+  }
+  close $fp
+} 
 
 #foreach {sector1 sector2} [list "conus" co "guam" gu "hawaii" hi "puertori" pr \
 #                           alaska ak nhemi nhemi] {
