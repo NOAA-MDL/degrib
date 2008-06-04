@@ -247,16 +247,17 @@ int UserValidate (userType *usr)
    myAssert (usr->f_Command != -1);
    myAssert (sizeof (char) == 1);
 
-   if ((usr->f_Command != CMD_VERSION) && (usr->numInNames == 0)) {
+   if ((usr->f_Command != CMD_VERSION) && (usr->f_Command != CMD_SECTOR)) {
+      if (usr->numInNames == 0) {
 /*#ifdef WIN32*/
 #ifdef _WINDOWS_
-      /* Set stdin to binary mode */
-      setmode (0, O_BINARY);
+         /* Set stdin to binary mode */
+         setmode (0, O_BINARY);
 #endif
-/*
-      errSprintf ("Please provide an input file. See '-in' option.\n");
-      return -1;
-*/
+         /* Uncommented on 6/4/2008 to deal with "degrib -DP -pnt 1,1" */
+         errSprintf ("Please provide an input file. See '-in' option.\n");
+         return -1;
+      }
    }
    if (usr->numInNames == 1) {
       if (strcmp (usr->inNames[0], "stdin") == 0) {
