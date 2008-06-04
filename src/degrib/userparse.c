@@ -624,6 +624,25 @@ char *Grib2About (const char *name)
    return buffer;
 }
 
+int myCommaDoubleList2 (char *name, double *x, double *y)
+{
+   char *ptr;
+
+   if ((ptr = strchr (name, ',')) == NULL) {
+      return 1;
+   }
+   *ptr = '\0';
+   if (! myAtoF (name, x)) {
+      *ptr = ',';
+      return 1;
+   }
+   *ptr = ',';
+   if (! myAtoF (ptr + 1, y)) {
+      return 1;
+   }
+   return 0;
+}
+
 /*****************************************************************************
  * ParseUserChoice() -- Review 12/2002
  *
@@ -1312,7 +1331,10 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
          }
          return 2;
       case PNT:
-         sscanf (next, "%lf, %lf", &lat, &lon);
+         if (myCommaDoubleList2 (next, &lat, &lon) != 0) {
+            errSprintf ("invalid -pnt option '%s'\n", next);
+            return -1;
+         }
          usr->numPnt++;
          usr->pnt =
                (Point *) realloc (usr->pnt, usr->numPnt * sizeof (Point));
@@ -1323,13 +1345,16 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
          return 2;
       case LWLF:
          if (usr->lwlf.lat == -100) {
-            sscanf (next, "%lf, %lf", &lat, &lon);
+            if (myCommaDoubleList2 (next, &lat, &lon) != 0) {
+               errSprintf ("invalid -lwlf option '%s'\n", next);
+               return -1;
+            }
             if ((lat < -90) || (lat > 90)) {
-               errSprintf ("in -pnt option, invalid lat of %f\n", lat);
+               errSprintf ("in -lwlf option, invalid lat of %f\n", lat);
                return -1;
             }
             if ((lon < -360) || (lon > 360)) {
-               errSprintf ("in -pnt option, invalid lat of %f\n", lat);
+               errSprintf ("in -lwlf option, invalid lat of %f\n", lat);
                return -1;
             }
             usr->lwlf.lat = lat;
@@ -1338,13 +1363,16 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
          return 2;
       case UPRT:
          if (usr->uprt.lat == -100) {
-            sscanf (next, "%lf, %lf", &lat, &lon);
+            if (myCommaDoubleList2 (next, &lat, &lon) != 0) {
+               errSprintf ("invalid -uprt option '%s'\n", next);
+               return -1;
+            }
             if ((lat < -90) || (lat > 90)) {
-               errSprintf ("in -pnt option, invalid lat of %f\n", lat);
+               errSprintf ("in -uprt option, invalid lat of %f\n", lat);
                return -1;
             }
             if ((lon < -360) || (lon > 360)) {
-               errSprintf ("in -pnt option, invalid lat of %f\n", lat);
+               errSprintf ("in -uprt option, invalid lat of %f\n", lat);
                return -1;
             }
             usr->uprt.lat = lat;
