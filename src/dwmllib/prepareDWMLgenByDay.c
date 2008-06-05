@@ -63,6 +63,8 @@
  *                               hour is between 5Z and 12Z.
  * 11/2007 Paul Hershberg (MDL): Added code to make startDate work as local 
  *                               time.
+ *  6/2008 Paul Hershberg (MDL): Fixed numDays bug.
+ *
  * NOTES:
  *****************************************************************************
  */
@@ -98,13 +100,13 @@ void prepareDWMLgenByDay(genMatchType *match, uChar f_XML,
    /* Find the current hour in UTC form. */
    Clock_Print2(currUTCTime, 30, currDoubTime,
                 "%Y-%m-%dT%H:%M:%S", 0, 0);
+
    currUTCHour[0] = currUTCTime[11];
    currUTCHour[1] = currUTCTime[12];
    currUTCHour[2] = '\0';
    currUTCDate[0] = currUTCTime[8];
    currUTCDate[1] = currUTCTime[9];
    currUTCDate[2] = '\0';
-
 
    /* Get the validTime of the first match and last match of the match 
     * structure. We'll need these to calculate numDays. 
@@ -192,16 +194,16 @@ void prepareDWMLgenByDay(genMatchType *match, uChar f_XML,
                  */
                 {
                    if (strcmp(currentLocalDate[j], currUTCDate) != 0)
-                      numDays[j] = floor((*endTime_cml - (currDoubTime-(3600*24))) / (3600 * 24));
+                      numDays[j] = floor((*endTime_cml - currDoubTime) / (3600 * 24));
                    else
-                      numDays[j] = ceil((*endTime_cml - currDoubTime) / (3600 * 24));
+                      numDays[j] = floor((*endTime_cml - currDoubTime) / (3600 * 24));
                 }
                 else
                 {
                    if (strcmp(currentLocalDate[j], currUTCDate) != 0)
                       numDays[j] = floor((*endTime_cml - (currDoubTime-(3600*24))) / (3600 * 24));
                    else
-                      numDays[j] = ceil((*endTime_cml - currDoubTime) / (3600 * 24));   
+                      numDays[j] = ceil((*endTime_cml - currDoubTime) / (3600 * 24));
                 }
              }
           }
@@ -214,7 +216,9 @@ void prepareDWMLgenByDay(genMatchType *match, uChar f_XML,
                 numDays[j] = ceil(((lastValidTimeMatch - *startTime_cml) / 3600) / 24);
              }
              else /* Both are valid, shortening the time period data is returned for. */
+             {
                 numDays[j] = floor((*endTime_cml - *startTime_cml) / (3600 * 24));
+             }
           }
       }
 
