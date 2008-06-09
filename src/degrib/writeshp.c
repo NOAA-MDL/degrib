@@ -1501,7 +1501,8 @@ int gribWriteShp (const char *Filename, double *grib_Data,
    polyType *poly;      /* list of chains that represent large polygons. */
    int numPoly;         /* number of element in poly. */
    double *polyData;    /* Data values for each poly (no missing values) */
-   char EsriName[12];   /* element name shortened to 11 characters */
+   char EsriName[11];   /* element name shortened to 11 characters */
+   int len;             /* Length of desired element name. */
 
    nameLen = strlen (Filename);
    if (nameLen < 4) {
@@ -1582,14 +1583,23 @@ int gribWriteShp (const char *Filename, double *grib_Data,
       return -6;
    }
 
-   strncpy (EsriName, meta->element, 11);
-   EsriName[11] = '\0';
-   if (strlen (meta->element) > 11) {
+   /* Since ESRI was lazy, we null terminate the .dbf column name.  Excel
+    * doesn't need this, but ESRI does. */
+   strncpy (EsriName, meta->element, 10);
+   len = strlen (meta->element);
+   if (len > 10) {
       if (strncmp (meta->element, "Prob", 4) == 0) {
          EsriName[0] = 'P';
-         strncpy (EsriName + 1, meta->element + 4, 11);
+         if ((len > 13) && (strncmp (meta->element + 4, "Wind", 4) == 0)) {
+            EsriName[1] = 'w';
+            strncpy (EsriName + 2, meta->element + 6, 10);
+         } else {
+            strncpy (EsriName + 1, meta->element + 4, 10);
+         }
       }
    }
+   EsriName[10] = '\0';
+
 
    /* Create the .dbf files */
    if (strcmp (EsriName, "Wx") == 0) {
