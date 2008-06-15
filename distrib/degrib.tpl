@@ -28,6 +28,7 @@ Var UninstLog_FP
 !define MUI_ICON e:/svn/degrib/bin/ndfd.ico
 ; !define MUI_UNICON e:/svn/degrib/bin/ndfd.ico
 !define MUI_UNICON e:/svn/degrib/distrib/uninst.ico
+; !define MUI_HEADERIMAGE_UNBITMAP e:/svn/degrib/bin/ndfd.ico
 
 ;-----------------------------------------------------------------------------
 Function .onInit
