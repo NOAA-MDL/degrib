@@ -16,24 +16,41 @@
 
 !define prjDate "PRJDATE"
 !define prjVer "PRJVER"
+!define prjName "degrib"
 
 Var shortDir
+
+!define UninstLog "uninstall.log"
+Var UninstLog_FP
 
 !include "MUI2.nsh"
 
 !define MUI_ICON e:/svn/degrib/bin/ndfd.ico
-!define MUI_UNICON e:/svn/degrib/bin/ndfd.ico
+; !define MUI_UNICON e:/svn/degrib/bin/ndfd.ico
+!define MUI_UNICON e:/svn/degrib/distrib/uninst.ico
 
 ;-----------------------------------------------------------------------------
 Function .onInit
   ; Make sure there is only one instance running at a time.
-  System::Call 'kernel32::CreateMutexA(i 0, i 0, t "degribMutex") i .r1 ?e'
+  System::Call 'kernel32::CreateMutexA(i 0, i 0, t "${prjName}Mutex") i .r1 ?e'
   Pop $R0
   StrCmp $R0 0 +3
     MessageBox MB_OK|MB_ICONEXCLAMATION "The installer is already running."
     Abort
 
 ;  System::Call 'kernel32::Beep(i 800,i 100) l'
+FunctionEnd
+
+;-----------------------------------------------------------------------------
+Function un.onInit
+  ; Make sure there is only one instance running at a time.
+  System::Call 'kernel32::CreateMutexA(i 0, i 0, t "${prjName}MutexUn") i .r1 ?e'
+  Pop $R0
+  StrCmp $R0 0 +3
+    MessageBox MB_OK|MB_ICONEXCLAMATION "The uninstaller is already running."
+    Abort
+
+  StrCpy $INSTDIR "$INSTDIR\.."
 FunctionEnd
 
 ;-----------------------------------------------------------------------------
@@ -56,94 +73,30 @@ Function StartMenuGroupSelect
 	Pop $R1
 FunctionEnd
 
+;-----------------------------------------------------------------------------
 Function LaunchLink
-  MessageBox MB_OK "Reached LaunchLink $\r$\n \
-                   SMPROGRAMS: $SMPROGRAMS  $\r$\n \
-                   Start Menu Folder: $STARTMENU_FOLDER $\r$\n \
-                   InstallDirectory: $INSTDIR "
-;  ExecShell "" "C:\User\test.lnk"
+;  Avoid the execShell with the lnk since user may not create the .lnk file
+;  ExecShell "" "$SMPROGRAMS\$shortDir\tkdegrib.lnk"
+  Exec "$INSTDIR\${prjName}\bin\tkdegrib.exe"
 FunctionEnd
 
 ;-----------------------------------------------------------------------------
-; Create a log file so we can undo our install.
-
-!define UninstLog "$INSTDIR\degrib\distrib\uninstall.log"
-Var UninstLog
-
-; AddItem macro
-!macro AddItem Path
- FileWrite $UninstLog "${Path}$\r$\n"
+; LogIt
+!macro LogIt Cmd Path
+ FileWrite $UninstLog_FP "${Cmd} ${Path}$\r$\n"
 !macroend
-!define AddItem "!insertmacro AddItem"
-
-; File macro
-!macro File FilePath FileName
- IfFileExists "$OUTDIR\${FileName}" +2
-  FileWrite $UninstLog "$OUTDIR\${FileName}$\r$\n"
- File "${FilePath}${FileName}"
-!macroend
-!define File "!insertmacro File"
-
-; Copy files macro
-!macro CopyFiles SourcePath DestPath
- IfFileExists "${DestPath}" +2
-  FileWrite $UninstLog "${DestPath}$\r$\n"
- CopyFiles "${SourcePath}" "${DestPath}"
-!macroend
-!define CopyFiles "!insertmacro CopyFiles"
-
-; Rename macro
-!macro Rename SourcePath DestPath
- IfFileExists "${DestPath}" +2
-  FileWrite $UninstLog "${DestPath}$\r$\n"
- Rename "${SourcePath}" "${DestPath}"
-!macroend
-!define Rename "!insertmacro Rename"
-
-; CreateDirectory macro
-!macro CreateDirectory Path
- CreateDirectory "${Path}"
- FileWrite $UninstLog "${Path}$\r$\n"
-!macroend
-!define CreateDirectory "!insertmacro CreateDirectory"
-
-; SetOutPath macro
-!macro SetOutPath Path
- SetOutPath "${Path}"
- FileWrite $UninstLog "${Path}$\r$\n"
-!macroend
-!define SetOutPath "!insertmacro SetOutPath"
-
-; WriteUninstaller macro
-!macro WriteUninstaller Path
- WriteUninstaller "$OUTDIR\${Path}"
- FileWrite $UninstLog "$OUTDIR\${Path}$\r$\n"
-!macroend
-!define WriteUninstaller "!insertmacro WriteUninstaller"
-
-Section -openlogfile
- CreateDirectory "$INSTDIR"
- IfFileExists "$INSTDIR\${UninstLog}" +3
-  FileOpen $UninstLog "$INSTDIR\${UninstLog}" w
- Goto +4
-  SetFileAttributes "$INSTDIR\${UninstLog}" NORMAL
-  FileOpen $UninstLog "$INSTDIR\${UninstLog}" a
-  FileSeek $UninstLog 0 END
-SectionEnd
-
-; Finished the log file so we can undo our install.
-;-----------------------------------------------------------------------------
+!define LogIt "!insertmacro LogIt"
 
 ;--------------------------------
 ; The name of the installer
 Name "Degrib ${prjVer} (aka NDFD GRIB2 Decoder)"
 
 ; The file to write
-OutFile "degrib-install.exe"
+OutFile "${prjName}-install.exe"
 
 XPStyle on
 
-BrandingText "degrib ${prjVer}"
+BrandingText "${prjName} ${prjVer}"
 
 ; The default installation directory
 InstallDir c:\ndfd2
@@ -189,9 +142,18 @@ RequestExecutionLevel user
 ;    !define MUI_FINISHPAGE_SHOWREADME $INSTDIR\readme.txt
   !insertmacro MUI_PAGE_FINISH
 
+; Title to display on the top of the page.
+    !define MUI_WELCOMEPAGE_TITLE "Welcome to the Degrib ${prjVer} Uninstall Wizard"
+; Text to display on the page.
+    !define MUI_WELCOMEPAGE_TEXT "This wizard will guide you through the uninstallation of Degrib ${prjVer}$\n$\n\
+      Before starting the uninstallation, make sure degrib, tcldegrib and tkdegrib are not running$\n$\n\
+      Click Next to continue."
   !insertmacro MUI_UNPAGE_WELCOME
   !insertmacro MUI_UNPAGE_CONFIRM
   !insertmacro MUI_UNPAGE_INSTFILES
+    !define MUI_FINISHPAGE_TITLE "Completing the Degrib ${prjVer} Uninstall Wizard"
+    !define MUI_FINISHPAGE_TEXT "Degrib ${prjVer} has been uninstalled from your computer.$\n$\n\
+      Click Finish to close this wizard."
   !insertmacro MUI_UNPAGE_FINISH
 
 ;--------------------------------
@@ -200,40 +162,60 @@ RequestExecutionLevel user
   !insertmacro MUI_LANGUAGE "English"
 
 ;--------------------------------
+; Section on opening log files
+Section -openlogfile
+ CreateDirectory "$INSTDIR"
+ CreateDirectory "$INSTDIR\${prjName}"
+ IfFileExists "$INSTDIR\${prjName}\${UninstLog}" +3
+  FileOpen $UninstLog_FP "$INSTDIR\${prjName}\${UninstLog}" w
+ Goto +4
+  SetFileAttributes "$INSTDIR\${prjName}\${UninstLog}" NORMAL
+  FileOpen $UninstLog_FP "$INSTDIR\${prjName}\${UninstLog}" a
+  FileSeek $UninstLog_FP 0 END
+SectionEnd
+
+;--------------------------------
 ; The stuff to install
 Section "Degrib" mainDegrib
   SectionIn RO
 
   ; Set output path to the installation directory.
-  ${SetOutPath} $INSTDIR\degrib\distrib
-  ${WriteUninstaller} "uninstall.exe"
+  SetOutPath $INSTDIR\${prjName}
+  WriteUninstaller "$INSTDIR\${prjName}\uninstall.exe"
 
   ; Write the uninstall keys for Windows
-  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\degrib" "DisplayName" "Degrib ${prjVer} (aka NDFD GRIB2 Decoder)"
-  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\degrib" "UninstallString" '"$INSTDIR\degrib\distrib\uninstall.exe"'
-  WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\degrib" "NoModify" 1
-  WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\degrib" "NoRepair" 1
-
-;  WriteUninstaller "uninstall.exe"
+  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${prjName}" "DisplayName" "Degrib ${prjVer} (aka NDFD GRIB2 Decoder)"
+  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${prjName}" "UninstallString" '"$INSTDIR\${prjName}\uninstall.exe"'
+  WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${prjName}" "NoModify" 1
+  WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${prjName}" "NoRepair" 1
 
   ; Set output path to the installation directory.
-  ${SetOutPath} $INSTDIR
+  SetOutPath $INSTDIR
 
 PRJFILES
-
-;  ${SetOutPath} $INSTDIR\degrib\distrib
-;  ${File} "" degrib.nsi
+PRJUNINST_FILE
+PRJUNINST_DIR
 
   # this part is only necessary if you used /checknoshortcuts
   StrCpy $R1 $shortDir 1
   StrCmp $R1 ">" skip
-    ${CreateDirectory} "$SMPROGRAMS\$shortDir"
-    CreateShortCut "$SMPROGRAMS\$shortDir\tkdegrib.lnk" "$INSTDIR\bin\tkdegrib.exe" "" "$INSTDIR\degrib.nsi" 0
-    ${AddItem} "$SMPROGRAMS\$shortDir\tkdegrib.lnk"
-    CreateShortCut "$SMPROGRAMS\$shortDir\UnInstall degrib.lnk" "$INSTDIR\degrib\distrib\uninstall.exe" "" "$INSTDIR\degrib\distrib\uninstall.exe" 0
-    ${AddItem} "$SMPROGRAMS\$shortDir\UnInstall degrib.lnk"
+    CreateDirectory "$SMPROGRAMS\$shortDir"
+    SetOutPath $INSTDIR\${prjName}\bin
+    CreateShortCut "$SMPROGRAMS\$shortDir\tkdegrib.lnk" "$INSTDIR\${prjName}\bin\tkdegrib.exe" "" "$INSTDIR\${prjName}\bin\ndfd.ico" 0
+    ${LogIt} Delete "$SMPROGRAMS\$shortDir\tkdegrib.lnk"
+    CreateShortCut "$SMPROGRAMS\$shortDir\UnInstall ${prjName}.lnk" "$INSTDIR\${prjName}\uninstall.exe" "" "$INSTDIR\${prjName}\uninstall.exe" 0
+    ${LogIt} Delete "$SMPROGRAMS\$shortDir\UnInstall ${prjName}.lnk"
+    ${LogIt} RMDir "$SMPROGRAMS\$shortDir"
 ;      SetShellVarContext All
+
   skip:
+SectionEnd
+
+;--------------------------------
+; Section on closing log files
+Section -closelogfile
+ FileClose $UninstLog_FP
+ SetFileAttributes "$INSTDIR\${prjName}\${UninstLog}" READONLY|SYSTEM|HIDDEN
 SectionEnd
 
 ;--------------------------------
@@ -247,69 +229,54 @@ SectionEnd
 ;    !insertmacro MUI_DESCRIPTION_TEXT ${mainDegrib} $(DESC_mainDegrib)
 ;    !insertmacro MUI_DESCRIPTION_TEXT ${shortCuts} $(DESC_shortCut)
 ;  !insertmacro MUI_FUNCTION_DESCRIPTION_END
+LangString UninstLogMissing ${LANG_ENGLISH} "${UninstLog} not found!$\r$\nUninstallation cannot proceed!"
 
 ;-----------------------------------------------------------------------------
 ; Uninstaller stuff.
-
-Section -closelogfile
- FileClose $UninstLog
-;   SetFileAttributes "$INSTDIR\${UninstLog}" READONLY|SYSTEM|HIDDEN
-SectionEnd
-
-; Uninstall log file missing.
-LangString UninstLogMissing ${LANG_ENGLISH} "${UninstLog} not found!$\r$\nUninstallation cannot proceed!"
-
 Section Uninstall
+
  ; Can't uninstall if uninstall log is missing!
- IfFileExists "$INSTDIR\${UninstLog}" +3
+ IfFileExists "$INSTDIR\${prjName}\${UninstLog}" +3
   MessageBox MB_OK|MB_ICONSTOP "$(UninstLogMissing)"
    Abort
-
  Push $R0
  Push $R1
- Push $R2
- SetFileAttributes "$INSTDIR\${UninstLog}" NORMAL
- FileOpen $UninstLog "$INSTDIR\${UninstLog}" r
- StrCpy $R1 0
+ SetFileAttributes "$INSTDIR\${prjName}\${UninstLog}" NORMAL
+ FileOpen $UninstLog_FP "$INSTDIR\${prjName}\${UninstLog}" r
 
- GetLineCount:
+ LoopOver:
   ClearErrors
-   FileRead $UninstLog $R0
-   IntOp $R1 $R1 + 1
-   IfErrors 0 GetLineCount
-
- LoopRead:
-  FileSeek $UninstLog 0 SET
-  StrCpy $R2 0
-  FindLine:
-   FileRead $UninstLog $R0
-   IntOp $R2 $R2 + 1
-   StrCmp $R1 $R2 0 FindLine
-
+  FileRead $UninstLog_FP $R0
+; Remove trailing \r\n
    StrCpy $R0 $R0 -2
-   IfFileExists "$R0\*.*" 0 +3
-    RMDir $R0  #is dir
-   Goto +3
-   IfFileExists $R0 0 +2
-    Delete $R0 #is file
+   StrCpy $R1 $R0 6
+   StrCmp $R1 "Delete" 0 Continue
+     StrCpy $R1 $R0 "" 7
+     Delete "$R1"
+     Goto Done
+   Continue:
+   StrCpy $R1 $R0 5
+   StrCmp $R1 "RMDir" 0 Done
+     StrCpy $R1 $R0 "" 6
+     RMDir "$R1"
+; RMDir causes error if directory couldn't be deleted.
+     ClearErrors
+     Goto Done
+   Done:
+   IfErrors 0 LoopOver
 
-  IntOp $R1 $R1 - 1
-  StrCmp $R1 0 LoopDone
-  Goto LoopRead
- LoopDone:
- FileClose $UninstLog
- Delete "$INSTDIR\degrib\distrib\${UninstLog}"
+ FileClose $UninstLog_FP
 
- Delete $INSTDIR\degrib\distrib\uninstall.exe
+ Delete "$INSTDIR\${prjName}\${UninstLog}"
 
- RMDIR "$INSTDIR"
+ Delete $INSTDIR\${prjName}\uninstall.exe
+ RMDir "$INSTDIR\${prjName}"
+ RMDir "$INSTDIR"
 
  ; Remove registry keys
- DeleteRegKey HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\degrib"
-
- Pop $R2
- Pop $R1
+ DeleteRegKey HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\${prjName}"
  Pop $R0
+ Pop $R1
 
 SectionEnd
 

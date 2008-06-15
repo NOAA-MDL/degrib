@@ -10,12 +10,65 @@ set date [lindex $argv 1]
 set date2 [clock format [clock scan $date] -format "%B %d, %Y"]
 set curOutPath "degrib"
 
+set fileList ""
+set dirList ""
+
+proc addFile {op path tail} {
+  global curOutPath
+  global fileList
+
+#  puts $op "File \"..\\[file nativename $path]\\\" $tail"
+  if {$path != ""} {
+    puts $op "File \"..\\[file nativename $path/$tail]\""
+  } else {
+    puts $op "File \"..\\$tail\""
+  }
+  lappend fileList "\$INSTDIR\\[file nativename $curOutPath]\\$tail"
+}
+
+proc putUninstFiles {op} {
+  global fileList
+  for {set i [expr [llength $fileList] - 1]} {$i >= 0} {incr i -1} {
+    puts $op "\${LogIt} Delete \"[lindex $fileList $i]\""
+  }
+}
+
 proc cdOutPath {op outPath} {
   global curOutPath
+  global dirList
 
   if {$outPath != $curOutPath} {
     set curOutPath $outPath
-    puts $op "\${SetOutPath} \$INSTDIR\\[file nativename $outPath]"
+    puts $op "SetOutPath \$INSTDIR\\[file nativename $curOutPath]"
+    if {[lsearch $dirList $curOutPath] == -1} {
+      lappend dirList $curOutPath
+    }
+  }
+}
+
+proc putUninstDir {op} {
+  global dirList
+
+  set maxI 1
+  foreach dir $dirList {
+    set A [file split $dir]
+    set lenA [llength $A]
+    if {$lenA > $maxI} {
+      set maxI $lenA
+    }
+    for {set i 1} {$i <= $lenA} {incr i} {
+      set cur [join [lrange $A 0 [expr $i -1]] /]
+      if {! [info exists ray($i)]} {
+        set ray($i) $cur
+      } elseif {[lsearch $ray($i) $cur] == -1} {
+        lappend ray($i) $cur
+      }
+    }
+  }
+  for {set i $maxI} {$i >= 1} {incr i -1} {
+    foreach lst [lsort $ray($i)] {
+      puts $op "\${LogIt} RMDir \"\$INSTDIR\\[file nativename $lst]\""
+    }
   }
 }
 
@@ -29,7 +82,7 @@ proc recurseWild {op path tail outPath} {
       cdOutPath $op $outPath
       set f_first 0
     }
-    puts $op "\${File} \"..\\[file nativename $path]\\\" [file tail $file]"
+    addFile $op $path [file tail $file]
   }
   foreach file [glob -nocomplain ../$path/*] {
     if {[file isdirectory $file]} {
@@ -73,10 +126,10 @@ proc putPrjFiles {op {fileList all.txt}} {
           if {[file tail $file] == ".svn"} {
             continue
           }
-          puts $op "\${File} \"..\\[file nativename $path]\\\" [file tail $file]"
+          addFile $op $path [file tail $file]
         }
       } else {
-        puts $op "\${File} \"..\\[file nativename $path]\\\" $tail"
+        addFile $op $path $tail
       }
     }
   }
@@ -94,6 +147,10 @@ while {[gets $fp line] >= 0} {
   }
   if {[set ans [string first PRJFILES $line]] != -1} {
     putPrjFiles $op all.txt
+  } elseif {[set ans [string first PRJUNINST_FILE $line]] != -1} {
+    putUninstFiles $op
+  } elseif {[set ans [string first PRJUNINST_DIR $line]] != -1} {
+    putUninstDir $op
   } else {
     puts $op $line
   }
