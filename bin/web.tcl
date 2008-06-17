@@ -1175,4 +1175,7 @@ set ray(GRIB2Cmd) GRIB2
 
 Download_Select ray usr
 
+##### The following forces Tcl/Tk to free the GRIB2 commands. #####
+proc GRIB2 {} {}
+
 exit
