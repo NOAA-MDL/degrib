@@ -2,6 +2,7 @@
 merc                #mercator projection
 20.00               #origin latitude
 -67.812             #center meridian
--68.1953  16.8287   #lon, lat of lower left corner of grid
--63.9724  19.7474   #lon, lat of upper right corner of grid
-177  129            #number of grid points along x, y, 2.5 km grid
+-68.0278  16.9774   #lon, lat of lower left corner of grid
+-63.9844  19.5445   #lon, lat of upper right corner of grid
+339 227            #number of grid points along x, y, 1.25 km grid
+

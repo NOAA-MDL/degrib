@@ -1,9 +1,9 @@
 # Map definition file for conus grids (subdomain of awips227)
-lcc                 #lambert conic conformal projection
-25.00               #standard latitude 1
-25.00               #standard latitude 2
--95.00              #center meridian
-25.00               #origin latitude
--121.5540 20.1920   #lon, lat of lower left corner
--60.8856  50.1060   #lon, lat of upper right corner
-1073 689            #number of grid points along x, y 
+lcc                     #lambert conic conformal projection
+25.00                   #standard latitude 1
+25.00                   #standard latitude 2
+-95.00                  #center meridian
+25.00                   #origin latitude
+-121.5540 20.1920       #lon, lat of lower left corner
+-60.885764  50.105486   #lon, lat of upper right corner
+1073 689                #number of grid points along x, y 
