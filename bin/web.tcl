@@ -945,7 +945,7 @@ proc Download_Select {rayName usrName} {
       } elseif {$usr(-renameConv) == 4} {
         set localName [file join $usr(-renameRoot) $var1.$sec0]
       } elseif {$usr(-renameConv) == 5} {
-        set localName [file join $usr(-renameRoot) [file tail [file dirname $local]] [file dirname [file dirname $local]] [lindex [split [file rootname [file tail $local]] _] 0] TIME.[file tail $local]] 
+        set localName [file join $usr(-renameRoot) [file tail [file dirname $local]] [string toupper [file dirname [file dirname $local]]] [lindex [split [file rootname [file tail $local]] _] 0] TIME.[file tail $local]] 
       }
 
       set exprName "$Server1$guidExprDir[lindex $ray(guidVar,$var) 3]"
