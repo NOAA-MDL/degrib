@@ -175,7 +175,7 @@ S:degrib/src/jpeg2000/MODIFY.TXT
 
 # emapf-c source
 S:degrib/src/emapf-c/*.in
-S:degrib/src/emapf-c/makefile*
+# S:degrib/src/emapf-c/makefile*
 S:degrib/src/emapf-c/configure
 S:degrib/src/emapf-c/*.c
 S:degrib/src/emapf-c/*.hin
@@ -263,7 +263,7 @@ S:degrib/src/gd/bdftogd
 
 # libxml source
 S:degrib/src/libxml/AUTHORS
-S:degrib/src/libxml/COPYING
+# S:degrib/src/libxml/COPYING
 S:degrib/src/libxml/ChangeLog
 S:degrib/src/libxml/Copyright
 S:degrib/src/libxml/INSTALL
@@ -466,6 +466,10 @@ A:degrib/geodata/nhemitimezone.ind
 A:degrib/geodata/nhemitimezone.flt
 A:degrib/geodata/nhemidaylight.ind
 A:degrib/geodata/nhemidaylight.flt
+A:degrib/geodata/npacocntimezone.ind
+A:degrib/geodata/npacocntimezone.flt
+A:degrib/geodata/npacocndaylight.ind
+A:degrib/geodata/npacocndaylight.flt
 
 # Draw Shp Control files.
 A:degrib/MapIni/*

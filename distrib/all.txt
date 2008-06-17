@@ -466,8 +466,11 @@ A:degrib/geodata/nhemitimezone.ind
 A:degrib/geodata/nhemitimezone.flt
 A:degrib/geodata/nhemidaylight.ind
 A:degrib/geodata/nhemidaylight.flt
+A:degrib/geodata/npacocntimezone.ind
+A:degrib/geodata/npacocntimezone.flt
+A:degrib/geodata/npacocndaylight.ind
+A:degrib/geodata/npacocndaylight.flt
 
 # Draw Shp Control files.
 A:degrib/MapIni/*
-
 
