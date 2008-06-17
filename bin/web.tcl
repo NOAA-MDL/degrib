@@ -769,7 +769,7 @@ proc Download_Select {rayName usrName} {
         } elseif {$usr(-renameConv) == 4} {
           set localName [file join $usr(-renameRoot) $var1.$sec0]
         } elseif {$usr(-renameConv) == 5} {
-          set localName [file join $usr(-renameRoot) [lindex [split [file rootname $local] _] 0] TIME.[file tail $local]] 
+          set localName [file join $usr(-renameRoot) [lindex [split [file rootname $local] _] 0] TIME.[file tail $local]]
         }
         set remotePath [string replace [lindex $ray(foreVar,$var) 3] 3 7 $remote]
         set exprName "$Server1$foreExprDir$remotePath"
@@ -868,7 +868,7 @@ proc Download_Select {rayName usrName} {
         } elseif {$usr(-renameConv) == 4} {
           set localName [file join $usr(-renameRoot) $var1.$sec0]
         } elseif {$usr(-renameConv) == 5} {
-          set localName [file join $usr(-renameRoot) [lindex [split [file rootname $local] _] 0] TIME.[file tail $local]] 
+          set localName [file join $usr(-renameRoot) [lindex [split [file rootname $local] _] 0] TIME.[file tail $local]]
         }
         set box [split $ray(custom,box) ,]
         set opnlName "$ray(custom,URL)?var=[lindex $ray(custom,$var) 3]&lat1=[lindex $box 0]&lon1=[lindex $box 1]&lat2=[lindex $box 2]&lon2=[lindex $box 3]"
@@ -997,7 +997,7 @@ proc Usage {argv0} {
   set optDes [list \
      "Data set to use (ndfd or ndgd)" \
      "sector to use (-dataSet ndfd):\n\
-      \t\tconus, hawaii, puertori, guam, alaska, nhemi, custom,\n\
+      \t\tconus, hawaii, puertori, guam, alaska, nhemi, npacocn, custom,\n\
       \t\tpacnwest, pacswest, nrockies, crrocks, srockies, nplains,\n\
       \t\tcrplains, splains, umissvly, crmissvy, smissvly, crgrlake,\n\
       \t\tergrlake, neast, seast, midatlan" \
@@ -1087,8 +1087,8 @@ if {![info exists usr(-variable)]} {
   set usr(-variable) [split $usr(-variable) ,]
 }
 if {$usr(-dataSet) == "ndfd"} {
-  set valSector [list "conus" "hawaii" "puertori" "guam" "alaska" "nhemi"]
-  set shortSector [list conus hi pr gu ak nhemi]
+  set valSector [list "conus" "hawaii" "puertori" "guam" "alaska" "nhemi" "npacocn"]
+  set shortSector [list conus hi pr gu ak nhemi npacocn]
   set valSubSector [list "pacnwest" "pacswest" "nrockies" "crrocks" "srockies" "nplains" \
                  "crplains" "splains" "umissvly" "crmissvy" "smissvly" "crgrlake" \
                  "ergrlake" "neast" "seast" "midatlan"]
@@ -1164,11 +1164,6 @@ if {[file exists [file join $src_dir rename.txt]]} {
   }
   close $fp
 } 
-
-#foreach {sector1 sector2} [list "conus" co "guam" gu "hawaii" hi "puertori" pr \
-#                           alaska ak nhemi nhemi] {
-#  set ray(sectShort,$sector1) $sector2
-#}
 
 ##### Try to load the grib package.  #####
 if {[catch {package require grib2}]} {
