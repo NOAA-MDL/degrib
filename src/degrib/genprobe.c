@@ -151,7 +151,7 @@ static const uChar NdfdElementsLen = (sizeof (NdfdElements) /
 /* these are a string tolower on the short name of each NDFD element */
 static char *NDFD_Type[] = { "maxt", "mint", "pop12", "t", "winddir",
    "windspd", "td", "sky", "qpf", "snowamt", "wx", "waveheight",
-   "apparentt", "rh", "windgust", "probwindspd34i", "probwindspd50i",
+   "apparentt", "rh", "windgust", "hazard", "probwindspd34i", "probwindspd50i",
    "probwindspd64i", "probwindspd34c", "probwindspd50c", "probwindspd64c",
    "convoutlook", "tornadoprob", "hailprob", "windprob", "xtrmtornprob",
    "xtrmhailprob", "xtrmwindprob", "totalsvrprob", "totalxtrmprob",
@@ -164,7 +164,7 @@ static char *NDFD_Type[] = { "maxt", "mint", "pop12", "t", "winddir",
 /* These match the convention on official download pages (cube names). */
 static char *NDFD_File[] = { "maxt", "mint", "pop12", "temp", "wdir",
    "wspd", "td", "sky", "qpf", "snow", "wx", "waveh", "apt", "rhm",
-   "wgust", "tcwspdabv34i", "tcwspdabv50i", "tcwspdabv64i",
+   "wgust", "wwa", "tcwspdabv34i", "tcwspdabv50i", "tcwspdabv64i",
    "tcwspdabv34c", "tcwspdabv50c", "tcwspdabv64c", "conhazo", "ptornado",
    "phail", "ptstmwinds", "pxtornado", "pxhail", "pxtstmwinds",
    "ptotsvrtstm", "ptotxsvrtstm", "tmpabv14d", "tmpblw14d", "prcpabv14d",
@@ -176,7 +176,7 @@ static char *NDFD_File[] = { "maxt", "mint", "pop12", "temp", "wdir",
 /* A (mostly) 2 letter abreviation scheme created with/for the verification
    group */
 static char *NDFD_File2[] = { "mx", "mn", "po", "tt", "wd",
-   "ws", "dp", "cl", "qp", "sn", "wx", "wh", "at", "rh", "wg", "i3",
+   "ws", "dp", "cl", "qp", "sn", "wx", "wh", "at", "rh", "wg", "hazard", "i3",
    "i5", "i6", "c3", "c5", "c6", "ch", "pt", "ph", "pw", "xt", "xh", "xw",
    "ps", "xs", "ta6d", "tb6d", "pa6d", "pb6d",
    "ta1m", "tb1m", "pa1m", "pb1m", "ta3m", "tb3m", "pa3m", "pb3m",
