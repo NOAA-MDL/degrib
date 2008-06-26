@@ -100,6 +100,7 @@ enum { TDLP_MERCATOR = 7, TDLP_LAMBERT = 3, TDLP_POLAR = 5};
 
 #define NUM_UGLY_WORD 5
 #define NUM_UGLY_ATTRIB 5
+#define NUM_HAZARD_WORD 5
 
 typedef struct {
    uChar numValid;         /* (0..5) How many valid "types" */
@@ -146,15 +147,25 @@ typedef struct {
 } sect2_UnknownType;
 
 typedef struct {
+   uChar numValid;         /* (0..5) How many valid "types" */
+   uChar haz[NUM_HAZARD_WORD]; /* (see WxCode) */
+   uChar sig[NUM_HAZARD_WORD]; /* (see WxCover) */
+   uChar f_valid;          /* 1 valid may be not-used, 2 valid and used,
+                            * 0 invalid may be not-used,
+                            * temporarily 3 (invalid and used). */
+   char *english[NUM_HAZARD_WORD]; /* The english translation of ugly string. */
+   int SimpleCode;         /* Simple weather code for this ugly string. */
+} HazardStringType;
+
+typedef struct {
    char **data;              /* Array of text strings */
    uInt4 dataLen;            /* number of text strings in data. */
    int maxLen;               /* Max Length of all of the "ugly strings"
                               * It includes 1 for the \0 character. */
-/*   UglyStringType *ugly;  */   /* The parsed Ugly string. */
-/*   int maxEng[NUM_UGLY_WORD]; */ /* Max length of english phrases for all ugly
+   HazardStringType *haz;    /* The parsed Ugly string. */
+   int maxEng[NUM_HAZARD_WORD]; /* Max length of english phrases for all ugly
                                * word number X. */
 } sect2_HazardType;
-
 
 enum { GS2_NONE, GS2_WXTYPE, GS2_UNKNOWN, GS2_HAZARD };
 
