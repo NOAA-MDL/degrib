@@ -73,6 +73,7 @@ C_OBJECTS = myutil.o \
             scan.o \
             metaname.o \
             metaparse.o \
+            hazard.o \
             weather.o \
             grib1tab.o \
             metaprint.o \
@@ -112,6 +113,7 @@ H_SOURCES = type.h \
             scan.h \
             meta.h \
             metaname.h \
+            hazard.h \
             weather.h \
             chain.h \
             write.h \
@@ -144,6 +146,7 @@ DP_OBJECTS = myutil.o \
             myerror.o \
             myassert.o \
             tendian.o \
+            hazard.o \
             weather.o \
             interp.o \
             userparse.o \
