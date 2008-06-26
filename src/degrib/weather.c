@@ -1950,7 +1950,7 @@ void FreeUglyString (UglyStringType * ugly)
 {
    int j;               /* Used to free all the english words. */
 
-   for (j = 0; j < NUM_UGLY_ATTRIB; j++) {
+   for (j = 0; j < NUM_UGLY_WORD; j++) {
       free (ugly->english[j]);
    }
    free (ugly->errors);
