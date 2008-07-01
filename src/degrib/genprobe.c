@@ -25,6 +25,7 @@
 #include "database.h"
 #include "tendian.h"
 #include "weather.h"
+#include "hazard.h"
 #include "sector.h"
 #include "grpprobe.h"
 #ifdef _DWML_
@@ -2555,6 +2556,7 @@ int Grib2DataProbe (userType *usr, int numPnts, Point * pnts, char **labels,
    int jj;              /* Counter used to print "english" weather. */
    UglyStringType ugly; /* Used to 'translate' the weather keys. */
    char *lastSlash;     /* A pointer to last slash in the index file. */
+   HazardStringType haz;
 
    if (usr->Asc2Flx_File != NULL) {
       Asc2Flx (usr->Asc2Flx_File, usr->inNames[0]);
@@ -2806,32 +2808,60 @@ int Grib2DataProbe (userType *usr, int numPnts, Point * pnts, char **labels,
                      tableIndex = (int) value;
                   }
                   if ((tableIndex >= 0) && (tableIndex < numTable)) {
-                     if (usr->f_WxParse == 0) {
-                        printf ("%s", table[tableIndex]);
-                     } else if (strcmp (elem, "Weather") == 0) {
-                        printf ("%s", table[tableIndex]);
-                     } else if (usr->f_WxParse == 1) {
-                        ParseUglyString (&ugly, table[tableIndex],
-                                         usr->f_SimpleVer);
-                        for (jj = 0; jj < NUM_UGLY_WORD; jj++) {
-                           if (ugly.english[jj] != NULL) {
-                              if (jj != 0) {
-                                 printf (" and ");
+                     if (strcmp (elem, "Wx") == 0) {
+                        if (usr->f_WxParse == 0) {
+                           printf ("%s", table[tableIndex]);
+                        } else if (usr->f_WxParse == 1) {
+                           ParseUglyString (&ugly, table[tableIndex],
+                                            usr->f_SimpleVer);
+                           for (jj = 0; jj < NUM_UGLY_WORD; jj++) {
+                              if (ugly.english[jj] != NULL) {
+                                 if (jj != 0) {
+                                    printf (" and ");
+                                 }
+                                 printf ("%s", ugly.english[jj]);
+                              } else {
+                                 if (jj == 0) {
+                                    printf ("No Weather");
+                                 }
+                                 break;
                               }
-                              printf ("%s", ugly.english[jj]);
-                           } else {
-                              if (jj == 0) {
-                                 printf ("No Weather");
-                              }
-                              break;
                            }
+                           FreeUglyString (&ugly);
+                        } else if (usr->f_WxParse == 2) {
+                           ParseUglyString (&ugly, table[tableIndex],
+                                            usr->f_SimpleVer);
+                           printf ("%d", ugly.SimpleCode);
+                           FreeUglyString (&ugly);
                         }
-                        FreeUglyString (&ugly);
-                     } else if (usr->f_WxParse == 2) {
-                        ParseUglyString (&ugly, table[tableIndex],
-                                         usr->f_SimpleVer);
-                        printf ("%d", ugly.SimpleCode);
-                        FreeUglyString (&ugly);
+                     } else if (strcmp (elem, "Hazard") == 0) {
+                        if (usr->f_WxParse == 0) {
+                           printf ("%s", table[tableIndex]);
+                        } else if (usr->f_WxParse == 1) {
+                           ParseHazardString (&haz, table[tableIndex],
+                                            usr->f_SimpleVer);
+                           for (jj = 0; jj < NUM_HAZARD_WORD; jj++) {
+                              if (haz.english[jj] != NULL) {
+                                 if (jj != 0) {
+                                    printf (" and ");
+                                 }
+                                 printf ("%s", haz.english[jj]);
+                              } else {
+                                 if (jj == 0) {
+                                    printf ("No Hazard");
+                                 }
+                                 break;
+                              }
+                           }
+                           FreeHazardString (&haz);
+                        } else if (usr->f_WxParse == 2) {
+                           ParseHazardString (&haz, table[tableIndex],
+                                            usr->f_SimpleVer);
+                           printf ("%d", haz.SimpleCode);
+                           FreeHazardString (&haz);
+                        }
+                     } else {
+                        printf ("%s", table[tableIndex]);
                      }
                   } else {
                      printf ("9999");
@@ -2876,37 +2906,67 @@ int Grib2DataProbe (userType *usr, int numPnts, Point * pnts, char **labels,
                   } else {
                      tableIndex = (int) value;
                   }
+
                   if ((tableIndex >= 0) && (tableIndex < numTable)) {
-                     if (usr->f_WxParse == 0) {
-                        printf ("%s", table[tableIndex]);
-                     } else if (strcmp (elem, "Weather") == 0) {
-                        printf ("%s", table[tableIndex]);
-                     } else if (usr->f_WxParse == 1) {
-                        ParseUglyString (&ugly, table[tableIndex],
-                                         usr->f_SimpleVer);
-                        for (jj = 0; jj < NUM_UGLY_WORD; jj++) {
-                           if (ugly.english[jj] != NULL) {
-                              if (jj != 0) {
-                                 printf (" and ");
+                     if (strcmp (elem, "Wx") == 0) {
+                        if (usr->f_WxParse == 0) {
+                           printf ("%s", table[tableIndex]);
+                        } else if (usr->f_WxParse == 1) {
+                           ParseUglyString (&ugly, table[tableIndex],
+                                            usr->f_SimpleVer);
+                           for (jj = 0; jj < NUM_UGLY_WORD; jj++) {
+                              if (ugly.english[jj] != NULL) {
+                                 if (jj != 0) {
+                                    printf (" and ");
+                                 }
+                                 printf ("%s", ugly.english[jj]);
+                              } else {
+                                 if (jj == 0) {
+                                    printf ("No Weather");
+                                 }
+                                 break;
                               }
-                              printf ("%s", ugly.english[jj]);
-                           } else {
-                              if (jj == 0) {
-                                 printf ("No Weather");
-                              }
-                              break;
                            }
+                           FreeUglyString (&ugly);
+                        } else if (usr->f_WxParse == 2) {
+                           ParseUglyString (&ugly, table[tableIndex],
+                                            usr->f_SimpleVer);
+                           printf ("%d", ugly.SimpleCode);
+                           FreeUglyString (&ugly);
                         }
-                        FreeUglyString (&ugly);
-                     } else if (usr->f_WxParse == 2) {
-                        ParseUglyString (&ugly, table[tableIndex],
-                                         usr->f_SimpleVer);
-                        printf ("%d", ugly.SimpleCode);
-                        FreeUglyString (&ugly);
+                     } else if (strcmp (elem, "Hazard") == 0) {
+                        if (usr->f_WxParse == 0) {
+                           printf ("%s", table[tableIndex]);
+                        } else if (usr->f_WxParse == 1) {
+                           ParseHazardString (&haz, table[tableIndex],
+                                            usr->f_SimpleVer);
+                           for (jj = 0; jj < NUM_HAZARD_WORD; jj++) {
+                              if (haz.english[jj] != NULL) {
+                                 if (jj != 0) {
+                                    printf (" and ");
+                                 }
+                                 printf ("%s", haz.english[jj]);
+                              } else {
+                                 if (jj == 0) {
+                                    printf ("No Hazard");
+                                 }
+                                 break;
+                              }
+                           }
+                           FreeHazardString (&haz);
+                        } else if (usr->f_WxParse == 2) {
+                           ParseHazardString (&haz, table[tableIndex],
+                                            usr->f_SimpleVer);
+                           printf ("%d", haz.SimpleCode);
+                           FreeHazardString (&haz);
+                        }
+                     } else {
+                        printf ("%s", table[tableIndex]);
                      }
                   } else {
                      printf ("9999");
                   }
+
                } else {
                   printf (format, myRound (value, usr->decimal));
                }
