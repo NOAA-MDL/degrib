@@ -316,14 +316,11 @@ static void PrintSect2 (sect2_type * sect2)
          Print ("PDS-S2", "Number of Elements in Section 2", Prt_D,
                 sect2->hazard.dataLen);
          for (i = 0; i < sect2->hazard.dataLen; i++) {
-            sprintf (buffer, "Elem %3d", i);
-/*
-            if (sect2->wx.ugly[i].validIndex != -1) {
+            if (sect2->hazard.haz[i].validIndex != -1) {
                sprintf (buffer, "Elem %3d  Is Used", i);
             } else {
                sprintf (buffer, "Elem %3d NOT Used", i);
             }
-*/
             Print ("PDS-S2", buffer, Prt_S, sect2->hazard.data[i]);
          }
          break;
