@@ -228,7 +228,9 @@ CONFIG_HEADER = \
 CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(lib_LTLIBRARIES)
 
-libjasper_la_DEPENDENCIES = base/libbase.la jpc/libjpc.la
+libjasper_la_DEPENDENCIES = base/libbase.la \
+	jpc/libjpc.la
+
 am_libjasper_la_OBJECTS = dummy.lo
 libjasper_la_OBJECTS = $(am_libjasper_la_OBJECTS)
 
