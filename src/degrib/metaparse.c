@@ -2229,8 +2229,9 @@ int MetaParse (grib_MetaData *meta, sInt4 *is0, sInt4 ns0,
  *      iain = Place to find data if it is an Integer (or float). (Input)
  *     unitM = M in unit conversion equation y(new) = m x(orig) + b (Input)
  *     unitB = B in unit conversion equation y(new) = m x(orig) + b (Input)
- *  f_wxType = true if we have a valid wx type. (Input)
- *    WxType = table to look up values in. (Input)
+ *    f_txtType = true if we have a valid wx/hazard type. (Input)
+ *  txt_dataLen = Length of text table
+ *  txt_f_valid = whether that entry is used/valid. (Input)
  *    startX = The start of the X values. (Input)
  *    startY = The start of the Y values. (Input)
  *     subNx = The Nx dimmension of the subgrid (Input)
@@ -2256,8 +2257,9 @@ int MetaParse (grib_MetaData *meta, sInt4 *is0, sInt4 ns0,
  */
 static void ParseGridNoMiss (gridAttribType *attrib, double *grib_Data,
                              sInt4 Nx, sInt4 Ny, sInt4 *iain,
-                             double unitM, double unitB, uChar f_wxType,
-                             sect2_WxType *WxType, int startX, int startY,
+                             double unitM, double unitB,
+                             uChar f_txtType, uInt4 txt_dataLen,
+                             uChar *txt_f_valid, int startX, int startY,
                              int subNx, int subNy)
 {
    sInt4 x, y;          /* Where we are in the grid. */
@@ -2298,18 +2300,18 @@ static void ParseGridNoMiss (gridAttribType *attrib, double *grib_Data,
                      value = unitM * (*ftemp++) + unitB;
                   }
                }
-               if (f_wxType) {
+               if (f_txtType) {
                   index = (uInt4) value;
-                  if (index < WxType->dataLen) {
-                     if (WxType->f_valid[index] == 1) {
-                        WxType->f_valid[index] = 2;
-                     } else if (WxType->f_valid[index] == 0) {
+                  if (index < txt_dataLen) {
+                     if (txt_f_valid[index] == 1) {
+                        txt_f_valid[index] = 2;
+                     } else if (txt_f_valid[index] == 0) {
                         /* Table is not valid here so set value to missing? */
                         /* No missing value, so use index = WxType->dataLen? */
                         /* No... set f_valid to 3 so we know we used this
                          * invalid element, then handle it in degrib2.c ::
                          * ReadGrib2Record() where we set it back to 0. */
-                        WxType->f_valid[index] = 3;
+                        txt_f_valid[index] = 3;
                      }
                   }
                }
@@ -2350,8 +2352,9 @@ static void ParseGridNoMiss (gridAttribType *attrib, double *grib_Data,
  *      iain = Place to find data if it is an Integer (or float). (Input)
  *     unitM = M in unit conversion equation y(new) = m x(orig) + b (Input)
  *     unitB = B in unit conversion equation y(new) = m x(orig) + b (Input)
- *  f_wxType = true if we have a valid wx type. (Input)
- *    WxType = table to look up values in. (Input)
+ *    f_txtType = true if we have a valid wx/hazard type. (Input)
+ *  txt_dataLen = Length of text table
+ *  txt_f_valid = whether that entry is used/valid. (Input)
  *    startX = The start of the X values. (Input)
  *    startY = The start of the Y values. (Input)
  *     subNx = The Nx dimmension of the subgrid (Input)
@@ -2378,7 +2381,8 @@ static void ParseGridNoMiss (gridAttribType *attrib, double *grib_Data,
 static void ParseGridPrimMiss (gridAttribType *attrib, double *grib_Data,
                                sInt4 Nx, sInt4 Ny, sInt4 *iain,
                                double unitM, double unitB, sInt4 *missCnt,
-                               uChar f_wxType, sect2_WxType *WxType,
+                               uChar f_txtType, uInt4 txt_dataLen,
+                               uChar *txt_f_valid,
                                int startX, int startY, int subNx, int subNy)
 {
    sInt4 x, y;          /* Where we are in the grid. */
@@ -2425,11 +2429,11 @@ static void ParseGridPrimMiss (gridAttribType *attrib, double *grib_Data,
                   } else {
                      value = unitM * value + unitB;
                   }
-                  if (f_wxType) {
+                  if (f_txtType) {
                      index = (uInt4) value;
-                     if (index < WxType->dataLen) {
-                        if (WxType->f_valid[index]) {
-                           WxType->f_valid[index] = 2;
+                     if (index < txt_dataLen) {
+                        if (txt_f_valid[index]) {
+                           txt_f_valid[index] = 2;
                         } else {
                            /* Table is not valid here so set value to missPri
                             */
@@ -2438,7 +2442,7 @@ static void ParseGridPrimMiss (gridAttribType *attrib, double *grib_Data,
                         }
                      }
                   }
-                  if ((!f_wxType) || (value != attrib->missPri)) {
+                  if ((!f_txtType) || (value != attrib->missPri)) {
                      if (f_maxmin) {
                         if (value < attrib->min) {
                            attrib->min = value;
@@ -2478,8 +2482,9 @@ static void ParseGridPrimMiss (gridAttribType *attrib, double *grib_Data,
  *      iain = Place to find data if it is an Integer (or float). (Input)
  *     unitM = M in unit conversion equation y(new) = m x(orig) + b (Input)
  *     unitB = B in unit conversion equation y(new) = m x(orig) + b (Input)
- *  f_wxType = true if we have a valid wx type. (Input)
- *    WxType = table to look up values in. (Input)
+ *    f_txtType = true if we have a valid wx/hazard type. (Input)
+ *  txt_dataLen = Length of text table
+ *  txt_f_valid = whether that entry is used/valid. (Input)
  *    startX = The start of the X values. (Input)
  *    startY = The start of the Y values. (Input)
  *     subNx = The Nx dimmension of the subgrid (Input)
@@ -2506,7 +2511,8 @@ static void ParseGridPrimMiss (gridAttribType *attrib, double *grib_Data,
 static void ParseGridSecMiss (gridAttribType *attrib, double *grib_Data,
                               sInt4 Nx, sInt4 Ny, sInt4 *iain,
                               double unitM, double unitB, sInt4 *missCnt,
-                              uChar f_wxType, sect2_WxType *WxType,
+                              uChar f_txtType, uInt4 txt_dataLen,
+                              uChar *txt_f_valid,
                               int startX, int startY, int subNx, int subNy)
 {
    sInt4 x, y;          /* Where we are in the grid. */
@@ -2553,11 +2559,11 @@ static void ParseGridSecMiss (gridAttribType *attrib, double *grib_Data,
                   } else {
                      value = unitM * value + unitB;
                   }
-                  if (f_wxType) {
+                  if (f_txtType) {
                      index = (uInt4) value;
-                     if (index < WxType->dataLen) {
-                        if (WxType->f_valid[index]) {
-                           WxType->f_valid[index] = 2;
+                     if (index < txt_dataLen) {
+                        if (txt_f_valid[index]) {
+                           txt_f_valid[index] = 2;
                         } else {
                            /* Table is not valid here so set value to missPri 
                             */
@@ -2566,7 +2572,7 @@ static void ParseGridSecMiss (gridAttribType *attrib, double *grib_Data,
                         }
                      }
                   }
-                  if ((!f_wxType) || (value != attrib->missPri)) {
+                  if ((!f_txtType) || (value != attrib->missPri)) {
                      if (f_maxmin) {
                         if (value < attrib->min) {
                            attrib->min = value;
@@ -2613,8 +2619,9 @@ static void ParseGridSecMiss (gridAttribType *attrib, double *grib_Data,
  *           ib = Where to find the bitmap if we have one (Input)
  *        unitM = M in unit conversion equation y(new) = m x(orig) + b (Input)
  *        unitB = B in unit conversion equation y(new) = m x(orig) + b (Input)
- *     f_wxType = true if we have a valid wx type. (Input)
- *       WxType = table to look up values in. (Input)
+ *    f_txtType = true if we have a valid wx/hazard type. (Input)
+ *  txt_dataLen = Length of text table
+ *  txt_f_valid = whether that entry is used/valid. (Input)
  *    f_subGrid = True if we have a subgrid, false if not. (Input)
  * startX stopX = The bounds of the subgrid in X. (0,-1) means full grid (In)
  * startY stopY = The bounds of the subgrid in Y. (0,-1) means full grid (In)
@@ -2643,7 +2650,8 @@ static void ParseGridSecMiss (gridAttribType *attrib, double *grib_Data,
 void ParseGrid (gridAttribType *attrib, double **Grib_Data,
                 uInt4 *grib_DataLen, uInt4 Nx, uInt4 Ny, int scan,
                 sInt4 *iain, sInt4 ibitmap, sInt4 *ib, double unitM,
-                double unitB, uChar f_wxType, sect2_WxType *WxType,
+                double unitB, uChar f_txtType, uInt4 txt_dataLen,
+                uChar *txt_f_valid,
                 uChar f_subGrid, int startX, int startY, int stopX, int stopY)
 {
    double xmissp;       /* computed missing value needed for ibitmap = 1,
@@ -2682,14 +2690,14 @@ void ParseGrid (gridAttribType *attrib, double **Grib_Data,
    if (scan == 64) {
       if (attrib->f_miss == 0) {
          ParseGridNoMiss (attrib, grib_Data, Nx, Ny, iain, unitM, unitB,
-                          f_wxType, WxType, startX, startY, subNx, subNy);
+                          f_txtType, txt_dataLen, txt_f_valid, startX, startY, subNx, subNy);
       } else if (attrib->f_miss == 1) {
          ParseGridPrimMiss (attrib, grib_Data, Nx, Ny, iain, unitM, unitB,
-                            &missCnt, f_wxType, WxType, startX, startY,
+                            &missCnt, f_txtType, txt_dataLen, txt_f_valid, startX, startY,
                             subNx, subNy);
       } else if (attrib->f_miss == 2) {
          ParseGridSecMiss (attrib, grib_Data, Nx, Ny, iain, unitM, unitB,
-                           &missCnt, f_wxType, WxType, startX, startY, subNx,
+                           &missCnt, f_txtType, txt_dataLen, txt_f_valid, startX, startY, subNx,
                            subNy);
       }
    } else {
@@ -2721,12 +2729,12 @@ void ParseGrid (gridAttribType *attrib, double **Grib_Data,
              * can check if missing falls in the range of min/max.  If
              * missing does fall in that range we need to move missing. See
              * f_readjust */
-            if (f_wxType) {
+            if (f_txtType) {
                index = (uInt4) value;
-               if (index < WxType->dataLen) {
-                  if (WxType->f_valid[index] == 1) {
-                     WxType->f_valid[index] = 2;
-                  } else if (WxType->f_valid[index] == 0) {
+               if (index < txt_dataLen) {
+                  if (txt_f_valid[index] == 1) {
+                     txt_f_valid[index] = 2;
+                  } else if (txt_f_valid[index] == 0) {
                      /* Table is not valid here so set value to missPri */
                      if (attrib->f_miss != 0) {
                         value = attrib->missPri;
@@ -2736,12 +2744,12 @@ void ParseGrid (gridAttribType *attrib, double **Grib_Data,
                         /* No... set f_valid to 3 so we know we used this
                          * invalid element, then handle it in degrib2.c ::
                          * ReadGrib2Record() where we set it back to 0. */
-                        WxType->f_valid[index] = 3;
+                        txt_f_valid[index] = 3;
                      }
                   }
                }
             }
-            if ((!f_wxType) ||
+            if ((!f_txtType) ||
                 ((attrib->f_miss == 0) || (value != attrib->missPri))) {
                if (attrib->f_maxmin) {
                   if (value < attrib->min) {
