@@ -1325,7 +1325,7 @@ GRIB2LocalTable NDFD_LclTable[] = {
            {0, 19, 202, "XtrmWindProb", "Extreme Thunderstorm Wind Probability", "%", UC_NONE},
            {0, 19, 215, "TotalSvrProb", "Total Probability of Severe Thunderstorms", "%", UC_NONE},
            {0, 19, 216, "TotalXtrmProb", "Total Probability of Extreme Severe Thunderstorms", "%", UC_NONE},
-           {0, 19, 217, "Hazard", "Hazard string", "-", UC_NONE},
+           {0, 19, 217, "WWA", "Watch Warning Advisory", "-", UC_NONE},
 /* Leaving next two lines in for grandfathering sake. 9/19/2007... Probably can remove in future. */
            {0, 19, 203, "TotalSvrProb", "Total Probability of Severe Thunderstorms", "%", UC_NONE},
            {0, 19, 204, "TotalXtrmProb", "Total Probability of Extreme Severe Thunderstorms", "%", UC_NONE},
