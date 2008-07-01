@@ -245,6 +245,18 @@ int Grib2Database (userType *usr, IS_dataType *is, grib_MetaData *meta)
                      errSprintf ("ERROR: strlen (%s) > 254\n", outPtr);
                      goto error;
                   }
+               } else if (meta->pds2.sect2.ptrType == GS2_HAZARD) {
+                  if (InsertPDS (&flxArray, &flxArrayLen, meta->element,
+                                 (time_t) meta->pds2.refTime, meta->unitName,
+                                 meta->comment, gdsNum, meta->center,
+                                 meta->subcenter,
+                                 (time_t) meta->pds2.sect4.validTime, outPtr,
+                                 fltOffset, usr->f_MSB, scan,
+                                 meta->pds2.sect2.hazard.data,
+                                 meta->pds2.sect2.hazard.dataLen) != 0) {
+                     errSprintf ("ERROR: strlen (%s) > 254\n", outPtr);
+                     goto error;
+                  }
                } else {
                   errSprintf ("ERROR: working with element: %s\n",
                               meta->element);
