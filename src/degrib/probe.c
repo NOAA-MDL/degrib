@@ -95,23 +95,6 @@ static void PrintProbeWx (FILE *out_fp, double ans, sect2_WxType *wx,
    }
 
    if ((wxIndex >= 0) && (wxIndex < (sInt4) wx->dataLen)) {
-      /* Log any errors that have occured in the weather string. */
-/*
-      if ((wx->ugly[wxIndex].errors != NULL) && (logName != NULL)) {
-         if ((logFp = fopen (logName, "at")) != NULL) {
-            fprintf (logFp, "(%d,%d,%f,%f)%s", x1, y1, lat, lon, separator);
-            if (unitName != NULL) {
-               fprintf (logFp, "%s%s%s", element, unitName, separator);
-            } else {
-               fprintf (logFp, "%s%s%s", element, comment, separator);
-            }
-            fprintf (logFp, "%s%s%s%s\n", refTime, separator, validTime,
-                     separator);
-            fprintf (logFp, "%s\n", wx->ugly[wxIndex].errors);
-            fclose (logFp);
-         }
-      }
-*/
       /* Print out the weather string according to f_WxParse. */
       switch (f_WxParse) {
          case 0:
@@ -142,6 +125,51 @@ static void PrintProbeWx (FILE *out_fp, double ans, sect2_WxType *wx,
       }
    } else {
       fprintf (out_fp, "%ld", wxIndex);
+   }
+}
+
+static void PrintProbeHazard (FILE *out_fp, double ans, sect2_HazardType *hazard,
+                              char *logName, int x1, int y1, double lat,
+                              double lon, char *separator, char *element,
+                              char *unitName, char *comment, char *refTime,
+                              char *validTime, sChar f_WxParse)
+{
+   sInt4 hazIndex;       /* The index into the wx table. */
+   size_t j;            /* loop counter over the weather keys. */
+
+   hazIndex = (sInt4) ans;
+
+   if ((hazIndex >= 0) && (hazIndex < (sInt4) hazard->dataLen)) {
+      /* Print out the weather string according to f_WxParse. */
+      switch (f_WxParse) {
+         case 0:
+            fprintf (out_fp, "%s", hazard->data[hazIndex]);
+            break;
+         case 1:
+            for (j = 0; j < NUM_UGLY_WORD; j++) {
+               if (hazard->haz[hazIndex].english[j] != NULL) {
+                  if (j != 0) {
+                     if (j + 1 == hazard->haz[hazIndex].numValid) {
+                        fprintf (out_fp, " and ");
+                     } else {
+                        fprintf (out_fp, ", ");
+                     }
+                  }
+                  fprintf (out_fp, "%s", hazard->haz[hazIndex].english[j]);
+               } else {
+                  if (j == 0) {
+                     fprintf (out_fp, "No Weather");
+                  }
+                  break;
+               }
+            }
+            break;
+         case 2:
+            fprintf (out_fp, "%d", hazard->haz[hazIndex].SimpleCode);
+            break;
+      }
+   } else {
+      fprintf (out_fp, "%ld", hazIndex);
    }
 }
 
@@ -294,15 +322,22 @@ static void GRIB2ProbeStyle0 (FILE **pnt_fps, char *f_firstFps,
                                 meta->gridAttrib.f_miss, missing,
                                 meta->gridAttrib.missSec, usr->f_avgInterp);
       }
-      if (strcmp (meta->element, "Wx") != 0) {
-         fprintf (pnt_fps[i], format, myRound (ans, usr->decimal));
-      } else {
+      if (strcmp (meta->element, "Wx") == 0) {
          /* Handle the weather case. */
          PrintProbeWx (pnt_fps[i], ans, &(meta->pds2.sect2.wx),
                        usr->logName, x1, y1, pnts[i].Y, pnts[i].X,
                        usr->separator, meta->element, meta->unitName,
                        meta->comment, meta->refTime, meta->validTime,
                        usr->f_WxParse);
+      } else if (strcmp (meta->element, "Hazard") == 0) {
+         /* Handle the hazard case. */
+         PrintProbeHazard (pnt_fps[i], ans, &(meta->pds2.sect2.hazard),
+                        usr->logName, x1, y1, pnts[i].Y, pnts[i].X,
+                        usr->separator, meta->element, meta->unitName,
+                        meta->comment, meta->refTime, meta->validTime,
+                        usr->f_WxParse);
+      } else {
+         fprintf (pnt_fps[i], format, myRound (ans, usr->decimal));
       }
       if (i != numPnts - 1) {
          fprintf (pnt_fps[i], "%s", usr->separator);
