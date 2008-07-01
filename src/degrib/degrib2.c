@@ -1154,9 +1154,30 @@ int ReadGrib2Record (FILE *fp, sChar f_unit, double **Grib_Data,
    }
 
    if (strcmp (meta->element, "Wx") != 0) {
-      ParseGrid (&(meta->gridAttrib), Grib_Data, grib_DataLen, Nx, Ny,
-                 meta->gds.scan, IS->iain, ibitmap, IS->ib, unitM, unitB, 0,
-                 0, NULL, f_subGrid, x1, y1, x2, y2);
+      if (strcmp (meta->element, "Hazard") != 0) {
+         ParseGrid (&(meta->gridAttrib), Grib_Data, grib_DataLen, Nx, Ny,
+                    meta->gds.scan, IS->iain, ibitmap, IS->ib, unitM, unitB, 0,
+                    0, NULL, f_subGrid, x1, y1, x2, y2);
+      } else {
+         ParseGrid (&(meta->gridAttrib), Grib_Data, grib_DataLen, Nx, Ny,
+                    meta->gds.scan, IS->iain, ibitmap, IS->ib, unitM, unitB, 1,
+                    meta->pds2.sect2.hazard.dataLen, meta->pds2.sect2.hazard.f_valid, f_subGrid, x1, y1,
+                    x2, y2);
+         /* compact the table to only those which are actually used. */
+         cnt = 0;
+         for (i = 0; i < meta->pds2.sect2.hazard.dataLen; i++) {
+            if (meta->pds2.sect2.hazard.f_valid[i] == 2) {
+               meta->pds2.sect2.hazard.haz[i].validIndex = cnt;
+               cnt++;
+            } else if (meta->pds2.sect2.hazard.f_valid[i] == 3) {
+               meta->pds2.sect2.hazard.f_valid[i] = 0;
+               meta->pds2.sect2.hazard.haz[i].validIndex = cnt;
+               cnt++;
+            } else {
+               meta->pds2.sect2.hazard.haz[i].validIndex = -1;
+            }
+         }
+      }
    } else {
       /* Handle weather grid.  ParseGrid looks up the values... If they are
        * "<Invalid>" it sets it to missing (or creates one).  If the table

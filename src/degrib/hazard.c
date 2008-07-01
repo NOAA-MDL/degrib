@@ -380,7 +380,8 @@ int ParseHazardString (HazardStringType * haz, char *data, int simpleVer)
          haz->english[0] = (char *) malloc ((strlen (data) + 1) *
                                              sizeof (char));
          strcpy (haz->english[0], data);
-         printf ("Unknown Hazard 2 '%s'\n", data);
+         /* For unknown hazards, f_valid = 0, so parseGrid sets it to missing */
+         printf ("Unknown Hazard '%s' (Treating as missing)\n", data);
          if (simpleVer == 1) {
             haz->SimpleCode = 0;
          }
@@ -404,7 +405,8 @@ int ParseHazardString (HazardStringType * haz, char *data, int simpleVer)
          haz->english[0] = (char *) malloc ((strlen (data) + 1) *
                                              sizeof (char));
          strcpy (haz->english[0], data);
-         printf ("Unknown Hazard 1 '%s'\n", data);
+         /* For unknown hazards, f_valid = 0, so parseGrid sets it to missing */
+         printf ("Unknown Hazard '%s' (Treating as missing)\n", data);
          if (simpleVer == 1) {
             haz->SimpleCode = 0;
          }
@@ -434,7 +436,8 @@ int ParseHazardString (HazardStringType * haz, char *data, int simpleVer)
             if (simpleVer == 1) {
                haz->SimpleCode = 0;
             }
-            printf ("Unknown Significance '%s'\n", data);
+            /* For unknown hazards, f_valid = 0, so parseGrid sets it to missing */
+            printf ("Unknown Significance '%s' (Treating as missing)\n", data);
             return 1;
       }
       word++;
