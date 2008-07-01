@@ -1169,11 +1169,11 @@ int ReadGrib2Record (FILE *fp, sChar f_unit, double **Grib_Data,
       /* compact the table to only those which are actually used. */
       cnt = 0;
       for (i = 0; i < meta->pds2.sect2.wx.dataLen; i++) {
-         if (meta->pds2.sect2.wx.ugly[i].f_valid == 2) {
+         if (meta->pds2.sect2.wx.f_valid[i] == 2) {
             meta->pds2.sect2.wx.ugly[i].validIndex = cnt;
             cnt++;
-         } else if (meta->pds2.sect2.wx.ugly[i].f_valid == 3) {
-            meta->pds2.sect2.wx.ugly[i].f_valid = 0;
+         } else if (meta->pds2.sect2.wx.f_valid[i] == 3) {
+            meta->pds2.sect2.wx.f_valid[i] = 0;
             meta->pds2.sect2.wx.ugly[i].validIndex = cnt;
             cnt++;
          } else {

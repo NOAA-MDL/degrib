@@ -116,9 +116,6 @@ typedef struct {
    uChar attrib[NUM_UGLY_WORD][NUM_UGLY_ATTRIB]; /* (see WxAttrib) */
    uChar minVis;           /* vis[] should be constant, but just in case
                             * we use the minimum value. */
-   uChar f_valid;          /* 1 valid may be not-used, 2 valid and used,
-                            * 0 invalid may be not-used,
-                            * temporarily 3 (invalid and used). */
    sInt4 validIndex;    /* Which index this is, counting only used
                             * valid indexes.  If it is not used it is -1 */
    char *english[NUM_UGLY_WORD]; /* The english translation of ugly string. */
@@ -132,6 +129,9 @@ typedef struct {
 
 typedef struct {
    char **data;              /* Array of text strings (aka "ugly strings) */
+   uChar *f_valid;           /* 1 valid may be not-used, 2 valid and used,
+                              * 0 invalid may be not-used,
+                              * temporarily 3 (invalid and used). */
    uInt4 dataLen;            /* number of text strings in data. */
    int maxLen;               /* Max Length of all of the "ugly strings"
                               * It includes 1 for the \0 character. */
@@ -150,15 +150,17 @@ typedef struct {
    uChar numValid;         /* (0..5) How many valid "types" */
    uChar haz[NUM_HAZARD_WORD]; /* (see WxCode) */
    uChar sig[NUM_HAZARD_WORD]; /* (see WxCover) */
-   uChar f_valid;          /* 1 valid may be not-used, 2 valid and used,
-                            * 0 invalid may be not-used,
-                            * temporarily 3 (invalid and used). */
+   sInt4 validIndex;       /* Which index this is, counting only used
+                            * valid indexes.  If it is not used it is -1 */
    char *english[NUM_HAZARD_WORD]; /* The english translation of ugly string. */
    int SimpleCode;         /* Simple weather code for this ugly string. */
 } HazardStringType;
 
 typedef struct {
    char **data;              /* Array of text strings */
+   uChar *f_valid;           /* 1 valid may be not-used, 2 valid and used,
+                              * 0 invalid may be not-used,
+                              * temporarily 3 (invalid and used). */
    uInt4 dataLen;            /* number of text strings in data. */
    int maxLen;               /* Max Length of all of the "ugly strings"
                               * It includes 1 for the \0 character. */

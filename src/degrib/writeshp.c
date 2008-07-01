@@ -1270,7 +1270,7 @@ static int CreateWxDbf (char *filename, sInt4 Nx, sInt4 Ny,
             index = (uInt4) *curData;
             vis = 9999;
             if (index < WxType->dataLen) {
-               if (WxType->ugly[index].f_valid) {
+               if (WxType->f_valid[index]) {
                   if (WxType->ugly[index].minVis != 255) {
                      vis = WxType->ugly[index].minVis / 32.;
                   }

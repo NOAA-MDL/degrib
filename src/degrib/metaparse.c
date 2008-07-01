@@ -113,6 +113,8 @@ void MetaSect2Free (grib_MetaData *meta)
       meta->pds2.sect2.wx.ugly = NULL;
       free (meta->pds2.sect2.wx.data);
       meta->pds2.sect2.wx.data = NULL;
+      free (meta->pds2.sect2.wx.f_valid);
+      meta->pds2.sect2.wx.f_valid = NULL;
       meta->pds2.sect2.wx.dataLen = 0;
       meta->pds2.sect2.wx.maxLen = 0;
    } else if (meta->pds2.sect2.ptrType == GS2_HAZARD) {
@@ -124,6 +126,8 @@ void MetaSect2Free (grib_MetaData *meta)
       meta->pds2.sect2.hazard.haz = NULL;
       free (meta->pds2.sect2.hazard.data);
       meta->pds2.sect2.hazard.data = NULL;
+      free (meta->pds2.sect2.hazard.f_valid);
+      meta->pds2.sect2.hazard.f_valid = NULL;
       meta->pds2.sect2.hazard.dataLen = 0;
       meta->pds2.sect2.hazard.maxLen = 0;
    } else {
@@ -505,8 +509,13 @@ static int ParseSect2_Wx (float *rdat, sInt4 nrdat, sInt4 *idat,
    free (buffer);
    Wx->ugly = (UglyStringType *) malloc (Wx->dataLen *
                                          sizeof (UglyStringType));
+   Wx->f_valid = (uChar *) malloc (Wx->dataLen * sizeof (uChar));
    for (j = 0; j < Wx->dataLen; j++) {
-      ParseUglyString (&(Wx->ugly[j]), Wx->data[j], simpVer);
+      if (ParseUglyString (&(Wx->ugly[j]), Wx->data[j], simpVer) == 0) {
+         Wx->f_valid[j] = 1;
+      } else {
+         Wx->f_valid[j] = 0;
+      }
    }
    /* We want to know how many bytes we need for each english phrase column,
     * so we walk through each column calculating that value. */
@@ -535,6 +544,7 @@ static int ParseSect2_Hazard (float *rdat, sInt4 nrdat, sInt4 *idat,
    int i;               /* assists in traversing the maxEng[] array. */
    char *buffer;        /* Used to store the current Hazard string. */
    int buffLen;         /* Length of current Hazard string. */
+   int k;
 
    if (nrdat < 1) {
       return -1;
@@ -622,8 +632,18 @@ static int ParseSect2_Hazard (float *rdat, sInt4 nrdat, sInt4 *idat,
    free (buffer);
    Hazard->haz = (HazardStringType *) malloc (Hazard->dataLen *
                                          sizeof (HazardStringType));
+   Hazard->f_valid = (uChar *) malloc (Hazard->dataLen * sizeof (uChar));
    for (j = 0; j < Hazard->dataLen; j++) {
-      ParseHazardString (&(Hazard->haz[j]), Hazard->data[j], simpVer);
+      if (ParseHazardString (&(Hazard->haz[j]), Hazard->data[j], simpVer) == 0) {
+         Hazard->f_valid[j] = 1;
+      } else {
+         Hazard->f_valid[j] = 0;
+      }
+      printf ("%d : %d : %s", j, Hazard->haz[j].numValid, Hazard->data[j]);
+      for (k = 0; k < Hazard->haz[j].numValid; k++) {
+         printf (": %s", Hazard->haz[j].english[k]);
+      }
+      printf ("\n");
    }
    /* We want to know how many bytes we need for each english phrase column,
     * so we walk through each column calculating that value. */
@@ -2281,15 +2301,15 @@ static void ParseGridNoMiss (gridAttribType *attrib, double *grib_Data,
                if (f_wxType) {
                   index = (uInt4) value;
                   if (index < WxType->dataLen) {
-                     if (WxType->ugly[index].f_valid == 1) {
-                        WxType->ugly[index].f_valid = 2;
-                     } else if (WxType->ugly[index].f_valid == 0) {
+                     if (WxType->f_valid[index] == 1) {
+                        WxType->f_valid[index] = 2;
+                     } else if (WxType->f_valid[index] == 0) {
                         /* Table is not valid here so set value to missing? */
                         /* No missing value, so use index = WxType->dataLen? */
                         /* No... set f_valid to 3 so we know we used this
                          * invalid element, then handle it in degrib2.c ::
                          * ReadGrib2Record() where we set it back to 0. */
-                        WxType->ugly[index].f_valid = 3;
+                        WxType->f_valid[index] = 3;
                      }
                   }
                }
@@ -2408,10 +2428,10 @@ static void ParseGridPrimMiss (gridAttribType *attrib, double *grib_Data,
                   if (f_wxType) {
                      index = (uInt4) value;
                      if (index < WxType->dataLen) {
-                        if (WxType->ugly[index].f_valid) {
-                           WxType->ugly[index].f_valid = 2;
+                        if (WxType->f_valid[index]) {
+                           WxType->f_valid[index] = 2;
                         } else {
-                           /* Table is not valid here so set value to missPri 
+                           /* Table is not valid here so set value to missPri
                             */
                            value = attrib->missPri;
                            (*missCnt)++;
@@ -2536,8 +2556,8 @@ static void ParseGridSecMiss (gridAttribType *attrib, double *grib_Data,
                   if (f_wxType) {
                      index = (uInt4) value;
                      if (index < WxType->dataLen) {
-                        if (WxType->ugly[index].f_valid) {
-                           WxType->ugly[index].f_valid = 2;
+                        if (WxType->f_valid[index]) {
+                           WxType->f_valid[index] = 2;
                         } else {
                            /* Table is not valid here so set value to missPri 
                             */
@@ -2704,9 +2724,9 @@ void ParseGrid (gridAttribType *attrib, double **Grib_Data,
             if (f_wxType) {
                index = (uInt4) value;
                if (index < WxType->dataLen) {
-                  if (WxType->ugly[index].f_valid == 1) {
-                     WxType->ugly[index].f_valid = 2;
-                  } else if (WxType->ugly[index].f_valid == 0) {
+                  if (WxType->f_valid[index] == 1) {
+                     WxType->f_valid[index] = 2;
+                  } else if (WxType->f_valid[index] == 0) {
                      /* Table is not valid here so set value to missPri */
                      if (attrib->f_miss != 0) {
                         value = attrib->missPri;
@@ -2716,7 +2736,7 @@ void ParseGrid (gridAttribType *attrib, double **Grib_Data,
                         /* No... set f_valid to 3 so we know we used this
                          * invalid element, then handle it in degrib2.c ::
                          * ReadGrib2Record() where we set it back to 0. */
-                        WxType->ugly[index].f_valid = 3;
+                        WxType->f_valid[index] = 3;
                      }
                   }
                }
