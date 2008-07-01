@@ -676,6 +676,14 @@ int gribWriteFloat (const char *Filename, double *grib_Data,
                } else {
                   floatPtr[x] = (float) unDef;
                }
+            } else if (f_SimpleWx && (strcmp (meta->element, "Hazard") == 0)) {
+               index = (uInt4) *curData;
+               if (index < meta->pds2.sect2.hazard.dataLen) {
+                  floatPtr[x] = (float)
+                        meta->pds2.sect2.hazard.haz[index].SimpleCode;
+               } else {
+                  floatPtr[x] = (float) unDef;
+               }
             } else {
                floatPtr[x] = (float) ((floor (*curData * shift + .5)) /
                                       shift);
@@ -1055,7 +1063,9 @@ int gribInterpFloat (const char *Filename, double *grib_Data,
          }
          lon = ng.lon1 + x * ng.Dx;
 
-         if ((f_SimpleWx && (strcmp (meta->element, "Wx") == 0)) || (!f_interp)) {
+         if ((f_SimpleWx && (strcmp (meta->element, "Wx") == 0)) ||
+             (!f_interp) ||
+             (f_SimpleWx && (strcmp (meta->element, "Hazard") == 0))) {
             row = IndexNearest (&map, lat, lon, meta->gds.Nx, meta->gds.Ny);
             if (row < 0) {
                val = missing;
@@ -1070,13 +1080,23 @@ int gribInterpFloat (const char *Filename, double *grib_Data,
                /* For Simple weather we have to look up the value (which is
                 * now an index into a table) in the simple weather code
                 * table. */
-               if (f_SimpleWx && (strcmp (meta->element, "Wx") == 0)) {
-                  row = (sInt4) val;
-                  if ((row >= 0)
-                      && (row < (sInt4) meta->pds2.sect2.wx.dataLen)) {
-                     val = (float) meta->pds2.sect2.wx.ugly[row].SimpleCode;
-                  } else {
-                     val = missing;
+               if (f_SimpleWx) {
+                  if (strcmp (meta->element, "Wx") == 0) {
+                     row = (sInt4) val;
+                     if ((row >= 0)
+                         && (row < (sInt4) meta->pds2.sect2.wx.dataLen)) {
+                        val = (float) meta->pds2.sect2.wx.ugly[row].SimpleCode;
+                     } else {
+                        val = missing;
+                     }
+                  } else if (strcmp (meta->element, "Hazard") == 0) {
+                     row = (sInt4) val;
+                     if ((row >= 0)
+                         && (row < (sInt4) meta->pds2.sect2.hazard.dataLen)) {
+                        val = (float) meta->pds2.sect2.hazard.haz[row].SimpleCode;
+                     } else {
+                        val = missing;
+                     }
                   }
                }
             }
