@@ -304,7 +304,6 @@ static void InitHazardString (HazardStringType * haz)
    int i;               /* Used to traverse all the words. */
 
    haz->numValid = 0;
-   haz->f_valid = 1;
    haz->SimpleCode = 0;
    for (i = 0; i < NUM_HAZARD_WORD; i++) {
       haz->haz[i] = HAZ_NONE;
@@ -377,8 +376,14 @@ int ParseHazardString (HazardStringType * haz, char *data, int simpleVer)
          if (f_continue) {
             *end = '^';
          }
-         haz->f_valid = 0;
-         printf ("Unknown Hazard '%s'\n", data);
+         haz->numValid = 1;
+         haz->english[0] = (char *) malloc ((strlen (data) + 1) *
+                                             sizeof (char));
+         strcpy (haz->english[0], data);
+         printf ("Unknown Hazard 2 '%s'\n", data);
+         if (simpleVer == 1) {
+            haz->SimpleCode = 0;
+         }
          return 1;
       }
       *ptr = '\0';
@@ -395,8 +400,14 @@ int ParseHazardString (HazardStringType * haz, char *data, int simpleVer)
          if (f_continue) {
             *end = '^';
          }
-         haz->f_valid = 0;
-         printf ("Unknown Hazard '%s'\n", data);
+         haz->numValid = 1;
+         haz->english[0] = (char *) malloc ((strlen (data) + 1) *
+                                             sizeof (char));
+         strcpy (haz->english[0], data);
+         printf ("Unknown Hazard 1 '%s'\n", data);
+         if (simpleVer == 1) {
+            haz->SimpleCode = 0;
+         }
          return 1;
       }
       switch (ptr[1]) {
@@ -416,6 +427,13 @@ int ParseHazardString (HazardStringType * haz, char *data, int simpleVer)
             if (f_continue) {
                *end = '^';
             }
+            haz->numValid = 1;
+            haz->english[0] = (char *) malloc ((strlen (data) + 1) *
+                                             sizeof (char));
+            strcpy (haz->english[0], data);
+            if (simpleVer == 1) {
+               haz->SimpleCode = 0;
+            }
             printf ("Unknown Significance '%s'\n", data);
             return 1;
       }
@@ -426,7 +444,7 @@ int ParseHazardString (HazardStringType * haz, char *data, int simpleVer)
       }
    } while (f_continue);
 
-   haz->numValid = word + 1;
+   haz->numValid = word;
    Hazard2English (haz);
    if (simpleVer == 1) {
       haz->SimpleCode = HazTable1 (haz);
