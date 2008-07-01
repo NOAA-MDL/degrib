@@ -16,9 +16,11 @@ enum {
    HAZ_IP, HAZ_AS, HAZ_AF, HAZ_MH, HAZ_DU, HAZ_BS, HAZ_BW, HAZ_FG,
    HAZ_MF, HAZ_SM, HAZ_MS, HAZ_ZF, HAZ_ZR, HAZ_ZY, HAZ_FR, HAZ_HT,
    HAZ_LB, HAZ_LW, HAZ_LO, HAZ_SC, HAZ_SW, HAZ_RB, HAZ_SI, HAZ_SN,
-   HAZ_SB, HAZ_WI, HAZ_WC, HAZ_WW, HAZ_EW, HAZ_FL, HAZ_MA, HAZ_NONE,
+   HAZ_SB, HAZ_WI, HAZ_WW, HAZ_MA, HAZ_NONE,
    HAZ_UNKNOWN
 };
+
+/* HAZ_EW, HAZ_FL */
 
 /* See: http://products.weather.gov/PDD/HazardGrid0608.pdf */
 HazTable HazCode[] = {
@@ -27,7 +29,7 @@ HazTable HazCode[] = {
    /* 1 */ {"BZ", "Blizzard", HAZ_BZ},
    /* 2 */ {"CF", "Coastal Flood", HAZ_CF},
    /* 3 */ {"EH", "Excessive Heat", HAZ_EH},
-   /* 4 */ {"EC", "Excessive Cold", HAZ_EC}, /* Extreme Cold */
+   /* 4 */ {"EC", "Extreme Cold", HAZ_EC}, /* Excessive Cold */
    /* 5 */ {"FW", "Fire Weather", HAZ_FW},
    /* 6 */ {"FF", "Flash Flood", HAZ_FF},
    /* 7 */ {"FZ", "Freeze", HAZ_FZ},
@@ -67,7 +69,7 @@ HazTable HazCode[] = {
    /* 34 */ {"MH", "Ashfall", HAZ_MH},  /* Duplicate 1 */
    /* 35 */ {"DU", "Blowing Dust", HAZ_DU},
    /* 36 */ {"BS", "Blowing Snow", HAZ_BS},
-   /* 37 */ {"BW", "Blowing Wind", HAZ_BW}, /* Brisk Wind */
+   /* 37 */ {"BW", "Brisk Wind", HAZ_BW}, /* Blowing Wind */
    /* CF */
    /* 38 */ {"FG", "Dense Fog", HAZ_FG}, /* Duplicate 2 */
    /* 39 */ {"MF", "Dense Fog", HAZ_MF}, /* Duplicate 2 */
@@ -93,12 +95,11 @@ HazTable HazCode[] = {
    /* 56 */ {"SB", "Snow and Blowing Snow", HAZ_SB},
    /* TS */
    /* 57 */ {"WI", "Wind", HAZ_WI},
-   /* 58 */ {"WC", "Wind Chill", HAZ_WC},
-   /* 59 */ {"WW", "Winter Weather", HAZ_WW},
+   /* 58 */ {"WW", "Winter Weather", HAZ_WW},
 /* Extra Based on GFE documentation */
-   /* 60 */ {"EW", "Excessive Wind", HAZ_EW},
-   /* 61 */ {"FL", "Flood", HAZ_FL},
-   /* 62 */ {"MA", "Special Marine", HAZ_MA}
+   /* 59 */ {"MA", "Special Marine", HAZ_MA},
+   /* 60 */ /* {"EW", "Excessive Wind", HAZ_EW}, */
+   /* 61 */ /* {"FL", "Flood", HAZ_FL}, */
 };
 
 enum {
