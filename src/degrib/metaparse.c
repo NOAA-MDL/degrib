@@ -544,7 +544,9 @@ static int ParseSect2_Hazard (float *rdat, sInt4 nrdat, sInt4 *idat,
    int i;               /* assists in traversing the maxEng[] array. */
    char *buffer;        /* Used to store the current Hazard string. */
    int buffLen;         /* Length of current Hazard string. */
+/*
    int k;
+*/
 
    if (nrdat < 1) {
       return -1;
@@ -639,11 +641,13 @@ static int ParseSect2_Hazard (float *rdat, sInt4 nrdat, sInt4 *idat,
       } else {
          Hazard->f_valid[j] = 0;
       }
+/*
       printf ("%d : %d : %s", j, Hazard->haz[j].numValid, Hazard->data[j]);
       for (k = 0; k < Hazard->haz[j].numValid; k++) {
          printf (": %s", Hazard->haz[j].english[k]);
       }
       printf ("\n");
+*/
    }
    /* We want to know how many bytes we need for each english phrase column,
     * so we walk through each column calculating that value. */
