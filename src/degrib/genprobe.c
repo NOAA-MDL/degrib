@@ -152,7 +152,7 @@ static const uChar NdfdElementsLen = (sizeof (NdfdElements) /
 /* these are a string tolower on the short name of each NDFD element */
 static char *NDFD_Type[] = { "maxt", "mint", "pop12", "t", "winddir",
    "windspd", "td", "sky", "qpf", "snowamt", "wx", "waveheight",
-   "apparentt", "rh", "windgust", "hazard", "probwindspd34i", "probwindspd50i",
+   "apparentt", "rh", "windgust", "wwa", "probwindspd34i", "probwindspd50i",
    "probwindspd64i", "probwindspd34c", "probwindspd50c", "probwindspd64c",
    "convoutlook", "tornadoprob", "hailprob", "windprob", "xtrmtornprob",
    "xtrmhailprob", "xtrmwindprob", "totalsvrprob", "totalxtrmprob",
@@ -177,7 +177,7 @@ static char *NDFD_File[] = { "maxt", "mint", "pop12", "temp", "wdir",
 /* A (mostly) 2 letter abreviation scheme created with/for the verification
    group */
 static char *NDFD_File2[] = { "mx", "mn", "po", "tt", "wd",
-   "ws", "dp", "cl", "qp", "sn", "wx", "wh", "at", "rh", "wg", "hazard", "i3",
+   "ws", "dp", "cl", "qp", "sn", "wx", "wh", "at", "rh", "wg", "wwa", "i3",
    "i5", "i6", "c3", "c5", "c6", "ch", "pt", "ph", "pw", "xt", "xh", "xw",
    "ps", "xs", "ta6d", "tb6d", "pa6d", "pb6d",
    "ta1m", "tb1m", "pa1m", "pb1m", "ta3m", "tb3m", "pa3m", "pb3m",
@@ -244,6 +244,7 @@ uChar gen_NDFD_NDGD_Lookup (char *str, char f_toLower, char f_ndfdConven)
  * HISTORY:
  * 11/2007 Paul Hershberg (MDL): Created.
  * 11/2007 Paul Hershberg (MDL): Added RTMA elements.
+ *  6/2008 Paul Hershberg (MDL): Added Hazard element.
  *
  * NOTES:
  *****************************************************************************
@@ -346,12 +347,13 @@ int validMatch(double elemEndTime, double elemRefTime, int elemEnum,
       }
    }
 
-   /* 10 RTMA elements. 1-hour period.  */
+   /* 10 RTMA elements and the instantaneous Hazard element. 1-hour period.  */
    if ((elemEnum == RTMA_PRECIPA) || (elemEnum == RTMA_SKY) ||
        (elemEnum == RTMA_TD) || (elemEnum == RTMA_TEMP) ||
        (elemEnum == RTMA_UTD) || (elemEnum == RTMA_UTEMP) ||
        (elemEnum == RTMA_UWDIR) || (elemEnum == RTMA_UWSPD) ||
-       (elemEnum == RTMA_WDIR) || (elemEnum == RTMA_WSPD)) {
+       (elemEnum == RTMA_WDIR) || (elemEnum == RTMA_WSPD) ||
+       (elemEnum == NDFD_WWA)) {
       elemStartTime = elemEndTime - 3600;
 
       /* Notice no "=" sign in first part of if statement below, which differs
@@ -2279,7 +2281,7 @@ int genProbe (size_t numPnts, Point * pnts, sChar f_pntType,
 #ifdef DEBUG
 /*
    for (i = 0; i < numOutNames; i++) {
-      printf ("outnames [%d] = %s\n",i, outNames[i]);
+      printf ("outnames[%d] = %s\n", i, outNames[i]);
    }
 */
 #endif
@@ -2906,7 +2908,6 @@ int Grib2DataProbe (userType *usr, int numPnts, Point * pnts, char **labels,
                   } else {
                      tableIndex = (int) value;
                   }
-
                   if ((tableIndex >= 0) && (tableIndex < numTable)) {
                      if (strcmp (elem, "Wx") == 0) {
                         if (usr->f_WxParse == 0) {
@@ -2966,7 +2967,6 @@ int Grib2DataProbe (userType *usr, int numPnts, Point * pnts, char **labels,
                   } else {
                      printf ("9999");
                   }
-
                } else {
                   printf (format, myRound (value, usr->decimal));
                }
@@ -3121,6 +3121,10 @@ int ProbeCmd (sChar f_Command, userType *usr)
          goto done;
       }
 #endif
+      /* Fill the PntSectInfo member "cwa" of pntInfo. */
+      for (i = 0; i < numPnts; i++) {
+         strcpy (pntInfo[i].cwa, usr->cwaBuff[i]);
+      }
       ans = 0;
       /* numInNames, inNames <check> f_inTypes * file type from stat (1=dir,
        * 2=file, 3=unknown). * gribFilter * filter to use to find files
