@@ -1884,13 +1884,13 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
    {
       genElemFree(elem + i);
    }
-/*   free(elem); */
+   free(elem);
 
    for (i = 0; i < numMatch; i++)
    {
       genMatchFree(match + i);
    }
-/*   free(match); */
+   free(match);
 
    return 0;
 }
