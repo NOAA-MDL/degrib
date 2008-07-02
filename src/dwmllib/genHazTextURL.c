@@ -31,8 +31,10 @@ void  genHazTextURL(char *baseTextURL, char *cwaStr, char *phenomena,
    char delim[] = " ";
    char *result = NULL; /* Result of check to determine how many words make up 
                          * the hazard phenomena. */
-
-   sprintf (hazardTextURL, "%s%s%s", baseTextURL, cwaStr, "&wwwa=");
+   if (cwaStr == NULL)
+      sprintf (hazardTextURL, "%s%s%s", baseTextURL, "usa", "&wwwa=");
+   else   
+      sprintf (hazardTextURL, "%s%s%s", baseTextURL, cwaStr, "&wwwa=");
 
    /* Append the phenomena to the hazartTextURL string. */
    result = strtok (phenomena, delim);
