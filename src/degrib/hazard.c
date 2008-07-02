@@ -295,8 +295,9 @@ static int HazTable1 (HazardStringType * haz)
    minVal = 9999;
    for (i = 0; i < haz->numValid; i++) {
       ans = HazardRank (haz->haz[i], haz->sig[i]);
-      if (minVal > ans)
+      if (minVal > ans) {
          minVal = ans;
+      }
    }
    if (minVal > 131)
       minVal = 0;
@@ -362,6 +363,7 @@ int ParseHazardString (HazardStringType * haz, char *data, int simpleVer)
    /* Handle 'None case. */
    if (strcmp (data, "<None>") == 0) {
       haz->numValid = 1;
+      haz->haz[0] = HAZ_NONE;
       Hazard2English (haz);
       if (simpleVer == 1) {
          haz->SimpleCode = HazTable1 (haz);
@@ -381,15 +383,17 @@ int ParseHazardString (HazardStringType * haz, char *data, int simpleVer)
             *end = '^';
          }
          haz->numValid = 1;
+         haz->haz[0] = HAZ_NONE;
          haz->english[0] = (char *) malloc ((strlen (data) + 1) *
                                              sizeof (char));
          strcpy (haz->english[0], data);
          /* For unknown hazards, f_valid = 0, so parseGrid sets it to missing */
-         printf ("Unknown Hazard '%s' (Treating as missing)\n", data);
+         printf ("Unknown Hazard '%s' (Treating as <None>)\n", data);
          if (simpleVer == 1) {
             haz->SimpleCode = 0;
          }
-         return 1;
+/*         return 1;*/
+         return 0;
       }
       *ptr = '\0';
       f_found = 0;
@@ -406,15 +410,17 @@ int ParseHazardString (HazardStringType * haz, char *data, int simpleVer)
             *end = '^';
          }
          haz->numValid = 1;
+         haz->haz[0] = HAZ_NONE;
          haz->english[0] = (char *) malloc ((strlen (data) + 1) *
                                              sizeof (char));
          strcpy (haz->english[0], data);
          /* For unknown hazards, f_valid = 0, so parseGrid sets it to missing */
-         printf ("Unknown Hazard '%s' (Treating as missing)\n", data);
+         printf ("Unknown Hazard '%s' (Treating as <None>)\n", data);
          if (simpleVer == 1) {
             haz->SimpleCode = 0;
          }
-         return 1;
+/*         return 1;*/
+         return 0;
       }
       switch (ptr[1]) {
          case 'A':
