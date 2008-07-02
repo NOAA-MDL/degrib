@@ -109,7 +109,9 @@ typedef struct {
    sChar f_icon;        /* For XML, the icon version 0 == no icon,
                          * 1 == version 1 */
    Point *pnt;          /* pnt = -pnt option. */
-   size_t numPnt;       /* number of points specified using the -pnt option. */  
+   size_t numPnt;       /* number of points specified using the -pnt option. */
+   size_t numCWA;       /* number of cwa's specified using the -cwa option
+                         * (should = numPnt). */  
    LatLon lwlf;         /* lower left corner (cookie slicing) -lwlf */
    LatLon uprt;         /* upper right corner (cookie slicing) -uprt */
    sChar f_pntType;     /* 0 => lat/lon pnts, 1 => cells in pnts,
@@ -153,6 +155,7 @@ typedef struct {
    char *gribFilter;    /* -gribFilter *.bin (pattern to use when filtering
                          * files for grib files. */
    char *rtmaDataDir;   /* Directory to look in for RTMA data. */
+   char **cwaBuff;       /* Array holding 3 letter CWA's each point fall in. */
 /* filter... for *.bin or *.ind or .. */
 /*   sChar f_NDFDDir; */    /* If "input file" is a directory, then this describes
                          * the convention to use.
