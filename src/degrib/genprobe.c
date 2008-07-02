@@ -55,6 +55,7 @@ static const genElemDescript NdfdElements[] = {
 /* 12 */  {NDFD_AT,2, 8,MISSING_2,2,0, 0,0,0,193,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
 /* 13 */  {NDFD_RH,2, 8,MISSING_2,2,0, 0,0,1,1,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
 /* 14 */  {NDFD_WG,2, 8,MISSING_2,2,0, 0,0,2,22,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+/* 14b */  {NDFD_WWA,2, 8,MISSING_2,2,0, 0,0,19,217,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
 
 /* 15 */  {NDFD_INC34,2, 8,MISSING_2,2,0, 0,9,2,1,-1,6, 103,10.0,0.0 ,1,0,0,17491,3},
 /* 16 */  {NDFD_INC50,2, 8,MISSING_2,2,0, 0,9,2,1,-1,6, 103,10.0,0.0 ,1,0,0,25722,3},
@@ -1712,9 +1713,8 @@ static int genProbeGrib (FILE *fp, size_t numPnts, const Point * pnts,
       }
       /* Have determined that this is a good match, allocate memory */
       *numMatch = *numMatch + 1;
-      *match =
-            (genMatchType *) realloc (*match,
-                                      (*numMatch) * sizeof (genMatchType));
+      *match = (genMatchType *) realloc (*match,
+                                         (*numMatch) * sizeof (genMatchType));
       curMatch = &((*match)[*numMatch - 1]);
 
       /* Might try to use genElemMatchMeta info to help with the enum type.
@@ -3093,7 +3093,6 @@ int ProbeCmd (sChar f_Command, userType *usr)
       }
 #endif
 */
-
       /* Create File names by walking through inNames for dir types. If it is
        * a file then keep going.  If it is a dir, tack on all relevant
        * sectors, and files that match the ndfdVars + the filter */
@@ -3118,10 +3117,16 @@ int ProbeCmd (sChar f_Command, userType *usr)
       }
 #endif
       /* Fill the PntSectInfo member "cwa" of pntInfo. */
-      for (i = 0; i < numPnts; i++) {
-         strcpy (pntInfo[i].cwa, usr->cwaBuff[i]);
+      if (usr->cwaBuff != NULL) {
+         for (i = 0; i < numPnts; i++) {
+            /* Don't have to worry about freeing it since usr is free'd
+             * elsewhere */
+            pntInfo[i].cwa = usr->cwaBuff[i];
+/*            strcpy (pntInfo[i].cwa, usr->cwaBuff[i]); */
+         }
       }
       ans = 0;
+
       /* numInNames, inNames <check> f_inTypes * file type from stat (1=dir,
        * 2=file, 3=unknown). * gribFilter * filter to use to find files
        * numSecor, sector * names of all sectors that we have points in *
