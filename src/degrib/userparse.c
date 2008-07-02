@@ -99,6 +99,7 @@ void UserInit (userType *usr)
    usr->separator = NULL;
 /*   usr->pnt.f_valid = 0;*/
    usr->pnt = NULL;
+   usr->numCWA = 0;
    usr->numPnt = 0;
    usr->ndfdVars = NULL;
    usr->numNdfdVars = 0;
@@ -139,6 +140,7 @@ void UserInit (userType *usr)
    usr->f_verboseShp = -1;
    usr->f_valTime = -1;
    usr->f_ndfdConven = -1;
+   usr->cwaBuff = NULL;
    usr->ndfdVarsBuff = NULL;
    usr->startTime = 0;
    usr->endTime = 0;
@@ -203,6 +205,8 @@ void UserFree (userType *usr)
       free (usr->gribFilter);
    if (usr->ndfdVarsBuff != NULL)
       free (usr->ndfdVarsBuff);
+   if (usr->cwaBuff != NULL)
+      free (usr->cwaBuff);
 }
 
 /*****************************************************************************
@@ -392,7 +396,13 @@ int UserValidate (userType *usr)
       /* Could realloc usr->ndfdVars here, but no real point */
       free (colList);
    }
-
+   if (usr->cwaBuff != NULL) {
+      if (usr->numPnt != usr->numCWA) {
+         errSprintf (" Hazards were queried for. Each point has one associated "
+                     "CWA with it and numPnt != numCWA.\n");
+         return -1;
+      }
+   }
    if (usr->f_validRange == -1)
       usr->f_validRange = 0;
    if (usr->f_verboseShp == -1)
@@ -686,7 +696,7 @@ static char *UsrOpt[] = { "-cfg", "-in", "-I", "-C", "-P", "-V", "-Flt",
    "-sectFile", "-NC", "-AscGrid", "-Map", "-MapIni", "-MapIniOptions",
    "-XML", "-MOTD", "-Graph", "-startTime", "-endTime", "-startDate",
    "-numDays", "-ndfdVars", "-geoData", "-gribFilter", "-ndfdConven", "-Freq",
-   "-Icon", "-curTime", "-rtmaDir", "-avgInterp",
+   "-Icon", "-curTime", "-rtmaDir", "-avgInterp", "-cwa",
    NULL
 };
 
@@ -709,7 +719,7 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
       VALIDMIN, TDL, NO_TDL, SECTOR, SECTFILE, NCCONVERT, ASCGRID, MAP,
       MAPINIFILE, MAPINIOPTIONS, XML, MOTD, GRAPH, STARTTIME, ENDTIME,
       STARTDATE, NUMDAYS, NDFDVARS, GEODATA, GRIBFILTER, NDFDCONVEN,
-      FREQUENCY, ICON, CURTIME, RTMADIR, AVGINTERP
+      FREQUENCY, ICON, CURTIME, RTMADIR, AVGINTERP, CWA
    };
    int index;           /* "cur"'s index into Opt, which matches enum val. */
    double lat, lon;     /* Used to check on the -pnt option. */
@@ -1328,6 +1338,16 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
             usr->ndfdVarsBuff = (char *) malloc ((strlen (next) + 1) *
                                                  sizeof (char));
             strcpy (usr->ndfdVarsBuff, next);
+         }
+         return 2;
+      case CWA:
+         if (usr->cwaBuff == NULL) {
+            usr->numCWA++;
+            usr->cwaBuff = (char **) realloc (usr->cwaBuff, usr->numCWA 
+                           * sizeof (char*));
+            usr->cwaBuff[usr->numCWA - 1] = (char *) malloc ((strlen (next)
+                                            + 1) * sizeof (char));
+            strcpy (usr->cwaBuff[usr->numCWA - 1], next);
          }
          return 2;
       case PNT:
