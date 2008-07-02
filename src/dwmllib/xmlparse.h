@@ -138,14 +138,14 @@ void checkNeedForPeriodName(int index, uChar * numPeriodNames,
                             double startTime_cml, double currentDoubTime,
                             double firstValidTime);
 
-/* void computeStartEndTimes(uChar parameterName, int numFmtdRows,
-                         int periodLength, sChar TZoffset,
+void computeStartEndTimes(uChar parameterName, int numFmtdRows,
+                          int periodLength, double TZoffset,
                           sChar f_observeDST, genMatchType * match,
                           uChar useEndTimes, char **startTimes, char **endTimes,
                           char *frequency, uChar f_XML, double startTime_cml, 
 			  double currentDoubTime, numRowsInfo numRows, 
                           int startNum, int endNum);
-*/
+
 void concatRtmaNdfdValues(size_t pnt, char *layoutKey, genMatchType *match, 
                           uChar NDFDname, uChar RTMAname, char *name, 
                           char *metElement, char *type, char *units, 
@@ -361,19 +361,18 @@ void generatePhraseAndIcons (int dayIndex, char *frequency,
                              int numRowsWG, int percentTimeWithFog, 
                              double *maxWindSpeedValTimes);
 
-/*
 void generateTimeLayout(numRowsInfo numRows, uChar parameterName,
                         char *layoutKey, const char *timeCoordinate,
                         char *summarization, genMatchType * match,
                         size_t numMatch, uChar f_formatPeriodName,
-                        sChar TZoffset, sChar f_observeDST,
+                        double TZoffset, sChar f_observeDST,
                         size_t * numLayoutSoFar,
                         uChar * numCurrentLayout, char *currentHour,
                         char *currentDay, char *frequency,
                         xmlNodePtr data, double startTime_cml,
                         double currentDoubTime, int *numFmtdRows,
 			uChar f_XML, int startNum, int endNum);
-*/
+
 void getColdSeasonTimes(genMatchType *match, numRowsInfo numRowsWS,
                         sChar TZoffset, double **springDoubleDate, 
 			double **fallDoubleDate, int startNum, int endNum);
