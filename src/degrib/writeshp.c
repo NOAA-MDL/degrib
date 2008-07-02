@@ -1367,6 +1367,322 @@ static int CreateWxDbf (char *filename, sInt4 Nx, sInt4 Ny,
    return checkFileSize (filename, totSize);
 }
 
+static int CreateWWADbf (char *filename, sInt4 Nx, sInt4 Ny,
+                        double *grib_Data, const char *element,
+                        sChar f_nMissing, gridAttribType *attrib,
+                        sect2_HazardType *HazType, char f_verbose, myMaparam *map)
+{
+#ifdef NEW
+   uChar header[] = { 3, 101, 4, 20 }; /* Header info for dbf. */
+   int numColN = 25;    /* The number of columns we use. */
+   int numColV = 29;    /* The number of columns we use. */
+   char namesN[][11] = {
+      "POINTID", "element", "WX-INDEX",
+      "WWA_Code",
+      "WWA_1", "Signif_1",
+      "WWA_2", "Signif_2",
+      "WWA_3", "Signif_3",
+      "WWA_4", "Signif_4",
+      "WWA_5", "Signif_5",
+   };                   /* Field (column) names. */
+   char namesV[][11] = {
+      "POINTID", "X", "Y", "LON", "LAT",
+      "element", "WX-INDEX",
+      "WWA_Code",
+      "WWA_1", "Signif_1",
+      "WWA_2", "Signif_2",
+      "WWA_3", "Signif_3",
+      "WWA_4", "Signif_4",
+      "WWA_5", "Signif_5",
+   };                   /* Field (column) names. */
+   char typeN[] = {
+      'N', 'C', 'N',
+      'N',
+      'C', 'N',
+      'C', 'N',
+      'C', 'N',
+      'C', 'N',
+      'C', 'N',
+   };                   /* Type of data for columns. */
+   char typeV[] = {
+      'N', 'N', 'N', 'N', 'N',
+      'C', 'N', 'N',
+      'C', 'N',
+      'C', 'N',
+      'C', 'N',
+      'C', 'N',
+      'C', 'N',
+   };                   /* Type of data for columns. */
+   uChar fldLenN[] = {
+      8, 0, 8,
+      4,
+      0, 3,
+      0, 3,
+      0, 3,
+      0, 3,
+      0, 3,
+   };                   /* field len for columns. */
+   uChar fldLenV[] = {
+      8, 4, 4, 10, 9,
+      0, 8, 4,
+      0, 3,
+      0, 3,
+      0, 3,
+      0, 3,
+      0, 3,
+   };                   /* field len for columns. */
+   uChar fldDecN[] = {
+      0, 0, 0,
+      0,
+      0, 0,
+      0, 0,
+      0, 0,
+      0, 0,
+      0, 0,
+   };                   /* field decimal lens for columns. */
+   uChar fldDecV[] = {
+      0, 0, 0, 5, 5,
+      0, 0, 0,
+      0, 0,
+      0, 0,
+      0, 0,
+      0, 0,
+      0, 0, 
+   };                   /* field decimal lens for columns. */
+   int cnt;             /* Used to loop over fldLen[] to compute recLen */
+   sInt4 reserved[] = { 0, 0, 0, 0, 0 }; /* need 20 bytes of 0. */
+   sInt4 address = 0;   /* Address to find data? */
+   sInt4 NxNy = Nx * Ny; /* The total number of values. */
+   FILE *fp;            /* The open .dbf file pointer. */
+   int x, y;            /* Current grid cell location. */
+   short int recLen;    /* Size in bytes of one cell of data */
+   sInt4 id;            /* A unique decimal id for the current cell. */
+   double *curData;     /* A pointer to Grib data for current cell. */
+   sInt4 totSize;       /* Total size of the .dbf file. */
+   uChar uc_temp;       /* Temp. storage of type unsigned char. */
+   short int si_temp;   /* Temp. storage of type short int. */
+   char formBuf1[100];  /* Used to format float output sent to .dbf */
+   char formBuf[NUM_HAZARD_WORD][100]; /* Used to format hazard columns */
+   sInt4 numRec;        /* The total number of records actually stored. */
+   char buffer[100];    /* Stores index if we can't look it up in table. */
+   uInt4 index;         /* Current index into WWA table. */
+   char *ptr;           /* Help print english version of WWA elements. */
+   uChar wwa_inten;     /* Help print WWA code. */
+   sInt4 HazCode;       /* Help print hazard/WWA codes. */
+   uChar cover;         /* Help print coverage code. */
+   int i;               /* Helps init ptr, wwa_inten. */
+   double lat;          /* Latitude of the current point for f_verbose */
+   double lon;          /* Longitude of the current point for f_verbose */
+
+   strncpy (filename + strlen (filename) - 3, "dbf", 3);
+   if ((fp = fopen (filename, "wb")) == NULL) {
+      errSprintf ("ERROR: Problems opening %s for write.", filename);
+      return -1;
+   }
+
+   /* Figure out the field lengths, and the fprintf format. */
+   if (f_verbose) {
+      fldLenV[5] = HazType->maxLen;
+      sprintf (formBuf1, " %%08ld%%0%dd%%0%dd%%%d.%df%%%d.%df%%%ds%%08ld"
+               "%%04ld", fldLenV[1], fldLenV[2], fldLenV[3],
+               fldDecV[3], fldLenV[4], fldDecV[4], fldLenV[5]);
+   } else {
+      fldLenN[1] = HazType->maxLen;
+      sprintf (formBuf1, " %%08ld%%%ds%%08ld%%04ld", fldLenN[1]);
+   }
+
+   /* Reserve enough space in each english column for "unknown" */
+   for (i = 0; i < NUM_HAZARD_WORD; i++) {
+      if (HazType->maxEng[i] != 0) {
+         sprintf (formBuf[i], "%%%ds%%03d%%02d%%010ld", HazType->maxEng[i]);
+         if (f_verbose) {
+            fldLenV[9 + i * 2] = HazType->maxEng[i];
+         } else {
+            fldLenN[5 + i * 2] = HazType->maxEng[i];
+         }
+      } else {
+         sprintf (formBuf[i], "%%%ds%%01d%%01d%%01ld", 7);
+         if (f_verbose) {
+            fldLenV[9 + i * 2] = 7;
+            fldLenV[10 + i * 2] = 1;
+         } else {
+            fldLenN[5 + i * 2] = 7;
+            fldLenN[6 + i * 2] = 1;
+         }
+      }
+   }
+
+   if (f_verbose) {
+      strncpy (namesV[5], element, 11);
+      recLen = (short int) 1;
+      for (cnt = 0; cnt < numColV; cnt++) {
+         recLen += (short int) (fldLenV[cnt]);
+      }
+   } else {
+      strncpy (namesN[1], element, 11);
+      recLen = (short int) 1;
+      for (cnt = 0; cnt < numColN; cnt++) {
+         recLen += (short int) (fldLenN[cnt]);
+      }
+   }
+
+   /* Start writing the header. */
+   /* Write the ID and date of last update. */
+   fwrite (header, sizeof (char), 4, fp);
+   /* Write number of records, size of header, then length of record. */
+   FWRITE_LIT (&NxNy, sizeof (sInt4), 1, fp);
+   if (f_verbose) {
+      si_temp = (short int) (32 + 32 * numColV + 1);
+   } else {
+      si_temp = (short int) (32 + 32 * numColN + 1);
+   }
+   FWRITE_LIT (&si_temp, sizeof (short int), 1, fp);
+   FWRITE_LIT (&recLen, sizeof (short int), 1, fp);
+   /* Write Reserved bytes.. 20 bytes of them.. all 0. */
+   fwrite (reserved, sizeof (char), 20, fp);
+
+   /* Write field descriptor array. */
+   if (f_verbose) {
+      for (x = 0; x < numColV; x++) {
+         /* Already taken care of padding with 0's since we did a strncpy */
+         fwrite (namesV[x], sizeof (char), 11, fp);
+         fputc (typeV[x], fp);
+         /* with address 0 */
+         FWRITE_LIT (&(address), sizeof (sInt4), 1, fp);
+         fputc (fldLenV[x], fp);
+         fputc (fldDecV[x], fp);
+         /* reserved already has 0's */
+         fwrite (reserved, sizeof (char), 14, fp);
+      }
+   } else {
+      for (x = 0; x < numColN; x++) {
+         /* Already taken care of padding with 0's since we did a strncpy */
+         fwrite (namesN[x], sizeof (char), 11, fp);
+         fputc (typeN[x], fp);
+         /* with address 0 */
+         FWRITE_LIT (&(address), sizeof (sInt4), 1, fp);
+         fputc (fldLenN[x], fp);
+         fputc (fldDecN[x], fp);
+         /* reserved already has 0's */
+         fwrite (reserved, sizeof (char), 14, fp);
+      }
+   }
+   /* Write trailing header character. */
+   uc_temp = 13;
+   fputc (uc_temp, fp);
+
+   /* Start writing the body. */
+   numRec = 0;
+   for (y = 0; y < Ny; y++) {
+      curData = grib_Data + y * Nx;
+      /* Ny is 1 if we are creating BigPolyDbf files. */
+      if (Ny == 1) {
+         id = y + 1;
+      } else {
+         id = 10000 + y + 1;
+      }
+      for (x = 0; x < Nx; x++) {
+         if ((!f_nMissing) || (attrib->f_miss == 0) ||
+             ((attrib->f_miss == 1) && (*curData != attrib->missPri)) ||
+             ((attrib->f_miss == 2) && (*curData != attrib->missPri)
+              && (*curData != attrib->missSec))) {
+            index = (uInt4) *curData;
+            if (index < WxType->dataLen) {
+               if (HazType->f_valid[index]) {
+                  if (f_verbose) {
+                     myCxy2ll (map, x + 1, y + 1, &lat, &lon);
+                     lat = myRound (lat, 5);
+                     lon = myRound (lon, 5);
+                     fprintf (fp, formBuf1, id, x + 1, y + 1, lon, lat,
+                              HazType->data[index],
+                              HazType->haz[index].validIndex,
+                              (sInt4) HazType->haz[index].SimpleCode);
+                  } else {
+                     fprintf (fp, formBuf1, id, HazType->data[index],
+                              HazType->haz[index].validIndex,
+                              (sInt4) HazType->haz[index].SimpleCode);
+                  }
+                  for (i = 0; i < NUM_UGLY_WORD; i++) {
+                     ptr = WxType->ugly[index].english[i];
+                     if (ptr != NULL) {
+                        wx_inten = WxType->ugly[index].wx_inten[i];
+                        HazCode = WxType->ugly[index].HazCode[i];
+                        cover = WxType->ugly[index].cover[i];
+                        fprintf (fp, formBuf[i], ptr, wx_inten,
+                                 cover, HazCode);
+                     } else {
+                        fprintf (fp, formBuf[i], "", 0, 0, 0);
+                     }
+                  }
+               } else {
+                  /* Handles a string of <Invalid><Invalid>... A rare event
+                   * to begin with, typically this will be turned into a
+                   * missing value in metaparse.c, but if we don't have any
+                   * missing management, it sets f_valid to false. so we
+                   * handle it here. */
+                  if (f_verbose) {
+                     myCxy2ll (map, x + 1, y + 1, &lat, &lon);
+                     lat = myRound (lat, 5);
+                     lon = myRound (lon, 5);
+                     fprintf (fp, formBuf1, id, x + 1, y + 1, lon, lat,
+                              WxType->data[index],
+                              WxType->ugly[index].validIndex, vis,
+                              (sInt4) 9999);
+                  } else {
+                     fprintf (fp, formBuf1, id, WxType->data[index],
+                              WxType->ugly[index].validIndex, vis,
+                              (sInt4) 9999);
+                  }
+                  fprintf (fp, formBuf[0], "Unkown", 0, 0, 0);
+                  fprintf (fp, formBuf[1], "Unkown", 0, 0, 0);
+                  fprintf (fp, formBuf[2], "Unkown", 0, 0, 0);
+                  fprintf (fp, formBuf[3], "Unkown", 0, 0, 0);
+                  fprintf (fp, formBuf[4], "Unkown", 0, 0, 0);
+               }
+            } else {
+               sprintf (buffer, "%ld", index);
+/*               fprintf (fp, formBuf1, id, buffer, index, vis, index); */
+               if (f_verbose) {
+                  myCxy2ll (map, x + 1, y + 1, &lat, &lon);
+                  lat = myRound (lat, 5);
+                  lon = myRound (lon, 5);
+                  fprintf (fp, formBuf1, id, x + 1, y + 1, lon, lat, buffer,
+                           0, vis, 0);
+               } else {
+                  fprintf (fp, formBuf1, id, buffer, 0, vis, 0);
+               }
+               fprintf (fp, formBuf[0], "Unkown", 0, 0, 0);
+               fprintf (fp, formBuf[1], "Unkown", 0, 0, 0);
+               fprintf (fp, formBuf[2], "Unkown", 0, 0, 0);
+               fprintf (fp, formBuf[3], "Unkown", 0, 0, 0);
+               fprintf (fp, formBuf[4], "Unkown", 0, 0, 0);
+            }
+            numRec++;
+         }
+         curData++;
+         /* Ny is 1 if we are creating BigPolyDbf files. */
+         if (Ny == 1) {
+            id++;
+         } else {
+            id += 10000;
+         }
+      }
+   }
+   /* Update file total # of records. */
+   fseek (fp, 4, SEEK_SET);
+   FWRITE_LIT (&numRec, sizeof (sInt4), 1, fp);
+   if (f_verbose) {
+      totSize = 1 + 32 + 32 * numColV + recLen * numRec;
+   } else {
+      totSize = 1 + 32 + 32 * numColN + recLen * numRec;
+   }
+   fclose (fp);
+
+   /* Check that .dbf is now the correct file size. */
+   return checkFileSize (filename, totSize);
+#endif
+}
+
 /*****************************************************************************
  * GridCompute() -- Review 12/2002
  *
@@ -1617,6 +1933,26 @@ int gribWriteShp (const char *Filename, double *grib_Data,
          if (CreateWxDbf (filename, gds->Nx, gds->Ny, grib_Data,
                           EsriName, f_nMissing, &(meta->gridAttrib),
                           (sect2_WxType *) &(meta->pds2.sect2.wx),
+                          f_verbose, &map) != 0) {
+            free (filename);
+            return -5;
+         }
+      }
+   } else if (strcmp (EsriName, "WWA") == 0) {
+      if (f_poly == 2) {
+         if (CreateWWADbf (filename, numPoly, 1, polyData, EsriName,
+                          f_nMissing, &(meta->gridAttrib),
+                          (sect2_HazardType *) &(meta->pds2.sect2.hazard), 0,
+                          &map) != 0) {
+            free (filename);
+            free (polyData);
+            return -5;
+         }
+         free (polyData);
+      } else {
+         if (CreateWWADbf (filename, gds->Nx, gds->Ny, grib_Data,
+                          EsriName, f_nMissing, &(meta->gridAttrib),
+                          (sect2_HazardType *) &(meta->pds2.sect2.hazard),
                           f_verbose, &map) != 0) {
             free (filename);
             return -5;
