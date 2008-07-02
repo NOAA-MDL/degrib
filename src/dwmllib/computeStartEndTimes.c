@@ -81,7 +81,7 @@
  */
 #include "xmlparse.h"
 void computeStartEndTimes(uChar parameterName, int numFmtdRows,
-                          int periodLength, sChar TZoffset,
+                          int periodLength, double TZoffset,
                           sChar f_observeDST, genMatchType * match,
                           uChar useEndTimes, char **startTimes, char **endTimes,
                           char *frequency, uChar f_XML, double startTime_cml, 
@@ -653,7 +653,9 @@ void computeStartEndTimes(uChar parameterName, int numFmtdRows,
             }
             break;
 
-         default: /* All RTMA elements are here other than above exception. */
+         default: /* All RTMA elements and the Hazard element are here (other
+                   * than above RTMA exception. 
+                   */
 
             /* Loop over matches of the data. */
             priorElemCount = startNum;

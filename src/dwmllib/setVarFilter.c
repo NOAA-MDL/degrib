@@ -40,8 +40,9 @@
  *  8/2007 Paul Hershberg (MDL): Added 12 NDFD Climate Outlook Elements.
  * 11/2007 Paul Hershberg (MDL): Added 10 RTMA Elements.
  *  8/2007 Paul Hershberg (MDL): Added 6 RTMA+NDFD Concatenated Elements.
+ *  6/2008 Paul Hershberg (MDL): Added Hazard Element.
  *
- * NOTES:dfdf
+ * NOTES:
  *****************************************************************************
  */
 #include "xmlparse.h"
@@ -69,6 +70,7 @@ void setVarFilter(sChar f_XML, sChar *f_icon, size_t numNdfdVars,
    varFilter[NDFD_AT] = 1;
    varFilter[NDFD_RH] = 1;
    varFilter[NDFD_WG] = 1;
+   varFilter[NDFD_WWA] = 1;
 
    /* 6 Tropical Wind Threshold elements. */
    varFilter[NDFD_INC34] = 1;
@@ -125,6 +127,7 @@ void setVarFilter(sChar f_XML, sChar *f_icon, size_t numNdfdVars,
       varFilter[NDFD_SKY] = 2;
       varFilter[NDFD_WX] = 2;
       varFilter[NDFD_POP] = 2;
+      varFilter[NDFD_WWA] = 2;
    }
    else if ((f_XML == 1 || f_XML == 6 ) && *f_icon == 1) 
    {
@@ -144,6 +147,7 @@ void setVarFilter(sChar f_XML, sChar *f_icon, size_t numNdfdVars,
       varFilter[NDFD_WG] = 2;
       varFilter[NDFD_SKY] = 2;
       varFilter[NDFD_WX] = 2;
+/*      varFilter[NDFD_WWA] = 2; */
    }
 
    /* Force genprobe() to return required RTMA uncertainty element(s), if 

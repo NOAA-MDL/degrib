@@ -47,8 +47,10 @@
 #include "xmlparse.h"
 void prepareVarFilter(sChar f_XML, sChar *f_icon, size_t numNdfdVars, 
                       uChar *ndfdVars, uChar varFilter[NDFD_MATCHALL + 1], 
-                      size_t *numElem, genElemDescript **elem)
+                      size_t *numElem, genElemDescript **elem, 
+                      int *f_hazQueriedFor)
 {
+   int i;
    setVarFilter(f_XML, f_icon, numNdfdVars, ndfdVars, varFilter);
 
    /* Allow user filter of variables to reduce the element list, but include
@@ -80,6 +82,22 @@ void prepareVarFilter(sChar f_XML, sChar *f_icon, size_t numNdfdVars,
    /* Force Icons to be formatted if DWMLgen "glance" product. */
    if (f_XML == 2)
       *f_icon = 1;
+
+   /* Check to see if the Hazard element was queried for. This element either 
+    * exists or not. There is no indication from NDFD of a denotion of hazard
+    * as <None> or NULL from the database.
+    */ 
+   if (f_XML != 5)
+   {
+      for (i = 0; i < numNdfdVars; i++)
+      {
+         if (ndfdVars[i] == NDFD_WWA)
+         {
+            *f_hazQueriedFor = 1;
+            break;
+         }
+      }
+   }
 
    return;
 }

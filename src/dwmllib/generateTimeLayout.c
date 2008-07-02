@@ -116,7 +116,7 @@ void generateTimeLayout(numRowsInfo numRows, uChar parameterName,
                         char *layoutKey, const char *timeCoordinate,
                         char *summarization, genMatchType * match,
                         size_t numMatch, uChar f_formatPeriodName,
-                        sChar TZoffset, sChar f_observeDST,
+                        double TZoffset, sChar f_observeDST,
                         size_t * numLayoutSoFar,
                         uChar * numCurrentLayout, char *currentHour,
                         char *currentDay, char *frequency,
@@ -190,7 +190,8 @@ void generateTimeLayout(numRowsInfo numRows, uChar parameterName,
       period = 12;
    else if (parameterName == RTMA_TEMP || parameterName == RTMA_TD || 
             parameterName == RTMA_WSPD || parameterName == RTMA_WDIR || 
-            parameterName == RTMA_PRECIPA || parameterName == RTMA_SKY)
+            parameterName == RTMA_PRECIPA || parameterName == RTMA_SKY ||
+            parameterName == NDFD_WWA)
       period = 1;
    else /* Calculate it */
       period = determinePeriodLength(firstValidTime, secondValidTime, 
@@ -219,6 +220,11 @@ void generateTimeLayout(numRowsInfo numRows, uChar parameterName,
       {
          periodClimate = (int)(myRound((period/24), 0));
          sprintf(layoutKey, "k-p%dd-n%d-%d", periodClimate, *numFmtdRows, 
+	         *numLayoutSoFar);
+      }
+      else if (period == 1 && parameterName == NDFD_WWA)
+      {
+         sprintf(layoutKey, "k-p%sh-n%d-%d", "0", *numFmtdRows, 
 	         *numLayoutSoFar);
       }
       else

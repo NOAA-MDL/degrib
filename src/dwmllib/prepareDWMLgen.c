@@ -44,6 +44,7 @@
  *  2/2006 Paul Hershberg (MDL): Created.
  *  9/2007 Paul Hershberg (MDL): Added 12 Climate Outlook Elements
  * 12/2007 Paul Hershberg (MDL): Added 10 RTMA Elements
+ * 5/2008 Paul Hershberg (MDL): Added Hazard Element
  *
  * NOTES:
  *****************************************************************************
@@ -149,6 +150,8 @@ void prepareDWMLgen(uChar f_XML, uChar * f_formatPeriodName,
             wxParameters[j][NDFD_PRCPABV90D] = 1;
          if (varFilter[NDFD_PRCPBLW90D] == 2)
             wxParameters[j][NDFD_PRCPBLW90D] = 1;
+         if (varFilter[NDFD_WWA] == 2)
+            wxParameters[j][NDFD_WWA] = 1;
 
          /* We need to create a time layout for the icons in the case that only
           * icons is to be formatted. When this occurs, make Icons use the
@@ -161,10 +164,10 @@ void prepareDWMLgen(uChar f_XML, uChar * f_formatPeriodName,
          }
       }
 
-      /* For DWMLgen's "glance" product, there are five pre-defined set of NDFD
-       * parameters to be formatted. Four of these are maxt, mint, sky, and wx.
-       * Two other elements not formatted (temp and wind speed) are used to
-       * derive the 5th element formatted: Icons. 
+      /* For DWMLgen's "glance" product, there are six pre-defined set of NDFD
+       * parameters to be formatted. Five of these are maxt, mint, sky, hazard, 
+       * and wx. Two other elements not formatted (temp and wind speed) are used
+       * to derive the 5th element formatted: Icons. 
        */
       if (f_XML == 2)
       {
@@ -177,6 +180,8 @@ void prepareDWMLgen(uChar f_XML, uChar * f_formatPeriodName,
             wxParameters[j][NDFD_SKY] = 1;
          if (varFilter[NDFD_MAX] >= 2)
             wxParameters[j][NDFD_WX] = 1;
+         if (varFilter[NDFD_WWA] >= 2)
+            wxParameters[j][NDFD_WWA] = 1;
       }
 
       /* RTMA elements. */

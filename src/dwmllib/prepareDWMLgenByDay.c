@@ -229,6 +229,7 @@ void prepareDWMLgenByDay(genMatchType *match, uChar f_XML,
       wxParameters[j][NDFD_MIN] = 1;
       wxParameters[j][NDFD_POP] = 1;
       wxParameters[j][NDFD_WX] = 1;
+/*      wxParameters[j][NDFD_WWA] = 1; */
 
       /* We need to collect data for the following four elements too. They are
        * not formatted in the output XML, but are used in icon determination.

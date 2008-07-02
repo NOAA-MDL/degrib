@@ -12,7 +12,7 @@
 #include "grpprobe.h"
 #include "clock.h"
 #ifdef MEMWATCH
-#include "memwatch.h"
+#include "memwatch/memwatch.h"
 #endif
 #include "myassert.h"
 #include <libxml/parser.h>
@@ -69,6 +69,13 @@ typedef struct                /* Denotes structure of Weather info. Used in
    char str[600];
    sChar valueType;
 } WX;
+
+typedef struct                /* Denotes structure of Hazard info. */ 
+{
+   double validTime;
+   char str[600];
+   sChar valueType;
+} HZ;
 
 typedef struct                /* Structure with info on the number of rows 
                                * skipped due to a startTime and/or endTime 
@@ -131,14 +138,14 @@ void checkNeedForPeriodName(int index, uChar * numPeriodNames,
                             double startTime_cml, double currentDoubTime,
                             double firstValidTime);
 
-void computeStartEndTimes(uChar parameterName, int numFmtdRows,
-                          int periodLength, sChar TZoffset,
+/* void computeStartEndTimes(uChar parameterName, int numFmtdRows,
+                         int periodLength, sChar TZoffset,
                           sChar f_observeDST, genMatchType * match,
                           uChar useEndTimes, char **startTimes, char **endTimes,
                           char *frequency, uChar f_XML, double startTime_cml, 
 			  double currentDoubTime, numRowsInfo numRows, 
                           int startNum, int endNum);
-
+*/
 void concatRtmaNdfdValues(size_t pnt, char *layoutKey, genMatchType *match, 
                           uChar NDFDname, uChar RTMAname, char *name, 
                           char *metElement, char *type, char *units, 
@@ -204,6 +211,14 @@ void genConvSevereCompValues(size_t pnt, char *layoutKey, uChar parameterName,
 void genDewPointTempValues(size_t pnt, char *layoutKey, genMatchType *match, 
                            xmlNodePtr parameters, numRowsInfo numRows, 
                            int startNum, int endNum);
+
+void genHazardValues(size_t pnt, char *layoutKey, genMatchType *match,
+                     numRowsInfo numRowsHZ, xmlNodePtr parameters,
+                     int startNum, int endNum, char *cwaStr, 
+                     int f_noHazActiveForPoint);
+
+void  genHazTextURL(char *baseTextURL, char *cwaStr, char *phenomena, 
+                    char *significance, char *hazardTextURL);
 
 void genIconLinks(icon_def *iconInfo, uChar numRows, char *layoutKey, 
                   xmlNodePtr parameters);
@@ -346,6 +361,7 @@ void generatePhraseAndIcons (int dayIndex, char *frequency,
                              int numRowsWG, int percentTimeWithFog, 
                              double *maxWindSpeedValTimes);
 
+/*
 void generateTimeLayout(numRowsInfo numRows, uChar parameterName,
                         char *layoutKey, const char *timeCoordinate,
                         char *summarization, genMatchType * match,
@@ -357,7 +373,7 @@ void generateTimeLayout(numRowsInfo numRows, uChar parameterName,
                         xmlNodePtr data, double startTime_cml,
                         double currentDoubTime, int *numFmtdRows,
 			uChar f_XML, int startNum, int endNum);
-
+*/
 void getColdSeasonTimes(genMatchType *match, numRowsInfo numRowsWS,
                         sChar TZoffset, double **springDoubleDate, 
 			double **fallDoubleDate, int startNum, int endNum);
@@ -367,6 +383,9 @@ void getFirstSecondValidTimes(double *firstValidTime, double *secondValidTime,
                               uChar parameterName, int startNum, int endNum, 
                               int numRows, int numRowsSkippedBeg, 
                               int numRowsSkippedEnd);
+
+void  getHazPhenAndIcon(char *uglyStr, char *transStr, int *f_icon, 
+                        char *iconStr, char *hzSig);
 
 void getNumRows(numRowsInfo *numRowsForPoint, double *timeUserStart, 
 		double *timeUserEnd, size_t numMatch, genMatchType *match, 
@@ -394,6 +413,8 @@ void getStartDates(char **startDate, uChar f_XML, double startTime,
                    sChar TZoffset, sChar f_observeDST, int point);
 
 void getTranslatedCoverage(char *uglyStr, char *transStr);
+
+void getTranslatedHzSig(char *uglyStr, char *transStr);
 
 void getTranslatedIntensity(char *uglyStr, char *transStr);
 
@@ -438,7 +459,8 @@ void prepareDWMLgenByDay(genMatchType *match, uChar f_XML,
 
 void prepareVarFilter(sChar f_XML, sChar *f_icon, size_t numNdfdVars, 
                       uChar *ndfdVars, uChar varFilter[NDFD_MATCHALL + 1], 
-                      size_t *numElem, genElemDescript **elem);
+                      size_t *numElem, genElemDescript **elem, 
+                      int *f_hazQueriedFor);
 
 void prepareWeatherValuesByDay (genMatchType *match, sChar TZoffset,
 		                sChar f_observeDST, char *frequency,

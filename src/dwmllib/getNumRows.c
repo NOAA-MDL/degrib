@@ -206,6 +206,8 @@ void getNumRows(numRowsInfo *numRowsForPoint, double *timeUserStart,
       {
 	 if (k == NDFD_MAX || k == NDFD_MIN)
 	    period = 12;
+         else if (k == NDFD_WWA)
+	    period = 1;
 	 else
 	 {
             getFirstSecondValidTimes(&firstValidTime, &secondValidTime, 

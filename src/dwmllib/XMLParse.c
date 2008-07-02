@@ -371,7 +371,12 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                            * Sky Cover and RTMA Sky Cover. Thus, the two
                            * will be conjoined into one element. */
    int *pnt_rtmaNdfdSky = NULL; /* Point specific f_rtmaNdfdSky */
- 
+   int f_hazQueriedFor = 0; /* Flag denoting if a hazard was queried for by the
+                             * user. */
+   int f_noHazActiveForPoint = 0; /* Used when hazards were queried for by the 
+                                   * user but none are active for the particular 
+                                   * point in question. */
+
    /* XML Document pointer */
    xmlDocPtr doc = NULL;      /* An xml Node Pointer denoting the top-level
                                * document node. */
@@ -402,7 +407,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
     * array depending on type of XML queried.
     */
    prepareVarFilter(f_XML, &f_icon, numNdfdVars, ndfdVars, varFilter, &numElem,
-                    &elem);
+                    &elem, &f_hazQueriedFor);
 
    /* See if any points are outside the NDFD Sectors. Print error message to
     * standard error if so. If all points selected are outside the NDFD
@@ -460,7 +465,6 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
 
    /*********************** GRAB THE NDFD DATA AND SORT. *********************/
    /**************************************************************************/
-
    /* f_WxParse = 0, is the flag to return WX as ugly weather codes. */
    f_WxParse = 0;
    if (genProbe(numPnts, pnts, f_pntType, *numInFiles, *inFiles, f_fileType,
@@ -508,7 +512,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
    f_pntHasData = calloc(numPnts, sizeof(char));
 
    /* Collate the matches. While accessing match structure, get infomation on
-    * any matches in the "nhemi" structure.
+    * whether there are any matches in the "nhemi" and "npacocn" sectors.
     */
    curTime = -1;
    for (i = 0; i < numMatch; i++)
@@ -1670,15 +1674,16 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                                  numRowsForPoint[j][NDFD_RH], 
                                  pntInfo[j].startNum, pntInfo[j].endNum);
 
-         /************************WEATHER GENERATION**************************/
+         /************************WEATHER AND HAZARD GENERATION****************/
 
-         /* Format Weather Values and\or Icons, if applicable. We must have
-          * at least some rows of weather data to format either. 
+         /* Format Hazards and Weather Values (and\or Icons), if applicable. 
+          * We must have at least some rows of weather data to format weather 
+          * and icons. 
           */
-         if ((f_XML == 1 || f_XML == 2 || f_XML == 6) && 
-              weatherParameters[j][NDFD_WX]) 
+         if (f_XML == 1 || f_XML == 2 || f_XML == 6)
          {
-            genWeatherValues(j, layoutKeys[j][NDFD_WX], match,
+            if (weatherParameters[j][NDFD_WX] == 1)
+               genWeatherValues(j, layoutKeys[j][NDFD_WX], match,
                              weatherParameters[j][NDFD_WX],
                              f_formatIconForPnt[j], 
                              numRowsForPoint[j][NDFD_WS],
@@ -1689,6 +1694,26 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                              pnts[j].Y, pnts[j].X, pntInfo[j].startNum, 
                              pntInfo[j].endNum, TZoffset[j], 
                              pntInfo[j].f_dayLight);
+
+            /**************************** HAZARDS *****************************/
+
+            if (f_hazQueriedFor)
+            {
+               /* In order to format just a closed </hazard-conditions> tag
+                * denoting hazards were queried for by the user, but none are
+                * active for this particular point, we need to flag this 
+                * situation.
+                */
+               f_noHazActiveForPoint = 0;
+               if (weatherParameters[j][NDFD_WWA] == 0)
+                  f_noHazActiveForPoint = 1;
+
+               if (weatherParameters[j][NDFD_WWA] == 1)
+                  genHazardValues(j, layoutKeys[j][NDFD_WWA], match,
+                                  numRowsForPoint[j][NDFD_WWA], parameters,
+                                  pntInfo[j].startNum, pntInfo[j].endNum, 
+                                  pntInfo[j].cwa, f_noHazActiveForPoint);
+            } 
          }
 	 else if (f_XML == 3 || f_XML == 4)
          { 
