@@ -2834,7 +2834,7 @@ int Grib2DataProbe (userType *usr, int numPnts, Point * pnts, char **labels,
                            printf ("%d", ugly.SimpleCode);
                            FreeUglyString (&ugly);
                         }
-                     } else if (strcmp (elem, "Hazard") == 0) {
+                     } else if (strcmp (elem, "WWA") == 0) {
                         if (usr->f_WxParse == 0) {
                            printf ("%s", table[tableIndex]);
                         } else if (usr->f_WxParse == 1) {
@@ -2934,7 +2934,7 @@ int Grib2DataProbe (userType *usr, int numPnts, Point * pnts, char **labels,
                            printf ("%d", ugly.SimpleCode);
                            FreeUglyString (&ugly);
                         }
-                     } else if (strcmp (elem, "Hazard") == 0) {
+                     } else if (strcmp (elem, "WWA") == 0) {
                         if (usr->f_WxParse == 0) {
                            printf ("%s", table[tableIndex]);
                         } else if (usr->f_WxParse == 1) {
