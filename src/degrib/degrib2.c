@@ -1154,7 +1154,7 @@ int ReadGrib2Record (FILE *fp, sChar f_unit, double **Grib_Data,
    }
 
    if (strcmp (meta->element, "Wx") != 0) {
-      if (strcmp (meta->element, "Hazard") != 0) {
+      if (strcmp (meta->element, "WWA") != 0) {
          ParseGrid (&(meta->gridAttrib), Grib_Data, grib_DataLen, Nx, Ny,
                     meta->gds.scan, IS->iain, ibitmap, IS->ib, unitM, unitB, 0,
                     0, NULL, f_subGrid, x1, y1, x2, y2);

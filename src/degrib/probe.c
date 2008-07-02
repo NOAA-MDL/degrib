@@ -329,7 +329,7 @@ static void GRIB2ProbeStyle0 (FILE **pnt_fps, char *f_firstFps,
                        usr->separator, meta->element, meta->unitName,
                        meta->comment, meta->refTime, meta->validTime,
                        usr->f_WxParse);
-      } else if (strcmp (meta->element, "Hazard") == 0) {
+      } else if (strcmp (meta->element, "WWA") == 0) {
          /* Handle the hazard case. */
          PrintProbeHazard (pnt_fps[i], ans, &(meta->pds2.sect2.hazard),
                         usr->logName, x1, y1, pnts[i].Y, pnts[i].X,

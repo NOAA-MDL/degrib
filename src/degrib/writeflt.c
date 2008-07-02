@@ -676,7 +676,7 @@ int gribWriteFloat (const char *Filename, double *grib_Data,
                } else {
                   floatPtr[x] = (float) unDef;
                }
-            } else if (f_SimpleWx && (strcmp (meta->element, "Hazard") == 0)) {
+            } else if (f_SimpleWx && (strcmp (meta->element, "WWA") == 0)) {
                index = (uInt4) *curData;
                if (index < meta->pds2.sect2.hazard.dataLen) {
                   floatPtr[x] = (float)
@@ -1065,7 +1065,7 @@ int gribInterpFloat (const char *Filename, double *grib_Data,
 
          if ((f_SimpleWx && (strcmp (meta->element, "Wx") == 0)) ||
              (!f_interp) ||
-             (f_SimpleWx && (strcmp (meta->element, "Hazard") == 0))) {
+             (f_SimpleWx && (strcmp (meta->element, "WWA") == 0))) {
             row = IndexNearest (&map, lat, lon, meta->gds.Nx, meta->gds.Ny);
             if (row < 0) {
                val = missing;
@@ -1089,7 +1089,7 @@ int gribInterpFloat (const char *Filename, double *grib_Data,
                      } else {
                         val = missing;
                      }
-                  } else if (strcmp (meta->element, "Hazard") == 0) {
+                  } else if (strcmp (meta->element, "WWA") == 0) {
                      row = (sInt4) val;
                      if ((row >= 0)
                          && (row < (sInt4) meta->pds2.sect2.hazard.dataLen)) {

@@ -2186,7 +2186,7 @@ int MetaParse (grib_MetaData *meta, sInt4 *is0, sInt4 ns0,
             preErrSprintf ("Parse error Section 2 : Weather Data\n");
             return ierr;
          }
-      } else if (strcmp (meta->element, "Hazard") == 0) {
+      } else if (strcmp (meta->element, "WWA") == 0) {
          meta->pds2.sect2.ptrType = GS2_HAZARD;
          if ((ierr = ParseSect2_Hazard (rdat, nrdat, idat, nidat,
                                     &(meta->pds2.sect2.hazard), simpVer)) != 0) {
@@ -2206,7 +2206,7 @@ int MetaParse (grib_MetaData *meta, sInt4 *is0, sInt4 ns0,
          errSprintf ("Weather grid does not have look up table?");
          return -11;
       }
-      if (strcmp (meta->element, "Hazard") == 0) {
+      if (strcmp (meta->element, "WWA") == 0) {
          errSprintf ("Hazard grid does not have look up table?");
          return -11;
       }
