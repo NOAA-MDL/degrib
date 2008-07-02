@@ -1570,7 +1570,7 @@ static int genProbeGrib (FILE *fp, size_t numPnts, const Point * pnts,
                          const genElemDescript * elem, sChar f_valTime,
                          double startTime, double endTime, uChar f_interp,
                          sChar f_unit, double majEarth, double minEarth,
-                         sChar f_WxParse, sChar f_SimpleVer,
+                         sChar f_WxParse, sChar f_SimpleVer, sChar f_SimpleWWA,
                          size_t *numMatch, genMatchType ** match,
                          sChar f_avgInterp)
 {
@@ -1620,7 +1620,7 @@ static int genProbeGrib (FILE *fp, size_t numPnts, const Point * pnts,
 
       /* Read the GRIB message. */
       if (ReadGrib2Record (fp, f_unit, &gribData, &gribDataLen, &meta,
-                           &is, subgNum, majEarth, minEarth, f_SimpleVer,
+                           &is, subgNum, majEarth, minEarth, f_SimpleVer, f_SimpleWWA,
                            &f_lstSubGrd, &(lwlf), &(uprt)) != 0) {
          preErrSprintf ("ERROR: In call to ReadGrib2Record.\n");
          free (gribData);
@@ -2160,7 +2160,7 @@ printf ("element is %d\n", elemEnum);
 int genProbe (size_t numPnts, Point * pnts, sChar f_pntType,
               size_t numInFiles, char **inFiles, uChar f_fileType,
               uChar f_interp, sChar f_unit, double majEarth, double minEarth,
-              sChar f_WxParse, sChar f_SimpleVer, size_t numElem,
+              sChar f_WxParse, sChar f_SimpleVer, sChar f_SimpleWWA, size_t numElem,
               genElemDescript * elem, sChar f_valTime, double startTime,
               double endTime, uChar f_XML, size_t *numMatch, genMatchType ** match,
               char *f_inTypes, char *gribFilter, size_t numSector,
@@ -2298,7 +2298,7 @@ int genProbe (size_t numPnts, Point * pnts, sChar f_pntType,
          }
          if (genProbeGrib (fp, numPnts, pnts, f_pntType, numElem, elem,
                            f_valTime, startTime, endTime, f_interp, f_unit,
-                           majEarth, minEarth, f_WxParse, f_SimpleVer,
+                           majEarth, minEarth, f_WxParse, f_SimpleVer, f_SimpleWWA,
                            numMatch, match, f_avgInterp) != 0) {
 #ifdef DEBUG
             msg = errSprintf (NULL);
@@ -2840,8 +2840,7 @@ int Grib2DataProbe (userType *usr, int numPnts, Point * pnts, char **labels,
                         if (usr->f_WxParse == 0) {
                            printf ("%s", table[tableIndex]);
                         } else if (usr->f_WxParse == 1) {
-                           ParseHazardString (&haz, table[tableIndex],
-                                            usr->f_SimpleVer);
+                           ParseHazardString (&haz, table[tableIndex], usr->f_SimpleWWA);
                            for (jj = 0; jj < NUM_HAZARD_WORD; jj++) {
                               if (haz.english[jj] != NULL) {
                                  if (jj != 0) {
@@ -2857,8 +2856,7 @@ int Grib2DataProbe (userType *usr, int numPnts, Point * pnts, char **labels,
                            }
                            FreeHazardString (&haz);
                         } else if (usr->f_WxParse == 2) {
-                           ParseHazardString (&haz, table[tableIndex],
-                                            usr->f_SimpleVer);
+                           ParseHazardString (&haz, table[tableIndex], usr->f_SimpleWWA);
                            printf ("%d", haz.SimpleCode);
                            FreeHazardString (&haz);
                         }
@@ -2939,8 +2937,7 @@ int Grib2DataProbe (userType *usr, int numPnts, Point * pnts, char **labels,
                         if (usr->f_WxParse == 0) {
                            printf ("%s", table[tableIndex]);
                         } else if (usr->f_WxParse == 1) {
-                           ParseHazardString (&haz, table[tableIndex],
-                                            usr->f_SimpleVer);
+                           ParseHazardString (&haz, table[tableIndex], usr->f_SimpleWWA);
                            for (jj = 0; jj < NUM_HAZARD_WORD; jj++) {
                               if (haz.english[jj] != NULL) {
                                  if (jj != 0) {
@@ -2956,8 +2953,7 @@ int Grib2DataProbe (userType *usr, int numPnts, Point * pnts, char **labels,
                            }
                            FreeHazardString (&haz);
                         } else if (usr->f_WxParse == 2) {
-                           ParseHazardString (&haz, table[tableIndex],
-                                            usr->f_SimpleVer);
+                           ParseHazardString (&haz, table[tableIndex], usr->f_SimpleWWA);
                            printf ("%d", haz.SimpleCode);
                            FreeHazardString (&haz);
                         }
@@ -3136,7 +3132,7 @@ int ProbeCmd (sChar f_Command, userType *usr)
          ans = XMLParse (usr->f_XML, numPnts, pnts, pntInfo, usr->f_pntType,
                          labels, &(usr->numInNames), &(usr->inNames),
                          f_fileType, usr->f_interp, usr->f_unit, usr->majEarth,
-                         usr->minEarth, usr->f_icon, usr->f_SimpleVer,
+                         usr->minEarth, usr->f_icon, usr->f_SimpleVer, usr->f_SimpleWWA,
                          usr->f_valTime, usr->startTime, usr->endTime,
                          usr->numNdfdVars, usr->ndfdVars, usr->f_inTypes,
                          usr->gribFilter, numSector, sector,
@@ -3148,7 +3144,7 @@ int ProbeCmd (sChar f_Command, userType *usr)
                             usr->f_pntType, labels, usr->numInNames,
                             usr->inNames, f_fileType, usr->f_interp,
                             usr->f_unit, usr->majEarth, usr->minEarth,
-                            usr->f_WxParse, usr->f_SimpleVer, usr->f_valTime,
+                            usr->f_WxParse, usr->f_SimpleVer, usr->f_SimpleWWA, usr->f_valTime,
                             usr->startTime, usr->endTime, usr->numNdfdVars,
                             usr->ndfdVars, usr->f_inTypes, usr->gribFilter,
                             numSector, sector, usr->f_ndfdConven,
@@ -3162,7 +3158,7 @@ int ProbeCmd (sChar f_Command, userType *usr)
                            usr->f_pntType, labels, usr->numInNames,
                            usr->inNames, f_fileType, usr->f_interp,
                            usr->f_unit, usr->majEarth, usr->minEarth,
-                           usr->f_WxParse, usr->f_SimpleVer, usr->f_valTime,
+                           usr->f_WxParse, usr->f_SimpleVer, usr->f_SimpleWWA, usr->f_valTime,
                            usr->startTime, usr->endTime, usr->numNdfdVars,
                            usr->ndfdVars, usr->f_inTypes, usr->gribFilter,
                            numSector, sector, usr->f_ndfdConven, usr->f_XML,

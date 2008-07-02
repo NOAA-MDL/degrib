@@ -63,7 +63,7 @@ int ReadSECT0 (FILE * fp, char **buff, uInt4 *buffLen, sInt4 limit,
 int ReadGrib2Record (FILE * fp, sChar f_unit, double **Grib_Data,
                      uInt4 *grib_DataLen, grib_MetaData * meta,
                      IS_dataType * IS, int subgNum, double majEarth,
-                     double minEarth, int simpVer, sInt4 * f_endMsg,
+                     double minEarth, int simpVer, int simpWWA, sInt4 * f_endMsg,
                      LatLon *lwlf, LatLon *uprt);
 
 /* Possible error messages left in errSprintf() */

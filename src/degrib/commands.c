@@ -717,7 +717,7 @@ int Grib2Convert (userType *usr, FILE *grib_fp, IS_dataType *is,
       /* Read the GRIB message. */
       if (ReadGrib2Record (grib_fp, usr->f_unit, &grib_Data, &grib_DataLen,
                            meta, is, subgNum, usr->majEarth, usr->minEarth,
-                           usr->f_SimpleVer, &f_endMsg, &(usr->lwlf),
+                           usr->f_SimpleVer, usr->f_SimpleWWA, &f_endMsg, &(usr->lwlf),
                            &(usr->uprt)) != 0) {
          preErrSprintf ("ERROR: In call to ReadGrib2Record.\n");
          free (grib_Data);

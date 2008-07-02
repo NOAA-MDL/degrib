@@ -107,7 +107,7 @@ void genMatchFree (genMatchType *match);
 int genProbe (size_t numPnts, Point * pnts, sChar f_pntType,
               size_t numInFiles, char **inFiles, uChar f_fileType,
               uChar f_interp, sChar f_unit, double majEarth, double minEarth,
-              sChar f_WxParse, sChar f_SimpleVer, size_t numElem,
+              sChar f_WxParse, sChar f_SimpleVer, sChar f_SimpleWWA, size_t numElem,
               genElemDescript * elem, sChar f_valTime, double startTime,
               double endTime, uChar f_XML, size_t * numMatch, 
               genMatchType ** match, char *f_inTypes, char *gribFilter, 

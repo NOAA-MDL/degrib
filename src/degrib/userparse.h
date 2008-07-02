@@ -91,6 +91,8 @@ typedef struct {
    sChar f_SimpleVer;   /* Which version of the simple NDFD Weather table to
                          * use. (1 is 6/2003) (2 is 1/2004) (3 is 2/2004)
                          * (4 is 11/2004) (default 4) */
+   sChar f_SimpleWWA;   /* Which version of the simple NDFD WWA table to
+                         * use. (1 is 7/2008) (default 0 = none) */
    sChar f_revFlt;      /* f_revFlt = -revFlt */
    sChar f_MSB;         /* f_MSB = -MSB */
    sChar f_validRange;  /* 0 if no -validMin / -validMax, 1 if -validMin,

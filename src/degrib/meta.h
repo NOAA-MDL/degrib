@@ -556,7 +556,7 @@ int MetaParse (grib_MetaData * meta, sInt4 *is0, sInt4 ns0,
                float *rdat, sInt4 nrdat, sInt4 *idat, sInt4 nidat,
                sInt4 *is3, sInt4 ns3, sInt4 *is4, sInt4 ns4,
                sInt4 *is5, sInt4 ns5, sInt4 grib_len,
-               float xmissp, float xmisss, int simpVer);
+               float xmissp, float xmisss, int simpVer, int simpWWA);
 
 void ParseGrid (gridAttribType * attrib, double **Grib_Data,
                 uInt4 *grib_DataLen, uInt4 Nx, uInt4 Ny, int scan,

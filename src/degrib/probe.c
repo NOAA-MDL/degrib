@@ -857,7 +857,7 @@ int GRIB2Probe (userType *usr, int numPnts, Point * pnts, char **labels,
       /* Read the GRIB message. */
       if (ReadGrib2Record (grib_fp, usr->f_unit, &grib_Data, &grib_DataLen,
                            &meta, &is, subgNum, usr->majEarth, usr->minEarth,
-                           usr->f_SimpleVer, &f_endMsg, &(usr->lwlf),
+                           usr->f_SimpleVer, usr->f_SimpleWWA, &f_endMsg, &(usr->lwlf),
                            &(usr->uprt)) != 0) {
          preErrSprintf ("ERROR: In call to ReadGrib2Record.\n");
          for (i = 0; i < numPnts; i++) {
@@ -1057,7 +1057,9 @@ int GenericProbe (char *filename, int numPnts, double *lat, double *lon,
                          * in. */
    double majEarth = 0; /* If > 6000 use this to over-ride the radEarth. */
    double minEarth = 0; /* If > 6000 use this to over-ride the radEarth. */
-   int f_SimpleVer = 2; /* We don't use Weather, but if we did use most
+   int f_SimpleVer = 4; /* We don't use Weather, but if we did use most
+                         * recent version of the weather tables. */
+   int f_SimpleWWA = 1; /* We don't use WWA, but if we did use most
                          * recent version of the weather tables. */
    sInt4 f_endMsg = 1;  /* 1 if we read the last grid in a GRIB message */
    LatLon lwlf;         /* ReadGrib2Record allows subgrids.  We want entire
@@ -1101,7 +1103,7 @@ int GenericProbe (char *filename, int numPnts, double *lat, double *lon,
       ungetc (c, grib_fp);
       /* Read the GRIB message. */
       if (ReadGrib2Record (grib_fp, f_unit, &grib_Data, &grib_DataLen, &meta,
-                           &is, subgNum, majEarth, minEarth, f_SimpleVer,
+                           &is, subgNum, majEarth, minEarth, f_SimpleVer, f_SimpleWWA,
                            &f_endMsg, &lwlf, &uprt) != 0) {
          msg = errSprintf (NULL);
          fprintf (stderr, "ERROR: In call to GenericProbe().\n%s", msg);

@@ -121,6 +121,7 @@ void UserInit (userType *usr)
    usr->f_Graph = -1;
    usr->f_MOTD = -1;
    usr->f_SimpleWx = -1;
+   usr->f_SimpleWWA = -1;
    usr->f_SimpleVer = -1;
    usr->f_revFlt = -1;
    usr->f_MSB = -1;
@@ -467,6 +468,8 @@ int UserValidate (userType *usr)
       usr->f_MOTD = 0;
    if (usr->f_SimpleWx == -1)
       usr->f_SimpleWx = 0;
+   if (usr->f_SimpleWWA == -1)
+      usr->f_SimpleWWA = 0;
    if (usr->f_SimpleVer == -1)
       usr->f_SimpleVer = 4;
    if (usr->f_pntStyle == -1)
@@ -696,7 +699,7 @@ static char *UsrOpt[] = { "-cfg", "-in", "-I", "-C", "-P", "-V", "-Flt",
    "-sectFile", "-NC", "-AscGrid", "-Map", "-MapIni", "-MapIniOptions",
    "-XML", "-MOTD", "-Graph", "-startTime", "-endTime", "-startDate",
    "-numDays", "-ndfdVars", "-geoData", "-gribFilter", "-ndfdConven", "-Freq",
-   "-Icon", "-curTime", "-rtmaDir", "-avgInterp", "-cwa",
+   "-Icon", "-curTime", "-rtmaDir", "-avgInterp", "-cwa", "-SimpleWWA",
    NULL
 };
 
@@ -719,7 +722,7 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
       VALIDMIN, TDL, NO_TDL, SECTOR, SECTFILE, NCCONVERT, ASCGRID, MAP,
       MAPINIFILE, MAPINIOPTIONS, XML, MOTD, GRAPH, STARTTIME, ENDTIME,
       STARTDATE, NUMDAYS, NDFDVARS, GEODATA, GRIBFILTER, NDFDCONVEN,
-      FREQUENCY, ICON, CURTIME, RTMADIR, AVGINTERP, CWA
+      FREQUENCY, ICON, CURTIME, RTMADIR, AVGINTERP, CWA, SIMPLEWWA
    };
    int index;           /* "cur"'s index into Opt, which matches enum val. */
    double lat, lon;     /* Used to check on the -pnt option. */
@@ -1201,6 +1204,16 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
                return -1;
             }
             usr->f_SimpleVer = li_temp;
+         }
+         return 2;
+      case SIMPLEWWA:
+         if (usr->f_SimpleWWA == -1) {
+/*            usr->f_SimpleVer = atoi (next); */
+            if (myAtoI (next, &(li_temp)) != 1) {
+               errSprintf ("Bad value to '%s' of '%s'\n", cur, next);
+               return -1;
+            }
+            usr->f_SimpleWWA = li_temp;
          }
          return 2;
       case GRADS:

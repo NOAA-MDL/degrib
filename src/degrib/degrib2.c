@@ -826,8 +826,8 @@ void IS_Free (IS_dataType *is)
 int ReadGrib2Record (FILE *fp, sChar f_unit, double **Grib_Data,
                      uInt4 *grib_DataLen, grib_MetaData *meta,
                      IS_dataType *IS, int subgNum, double majEarth,
-                     double minEarth, int simpVer, sInt4 *f_endMsg,
-                     LatLon *lwlf, LatLon *uprt)
+                     double minEarth, int simpVer, int simpWWA,
+                     sInt4 *f_endMsg, LatLon *lwlf, LatLon *uprt)
 {
    sInt4 l3264b;        /* Number of bits in a sInt4.  Needed by FORTRAN
                          * unpack library to determine if system has a 4
@@ -1076,7 +1076,7 @@ int ReadGrib2Record (FILE *fp, sChar f_unit, double **Grib_Data,
    if (MetaParse (meta, IS->is[0], IS->ns[0], IS->is[1], IS->ns[1],
                   IS->is[2], IS->ns[2], IS->rdat, IS->nrdat, IS->idat,
                   IS->nidat, IS->is[3], IS->ns[3], IS->is[4], IS->ns[4],
-                  IS->is[5], IS->ns[5], gribLen, xmissp, xmisss, simpVer)
+                  IS->is[5], IS->ns[5], gribLen, xmissp, xmisss, simpVer, simpWWA)
        != 0) {
 #ifdef DEBUG
       FILE *fp;

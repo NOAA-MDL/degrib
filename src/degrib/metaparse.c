@@ -534,7 +534,7 @@ static int ParseSect2_Wx (float *rdat, sInt4 nrdat, sInt4 *idat,
 }
 
 static int ParseSect2_Hazard (float *rdat, sInt4 nrdat, sInt4 *idat,
-                          uInt4 nidat, sect2_HazardType *Hazard, int simpVer)
+                          uInt4 nidat, sect2_HazardType *Hazard, int simpWWA)
 {
    size_t loc;          /* Where we currently are in idat. */
    size_t groupLen;     /* Length of current group in idat. */
@@ -636,7 +636,7 @@ static int ParseSect2_Hazard (float *rdat, sInt4 nrdat, sInt4 *idat,
                                          sizeof (HazardStringType));
    Hazard->f_valid = (uChar *) malloc (Hazard->dataLen * sizeof (uChar));
    for (j = 0; j < Hazard->dataLen; j++) {
-      if (ParseHazardString (&(Hazard->haz[j]), Hazard->data[j], simpVer) == 0) {
+      if (ParseHazardString (&(Hazard->haz[j]), Hazard->data[j], simpWWA) == 0) {
          Hazard->f_valid[j] = 1;
       } else {
          Hazard->f_valid[j] = 0;
@@ -1976,7 +1976,7 @@ int MetaParse (grib_MetaData *meta, sInt4 *is0, sInt4 ns0,
                float *rdat, sInt4 nrdat, sInt4 *idat, sInt4 nidat,
                sInt4 *is3, sInt4 ns3, sInt4 *is4, sInt4 ns4,
                sInt4 *is5, sInt4 ns5, sInt4 grib_len,
-               float xmissp, float xmisss, int simpVer)
+               float xmissp, float xmisss, int simpVer, int simpWWA)
 {
    int ierr;            /* The error code of a called routine */
    /* char *element; *//* Holds the name of the current variable. */
@@ -2189,7 +2189,7 @@ int MetaParse (grib_MetaData *meta, sInt4 *is0, sInt4 ns0,
       } else if (strcmp (meta->element, "WWA") == 0) {
          meta->pds2.sect2.ptrType = GS2_HAZARD;
          if ((ierr = ParseSect2_Hazard (rdat, nrdat, idat, nidat,
-                                    &(meta->pds2.sect2.hazard), simpVer)) != 0) {
+                                    &(meta->pds2.sect2.hazard), simpWWA)) != 0) {
             preErrSprintf ("Parse error Section 2 : Hazard Data\n");
             return ierr;
          }

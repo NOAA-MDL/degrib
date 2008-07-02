@@ -94,7 +94,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
              PntSectInfo * pntInfo, sChar f_pntType, char **labels,
              size_t *numInFiles, char ***inFiles, uChar f_fileType,
              sChar f_interp, sChar f_unit, double majEarth, double minEarth,
-             sChar f_icon, sChar f_SimpleVer, sChar f_valTime,
+             sChar f_icon, sChar f_SimpleVer, sChar f_SimpleWWA, sChar f_valTime,
              double startTime, double endTime, size_t numNdfdVars, 
              uChar *ndfdVars, char *f_inTypes, char *gribFilter, 
              size_t numSector, char **sector, sChar f_ndfdConven, 
@@ -469,7 +469,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
    f_WxParse = 0;
    if (genProbe(numPnts, pnts, f_pntType, *numInFiles, *inFiles, f_fileType,
                 f_interp, f_unit, majEarth, minEarth, f_WxParse,
-                f_SimpleVer, numElem, elem, f_valTime, startTime, endTime,
+                f_SimpleVer, f_SimpleWWA, numElem, elem, f_valTime, startTime, endTime,
                 f_XML, &numMatch, &match, f_inTypes, gribFilter, numSector,
                 sector, f_ndfdConven, f_avgInterp) != 0)
    {
