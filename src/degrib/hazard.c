@@ -195,8 +195,10 @@ static int HazardRank (uChar haz, uChar sig)
       return 75;
    if ((haz == HAZ_HT) && (sig == SIG_Y))
       return 76;
+/*
    if ((haz == HAZ_FA) && (sig == SIG_Y))
       return 77;
+*/
    if ((haz == HAZ_LS) && (sig == SIG_Y))
       return 82;
    if ((haz == HAZ_CF) && (sig == SIG_Y))
@@ -273,13 +275,14 @@ static int HazardRank (uChar haz, uChar sig)
       return 123;
    if ((haz == HAZ_FW) && (sig == SIG_A))
       return 124;
+/*
    if ((haz == HAZ_CF) && (sig == SIG_S))
       return 128;
    if ((haz == HAZ_LS) && (sig == SIG_S))
       return 129;
    if ((haz == HAZ_MA) && (sig == SIG_S))
       return 131;
-
+*/
    return 9999;
 }
 
