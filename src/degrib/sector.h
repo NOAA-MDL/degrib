@@ -12,6 +12,7 @@ typedef struct {
    sChar f_sector[NDFD_OCONUS_UNDEF]; /* Array of oconus sectors that the
                       * point falls in.  Initialized to values of UNDEF */
    sChar numSector;  /* number of sectors point falls in */
+   char *cwa;        /* The CWA the point fall in. */
    int startNum;     /* The first index in the match structure in which
                       * matches for this point can be found, as defined by
                       * sector. */
