@@ -1372,82 +1372,81 @@ static int CreateWWADbf (char *filename, sInt4 Nx, sInt4 Ny,
                         sChar f_nMissing, gridAttribType *attrib,
                         sect2_HazardType *HazType, char f_verbose, myMaparam *map)
 {
-#ifdef NEW
    uChar header[] = { 3, 101, 4, 20 }; /* Header info for dbf. */
-   int numColN = 25;    /* The number of columns we use. */
-   int numColV = 29;    /* The number of columns we use. */
+   int numColN = 9;    /* The number of columns we use. */
+   int numColV = 13;    /* The number of columns we use. */
    char namesN[][11] = {
-      "POINTID", "element", "WX-INDEX",
+      "POINTID", "element", "WWA-INDEX",
       "WWA_Code",
-      "WWA_1", "Signif_1",
-      "WWA_2", "Signif_2",
-      "WWA_3", "Signif_3",
-      "WWA_4", "Signif_4",
-      "WWA_5", "Signif_5",
+      "WWA_1",
+      "WWA_2",
+      "WWA_3",
+      "WWA_4",
+      "WWA_5",
    };                   /* Field (column) names. */
    char namesV[][11] = {
       "POINTID", "X", "Y", "LON", "LAT",
-      "element", "WX-INDEX",
+      "element", "WWA-INDEX",
       "WWA_Code",
-      "WWA_1", "Signif_1",
-      "WWA_2", "Signif_2",
-      "WWA_3", "Signif_3",
-      "WWA_4", "Signif_4",
-      "WWA_5", "Signif_5",
+      "WWA_1",
+      "WWA_2",
+      "WWA_3",
+      "WWA_4",
+      "WWA_5",
    };                   /* Field (column) names. */
    char typeN[] = {
       'N', 'C', 'N',
       'N',
-      'C', 'N',
-      'C', 'N',
-      'C', 'N',
-      'C', 'N',
-      'C', 'N',
+      'C',
+      'C',
+      'C',
+      'C',
+      'C',
    };                   /* Type of data for columns. */
    char typeV[] = {
       'N', 'N', 'N', 'N', 'N',
       'C', 'N', 'N',
-      'C', 'N',
-      'C', 'N',
-      'C', 'N',
-      'C', 'N',
-      'C', 'N',
+      'C',
+      'C',
+      'C',
+      'C',
+      'C',
    };                   /* Type of data for columns. */
    uChar fldLenN[] = {
       8, 0, 8,
       4,
-      0, 3,
-      0, 3,
-      0, 3,
-      0, 3,
-      0, 3,
+      0,
+      0,
+      0,
+      0,
+      0,
    };                   /* field len for columns. */
    uChar fldLenV[] = {
       8, 4, 4, 10, 9,
       0, 8, 4,
-      0, 3,
-      0, 3,
-      0, 3,
-      0, 3,
-      0, 3,
+      0,
+      0,
+      0,
+      0,
+      0,
    };                   /* field len for columns. */
    uChar fldDecN[] = {
       0, 0, 0,
       0,
-      0, 0,
-      0, 0,
-      0, 0,
-      0, 0,
-      0, 0,
+      0,
+      0,
+      0,
+      0,
+      0,
    };                   /* field decimal lens for columns. */
    uChar fldDecV[] = {
       0, 0, 0, 5, 5,
       0, 0, 0,
-      0, 0,
-      0, 0,
-      0, 0,
-      0, 0,
-      0, 0, 
+      0,
+      0,
+      0,
+      0,
+      0,
    };                   /* field decimal lens for columns. */
    int cnt;             /* Used to loop over fldLen[] to compute recLen */
    sInt4 reserved[] = { 0, 0, 0, 0, 0 }; /* need 20 bytes of 0. */
@@ -1467,9 +1466,6 @@ static int CreateWWADbf (char *filename, sInt4 Nx, sInt4 Ny,
    char buffer[100];    /* Stores index if we can't look it up in table. */
    uInt4 index;         /* Current index into WWA table. */
    char *ptr;           /* Help print english version of WWA elements. */
-   uChar wwa_inten;     /* Help print WWA code. */
-   sInt4 HazCode;       /* Help print hazard/WWA codes. */
-   uChar cover;         /* Help print coverage code. */
    int i;               /* Helps init ptr, wwa_inten. */
    double lat;          /* Latitude of the current point for f_verbose */
    double lon;          /* Longitude of the current point for f_verbose */
@@ -1494,20 +1490,18 @@ static int CreateWWADbf (char *filename, sInt4 Nx, sInt4 Ny,
    /* Reserve enough space in each english column for "unknown" */
    for (i = 0; i < NUM_HAZARD_WORD; i++) {
       if (HazType->maxEng[i] != 0) {
-         sprintf (formBuf[i], "%%%ds%%03d%%02d%%010ld", HazType->maxEng[i]);
+         sprintf (formBuf[i], "%%%ds", HazType->maxEng[i]);
          if (f_verbose) {
-            fldLenV[9 + i * 2] = HazType->maxEng[i];
+            fldLenV[8 + i] = HazType->maxEng[i];
          } else {
-            fldLenN[5 + i * 2] = HazType->maxEng[i];
+            fldLenN[4 + i] = HazType->maxEng[i];
          }
       } else {
-         sprintf (formBuf[i], "%%%ds%%01d%%01d%%01ld", 7);
+         sprintf (formBuf[i], "%%%ds", 7);
          if (f_verbose) {
-            fldLenV[9 + i * 2] = 7;
-            fldLenV[10 + i * 2] = 1;
+            fldLenV[8 + i] = 7;
          } else {
-            fldLenN[5 + i * 2] = 7;
-            fldLenN[6 + i * 2] = 1;
+            fldLenN[4 + i] = 7;
          }
       }
    }
@@ -1587,7 +1581,7 @@ static int CreateWWADbf (char *filename, sInt4 Nx, sInt4 Ny,
              ((attrib->f_miss == 2) && (*curData != attrib->missPri)
               && (*curData != attrib->missSec))) {
             index = (uInt4) *curData;
-            if (index < WxType->dataLen) {
+            if (index < HazType->dataLen) {
                if (HazType->f_valid[index]) {
                   if (f_verbose) {
                      myCxy2ll (map, x + 1, y + 1, &lat, &lon);
@@ -1601,17 +1595,19 @@ static int CreateWWADbf (char *filename, sInt4 Nx, sInt4 Ny,
                      fprintf (fp, formBuf1, id, HazType->data[index],
                               HazType->haz[index].validIndex,
                               (sInt4) HazType->haz[index].SimpleCode);
+if (index != 0) {
+   printf ("HERE %s %d\n", HazType->data[index], HazType->haz[index].validIndex);
+   if (HazType->haz[index].SimpleCode != 0) {
+      printf ("HERE\n");
+   }
+}
                   }
-                  for (i = 0; i < NUM_UGLY_WORD; i++) {
-                     ptr = WxType->ugly[index].english[i];
+                  for (i = 0; i < NUM_HAZARD_WORD; i++) {
+                     ptr = HazType->haz[index].english[i];
                      if (ptr != NULL) {
-                        wx_inten = WxType->ugly[index].wx_inten[i];
-                        HazCode = WxType->ugly[index].HazCode[i];
-                        cover = WxType->ugly[index].cover[i];
-                        fprintf (fp, formBuf[i], ptr, wx_inten,
-                                 cover, HazCode);
+                        fprintf (fp, formBuf[i], ptr);
                      } else {
-                        fprintf (fp, formBuf[i], "", 0, 0, 0);
+                        fprintf (fp, formBuf[i], "");
                      }
                   }
                } else {
@@ -1625,19 +1621,19 @@ static int CreateWWADbf (char *filename, sInt4 Nx, sInt4 Ny,
                      lat = myRound (lat, 5);
                      lon = myRound (lon, 5);
                      fprintf (fp, formBuf1, id, x + 1, y + 1, lon, lat,
-                              WxType->data[index],
-                              WxType->ugly[index].validIndex, vis,
+                              HazType->data[index],
+                              HazType->haz[index].validIndex,
                               (sInt4) 9999);
                   } else {
-                     fprintf (fp, formBuf1, id, WxType->data[index],
-                              WxType->ugly[index].validIndex, vis,
+                     fprintf (fp, formBuf1, id, HazType->data[index],
+                              HazType->haz[index].validIndex,
                               (sInt4) 9999);
                   }
-                  fprintf (fp, formBuf[0], "Unkown", 0, 0, 0);
-                  fprintf (fp, formBuf[1], "Unkown", 0, 0, 0);
-                  fprintf (fp, formBuf[2], "Unkown", 0, 0, 0);
-                  fprintf (fp, formBuf[3], "Unkown", 0, 0, 0);
-                  fprintf (fp, formBuf[4], "Unkown", 0, 0, 0);
+                  fprintf (fp, formBuf[0], "Unkown");
+                  fprintf (fp, formBuf[1], "Unkown");
+                  fprintf (fp, formBuf[2], "Unkown");
+                  fprintf (fp, formBuf[3], "Unkown");
+                  fprintf (fp, formBuf[4], "Unkown");
                }
             } else {
                sprintf (buffer, "%ld", index);
@@ -1647,15 +1643,15 @@ static int CreateWWADbf (char *filename, sInt4 Nx, sInt4 Ny,
                   lat = myRound (lat, 5);
                   lon = myRound (lon, 5);
                   fprintf (fp, formBuf1, id, x + 1, y + 1, lon, lat, buffer,
-                           0, vis, 0);
+                           0, 0);
                } else {
-                  fprintf (fp, formBuf1, id, buffer, 0, vis, 0);
+                  fprintf (fp, formBuf1, id, buffer, 0, 0);
                }
-               fprintf (fp, formBuf[0], "Unkown", 0, 0, 0);
-               fprintf (fp, formBuf[1], "Unkown", 0, 0, 0);
-               fprintf (fp, formBuf[2], "Unkown", 0, 0, 0);
-               fprintf (fp, formBuf[3], "Unkown", 0, 0, 0);
-               fprintf (fp, formBuf[4], "Unkown", 0, 0, 0);
+               fprintf (fp, formBuf[0], "Unkown");
+               fprintf (fp, formBuf[1], "Unkown");
+               fprintf (fp, formBuf[2], "Unkown");
+               fprintf (fp, formBuf[3], "Unkown");
+               fprintf (fp, formBuf[4], "Unkown");
             }
             numRec++;
          }
@@ -1680,7 +1676,6 @@ static int CreateWWADbf (char *filename, sInt4 Nx, sInt4 Ny,
 
    /* Check that .dbf is now the correct file size. */
    return checkFileSize (filename, totSize);
-#endif
 }
 
 /*****************************************************************************
