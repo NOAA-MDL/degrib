@@ -1595,12 +1595,6 @@ static int CreateWWADbf (char *filename, sInt4 Nx, sInt4 Ny,
                      fprintf (fp, formBuf1, id, HazType->data[index],
                               HazType->haz[index].validIndex,
                               (sInt4) HazType->haz[index].SimpleCode);
-if (index != 0) {
-   printf ("HERE %s %d\n", HazType->data[index], HazType->haz[index].validIndex);
-   if (HazType->haz[index].SimpleCode != 0) {
-      printf ("HERE\n");
-   }
-}
                   }
                   for (i = 0; i < NUM_HAZARD_WORD; i++) {
                      ptr = HazType->haz[index].english[i];
