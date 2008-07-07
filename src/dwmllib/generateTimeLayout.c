@@ -195,8 +195,8 @@ void generateTimeLayout(numRowsInfo numRows, uChar parameterName,
       period = 1;
    else /* Calculate it */
       period = determinePeriodLength(firstValidTime, secondValidTime, 
-		                     numActualRows, parameterName); 
-   
+		                     numActualRows, parameterName);
+
    /* Fill the rest of the time layout array with current data. */
    currentTimeLayout.period = period;
    currentTimeLayout.numRows = numActualRows;
@@ -417,6 +417,11 @@ void generateTimeLayout(numRowsInfo numRows, uChar parameterName,
          periodClimate = (int)(myRound((period/24), 0));
          sprintf(layoutKey, "k-p%dd-n%d-%d", periodClimate, *numFmtdRows, 
 	         *numCurrentLayout);
+      }
+      else if (period == 1 && parameterName == NDFD_WWA)
+      {
+         sprintf(layoutKey, "k-p%sh-n%d-%d", "0", *numFmtdRows, 
+	         *numLayoutSoFar);
       }
       else
          sprintf(layoutKey, "k-p%dh-n%d-%d", period, *numFmtdRows, 

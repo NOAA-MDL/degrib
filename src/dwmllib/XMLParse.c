@@ -77,14 +77,14 @@
  *        NDFD_PRCPBLW14D(33), NDFD_TMPABV30D(34), NDFD_TMPBLW30D(35),
  *        NDFD_PRCPABV30D(36), NDFD_PRCPBLW30D(37), NDFD_TMPABV90D(38), 
  *        NDFD_TMPBLW90D(39), NDFD_PRCPABV90D(40), NDFD_PRCPBLW90D(41), 
- *        RTMA_PRECIPA(42), RTMA_SKY(43), RTMA_TD(44), RTMA_TEMP(45), 
- *        RTMA_UTD(46), RTMA_UTEMP(47), RTMA_UWDIR(48), RTMA_UWSPD(49), 
- *        RTMA_WDIR(50), RTMA_WSPD(51), NDFD_UNDEF(52), NDFD_MATCHALL(53)
+ *        NDFD_WWA(42), RTMA_PRECIPA(43), RTMA_SKY(44), RTMA_TD(45), RTMA_TEMP(46), 
+ *        RTMA_UTD(47), RTMA_UTEMP(48), RTMA_UWDIR(49), RTMA_UWSPD(50), 
+ *        RTMA_WDIR(51), RTMA_WSPD(52), NDFD_UNDEF(53), NDFD_MATCHALL(54)
  *      };
  *
- * enum { RTMA_NDFD_SKY(54) = NDFD_MATCHALL + 1, RTMA_NDFD_PRECIPA(55), 
- *        RTMA_NDFD_TD(56), RTMA_NDFD_TEMP(57), RTMA_NDFD_WDIR(58), 
- *        RTMA_NDFD_WSPD(59), XML_MAX(60) 
+ * enum { RTMA_NDFD_SKY(55) = NDFD_MATCHALL + 1, RTMA_NDFD_PRECIPA(56), 
+ *        RTMA_NDFD_TD(57), RTMA_NDFD_TEMP(58), RTMA_NDFD_WDIR(59), 
+ *        RTMA_NDFD_WSPD(60), XML_MAX(61) 
  *      };
  * 
  ****************************************************************************** 
@@ -873,7 +873,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                                               currentDoubTime, &numDays[j], f_XML, 
                                               startNum, endNum);
                         }
- 
+
                         layoutKeys[j][k] = malloc(strlen(layoutKey) + 1);
                         strcpy(layoutKeys[j][k], layoutKey);
                      }
@@ -1682,6 +1682,30 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
           */
          if (f_XML == 1 || f_XML == 2 || f_XML == 6)
          {
+
+            /**************************** HAZARDS *****************************/
+
+/*            if (f_hazQueriedFor)
+            { 
+*/
+/*                In order to format just a closed </hazard-conditions> tag */
+/*                * denoting hazards were queried for by the user, but none are */
+/*                * active for this particular point, we need to flag this */
+/*                * situation.*/
+/*                
+               f_noHazActiveForPoint = 0;
+               if (weatherParameters[j][NDFD_WWA] == 0)
+                  f_noHazActiveForPoint = 1;
+*/
+               if (weatherParameters[j][NDFD_WWA] == 1)
+                  genHazardValues(j, layoutKeys[j][NDFD_WWA], match,
+                                  numRowsForPoint[j][NDFD_WWA], parameters,
+                                  pntInfo[j].startNum, pntInfo[j].endNum, 
+                                  pntInfo[j].cwa, f_noHazActiveForPoint);
+/*            } */
+
+            /**************************** WEATHER ****************************/
+
             if (weatherParameters[j][NDFD_WX] == 1)
                genWeatherValues(j, layoutKeys[j][NDFD_WX], match,
                              weatherParameters[j][NDFD_WX],
@@ -1694,26 +1718,6 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                              pnts[j].Y, pnts[j].X, pntInfo[j].startNum, 
                              pntInfo[j].endNum, TZoffset[j], 
                              pntInfo[j].f_dayLight);
-
-            /**************************** HAZARDS *****************************/
-
-            if (f_hazQueriedFor)
-            {
-               /* In order to format just a closed </hazard-conditions> tag
-                * denoting hazards were queried for by the user, but none are
-                * active for this particular point, we need to flag this 
-                * situation.
-                */
-               f_noHazActiveForPoint = 0;
-               if (weatherParameters[j][NDFD_WWA] == 0)
-                  f_noHazActiveForPoint = 1;
-
-               if (weatherParameters[j][NDFD_WWA] == 1)
-                  genHazardValues(j, layoutKeys[j][NDFD_WWA], match,
-                                  numRowsForPoint[j][NDFD_WWA], parameters,
-                                  pntInfo[j].startNum, pntInfo[j].endNum, 
-                                  pntInfo[j].cwa, f_noHazActiveForPoint);
-            } 
          }
 	 else if (f_XML == 3 || f_XML == 4)
          { 

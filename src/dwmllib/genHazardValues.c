@@ -75,7 +75,7 @@ void genHazardValues(size_t pnt, char *layoutKey, genMatchType *match,
    xmlNodePtr hazard_conditions = NULL;  /* Xml Node Pointer for node
                                           * "hazard-conditions". */
    xmlNodePtr hazard = NULL;   /* Xml Node Pointer for node "hazard". */
-   HZ *hzInfo = NULL ;         /* Hazard data taken from the match array. */
+   HZ *hzInfo = NULL;         /* Hazard data taken from the match array. */
    int numActualRowsHZ; /* Number may be reduced due to a smaller time window 
                          * chosen by user. */
  
@@ -108,6 +108,7 @@ void genHazardValues(size_t pnt, char *layoutKey, genMatchType *match,
             strcpy(hzInfo[i-priorElemCount-startNum].str, 
                    match[i].value[pnt].str);
          }
+
          hzInfo[i-priorElemCount-startNum].valueType =
                match[i].value[pnt].valueType;
       }
@@ -137,11 +138,14 @@ void genHazardValues(size_t pnt, char *layoutKey, genMatchType *match,
          continue;
       }
 /*    if (valueIsMissing != 1) */
-      /* Check to see if there are no hazards, i.e. <None>. If so, simply 
-       * format an empty <hazard-conditions> XML element tag.
+      /* Check to see if there are no hazards, i.e. == NULL. If so, simply 
+       * format an empty <hazard-conditions> XML element tag. Denoted when 
+       * valueType == 0.
        */ 
-      else if (hzInfo[hzIndex].str[0] == '<' && hzInfo[hzIndex].str[1] == 'N' &&
+/*      else if (hzInfo[hzIndex].str[0] == '<' && hzInfo[hzIndex].str[1] == 'N' &&
                hzInfo[hzIndex].str[2] == 'o')
+*/
+      else if (hzInfo[hzIndex].valueType == 0)
       {
          continue;
       }
