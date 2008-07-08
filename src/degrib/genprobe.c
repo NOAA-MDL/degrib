@@ -34,6 +34,7 @@
 #ifdef MEMWATCH
 #include "memwatch.h"
 #endif
+#include "hazard.h"
 
 /* *INDENT-OFF* */
 /* Problems using MISSING to denote all possible, since subcenter = Missing
@@ -232,7 +233,7 @@ uChar gen_NDFD_NDGD_Lookup (char *str, char f_toLower, char f_ndfdConven)
  *
  * elemRefTime = Reference time of this element (Input).
  * elemEndTime = The end time of the duration the element is valid for (Input).
- * elemEnum    = Enum # (see meta.h) of element (Input). 
+ * elemEnum    = Enum # (see meta.h) of element (Input).
  * f_valTime   = 0 false, 1 f_validStartTime, 2 f_validEndTime,
  *               3 both f_validStartTime, and f_validEndTime (Input)
  *   startTime = User supplied start time (Input).
@@ -286,7 +287,7 @@ int validMatch(double elemEndTime, double elemRefTime, int elemEnum,
     */
    if ((elemEnum == NDFD_TEMP) || (elemEnum == NDFD_WD) || (elemEnum == NDFD_WS) ||
        (elemEnum == NDFD_TD) || (elemEnum == NDFD_SKY) || (elemEnum == NDFD_WX) ||
-       (elemEnum == NDFD_AT) || (elemEnum == NDFD_RH)) {
+       (elemEnum == NDFD_AT) || (elemEnum == NDFD_RH) || (elemEnum == NDFD_WWA)) {
       if (elemEndTime - elemRefTime > (72*3600)) {
          elemStartTime = elemEndTime - (6*3600);
       } else {
@@ -1308,6 +1309,46 @@ static void getWxString (char **str, sInt4 wxIndex, const sect2_WxType *wx,
          return;
    }
 }
+
+static void getWWAString (char **str, sInt4 wwaIndex, const sect2_HazardType *haz,
+                          sChar f_WxParse)
+{
+   int j;               /* loop counter over the weather keys. */
+
+   if ((wwaIndex < 0) || (wwaIndex >= (sInt4) haz->dataLen)) {
+      mallocSprintf (str, "%ld", wwaIndex);
+      return;
+   }
+   /* Print out the weather string according to f_WxParse. */
+   switch (f_WxParse) {
+      case 0:
+         *str = (char *) malloc (strlen (haz->data[wwaIndex]) + 1);
+         strcpy ((*str), haz->data[wwaIndex]);
+         return;
+      case 1:
+         *str = NULL;
+         for (j = 0; j < NUM_HAZARD_WORD; j++) {
+            if (haz->haz[wwaIndex].english[j] == NULL) {
+               if (j == 0) {
+                  reallocSprintf (str, "No Weather");
+               }
+               return;
+            }
+            if (j != 0) {
+               if (j == haz->haz[wwaIndex].numValid - 1) {
+                  reallocSprintf (str, " and ");
+               } else {
+                  reallocSprintf (str, ", ");
+               }
+            }
+            reallocSprintf (str, "%s", haz->haz[wwaIndex].english[j]);
+         }
+         return;
+      case 2:
+         mallocSprintf (str, "%d", haz->haz[wwaIndex].SimpleCode);
+         return;
+   }
+}
 #endif
 
 /*****************************************************************************
@@ -1343,10 +1384,10 @@ static void getWxString (char **str, sInt4 wxIndex, const sect2_WxType *wx,
 static void genFillValue (sInt4 gribDataLen, const double *gribData,
                           const gridAttribType *grdAtt, myMaparam *map,
                           sInt4 Nx, sInt4 Ny, uChar f_interp,
-                          const sect2_WxType *wx, sChar f_WxParse,
-                          size_t numPnts, const Point * pnts,
-                          sChar f_pntType, genValueType * value,
-                          sChar f_avgInterp)
+                          const sect2_WxType *wx, const sect2_HazardType *haz,
+                          sChar f_WxParse, size_t numPnts,
+                          const Point * pnts, sChar f_pntType,
+                          genValueType * value, sChar f_avgInterp)
 {
    double missing;      /* Missing value to use. */
    size_t i;            /* loop counter over number of points. */
@@ -1369,28 +1410,30 @@ static void genFillValue (sInt4 gribDataLen, const double *gribData,
 
    /* Loop over the points. */
    for (i = 0; i < numPnts; i++) {
-      /* make sure that !(f_interp && (wx != NULL)) */
-      myAssert ((!f_interp) || (wx == NULL));
       getValAtPnt (gribDataLen, gribData, map, f_pntType, pnts[i].X,
                    pnts[i].Y, Nx, Ny, grdAtt->f_miss, missing,
                    grdAtt->missSec, f_interp, &ans, f_avgInterp);
       if (ans == missing) {
          value[i].valueType = 2;
          value[i].data = ans;
-         if (wx == NULL) {
+         if ((wx == NULL) && (haz == NULL)) {
             value[i].str = NULL;
          } else {
             mallocSprintf (&(value[i].str), "%.0f", ans);
          }
       } else {
-         if (wx == NULL) {
+         if ((wx == NULL) && (haz == NULL)) {
             value[i].valueType = 0;
             value[i].data = ans;
             value[i].str = NULL;
-         } else {
+         } else if (haz == NULL) {
             value[i].valueType = 1;
             value[i].data = 0;
             getWxString (&(value[i].str), (sInt4) ans, wx, f_WxParse);
+         } else {
+            value[i].valueType = 1;
+            value[i].data = 0;
+            getWWAString (&(value[i].str), (sInt4) ans, haz, f_WxParse);
          }
       }
    }
@@ -1435,7 +1478,7 @@ static void genCubeFillValue (FILE *data, sInt4 dataOffset, uChar scan,
                               size_t numPnts, const Point * pnts, sInt4 Nx,
                               sInt4 Ny, uChar f_interp, uChar elemEnum,
                               uShort2 numTable, char **table,
-                              sChar f_WxParse, sChar f_SimpleVer,
+                              sChar f_WxParse, sChar f_SimpleVer, sChar f_SimpleWWA,
                               genValueType * value)
 {
    size_t i;            /* loop counter over number of points. */
@@ -1443,14 +1486,17 @@ static void genCubeFillValue (FILE *data, sInt4 dataOffset, uChar scan,
    uShort2 wxIndex;     /* 'value' cast to an integer for table lookup. */
    size_t j;            /* Counter used to print "english" weather. */
    UglyStringType ugly; /* Used to 'translate' the weather keys. */
+   HazardStringType haz; /* Used to 'translate' the hazard keys. */
 
    myAssert ((scan == 0) || (scan == 64));
    myAssert (sizeof (float) == 4);
+/*
    myAssert (((elemEnum == NDFD_WX) && (numTable != 0)) ||
              ((elemEnum != NDFD_WX) && (numTable == 0)));
+*/
 
    /* Check if the user is trying to bi-linear interpolate weather. */
-   if (elemEnum == NDFD_WX) {
+   if ((elemEnum == NDFD_WX) || (elemEnum == NDFD_WWA)) {
       f_interp = 0;
    }
 
@@ -1462,14 +1508,14 @@ static void genCubeFillValue (FILE *data, sInt4 dataOffset, uChar scan,
       if (ans == 9999) {
          value[i].valueType = 2;
          value[i].data = ans;
-         if (elemEnum != NDFD_WX) {
+         if ((elemEnum != NDFD_WX) && (elemEnum != NDFD_WWA)) {
             value[i].str = NULL;
          } else {
             value[i].str = (char *) malloc (4 + 1);
             strcpy (value[i].str, "9999");
          }
       } else {
-         if (elemEnum != NDFD_WX) {
+         if ((elemEnum != NDFD_WX) && (elemEnum != NDFD_WWA)) {
             value[i].valueType = 0;
             value[i].data = ans;
             value[i].str = NULL;
@@ -1489,31 +1535,60 @@ static void genCubeFillValue (FILE *data, sInt4 dataOffset, uChar scan,
                      strcpy (value[i].str, table[wxIndex]);
                      break;
                   case 1:
-                     ParseUglyString (&ugly, table[wxIndex], f_SimpleVer);
-                     value[i].str = NULL;
-                     for (j = 0; j < NUM_UGLY_WORD; j++) {
-                        if (ugly.english[j] == NULL) {
-                           if (j == 0) {
-                              reallocSprintf (&(value[i].str), "No Weather");
+                     if (elemEnum == NDFD_WX) {
+                        ParseUglyString (&ugly, table[wxIndex], f_SimpleVer);
+                        value[i].str = NULL;
+                        for (j = 0; j < NUM_UGLY_WORD; j++) {
+                           if (ugly.english[j] == NULL) {
+                              if (j == 0) {
+                                 reallocSprintf (&(value[i].str), "No Weather");
+                              }
+                              break;
                            }
-                           break;
-                        }
-                        if (j != 0) {
-                           if (j + 1 == ugly.numValid) {
-                              reallocSprintf (&(value[i].str), " and ");
-                           } else {
-                              reallocSprintf (&(value[i].str), ", ");
+                           if (j != 0) {
+                              if (j + 1 == ugly.numValid) {
+                                 reallocSprintf (&(value[i].str), " and ");
+                              } else {
+                                 reallocSprintf (&(value[i].str), ", ");
+                              }
                            }
+                           reallocSprintf (&(value[i].str), "%s",
+                                           ugly.english[j]);
                         }
-                        reallocSprintf (&(value[i].str), "%s",
-                                        ugly.english[j]);
+                        FreeUglyString (&ugly);
+                     } else {
+                        ParseHazardString (&haz, table[wxIndex], f_SimpleWWA);
+                        value[i].str = NULL;
+                        for (j = 0; j < NUM_HAZARD_WORD; j++) {
+                           if (haz.english[j] == NULL) {
+                              if (j == 0) {
+                                 reallocSprintf (&(value[i].str), "No Hazard");
+                              }
+                              break;
+                           }
+                           if (j != 0) {
+                              if (j + 1 == haz.numValid) {
+                                 reallocSprintf (&(value[i].str), " and ");
+                              } else {
+                                 reallocSprintf (&(value[i].str), ", ");
+                              }
+                           }
+                           reallocSprintf (&(value[i].str), "%s",
+                                           haz.english[j]);
+                        }
+                        FreeHazardString (&haz);
                      }
-                     FreeUglyString (&ugly);
                      break;
                   case 2:
-                     ParseUglyString (&ugly, table[wxIndex], f_SimpleVer);
-                     mallocSprintf (&(value[i].str), "%d", ugly.SimpleCode);
-                     FreeUglyString (&ugly);
+                     if (elemEnum == NDFD_WX) {
+                        ParseUglyString (&ugly, table[wxIndex], f_SimpleVer);
+                        mallocSprintf (&(value[i].str), "%d", ugly.SimpleCode);
+                        FreeUglyString (&ugly);
+                     } else {
+                        ParseHazardString (&haz, table[wxIndex], f_SimpleWWA);
+                        mallocSprintf (&(value[i].str), "%d", haz.SimpleCode);
+                        FreeHazardString (&haz);
+                     }
                }
             }
          }
@@ -1739,18 +1814,24 @@ static int genProbeGrib (FILE *fp, size_t numPnts, const Point * pnts,
       curMatch->numValue = numPnts;
       curMatch->value =
             (genValueType *) malloc (numPnts * sizeof (genValueType));
-      if ((meta.GribVersion != 2) || (strcmp (meta.element, "Wx") != 0)) {
+      if ((meta.GribVersion == 2) && (strcmp (meta.element, "Wx") != 0)) {
          genFillValue (gribDataLen, gribData, &(meta.gridAttrib), &map,
-                       meta.gds.Nx, meta.gds.Ny, f_interp, NULL, f_WxParse,
+                       meta.gds.Nx, meta.gds.Ny, f_interp, &(meta.pds2.sect2.wx), NULL, f_WxParse,
                        numPnts, pnts, f_pntType, curMatch->value,
                        f_avgInterp);
+
+      } else if ((meta.GribVersion == 2) && (strcmp (meta.element, "WWA") != 0)) {
+         genFillValue (gribDataLen, gribData, &(meta.gridAttrib), &map,
+                       meta.gds.Nx, meta.gds.Ny, f_interp, NULL, &(meta.pds2.sect2.hazard), f_WxParse,
+                       numPnts, pnts, f_pntType, curMatch->value,
+                       f_avgInterp);
+
       } else {
          genFillValue (gribDataLen, gribData, &(meta.gridAttrib), &map,
-                       meta.gds.Nx, meta.gds.Ny, f_interp,
-                       &(meta.pds2.sect2.wx), f_WxParse, numPnts, pnts,
-                       f_pntType, curMatch->value, f_avgInterp);
+                       meta.gds.Nx, meta.gds.Ny, f_interp, NULL, NULL, f_WxParse,
+                       numPnts, pnts, f_pntType, curMatch->value,
+                       f_avgInterp);
       }
-
       MetaFree (&meta);
    }
    IS_Free (&is);
@@ -1808,7 +1889,7 @@ static int genProbeCube (const char *filename, size_t numPnts,
                          const genElemDescript * elem, sChar f_valTime,
                          double startTime, double endTime, uChar f_interp,
                          sChar f_unit, double majEarth, double minEarth,
-                         sChar f_WxParse, uChar f_XML, sChar f_SimpleVer,
+                         sChar f_WxParse, uChar f_XML, sChar f_SimpleVer, sChar f_SimpleWWA,
                          size_t *numMatch, genMatchType ** match)
 {
    char *flxArray = NULL; /* The index file in a char buffer. */
@@ -2043,12 +2124,12 @@ printf ("element is %d\n", elemEnum);
                genCubeFillValue (data, dataOffset, scan, f_bigEndian, &map,
                                  numPnts, gridPnts, gds.Nx, gds.Ny, f_interp,
                                  elemEnum, numTable, table, f_WxParse,
-                                 f_SimpleVer, curMatch->value);
+                                 f_SimpleVer, f_SimpleWWA, curMatch->value);
             } else {
                genCubeFillValue (data, dataOffset, scan, f_bigEndian, &map,
                                  numPnts, pnts, gds.Nx, gds.Ny, f_interp,
                                  elemEnum, numTable, table, f_WxParse,
-                                 f_SimpleVer, curMatch->value);
+                                 f_SimpleVer, f_SimpleWWA, curMatch->value);
             }
 
             if (numTable != 0) {
@@ -2322,7 +2403,7 @@ int genProbe (size_t numPnts, Point * pnts, sChar f_pntType,
          if (genProbeCube (outNames[i], numPnts, pnts, f_pntType, numElem,
                            elem, f_valTime, startTime, endTime, f_interp,
                            f_unit, majEarth, minEarth, f_WxParse, f_XML,
-                           f_SimpleVer, numMatch, match) != 0) {
+                           f_SimpleVer, f_SimpleWWA, numMatch, match) != 0) {
 #ifdef DEBUG
             msg = errSprintf (NULL);
             printf ("Error message was: '%s'\n", msg);
@@ -2339,9 +2420,15 @@ int genProbe (size_t numPnts, Point * pnts, sChar f_pntType,
 #ifdef DEBUG
 /*
    for (i=0; i < *numMatch; i++) {
-      printf ("%d : elem %d : sector %d refTime %f valTime %f\n", i,
-              (*match)[i].elem.ndfdEnum, (*match)[i].f_sector,
-              (*match)[i].refTime, (*match)[i].validTime);
+      if ((*match)[i].value->valueType == 2) {
+         printf ("%d : elem %d : sector %d refTime %f valTime %f missing\n", i,
+                 (*match)[i].elem.ndfdEnum, (*match)[i].f_sector,
+                 (*match)[i].refTime, (*match)[i].validTime);
+      } else {
+         printf ("%d : elem %d : sector %d refTime %f valTime %f val %s\n", i,
+                 (*match)[i].elem.ndfdEnum, (*match)[i].f_sector,
+                 (*match)[i].refTime, (*match)[i].validTime, (*match)[i].value->str);
+      }
    }
 */
 #endif
