@@ -5,7 +5,7 @@
 
 void FreeHazardString (HazardStringType * haz);
 
-int ParseHazardString (HazardStringType * haz, char *data, int simpleVer);
+void ParseHazardString (HazardStringType * haz, char *data, int simpleVer);
 
 void PrintHazardString (HazardStringType * haz);
 

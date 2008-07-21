@@ -100,21 +100,12 @@ HazTable HazCode[] = {
    /* 59 */ {"MA", "Special Marine", HAZ_MA},
    /* 60 */ /* {"EW", "Excessive Wind", HAZ_EW}, */
    /* 61 */ /* {"FL", "Flood", HAZ_FL}, */
+   /* 62 */ {"None", "None", HAZ_NONE},
 };
 
 enum {
    SIG_A, SIG_S, SIG_Y, SIG_W, SIG_NONE
 };
-
-
-void FreeHazardString (HazardStringType * haz)
-{
-   int j;               /* Used to free all the english words. */
-
-   for (j = 0; j < NUM_HAZARD_WORD; j++) {
-      free (haz->english[j]);
-   }
-}
 
 /* Based on the method used in "matchHazImageCodes()" */
 static int HazardRank (uChar haz, uChar sig)
@@ -317,6 +308,16 @@ static void InitHazardString (HazardStringType * haz)
    }
 }
 
+void FreeHazardString (HazardStringType * haz)
+{
+   int j;               /* Used to free all the english words. */
+
+   for (j = 0; j < NUM_HAZARD_WORD; j++) {
+      free (haz->english[j]);
+   }
+   InitHazardString (haz);
+}
+
 static void Hazard2English (HazardStringType * haz)
 {
    int i;               /* Loop counter over number of words. */
@@ -349,7 +350,7 @@ static void Hazard2English (HazardStringType * haz)
    }
 }
 
-int ParseHazardString (HazardStringType * haz, char *data, int simpleVer)
+void ParseHazardString (HazardStringType * haz, char *data, int simpleVer)
 {
    char *start;         /* Where current phrase starts. */
    char *end;
@@ -364,36 +365,32 @@ int ParseHazardString (HazardStringType * haz, char *data, int simpleVer)
    if (strcmp (data, "<None>") == 0) {
       haz->numValid = 1;
       haz->haz[0] = HAZ_NONE;
+      haz->sig[0] = SIG_NONE;
       Hazard2English (haz);
       if (simpleVer == 1) {
          haz->SimpleCode = HazTable1 (haz);
       }
-      return 0;
+      return;
    }
    start = data;
    f_continue = 1;
    do {
+      if (word == 5) {
+         printf ("More than 5 hazards in '%s', ignoring the rest\n", data);
+         continue;
+      }
       if ((end = strchr (start, '^')) != NULL) {
          *end = '\0';
       } else {
          f_continue = 0;
       }
+
       if ((ptr = strchr (start, '.')) == NULL) {
+         printf ("Problems parsing '%s' (Treating as <None>)\n", start);
          if (f_continue) {
             *end = '^';
          }
-         haz->numValid = 1;
-         haz->haz[0] = HAZ_NONE;
-         haz->english[0] = (char *) malloc ((strlen (data) + 1) *
-                                             sizeof (char));
-         strcpy (haz->english[0], data);
-         /* For unknown hazards, f_valid = 0, so parseGrid sets it to missing */
-         printf ("Unknown Hazard '%s' (Treating as <None>)\n", data);
-         if (simpleVer == 1) {
-            haz->SimpleCode = 0;
-         }
-/*         return 1;*/
-         return 0;
+         continue;
       }
       *ptr = '\0';
       f_found = 0;
@@ -406,21 +403,11 @@ int ParseHazardString (HazardStringType * haz, char *data, int simpleVer)
       }
       *ptr = '.';
       if (! f_found) {
+         printf ("Couldn't find the hazard type '%s' (Treating as <None>)\n", start);
          if (f_continue) {
             *end = '^';
          }
-         haz->numValid = 1;
-         haz->haz[0] = HAZ_NONE;
-         haz->english[0] = (char *) malloc ((strlen (data) + 1) *
-                                             sizeof (char));
-         strcpy (haz->english[0], data);
-         /* For unknown hazards, f_valid = 0, so parseGrid sets it to missing */
-         printf ("Unknown Hazard '%s' (Treating as <None>)\n", data);
-         if (simpleVer == 1) {
-            haz->SimpleCode = 0;
-         }
-/*         return 1;*/
-         return 0;
+         continue;
       }
       switch (ptr[1]) {
          case 'A':
@@ -436,20 +423,13 @@ int ParseHazardString (HazardStringType * haz, char *data, int simpleVer)
             haz->sig[word] = SIG_W;
             break;
          default:
+            printf ("Couldn't find the 'significance' '%s' (Treating as <None>)\n", start);
             if (f_continue) {
                *end = '^';
             }
-            haz->numValid = 1;
-            haz->english[0] = (char *) malloc ((strlen (data) + 1) *
-                                             sizeof (char));
-            strcpy (haz->english[0], data);
-            if (simpleVer == 1) {
-               haz->SimpleCode = 0;
-            }
-            /* For unknown hazards, f_valid = 0, so parseGrid sets it to missing */
-            printf ("Unknown Significance '%s' (Treating as missing)\n", data);
-            return 1;
+            continue;
       }
+
       word++;
       if (f_continue) {
          *end = '^';
@@ -457,10 +437,55 @@ int ParseHazardString (HazardStringType * haz, char *data, int simpleVer)
       }
    } while (f_continue);
 
+   if (word == 0) {
+      haz->numValid = 1;
+      haz->haz[0] = HAZ_NONE;
+      haz->sig[0] = SIG_NONE;
+      haz->english[0] = (char *) malloc ((strlen (data) + 1) *
+                                          sizeof (char));
+      strcpy (haz->english[0], data);
+      if (simpleVer == 1) {
+         haz->SimpleCode = HazTable1 (haz);
+      }
+      return;
+   }
+
    haz->numValid = word;
    Hazard2English (haz);
    if (simpleVer == 1) {
       haz->SimpleCode = HazTable1 (haz);
    }
-   return 0;
+   return;
 }
+
+void PrintHazardString (HazardStringType * haz)
+{
+   int i;               /* Used to traverse the ugly string structure. */
+
+   printf ("numValid %d\n", haz->numValid);
+   for (i = 0; i < haz->numValid; i++) {
+      printf ("Haz=%d, Sig=%d ::", haz->haz[i], haz->sig[i]);
+      printf ("HazName=%s ::", HazCode[haz->haz[i]].name);
+      printf ("SimpleHazCode=%d ::", haz->SimpleCode);
+      printf ("English=%s\n", haz->english[i]);
+   }
+   printf ("\n");
+}
+
+#ifdef DEBUG_HAZARD
+int main (int argc, char **argv)
+{
+   HazardStringType haz;
+   char buffer[100];
+
+   ParseHazardString (&haz, "<None>", 1);
+   PrintHazardString (&haz);
+   FreeHazardString (&haz);
+   printf ("----\n");
+   strcpy (buffer, "FW.W:2^RecHiPos");
+   ParseHazardString (&haz, buffer, 1);
+   PrintHazardString (&haz);
+   FreeHazardString (&haz);
+}
+#endif
+
