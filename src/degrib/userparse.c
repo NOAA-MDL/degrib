@@ -469,7 +469,7 @@ int UserValidate (userType *usr)
    if (usr->f_SimpleWx == -1)
       usr->f_SimpleWx = 0;
    if (usr->f_SimpleWWA == -1)
-      usr->f_SimpleWWA = 0;
+      usr->f_SimpleWWA = 1;
    if (usr->f_SimpleVer == -1)
       usr->f_SimpleVer = 4;
    if (usr->f_pntStyle == -1)
@@ -700,7 +700,7 @@ static char *UsrOpt[] = { "-cfg", "-in", "-I", "-C", "-P", "-V", "-Flt",
    "-XML", "-MOTD", "-Graph", "-startTime", "-endTime", "-startDate",
    "-numDays", "-ndfdVars", "-geoData", "-gribFilter", "-ndfdConven", "-Freq",
    "-Icon", "-curTime", "-rtmaDir", "-avgInterp", "-cwa", "-SimpleWWA",
-   NULL
+   "-TxtParse", NULL
 };
 
 int IsUserOpt (char *str)
@@ -722,7 +722,7 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
       VALIDMIN, TDL, NO_TDL, SECTOR, SECTFILE, NCCONVERT, ASCGRID, MAP,
       MAPINIFILE, MAPINIOPTIONS, XML, MOTD, GRAPH, STARTTIME, ENDTIME,
       STARTDATE, NUMDAYS, NDFDVARS, GEODATA, GRIBFILTER, NDFDCONVEN,
-      FREQUENCY, ICON, CURTIME, RTMADIR, AVGINTERP, CWA, SIMPLEWWA
+      FREQUENCY, ICON, CURTIME, RTMADIR, AVGINTERP, CWA, SIMPLEWWA, TXTPARSE
    };
    int index;           /* "cur"'s index into Opt, which matches enum val. */
    double lat, lon;     /* Used to check on the -pnt option. */
@@ -1588,6 +1588,7 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
          }
          return 2;
       case WXPARSE:
+      case TXTPARSE:
          if (usr->f_WxParse == -1) {
 /*            usr->f_WxParse = (sChar) atoi (next); */
             if (myAtoI (next, &(li_temp)) != 1) {

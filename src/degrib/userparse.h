@@ -92,7 +92,7 @@ typedef struct {
                          * use. (1 is 6/2003) (2 is 1/2004) (3 is 2/2004)
                          * (4 is 11/2004) (default 4) */
    sChar f_SimpleWWA;   /* Which version of the simple NDFD WWA table to
-                         * use. (1 is 7/2008) (default 0 = none) */
+                         * use. (1 is 7/2008) (default 1) */
    sChar f_revFlt;      /* f_revFlt = -revFlt */
    sChar f_MSB;         /* f_MSB = -MSB */
    sChar f_validRange;  /* 0 if no -validMin / -validMax, 1 if -validMin,
@@ -108,6 +108,7 @@ typedef struct {
    char *separator;     /* The separator to use for -P output. */
    sChar f_WxParse;     /* -WxParse option.  0 == ugly string,
                          * 1 == English Translation, 2 == -SimpleWx code */
+                        /* Want to rename this to "f_txtParse" */
    sChar f_icon;        /* For XML, the icon version 0 == no icon,
                          * 1 == version 1 */
    Point *pnt;          /* pnt = -pnt option. */
