@@ -1812,15 +1812,14 @@ static int genProbeGrib (FILE *fp, size_t numPnts, const Point * pnts,
 
       /* fill in the value structure. */
       curMatch->numValue = numPnts;
-      curMatch->value =
-            (genValueType *) malloc (numPnts * sizeof (genValueType));
-      if ((meta.GribVersion == 2) && (strcmp (meta.element, "Wx") != 0)) {
+      curMatch->value = (genValueType *) malloc (numPnts * sizeof (genValueType));
+      if ((meta.GribVersion == 2) && (strcmp (meta.element, "Wx") == 0)) {
          genFillValue (gribDataLen, gribData, &(meta.gridAttrib), &map,
                        meta.gds.Nx, meta.gds.Ny, f_interp, &(meta.pds2.sect2.wx), NULL, f_WxParse,
                        numPnts, pnts, f_pntType, curMatch->value,
                        f_avgInterp);
 
-      } else if ((meta.GribVersion == 2) && (strcmp (meta.element, "WWA") != 0)) {
+      } else if ((meta.GribVersion == 2) && (strcmp (meta.element, "WWA") == 0)) {
          genFillValue (gribDataLen, gribData, &(meta.gridAttrib), &map,
                        meta.gds.Nx, meta.gds.Ny, f_interp, NULL, &(meta.pds2.sect2.hazard), f_WxParse,
                        numPnts, pnts, f_pntType, curMatch->value,
@@ -1831,6 +1830,7 @@ static int genProbeGrib (FILE *fp, size_t numPnts, const Point * pnts,
                        meta.gds.Nx, meta.gds.Ny, f_interp, NULL, NULL, f_WxParse,
                        numPnts, pnts, f_pntType, curMatch->value,
                        f_avgInterp);
+
       }
       MetaFree (&meta);
    }
