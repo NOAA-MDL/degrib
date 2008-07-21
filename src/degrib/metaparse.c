@@ -636,11 +636,8 @@ static int ParseSect2_Hazard (float *rdat, sInt4 nrdat, sInt4 *idat,
                                          sizeof (HazardStringType));
    Hazard->f_valid = (uChar *) malloc (Hazard->dataLen * sizeof (uChar));
    for (j = 0; j < Hazard->dataLen; j++) {
-      if (ParseHazardString (&(Hazard->haz[j]), Hazard->data[j], simpWWA) == 0) {
-         Hazard->f_valid[j] = 1;
-      } else {
-         Hazard->f_valid[j] = 0;
-      }
+      ParseHazardString (&(Hazard->haz[j]), Hazard->data[j], simpWWA);
+      Hazard->f_valid[j] = 1;
 /*
       printf ("%d : %d : %s", j, Hazard->haz[j].numValid, Hazard->data[j]);
       for (k = 0; k < Hazard->haz[j].numValid; k++) {

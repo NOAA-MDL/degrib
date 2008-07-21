@@ -455,6 +455,10 @@ void ParseHazardString (HazardStringType * haz, char *data, int simpleVer)
    if (simpleVer == 1) {
       haz->SimpleCode = HazTable1 (haz);
    }
+/*
+   printf ("%s\n", data);
+   PrintHazardString (haz);
+*/
    return;
 }
 
