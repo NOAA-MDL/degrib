@@ -3,6 +3,12 @@
 #include <stdlib.h>
 #include "hazard.h"
 
+/*
+ * Uncomment the following to have error messages sent to stdout.
+ */
+/* #define VERBOSE */
+#undef VERBOSE
+
 typedef struct {
    char *abrev, *name;
    uChar number;
@@ -376,7 +382,9 @@ void ParseHazardString (HazardStringType * haz, char *data, int simpleVer)
    f_continue = 1;
    do {
       if (word == 5) {
-         printf ("More than 5 hazards in '%s', ignoring the rest\n", data);
+#ifdef VERBOSE
+         fprintf (stderr, "More than 5 hazards in '%s', ignoring the rest\n", data);
+#endif
          continue;
       }
       if ((end = strchr (start, '^')) != NULL) {
@@ -386,7 +394,9 @@ void ParseHazardString (HazardStringType * haz, char *data, int simpleVer)
       }
 
       if ((ptr = strchr (start, '.')) == NULL) {
-         printf ("Problems parsing '%s' (Treating as <None>)\n", start);
+#ifdef VERBOSE
+         fprintf (stderr, "Problems parsing '%s' (Treating as <None>)\n", start);
+#endif
          if (f_continue) {
             *end = '^';
          }
@@ -403,7 +413,9 @@ void ParseHazardString (HazardStringType * haz, char *data, int simpleVer)
       }
       *ptr = '.';
       if (! f_found) {
-         printf ("Couldn't find the hazard type '%s' (Treating as <None>)\n", start);
+#ifdef VERBOSE
+         fprintf (stderr, "Couldn't find the hazard type '%s' (Treating as <None>)\n", start);
+#endif
          if (f_continue) {
             *end = '^';
          }
@@ -423,7 +435,9 @@ void ParseHazardString (HazardStringType * haz, char *data, int simpleVer)
             haz->sig[word] = SIG_W;
             break;
          default:
-            printf ("Couldn't find the 'significance' '%s' (Treating as <None>)\n", start);
+#ifdef VERBOSE
+            fprintf (stderr, "Couldn't find the 'significance' '%s' (Treating as <None>)\n", start);
+#endif
             if (f_continue) {
                *end = '^';
             }
