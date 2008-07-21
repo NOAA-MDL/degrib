@@ -97,7 +97,8 @@
  *                                timeUserStart and timeUserEnd by deltaSecs
  *                                if product is of summary type.
  *   2/2008 Paul Hershberg (MDL): Find number of rows generated for the 
- *                                concatenated RTMA-NDFD elements. 
+ *                                concatenated RTMA-NDFD elements.
+ *   6/2008 Paul Hershberg (MDL): Accommodated hazard (NDFD_WWA) element.
  *
  * NOTES
  ******************************************************************************

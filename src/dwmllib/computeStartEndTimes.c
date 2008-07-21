@@ -76,6 +76,8 @@
  * 11/2007 Paul Hershberg (MDL): -- Added 10 RTMA elements 
  *  2/2008 Paul Hershberg (MDL): -- Added special case of RTMA_PRECIPA when 
  *                                  concatenated to NDFD_QPF
+ *  6/2008 Paul Hershberg (MDL): -- Added Hazard Element 
+ *                                  
  * NOTES:
  *****************************************************************************
  */

@@ -8,15 +8,16 @@
  *   Get the English translations for the NDFD hazard phenomena part of the
  *   "hazard ugly string". For example, NDFD coverage "SC" is converted to
  *   its english equivilant "Small Craft". Also, if phenomena has an icon,
- *   get that too.
+ *   flag that too.
  *
  *   
  * ARGUMENTS
- *  uglyStr = Incoming string with the NDFD hazard phenomena. (Input)
- * transStr = Outgoing string with the translated phenomena. (Output)
- *   f_icon = Denotes if this hazard phenomena has an associated icon. (Output).
- *  iconStr = Outgoing icon string if phenomena has an icon. (Output).
- *    hzSig = Significance portion of hazard. Used to determine icon. (Input)
+ *      uglyStr = Incoming string with the NDFD hazard phenomena. (Input)
+ * significance = Hazard's significance. (Input)
+ *     transStr = Outgoing string with the translated phenomena. (Output)
+ *       f_icon = Denotes if this hazard phenomena has an associated icon. 
+ *                (Output).
+ *      iconStr = Outgoing icon string if phenomena has an icon. (Output).
  *
  * FILES/DATABASES: None
  *
@@ -29,12 +30,26 @@
  ******************************************************************************
  */
 #include "xmlparse.h"
-void  getHazPhenAndIcon(char *uglyStr, char *transStr, int *f_icon, 
-                        char *iconStr, char *hzSig)
+void  getHazPhenAndIcon(char *uglyStr, char *significance, char *transStr,
+                        int *f_icon, char *iconStr)
 {
    if (strcmp(uglyStr, "AF") == 0)
    {
       strcpy(transStr, "Ashfall");
+      return;
+   }
+
+   else if (strcmp(uglyStr, "AQA") == 0)
+   {
+      strcpy(transStr, "Air Quality");
+
+      /* We need to temporarily create a significance. NOTE from Shannon White
+       * 7/9/08. The Air Quality Alert message becomes a VTEC product in OB9 
+       * which deploys in late winter. It will have a new VTEC code of AQ.Y 
+       * when issued. Currently only ER issues it and it is not VTEC-enabled. 
+       * So nothing to map as of yet.
+       */
+      strcpy(significance, "Y");
       return;
    }
 
@@ -52,7 +67,7 @@ void  getHazPhenAndIcon(char *uglyStr, char *transStr, int *f_icon,
 
    else if (strcmp(uglyStr, "BW") == 0)
    {
-      strcpy(transStr, "Brisk Wind");
+      strcpy(transStr, "Blowing Wind");
       return;
    }
 
@@ -82,13 +97,19 @@ void  getHazPhenAndIcon(char *uglyStr, char *transStr, int *f_icon,
 
    else if (strcmp(uglyStr, "EC") == 0)
    {
-      strcpy(transStr, "Extreme Cold");
+      strcpy(transStr, "Excessive Cold");
       return;
    }
 
    else if (strcmp(uglyStr, "EH") == 0)
    {
       strcpy(transStr, "Excessive Heat");
+      return;
+   }
+
+   else if (strcmp(uglyStr, "EW") == 0)
+   {
+      strcpy(transStr, "Excessive Wind");
       return;
    }
 
@@ -110,6 +131,12 @@ void  getHazPhenAndIcon(char *uglyStr, char *transStr, int *f_icon,
       return;
    }
 
+   else if (strcmp(uglyStr, "FL") == 0)
+   {
+      strcpy(transStr, "Flood");
+      return;
+   }
+
    else if (strcmp(uglyStr, "FR") == 0)
    {
       strcpy(transStr, "Frost");
@@ -118,7 +145,10 @@ void  getHazPhenAndIcon(char *uglyStr, char *transStr, int *f_icon,
 
    else if (strcmp(uglyStr, "FW") == 0)
    {
-      strcpy(transStr, "Fire Weather");
+      if (strcmp (significance, "W") == 0)
+         strcpy(transStr, "Red Flag");
+      else
+         strcpy(transStr, "Fire Weather");
       return;
    }
 
@@ -226,7 +256,10 @@ void  getHazPhenAndIcon(char *uglyStr, char *transStr, int *f_icon,
 
    else if (strcmp(uglyStr, "MA") == 0)
    {
-      strcpy(transStr, "Marine");
+      if (strcmp (significance, "W") == 0)
+         strcpy(transStr,"Special Marine");
+      else
+         strcpy(transStr,"Marine");
       return;
    }
 
@@ -330,7 +363,7 @@ void  getHazPhenAndIcon(char *uglyStr, char *transStr, int *f_icon,
    {
       strcpy(transStr, "Tsunami");
       *f_icon = 1;
-      strcpy (iconStr, "m_wave.gif");
+      strcpy (iconStr, "m_wave.jpg");
       return;
    }
 
@@ -382,7 +415,19 @@ void  getHazPhenAndIcon(char *uglyStr, char *transStr, int *f_icon,
       return;
    }
 
-   else if (strcmp(uglyStr, "none") == 0)
+   else if (strcmp(uglyStr, "RECHIP") == 0)
+   {
+      strcpy(transStr, "Record High Temperature Possible");
+      return;
+   }
+
+   else if (strcmp(uglyStr, "RECLOP") == 0)
+   {
+      strcpy(transStr, "Record Low Temperature Possible");
+      return;
+   }
+
+   else
    {
       strcpy(transStr, "none");
       return;

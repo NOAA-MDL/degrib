@@ -20,6 +20,8 @@
  *               matches can be found. (Input)
  *      endNum = Last index in match structure an individual point's data
  *               matches can be found. (Input)
+ *      cwaStr = The CWA this point falls into. String is part of the 
+ *               <hazardTextURL> element.(Input)
  *
  * FILES/DATABASES: None
  *                
@@ -33,8 +35,7 @@
 #include "xmlparse.h"
 void genHazardValues(size_t pnt, char *layoutKey, genMatchType *match,
                      numRowsInfo numRowsHZ, xmlNodePtr parameters,
-                     int startNum, int endNum, char *cwaStr,
-                     int f_noHazActiveForPoint)
+                     int startNum, int endNum, char *cwaStr)
 {
    int i;                     /* Counter through match structure. */
    int priorElemCount;        /* Counter used to find elements' location in
@@ -42,33 +43,24 @@ void genHazardValues(size_t pnt, char *layoutKey, genMatchType *match,
    int hzIndex = 0;           /* Counter thru hazard ugly strings (hazard data 
                                * rows). */
    int numGroups = 0;         /* Number of hazards per hazard ugly string. */
-   int numValues;             /* An index denoting number of values (sig, phen, 
-                               * ETN, etc) per hazard group. */
    int groupIndex;            /* An index into the HzGroups array denoting the 
                                * number of hazards per hazard ugly string.. */
-/*   int valueIndex; */       /* An index into each weatherGroups fields (=
-                               * 5). */
-/*   int valueIsMissing = 0; */ /* Denotes if current weather is missing value. 
-                                 */
    char *pstr = NULL;         /* Pointer to "hazard ugly string". */
    char *pstr1 = NULL;        /* Pointer to "hazard ugly string". */
-   char *pstr2 = NULL;        /* Pointer to "hazard ugly string". */
    char **HzGroups = NULL;    /* An array holding the hazard groups for
                                * one ugly hazard string, each group delimited 
                                * by "^". */
+   char **hzCode = NULL;      /* An individual hazard group's full code. */
    char **hzPhen = NULL;      /* An individual hazard group's phenomena. */
    char **hzSig = NULL;       /* An individual hazard group's significance. */
    char **hzETN = NULL;       /* An individual hazard group's significance. */
-/*   char HzValues[5][50]; */ /* An associative array holding the current
-                               * group's type, coverage, intensity, vis, &
-                               * qualifier. */
    char hazardType[] = "long duration";
    char transPhenomenaStr[100];  /* String holding english translation of
                                   * hazard phenomena. */
    char transSignificanceStr[100];    /* String holding english translation of
                                        * hazard significance. */
-   char iconStr[100]; /* The specific part of the icon string ("mf_gale.gif"). */
-   char hazardIcon[200]; /* Total hazard Icon string. */
+   char iconStr[40]; /* The specific part of the icon string ("mf_gale.gif"). */
+   char hazardIcon[300]; /* Total hazard Icon string. */
    char hazardTextURL[300]; /* Total hazard Text URL string. */
    int f_icon;        /* Denotes if a specific hazard group has an icon. */
    xmlNodePtr hazards = NULL; /* Xml Node Pointer for node "hazards". */
@@ -78,7 +70,9 @@ void genHazardValues(size_t pnt, char *layoutKey, genMatchType *match,
    HZ *hzInfo = NULL;         /* Hazard data taken from the match array. */
    int numActualRowsHZ; /* Number may be reduced due to a smaller time window 
                          * chosen by user. */
- 
+   int f_formatHazTextURL = 1; /* Flag to determine if <hazardTextURL> element 
+                                * is to be formatted. */
+
 /* Initialize the base strings for the hazard icons and hazard Text URL's. */
    char baseIconURL[] = "http://forecast.weather.gov/images/wtf/";
    char baseTextURL[] = "http://forecast.weather.gov/wwamap/wwatxtget.php?cwa=";
@@ -137,25 +131,22 @@ void genHazardValues(size_t pnt, char *layoutKey, genMatchType *match,
          xmlNewProp(hazard_conditions, BAD_CAST "xsi:nil", BAD_CAST "true");
          continue;
       }
-/*    if (valueIsMissing != 1) */
-      /* Check to see if there are no hazards, i.e. == NULL. If so, simply 
-       * format an empty <hazard-conditions> XML element tag. Denoted when 
-       * valueType == 0.
+
+      /* Check to see if there are no hazards, i.e. == <None>. If so, simply 
+       * format an empty <hazard-conditions> XML element tag.
        */ 
-/*      else if (hzInfo[hzIndex].str[0] == '<' && hzInfo[hzIndex].str[1] == 'N' &&
-               hzInfo[hzIndex].str[2] == 'o')
-*/
-      else if (hzInfo[hzIndex].valueType == 0)
+      else if (hzInfo[hzIndex].str[0] == '<' && hzInfo[hzIndex].str[1] == 'N' &&
+               hzInfo[hzIndex].str[2] == 'o' && hzInfo[hzIndex].str[3] == 'n')
+
       {
          continue;
       }
       else  /* We have hazard data. Need to see if there are multiple hazards 
              * (groups) in this ugly hazard string. 
              */
-      {                      
+      {
          /* Initialize/Reset a few things. */
          numGroups = 0;
-         groupIndex = 0;
 
          /* Now put any hazard groupings into an array using the "^" as the
           * delimiter between 2 or more hazards in a hazard ugly string. Find
@@ -166,205 +157,102 @@ void genHazardValues(size_t pnt, char *layoutKey, genMatchType *match,
          while (pstr != NULL)
          { 
             numGroups++;
+            HzGroups = (char **) realloc(HzGroups, numGroups * sizeof(char *));
+            HzGroups[numGroups-1] = (char *) malloc((strlen(pstr)+1) * sizeof(char));
+            strcpy (HzGroups[numGroups-1], pstr);
             pstr = strtok (NULL, "^");
          }
-         HzGroups = (char **)calloc(numGroups, sizeof(char *));
-
-         /* Fill the first array elements (groupIndex = 0) before the others. */ 
-         pstr = HzGroups[0];
-         for (i = 0; pstr[i]; i++)
-         {
-            if (pstr[i] != '^')
-               /* Simply copy over character into HzGroups. */
-               HzGroups[groupIndex][i] = pstr[i];
-            else if (pstr[i] == '^')
-            {
-               /* Copy over null character into HzGroups in place of "^". */
-               HzGroups[groupIndex][i] = '\0';
-               break;
-            }
-         }
-
-         /* Get the total number of Hazards for this one row of hazard 
-          * data. Set pointer now to delimiter of second hazard, if there is
-          * one.
-          */
-         pstr1 = strchr(hzInfo[hzIndex].str, '^');
-         while (pstr1 != NULL)
-         {
-            numGroups++;
-            pstr1 = strchr(pstr1 + 1, '^');
-         }
-
-         /* Continue filling the array of HzGroups. */
-         pstr = strchr(hzInfo[hzIndex].str, '^');
-         pstr2 = strchr(hzInfo[hzIndex].str, '^');
-
-         for (groupIndex = 1; groupIndex < numGroups + 1; groupIndex++)
-         {
-            for (i = 1; pstr[i]; i++)
-            {
-               if (pstr[i] != '^')
-               {
-                  HzGroups[groupIndex][i - 1] = pstr[i];
-               }
-               else if (pstr[i] == '^')
-                  {
-                  HzGroups[groupIndex][i - 1] = '\0';
-                  pstr = strchr(pstr + 1, '^');
-                  break;
-               }
-            }
-         }
-/*         else
-         {
-            if (pstr2[i - 1] == ':')
-               HzGroups[numGroups][i - 1] = '\0';
-         }
-*/
 
          /* For each group, process its hazard information. This can include
           * the Phenomena (i.e. "SC" == "Small Craft"), Significance (i.e. 
           * "Y" == "Advisory") and Event Tracking Number (i.e. "1001"). The
-          * Phenomena and Significance will be delimited by a period (".").
-          * The Event Tracking Number will be delimited from the Phenomena or
-          * Significance by a colon (":").
+          * Phenomena, Significance, and ETN will be delimited by a period (".").
           */
-         hzPhen = (char **)calloc(numGroups + 1, sizeof(char *));
-         hzSig = (char **)calloc(numGroups + 1, sizeof(char *));
-         hzETN = (char **)calloc(numGroups + 1, sizeof(char *));
-	    
+         hzCode = (char **)calloc(numGroups, sizeof(char *));
+         hzPhen = (char **)calloc(numGroups, sizeof(char *));
+         hzSig = (char **)calloc(numGroups, sizeof(char *));
+         hzETN = (char **)calloc(numGroups, sizeof(char *));
+
          /* Loop over each group. */
-         for (groupIndex = 0; groupIndex < numGroups + 1; groupIndex++)
+         for (groupIndex = 0; groupIndex < numGroups; groupIndex++)
          {
             f_icon = 0;
+            f_formatHazTextURL = 1;
+
             /* Format each <hazard> denoting multiple hazards per one ugly
              * hazard string. 
              */
             hazard = xmlNewChild(hazard_conditions, NULL, BAD_CAST "hazard",
                      NULL);
 
-	    /* Initialize the number of hazard values (phenomena, 
-             * significance, ETN's) per group. 
-	     */
-            numValues = 0;
-
             /* Create the associative array holding the hazard phenomena,
              * significance, and ETN. Find the first Phenomena firstly.
 	     */
-            pstr = HzGroups[groupIndex];
-/*               valueIndex = 0;
-                 f_hzPhenFoundByDelimiter = 0;
-*/
-            for (i = 0; pstr[i]; i++)
+            hzCode[groupIndex] = malloc(strlen(HzGroups[groupIndex]) + 1);
+            strcpy (hzCode[groupIndex],HzGroups[groupIndex]);
+
+            pstr1 = strtok(HzGroups[groupIndex], ".");
+
+            /* Initialize a few things. */
+            hzPhen[groupIndex] = malloc(strlen("none") + 1);
+            strcpy (hzPhen[groupIndex], "none");
+            hzSig[groupIndex] = malloc(strlen("none") + 1);
+            strcpy (hzSig[groupIndex], "none");
+            hzETN[groupIndex] = malloc(strlen("none") + 1);
+            strcpy (hzETN[groupIndex], "none");
+
+            while (pstr1 != NULL)
             {
-               if (pstr[i] != '.' && pstr[i] != ':')
-/*                     HzValues[valueIndex][i] = pstr[i]; */
-                  hzPhen[groupIndex][i] = pstr[i];
-               else if (pstr[i] == '.' || pstr[i] == ':')
+               hzPhen[groupIndex] = (char *) malloc((strlen(pstr1)+1) * sizeof(char));
+               strcpy (hzPhen[groupIndex], pstr1);
+               pstr1 = strtok (NULL, ".");
+               while (pstr1 != NULL)
                {
-                  hzPhen[groupIndex][i] = '\0';
-/*                  f_hzPhenFoundByDelimiter = 1; */
-                  break;
-               }
-            }
-/*               if (!f_hzPhenFoundByDelimiter)
-                   HzValues[valueIndex][i] = '\0';               
-*/
-            /* Get the total number of HzValues (phenomena, significance, 
-             * and ETN) in this first HzGroups. If HzValues array == HzGroups
-             * array, then there is only one Hazard value, the Hazard 
-             * Phenomena. There can be 1, 2, or 3 (Phen, Sig, ETN) values per
-             * group.
-             */
-/*               pstr1 = strchr(HzGroups[groupIndex], ':'); */
-            if (strcmp(hzPhen[groupIndex], HzGroups[groupIndex]) == 0)
-            {
-               hzPhen[groupIndex][i] = '\0';
-            }
-            else
-            {
-               if (strchr(HzGroups[groupIndex], ':') != NULL)
-                  numValues++;
-               if (strchr(HzGroups[groupIndex], '.') != NULL)
-                  numValues++;
-            }
-
-            /* Bump this number up by one to account for phenomena. */
-            numValues++;
-
-            /* Done with this group's Phenomena. */
-            strTrim(hzPhen[groupIndex]);
-
-            /* Continue with the Significance and Event Tracking Number. */
-            if (numValues > 1)
-            {
-               if (strchr(HzGroups[groupIndex], '.') != NULL)
-               {
-                  pstr = strchr(HzGroups[groupIndex], '.');
-                  for (i = 1; pstr[i]; i++)
+                  hzSig[groupIndex] = (char *) malloc((strlen(pstr1)+1) * sizeof(char));
+                  strcpy (hzSig[groupIndex], pstr1);
+                  pstr1 = strtok (NULL, ".");
+                  while (pstr1 != NULL)
                   {
-                     if (pstr[i] != ':')
-                        hzSig[groupIndex][i - 1] = pstr[i];
-                     else if (pstr[i] == ':')
+                     if (strlen(pstr1) == 4)
                      {
-                        hzSig[groupIndex][i - 1] = '\0';
-                        break;
-                     }
-                  }
-               }
-               if (strchr(HzGroups[groupIndex], ':') != NULL)
-               {
-                  pstr = strchr(HzGroups[groupIndex], ':');
-                  for (i = 1; pstr[i]; i++)
-                  {
-                     hzETN[groupIndex][i - 1] = pstr[i];
-                  }
-                  hzETN[groupIndex][i - 1] = '\0';
-
-                  /* If not 4 digits, it's not an ETN, but a WFO segment 
-                   * identifier. 
-                   */
-                  if (strlen(hzETN[groupIndex]) < 4)
-                  {
-                     hzETN[groupIndex] = malloc(strlen("none") + 1);
-                     strcpy (hzETN[groupIndex], "none");
+                        hzETN[groupIndex] = (char *) malloc((strlen(pstr1)+1) * sizeof(char));
+                        strcpy (hzETN[groupIndex], pstr1);
+                     } 
+                     pstr1 = strtok (NULL, ".");
                   }
                }
             }
-            else /* No significance or ETN, so set these to = "none". */
-            {
-               strcpy (hzSig[groupIndex], "none");
-               strcpy (hzETN[groupIndex], "none");
-            }
-            
-            /* Begin formatting the hazard attributes. Need to translate the 
-             * Phenomena and Significance code into English Words, first.
-             */
-
-            /* Format hazardCode (no translation). */
-            strTrim (HzGroups[groupIndex]);
+             
+            /* Begin formatting the hazard attributes. We can format the 
+             * entire hazardCode (no translation). */
+            strTrim (hzCode[groupIndex]);
             xmlNewProp(hazard, BAD_CAST "hazardCode", BAD_CAST 
-                       HzGroups[groupIndex]);
+                       hzCode[groupIndex]);
 
             /* Translate and format hazard phenomena and get the icon based 
-             * off of the phenomena and significance.  
+             * off of the phenomena (and significance in a few cases).  
              */
-            getHazPhenAndIcon(hzPhen[groupIndex], transPhenomenaStr, &f_icon, 
-                              iconStr, hzSig[groupIndex]);
+            strTrim(hzPhen[groupIndex]);
+            getHazPhenAndIcon(hzPhen[groupIndex], hzSig[groupIndex],
+                              transPhenomenaStr, &f_icon, iconStr);
+            
             xmlNewProp(hazard, BAD_CAST "phenomena", BAD_CAST
                        transPhenomenaStr);
 
             /* Translate and Format hazard significance. */
             strTrim(hzSig[groupIndex]);
             getTranslatedHzSig(hzSig[groupIndex], transSignificanceStr);
+            
             xmlNewProp(hazard, BAD_CAST "significance", BAD_CAST
                        transSignificanceStr);
 
-            /* Format hazard Event Tracking Number. */
-            strTrim(hzETN[groupIndex]);
-            xmlNewProp(hazard, BAD_CAST "EventTrackingNumber", BAD_CAST
-                       hzETN[groupIndex]);
+            /* Format hazard Event Tracking Number, if available. */
+            if (strcmp(hzETN[groupIndex], "none") != 0)
+            {
+               strTrim(hzETN[groupIndex]);
+               xmlNewProp(hazard, BAD_CAST "eventTrackingNumber", BAD_CAST
+                          hzETN[groupIndex]);
+            }
 
             /* Format hazard Type (duration). */
             xmlNewProp(hazard, BAD_CAST "hazardType", BAD_CAST
@@ -372,10 +260,14 @@ void genHazardValues(size_t pnt, char *layoutKey, genMatchType *match,
 
             /* Derive and format the <hazardTextURL> string. */
             genHazTextURL(baseTextURL, cwaStr, transPhenomenaStr, 
-                          transSignificanceStr, hazardTextURL); 
-            strTrim(hazardTextURL);
-            xmlNewChild(hazard, NULL, BAD_CAST "hazardTextURL", BAD_CAST
-                        hazardTextURL);
+                          transSignificanceStr, hzCode[groupIndex], 
+                          hazardTextURL, &f_formatHazTextURL);
+            if (f_formatHazTextURL)
+            {
+               strTrim(hazardTextURL);
+               xmlNewTextChild(hazard, NULL, BAD_CAST "hazardTextURL", BAD_CAST
+                               hazardTextURL);
+            }
 
             /* Derive and format the <hazardIcon> element string. */
             if (f_icon)
@@ -386,21 +278,26 @@ void genHazardValues(size_t pnt, char *layoutKey, genMatchType *match,
                            hazardIcon);
             }
 
-/*            memset(hzPhen, '\0', 10 * 100);
-              memset(hzSig, '\0', 10 * 100);
-*/
             free(HzGroups[groupIndex]);
-            
+            free(hzCode[groupIndex]);
+            free(hzPhen[groupIndex]);
+            free(hzSig[groupIndex]);
+            free(hzETN[groupIndex]);
+              
          } /* Closing out groupIndex "for" loop */
 
-         /* Re-initialize the HzGroups array and free a few things. */
-         free(HzGroups);
+         /* Free a few things. */
+         free(hzCode);
          free(hzPhen);
          free(hzSig);
+         free(hzETN);
 
       } /* Closing out if we have hazard data "else" statement. */
 
    } /* Closing out hzIndex "for" loop */
+
+   free(HzGroups);
+   free(hzInfo);
 
    return;
 }

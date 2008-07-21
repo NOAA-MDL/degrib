@@ -43,6 +43,7 @@
  *  3/2006 Paul Hershberg (MDL): Created.
  *  7/5/2006 Carl McCalla (MDL): Modified to handle up to five comma delimited 
  *                               hazards/qualifier strings
+ *  7/2008 Paul Hershberg (MDL): Initialized valueIsMissing in wx index loop.
  *
  * NOTES:
  *****************************************************************************
@@ -308,13 +309,13 @@ void genWeatherValues(size_t pnt, char *layoutKey, genMatchType *match,
          memset(WxValues, '\0', 5 * 50);
          memset(WxGroups, '\0', 10 * 100);
          numGroups = 0;
+         valueIsMissing = 0;
 
          if (wxInfo[wxIndex].valueType == 2)
             valueIsMissing = 1;
 
          if (valueIsMissing != 1)
          {
-
             /* Determine if this interation is occuring during the day or
              * night. First, calculate the total offset, in hours, from GMT.
              */

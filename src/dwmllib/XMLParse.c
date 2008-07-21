@@ -62,6 +62,7 @@
  *  10/2007 Paul Hershberg (MDL): Removed code that shifted data back by 1/2
  *                                the period length (bug from php code)
  *  11/2007 Paul Hershberg (MDL): Added 10 RTMA Elements.
+ *   7/2008 Paul Hershberg (MDL): Accommodates Hazard Element (NDFD_WWA).
  *
  * NOTES: The NDFD/RTMA element list is below. This contains all elements
  *        data can be returned for in DWML.
@@ -371,11 +372,6 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                            * Sky Cover and RTMA Sky Cover. Thus, the two
                            * will be conjoined into one element. */
    int *pnt_rtmaNdfdSky = NULL; /* Point specific f_rtmaNdfdSky */
-   int f_hazQueriedFor = 0; /* Flag denoting if a hazard was queried for by the
-                             * user. */
-   int f_noHazActiveForPoint = 0; /* Used when hazards were queried for by the 
-                                   * user but none are active for the particular 
-                                   * point in question. */
 
    /* XML Document pointer */
    xmlDocPtr doc = NULL;      /* An xml Node Pointer denoting the top-level
@@ -407,7 +403,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
     * array depending on type of XML queried.
     */
    prepareVarFilter(f_XML, &f_icon, numNdfdVars, ndfdVars, varFilter, &numElem,
-                    &elem, &f_hazQueriedFor);
+                    &elem);
 
    /* See if any points are outside the NDFD Sectors. Print error message to
     * standard error if so. If all points selected are outside the NDFD
@@ -543,6 +539,30 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
             f_pntHasData[j] = 1;
       }
    }
+
+/*
+   for (i =0; i<numMatch;i++)
+   {
+      if (match[i].elem.ndfdEnum == NDFD_WWA)
+      {
+         for (j = 0; j<numPnts;j++)
+         {
+            if (j == 0)
+            {
+               match[i].value[j].str = (char *)malloc(25 * sizeof(char));
+               strcpy (match[i].value[j].str, "SI.A.1002^TS.A^RB.A.1005");
+               match[i].value[j].valueType = 1;
+            }
+            else if (j == 2)
+            {
+               match[i].value[j].str = (char *)malloc(11 * sizeof(char));
+               strcpy (match[i].value[j].str, "EH.A.32244");
+               match[i].value[j].valueType = 1;
+            }
+         }
+      }
+   }
+*/
 
 #ifdef PRINT_DIAG
    /* Loop by point to check if any data at point at all. */
@@ -781,7 +801,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
       f_formatNIL[j] = 0;
       f_useMinTempTimes[j] = 0;
       if (isPntInASector(pnts[j]))
-      {   
+      {
          TZoffset[j] = pntInfo[j].timeZone;
          f_observeDST = pntInfo[j].f_dayLight;
          startNum = pntInfo[j].startNum;
@@ -1024,10 +1044,29 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                {
                   for (k = 0; k < XML_MAX; k++)
                   {
-                     if (weatherParameters[j][k] == 1)
+                     if ((k == RTMA_UTEMP) || (k == RTMA_UTD) || (k == RTMA_UWSPD) || 
+                         (k==RTMA_UWDIR) || (k==NDFD_TEMP && pnt_rtmaNdfdTemp[j]) ||
+                         (k == RTMA_TEMP && pnt_rtmaNdfdTemp[j]) || 
+                         (k == NDFD_TD && pnt_rtmaNdfdTd[j]) || 
+                         (k == RTMA_TD && pnt_rtmaNdfdTd[j]) || 
+                         (k == NDFD_WS && pnt_rtmaNdfdWspd[j]) || 
+                         (k == RTMA_WSPD && pnt_rtmaNdfdWspd[j]) || 
+                         (k == NDFD_WD && pnt_rtmaNdfdWdir[j]) || 
+                         (k == RTMA_WDIR && pnt_rtmaNdfdWdir[j]) || 
+                         (k == NDFD_QPF && pnt_rtmaNdfdPrecipa[j]) || 
+                         (k == RTMA_PRECIPA && pnt_rtmaNdfdPrecipa[j]) || 
+                         (k == NDFD_SKY && pnt_rtmaNdfdSky[j]) || 
+                         (k == RTMA_SKY && pnt_rtmaNdfdSky[j]))
                      {
-                        layoutKeys[j][k] = malloc(strlen(layoutKeys[i][k]) + 1);
-                        strcpy(layoutKeys[j][k], layoutKeys[i][k]);
+                        continue;
+                     }
+                     else
+                     {
+                        if (weatherParameters[j][k] == 1 || weatherParameters[j][k] == 3)
+                        {
+                           layoutKeys[j][k] = malloc(strlen(layoutKeys[i][k]) + 1);
+                           strcpy(layoutKeys[j][k], layoutKeys[i][k]);
+                        }
                      }
                   }
                }
@@ -1682,31 +1721,10 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
           */
          if (f_XML == 1 || f_XML == 2 || f_XML == 6)
          {
-
-            /**************************** HAZARDS *****************************/
-
-/*            if (f_hazQueriedFor)
-            { 
-*/
-/*                In order to format just a closed </hazard-conditions> tag */
-/*                * denoting hazards were queried for by the user, but none are */
-/*                * active for this particular point, we need to flag this */
-/*                * situation.*/
-/*                
-               f_noHazActiveForPoint = 0;
-               if (weatherParameters[j][NDFD_WWA] == 0)
-                  f_noHazActiveForPoint = 1;
-*/
-               if (weatherParameters[j][NDFD_WWA] == 1)
-                  genHazardValues(j, layoutKeys[j][NDFD_WWA], match,
-                                  numRowsForPoint[j][NDFD_WWA], parameters,
-                                  pntInfo[j].startNum, pntInfo[j].endNum, 
-                                  pntInfo[j].cwa, f_noHazActiveForPoint);
-/*            } */
-
             /**************************** WEATHER ****************************/
 
-            if (weatherParameters[j][NDFD_WX] == 1)
+            if (weatherParameters[j][NDFD_WX] == 1 ||
+                weatherParameters[j][NDFD_WX] == 3)
                genWeatherValues(j, layoutKeys[j][NDFD_WX], match,
                              weatherParameters[j][NDFD_WX],
                              f_formatIconForPnt[j], 
@@ -1718,6 +1736,15 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                              pnts[j].Y, pnts[j].X, pntInfo[j].startNum, 
                              pntInfo[j].endNum, TZoffset[j], 
                              pntInfo[j].f_dayLight);
+
+            /**************************** HAZARDS *****************************/
+
+            if (weatherParameters[j][NDFD_WWA] == 1)
+               genHazardValues(j, layoutKeys[j][NDFD_WWA], match,
+                               numRowsForPoint[j][NDFD_WWA], parameters,
+                               pntInfo[j].startNum, pntInfo[j].endNum, 
+                               pntInfo[j].cwa);
+
          }
 	 else if (f_XML == 3 || f_XML == 4)
          { 

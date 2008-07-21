@@ -138,8 +138,8 @@ void checkNeedForPeriodName(int index, uChar * numPeriodNames,
                             double startTime_cml, double currentDoubTime,
                             double firstValidTime);
 
-void computeStartEndTimes(uChar parameterName, int numFmtdRows,
-                          int periodLength, double TZoffset,
+ void computeStartEndTimes(uChar parameterName, int numFmtdRows,
+                         int periodLength, double TZoffset,
                           sChar f_observeDST, genMatchType * match,
                           uChar useEndTimes, char **startTimes, char **endTimes,
                           char *frequency, uChar f_XML, double startTime_cml, 
@@ -214,11 +214,11 @@ void genDewPointTempValues(size_t pnt, char *layoutKey, genMatchType *match,
 
 void genHazardValues(size_t pnt, char *layoutKey, genMatchType *match,
                      numRowsInfo numRowsHZ, xmlNodePtr parameters,
-                     int startNum, int endNum, char *cwaStr, 
-                     int f_noHazActiveForPoint);
+                     int startNum, int endNum, char *cwaStr);
 
-void  genHazTextURL(char *baseTextURL, char *cwaStr, char *phenomena, 
-                    char *significance, char *hazardTextURL);
+void genHazTextURL(char *baseTextURL, char *cwaStr, char *phenomena, 
+                   char *significance, char *code, char *hazardTextURL,
+                   int *f_formatHazTextURL);
 
 void genIconLinks(icon_def *iconInfo, uChar numRows, char *layoutKey, 
                   xmlNodePtr parameters);
@@ -383,8 +383,8 @@ void getFirstSecondValidTimes(double *firstValidTime, double *secondValidTime,
                               int numRows, int numRowsSkippedBeg, 
                               int numRowsSkippedEnd);
 
-void  getHazPhenAndIcon(char *uglyStr, char *transStr, int *f_icon, 
-                        char *iconStr, char *hzSig);
+void  getHazPhenAndIcon(char *uglyStr, char *significance, char *transStr,
+                        int *f_icon, char *iconStr);
 
 void getNumRows(numRowsInfo *numRowsForPoint, double *timeUserStart, 
 		double *timeUserEnd, size_t numMatch, genMatchType *match, 
@@ -458,8 +458,7 @@ void prepareDWMLgenByDay(genMatchType *match, uChar f_XML,
 
 void prepareVarFilter(sChar f_XML, sChar *f_icon, size_t numNdfdVars, 
                       uChar *ndfdVars, uChar varFilter[NDFD_MATCHALL + 1], 
-                      size_t *numElem, genElemDescript **elem, 
-                      int *f_hazQueriedFor);
+                      size_t *numElem, genElemDescript **elem); 
 
 void prepareWeatherValuesByDay (genMatchType *match, sChar TZoffset,
 		                sChar f_observeDST, char *frequency,

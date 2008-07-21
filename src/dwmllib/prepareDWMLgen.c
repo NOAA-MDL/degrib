@@ -44,7 +44,7 @@
  *  2/2006 Paul Hershberg (MDL): Created.
  *  9/2007 Paul Hershberg (MDL): Added 12 Climate Outlook Elements
  * 12/2007 Paul Hershberg (MDL): Added 10 RTMA Elements
- * 5/2008 Paul Hershberg (MDL): Added Hazard Element
+ *  5/2008 Paul Hershberg (MDL): Added Hazard Element
  *
  * NOTES:
  *****************************************************************************
