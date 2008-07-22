@@ -1849,25 +1849,34 @@ static void ElemNameProb (uShort2 center, uShort2 subcenter, int prodType,
             myAssert (probType == 1);
             if (lenTime > 0) {
                if (timeRangeUnit == 3) {
-                  mallocSprintf (name, "PoP%02dm", lenTime);
-                  mallocSprintf (comment, "%02d mon Prob of Precip > 0.01 "
-                                 "In.", lenTime);
+                  if (upperProb != .254) {
+                     mallocSprintf (name, "PoP%02dm-%03d", lenTime, (int) (int) (upperProb / .254 + .5));
+                  } else {
+                     mallocSprintf (name, "PoP%02dm", lenTime);
+                  }
+                  mallocSprintf (comment, "%02d mon Prob of Precip > %g In.", lenTime, upperProb / 25.4);
                } else if (timeRangeUnit == 4) {
-                  mallocSprintf (name, "PoP%02dy", lenTime);
-                  mallocSprintf (comment, "%02d yr Prob of Precip > 0.01 "
-                                 "In.", lenTime);
+                  if (upperProb != .254) {
+                     mallocSprintf (name, "PoP%02dy-%03d", lenTime, (int) (upperProb / .254 + .5));
+                  } else {
+                     mallocSprintf (name, "PoP%02dy", lenTime);
+                  }
+                  mallocSprintf (comment, "%02d yr Prob of Precip > %g In.", lenTime, upperProb / 25.4);
                } else {
-                  mallocSprintf (name, "PoP%02d", lenTime);
-                  mallocSprintf (comment, "%02d hr Prob of Precip > 0.01 "
-                                 "In.", lenTime);
+                  if (upperProb != .254) {
+                     mallocSprintf (name, "PoP%02d-%03d", lenTime, (int) (upperProb / .254 + .5));
+                  } else {
+                     mallocSprintf (name, "PoP%02d", lenTime);
+                  }
+                  mallocSprintf (comment, "%02d hr Prob of Precip > %g In.", lenTime, upperProb / 25.4);
                }
             } else {
-               *name = (char *) malloc (strlen ("PoP") + 1);
-               strcpy (*name, "PoP");
-               *comment =
-                     (char *) malloc (strlen ("Prob of Precip > 0.01 In.") +
-                                      1);
-               strcpy (*comment, "Prob of Precip > 0.01 In.");
+               if (upperProb != .254) {
+                  mallocSprintf (name, "PoP-p%03d", (int) (upperProb / .254 + .5));
+               } else {
+                  mallocSprintf (name, "PoP");
+               }
+               mallocSprintf (comment, "Prob of Precip > %g In.", upperProb / 25.4);
             }
             *convert = UC_NONE;
          }
