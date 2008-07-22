@@ -19,9 +19,9 @@ Physical Atmospheric category)</small><br>
 </small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 19<br>
 </big></big></center>
 <br>
-<center><b>Revised 03/12/2008</b><br>
+<center><b>Revised 06/27/2008</b><br>
 <span style="color: red; font-size: 10pt;"><b>Red text depicts changes
-made since 03/05/2008</b></span><span style="font-weight: bold;"><br>
+made since 05/02/2008</b></span><span style="font-weight: bold;"><br>
 <br>
 <br>
 </span></center>
@@ -83,7 +83,7 @@ made since 03/05/2008</b></span><span style="font-weight: bold;"><br>
       <td style="vertical-align: top;">See <a
  href="grib2_table4-206.shtml">Table 4.206</a><br>
       </td>
-      <td style="vertical-align: top;">-<br>
+      <td style="vertical-align: top;">VOLASH<br>
       </td>
     </tr>
     <tr>
@@ -93,7 +93,7 @@ made since 03/05/2008</b></span><span style="font-weight: bold;"><br>
       </td>
       <td style="vertical-align: top;">m<br>
       </td>
-      <td style="vertical-align: top;">-<br>
+      <td style="vertical-align: top;">ICIT<br>
       </td>
     </tr>
     <tr>
@@ -103,7 +103,7 @@ made since 03/05/2008</b></span><span style="font-weight: bold;"><br>
       </td>
       <td style="vertical-align: top;">m<br>
       </td>
-      <td style="vertical-align: top;">-<br>
+      <td style="vertical-align: top;">ICIB<br>
       </td>
     </tr>
     <tr>
@@ -112,7 +112,7 @@ made since 03/05/2008</b></span><span style="font-weight: bold;"><br>
       <td style="vertical-align: top;">Icing<br>
       </td>
       <td style="vertical-align: top;">See <a href="grib2_table4-207.shtml">Table 4.207</a></td>
-      <td style="vertical-align: top;">-<br>
+      <td style="vertical-align: top;">ICI<br>
       </td>
     </tr>
     <tr>
@@ -122,7 +122,7 @@ made since 03/05/2008</b></span><span style="font-weight: bold;"><br>
       </td>
       <td style="vertical-align: top;">m<br>
       </td>
-      <td style="vertical-align: top;">-<br>
+      <td style="vertical-align: top;">TURBT<br>
       </td>
     </tr>
     <tr>
@@ -132,7 +132,7 @@ made since 03/05/2008</b></span><span style="font-weight: bold;"><br>
       </td>
       <td style="vertical-align: top;">m<br>
       </td>
-      <td style="vertical-align: top;">-<br>
+      <td style="vertical-align: top;">TURBB<br>
       </td>
     </tr>
     <tr>
@@ -141,7 +141,7 @@ made since 03/05/2008</b></span><span style="font-weight: bold;"><br>
       <td style="vertical-align: top;">Turbulence</td>
       <td style="vertical-align: top;">See <a
  href="grib2_table4-208.shtml">Table 4.208</a></td>
-      <td style="vertical-align: top;">-<br>
+      <td style="vertical-align: top;">TURB<br>
       </td>
     </tr>
     <tr>
@@ -171,7 +171,7 @@ made since 03/05/2008</b></span><span style="font-weight: bold;"><br>
       </td>
       <td style="vertical-align: top;">See <a
  href="grib2_table4-210.shtml">Table 4.210</a></td>
-      <td style="vertical-align: top;">-<br>
+      <td style="vertical-align: top;">CONTI<br>
       </td>
     </tr>
     <tr>
@@ -181,7 +181,7 @@ made since 03/05/2008</b></span><span style="font-weight: bold;"><br>
       </td>
       <td style="vertical-align: top;">See <a
  href="grib2_table4-211.shtml">Table 4.211</a></td>
-      <td style="vertical-align: top;">-<br>
+      <td style="vertical-align: top;">CONTET<br>
       </td>
     </tr>
     <tr>
@@ -191,7 +191,7 @@ made since 03/05/2008</b></span><span style="font-weight: bold;"><br>
       </td>
       <td style="vertical-align: top;">m<br>
       </td>
-      <td style="vertical-align: top;">-<br>
+      <td style="vertical-align: top;">CONTT<br>
       </td>
     </tr>
     <tr>
@@ -201,7 +201,7 @@ made since 03/05/2008</b></span><span style="font-weight: bold;"><br>
       </td>
       <td style="vertical-align: top;">m<br>
       </td>
-      <td style="vertical-align: top;">-<br>
+      <td style="vertical-align: top;">CONTB<br>
       </td>
     </tr>
     <tr>
@@ -263,7 +263,7 @@ for Local Use<br>
       <td style="vertical-align: top;">Snow-Free Albedo</td>
       <td style="vertical-align: top;">%<br>
       </td>
-      <td style="vertical-align: top;">SNFALB </td>
+      <td style="vertical-align: top;">SNFALB</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">194<br>
@@ -274,7 +274,7 @@ for Local Use<br>
       <td style="vertical-align: top;"><font
  face="Times New Roman, Times, serif">c</font><font
  face="Times New Roman, Times, serif">ategorical</font></td>
-      <td style="vertical-align: top;">-<br>
+      <td style="vertical-align: top;">SRCONO<br>
       </td>
     </tr>
     <tr>
@@ -288,7 +288,7 @@ for Local Use<br>
       <td style="vertical-align: top;"><font
  face="Times New Roman, Times, serif">c</font><font
  face="Times New Roman, Times, serif">ategorical</font></td>
-      <td style="vertical-align: top;">-<br>
+      <td style="vertical-align: top;">MRCONO<br>
       </td>
     </tr>
     <tr>
@@ -302,7 +302,7 @@ for Local Use<br>
       <td style="vertical-align: top;"><font
  face="Times New Roman, Times, serif">c</font><font
  face="Times New Roman, Times, serif">ategorical</font></td>
-      <td style="vertical-align: top;">-<br>
+      <td style="vertical-align: top;">HRCONO<br>
       </td>
     </tr>
     <tr>
@@ -313,7 +313,7 @@ for Local Use<br>
       </font></td>
       <td style="vertical-align: top;">%<br>
       </td>
-      <td style="vertical-align: top;">-<br>
+      <td style="vertical-align: top;">TORPROB<br>
       </td>
     </tr>
     <tr>
@@ -323,7 +323,7 @@ for Local Use<br>
  face="Times New Roman, Times, serif">Hail probability</font></td>
       <td style="vertical-align: top;">%<br>
       </td>
-      <td style="vertical-align: top;">-<br>
+      <td style="vertical-align: top;">HAILPROB<br>
       </td>
     </tr>
     <tr>
@@ -333,7 +333,7 @@ for Local Use<br>
  face="Times New Roman, Times, serif">Wind probability</font></td>
       <td style="vertical-align: top;">%<br>
       </td>
-      <td style="vertical-align: top;">-<br>
+      <td style="vertical-align: top;">WINDPROB<br>
       </td>
     </tr>
     <tr>
@@ -344,7 +344,7 @@ for Local Use<br>
 probability</font></td>
       <td style="vertical-align: top;">%<br>
       </td>
-      <td style="vertical-align: top;">-<br>
+      <td style="vertical-align: top;">STORPROB<br>
       </td>
     </tr>
     <tr>
@@ -355,7 +355,7 @@ probability</font></td>
 probability</font></td>
       <td style="vertical-align: top;">%<br>
       </td>
-      <td style="vertical-align: top;">-<br>
+      <td style="vertical-align: top;">SHAILPRO<br>
       </td>
     </tr>
     <tr>
@@ -366,7 +366,7 @@ probability</font></td>
 probability</font></td>
       <td style="vertical-align: top;">%<br>
       </td>
-      <td style="vertical-align: top;">-<br>
+      <td style="vertical-align: top;">SWINDPRO<br>
       </td>
     </tr>
     <tr>
@@ -519,9 +519,9 @@ Probability of Extreme Severe Thunderstorms (Days 2,3)</td>
     </tr>
     <tr>
       <td style="text-align: center; vertical-align: top; color: rgb(255, 0, 0);">217</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Supercooled Large Droplet Icing</td>
-      <td style="vertical-align: top;">See <a href="grib2_table4-207.shtml">Table 4.207</a></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Supercooled Large Droplet (SLD) Potential</td>
+      <td style="vertical-align: top;color:red; ">Numeric<sup>See Note (1)</sup></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">SIPD</td>
     </tr>
     <tr>
       <td style="text-align: center; color: red;">218<br> </td>
@@ -530,7 +530,13 @@ Probability of Extreme Severe Thunderstorms (Days 2,3)</td>
       <td style="vertical-align: top; color: red;">EPSR<br> </td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: rgb(0, 0, 0);">219-231<br>
+      <td style="text-align: center; color: red;">219<br> </td>
+      <td style="vertical-align: top; color: red;">Turbulence Potential Forecast Index<br> </td>
+      <td style="vertical-align: top; color: red;"><br></td>
+      <td style="vertical-align: top; color: red;">TPFI</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: rgb(0, 0, 0);">220-231<br>
       </td>
       <td style="vertical-align: top; color: rgb(0, 0, 0);">Reserved</td>
       <td style="vertical-align: top; color: rgb(0, 0, 0);"><br></td>
@@ -563,6 +569,16 @@ Ash Forecast Transport and Dispersion<br>
 </center>
 <br>
 <br>
+<table style="margin-left: auto; margin-right: auto; width: 80%; text-align: left;"
+border="0" cellpadding="2" cellspacing="2">
+<tbody>
+<tr>
+<td style="vertical-align: top;"><b>Notes:</b><br><br>
+(1) A  value of -0.1 indicates "icing was present, but there was not enough 
+    information to determine whether SLD were present". <br>
+<br>
+</tr>
+</table>
 <center><a href="/pmb/docs/grib2/grib2_doc.shtml">Back</a></center>
 <br>
 <br>

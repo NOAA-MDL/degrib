@@ -19,9 +19,9 @@ short-wave radiation category)</small><br>
 </small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 4<br>
 </big></big></center>
 <br>
-<center><b>Revised 10/30/2007</b><br>
+<center><b>Revised 06/20/2008</b><br>
 <span style="color: red; font-size: 10pt;"><b>Red text depicts changes
-made since 08/24/2007</b></span></center>
+made since 10/30/2007</b></span></center>
 <br>
 <br>
 <center>
@@ -115,25 +115,25 @@ wavelength)<br>
       <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">9<br></td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">Net Short Wave Radiation Flux</td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">W m<sup>-2</sup></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">NSWRF</td>
     </tr>
     <tr>
       <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">10<br></td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">Photosynthetically Active Radiation</td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">W m<sup>-2</sup></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">PHOTAR</td>
     </tr>
     <tr>
       <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">11<br></td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">Net Short-Wave Radiation Flux, Clear Sky</td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">W m<sup>-2</sup></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">NSWRFCS<br></td>
     </tr>
     <tr>
       <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">12<br></td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">Downward UV Radiation</td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">W m<sup>-2</sup></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">DWUVR</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">13-49<br></td>
@@ -145,13 +145,13 @@ wavelength)<br>
       <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">50<br></td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">UV Index (Under Clear Sky)</td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">Numeric</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">UVIUCS<br></td>
     </tr>
     <tr>
       <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">51<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">UV Index (Under Clear Sky)</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Numeric</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">UV Index</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">J m<sup>-2</sup></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">UVI</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">52-191<br></td>

@@ -43,9 +43,8 @@ made since 03/13/2006<br>
     <tr>
       <td style="vertical-align: top; text-align: center;">0<br>
       </td>
-      <td style="vertical-align: top;">Seconds prior to initial
-reference time (defined in Section 1)</td>
-      <td style="vertical-align: top;">s </td>
+      <td style="vertical-align: top;">Seconds prior to initial reference time (defined in Section 1)</td>
+      <td style="vertical-align: top;">s</td>
       <td style="vertical-align: top;">TSEC<br>
       </td>
     </tr>
@@ -74,19 +73,15 @@ for Local Use<br>
       </td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center;">192<br>
-      </td>
-      <td style="vertical-align: top;">Latitude (-90 to +90)</td>
-      <td style="vertical-align: top;">deg<br>
-      </td>
-      <td style="vertical-align: top;">NLAT </td>
+      <td style="vertical-align: top; text-align: center;">192<br></td>
+      <td style="vertical-align: top;">Latitude (-90 to +90)</td> 
+      <td style="vertical-align: top;">deg<br></td>
+      <td style="vertical-align: top;">NLAT</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center;">193<br>
-      </td>
+      <td style="vertical-align: top; text-align: center;">193<br></td>
       <td style="vertical-align: top;">East Longitude (0 - 360)</td>
-      <td style="vertical-align: top;">deg<br>
-      </td>
+      <td style="vertical-align: top;">deg<br> </td>
       <td style="vertical-align: top;">ELON </td>
     </tr>
     <tr>
@@ -102,6 +97,18 @@ reference time</td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">Model Layer number (From bottom up)</td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);"><br></td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">MLYNO</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;color: rgb(255, 0, 0);">196<br></td>
+      <td style="vertical-align: top;color: rgb(255, 0, 0);">Latitude (nearest neighbor) (-90 to +90)</td> 
+      <td style="vertical-align: top;color: rgb(255, 0, 0);">deg<br></td>
+      <td style="vertical-align: top;color: rgb(255, 0, 0);">NLATN</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;color: rgb(255, 0, 0);">197<br></td>
+      <td style="vertical-align: top;color: rgb(255, 0, 0);">East Longitude (nearest neighbor) (0 - 360)</td>
+      <td style="vertical-align: top;color: rgb(255, 0, 0);">deg<br> </td>
+      <td style="vertical-align: top;color: rgb(255, 0, 0);">ELONN</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">255<br>

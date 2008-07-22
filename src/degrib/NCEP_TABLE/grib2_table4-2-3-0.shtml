@@ -19,9 +19,9 @@ category)</small><br>
 </small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 0<br>
 </big></big></center>
 <br>
-<center><b>Revised 11/01/2007</b><br>
+<center><b>Revised 06/27/2008</b><br>
 <span style="color: red; font-size: 10pt;"><b>Red text depicts changes
-made since 02/21/2005</b></span></center>
+made since 11/01/2007</b></span></center>
 <br>
 </b></center>
 <br>
@@ -47,7 +47,7 @@ made since 02/21/2005</b></span></center>
       </td>
       <td style="vertical-align: top;">numeric<br>
       </td>
-      <td style="vertical-align: top;"><br>
+      <td style="vertical-align: top;">SRAD<br>
       </td>
     </tr>
     <tr>
@@ -56,7 +56,7 @@ made since 02/21/2005</b></span></center>
       <td style="vertical-align: top;">Scaled Albedo<br>
       </td>
       <td style="vertical-align: top;">numeric</td>
-      <td style="vertical-align: top;"><br>
+      <td style="vertical-align: top;">SALBEDO<br>
       </td>
     </tr>
     <tr>
@@ -65,7 +65,7 @@ made since 02/21/2005</b></span></center>
       <td style="vertical-align: top;">Scaled Brightness Temperature<br>
       </td>
       <td style="vertical-align: top;">numeric</td>
-      <td style="vertical-align: top;"><br>
+      <td style="vertical-align: top;">SBTMP<br>
       </td>
     </tr>
     <tr>
@@ -74,7 +74,7 @@ made since 02/21/2005</b></span></center>
       <td style="vertical-align: top;">Scaled Precipitable Water<br>
       </td>
       <td style="vertical-align: top;">numeric</td>
-      <td style="vertical-align: top;"><br>
+      <td style="vertical-align: top;">SPWAT<br>
       </td>
     </tr>
     <tr>
@@ -83,7 +83,7 @@ made since 02/21/2005</b></span></center>
       <td style="vertical-align: top;">Scaled Lifted Index<br>
       </td>
       <td style="vertical-align: top;">numeric</td>
-      <td style="vertical-align: top;"><br>
+      <td style="vertical-align: top;">SLFTI<br>
       </td>
     </tr>
     <tr>
@@ -92,7 +92,7 @@ made since 02/21/2005</b></span></center>
       <td style="vertical-align: top;">Scaled Cloud Top Pressure<br>
       </td>
       <td style="vertical-align: top;">numeric</td>
-      <td style="vertical-align: top;"><br>
+      <td style="vertical-align: top;">SCTPRES<br>
       </td>
     </tr>
     <tr>
@@ -101,7 +101,7 @@ made since 02/21/2005</b></span></center>
       <td style="vertical-align: top;">Scaled Skin Temperature<br>
       </td>
       <td style="vertical-align: top;">numeric</td>
-      <td style="vertical-align: top;"><br>
+      <td style="vertical-align: top;">SSTMP<br>
       </td>
     </tr>
     <tr>
@@ -111,20 +111,20 @@ made since 02/21/2005</b></span></center>
       </td>
       <td style="vertical-align: top;">See <a href="grib2_table4-217.shtml">Table 4.217</a><br>
       </td>
-      <td style="vertical-align: top;"><br>
+      <td style="vertical-align: top;">CLOUDM<br>
       </td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">8<br></td>
       <td style="vertical-align: top;">Pixel scene type<br></td>
       <td style="vertical-align: top;">See <a href="grib2_table4-218.shtml">Table 4.218</a><br></td>
-      <td style="vertical-align: top;"><br></td>
+      <td style="vertical-align: top;">PIXST<br></td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">9<br></td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">Fire Detection Indicator</td>
       <td style="vertical-align: top;">See <a href="grib2_table4-223.shtml">Table 4.223</a><br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">FIREDI<br></td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">10-191<br>

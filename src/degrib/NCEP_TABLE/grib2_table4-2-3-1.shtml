@@ -19,9 +19,9 @@ category)</small><br>
 </small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 1<br>
 </big></big></center>
 <br>
-<center><b>Revised 11/01/2007</b><br>
+<center><b>Revised 06/27/2008</b><br>
 <span style="color: red; font-size: 10pt;"><b>Red text depicts changes
-made since 02/21/2005</b></span></center>
+made since 11/01/2007</b></span></center>
 <br>
 </b></center>
 <br>
@@ -47,7 +47,7 @@ made since 02/21/2005</b></span></center>
       </td>
       <td style="vertical-align: top;">kg m<sup>-2</sup><br>
       </td>
-      <td style="vertical-align: top;"><br>
+      <td style="vertical-align: top;">ESTP<br>
       </td>
     </tr>
     <tr>
@@ -57,7 +57,7 @@ made since 02/21/2005</b></span></center>
       </td>
       <td style="vertical-align: top;">kg m<sup>-2</sup>s<sup>-1</sup><br>
       </td>
-      <td style="vertical-align: top;"><br>
+      <td style="vertical-align: top;">IRRATE<br>
       </td>
     </tr>
     <tr>
@@ -67,7 +67,7 @@ made since 02/21/2005</b></span></center>
       </td>
       <td style="vertical-align: top;"> m<br>
       </td>
-      <td style="vertical-align: top;"><br>
+      <td style="vertical-align: top;">CTOPH<br>
       </td>
     </tr>
     <tr>
@@ -78,7 +78,7 @@ made since 02/21/2005</b></span></center>
       <td style="vertical-align: top;"><a href="grib2_table4-219.shtml">Code
 table 4.219</a><br>
       </td>
-      <td style="vertical-align: top;"><br>
+      <td style="vertical-align: top;">CTOPHQI<br>
       </td>
     </tr>
     <tr>
@@ -88,7 +88,7 @@ table 4.219</a><br>
       </td>
       <td style="vertical-align: top;">m<sup>-1</sup><br>
       </td>
-      <td style="vertical-align: top;"><br>
+      <td style="vertical-align: top;">ESTUGRD<br>
       </td>
     </tr>
     <tr>
@@ -98,56 +98,56 @@ table 4.219</a><br>
       </td>
       <td style="vertical-align: top;">m<sup>-1</sup><br>
       </td>
-      <td style="vertical-align: top;"><br>
+      <td style="vertical-align: top;">ESTVGRD<br>
       </td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">6<br></td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">Number Of Pixels Used</td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">Numeric</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">NPIXU<br></td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">7<br></td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">Solar Zenith Angle</td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">Degree</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">SOLZA<br></td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">8<br></td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">Relative Azimuth Angle</td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">Degree</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">RAZA<br></td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">9<br></td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">Reflectance in 0.6 Micron Channel</td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">%</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">RFL06<br></td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">10<br></td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">Reflectance in 0.8 Micron Channel</td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">%</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">RFL08<br></td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">11<br></td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">Reflectance in 1.6 Micron Channel</td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">%</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">RFL16<br></td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">12<br></td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">Reflectance in 3.9 Micron Channel</td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">%</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">RFL39<br></td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">13<br></td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">Atmospheric Divergence</td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">s<sup>-1</sup></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">ATMDIV<br></td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">14-191<br>

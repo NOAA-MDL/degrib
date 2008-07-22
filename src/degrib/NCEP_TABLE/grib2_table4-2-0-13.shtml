@@ -20,9 +20,9 @@ Aerosols category)</small><br>
 </big></big></center>
 <br>
 <br>
-<center><b>Revised 01/26/2006</b><br>
+<center><b>Revised 06/30/2008</b><br>
 <span style="color: red; font-size: 10pt;"><b>Red text depicts changes
-made since 05/20/2005</b></span>
+made since 01/26/2006</b></span>
 <br>
 <b><br>
 </b></center>
@@ -43,15 +43,11 @@ made since 05/20/2005</b></span>
  style="vertical-align: middle; font-weight: bold; text-align: center;">Abbrev</td>
     </tr>
     <tr>
-      <td style="text-align: center;">0<br>
-      </td>
-      <td>Aerosol Type<br>
-      </td>
+      <td style="text-align: center;">0<br></td>
+      <td>Aerosol Type<br></td>
       <td style="vertical-align: top;">See <a
- href="grib2_table4-205.shtml">Table 4.205</a><br>
-      </td>
-      <td style="vertical-align: top;"><br>
-      </td>
+ href="grib2_table4-205.shtml">Table 4.205</a><br></td>
+      <td style="vertical-align: top;">AEROT<br></td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">1-191<br>

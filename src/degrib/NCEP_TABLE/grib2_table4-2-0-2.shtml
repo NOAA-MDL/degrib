@@ -21,9 +21,9 @@ momentum category)</small><br>
 <br>
 <center>
 <center>
-<center><b>Revised 03/12/2008</b><br>
+<center><b>Revised 06/30/2008</b><br>
 <span style="color: red; font-size: 10pt;"><b>Red text depicts changes
-made since 08/23/2007</b></span><b><br>
+made since 03/12/2008</b></span><b><br>
 </b></center>
 </center>
 <b></b></center>
@@ -220,8 +220,7 @@ Velocity<br>
       <td style="vertical-align: top;">Maximum Wind Speed<br>
       </td>
       <td style="vertical-align: top;">m s<sup>-1</sup></td>
-      <td style="vertical-align: top;">-<br>
-      </td>
+      <td style="vertical-align: top;">MAXGUST</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">22<br>
@@ -237,16 +236,14 @@ Velocity<br>
       </td>
       <td style="vertical-align: top;">U-Component of Wind (Gust)</td>
       <td style="vertical-align: top;">m s<sup>-1</sup></td>
-      <td style="vertical-align: top;">-<br>
-      </td>
+      <td style="vertical-align: top;">U GUTS</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">24<br>
       </td>
       <td style="vertical-align: top;">V-Component of Wind (Gust)</td>
       <td style="vertical-align: top;">m s<sup>-1</sup></td>
-      <td style="vertical-align: top;">-<br>
-      </td>
+      <td style="vertical-align: top;">V GUST</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">25<br>
@@ -490,6 +487,25 @@ for Local Use<br>
       <td style="vertical-align: top; color: red;">m/s<sup>2</sup><br> </td>
       <td style="vertical-align: top; color: red;">CNGWDV<br> </td>
     </tr>
+    <tr>
+      <td style="text-align: center; color: red;">218<br> </td>
+      <td style="vertical-align: top; color: red;">Velocity Point Model Surface</td>
+      <td style="vertical-align: top; color: red;"><br></td>
+      <td style="vertical-align: top; color: red;">LMV</td>
+    </tr>
+    <tr>
+      <td style="text-align: center; color: red;">219<br> </td>
+      <td style="vertical-align: top; color: red;">Potential Vorticity (Mass-Weighted)</td>
+      <td style="vertical-align: top; color: red;">1/s/m</td>
+      <td style="vertical-align: top; color: red;">PVMWW</td>
+    </tr>
+    <tr>
+      <td style="text-align: center; color: red;">220<br></td>
+      <td style="vertical-align: top; color: red;">Momentum flux N/m<sup>2</sup></td>
+      <td style="vertical-align: top; color: red;">M</td>
+      <td style="vertical-align: top; color: red;">FLX</td>
+    </tr> 
+
     <tr>
       <td style="vertical-align: top; text-align: center;">255<br>
       </td>

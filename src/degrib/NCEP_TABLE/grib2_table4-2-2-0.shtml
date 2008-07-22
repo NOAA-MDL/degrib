@@ -19,9 +19,9 @@ Vegetation/Biomass category)</small><br>
 </small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 0<br>
 </big></big></center>
 <br>
-<div style="text-align: center;"><b>Revised 03/12/2008</b><br>
+<div style="text-align: center;"><b>Revised 06/30/2008</b><br>
 <span style="color: red; font-size: 10pt;"><b>Red text depicts changes
-made since 11/01/2007</b></span><br>
+made since 03/12/2008</b></span><br>
 </div>
 <br>
 <center>
@@ -95,7 +95,7 @@ made since 11/01/2007</b></span><br>
       </td>
       <td style="vertical-align: top;">kg<sup>-2</sup> s<sup>-1</sup><br>
       </td>
-      <td style="vertical-align: top;">-<br>
+      <td style="vertical-align: top;">EVAPT<br>
       </td>
     </tr>
     <tr>
@@ -105,7 +105,7 @@ made since 11/01/2007</b></span><br>
       </td>
       <td style="vertical-align: top;">m<br>
       </td>
-      <td style="vertical-align: top;">-<br>
+      <td style="vertical-align: top;">MTERH<br>
       </td>
     </tr>
     <tr>
@@ -115,7 +115,7 @@ made since 11/01/2007</b></span><br>
       </td>
       <td style="vertical-align: top;">See <a href="grib2_table4-212.shtml">Table 4.212</a><br>
       </td>
-      <td style="vertical-align: top;">-<br>
+      <td style="vertical-align: top;">LANDU<br>
       </td>
     </tr>
     <tr>
@@ -220,38 +220,38 @@ canopy conductance</td>
     <tr>
       <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">22</td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">Soil Moisture</td>
-      <td style="vertical-align: top;">kg m<sup>-3</sup> </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">kg m<sup>-3</sup> </td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">SOILM</td>
     </tr>
     <tr>
       <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">23</td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">Column-Integrated Soil Water</td>
-      <td style="vertical-align: top;">kg m<sup>-2</sup></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">kg m<sup>-2</sup></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">CISOILW</td>
     </tr> 
     <tr>
       <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">24</td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">Heat Flux</td>
-      <td style="vertical-align: top;">W m<sup>-2</sup></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">W m<sup>-2</sup></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">HFLUX</td>
     </tr>
     <tr>
       <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">25</td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">Volumetric Soil Moisture</td>
-      <td style="vertical-align: top;">m<sup>-3</sup>m<sup>-3</sup></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">m<sup>3</sup>m<sup>-3</sup></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">VSOILM<br></td>
     </tr>
     <tr>
       <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">26</td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">Wilting Point</td>
-      <td style="vertical-align: top;">kg m<sup>-3</sup></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">kg m<sup>-3</sup></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">WILTP<br></td>
     </tr>
     <tr>
       <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">27</td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">Volumetric Wilting Moisture</td>
-      <td style="vertical-align: top;">m<sup>-3</sup>m<sup>-3</sup></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">m<sup>3</sup>m<sup>-3</sup></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">VWILTM<br></td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">28-191<br>
@@ -415,6 +415,119 @@ canopy conductance</td>
       <td style="vertical-align: top; color: red;">m/s<br> </td>
       <td style="vertical-align: top; color: red;">AKMS<br> </td>
     </tr>
+    <tr>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">210<br> </td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Vegetation canopy temperature</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">K<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">VEGT</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">211<br> </td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Surface water storage</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Kg/m<sup>2</sup><br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">SSTOR</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">212<br> </td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Liquid soil moisture content (non-frozen)</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Kg/m<sup>2</sup><br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">LSOIL</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">213<br> </td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Open water evaporation (standing water)</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">W/m<sup>2</sup><br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">EWATR</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">214<br> </td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Groundwater recharge</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">kg/m<sup>2</sup><br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">GWREC</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">215<br> </td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Flood plain recharge</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">kg/m<sup>2</sup><br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">QREC</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">216<br> </td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Roughness length for heat</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">m<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">SFCRH</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">217<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Normalized Difference Vegetation Index</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">NDVI</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">218<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Land-sea coverage (nearest neighbor) [land=1,sea=0]</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);"><br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">LANDN</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">219<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Asymptotic mixing lenght scale</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">m<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">AMIXL</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">220<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Water vapor added by precip assimilation</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">kg/m<sup>2</sup><br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">WVINC</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">221<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Water condensate added by precip assimilation</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">kg/m<sup>2</sup><br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">WVINC</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">222<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Water Vapor Flux Convergance (Vertical Int)</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">kg/m<sup>2</sup><br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">WVCONV</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">223<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Water Condensate Flux Convergance (Vertical Int)</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">kg/m<sup>2</sup><br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">WCCONV</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">224<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Water Vapor Zonal Flux (Vertical Int)</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">kg/m<sup>2</sup><br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">WVUFLX</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">225<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Water Vapor Meridional Flux (Vertical Int)</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">kg/m<sup>2</sup><br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">WVVFLX</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">226<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Water Condensate Zonal Flux (Vertical Int)</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">kg/m<sup>2</sup><br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">WCUFLX</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">227<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Water Condensate Meridional Flux (Vertical Int)</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">kg/m<sup>2</sup><br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">WCVFLX</td>
+    </tr> 
+
+
+
+
+
     <tr>
       <td style="vertical-align: top; text-align: center;">255<br>
       </td>

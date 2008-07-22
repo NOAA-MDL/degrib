@@ -19,7 +19,9 @@ Hydrology category)</small><br>
 </small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 0<br>
 </big></big></center>
 <br>
-<center><b>Revised 04/09/07<br>
+<center><b>Revised 06/27/2008</b><br>
+<span style="color: red; font-size: 10pt;"><b>Red text depicts changes
+made since 04/09/2007</b></span><b><br>
 </b></center>
 <br>
 <br>
@@ -46,7 +48,7 @@ time and valid time)</i></font><br>
       </td>
       <td style="vertical-align: top;">kg m<sup>-2</sup><br>
       </td>
-      <td style="vertical-align: top;"><br>
+      <td style="vertical-align: top;">FFLDG<br>
       </td>
     </tr>
     <tr>
@@ -57,7 +59,7 @@ time and valid time)</i></font><br>
 of time)</i></font><br>
       </td>
       <td style="vertical-align: top;">kg m<sup>-2</sup></td>
-      <td style="vertical-align: top;"><br>
+      <td style="vertical-align: top;">FFLDRO<br>
       </td>
     </tr>
     <tr>
@@ -68,7 +70,7 @@ of time)</i></font><br>
       <td style="vertical-align: top;">See <a
  href="grib2_table4-215.shtml">Table 4.215</a><br>
       </td>
-      <td style="vertical-align: top;"><br>
+      <td style="vertical-align: top;">RSSC<br>
       </td>
     </tr>
     <tr>
@@ -78,7 +80,7 @@ of time)</i></font><br>
       </td>
       <td style="vertical-align: top;">See <a
  href="grib2_table4-216.shtml">Table 4.216</a></td>
-      <td style="vertical-align: top;"><br>
+      <td style="vertical-align: top;">ESCT<br>
       </td>
     </tr>
     <tr>
@@ -89,7 +91,7 @@ Normal<br>
       </td>
       <td style="vertical-align: top;">%<br>
       </td>
-      <td style="vertical-align: top;"><br>
+      <td style="vertical-align: top;">SWEPON<br>
       </td>
     </tr>
     <tr>
@@ -137,7 +139,7 @@ for Local Use<br>
       </td>
       <td style="vertical-align: top;">Baseflow-Groundwater Runoff</td>
       <td style="vertical-align: top;">kg m<sup>-2</sup></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">BGRUN<br>
+      <td style="vertical-align: top; ">BGRUN<br>
       </td>
     </tr>
     <tr>
@@ -145,7 +147,7 @@ for Local Use<br>
       </td>
       <td style="vertical-align: top;">Storm Surface Runoff</td>
       <td style="vertical-align: top;">kg m<sup>-2</sup></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">SSRUN<br>
+      <td style="vertical-align: top; ">SSRUN<br>
       </td>
     </tr>
     <tr>

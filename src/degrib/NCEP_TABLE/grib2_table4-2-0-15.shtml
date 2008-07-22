@@ -19,7 +19,11 @@ category)</small><br>
 </small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 15<br>
 </big></big></center>
 <br>
-<center><b>Created 05/20/05<br>
+<center><b>Revised 06/30/2008</b><br>
+<span style="color: red; font-size: 10pt;"><b>Red text depicts changes
+made since 01/26/2006</b></span>
+<br>
+<b><br>
 </b></center>
 <br>
 <br>
@@ -44,8 +48,7 @@ category)</small><br>
       </td>
       <td style="vertical-align: top;">m s<sup>-1</sup><br>
       </td>
-      <td style="vertical-align: top;"><br>
-      </td>
+      <td style="vertical-align: top;">BSWID</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">1<br>
@@ -54,8 +57,7 @@ category)</small><br>
       </td>
       <td style="vertical-align: top;">dB<br>
       </td>
-      <td style="vertical-align: top;"><br>
-      </td>
+      <td style="vertical-align: top;">BREF</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">2<br>
@@ -63,8 +65,7 @@ category)</small><br>
       <td style="vertical-align: top;">Base Radial Velocity<br>
       </td>
       <td style="vertical-align: top;">m s<sup>-1</sup></td>
-      <td style="vertical-align: top;"><br>
-      </td>
+      <td style="vertical-align: top;">BRVEL</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">3<br>
@@ -73,8 +74,7 @@ category)</small><br>
 (VIL)<br>
       </td>
       <td style="vertical-align: top;">kg m<sup>-1</sup></td>
-      <td style="vertical-align: top;"><br>
-      </td>
+      <td style="vertical-align: top;">VERIL</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">4<br>
@@ -83,8 +83,7 @@ category)</small><br>
       </td>
       <td style="vertical-align: top;">dB<br>
       </td>
-      <td style="vertical-align: top;"><br>
-      </td>
+      <td style="vertical-align: top;">LMAXBR</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">5<br>
@@ -92,8 +91,7 @@ category)</small><br>
       <td style="vertical-align: top;">Precipitation<br>
       </td>
       <td style="vertical-align: top;">kg m<sup>-2</sup></td>
-      <td style="vertical-align: top;"><br>
-      </td>
+      <td style="vertical-align: top;">PREC</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">6<br>

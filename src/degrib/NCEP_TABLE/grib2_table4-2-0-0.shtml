@@ -19,9 +19,9 @@ temperature category)</small><br>
 </small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 0<br>
 </big></big></center>
 <br>
-<center><b>Revised 03/12/2008</b><br>
+<center><b>Revised 06/20/2008</b><br>
 <span style="color: red; font-size: 10pt;"><b>Red text depicts changes
-made since 10/30/2007</b></span><b><br>
+made since 03/12/2008</b></span><b><br>
 </b></center>
 <br>
 <br>
@@ -148,7 +148,7 @@ Temperature<br>
       </td>
       <td style="vertical-align: top;">K<br>
       </td>
-      <td style="vertical-align: top;">-<br>
+      <td style="vertical-align: top;">HEATX<br>
       </td>
     </tr>
     <tr>
@@ -157,8 +157,7 @@ Temperature<br>
       <td style="vertical-align: top;">Wind Chill Factor</td>
       <td style="vertical-align: top;">K<br>
       </td>
-      <td style="vertical-align: top;">-<br>
-      </td>
+      <td style="vertical-align: top;">WCF</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">14<br>
@@ -166,8 +165,7 @@ Temperature<br>
       <td style="vertical-align: top;">Minimum Dew Point depression</td>
       <td style="vertical-align: top;">K<br>
       </td>
-      <td style="vertical-align: top;">-<br>
-      </td>
+      <td style="vertical-align: top;">MINDPD</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">15<br>

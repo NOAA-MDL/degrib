@@ -19,9 +19,9 @@ Hydrology Probabilities category)</small><br>
 </small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 1<br>
 </big></big></center>
 <br>
-<center><b>Revised 01/17/2008</b><br>
+<center><b>Revised 06/27/2008</b><br>
 <span style="color: red; font-size: 10pt;"><b>Red text depicts changes
-made since 04/01/2006</b></span><b><br>
+made since 01/17/2008</b></span><b><br>
 </b></center>
 <br>
 <br>
@@ -47,7 +47,7 @@ overall period (encoded as an accumulation)<br>
       </td>
       <td style="vertical-align: top;">kg m<sup>-2</sup><br>
       </td>
-      <td style="vertical-align: top;"><br>
+      <td style="vertical-align: top;">CPPOP<br>
       </td>
     </tr>
     <tr>
@@ -59,7 +59,7 @@ the sub-period)<br>
       </td>
       <td style="vertical-align: top;">%<br>
       </td>
-      <td style="vertical-align: top;"><br>
+      <td style="vertical-align: top;">PPOSP<br>
       </td>
     </tr>
     <tr>

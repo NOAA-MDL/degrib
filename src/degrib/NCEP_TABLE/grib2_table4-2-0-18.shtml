@@ -20,11 +20,12 @@ category)</small><br>
 </small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 18<br>
 </big></big></center>
 <br>
-<center><b>Created 05/20/05<br>
+<center><b>Revised 06/30/2008</b><br>
+<span style="color: red; font-size: 10pt;"><b>Red text depicts changes
+made since 01/26/2006</b></span>
+<br>
+<b><br>
 </b></center>
-<br>
-<br>
-<center>
 <table border="1" cellspacing="0" cellpadding="5" style="width: 90%;">
   <tbody>
     <tr>
@@ -45,8 +46,7 @@ category)</small><br>
       </td>
       <td style="vertical-align: top;">Bq m<sup>-3</sup><br>
       </td>
-      <td style="vertical-align: top;"><br>
-      </td>
+      <td style="vertical-align: top;">ACCES</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">1<br>
@@ -54,8 +54,7 @@ category)</small><br>
       <td style="vertical-align: top;">Air Concentration of Iodine 131<br>
       </td>
       <td style="vertical-align: top;">Bq m<sup>-3</sup></td>
-      <td style="vertical-align: top;"><br>
-      </td>
+      <td style="vertical-align: top;">ACIOD</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">2<br>
@@ -64,7 +63,7 @@ category)</small><br>
 Pollutant<br>
       </td>
       <td style="vertical-align: top;">Bq m<sup>-3</sup></td>
-      <td style="vertical-align: top;"><br>
+      <td style="vertical-align: top;">ACRADP
       </td>
     </tr>
     <tr>
@@ -72,16 +71,14 @@ Pollutant<br>
       </td>
       <td style="vertical-align: top;">Ground Deposition of Cesium 137</td>
       <td style="vertical-align: top;">Bq m<sup>-2</sup></td>
-      <td style="vertical-align: top;"><br>
-      </td>
+      <td style="vertical-align: top;">GDCES</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">4<br>
       </td>
       <td style="vertical-align: top;">Ground Deposition of Iodine 131 </td>
       <td style="vertical-align: top;">Bq m<sup>-2</sup></td>
-      <td style="vertical-align: top;"><br>
-      </td>
+      <td style="vertical-align: top;">GDIOD</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">5<br>
@@ -89,8 +86,7 @@ Pollutant<br>
       <td style="vertical-align: top;">Ground Deposition of Radioactive
 Pollutant </td>
       <td style="vertical-align: top;">Bq m<sup>-2</sup></td>
-      <td style="vertical-align: top;"><br>
-      </td>
+      <td style="vertical-align: top;">GDRADP</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">6<br>
@@ -99,8 +95,7 @@ Pollutant </td>
 Concentration of Cesium Pollutant<br>
       </td>
       <td style="vertical-align: top;">Bq m<sup>-3</sup></td>
-      <td style="vertical-align: top;"><br>
-      </td>
+      <td style="vertical-align: top;">TIACCP</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">7<br>
@@ -109,17 +104,14 @@ Concentration of Cesium Pollutant<br>
 Concentration of Iodine Pollutant<br>
       </td>
       <td style="vertical-align: top;">Bq m<sup>-3</sup> </td>
-      <td style="vertical-align: top;"><br>
-      </td>
-    </tr>
+      <td style="vertical-align: top;">TIACIP</tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">8<br>
       </td>
       <td style="vertical-align: top;">Time Integrated Air
 Concentration of Radioactive Pollutant</td>
       <td style="vertical-align: top;">Bq m<sup>-3</sup> </td>
-      <td style="vertical-align: top;"><br>
-      </td>
+      <td style="vertical-align: top;">TIACRP</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">9-191<br>
