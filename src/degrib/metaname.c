@@ -1429,7 +1429,7 @@ GRIB2LocalTable NCEP_LclTable[] = {
             {0, 2, 217, "CNGWDV", "Convective Gravity wave drag meridional acceleration", "m/s^2", UC_NONE},
             {0, 2, 218, "LMV", "Velocity point model surface", "-", UC_NONE},
             {0, 2, 219, "PVMWW", "Potential vorticity (mass-weighted)", "1/(s/m)", UC_NONE},
-            {0, 2, 220, "CNGWDV", "Momentum flux N/m^2", "M", UC_NONE},
+            {0, 2, 220, "MFLX", "Momentum flux", "N/m^2", UC_NONE},
 
    /* 21 */ {0, 3, 192, "MSLET", "MSLP (Eta model reduction)", "Pa", UC_NONE},
    /* 22 */ {0, 3, 193, "5WAVH", "5-Wave Geopotential Height", "gpm", UC_NONE},
