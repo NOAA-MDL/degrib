@@ -1,4 +1,44 @@
 #
+#----- Release: Version 1.92 07/24/2008 -----
+#
+ 7/23 AAT Updated the status of sky, snow, wwa, and qpf (r742)
+ 7/23 AAT Added hazards to the download file for tkdegrib (r741)
+ 7/22 AAT Updating the tables based on NCEPs current web pages. (r739)
+ 7/22 AAT Modifying the metaname labels for PoP to handle the case when we're
+          dealing with a non 0.01 inch threshold. (r738)
+ 7/21 AAT Improving handling of 'FW.W:2^RecHiPos'.  Now goes to 'FW.W:2'
+          instead of '<None>' (r733)
+ 7/21 AAT Updated the defaults for SimpleWWA (r732)
+ 7/21 AAT Added -TxtParse (same as -WxParase but is intended to apply to WWA)
+ 7/8  AAT Added "getWWAString()" to enable XML code to work with hazards (r731)
+ 7/2  AAT Started in on the createWWADBF() procedure (r725)
+ 7/2  AAT Added a -cwa option to help with XML for wwa grids (r717)
+ 7/2  AAT Switching from using "Hazard" to using "WWA" (r711)
+ 7/1  AAT Enabling -DP to parse the hazard string (r705)
+ 7/1  AAT Added code to store the hazard cubes (r704)
+ 7/1  AAT Had writeflt.c create hazard .flt files (r702)
+ 7/1  AAT Finished having degrib parse the Hazard Grid (r701)
+ 7/1  AAT Restructured parseGrid() to be 'non-Wx' centric (r699)
+ 7/1  AAT Attempting to clean up handling of bad hazards. (r695)
+ 6/26 AAT First pass at a hazard (wwa) module (r691)
+ 6/17 AAT Updating PR and CentGRTLakes tiles (r688)
+ 6/17 AAT Updated the mapdef files for PR and cleaning them up for conus (r687)
+ 6/17 AAT Continued adding npacocn sector (r684)
+ 6/17 AAT Relabeling rtma-sky00 to rtma00-sky, etc in ndfd.ini (r682)
+ 6/15 AAT Added a nsi creation script and template file. (r678)
+ 6/9  AAT modified writeshp.c to have a '\0' in the column headers, since ESRI
+          appears to need it (for names longer than 10 char).
+ 6/4  AAT Fixed the problem with bad -pnt options (eg -pnt 1, -pnt asdasg)
+ 6/4  AAT Fixed code to handle 'degrib -DP -pnt 1,1 -Print' error. (r675)
+ 5/29 AAT Added a quiet option to getUrl.tcl
+ 5/29 AAT Expanded genprobe list to include npacocn when dealing with Guam,
+          Hawaii
+ 5/15 AAT Added npacocn timezone and daylight savings info (r665)
+ 4/25 AAT Added a sector for ndfd_oconus_npacific (r663)
+ 4/24 AAT Attempting to fix a branch cut issue with Mercator Grids.  This was
+          due to not understanding the definition of orientation angle.
+ 4/17 AAT Started adding hazards to degrib (similar to wx)
+#
 #----- Release: Version 1.91 04/01/2008 -----
 #
  4/1  AAT Made default windows install c:/ndfd/degrib instead of
