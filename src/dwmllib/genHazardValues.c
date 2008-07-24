@@ -84,7 +84,7 @@ void genHazardValues(size_t pnt, char *layoutKey, genMatchType *match,
    /* Firstly, create a subset array of structures holding the hazard data from
     * the match structure.
     */
-   hzInfo = malloc(numActualRowsHZ * sizeof(HZ));
+   hzInfo = malloc(numActualRowsHZ * sizeof(HZtype));
       
    /* Fill Hazard Array. */
    priorElemCount = 0;
