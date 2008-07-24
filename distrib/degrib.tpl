@@ -100,7 +100,7 @@ XPStyle on
 BrandingText "${prjName} ${prjVer}"
 
 ; The default installation directory
-InstallDir c:\ndfd2
+InstallDir c:\ndfd
 
 ; Request application privileges for Windows Vista
 RequestExecutionLevel user
@@ -280,4 +280,3 @@ Section Uninstall
  Pop $R1
 
 SectionEnd
-
