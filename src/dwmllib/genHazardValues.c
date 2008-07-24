@@ -67,7 +67,7 @@ void genHazardValues(size_t pnt, char *layoutKey, genMatchType *match,
    xmlNodePtr hazard_conditions = NULL;  /* Xml Node Pointer for node
                                           * "hazard-conditions". */
    xmlNodePtr hazard = NULL;   /* Xml Node Pointer for node "hazard". */
-   HZ *hzInfo = NULL;         /* Hazard data taken from the match array. */
+   HZtype *hzInfo = NULL;         /* Hazard data taken from the match array. */
    int numActualRowsHZ; /* Number may be reduced due to a smaller time window 
                          * chosen by user. */
    int f_formatHazTextURL = 1; /* Flag to determine if <hazardTextURL> element 

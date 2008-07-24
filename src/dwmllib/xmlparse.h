@@ -75,7 +75,7 @@ typedef struct                /* Denotes structure of Hazard info. */
    double validTime;
    char str[600];
    sChar valueType;
-} HZ;
+} HZtype;
 
 typedef struct                /* Structure with info on the number of rows 
                                * skipped due to a startTime and/or endTime 
