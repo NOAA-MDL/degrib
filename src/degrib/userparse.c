@@ -1354,14 +1354,13 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
          }
          return 2;
       case CWA:
-         if (usr->cwaBuff == NULL) {
-            usr->numCWA++;
-            usr->cwaBuff = (char **) realloc (usr->cwaBuff, usr->numCWA 
-                           * sizeof (char*));
-            usr->cwaBuff[usr->numCWA - 1] = (char *) malloc ((strlen (next)
-                                            + 1) * sizeof (char));
-            strcpy (usr->cwaBuff[usr->numCWA - 1], next);
-         }
+         usr->numCWA++;
+         usr->cwaBuff = (char **) realloc (usr->cwaBuff, usr->numCWA 
+                        * sizeof (char*));
+         usr->cwaBuff[usr->numCWA - 1] = (char *) malloc ((strlen (next)
+                                         + 1) * sizeof (char));
+         strToLower(next);
+         strcpy (usr->cwaBuff[usr->numCWA - 1], next);
          return 2;
       case PNT:
          if (myCommaDoubleList2 (next, &lat, &lon) != 0) {
