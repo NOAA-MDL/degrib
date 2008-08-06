@@ -134,11 +134,16 @@ void checkNeedForPeriodName(int index, uChar * numPeriodNames,
        * summarization product.
        */
       if (parameterName == NDFD_POP)
-         numPeriodsClippedBegin = ceil(numHoursClippedBegin / 12.0);
+      {
+         if (numHoursClippedBegin >= 12)
+            numPeriodsClippedBegin = floor(numHoursClippedBegin / 12.0);
+         else
+            numPeriodsClippedBegin = ceil(numHoursClippedBegin / 12.0);
+      }
       else
-         numPeriodsClippedBegin = myRound((numHoursClippedBegin / 24.0), 0); 
+         numPeriodsClippedBegin = myRound((numHoursClippedBegin / 24.0), 0);
  
-      if ((int)myRound(numPeriodsClippedBegin, 0) >= *numPeriodNames)
+      if ((int)myRound(numPeriodsClippedBegin, 0) > *numPeriodNames || index+1 > *numPeriodNames)
       {
          *outputPeriodName = 0;
          return;
@@ -155,6 +160,7 @@ void checkNeedForPeriodName(int index, uChar * numPeriodNames,
             strcpy(periodName, periodData[issuanceType][whichPeriodName]);
          else
             *outputPeriodName = 0;
+
          return;
       }
    }
@@ -168,7 +174,7 @@ void checkNeedForPeriodName(int index, uChar * numPeriodNames,
          /* If the max temp day is not the same as the today's day, then we
           * don't need to label it using "today".  This happens in the
           * evening after about 8:00 PM. */
-         if (strcmp(currentDay, TDay) != 0 && index + 1 < *numPeriodNames)
+         if (strcmp(currentDay, TDay) != 0 && index + 1 <= *numPeriodNames)
          {
             *outputPeriodName = 1;  /* Tell user they need to use a period
                                      * name. */
@@ -271,6 +277,5 @@ void checkNeedForPeriodName(int index, uChar * numPeriodNames,
    {
       strcpy(periodName, periodData[issuanceType][whichPeriodName]);
    }
-
    return;
 }

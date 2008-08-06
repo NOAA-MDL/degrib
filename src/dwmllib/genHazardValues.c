@@ -28,6 +28,8 @@
  * RETURNS: void
  *
  *  5/2008 Paul Hershberg (MDL): Created.
+ *  7/2008 Paul Hershberg (MDL): Made change to ETN delimiter (from "." to ":")
+ *  7/2008 Paul Hershberg (MDL): Changed type "HZ" to "HZtype".
  *
  * NOTES:
  *****************************************************************************
@@ -67,7 +69,7 @@ void genHazardValues(size_t pnt, char *layoutKey, genMatchType *match,
    xmlNodePtr hazard_conditions = NULL;  /* Xml Node Pointer for node
                                           * "hazard-conditions". */
    xmlNodePtr hazard = NULL;   /* Xml Node Pointer for node "hazard". */
-   HZtype *hzInfo = NULL;         /* Hazard data taken from the match array. */
+   HZtype *hzInfo = NULL;      /* Hazard data taken from the match array. */
    int numActualRowsHZ; /* Number may be reduced due to a smaller time window 
                          * chosen by user. */
    int f_formatHazTextURL = 1; /* Flag to determine if <hazardTextURL> element 
@@ -205,20 +207,21 @@ void genHazardValues(size_t pnt, char *layoutKey, genMatchType *match,
             {
                hzPhen[groupIndex] = (char *) malloc((strlen(pstr1)+1) * sizeof(char));
                strcpy (hzPhen[groupIndex], pstr1);
-               pstr1 = strtok (NULL, ".");
+               pstr1 = strtok (NULL, ":");
                while (pstr1 != NULL)
                {
                   hzSig[groupIndex] = (char *) malloc((strlen(pstr1)+1) * sizeof(char));
                   strcpy (hzSig[groupIndex], pstr1);
-                  pstr1 = strtok (NULL, ".");
+                  pstr1 = strtok (NULL, ":");
+
                   while (pstr1 != NULL)
                   {
-                     if (strlen(pstr1) == 4)
+                     if (strlen(pstr1) >= 2)
                      {
                         hzETN[groupIndex] = (char *) malloc((strlen(pstr1)+1) * sizeof(char));
                         strcpy (hzETN[groupIndex], pstr1);
                      } 
-                     pstr1 = strtok (NULL, ".");
+                     pstr1 = strtok (NULL, ":");
                   }
                }
             }

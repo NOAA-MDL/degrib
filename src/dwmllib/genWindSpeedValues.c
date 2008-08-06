@@ -239,14 +239,20 @@ void genWindSpeedValues(double timeUserStart, double timeUserEnd, size_t pnt,
                   if ((Clock_IsDaylightSaving2(timeUserStartStep, TZoffset) != 1) 
                      && (Clock_IsDaylightSaving2(timeUserStartStep + interval, 
                      TZoffset) == 1))
+                  {
                      interval = interval - 3600;
+                     f_DSTswitchFound = 1; 
+                  }
                }
                else
                { 
                   if ((Clock_IsDaylightSaving2(timeUserStartStep, TZoffset) == 1) 
                      && (Clock_IsDaylightSaving2(timeUserStartStep + interval, 
                      TZoffset) != 1))
+                  {
+                     f_DSTswitchFound = 1; 
                      interval = interval + 3600;
+                  }
                }
             }
 

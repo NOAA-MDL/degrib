@@ -28,10 +28,6 @@
  * RETURNS: void
  *
  *  2/2006 Paul Hershberg (MDL): Created.
- *  4/2008 Paul Hershberg (MDL): Upped the StartMorning by +3 hours in one of
- *                               the conditional statements, because the night
- *                               time POP data hangs around til after 8AM, not
- *                               6AM.
  *
  * NOTES:
  *****************************************************************************
@@ -89,8 +85,7 @@ void getPeriodInfo(uChar parameterName, char *firstValidTime, char *currentHour,
     * This section if for the DWMLgenByDay product only. 
     */
    if (((strcmp(frequency, "12 hourly") == 0) || (strcmp(frequency, "24 hourly") == 0)) &&
-       (((atoi(currentHour) < startMorning) || (atoi(currentHour) < startMorning+3 && 
-          strcmp(firstValidDay, currentDay) != 0))))
+       (((atoi(currentHour) < startMorning && strcmp(firstValidHour, "06") != 0) || (atoi(currentHour) < startMorning+3 && strcmp(firstValidDay, currentDay) != 0))))
    {
 
       /* Determine which NDFD parameter we are processing and return TRUE if
@@ -145,7 +140,11 @@ void getPeriodInfo(uChar parameterName, char *firstValidTime, char *currentHour,
       if (*issuanceType == earlyMorningMaxT || *issuanceType ==
           earlyMorningMinT)
          *numPeriodNames = 1;
-      else if (*issuanceType == morning24 || *issuanceType == afternoon24)
+      else if (*issuanceType == afternoon24)
+         *numPeriodNames = 2;
+      else if ((*issuanceType == morning24) && (strcmp(firstValidDay, currentDay) != 0))
+         *numPeriodNames = 1;
+      else
          *numPeriodNames = 2;
    }
    if (period == 12)

@@ -149,7 +149,7 @@ void genSkyCoverValues(size_t pnt, char *layoutKey, genMatchType * match,
                                * data. */
    char month[3];             /* String holding formatted month to see if a 
                                  change from standard to daylight savings time
-                                 (or vice versa) occurs within forecast period
+                                 (or vice
                                  in question. */
    int interval = timeInterval; /* Used in case DST to Standard time (or vice 
                                  * versa) occurs sometime in the forecast. */
@@ -273,8 +273,10 @@ void genSkyCoverValues(size_t pnt, char *layoutKey, genMatchType * match,
                   if ((Clock_IsDaylightSaving2(timeUserStartStep, TZoffset) == 1) 
                      && (Clock_IsDaylightSaving2(timeUserStartStep + interval, 
                      TZoffset) != 1))
+                  {
                      interval = interval + 3600;
                      f_DSTswitchFound = 1;
+                  }
                }
             }
 

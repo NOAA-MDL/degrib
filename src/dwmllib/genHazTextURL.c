@@ -73,13 +73,27 @@ void  genHazTextURL(char *baseTextURL, char *cwaStr, char *phenomena,
    else   
       sprintf (hazardTextURL, "%s%s%s", baseTextURL, cwaStr, "&wwa=");
 
- 
    /* A special case concerning the "Small Craft" hazards. */
    if ((strstr(phenomena, "Small Craft") != '\0'))
    {       
       strcat (hazardTextURL, "Small");
       strcat (hazardTextURL, "%20");
       strcat (hazardTextURL, "Craft");
+      strcat (hazardTextURL, "%20");
+
+      /* Append the significance to the hazartTextURL string as long as it is 
+       * not "none". 
+       */
+      if (strcmp(significance, "none") != 0)
+         strcat (hazardTextURL, significance);
+
+      return;
+   }
+ 
+   /* A special case concerning the "Areal Flood" hazards. */
+   if ((strstr(phenomena, "Areal Flood") != '\0'))
+   {       
+      strcat (hazardTextURL, "Flood");
       strcat (hazardTextURL, "%20");
 
       /* Append the significance to the hazartTextURL string as long as it is 

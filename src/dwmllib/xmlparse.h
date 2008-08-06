@@ -383,8 +383,8 @@ void getFirstSecondValidTimes(double *firstValidTime, double *secondValidTime,
                               int numRows, int numRowsSkippedBeg, 
                               int numRowsSkippedEnd);
 
-void  getHazPhenAndIcon(char *uglyStr, char *significance, char *transStr,
-                        int *f_icon, char *iconStr);
+void getHazPhenAndIcon(char *uglyStr, char *significance, char *transStr,
+                       int *f_icon, char *iconStr);
 
 void getNumRows(numRowsInfo *numRowsForPoint, double *timeUserStart, 
 		double *timeUserEnd, size_t numMatch, genMatchType *match, 
