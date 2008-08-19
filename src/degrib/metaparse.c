@@ -2020,10 +2020,12 @@ int MetaParse (grib_MetaData *meta, sInt4 *is0, sInt4 ns0,
    if (IsData_NDFD (meta->center, meta->subcenter)) {
       meta->gds.hdatum = 1;
    }
+/*
    if (meta->gds.f_sphere != 1) {
       errSprintf ("Driver Filter: Can only handle spheres.\n");
       return -10;
    }
+*/
    if ((ierr = ParseSect4 (is4, ns4, meta)) != 0) {
       preErrSprintf ("Parse error Section 4\n");
       return ierr;
