@@ -21,7 +21,7 @@ momentum category)</small><br>
 <br>
 <center>
 <center>
-<center><b>Revised 06/30/2008</b><br>
+<center><b>Revised 08/07/2008</b><br>
 <span style="color: red; font-size: 10pt;"><b>Red text depicts changes
 made since 03/12/2008</b></span><b><br>
 </b></center>
@@ -236,7 +236,7 @@ Velocity<br>
       </td>
       <td style="vertical-align: top;">U-Component of Wind (Gust)</td>
       <td style="vertical-align: top;">m s<sup>-1</sup></td>
-      <td style="vertical-align: top;">U GUTS</td>
+      <td style="vertical-align: top;">U GUST</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">24<br>
@@ -442,25 +442,25 @@ for Local Use<br>
     <tr>
       <td style="text-align: center; color: red;">210<br></td>
       <td style="vertical-align: top; color: red;">Gravity wave drag zonal acceleration<br></td>
-      <td style="vertical-align: top; color: red;">m/s<sup>2</sup><br></td>
+      <td style="vertical-align: top; color: red;">m s<sup>-2</sup><br></td>
       <td style="vertical-align: top; color: red;">GWDU<br></td>
     </tr>
     <tr>
       <td style="text-align: center; color: red;">211<br></td>
       <td style="vertical-align: top; color: red;">Gravity wave drag meridional acceleration<br></td>
-      <td style="vertical-align: top; color: red;">m/s<sup>2</sup><br></td>
+      <td style="vertical-align: top; color: red;">m s<sup>-2</sup><br></td>
       <td style="vertical-align: top; color: red;">GWDV<br></td>
     </tr>
     <tr>
       <td style="text-align: center; color: red;">212<br> </td>
       <td style="vertical-align: top; color: red;">Convective zonal momentum mixing acceleration<br> </td>
-      <td style="vertical-align: top; color: red;">m/s<sup>2</sup><br> </td>
+      <td style="vertical-align: top; color: red;">m s<sup>-2</sup><br> </td>
       <td style="vertical-align: top; color: red;">CNVU<br> </td>
     </tr>
     <tr>
       <td style="text-align: center; color: red;">213<br> </td>
       <td style="vertical-align: top; color: red;">Convective meridional momentum mixing acceleration<br> </td>
-      <td style="vertical-align: top; color: red;">m/s<sup>2</sup><br> </td>
+      <td style="vertical-align: top; color: red;">m s<sup>-2</sup><br> </td>
       <td style="vertical-align: top; color: red;">CNVV<br> </td>
     </tr>
     <tr>
@@ -499,13 +499,6 @@ for Local Use<br>
       <td style="vertical-align: top; color: red;">1/s/m</td>
       <td style="vertical-align: top; color: red;">PVMWW</td>
     </tr>
-    <tr>
-      <td style="text-align: center; color: red;">220<br></td>
-      <td style="vertical-align: top; color: red;">Momentum flux N/m<sup>2</sup></td>
-      <td style="vertical-align: top; color: red;">M</td>
-      <td style="vertical-align: top; color: red;">FLX</td>
-    </tr> 
-
     <tr>
       <td style="vertical-align: top; text-align: center;">255<br>
       </td>
