@@ -39,7 +39,8 @@
 /* *INDENT-OFF* */
 /* Problems using MISSING to denote all possible, since subcenter = Missing
  * is defined for NDFD. */
-/* A good way to get these numbers is (in debug mode) "-P -MOTD 1 -pnt 36,-78" */
+/* A good way to get these numbers is "-C -IS0 -stdout" */
+/* Also look for a document called genelem.txt in /degrib/src/degrib" */
 static const genElemDescript NdfdElements[] = {
 /* 0 */   {NDFD_MAX,2, 8,MISSING_2,2,0, 0,8,0,4,-1,12, 1,0.0,0.0 ,0,-1,-1,-1,-1},
 /* 1 */   {NDFD_MIN,2, 8,MISSING_2,2,0, 0,8,0,5,-1,12, 1,0.0,0.0 ,0,-1,-1,-1,-1},
@@ -104,6 +105,12 @@ static const genElemDescript NdfdElements[] = {
 /* 49 */  {RTMA_UWSPD,2, 7,4,7,109, 0,0,2,1,-1,0, 103,10.0,0.0, 0,-1,-1,-1,-1},
 /* 50 */  {RTMA_WDIR,2, 7,4,0,109, 0,0,2,0,-1,0, 103,10.0,0.0, 0,-1,-1,-1,-1},
 /* 51 */  {RTMA_WSPD,2, 7,4,0,109, 0,0,2,1,-1,0, 103,10.0,0.0, 0,-1,-1,-1,-1},
+
+/* 52 */  {GFSEKDMOS_MAXT,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
+/* 53 */  {GFSEKDMOS_MINT,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
+/* 54 */  {GFSEKDMOS_TEMP,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
+/* 55 */  {GFSEKDMOS_TD,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
+/* 56 */  {GFSEKDMOS_QPF,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
 
    {NDFD_UNDEF,2, MISSING_2,MISSING_2,MISSING_1,MISSING_1,
                   MISSING_1,MISSING_2,MISSING_1,MISSING_1,-1,0,

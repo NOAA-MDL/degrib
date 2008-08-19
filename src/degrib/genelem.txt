@@ -1,0 +1,100 @@
+8/19/2008: Creating genElemDescript NdfdElements[] entries...
+
+The main idea is to get what is encoded in the GRIB2 message so we can match
+what we think is "NDFD_MAXT" with what we see.  The tools we can use are:
+
+A) "degrib file -C -IS0 -stdout | more"
+
+B) The GRIB2 document.  (When in doubt, the -IS0 (zero not oh) values
+correspond directly to the GRIB2 document, but you shouldn't need it).
+
+----- In the following I'll work on adding GFSEKDMOS_MAXT ------
+
+1) The first entry "ndfdEnum" is our choice.  It is defined (currently) in
+"meta.h".  Typically is has taken the form of "source"_"variable".  IE:
+NDFD_MAX or RTMA_TEMP.  For adding "GFSEKDMOS" "QPF", I'd go with:
+
+GFSEKDMOS_MAXT, GFSEKDMOS_MINT, GFSEKDMOS_TEMP, GFSEKDMOS_TD, GFSEKDMOS_QPF
+
+Add these to the enum list before the NDFD_UNDEF and NDFD_MATCHALL.
+
+2) The second entry deals with GRIB version.  NDFD and NDGD is GRIB 2, so this
+should be a 2.  There is a chance we could have TDLPack data, in which case it
+would be a -1, but it is very unlikely.
+
+3,4) The next 2 entries define where it is from.  NDFD is typically from
+center 8, subcenter 0 or missing.  However NCEP generates center 7, and MDL
+from NCEP is subcenter 14.  So it is best to check using the -C -stdout option:
+PDS-S1 | Originating center | 7 (US-NCEP)
+PDS-S1 | Originating sub-center | 14 (Meteorological Development Laboratory (MDL))
+
+5,6) Generating process and ID can be found in:
+PDS-S4 | Generation process | 2 (Forecast)
+PDS-S4 | Forecast generating process ID | 96 (Global Forecast System Model)
+
+7) is the prodType (aka data type) which matches:
+PDS-S0 | DataType | 0 (Meteorological products)
+
+8) is the templat (aka product type).  In this case:
+PDS-S4 | Product type | 10 (Percentile forecasts at a horizontal layer or level in a time interval)
+
+9,10) define what the category and subcategory the data is:
+PDS-S4 | Category Description | 0 (Temperature)
+PDS-S4 | Category Sub-Description | 4 (Maximum temperature Percentile(5) [K])
+
+11) Is almost always missing or -1.  This is because for a "generic" variable,
+say maxt, the "forecast in sec" or actually "forecast in hours", changes with
+projection.  The only exception is cumulative tropical cyclone wind
+probabilities where the forecast time is always 0, but the length of time over
+which statistical processing has been done varies.  This allows one to
+differentiate it with the incremental tropical cyclones where the forecast
+time changes but the length of time is constant.  See:
+PDS-S4 | Forecast time in hours | 24.000000
+
+12) This is the length of time over which statistical processing has been done.
+Its units can vary a bit.  For NDFD_PoP12:
+PDS-S4 | Time range for processing | 12 Hour
+For NDFD_MAX:
+PDS-S4 | Time range for processing | 12 Hour
+!!! However for GFSEKDMOS_MAXT, it appears to be missing because no time ranges
+were specified.  Likely an error in the encoding !!!
+For now we can set to -1.
+Note: Temp, WD and the other "instantaneous" variables are 0.
+
+13,14) Deal with the first fixed surface:
+PDS-S4 | Type of first fixed surface | 103 (Specified height level above ground [m])
+PDS-S4 | Value of first fixed surface | 2.000000
+
+15) Deals with the second fixed surface.  For NDFD this is almost always
+missing.  If it is missing, it doesn't show up in the labeled part of -C -stdout,
+but does show up in the unlabeled part of -C -IS0.  Since it is missing in this
+case, we set it to 0.
+
+16) Is the probability type.  For non-probabilistic entries this is 0.  For
+probabilistic entries, an example would be:
+PDS-S4 | Probability type | 1 (Probability of event above upper limit)
+In this case it is missing so we use 0
+
+17,18,19,20)  The probability type in 16 describes with regards to both an
+upper and possibly lower limit.  These limits are described using scale factors
+and values.  Example from PoP12.
+PDS-S4 | Lower limit (scale value, scale factor) | -2.14748e+010 (-2147483647, -1)
+PDS-S4 | Upper limit (scale value, scale factor) | 0.254 (254, 3)
+Note: the lower scale value is GRIB2MISSING_s4, while the scale factor is -1.
+In our case we can use -1, -1, -1, -1 because the probability type is 0.
+
+Conclusion:  Putting it all together we get:
+
+           ourName,Type      where(model) what            surface   prob type
+/* 52 */  {GFSEKDMOS_MAXT,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
+
+-----------------
+
+Now we reach a possible dillema.  No where in this did we look at percentiles.
+We can't differentiate between the precentile.  Ie we can't select 5 percentile
+vs 10 percentile.  I'm not sure if we have a need to.  If we do, we should
+add a precentile entry based on:
+PDS-S4 | Percentile | 5 ([%])
+
+The reason we might would be that a user wants to only look at the 5 percentile
+values, and we don't want to have to filter them later.
