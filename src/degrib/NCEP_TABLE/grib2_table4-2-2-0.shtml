@@ -19,7 +19,7 @@ Vegetation/Biomass category)</small><br>
 </small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 0<br>
 </big></big></center>
 <br>
-<div style="text-align: center;"><b>Revised 06/30/2008</b><br>
+<div style="text-align: center;"><b>Revised 07/29/2008</b><br>
 <span style="color: red; font-size: 10pt;"><b>Red text depicts changes
 made since 03/12/2008</b></span><br>
 </div>
@@ -245,7 +245,7 @@ canopy conductance</td>
       <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">26</td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">Wilting Point</td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">kg m<sup>-3</sup></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">WILTP<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">WILT<br></td>
     </tr>
     <tr>
       <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">27</td>
@@ -471,7 +471,7 @@ canopy conductance</td>
     </tr>
     <tr>
       <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">219<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Asymptotic mixing lenght scale</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Asymptotic mixing length scale</td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">m<br></td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">AMIXL</td>
     </tr>
@@ -485,7 +485,7 @@ canopy conductance</td>
       <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">221<br></td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">Water condensate added by precip assimilation</td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">kg/m<sup>2</sup><br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">WVINC</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">WCINC</td>
     </tr>
     <tr>
       <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">222<br></td>

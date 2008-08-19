@@ -979,7 +979,7 @@ GRIB2ParmTable LandVeg[] = {
 /* 23 */   {"CISOILW", "Column-integrated soil water", "kg/m^2", UC_NONE},
 /* 24 */   {"HFLUX", "Heat flux", "W/m^2", UC_NONE},
 /* 25 */   {"VSOILM", "Volumetric soil moisture", "m^3/m^3", UC_NONE},
-/* 26 */   {"WILTP", "Wilting point", "kg/m^3", UC_NONE},
+/* 26 */   {"WILT", "Wilting point", "kg/m^3", UC_NONE},
 /* 27 */   {"VWILTM", "Volumetric wilting moisture", "m^3/m^3", UC_NONE},
 };
 
@@ -1638,7 +1638,7 @@ GRIB2LocalTable NCEP_LclTable[] = {
             {2, 0, 218, "LANDN", "Land-sea coverage (nearest neighbor)", "0=sea; 1=land", UC_NONE},
             {2, 0, 219, "AMIXL", "Asymptotic mixing length scale", "m", UC_NONE},
             {2, 0, 220, "WVINC", "Water vapor added by precip assimilation", "kg/m^2", UC_NONE},
-            {2, 0, 221, "WVINC", "Water condensate added by precip assimilation", "kg/m^2", UC_NONE},
+            {2, 0, 221, "WCINC", "Water condensate added by precip assimilation", "kg/m^2", UC_NONE},
             {2, 0, 222, "WVCONV", "Water vapor flux convergence (vertical int)", "kg/m^2", UC_NONE},
             {2, 0, 223, "WCCONV", "Water condensate flux convergence (vertical int)", "kg/m^2", UC_NONE},
             {2, 0, 224, "WVUFLX", "Water vapor zonal flux (vertical int)", "kg/m^2", UC_NONE},
