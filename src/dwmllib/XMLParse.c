@@ -455,7 +455,9 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
             #endif
          }
 	 if (endTime - startTime == (12 * 3600))
+         {
             endTime = endTime + (24 * 3600);
+         }
       }
    }
 
@@ -488,6 +490,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
       #ifdef PRINT_DIAG
       printf("No data retrieved from NDFD (matches = 0).\n");
       #endif
+
       for (i = 0; i < numElem; i++)
       {
          genElemFree(elem + i);
@@ -963,47 +966,78 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
 					    TZoffset[j], startNum, endNum,
 					    numRowsForPoint[j][NDFD_MAX]);
 
-                           if (atoi(currentHour[j]) > 18 && currentLocalTime_doub_adj
-                               + 86400 == firstMaxTValidTime_doub_adj) 
+                           if ((atoi(currentHour[j]) > 18) && (currentLocalTime_doub_adj
+                               + 86400 == firstMaxTValidTime_doub_adj) && 
+                               (firstValidTime_maxt[j] <= firstValidTime_pop[j])) 
                            {
-                              f_formatNIL[j] = 1;
-                              f_useMinTempTimes[j] = 1;
+                              if (numRowsForPoint[j][NDFD_MIN].total != 0)
+                              {
+                                 f_formatNIL[j] = 1;
+                                 f_useMinTempTimes[j] = 1;
 
-                              generateTimeLayout(numRowsForPoint[j][NDFD_MIN],
-					         NDFD_MIN, layoutKey,
-                                                 whichTimeCoordinate,
-                                                 whatSummarization, match,
-                                                 numMatch, f_formatPeriodName,
-                                                 TZoffset[j], f_observeDST,
-                                                 &numLayoutSoFar, &numCurrentLayout,
-                                                 currentHour[j], currentDay[j],
-                                                 format, data, startTime,
-                                                 currentDoubTime, &numDays[j], f_XML, 
-                                                 startNum, endNum);
+                                 generateTimeLayout(numRowsForPoint[j][NDFD_MIN],
+					            NDFD_MIN, layoutKey,
+                                                    whichTimeCoordinate,
+                                                    whatSummarization, match,
+                                                    numMatch, f_formatPeriodName,
+                                                    TZoffset[j], f_observeDST,
+                                                    &numLayoutSoFar, &numCurrentLayout,
+                                                    currentHour[j], currentDay[j],
+                                                    format, data, startTime,
+                                                    currentDoubTime, &numDays[j], f_XML, 
+                                                    startNum, endNum);
 
-                              layoutKeys[j][k] = malloc(strlen(layoutKey) + 1);
-                              strcpy(layoutKeys[j][k], layoutKey);
+                                 layoutKeys[j][k] = malloc(strlen(layoutKey) + 1);
+                                 strcpy(layoutKeys[j][k], layoutKey);
+                              }
                            }
-                           else  /* Use MaxT's own time-layout. */
+                           else  /* Use MaxT's own time-layout, but check to 
+                                  * make sure it is available first. If MaxT is
+                                  * not available, then use MinT's time layout.
+                                  */
                            {
-                              f_formatNIL[j] = 0;
-                              f_useMinTempTimes[j] = 0;
+                              if (numRowsForPoint[j][NDFD_MAX].total != 0)
+                              {
+                                 f_formatNIL[j] = 0;
+                                 f_useMinTempTimes[j] = 0;
 
-                              generateTimeLayout(numRowsForPoint[j][NDFD_MAX],
-					         NDFD_MAX, layoutKey,
-                                                 whichTimeCoordinate,
-                                                 whatSummarization, match,
-                                                 numMatch, f_formatPeriodName,
-                                                 TZoffset[j], f_observeDST,
-                                                 &numLayoutSoFar,
-                                                 &numCurrentLayout,
-                                                 currentHour[j], currentDay[j],
-                                                 format, data, startTime,
-                                                 currentDoubTime, &numDays[j], f_XML, 
-                                                 startNum, endNum);
+                                 generateTimeLayout(numRowsForPoint[j][NDFD_MAX],
+					            NDFD_MAX, layoutKey,
+                                                    whichTimeCoordinate,
+                                                    whatSummarization, match,
+                                                    numMatch, f_formatPeriodName,
+                                                    TZoffset[j], f_observeDST,
+                                                    &numLayoutSoFar,
+                                                    &numCurrentLayout,
+                                                    currentHour[j], currentDay[j],
+                                                    format, data, startTime,
+                                                    currentDoubTime, &numDays[j], f_XML, 
+                                                    startNum, endNum);
 
-                              layoutKeys[j][k] = malloc(strlen(layoutKey) + 1);
-                              strcpy(layoutKeys[j][k], layoutKey);
+                                 layoutKeys[j][k] = malloc(strlen(layoutKey) + 1);
+                                 strcpy(layoutKeys[j][k], layoutKey);
+                              }
+                              else if (numRowsForPoint[j][NDFD_MIN].total != 0)
+                              {
+                                 f_formatNIL[j] = 1;
+                                 f_useMinTempTimes[j] = 1;
+
+                                 generateTimeLayout(numRowsForPoint[j][NDFD_MIN],
+					            NDFD_MIN, layoutKey,
+                                                    whichTimeCoordinate,
+                                                    whatSummarization, match,
+                                                    numMatch, f_formatPeriodName,
+                                                    TZoffset[j], f_observeDST,
+                                                    &numLayoutSoFar,
+                                                    &numCurrentLayout,
+                                                    currentHour[j], currentDay[j],
+                                                    format, data, startTime,
+                                                    currentDoubTime, &numDays[j], f_XML, 
+                                                    startNum, endNum);
+
+                                 layoutKeys[j][k] = malloc(strlen(layoutKey) + 1);
+                                 strcpy(layoutKeys[j][k], layoutKey);
+                              }
                            }
                         }
                         else
@@ -1848,16 +1882,18 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
          free(startDate[j]);
          free(currentDay[j]);
          free(currentHour[j]);
-
       }                       /* End of "is Point in Sectors" check. */
 
-   }                          /* Close Parameters Point Loop. */
+   }
+                          /* Close Parameters Point Loop. */
 
    /* Free layoutKeys point array. */
    for (j = 0; j < numPnts; j++)
    {
       if (isPntInASector(pnts[j]))
+      {
          free(layoutKeys[j]);
+      }
    }
 
    /* Free the static array "timeLayoutDefinitions" by destroying it. */
