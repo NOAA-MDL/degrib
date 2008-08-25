@@ -382,9 +382,12 @@ PROBE OPTIONS (see above for "-P")
       This converts NDFD specific data into various flavors of XML.  The
       Default value is -XML 0 (don't create XML).
       [type] is defined as:
-         1 = create DWML "time-series" product
+         1 = create DWML "time-series" product with NDFD and/or RTMA elements
          2 = create a DWML "glance" product
-
+         3 = create DWMLgenByDay "12 hourly" summarization product
+         4 = create a DWMLgenByDay "24 hourly" summarization product
+      NOTE: To derive weather summaries, data for wx, maxt, mint, pop12,
+            wdir, wspd, wgust, and sky are needed.
       See also -ndfdVars, -ndfdConven, -Icon, -startTime, and -endTime
 
    -ndfdVars [string]
@@ -404,21 +407,60 @@ PROBE OPTIONS (see above for "-P")
       is equivalent to -ndfdConven 1.
       [type] is defined as:
 
-      [type]=0   1     2
-      maxt       maxt  mx "Maximum Temperature"
-      mint       mint  mn "Minimum Temperature"
-      pop12      pop12 po "12-Hour Probability of Precipitation"
-      t          temp  tt "Temperature"
-      winddir    wdir  wd "Wind Direction"
-      windspd    wspd  ws "Wind Speed"
-      td         td    dp "Dewpoint Temperature"
-      sky        sky   cl "Sky Cover"
-      qpf        qpf   qp "Quantitative Precipitation Forecast"
-      snowamt    snow  sn "Snowfall Amount"
-      wx         wx    wx "Weather"
-      waveheight waveh wh "Wave Height"
-      apparentt  apt   at "Apparent Temperature (wind chill or heat index)"
-      rh         rhm   rh "Relative Humidity"
+      [type]= 0      1            2
+      maxt           maxt         mx      "Maximum Temperature"
+      mint           mint         mn      "Minimum Temperature"
+      pop12          pop12        po      "12-Hour Probability of Precipitation"
+      t              temp         tt      "Temperature"
+      winddir        wdir         wd      "Wind Direction"
+      windspd        wspd         ws      "Wind Speed"
+      td             td           dp      "Dewpoint Temperature"
+      sky            sky          cl      "Sky Cover"
+      qpf            qpf          qp      "Quantitative Precipitation Forecast"
+      snowamt        snow         sn      "Snowfall Amount"
+      wx             wx           wx      "Weather"
+      waveheight     waveh        wh      "Wave Height"
+      apparentt      apt          at      "Apparent Temperature (wind chill or heat index)"
+      rh             rhm          rh      "Relative Humidity"
+      windgust       wgust        wg      "Wind Gust"
+      wwa            wwa          wwa     "Watches, Warnings, and Advisories"
+      prowindspd34i  tcwspdabv34i i3      "Probability of a Tropical Wind Speed above 34 knots (Incremental)"
+      prowindspd50i  tcwspdabv50i i5      "Probability of a Tropical Wind Speed above 50 knots (Incremental)"
+      prowindspd64i  tcwspdabv64i i6      "Probability of a Tropical Wind Speed above 64 knots (Incremental)"
+      prowindspd34c  tcwspdabv34c c3      "Probability of a Tropical Wind Speed above 34 knots (Cumulative)"
+      prowindspd50c  tcwspdabv50c c5      "Probability of a Tropical Wind Speed above 50 knots (Cumulative)"
+      prowindspd64c  tcwspdabv64c c6      "Probability of a Tropical Wind Speed above 64 knots (Cumulative)"
+      convoutlook    conhazo      ch      "Convective Outlook Hazard"
+      tornadoprob    ptornado     pt      "Probability of Tornadoes"
+      hailprob       phail        ph      "Probability of Hail"
+      windprob       ptstmwinds   pw      "Probability of Damaging Thunderstorm Winds"
+      xtrmtornprob   pxtornado    xt      "Probability of Extreme Tornadoes"
+      xtrmhailprob   pxhail       xh      "Probabilty of Extreme Hail"
+      xtrmwindprob   pxtstmwinds  xw      "Probability of Extreme Thunderstorm Winds"
+      totalsvrprob   ptotsvrtstm  ps      "Total Probability of Severe Thunderstorms"
+      totalxtrmprob  ptotxsvrtstm xs      "Total Probability of Extreme Severe Thunderstorms"
+      probtmpabv144  tempabv14d   ta6d    "Probability of 8 to 14 day Temperature Above Normal"
+      probtmpblw144  tempblw14d   tb6d    "Probability of 8 to 14 day Temperature Below Normal"
+      probprcpabv144 prcpabv14d   pa6d    "Probability of 8 to 14 day Precipitation Above Normal"
+      probprcpblw144 prcpblw14d   pb6d    "Probability of 8 to 14 day Precipitation Below Normal"
+      probtmpabv01m  tmpabv30d    ta1m    "Probability of One-Month Temperature Above Normal"
+      probtmpblw01m  tmpblw30d    tb1m    "Probability of One-Month Temperature Below Normal"
+      probprcpabv01m prcpabv30d   pa1m    "Probability of One-Month Precipitation Above Normal"
+      probprcpblw01m prcpblw30d   pb1m    "Probability of One-Month Precipitation Below Normal"
+      probtmpabv03m  tmpabv90d    ta3m    "Probability of Three-Month Temperature Above Normal"
+      probtmpblw03m  tmpblw90d    tb3m    "Probability of Three-Month Temperature Below Normal"
+      probprcpabv03m prcpabv90d   pa3m    "Probability of Three-Month Precipitation Above Normal"
+      probprcpblw03m prcpblw90d   pb3m    "Probability of Three-Month Precipitation Below Normal"
+      apcp01         precipa_r    apcp01  "Real Time Mesoscale Analysis for Precipitation"
+      tcdc           sky_r        tcdc    "Real Time Mesoscale Analysis for Cloud Amount"
+      dpt            td_r         dpt     "Real Time Mesoscale Analysis for Dew Point Temperature"
+      tmp            temp_r       tmp     "Real Time Mesoscale Analysis for Temperature"
+      dpterr         utd          dpterr  "Real Time Mesoscale Analysis Uncertainty for Dew Point Temperature"
+      tmperr         utd          temperr "Real Time Mesoscale Analysis Uncertainty for Temperature"
+      wdirerr        uwdir        wdirerr "Real Time Mesoscale Analysis Uncertainty for Wind Direction"
+      winderr        uwspd        winderr "Real Time Mesoscale Analysis Uncertainty for Wind Speed"
+      wdir           wdir_r       wdir    "Real Time Mesoscale Analysis for Wind Direction"
+      wind           wspd_r       wind    "Real Time Mesoscale Analysis for Wind Speed"
 
       Example:  -ndfdConven 1
 
@@ -444,7 +486,10 @@ PROBE OPTIONS (see above for "-P")
 
    -Icon [type]
       Indicates that you want the DWML to contain icon information. The
-      default value is -Icon 0 (no icon information).
+      default value is -Icon 0 (no icon information). This option is only 
+      applicable for the "time-series" (-XML 1) product (Icons by default
+      are formatted for the "glance" product; -XML 2).
+
       [type] is defined as:
 
          0 = Degrib will not format icon XML elements in the DWML.
@@ -453,7 +498,8 @@ PROBE OPTIONS (see above for "-P")
          Example:  -Icon 1
 
       NOTE:  To format icon elements, degrib will need temperature,
-             sky cover, wind speed, and weather files.
+             sky cover, wind speed, probability of precipitation, and 
+             weather files.
 
    -startTime [string]
       Establishes the beginning time of the period for which you want data.
@@ -630,12 +676,13 @@ DATABASE PROBE OPTIONS (see above for "-DP")
       typically "Amount" is <= 5.
 
    -XML [type]
-      This converts NDFD specific data into various flavors of XML.  The 
+      This converts NDFD specific data into various flavors of XML.  The
       Default value is -XML 0 (don't create XML).
       [type] is defined as:
-         1 = create DWML "time-series" product
+         1 = create DWML "time-series" product with NDFD and/or RTMA elements
          2 = create a DWML "glance" product
-
+         3 = create DWMLgenByDay "12 hourly" summarization product
+         4 = create a DWMLgenByDay "24 hourly" summarization product
       See also -ndfdVars, -ndfdConven, -Icon, -startTime, and -endTime
 
    -ndfdVars [string]
@@ -655,21 +702,60 @@ DATABASE PROBE OPTIONS (see above for "-DP")
       is equivalent to -ndfdConven 1.
       [type] is defined as:
 
-      [type]=0   1     2
-      maxt       maxt  mx "Maximum Temperature"
-      mint       mint  mn "Minimum Temperature"
-      pop12      pop12 po "12-Hour Probability of Precipitation"
-      t          temp  tt "Temperature"
-      winddir    wdir  wd "Wind Direction"
-      windspd    wspd  ws "Wind Speed"
-      td         td    dp "Dewpoint Temperature"
-      sky        sky   cl "Sky Cover"
-      qpf        qpf   qp "Quantitative Precipitation Forecast"
-      snowamt    snow  sn "Snowfall Amount"
-      wx         wx    wx "Weather"
-      waveheight waveh wh "Wave Height"
-      apparentt  apt   at "Apparent Temperature (wind chill or heat index)"
-      rh         rhm   rh "Relative Humidity"
+      [type]= 0      1            2
+      maxt           maxt         mx      "Maximum Temperature"
+      mint           mint         mn      "Minimum Temperature"
+      pop12          pop12        po      "12-Hour Probability of Precipitation"
+      t              temp         tt      "Temperature"
+      winddir        wdir         wd      "Wind Direction"
+      windspd        wspd         ws      "Wind Speed"
+      td             td           dp      "Dewpoint Temperature"
+      sky            sky          cl      "Sky Cover"
+      qpf            qpf          qp      "Quantitative Precipitation Forecast"
+      snowamt        snow         sn      "Snowfall Amount"
+      wx             wx           wx      "Weather"
+      waveheight     waveh        wh      "Wave Height"
+      apparentt      apt          at      "Apparent Temperature (wind chill or heat index)"
+      rh             rhm          rh      "Relative Humidity"
+      windgust       wgust        wg      "Wind Gust"
+      wwa            wwa          wwa     "Watches, Warnings, and Advisories"
+      prowindspd34i  tcwspdabv34i i3      "Probability of a Tropical Wind Speed above 34 knots (Incremental)"
+      prowindspd50i  tcwspdabv50i i5      "Probability of a Tropical Wind Speed above 50 knots (Incremental)"
+      prowindspd64i  tcwspdabv64i i6      "Probability of a Tropical Wind Speed above 64 knots (Incremental)"
+      prowindspd34c  tcwspdabv34c c3      "Probability of a Tropical Wind Speed above 34 knots (Cumulative)"
+      prowindspd50c  tcwspdabv50c c5      "Probability of a Tropical Wind Speed above 50 knots (Cumulative)"
+      prowindspd64c  tcwspdabv64c c6      "Probability of a Tropical Wind Speed above 64 knots (Cumulative)"
+      convoutlook    conhazo      ch      "Convective Outlook Hazard"
+      tornadoprob    ptornado     pt      "Probability of Tornadoes"
+      hailprob       phail        ph      "Probability of Hail"
+      windprob       ptstmwinds   pw      "Probability of Damaging Thunderstorm Winds"
+      xtrmtornprob   pxtornado    xt      "Probability of Extreme Tornadoes"
+      xtrmhailprob   pxhail       xh      "Probabilty of Extreme Hail"
+      xtrmwindprob   pxtstmwinds  xw      "Probability of Extreme Thunderstorm Winds"
+      totalsvrprob   ptotsvrtstm  ps      "Total Probability of Severe Thunderstorms"
+      totalxtrmprob  ptotxsvrtstm xs      "Total Probability of Extreme Severe Thunderstorms"
+      probtmpabv144  tempabv14d   ta6d    "Probability of 8 to 14 day Temperature Above Normal"
+      probtmpblw144  tempblw14d   tb6d    "Probability of 8 to 14 day Temperature Below Normal"
+      probprcpabv144 prcpabv14d   pa6d    "Probability of 8 to 14 day Precipitation Above Normal"
+      probprcpblw144 prcpblw14d   pb6d    "Probability of 8 to 14 day Precipitation Below Normal"
+      probtmpabv01m  tmpabv30d    ta1m    "Probability of One-Month Temperature Above Normal"
+      probtmpblw01m  tmpblw30d    tb1m    "Probability of One-Month Temperature Below Normal"
+      probprcpabv01m prcpabv30d   pa1m    "Probability of One-Month Precipitation Above Normal"
+      probprcpblw01m prcpblw30d   pb1m    "Probability of One-Month Precipitation Below Normal"
+      probtmpabv03m  tmpabv90d    ta3m    "Probability of Three-Month Temperature Above Normal"
+      probtmpblw03m  tmpblw90d    tb3m    "Probability of Three-Month Temperature Below Normal"
+      probprcpabv03m prcpabv90d   pa3m    "Probability of Three-Month Precipitation Above Normal"
+      probprcpblw03m prcpblw90d   pb3m    "Probability of Three-Month Precipitation Below Normal"
+      apcp01         precipa_r    apcp01  "Real Time Mesoscale Analysis for Precipitation"
+      tcdc           sky_r        tcdc    "Real Time Mesoscale Analysis for Cloud Amount"
+      dpt            td_r         dpt     "Real Time Mesoscale Analysis for Dew Point Temperature"
+      tmp            temp_r       tmp     "Real Time Mesoscale Analysis for Temperature"
+      dpterr         utd          dpterr  "Real Time Mesoscale Analysis Uncertainty for Dew Point Temperature"
+      tmperr         utd          temperr "Real Time Mesoscale Analysis Uncertainty for Temperature"
+      wdirerr        uwdir        wdirerr "Real Time Mesoscale Analysis Uncertainty for Wind Direction"
+      winderr        uwspd        winderr "Real Time Mesoscale Analysis Uncertainty for Wind Speed"
+      wdir           wdir_r       wdir    "Real Time Mesoscale Analysis for Wind Direction"
+      wind           wspd_r       wind    "Real Time Mesoscale Analysis for Wind Speed"
 
       Example:  -ndfdConven 1
 
@@ -695,7 +781,10 @@ DATABASE PROBE OPTIONS (see above for "-DP")
 
    -Icon [type]
       Indicates that you want the DWML to contain icon information. The
-      default value is -Icon 0 (no icon information).
+      default value is -Icon 0 (no icon information). This option is only 
+      applicable for the "time-series" (-XML 1) product (Icons by default
+      are formatted for the "glance" product; -XML 2).
+
       [type] is defined as:
 
          0 = Degrib will not format icon XML elements in the DWML.
@@ -704,7 +793,8 @@ DATABASE PROBE OPTIONS (see above for "-DP")
          Example:  -Icon 1
 
       NOTE:  To format icon elements, degrib will need temperature,
-             sky cover, wind speed, and weather files.
+             sky cover, wind speed, probability of precipitation, and 
+             weather files.
 
    -startTime [string]
       Establishes the beginning time of the period for which you want data.
