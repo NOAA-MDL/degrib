@@ -56,6 +56,10 @@
 #define DEF_NCEP_TABLE rean_nowarn
 enum Def_NCEP_Table { rean, opn, rean_nowarn, opn_nowarn };
 
+/* For an update to these tables see:
+ * http://www.nco.ncep.noaa.gov/pmb/docs/on388/table2.html
+ */
+
 extern GRIB1ParmTable parm_table_ncep_opn[256];
 extern GRIB1ParmTable parm_table_ncep_reanal[256];
 extern GRIB1ParmTable parm_table_ncep_tdl[256];
@@ -64,6 +68,9 @@ extern GRIB1ParmTable parm_table_omb[256];
 extern GRIB1ParmTable parm_table_nceptab_129[256];
 extern GRIB1ParmTable parm_table_nceptab_130[256];
 extern GRIB1ParmTable parm_table_nceptab_131[256];
+extern GRIB1ParmTable parm_table_nceptab_133[256];
+extern GRIB1ParmTable parm_table_nceptab_140[256];
+extern GRIB1ParmTable parm_table_nceptab_141[256];
 
 extern GRIB1ParmTable parm_table_nohrsc[256];
 
@@ -171,6 +178,12 @@ static GRIB1ParmTable *Choose_ParmTable (pdsG1Type *pdsMeta,
                return &parm_table_nceptab_130[0];
             case 131:
                return &parm_table_nceptab_131[0];
+            case 133:
+               return &parm_table_nceptab_133[0];
+            case 140:
+               return &parm_table_nceptab_140[0];
+            case 141:
+               return &parm_table_nceptab_141[0];
          }
          break;
       case AFWA:
