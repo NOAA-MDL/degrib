@@ -576,7 +576,7 @@
           files or valid arguments.
  1/26 AAT Finished -NDFDvars option.
  1/25 AAT Introduced -NDFDvars option (primarily for XML parse)
- 1/25 AAT Worked on adding ability to convert log10(µg/m^3) to µg/m^3
+ 1/25 AAT Worked on adding ability to convert log10(Âµg/m^3) to Âµg/m^3
  1/25 AAT Introduced multiple point option. (-pnt x1,y1 -pnt x2,y2 ...)
  1/25 AAT Introduced -startTime and -endTime options.
  1/25 AAT Did a little work on "MOTD" option.
