@@ -1,4 +1,4 @@
-#!/usr/local/tcltk/bin/tclsh
+#!/usr/bin/tclsh
 
 set src_dir [file dirname [info script]]
 if {[file pathtype $src_dir] != "absolute"} {
@@ -7,7 +7,7 @@ if {[file pathtype $src_dir] != "absolute"} {
   set src_dir [pwd]
   cd $cur_dir
 }
-
+cd $src_dir
 
 proc clean {filename outfile {trim 0} {mode unix} } {
 
