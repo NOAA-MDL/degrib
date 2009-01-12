@@ -3214,12 +3214,15 @@ int ProbeCmd (sChar f_Command, userType *usr)
       }
 #endif
       /* Fill the PntSectInfo member "cwa" of pntInfo. */
-      if (usr->cwaBuff != NULL) {
-         for (i = 0; i < numPnts; i++) {
+      for (i = 0; i < numPnts; i++) {
+         if (usr->cwaBuff != NULL) {
             /* Don't have to worry about freeing it since usr is free'd
              * elsewhere */
             pntInfo[i].cwa = usr->cwaBuff[i];
 /*            strcpy (pntInfo[i].cwa, usr->cwaBuff[i]); */
+         } else {
+            /* Initialize to NULL. */
+            pntInfo[i].cwa = NULL;
          }
       }
 
