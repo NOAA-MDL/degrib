@@ -703,7 +703,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
    if (f_XML == 3 || f_XML == 4)
    {
       indivHaz = (hazInfo **)malloc(numPnts * sizeof(hazInfo *));
-      numHazards = (int *)malloc(numPnts * sizeof(int));
+      numHazards = (int *)calloc(numPnts,  sizeof(int));
    }
 
    for (j = 0; j < numPnts; j++)
@@ -1909,12 +1909,13 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
             }
 
             /**************************** HAZARDS *****************************/
-
-            genHazardSummaryValues(j, numRowsForPoint[j][NDFD_WWA].multiLayouts,
+            if (numRowsForPoint[j][NDFD_WWA].total != 0) {
+               genHazardSummaryValues(j, numRowsForPoint[j][NDFD_WWA].multiLayouts,
                                    match, numRowsForPoint[j][NDFD_WWA], 
                                    parameters, pntInfo[j].startNum, pntInfo[j].
                                    endNum, pntInfo[j].cwa, indivHaz[j], 
                                    numHazards[j], layoutKeys[j][NDFD_WWA]);
+            }
          }
 
          /* Format Wave Height Values, if applicable. */
