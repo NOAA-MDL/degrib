@@ -37,7 +37,7 @@ enum
   RTMA_NDFD_TEMP, RTMA_NDFD_WDIR, RTMA_NDFD_WSPD, XML_MAX 
 };
 
-typedef struct                /* Denotes structure of the time layouts. */
+typedef struct              /* Denotes structure of the time layouts. */
 {
    int period;
    uChar numRows;
@@ -70,12 +70,23 @@ typedef struct                /* Denotes structure of Weather info. Used in
    sChar valueType;
 } WX;
 
-typedef struct                /* Denotes structure of Hazard info. */ 
+typedef struct                /* Denotes structure of Hazard info in match 
+                               * structure. */ 
 {
    double validTime;
    char str[600];
    sChar valueType;
 } HZtype;
+
+typedef struct                /* Array holding info about each hazard. */
+{          
+   double startHour;
+   double endHour;
+   int numConsecRows;
+   char code[150];
+   double valTimeResSplit;
+   int numOutputLines;
+} hazInfo;
 
 typedef struct                /* Structure with info on the number of rows 
                                * skipped due to a startTime and/or endTime 
@@ -102,6 +113,10 @@ typedef struct                /* Structure with info on the number of rows
                             data is retrieved for, this value is simply
                             the last validTime for the element returned
                             from the match structure. */
+   char **multiLayouts;  /* In case an element has multiple sub elements.
+                          * This is the case for hazards in the summary 
+                          * products, in which each hazard is treated as
+                          * if it were an individual element.*/
 } numRowsInfo;
 
 typedef struct                /* Denotes structure of sector info for use in a 
@@ -138,7 +153,11 @@ void checkNeedForPeriodName(int index, uChar * numPeriodNames,
                             double startTime_cml, double currentDoubTime,
                             double firstValidTime);
 
- void computeStartEndTimes(uChar parameterName, int numFmtdRows,
+void collectHazInfo(genMatchType *match, size_t numMatch, int startNum, 
+                    int endNum, numRowsInfo numRowsHZ, size_t pnt, 
+                    hazInfo **ptsIndivHazs, int *numHazards);
+
+void computeStartEndTimes(uChar parameterName, int numFmtdRows,
                          int periodLength, double TZoffset,
                           sChar f_observeDST, genMatchType * match,
                           uChar useEndTimes, char **startTimes, char **endTimes,
@@ -211,6 +230,12 @@ void genConvSevereCompValues(size_t pnt, char *layoutKey, uChar parameterName,
 void genDewPointTempValues(size_t pnt, char *layoutKey, genMatchType *match, 
                            xmlNodePtr parameters, numRowsInfo numRows, 
                            int startNum, int endNum);
+
+void genHazardSummaryValues(size_t pnt, char **multiLayouts, genMatchType *match,
+                            numRowsInfo numRowsHZ, xmlNodePtr parameters,
+                            int startNum, int endNum, char *cwaStr, 
+                            hazInfo *ptsIndivHazs, int numHazards, 
+                            char *layoutKey);
 
 void genHazardValues(size_t pnt, char *layoutKey, genMatchType *match,
                      numRowsInfo numRowsHZ, xmlNodePtr parameters,
@@ -339,6 +364,25 @@ void generateConcatTimeLayout(numRowsInfo *numRows, uChar concatElem,
                               double currentDoubTime,
 		      	      uChar f_XML, int startNum, int endNum);
 
+void generateHazTimeLayout(char *layoutKey, const char *timeCoordinate, 
+                           hazInfo consecHazRows, char *summarization, 
+                           genMatchType *match, size_t numMatch, 
+                           double TZoffset, sChar f_observeDST, 
+                           size_t **numLayoutSoFar,  uChar **numCurrentLayout, 
+                           char *currentHour, char *currentDay, 
+                           char *frequency, xmlNodePtr data, 
+                           double startTime_cml, double currentDoubTime, 
+                           int *numFmtdRows, uChar f_XML, int startNum, 
+                           int endNum, double **periodTimes, 
+                           int *numPeriodTimes);
+
+void generateNoHazTimeLayout(char *tempBuff, char *layoutKey, 
+                             const char *timeCoordinate, char *summarization,
+                             double TZoffset, sChar f_observeDST,
+                             size_t *numLayoutSoFar, uChar *numCurrentLayout,
+                             double firstPeriodStartTime, int numDays,
+                             xmlNodePtr data);
+
 void generatePhraseAndIcons (int dayIndex, char *frequency, 
                              int timeLayoutHour, char *dominantWeather[4],
 			     char *baseURL, int *maxDailyPop, 
@@ -383,8 +427,8 @@ void getFirstSecondValidTimes(double *firstValidTime, double *secondValidTime,
                               int numRows, int numRowsSkippedBeg, 
                               int numRowsSkippedEnd);
 
-void getHazPhenAndIcon(char *uglyStr, char *significance, char *transStr,
-                       int *f_icon, char *iconStr);
+void  getHazPhenAndIcon(char *uglyStr, char *significance, char *transStr,
+                        int *f_icon, char *iconStr);
 
 void getNumRows(numRowsInfo *numRowsForPoint, double *timeUserStart, 
 		double *timeUserEnd, size_t numMatch, genMatchType *match, 
@@ -393,7 +437,7 @@ void getNumRows(numRowsInfo *numRowsForPoint, double *timeUserStart,
                 int *numDays, double startTime, double endTime, 
                 char currentHour[3], double *firstValidTime_pop, 
                 double *firstValidTimeMatch, int *f_formatIconForPnt, 
-                int *f_formatSummarizations, int pnt, int *pnt_rtmaNdfdTemp, 
+                int *f_formatSummarizations, size_t pnt, int *pnt_rtmaNdfdTemp, 
                 int *pnt_rtmaNdfdTd, int *pnt_rtmaNdfdWdir, 
                 int *pnt_rtmaNdfdWspd, int *pnt_rtmaNdfdPrecipa, 
                 int *pnt_rtmaNdfdSky, double currentDoubTime);
@@ -402,6 +446,10 @@ void getPeriodInfo(uChar parameterName, char *firstValidTime, char *currentHour,
                    char *currentDay, uChar * issuanceType, 
                    uChar * numPeriodNames, int period, char *frequency);
 
+void getPeriodTimes(double firstPeriodStartTime, double lastPeriodEndTime, 
+                    int timeInterval, double TZoffset, sChar f_observeDST, 
+                    double **periodTimes, int *numPeriodTimes);
+
 void getSectorInfo(PntSectInfo *pntInfo, Point *pnts, size_t numPnts,
                    genMatchType *match, size_t numMatch, 
                    size_t numSector, char **sector, int f_nhemi, 
@@ -409,7 +457,7 @@ void getSectorInfo(PntSectInfo *pntInfo, Point *pnts, size_t numPnts,
 
 void getStartDates(char **startDate, uChar f_XML, double startTime, 
 		   double firstValidTimeMatch, double firstValidTime_maxt,
-                   sChar TZoffset, sChar f_observeDST, int point);
+                   sChar TZoffset, sChar f_observeDST, size_t point);
 
 void getTranslatedCoverage(char *uglyStr, char *transStr);
 
@@ -430,6 +478,20 @@ void getUserTimes(double **timeUserStart, double **timeUserEnd,
                   double startTime, sChar f_observeDST, int *numDays, 
                   double *firstValidTime_pop, sChar f_XML, 
                   double *firstValidTimeMatch);
+
+void hazStartEndTimes(char ***startTimes, char ***endTimes, int **numFmtdRows, 
+                      hazInfo consecHazRows, double **periodTimes, 
+                      int *nmPeriodTimes, double TZoffset, sChar f_observeDST);
+
+void hazTimeInfo(char ***multiLayouts, const char *timeCoordinate, 
+                 hazInfo *ptsIndivHazs, int numHazards, char *summarization, 
+                 genMatchType *match, size_t numMatch, double TZoffset, 
+                 sChar f_observeDST, char *currentHour, char *currentDay, 
+                 char *frequency, xmlNodePtr data, double startTime_cml, 
+                 double currentDoubTime, uChar f_XML, int startNum, int endNum,
+                 double firstPeriodStartTime, double lastPeriodEndTime, 
+                 int timeInterval, double **periodTimes, int *numPeriodTimes, 
+                 size_t *numLayoutSoFar, uChar *numCurrentLayout);
 
 int isDominant(char *arg1, char *arg2, char *argType);
 

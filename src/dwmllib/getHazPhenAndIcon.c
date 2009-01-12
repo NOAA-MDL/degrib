@@ -25,6 +25,7 @@
  *
  * HISTORY
  *   6/2008 Paul Hershberg (MDL): Created
+ *  11/2008 Paul Hershberg (MDL): Added "Snow" to "Lake Effect".
  *
  * NOTES
  ******************************************************************************
@@ -67,7 +68,7 @@ void  getHazPhenAndIcon(char *uglyStr, char *significance, char *transStr,
 
    else if (strcmp(uglyStr, "BW") == 0)
    {
-      strcpy(transStr, "Blowing Wind");
+      strcpy(transStr, "Brisk Wind");
       return;
    }
 
@@ -115,7 +116,10 @@ void  getHazPhenAndIcon(char *uglyStr, char *significance, char *transStr,
 
    else if (strcmp(uglyStr, "FA") == 0)
    {
-      strcpy(transStr, "Areal Flood");
+      if (strcmp (significance, "A") == 0)
+         strcpy(transStr, "Flood");
+      else
+         strcpy(transStr, "Areal Flood");
       return;
    }
 
@@ -232,7 +236,7 @@ void  getHazPhenAndIcon(char *uglyStr, char *significance, char *transStr,
 
    else if (strcmp(uglyStr, "LE") == 0)
    {
-      strcpy(transStr, "Lake Effect");
+      strcpy(transStr, "Lake Effect Snow");
       return;
    }
 

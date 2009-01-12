@@ -41,6 +41,7 @@
  * 11/2007 Paul Hershberg (MDL): Added 10 RTMA Elements.
  *  8/2007 Paul Hershberg (MDL): Added 6 RTMA+NDFD Concatenated Elements.
  *  6/2008 Paul Hershberg (MDL): Added Hazard Element.
+ *  8/2008 Paul Hershberg (MDL): Added Hazard Element for summary products.
  *
  * NOTES:
  *****************************************************************************
@@ -147,7 +148,7 @@ void setVarFilter(sChar f_XML, sChar *f_icon, size_t numNdfdVars,
       varFilter[NDFD_WG] = 2;
       varFilter[NDFD_SKY] = 2;
       varFilter[NDFD_WX] = 2;
-/*      varFilter[NDFD_WWA] = 2; */
+      varFilter[NDFD_WWA] = 2;
    }
 
    /* Force genprobe() to return required RTMA uncertainty element(s), if 

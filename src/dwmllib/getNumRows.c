@@ -111,7 +111,7 @@ void getNumRows(numRowsInfo *numRowsForPoint, double *timeUserStart,
                 int *numDays, double startTime, double endTime, 
                 char currentHour[3], double *firstValidTime_pop, 
                 double *firstValidTimeMatch, int *f_formatIconForPnt, 
-                int *f_formatSummarizations, int pnt, int *pnt_rtmaNdfdTemp, 
+                int *f_formatSummarizations, size_t pnt, int *pnt_rtmaNdfdTemp, 
                 int *pnt_rtmaNdfdTd, int *pnt_rtmaNdfdWdir, 
                 int *pnt_rtmaNdfdWspd, int *pnt_rtmaNdfdPrecipa, 
                 int *pnt_rtmaNdfdSky, double currentDoubTime)

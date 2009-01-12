@@ -47,7 +47,7 @@
 #include "xmlparse.h"
 void getStartDates(char **startDate, uChar f_XML, double startTime, 
 		   double firstValidTimeMatch, double firstValidTime_maxt,
-                   sChar TZoffset, sChar f_observeDST, int point)
+                   sChar TZoffset, sChar f_observeDST, size_t point)
 {
    char *pstr;                /* Temporary pointer character string. */
    char startDateBuff[30];    /* Returned temporary string. */

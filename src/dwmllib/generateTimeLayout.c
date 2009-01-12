@@ -421,7 +421,7 @@ void generateTimeLayout(numRowsInfo numRows, uChar parameterName,
       else if (period == 1 && parameterName == NDFD_WWA)
       {
          sprintf(layoutKey, "k-p%sh-n%d-%d", "0", *numFmtdRows, 
-	         *numLayoutSoFar);
+	         *numCurrentLayout);
       }
       else
          sprintf(layoutKey, "k-p%dh-n%d-%d", period, *numFmtdRows, 
