@@ -19,7 +19,7 @@ Vegetation/Biomass category)</small><br>
 </small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 0<br>
 </big></big></center>
 <br>
-<div style="text-align: center;"><b>Revised 07/29/2008</b><br>
+<div style="text-align: center;"><b>Revised 08/19/2008</b><br>
 <span style="color: red; font-size: 10pt;"><b>Red text depicts changes
 made since 03/12/2008</b></span><br>
 </div>
@@ -65,7 +65,7 @@ made since 03/12/2008</b></span><br>
     <tr>
       <td style="vertical-align: top; text-align: center;">3<br>
       </td>
-      <td style="vertical-align: top;">Soil Moisture Content<br>
+      <td style="vertical-align: top;">Soil Moisture Content<sup><b>*</b></sup><br>
       </td>
       <td style="vertical-align: top;">kg m<sup>-2</sup><br>
       </td>
@@ -121,7 +121,7 @@ made since 03/12/2008</b></span><br>
     <tr>
       <td style="vertical-align: top; text-align: center;">9<br>
       </td>
-      <td style="vertical-align: top;">Volumetric Soil Moisture Content</td>
+      <td style="vertical-align: top;">Volumetric Soil Moisture Content<sup><b>**</b></sup></td>
       <td style="vertical-align: top;">Proportion<br>
       </td>
       <td style="vertical-align: top;">SOILW </td>
@@ -129,7 +129,7 @@ made since 03/12/2008</b></span><br>
     <tr>
       <td style="vertical-align: top; text-align: center;">10<br>
       </td>
-      <td style="vertical-align: top;">Ground Heat Flux</td>
+      <td style="vertical-align: top;">Ground Heat Flux<sup><b>*</b></sup></td>
       <td style="vertical-align: top;">W m<sup>-2</sup> </td>
       <td style="vertical-align: top;">GFLUX </td>
     </tr>
@@ -181,10 +181,10 @@ made since 03/12/2008</b></span><br>
     <tr>
       <td style="vertical-align: top; text-align: center;">17<br>
       </td>
-      <td style="vertical-align: top;">Wilting Point</td>
+      <td style="vertical-align: top;">Wilting Point<sup><b>**</b></sup></td>
       <td style="vertical-align: top;">Proportion<br>
       </td>
-      <td style="vertical-align: top;">WILT </td>
+      <td style="vertical-align: top;">WILT</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">18<br>
@@ -523,11 +523,6 @@ canopy conductance</td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">kg/m<sup>2</sup><br></td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">WCVFLX</td>
     </tr> 
-
-
-
-
-
     <tr>
       <td style="vertical-align: top; text-align: center;">255<br>
       </td>
@@ -541,6 +536,19 @@ canopy conductance</td>
   </tbody>
 </table>
 </center>
+<br>
+<br>
+<table align="center" width="80%">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;"><b>Notes:</b><br>
+      <br>
+<b>*</b>  Parameter deprecated - See Regulation 92.6.2 and use another parameter instead.<br>
+<b>**</b> It is not recommended to use this parameter, but to use another one with a more 
+descriptive unit.<br>
+    </tr>
+  </tbody>
+</table>
 <br>
 <br>
 <center><a href="/pmb/docs/grib2/grib2_doc.shtml">Back</a></center>

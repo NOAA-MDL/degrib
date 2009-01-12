@@ -21,7 +21,7 @@ momentum category)</small><br>
 <br>
 <center>
 <center>
-<center><b>Revised 08/07/2008</b><br>
+<center><b>Revised 10/09/2008</b><br>
 <span style="color: red; font-size: 10pt;"><b>Red text depicts changes
 made since 03/12/2008</b></span><b><br>
 </b></center>
@@ -162,7 +162,7 @@ Velocity<br>
       </td>
       <td style="vertical-align: top;">Potential Vorticity<br>
       </td>
-      <td style="vertical-align: top;">m<sup>2</sup> kg<sup>-1</sup> s<sup>-1</sup></td>
+      <td style="vertical-align: top;">K m<sup>2</sup> kg<sup>-1</sup> s<sup>-1</sup></td>
       <td style="vertical-align: top;">PVORT<br>
       </td>
     </tr>
@@ -384,7 +384,7 @@ for Local Use<br>
       <td style="vertical-align: top; color: red ;">Longitude of V Wind Component of        
           Velocity</td>
       <td style="vertical-align: top; color: red ;">deg</td>
-      <td style="vertical-align: top; color: red ;">LOUV</td>
+      <td style="vertical-align: top; color: red ;">LOVV</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center; color: red ;">202<br>

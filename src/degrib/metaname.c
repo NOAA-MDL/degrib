@@ -649,8 +649,8 @@ GRIB2ParmTable MeteoMoist[] = {
 /* 64 */    {"TCIWV", "Total column integrated water vapour", "kg/m^2", UC_NONE},
 /* 65 */    {"RPRATE", "Rain precipitation rate", "kg/(m^2*s)", UC_NONE},
 /* 66 */    {"SPRATE", "Snow precipitation rate", "kg/(m^2*s)", UC_NONE},
-/* 67 */    {"FRPRATE", "Freezing rain precipitation rate", "kg/(m^2*s)", UC_NONE},
-/* 68 */    {"IPPRATE", "Ice pellets precipitation rate", "kg/(m^2*s)", UC_NONE},
+/* 67 */    {"FPRATE", "Freezing rain precipitation rate", "kg/(m^2*s)", UC_NONE},
+/* 68 */    {"IPRATE", "Ice pellets precipitation rate", "kg/(m^2*s)", UC_NONE},
 };
 
 /* GRIB2 Code table 4.2 : 0.2 */
@@ -1657,7 +1657,7 @@ GRIB2LocalTable NCEP_LclTable[] = {
             {2, 3, 200, "BARET", "Bare soil surface skin temperature", "K", UC_NONE},
             {2, 3, 201, "AVSFT", "Average surface skin temperature", "K", UC_NONE},
             {2, 3, 202, "RADT", "Effective radiative skin temperature", "K", UC_NONE},
-            {2, 3, 203, "FLDCP", "Field Capacity", "fractionK", UC_NONE},
+            {2, 3, 203, "FLDCP", "Field Capacity", "fraction", UC_NONE},
 
 /* ScatEstUWind -> USCT, ScatEstVWind -> VSCT as of 7/5/2006 (pre 1.80) */
    /* 72 */ {3, 1, 192, "USCT", "Scatterometer Estimated U Wind", "m/s", UC_NONE},

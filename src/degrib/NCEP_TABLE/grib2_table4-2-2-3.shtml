@@ -19,7 +19,7 @@ category)</small><br>
 </small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 3<br>
 </big></big></center>
 <br>
-<center><b>Revised 06/30/2008</b><br>
+<center><b>Revised 08/19/2008</b><br>
 <span style="color: red; font-size: 10pt;"><b>Red text depicts changes
 made since 11/01/2007</b></span></center>
 <br>
@@ -52,7 +52,7 @@ made since 11/01/2007</b></span></center>
     <tr>
       <td style="vertical-align: top; text-align: center;">1<br>
       </td>
-      <td style="vertical-align: top;">Upper Layer Soil Temperature<br>
+      <td style="vertical-align: top;">Upper Layer Soil Temperature<sup><b>*</b></sup><br>
       </td>
       <td style="vertical-align: top;">K<br>
       </td>
@@ -62,7 +62,7 @@ made since 11/01/2007</b></span></center>
     <tr>
       <td style="vertical-align: top; text-align: center;">2<br>
       </td>
-      <td style="vertical-align: top;">Upper Layer Soil Moisture<br>
+      <td style="vertical-align: top;">Upper Layer Soil Moisture<sup><b>*</b></sup><br>
       </td>
       <td style="vertical-align: top;">kg m<sup>-3</sup><br>
       </td>
@@ -72,7 +72,7 @@ made since 11/01/2007</b></span></center>
     <tr>
       <td style="vertical-align: top; text-align: center;">3<br>
       </td>
-      <td style="vertical-align: top;">Lower Layer Soil Moisture<br>
+      <td style="vertical-align: top;">Lower Layer Soil Moisture<sup><b>*</b></sup><br>
       </td>
       <td style="vertical-align: top;">kg m<sup>-3</sup></td>
       <td style="vertical-align: top;">LOWLSM<br>
@@ -81,7 +81,7 @@ made since 11/01/2007</b></span></center>
     <tr>
       <td style="vertical-align: top; text-align: center;">4<br>
       </td>
-      <td style="vertical-align: top;">Bottom Layer Soil Temperature</td>
+      <td style="vertical-align: top;">Bottom Layer Soil Temperature<sup><b>*</b></sup></td>
       <td style="vertical-align: top;">K<br>
       </td>
       <td style="vertical-align: top;">BOTLST<br>
@@ -91,7 +91,7 @@ made since 11/01/2007</b></span></center>
       <td style="vertical-align: top; text-align: center;">5<br>
       </td>
       <td style="vertical-align: top;">Liquid Volumetric Soil Moisture
-(non-frozen)<br>
+(non-frozen)<sup><b>**</b></sup><br>
       </td>
       <td style="vertical-align: top;">Proportion<br>
       </td>
@@ -109,7 +109,7 @@ made since 11/01/2007</b></span></center>
       <td style="vertical-align: top; text-align: center;">7<br>
       </td>
       <td style="vertical-align: top;">Transpiration Stress-onset (soil
-moisture)</td>
+moisture)<sup><b>**</b></sup></td>
       <td style="vertical-align: top;">Proportion</td>
       <td style="vertical-align: top;">SMREF<br>
       </td>
@@ -118,14 +118,14 @@ moisture)</td>
       <td style="vertical-align: top; text-align: center;">8<br>
       </td>
       <td style="vertical-align: top;">Direct Evaporation Cease (soil
-moisture)</td>
+moisture)<sup><b>**</b></sup></td>
       <td style="vertical-align: top;">Proportion</td>
       <td style="vertical-align: top;">SMDRY<br>
       </td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">9<br></td>
-      <td style="vertical-align: top;">Soil Porosity</td>
+      <td style="vertical-align: top;">Soil Porosity<sup><b>**</b></sup></td>
       <td style="vertical-align: top;">Proportion</td>
       <td style="vertical-align: top;">POROS<br>
       </td>
@@ -281,7 +281,7 @@ moisture)</td>
     <tr>
       <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">203<br></td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">Field Capacity</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">fractionK</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">fraction</td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">FLDCP</td>
     </tr>
     <tr>
@@ -299,6 +299,17 @@ moisture)</td>
 </center>
 <br>
 <br>
+<table align="center" width="80%">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;"><b>Notes:</b><br>
+      <br>
+<b>*</b>  Parameter deprecated - See Regulation 92.6.2 and use another parameter instead.<br>
+<b>**</b> It is not recommended to use this parameter, but to use another one with a more
+descriptive unit.<br>
+    </tr>
+  </tbody>
+</table>
 <center><a href="/pmb/docs/grib2/grib2_doc.shtml">Back</a></center>
 <br>
 <br>
