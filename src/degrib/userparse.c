@@ -73,6 +73,7 @@ void UserInit (userType *usr)
    usr->f_Freq = -1;
    usr->f_Map = -1;
    usr->f_Shp = -1;
+   usr->f_Kml = -1;
    usr->f_Csv = -1;
    usr->f_Tdl = -1;
    usr->f_Grib2 = -1;
@@ -95,6 +96,7 @@ void UserInit (userType *usr)
    usr->pntFile = NULL;
    usr->indexFile = NULL;
    usr->mapIniFile = NULL;
+   usr->kmlIniFile = NULL;
    usr->mapIniOptions = NULL;
    usr->separator = NULL;
 /*   usr->pnt.f_valid = 0;*/
@@ -188,6 +190,7 @@ void UserFree (userType *usr)
    free (usr->pntFile);
    free (usr->indexFile);
    free (usr->mapIniFile);
+   free (usr->kmlIniFile);
    if (usr->mapIniOptions != NULL)
       free (usr->mapIniOptions);
    free (usr->separator);
@@ -418,6 +421,8 @@ int UserValidate (userType *usr)
       usr->f_stdout = 0;
    if (usr->f_Shp == -1)
       usr->f_Shp = 0;
+   if (usr->f_Kml == -1)
+      usr->f_Kml = 0;
    if (usr->f_Csv == -1)
       usr->f_Csv = 0;
    if (usr->f_Tdl == -1)
@@ -700,7 +705,7 @@ static char *UsrOpt[] = { "-cfg", "-in", "-I", "-C", "-P", "-V", "-Flt",
    "-XML", "-MOTD", "-Graph", "-startTime", "-endTime", "-startDate",
    "-numDays", "-ndfdVars", "-geoData", "-gribFilter", "-ndfdConven", "-Freq",
    "-Icon", "-curTime", "-rtmaDir", "-avgInterp", "-cwa", "-SimpleWWA",
-   "-TxtParse", NULL
+   "-TxtParse", "-Kml", "-KmlIni", NULL
 };
 
 int IsUserOpt (char *str)
@@ -722,7 +727,8 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
       VALIDMIN, TDL, NO_TDL, SECTOR, SECTFILE, NCCONVERT, ASCGRID, MAP,
       MAPINIFILE, MAPINIOPTIONS, XML, MOTD, GRAPH, STARTTIME, ENDTIME,
       STARTDATE, NUMDAYS, NDFDVARS, GEODATA, GRIBFILTER, NDFDCONVEN,
-      FREQUENCY, ICON, CURTIME, RTMADIR, AVGINTERP, CWA, SIMPLEWWA, TXTPARSE
+      FREQUENCY, ICON, CURTIME, RTMADIR, AVGINTERP, CWA, SIMPLEWWA, TXTPARSE,
+      KML, KMLINIFILE
    };
    int index;           /* "cur"'s index into Opt, which matches enum val. */
    double lat, lon;     /* Used to check on the -pnt option. */
@@ -864,6 +870,10 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
       case SHP:
          if (usr->f_Shp == -1)
             usr->f_Shp = 1;
+         return 1;
+      case KML:
+         if (usr->f_Kml == -1)
+            usr->f_Kml = 1;
          return 1;
       case SHP2:
          if (usr->f_Shp == -1)
@@ -1069,6 +1079,13 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
             usr->mapIniFile = (char *) malloc ((strlen (next) + 1) *
                                                sizeof (char));
             strcpy (usr->mapIniFile, next);
+            return 2;
+         }
+      case KMLINIFILE:
+         if (usr->kmlIniFile == NULL) {
+            usr->kmlIniFile = (char *) malloc ((strlen (next) + 1) *
+                                               sizeof (char));
+            strcpy (usr->kmlIniFile, next);
             return 2;
          }
       case MAPINIOPTIONS:

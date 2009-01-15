@@ -542,7 +542,7 @@ static void FreeLayer (layerType *layer)
    InitLayer (layer);
 }
 
-static int ParseSymbol (SymbolType * symbol, char *value)
+int ParseSymbol (SymbolType * symbol, char *value)
 {
    char *ptr;
    char *ptr2;

@@ -101,7 +101,8 @@ C_OBJECTS = myutil.o \
             genprobe.o \
             solar.o \
             grpprobe.o \
-            sector.o
+            sector.o \
+            writekml.o
 
 H_SOURCES = type.h \
             myutil.h \

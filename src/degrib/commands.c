@@ -443,6 +443,17 @@ int MainConvert (userType *usr, IS_dataType *is, grib_MetaData *meta,
       }
    }
 
+   /* Create kml file set. */
+   if (usr->f_Kml) {
+      if (gribWriteKml (outName, Data, meta, usr->f_poly,
+                        usr->f_nMissing, usr->decimal, usr->LatLon_Decimal,
+                        usr->kmlIniFile)
+          != 0) {
+         free (outName);
+         return 1;
+      }
+   }
+
    /* Create Map . */
    if (usr->f_Map) {
       if (drawGrib (outName, Data, usr->mapIniFile, usr->mapIniOptions,

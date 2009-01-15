@@ -54,6 +54,11 @@ int gribWriteShp (const char *Filename, double *grib_Data,
                   sChar decimal, sChar LatLon_Decimal, char f_verbose);
 
 /* Possible error messages left in errSprintf() */
+int gribWriteKml (const char *Filename, double *grib_Data,
+                  grib_MetaData *meta, sChar f_poly, sChar f_nMissing,
+                  sChar decimal, sChar LatLon_Decimal, const char *kmlIni);
+
+/* Possible error messages left in errSprintf() */
 int gribWriteCsv (FILE * out_fp, double *grib_Data, grib_MetaData * meta,
                   sChar decimal, char *separator, char *logName,
                   sChar f_WxParse, sChar f_NoMissing, sChar LatLon_Decimal);

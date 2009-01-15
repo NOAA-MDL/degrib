@@ -185,4 +185,6 @@ int SaveMapIniFile (mapIniType *mapIni, char *filename);
 int ReadShpBounds (char *filename, double *minX, double *minY, double *maxX,
                    double *maxY);
 
+int ParseSymbol (SymbolType * symbol, char *value);
+
 #endif

@@ -51,6 +51,7 @@ typedef struct {
    sChar f_Freq;        /* f_Freq */
    sChar f_Map;         /* f_Map */
    sChar f_Shp;         /* f_Shp = -Shp */
+   sChar f_Kml;         /* f_Kml = -Kml */
    sChar f_verboseShp;  /* f_verboseShp = -verboseShp */
    sChar f_Csv;         /* f_Csv = -Csv */
    sChar f_Tdl;         /* f_TDL = -Tdl */
@@ -131,7 +132,8 @@ typedef struct {
                          * override the minEarth in the GRIB1 or GRIB2
                          * message. */
    char *indexFile;     /* indexFile = -Index option or NULL */
-   char *mapIniFile;    /* mapIniFile = -MapIniFile option or NULL */
+   char *mapIniFile;    /* mapIniFile = -MapIni option or NULL */
+   char *kmlIniFile;    /* kmlIniFile = -KmlIni option or NULL */
    char *mapIniOptions; /* mapIniOption = -MapIniOptions or NULL */
    sChar f_Print;       /* Print option (for diagnosis of indexFile). */
    char *Asc2Flx_File;  /* Convert ASCII file to flx index file. */
