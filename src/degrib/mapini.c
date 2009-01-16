@@ -18,6 +18,12 @@ static char *ShpFileTypes[] = {
    "Invalid", "Polygon", "Point", "Memory", "Void", NULL
 };
 
+int freeIniSymbol (SymbolType *symbol)
+{
+   free (symbol->mark);
+   return 0;
+}
+
 static int ReadColorTable (char *filename, layerType *layer)
 {
    FILE *fp;
@@ -58,6 +64,7 @@ static int ReadColorTable (char *filename, layerType *layer)
             layer->ramp.colors[i].r = r;
             layer->ramp.colors[i].g = g;
             layer->ramp.colors[i].b = b;
+            layer->ramp.colors[i].alpha = 255;
             layer->ramp.colors[i].f_null = 0;
             if (cnt == 9) {
                min = max = value;
@@ -73,12 +80,14 @@ static int ReadColorTable (char *filename, layerType *layer)
             layer->ramp.outline.r = r;
             layer->ramp.outline.g = g;
             layer->ramp.outline.b = b;
+            layer->ramp.outline.alpha = 255;
             layer->ramp.outline.f_null = 0;
          } else if (cnt == 2) {
             sscanf (line, "%d %d %d", &r, &g, &b);
             layer->ramp.missColor.r = r;
             layer->ramp.missColor.g = g;
             layer->ramp.missColor.b = b;
+            layer->ramp.missColor.alpha = 255;
             if ((r == -1) || (g == -1) || (b == -1))
                layer->ramp.missColor.f_null = 1;
          } else if (cnt == 8) {
@@ -309,12 +318,25 @@ static int ParseColor (colorType *color, char *value)
       printf ("Invalid Color string %s\n", value);
       return -1;
    }
-   color->b = atoi (ptr);
+   ptr2 = strchr (ptr, ',');
+   if (ptr2 == NULL) {
+      color->b = atoi (ptr);
+   } else {
+      *ptr2 = '\0';
+      color->b = atoi (ptr);
+      ptr = ptr2 + 1;
+      if (ptr == '\0') {
+         printf ("Invalid Color string %s\n", value);
+         return -1;
+      }
+      color->alpha = atoi (ptr);
+   }
    if ((color->r == -1) || (color->g == -1) || (color->b == -1)) {
       color->f_null = 1;
       color->r = 0;
       color->g = 0;
       color->b = 0;
+      color->alpha = 255;
    } else {
       color->f_null = 0;
    }
@@ -515,7 +537,7 @@ static void FreeLayer (layerType *layer)
    switch (layer->type) {
       case GRADUATED:
          for (i = 0; i < layer->grad.numSymbol; i++) {
-            free (layer->grad.symbol[i].mark);
+            freeIniSymbol (& (layer->grad.symbol[i]));
          }
          free (layer->grad.symbol);
          free (layer->grad.field);
@@ -533,7 +555,7 @@ static void FreeLayer (layerType *layer)
          free (layer->pnt);
          break;
       case SINGLE_SYMBOL:
-         free (layer->single.mark);
+         freeIniSymbol (& (layer->single));
          break;
       case DB2:
          free (layer->db2.field);
@@ -546,6 +568,7 @@ int ParseSymbol (SymbolType * symbol, char *value)
 {
    char *ptr;
    char *ptr2;
+   char *ptr3;
    int cnt;
    enum { OUTLINE, FOREGROUND, MARK, MIN, MAX, DECIMAL, THICK };
 
@@ -558,9 +581,11 @@ int ParseSymbol (SymbolType * symbol, char *value)
       symbol->out.r = 0;
       symbol->out.g = 0;
       symbol->out.b = 0;
+      symbol->out.alpha = 255;
       symbol->fg.r = 0;
       symbol->fg.g = 0;
       symbol->fg.b = 0;
+      symbol->fg.alpha = 255;
       symbol->f_mark = 0;
       symbol->max = 0;
       symbol->min = 0;
@@ -569,55 +594,59 @@ int ParseSymbol (SymbolType * symbol, char *value)
       while ((ptr2 = strchr (ptr, ']')) != NULL) {
          cnt++;
          *ptr2 = '\0';
+         ptr = ptr + 1;
+         while ((ptr3 = strchr (ptr, '}')) != NULL) {
+            ptr = ptr3 + 1;
+         }
          switch (cnt) {
             case OUTLINE:
-               if (ParseColor (&(symbol->out), ptr + 1) != 0) {
+               if (ParseColor (&(symbol->out), ptr) != 0) {
                   printf ("Problems with symbol %s\n", value);
                   return -1;
                }
                break;
             case FOREGROUND:
-               if (ParseColor (&(symbol->fg), ptr + 1) != 0) {
+               if (ParseColor (&(symbol->fg), ptr) != 0) {
                   printf ("Problems with symbol %s\n", value);
                   return -1;
                }
                break;
             case MARK:
-               symbol->mark = (char *) malloc ((strlen (ptr + 1) + 1) *
+               symbol->mark = (char *) malloc ((strlen (ptr) + 1) *
                                                sizeof (char));
-               strcpy (symbol->mark, ptr + 1);
-               if (strcmp (ptr + 1, "dot") == 0) {
+               strcpy (symbol->mark, ptr);
+               if (strcmp (ptr, "dot") == 0) {
                   symbol->f_mark = 1;
-               } else if (strcmp (ptr + 1, "value") == 0) {
+               } else if (strcmp (ptr, "value") == 0) {
                   symbol->f_mark = 2;
-               } else if (strcmp (ptr + 1, "pixel") == 0) {
+               } else if (strcmp (ptr, "pixel") == 0) {
                   symbol->f_mark = 3;
-               } else if (strcmp (ptr + 1, "dot3") == 0) {
+               } else if (strcmp (ptr, "dot3") == 0) {
                   symbol->f_mark = 4;
-               } else if (strcmp (ptr + 1, "dot2") == 0) {
+               } else if (strcmp (ptr, "dot2") == 0) {
                   symbol->f_mark = 5;
                } else {
                   symbol->f_mark = 0;
                }
                break;
             case MAX:
-               if (strcmp ((ptr + 1), "-") != 0) {
-                  symbol->max = atof (ptr + 1);
+               if (strcmp ((ptr), "-") != 0) {
+                  symbol->max = atof (ptr);
                }
                break;
             case MIN:
-               if (strcmp ((ptr + 1), "-") != 0) {
-                  symbol->min = atof (ptr + 1);
+               if (strcmp ((ptr), "-") != 0) {
+                  symbol->min = atof (ptr);
                }
                break;
             case DECIMAL:
-               if (strcmp ((ptr + 1), "-") != 0) {
-                  symbol->decimal = atoi (ptr + 1);
+               if (strcmp ((ptr), "-") != 0) {
+                  symbol->decimal = atoi (ptr);
                }
                break;
             case THICK:
-               if (strcmp ((ptr + 1), "-") != 0) {
-                  symbol->thick = atoi (ptr + 1);
+               if (strcmp ((ptr), "-") != 0) {
+                  symbol->thick = atoi (ptr);
                }
                break;
          }
@@ -742,12 +771,15 @@ static int ParseLayerSect (allLayerType * all, layerType *layer, char *var,
             layer->title.fg.r = 0;
             layer->title.fg.g = 0;
             layer->title.fg.b = 0;
+            layer->title.fg.alpha = 255;
             layer->title.bg.r = 0;
             layer->title.bg.g = 0;
             layer->title.bg.b = 0;
+            layer->title.bg.alpha = 255;
             layer->title.textC.r = -1;
             layer->title.textC.g = -1;
             layer->title.textC.b = -1;
+            layer->title.textC.alpha = 255;
             layer->title.x = 0;
             layer->title.y = 0;
             layer->title.f_font = 5; /* default to giant. */
@@ -792,9 +824,11 @@ static int ParseLayerSect (allLayerType * all, layerType *layer, char *var,
             layer->legend.bg.r = 0;
             layer->legend.bg.g = 0;
             layer->legend.bg.b = 0;
+            layer->legend.bg.alpha = 255;
             layer->legend.textC.r = -1;
             layer->legend.textC.g = -1;
             layer->legend.textC.b = -1;
+            layer->legend.textC.alpha = 255;
             layer->legend.pixelSize = 2;
             layer->legend.x = 0;
             layer->legend.y = 0;
@@ -845,6 +879,7 @@ static int ParseLayerSect (allLayerType * all, layerType *layer, char *var,
          layer->title.textC.r = 0;
          layer->title.textC.g = 0;
          layer->title.textC.b = 0;
+         layer->title.textC.alpha = 255;
          first = strtok (value, "[]");
          if (first != NULL) {
             ParseColor (&(layer->legend.textC), first);
@@ -854,6 +889,7 @@ static int ParseLayerSect (allLayerType * all, layerType *layer, char *var,
          layer->legend.textC.r = 0;
          layer->legend.textC.g = 0;
          layer->legend.textC.b = 0;
+         layer->legend.textC.alpha = 255;
          first = strtok (value, "[]");
          if (first != NULL) {
             ParseColor (&(layer->legend.textC), first);
@@ -1002,6 +1038,7 @@ void InitMapIni (mapIniType * mapIni)
    mapIni->all.bg.r = 0;
    mapIni->all.bg.g = 0;
    mapIni->all.bg.b = 0;
+   mapIni->all.bg.alpha = 255;
    mapIni->all.layers = NULL;
 }
 

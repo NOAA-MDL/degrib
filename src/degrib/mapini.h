@@ -4,7 +4,7 @@
 #include "type.h"
 
 typedef struct {            
-   short int r, g, b;
+   short int r, g, b, alpha;
    float value;
    char f_null;
    int gdIndex;
@@ -184,6 +184,8 @@ int SaveMapIniFile (mapIniType *mapIni, char *filename);
 
 int ReadShpBounds (char *filename, double *minX, double *minY, double *maxX,
                    double *maxY);
+
+int freeIniSymbol (SymbolType *symbol);
 
 int ParseSymbol (SymbolType * symbol, char *value);
 
