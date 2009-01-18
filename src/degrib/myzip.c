@@ -1,18 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "zip.h"
+#include "myzip.h"
+#ifdef MEMWATCH
+#include "memwatch.h"
+#endif
 
-#define WRITEBUFFERSIZE (16384)
-#define MAXFILENAME (256)
-
-typedef struct {
-   zipFile zf;
-   FILE *fp;
-   int f_useZip;
-} myZipFile;
-
-/* open the zip file, or set f_useZip to 0 */
+/* open the zip file, or if we're not creating a zip file set f_useZip to 0 */
 /* allocates space for myzipFile structure */
 /* Choices for append to zipOpen is
  *  0 = APPEND_STATUS_CREATE
@@ -20,7 +14,6 @@ typedef struct {
  *  2 = APPEND_STATUS_ADDINZIP
  * Currently if f_append, APPEND_STATUS_ADDINZIP else APPEND_STATUS_CREATE
  */
-
 myZipFile * myZipInit (const char *filename, int f_useZip, int f_append)
 {
    myZipFile *zp;
@@ -89,7 +82,10 @@ int myZip_fopen (myZipFile *zp, const char *filename, const char *attrib,
 }
 
 /* print a NULL terminated string to the file in the zip file, or the opened
- * unziped file */
+ * unziped file.  The file in the zip file does not have CRLF.  The file out
+ * of the zip file has CRLF based on whether myZip_fopen was called with "wt"
+ * or with "wb".  Use "wb" to be consistent and to create unix flavor ASCII.
+  */
 int myZip_fputs (const char *s, const myZipFile *zp)
 {
    int err = 0;
@@ -134,16 +130,18 @@ int myZipClose (myZipFile *zp)
    return 0;
 }
 
+#ifdef TEST_MYZIP
 int main(int argc, char **argv)
 {
    myZipFile *zp;
+   int f_useZip = 1;
 
-   if ((zp = myZipInit ("arthur.zip", 1, 0)) == NULL) {
+   if ((zp = myZipInit ("arthur.zip", f_useZip, 0)) == NULL) {
       printf ("error opening %s\n", "arthur.zip");
       return 1;
    }
 
-   if (myZip_fopen (zp, "./ans/arthur.txt", "wt", 2009, 0, 16, 1, 58, 59)) {
+   if (myZip_fopen (zp, "arthur.txt", "wb", 2009, 0, 16, 1, 58, 59)) {
       printf ("Problems opening file\n");
    } else {
       if (myZip_fputs ("test PI=3.1415926535\n", zp) == EOF) {
@@ -159,8 +157,11 @@ int main(int argc, char **argv)
    }
    return 0;
 }
+#endif
 
 #ifdef ORIG
+#define WRITEBUFFERSIZE (16384)
+#define MAXFILENAME (256)
 int main(int argc, char **argv)
 {
    char filename_try[MAXFILENAME+16];
