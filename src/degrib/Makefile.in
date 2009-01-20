@@ -103,7 +103,8 @@ C_OBJECTS = myutil.o \
             solar.o \
             grpprobe.o \
             sector.o \
-            writekml.o
+            writekml.o \
+            myzip.o
 
 H_SOURCES = type.h \
             myutil.h \
@@ -135,7 +136,8 @@ H_SOURCES = type.h \
             genprobe.h \
             solar.h \
             grpprobe.h \
-            sector.h
+            sector.h \
+            myzip.h  
 
 CLOCK_OBJECTS = myassert.o \
             myutil.o \

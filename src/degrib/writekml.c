@@ -15,6 +15,7 @@
 #include "chain.h"
 /* #include <math.h> */
 #include "clock.h"
+#include "myzip.h"
 
 #ifdef USE_XMLLIB
 /* Either one. */
@@ -128,14 +129,15 @@ static int ParseKMLIniFile (const char *kmlIni, SymbolType **symbol,
  * and only 272 sec to use fprintf's */
 /* Note file size is smaller by about 1 meg because of the indentation
  * which xmllib does, but isn't needed. */
-#define KML_NEWLINE fprintf (fp, "\n");
-static int savePolysKmlFast (const char *filename, polyType *poly, int numPoly,
+#define KML_NEWLINE myZip_fputs ("\n", zp);
+static int savePolysKmlFast (char *filename, polyType *poly, int numPoly,
                              grib_MetaData *meta, sChar decimal,
                              sChar LatLon_Decimal, SymbolType *symbol,
-                             int numSymbol)
+                             int numSymbol, int f_kmz)
 {
-   FILE *fp;
-   char buffer[256];
+   myZipFile *zp;
+   char buf[256];
+   char buf2[256];
    char valTime[25];
    char title[256];
    char styleUrl[256];
@@ -144,38 +146,45 @@ static int savePolysKmlFast (const char *filename, polyType *poly, int numPoly,
    int i, j;
    sInt4 deltSec;
 
-   if ((fp = fopen (filename, "wt")) == NULL) {
-      printf ("Unable to write to %s\n", filename);
+   if (f_kmz) {
+      strncpy (filename + strlen (filename) - 3, "kmz", 3);
+   }
+   if ((zp = myZipInit (filename, f_kmz, 0)) == NULL) {
+      printf ("error opening %s\n", filename);
+      return -1;
+   }
+   strncpy (filename + strlen (filename) - 3, "kml", 3);
+   if (myZip_fopen (zp, filename, "wb", 2009, 0, 16, 1, 58, 59)) {
+      printf ("Problems opening file %s\n", filename);
       return -1;
    }
    Clock_Print (valTime, 25, meta->pds2.sect4.validTime, "%m/%d/%Y %H:%M:%S UTC", 0);
 
-   fprintf (fp, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"); KML_NEWLINE
-   fprintf (fp, "<kml xmlns=\"http://www.opengis.net/kml/2.2\">"); KML_NEWLINE
-   fprintf (fp, "<Document>"); KML_NEWLINE
+   myZip_fputs ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>", zp); KML_NEWLINE
+   myZip_fputs ("<kml xmlns=\"http://www.opengis.net/kml/2.2\">", zp); KML_NEWLINE
+   myZip_fputs ("<Document>", zp); KML_NEWLINE
 
-   fprintf (fp, "<name>");
+   myZip_fputs ("<name>", zp);
    if (meta->unitName != NULL) {
       sprintf (title, "%s %s, %s", meta->element, meta->unitName, valTime);
    } else {
       sprintf (title, "%s, %s", meta->element, valTime);
    }
-   fprintf (fp, "<![CDATA[%s]]>", title);
-   fprintf (fp, "</name>"); KML_NEWLINE
+   sprintf (buf, "<![CDATA[%s]]>", title); myZip_fputs (buf, zp);
+   myZip_fputs ("</name>", zp); KML_NEWLINE
 
-   fprintf (fp, "<open>1</open>"); KML_NEWLINE
+   myZip_fputs ("<open>1</open>", zp); KML_NEWLINE
 
-   fprintf (fp, "<description>");
-   fprintf (fp, "<![CDATA[%s\n", meta->comment);
+   myZip_fputs ("<description>", zp);
+   sprintf (buf, "<![CDATA[%s\n", meta->comment); myZip_fputs (buf, zp);
    if (meta->convert != UC_NONE) {
-      fprintf (fp, "Converted to %s\n", meta->unitName);
+      sprintf (buf, "Converted to %s\n", meta->unitName); myZip_fputs (buf, zp);
    }
-   Clock_Print (buffer, 25, meta->pds2.refTime, "%m/%d/%Y %H:%M:%S UTC", 0);
-   fprintf (fp, "Made %s\n", buffer);
-   fprintf (fp, "Valid %s\n", valTime);
-   fprintf (fp, "Surface: %s]]>", meta->longFstLevel);
-/*   fprintf (fp, "Surface: %s\n]]>", meta->longFstLevel);*/
-   fprintf (fp, "</description>"); KML_NEWLINE
+   Clock_Print (buf2, 25, meta->pds2.refTime, "%m/%d/%Y %H:%M:%S UTC", 0);
+   sprintf (buf, "Made %s\n", buf2); myZip_fputs (buf, zp);
+   sprintf (buf, "Valid %s\n", valTime); myZip_fputs (buf, zp);
+   sprintf (buf, "Surface: %s]]>", meta->longFstLevel); myZip_fputs (buf, zp);
+   myZip_fputs ("</description>", zp); KML_NEWLINE
 
    /* Try to handle the time stamp. */
    if (meta->GribVersion == 2) {
@@ -185,7 +194,7 @@ static int savePolysKmlFast (const char *filename, polyType *poly, int numPoly,
          case GS4_PERCENT_TIME:
          case GS4_ENSEMBLE_STAT:
          case GS4_DERIVED_INTERVAL:
-            fprintf (fp, "<TimeSpan>"); KML_NEWLINE
+            myZip_fputs ("<TimeSpan>", zp); KML_NEWLINE
             deltSec = meta->pds2.sect4.Interval[0].lenTime;
             if (meta->pds2.sect4.Interval[0].timeRangeUnit == 0) {
                deltSec *= 60;
@@ -206,60 +215,69 @@ static int savePolysKmlFast (const char *filename, polyType *poly, int numPoly,
                 * reserved */
                deltSec = 0;
             }
-            Clock_Print (buffer, 256, meta->pds2.sect4.validTime - deltSec,
+            Clock_Print (buf2, 256, meta->pds2.sect4.validTime - deltSec,
                          "%Y-%m-%dT%H:%M:%S", 0);
-            fprintf (fp, "<begin>%s</begin>", buffer); KML_NEWLINE
-            Clock_Print (buffer, 256, meta->pds2.sect4.validTime,
+            sprintf (buf, "<begin>%s</begin>", buf2); myZip_fputs (buf, zp);
+            KML_NEWLINE
+            Clock_Print (buf2, 256, meta->pds2.sect4.validTime,
                          "%Y-%m-%dT%H:%M:%S", 0);
-            fprintf (fp, "<end>%s</end>", buffer); KML_NEWLINE
-            fprintf (fp, "</TimeSpan>"); KML_NEWLINE
+            sprintf (buf, "<end>%s</end>", buf2); myZip_fputs (buf, zp);
+            KML_NEWLINE
+            myZip_fputs ("</TimeSpan>", zp); KML_NEWLINE
             break;
          default:
-            fprintf (fp, "<TimeStamp>"); KML_NEWLINE
-            Clock_Print (buffer, 256, meta->pds2.sect4.validTime,
+            myZip_fputs ("<TimeStamp>", zp); KML_NEWLINE
+            Clock_Print (buf2, 256, meta->pds2.sect4.validTime,
                          "%Y-%m-%dT%H:%M:%S", 0);
-            fprintf (fp, "<when>%s</when>", buffer); KML_NEWLINE
-            fprintf (fp, "</TimeStamp>"); KML_NEWLINE
+            sprintf (buf, "<when>%s</when>", buf2); myZip_fputs (buf, zp);
+            KML_NEWLINE
+            myZip_fputs ("</TimeStamp>", zp); KML_NEWLINE
             break;
       }
    }
 
    /* Work on Symbol table. */
    for (i=0; i < numSymbol; i++) {
-      fprintf (fp, "<Style id=\"%d\">", i); KML_NEWLINE
-      fprintf (fp, "<LineStyle>"); KML_NEWLINE
-      sprintf (buffer, "%02X%02X%02X%02X", symbol[i].out.alpha,
+      sprintf (buf, "<Style id=\"%d\">", i); myZip_fputs (buf, zp);
+      KML_NEWLINE
+      myZip_fputs ("<LineStyle>", zp); KML_NEWLINE
+      sprintf (buf2, "%02X%02X%02X%02X", symbol[i].out.alpha,
                symbol[i].out.b, symbol[i].out.g, symbol[i].out.r);
-      fprintf (fp, "<color>%s</color>", buffer); KML_NEWLINE
-      fprintf (fp, "<width>%3.1f</width>", symbol[i].thick / 10.); KML_NEWLINE
-      fprintf (fp, "</LineStyle>"); KML_NEWLINE
-      fprintf (fp, "<PolyStyle>"); KML_NEWLINE
+      sprintf (buf, "<color>%s</color>", buf2); myZip_fputs (buf, zp);
+      KML_NEWLINE
+      sprintf (buf, "<width>%3.1f</width>", symbol[i].thick / 10.);
+      myZip_fputs (buf, zp); KML_NEWLINE
+      myZip_fputs ("</LineStyle>", zp); KML_NEWLINE
+      myZip_fputs ("<PolyStyle>", zp); KML_NEWLINE
       if (symbol[i].out.f_null) {
-         fprintf (fp, "<outline>0</outline>"); KML_NEWLINE
+         myZip_fputs ("<outline>0</outline>", zp); KML_NEWLINE
       } else {
-         fprintf (fp, "<outline>1</outline>"); KML_NEWLINE
+         myZip_fputs ("<outline>1</outline>", zp); KML_NEWLINE
       }
       if (symbol[i].fg.f_null) {
-         fprintf (fp, "<fill>0</fill>"); KML_NEWLINE
+         myZip_fputs ("<fill>0</fill>", zp); KML_NEWLINE
       } else {
-         fprintf (fp, "<fill>1</fill>"); KML_NEWLINE
+         myZip_fputs ("<fill>1</fill>", zp); KML_NEWLINE
       }
-      sprintf (buffer, "%02X%02X%02X%02X", symbol[i].fg.alpha,
+      sprintf (buf2, "%02X%02X%02X%02X", symbol[i].fg.alpha,
                symbol[i].fg.b, symbol[i].fg.g, symbol[i].fg.r);
-      fprintf (fp, "<color>%s</color>", buffer); KML_NEWLINE
-      fprintf (fp, "</PolyStyle>"); KML_NEWLINE
-      fprintf (fp, "</Style>"); KML_NEWLINE
+      sprintf (buf, "<color>%s</color>", buf2); myZip_fputs (buf, zp);
+      KML_NEWLINE
+      myZip_fputs ("</PolyStyle>", zp); KML_NEWLINE
+      myZip_fputs ("</Style>", zp); KML_NEWLINE
    }
 
    /* Work on Dataset. */
-   fprintf (fp, "<Folder>"); KML_NEWLINE
-   fprintf (fp, "<name>Features (%s)</name>", title); KML_NEWLINE
-   fprintf (fp, "<open>0</open>"); KML_NEWLINE
+   myZip_fputs ("<Folder>", zp); KML_NEWLINE
+   sprintf (buf, "<name>Features (%s)</name>", title); myZip_fputs (buf, zp);
+   KML_NEWLINE
+   myZip_fputs ("<open>0</open>", zp); KML_NEWLINE
    for (i=0; i < numPoly; i++) {
-      fprintf (fp, "<Folder>"); KML_NEWLINE
-      fprintf (fp, "<name>");
-      fprintf (fp, "<![CDATA[%.*f]]>", decimal, poly[i].value);
-      fprintf (fp, "</name>"); KML_NEWLINE
+      myZip_fputs ("<Folder>", zp); KML_NEWLINE
+      myZip_fputs ("<name>", zp);
+      sprintf (buf, "<![CDATA[%.*f]]>", decimal, poly[i].value);
+      myZip_fputs (buf, zp);
+      myZip_fputs ("</name>", zp); KML_NEWLINE
       /* Determine style URL here. */
       styleIndex = -1;
       for (j=0; j < numSymbol; j++) {
@@ -273,42 +291,51 @@ static int savePolysKmlFast (const char *filename, polyType *poly, int numPoly,
          sprintf (styleUrl, "#%d", styleIndex);
       }
       for (j = 0; j < poly[i].numAct; j++) {
-         fprintf (fp, "<Placemark>"); KML_NEWLINE
-         fprintf (fp, "<name>");
-         fprintf (fp, "<![CDATA[%.*f]]>", decimal, poly[i].value);
-         fprintf (fp, "</name>"); KML_NEWLINE
-         fprintf (fp, "<description>");
-         fprintf (fp, "<![CDATA[]]>");
-/*         fprintf (fp, "<![CDATA[ ]]>");*/
-         fprintf (fp, "</description>"); KML_NEWLINE
+         myZip_fputs ("<Placemark>", zp); KML_NEWLINE
+         myZip_fputs ("<name>", zp);
+         sprintf (buf, "<![CDATA[%.*f]]>", decimal, poly[i].value);
+         myZip_fputs (buf, zp);
+         myZip_fputs ("</name>", zp); KML_NEWLINE
+         myZip_fputs ("<description>", zp);
+         myZip_fputs ("<![CDATA[]]>", zp);
+         myZip_fputs ("</description>", zp); KML_NEWLINE
          if (styleIndex != -1) {
-            fprintf (fp, "<styleUrl>%s</styleUrl>", styleUrl); KML_NEWLINE
+            sprintf (buf, "<styleUrl>%s</styleUrl>", styleUrl);
+            myZip_fputs (buf, zp); KML_NEWLINE
          }
-         fprintf (fp, "<Polygon>"); KML_NEWLINE
-         fprintf (fp, "<extrude>0</extrude>"); KML_NEWLINE
-         fprintf (fp, "<altitudeMode>clampedToGround</altitudeMode>"); KML_NEWLINE
-         fprintf (fp, "<outerBoundaryIs>"); KML_NEWLINE
-         fprintf (fp, "<LinearRing>"); KML_NEWLINE
-         fprintf (fp, "<coordinates>");
+         myZip_fputs ("<Polygon>", zp); KML_NEWLINE
+         myZip_fputs ("<extrude>0</extrude>", zp); KML_NEWLINE
+         myZip_fputs ("<altitudeMode>clampedToGround</altitudeMode>", zp); KML_NEWLINE
+         myZip_fputs ("<outerBoundaryIs>", zp); KML_NEWLINE
+         myZip_fputs ("<LinearRing>", zp); KML_NEWLINE
+         myZip_fputs ("<coordinates>", zp);
          Pnode = poly[i].actList[j].head;
          while (Pnode != NULL) {
-            fprintf (fp, "%.*f,%.*f,0\n", LatLon_Decimal, Pnode->x,
-                     LatLon_Decimal, Pnode->y);
+            sprintf (buf, "%.*f,%.*f,0\n", LatLon_Decimal, Pnode->x,
+                     LatLon_Decimal, Pnode->y); myZip_fputs (buf, zp);
             Pnode = Pnode->next;
          }
-         fprintf (fp, "</coordinates>"); KML_NEWLINE
-         fprintf (fp, "</LinearRing>"); KML_NEWLINE
-         fprintf (fp, "</outerBoundaryIs>"); KML_NEWLINE
-         fprintf (fp, "</Polygon>"); KML_NEWLINE
-         fprintf (fp, "</Placemark>"); KML_NEWLINE
+         myZip_fputs ("</coordinates>", zp); KML_NEWLINE
+         myZip_fputs ("</LinearRing>", zp); KML_NEWLINE
+         myZip_fputs ("</outerBoundaryIs>", zp); KML_NEWLINE
+         myZip_fputs ("</Polygon>", zp); KML_NEWLINE
+         myZip_fputs ("</Placemark>", zp); KML_NEWLINE
       }
-      fprintf (fp, "</Folder>"); KML_NEWLINE
+      myZip_fputs ("</Folder>", zp); KML_NEWLINE
    }
 
-   fprintf (fp, "</Folder>"); KML_NEWLINE
-   fprintf (fp, "</Document>"); KML_NEWLINE
-   fprintf (fp, "</kml>"); KML_NEWLINE
-   fclose (fp);
+   myZip_fputs ("</Folder>", zp); KML_NEWLINE
+   myZip_fputs ("</Document>", zp); KML_NEWLINE
+   myZip_fputs ("</kml>", zp); KML_NEWLINE
+   if (myZip_fclose (zp) == EOF) {
+      printf ("Error closing file in the zipfile\n");
+      return -1;
+   }
+   if (myZipClose (zp) == EOF) {
+      printf ("Error closing the zipfile\n");
+      return -1;
+   }
+   return 0;
 }
 
 #ifdef USE_XMLLIB
@@ -523,7 +550,8 @@ static int savePolysKml (const char *filename, polyType *poly, int numPoly,
 
 int gribWriteKml (const char *Filename, double *grib_Data,
                   grib_MetaData *meta, sChar f_poly, sChar f_nMissing,
-                  sChar decimal, sChar LatLon_Decimal, const char *kmlIni)
+                  sChar decimal, sChar LatLon_Decimal, const char *kmlIni,
+                  int f_kmz)
 {
    myMaparam map;       /* Used to compute the grid lat/lon points. */
    char *filename;      /* local copy of the filename. */
@@ -581,7 +609,7 @@ int gribWriteKml (const char *Filename, double *grib_Data,
       printf ("\n");
 */
       savePolysKmlFast (filename, poly, numPoly, meta, decimal, LatLon_Decimal,
-                    symbol, numSymbol);
+                        symbol, numSymbol, f_kmz);
       printf ("\n\n Saved to file %s\n", filename);
 
       FreePolys (poly, numPoly);

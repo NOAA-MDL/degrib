@@ -51,7 +51,7 @@ typedef struct {
    sChar f_Freq;        /* f_Freq */
    sChar f_Map;         /* f_Map */
    sChar f_Shp;         /* f_Shp = -Shp */
-   sChar f_Kml;         /* f_Kml = -Kml */
+   sChar f_Kml;         /* f_Kml = -Kml = 1, -Kmz = 2 */
    sChar f_verboseShp;  /* f_verboseShp = -verboseShp */
    sChar f_Csv;         /* f_Csv = -Csv */
    sChar f_Tdl;         /* f_TDL = -Tdl */

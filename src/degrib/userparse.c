@@ -705,7 +705,7 @@ static char *UsrOpt[] = { "-cfg", "-in", "-I", "-C", "-P", "-V", "-Flt",
    "-XML", "-MOTD", "-Graph", "-startTime", "-endTime", "-startDate",
    "-numDays", "-ndfdVars", "-geoData", "-gribFilter", "-ndfdConven", "-Freq",
    "-Icon", "-curTime", "-rtmaDir", "-avgInterp", "-cwa", "-SimpleWWA",
-   "-TxtParse", "-Kml", "-KmlIni", NULL
+   "-TxtParse", "-Kml", "-KmlIni", "-Kmz", NULL
 };
 
 int IsUserOpt (char *str)
@@ -728,7 +728,7 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
       MAPINIFILE, MAPINIOPTIONS, XML, MOTD, GRAPH, STARTTIME, ENDTIME,
       STARTDATE, NUMDAYS, NDFDVARS, GEODATA, GRIBFILTER, NDFDCONVEN,
       FREQUENCY, ICON, CURTIME, RTMADIR, AVGINTERP, CWA, SIMPLEWWA, TXTPARSE,
-      KML, KMLINIFILE
+      KML, KMLINIFILE, KMZ
    };
    int index;           /* "cur"'s index into Opt, which matches enum val. */
    double lat, lon;     /* Used to check on the -pnt option. */
@@ -874,6 +874,10 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
       case KML:
          if (usr->f_Kml == -1)
             usr->f_Kml = 1;
+         return 1;
+      case KMZ:
+         if (usr->f_Kml == -1)
+            usr->f_Kml = 2;
          return 1;
       case SHP2:
          if (usr->f_Shp == -1)
