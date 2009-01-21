@@ -13,19 +13,19 @@ STD_INC = @MEM_STDINC@ -I${top_srcdir}/libaat
 
 STD_LIB = @MEM_STDLIB@ -L${top_srcdir}/libaat/ -laat -L/usr/lib/ -lm
 
-PRJ_NAME = @PACKAGE_NAME@
+PRJ_NAME = xyz2shp
 
 CFLAGS = $(STD_FLAGS) $(STD_DEF) $(STD_INC)
-MAINFLAGS = $(CFLAGS) -DPKGVERS=\"@PACKAGE_VERSION@\" -DPKGDATE=\"@PACKAGE_DATE@\" -DPKGNAME=\"@PACKAGE_NAME@\"
+MAINFLAGS = $(CFLAGS) -DPKGVERS=\"@PACKAGE_VERSION@\" -DPKGDATE=\"@PACKAGE_DATE@\" -DPKGNAME=\"xyz2shp\"
 
 ############################
 # FILES
 ############################
-SOURCE = user.c
+SOURCE = xyzuser.c
 
 OBJECTS = $(SOURCE:.c=.o)
 
-HEADERS = user.h 
+HEADERS = xyzuser.h 
 
 MAIN = xyz2shp.c
 

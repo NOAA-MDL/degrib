@@ -23,7 +23,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "libaat.h"
-#include "user.h"
+#include "xyzuser.h"
 
 #ifdef MEMWATCH
 #include "memwatch.h"

@@ -13,7 +13,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "libaat.h"
-#include "user.h"
+#include "xyzuser.h"
 #ifdef MEMWATCH
 #include "memwatch.h"
 #endif
@@ -22,8 +22,10 @@
 static char argsDoc[] = "[OPTION]... [INFILE] [OUTFILE]";
 
 /* Program documentation. */
-static char doc[] =
-      "Convert a comma delimited ASCII xyz file to a point .shp file.\n";
+static char *doc[] = {
+      "Convert a comma delimited ASCII xyz file to a point .shp file.\n",
+      NULL
+};
 
 /*****************************************************************************
  * usrInit() -- Arthur Taylor / MDL
