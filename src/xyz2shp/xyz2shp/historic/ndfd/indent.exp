@@ -1,0 +1,46 @@
+#!/bin/sh
+# The next line restarts using expect \
+exec /usr/bin/expect "$0" "$@"
+
+#*****************************************************************************
+# <indent.exp>
+#
+#     The intent of this program is to make sure the .c files have the spacing
+#   as defined in ~/.indent.pro
+#
+# History:
+#   10/2002 Arthur Taylor (MDL/RSIS): Created
+#
+# Notes:
+#*****************************************************************************
+# Global variables:
+#*****************************************************************************
+if {$argc == 0} {
+  set fileList [concat [glob -nocomplain *.c] [glob -nocomplain *.h] \
+                     [glob -nocomplain make*] [glob -nocomplain *.txt] \
+                     [glob -nocomplain *.f] ] 
+  foreach file $fileList {
+    exec /usr/local/bin/nocr.exp $file 3.1415926535
+    catch {exec /bin/diff -q $file 3.1415926535} ans
+    if {$ans != ""} {
+#    file copy -force 3.1415926535 $file
+      puts "$file needs /usr/local/bin/nocr.exp run on it."
+    }
+  }
+  file delete -force 3.1415926535
+}
+
+foreach file [glob -nocomplain *.c] {
+  exec /bin/indent $file -o [file rootname $file].cpp
+  catch {exec /bin/diff -q $file [file rootname $file].cpp} ans
+  if {$ans != ""} {
+    puts $ans
+  } else {
+    puts "$file is ok"
+  }
+#  exec /bin/indent $file
+}
+foreach file [glob -nocomplain *.bak] {
+  file delete -force $file
+}
+exit

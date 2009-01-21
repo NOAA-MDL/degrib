@@ -1,0 +1,3 @@
+Enhancements:
+1) Move shp creation into libaat (8/7/2007)
+

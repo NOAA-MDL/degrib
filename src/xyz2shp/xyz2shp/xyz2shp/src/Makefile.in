@@ -1,0 +1,112 @@
+SHELL = @SHELL@
+
+top_srcdir = @top_srcdir@
+package = @PACKAGE_NAME@-@PACKAGE_VERSION@
+
+LIB_DEPENDS = @MEM_LIBDEP@ ${top_srcDir}/libaat/libaat.a
+
+PRJ_NAME = @PACKAGE_NAME@
+
+all: $(PRJ_NAME)/$(PRJ_NAME) install
+
+$(PRJ_NAME)/$(PRJ_NAME): $(LIB_DEPENDS)
+	@echo "-----------------------------"
+	@echo "Attempting to compile $(PRJ_NAME)..."
+	(cd $(PRJ_NAME) && make)
+	@echo "Finished with $(PRJ_NAME)"
+	@echo "-----------------------------"
+	@echo ""
+
+#####
+# LIBRARIES
+#####
+@MEM_LIBDEP@: ${top_srcdir}/@MEM_NAME@/Makefile
+	@echo "-----------------------------"
+	@echo "Attempting to compile memwatch..."
+	(cd ${top_srcdir}/@MEM_NAME@ && make)
+	@echo "Finished with memwatch..."
+	@echo "-----------------------------"
+	@echo ""
+
+${top_srcDir}/libaat/libaat.a: ${top_srcdir}/libaat/Makefile
+	@echo "-----------------------------"
+	@echo "Attempting to compile libaat..."
+	(cd ${top_srcdir}/libaat && make)
+	@echo "Finished with libaat..."
+	@echo "-----------------------------"
+	@echo ""
+
+#####
+# Configurables
+#####
+${top_srcdir}/@MEM_NAME@/Makefile: ${top_srcdir}/@MEM_NAME@/configure
+	@echo "-----------------------------"
+	@echo "Attempting to configure memwatch..."
+	(cd ${top_srcdir}/@MEM_NAME@ && ./configure)
+	@echo "-----------------------------"
+	@echo ""
+
+#####
+# Regular targets
+#####
+install:
+	@echo "-----------------------------"
+	@echo "Attempting to install $(PRJ_NAME)..."
+	(cd $(PRJ_NAME) && make install)
+	@echo "Finished with install of $(PRJ_NAME)"
+	@echo "-----------------------------"
+
+clean: @MEM_CLEAN@
+	- (cd libaat && make clean)
+	- (cd $(PRJ_NAME) && make clean)
+
+@MEM_CLEAN@:
+	- (cd @MEM_NAME@ && make clean)
+
+distclean: @MEM_DISTCLEAN@
+	- (cd libaat && make distclean)
+	- (cd $(PRJ_NAME) && make distclean)
+	- rm -r -f *.bak config.log config.status Makefile autom4te.cache
+
+@MEM_DISTCLEAN@:
+	- (cd @MEM_NAME@ && make distclean)
+
+CONFIG = configure.ac aclocal.m4 configure config.guess config.sub install-sh \
+         Makefile.in config-win.sh config-debug.sh config-aix32.sh
+
+dist: $(PRJ_NAME)/$(PRJ_NAME) install
+	@if [ ! -d $(package) ]; then mkdir $(package); fi
+	@cp ../NEWS.txt $(package)
+	@cp ../readme.txt $(package)
+	@echo "Copying the compiled code."
+	@if [ ! -d $(package)/bin ]; then mkdir $(package)/bin; fi
+	@cp $(PRJ_NAME)/$(PRJ_NAME)$(EXEEXT) $(package)/bin
+	@cp ../bin/simple.tcl $(package)/bin
+	@echo "Copying the source code."
+	@if [ ! -d $(package)/src ]; then mkdir $(package)/src; fi
+	@for file in $(CONFIG); do cp $$file $(package)/src; done
+	@if [ ! -d $(package)/src/libaat ]; then mkdir $(package)/src/libaat; fi
+	@(cd libaat && make DIST_DIR=../$(package)/src/libaat dist)
+	@if [ ! -d $(package)/src/$(PRJ_NAME) ]; then mkdir $(package)/src/$(PRJ_NAME); fi
+	@(cd $(PRJ_NAME) && make DIST_DIR=../$(package)/src/$(PRJ_NAME) dist)
+	@echo "Copying the test cases."
+	@if [ ! -d $(package)/test ]; then mkdir $(package)/test; fi
+	@if [ ! -d $(package)/test/ans0 ]; then mkdir $(package)/test/ans0; fi
+	@for file in `ls ../test/ans0/*`; do cp $$file ./$(package)/test/ans0; done
+	@if [ ! -d $(package)/test/ans1 ]; then mkdir $(package)/test/ans1; fi
+	@for file in `ls ../test/ans1/*`; do cp $$file ./$(package)/test/ans1; done
+	@if [ ! -d $(package)/test/ans2 ]; then mkdir $(package)/test/ans2; fi
+	@for file in `ls ../test/ans2/*`; do cp $$file ./$(package)/test/ans2; done
+	@if [ ! -d $(package)/test/data ]; then mkdir $(package)/test/data; fi
+	@for file in `ls ../test/data/*`; do cp $$file ./$(package)/test/data; done
+	@if [ ! -d $(package)/test/noLatLon ]; then mkdir $(package)/test/noLatLon; fi
+	@for file in `ls ../test/noLatLon/*`; do cp $$file ./$(package)/test/noLatLon; done
+	@if [ ! -d $(package)/test/xyzFiles ]; then mkdir $(package)/test/xyzFiles; fi
+	@for file in `ls ../test/xyzFiles/*`; do cp $$file ./$(package)/test/xyzFiles; done
+	@cp ../test/makefile ./$(package)/test
+	tar -cf $(package).tar ./$(package)
+	gzip $(package).tar
+	rm -r -f $(package)
+
+release: dist
+	mv $(package).tar.gz ../../release/$(package)-@PACKAGE_DATE@.tar.gz

@@ -1,0 +1,28 @@
+#
+#----- Release: Version 0.5 20080915 -----
+#
+ 9/15 AAT Ported it to linux 
+#
+#----- Release: Version 0.4 20070809 -----
+#
+ 8/9  AAT Ported it to the AIX system
+ 8/8  AAT Added -f (--filter) option which keeps the last occurance of an
+          identical lat/lon.
+ 8/8  AAT Added myGetOpt to libaat, to allow us to parse command lines better
+          Should handle -f --filter -filter.
+ 8/7  AAT Worked on converting to configure, and mimicing what I did with
+          rexout 
+#
+#----- Release: Version 0.3 20061108 
+#
+      AAT Worked on straightening out versions and porting it to "Dew"
+#
+#----- Release: Version 0.2 20050105
+#
+      AAT Enhanced code to deal with "NDFD" tables (created simple.tcl to do a
+          look up in station.tbl (MDL station table format)
+      AAT Worked on porting the code to "Blue" and AIX systems
+#
+#----- Release: Version 0.1 20040625
+#
+      AAT Started work on xyz2shp for AirQuaility

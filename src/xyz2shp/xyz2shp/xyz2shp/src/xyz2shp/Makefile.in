@@ -1,0 +1,65 @@
+SHELL = @SHELL@
+
+top_srcdir = @top_srcdir@
+
+CC = @CC@
+STRIP = @STRIP@
+STRIP_FLAGS = @STRIP_FLAGS@
+STD_FLAGS = @CFLAGS@ @ANSIFLAG@
+EXEEXT = @EXEEXT@
+
+STD_DEF = @DSIZEOF_LONG_INT@ @DWORDS_BIGENDIAN@ @MEM_DEF@ @DDEBUG@
+STD_INC = @MEM_STDINC@ -I${top_srcdir}/libaat
+
+STD_LIB = @MEM_STDLIB@ -L${top_srcdir}/libaat/ -laat -L/usr/lib/ -lm
+
+PRJ_NAME = @PACKAGE_NAME@
+
+CFLAGS = $(STD_FLAGS) $(STD_DEF) $(STD_INC)
+MAINFLAGS = $(CFLAGS) -DPKGVERS=\"@PACKAGE_VERSION@\" -DPKGDATE=\"@PACKAGE_DATE@\" -DPKGNAME=\"@PACKAGE_NAME@\"
+
+############################
+# FILES
+############################
+SOURCE = user.c
+
+OBJECTS = $(SOURCE:.c=.o)
+
+HEADERS = user.h 
+
+MAIN = xyz2shp.c
+
+LIB_DEPENDS = @MEM_LIBDEP@ ${top_srcdir}/libaat/libaat.a
+
+############################
+# TARGETS
+############################
+all: $(PRJ_NAME)
+
+$(PRJ_NAME): $(OBJECTS) $(MAIN) $(LIB_DEPENDS) $(HEADERS)
+	$(CC) $(MAIN) $(MAINFLAGS) $(LD_FLAGS) $(OBJECTS) $(STD_LIB) -o $(PRJ_NAME)
+	$(STRIP) $(STRIP_FLAGS) $(PRJ_NAME)$(EXEEXT)
+
+install: $(PRJ_NAME)
+	cp $(PRJ_NAME)$(EXEEXT) ../../bin
+
+clean:
+	rm -f *.o *.bak *.BAK *.obj
+	rm -f $(PRJ_NAME)$(EXEEXT)
+
+distclean: clean
+	rm -r -f Makefile
+
+# DIST_DIR is usually set by the calling Makefile... Set a default here.
+package = @PACKAGE_NAME@-@PACKAGE_VERSION@
+DIST_DIR = ./$(package)
+DISTRIB = $(SOURCE) $(HEADERS) $(MAIN) Makefile.in
+dist:
+	@if [ ! -d $(DIST_DIR) ]; then mkdir $(DIST_DIR); fi
+	@for file in $(DISTRIB); do cp $$file $(DIST_DIR); done
+
+############################
+# SUFFIXES
+############################
+.c.o : $(HEADERS)
+	$(CC) -c $(CFLAGS) $<
