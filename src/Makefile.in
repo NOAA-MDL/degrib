@@ -9,21 +9,31 @@ CFLAGS = @CFLAGS@
 ARFLAGS = @ARFLAGS@
 EXEEXT = @EXEEXT@
 
-LIB_DEPENDS = ./zlib/libz.a \
+LIB_DEP1 = @MEM_LIBDEP@ \
+           ./libaat/libaat.a 
+
+LIB_DEPENDS = $(LIB_DEP1) \
+              ./zlib/libz.a \
               ./libpng/libpng.a \
               ./jpeg2000/src/libjasper/jpc/.libs/libjpc.a \
               ./jpeg2000/src/libjasper/base/.libs/libbase.a \
-              ./libaat/libaat.a \
               ./mdl_g2c/libmdl_g2c.a \
               ./gd/libgd.a \
               ./emapf-c/libemapf.a \
               ./netcdf/libsrc/libnetcdf.a \
-              @MEM_LIBDEP@ \
               ./libxml/.libs/libxml2.a
 
 PRJ_NAME = @PACKAGE_NAME@
 
-all: $(PRJ_NAME)/$(PRJ_NAME) install
+all: xyz2shp/xyz2shp $(PRJ_NAME)/$(PRJ_NAME) install
+
+xyz2shp/xyz2shp: $(LIB_DEP1)
+	@echo "-----------------------------"
+	@echo "Attempting to compile xyz2shp..."
+	(cd xyz2shp && make)
+	@echo "Finished with xyz2shp"
+	@echo "-----------------------------"
+	@echo ""
 
 $(PRJ_NAME)/$(PRJ_NAME): $(LIB_DEPENDS)
 	@echo "-----------------------------"
@@ -210,6 +220,9 @@ ${top_srcdir}/@MEM_NAME@/Makefile: ${top_srcdir}/@MEM_NAME@/configure
 #####
 install:
 	@echo "-----------------------------"
+	@echo "Attempting to install xyz2shp..."
+	(cd xyz2shp && make install)
+	@echo "Finished with install of xyz2shp"
 	@echo "Attempting to install $(PRJ_NAME)..."
 	(cd $(PRJ_NAME) && make install)
 	@echo "Finished with install of $(PRJ_NAME)"
