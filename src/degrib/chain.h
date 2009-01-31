@@ -18,6 +18,7 @@ typedef struct {
 typedef struct {
    chainType *actList, *finList;
    int numAct, numFin;
+   int *crossLink;  /* used to denote which hole goes with which surround */
    double value;
 } polyType;
 

@@ -434,6 +434,7 @@ static void AddPoly (int *numPoly, polyType **poly, sChar f_3pnt,
       (*poly)[mid].numFin = 0;
       (*poly)[mid].actList = NULL;
       (*poly)[mid].finList = NULL;
+      (*poly)[mid].crossLink = NULL;
    }
    if (f_3pnt) {
       /* Check if middle point equals an end point. */
@@ -647,6 +648,9 @@ void gribCompactPolys (polyType *poly, int *numPoly, sChar f_nMissing,
          }
          free (poly[i].finList);
          poly[i].finList = NULL;
+         if (poly[i].crossLink != NULL) {
+            free (poly[i].crossLink);
+         }
          /* shift remaining polys up. */
          for (j = i + 1; j < *numPoly; j++) {
             poly[j - 1] = poly[j];
@@ -711,6 +715,9 @@ void FreePolys (polyType *poly, int numPoly)
          }
       }
       free (poly[i].finList);
+      if (poly[i].crossLink != NULL) {
+         free (poly[i].crossLink);
+      }
    }
    free (poly);
 }
