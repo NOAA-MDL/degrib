@@ -23,8 +23,251 @@
 /* #include <libxml/tree.h> */
 #endif
 
-#ifdef TEST_POLYOUT
+#ifdef EXPERIMENT
+typedef struct {
+   float x, y;
+} polyPointType;
+
+
+typedef struct {
+   double value;
+   polyPointType **data;
+   int numChunk;
+   int *chunkLen;
+   int *f_hole;
+} polyType2;
+
+
+static inline int isLeft (polyPointType P0, polyPointType P1, polyPointType P2)
+{
+   return ( (P1.x - P0.x) * (P2.y - P0.y)
+          - (P2.x - P0.x) * (P1.y - P0.y) );
+}
+
+static int orientation2D_Polygon (int n, polyPointType * V)
+{
+   /* first find rightmost lowest vertex of the polygon */
+   int rmin = 0;
+   int xmin = V[0].x;
+   int ymin = V[0].y;
+
+   for (int i=1; i<n; i++) {
+      if (V[i].y > ymin)
+         continue;
+      if (V[i].y == ymin) {    /* just as low */
+         if (V[i].x < xmin)   /* and to left */
+            continue;
+      }
+      rmin = i;          /* a new rightmost lowest vertex */
+      xmin = V[i].x;
+      ymin = V[i].y;
+   }
+
+   /* test orientation at this rmin vertex */
+   /* ccw <=> the edge leaving is left of the entering edge */
+   if (rmin == 0)
+      return isLeft( V[n-1], V[0], V[1] );
+   else
+      return isLeft( V[rmin-1], V[rmin], V[rmin+1] );
+}
+
+static void chain2chunk (polyType *poly, polyType2 *chunk, int f_fin)
+{
+   if (f_fin) {
+      chunk->numChunk = poly->numFin;
+   } else {
+      chunk->numChunk = poly->numAct;
+   }
+   chunk->chunkLen = (int *) malloc (chunk->numChunk * sizeof (int));
+   chunk->f_hole = (int *) malloc (chunk->numChunk * sizeof (int));
+   chunk->data = (PolyPointType **) malloc (chunk->numChunk *
+                                            sizeof (PolyPointType *));
+   for (j = 0; j < chunk->numChunk; j++) {
+      if (f_fin) {
+         node = poly[i].finList[j].head;
+      } else {
+         node = poly[i].actList[j].head;
+      }
+      cnt = 0;
+      while (node != NULL) {
+         cnt++;
+         node = node->next;
+      }
+      chunk->chunkLen[j] = cnt;
+      chunk->data[j] = (PolyPointType *) malloc (chunk->chunkLen[j] *
+                                                 sizeof (PolyPointType));
+      if (f_fin) {
+         node = poly[i].finList[j].head;
+      } else {
+         node = poly[i].actList[j].head;
+      }
+      cnt = 0;
+      while (node != NULL) {
+         chunk->data[j][cnt].x = node->x;
+         chunk->data[j][cnt].y = node->y;
+         cnt++;
+         node = node->next;
+      }
+      chunk->f_hole[j] = orientation2D_Polygon (chunk->chunkLen[j],
+                                                chunk->data[j]);
+   }
+}
+#endif
+
 static void PrintPolys (polyType *poly, int numPoly)
+{
+   int i;               /* Loop counter over number of Polys. */
+   int j;               /* Loop counter over list of chains. */
+   int cnt;             /* Check if we have > 100 nodes. */
+   chainNode *node;     /* The current node (to print). */
+   chainNode *next;     /* The current node (to print). */
+   double A;            /* area of polygon. */
+
+   printf ("Number of poly %d\n", numPoly);
+   for (i = 0; i < numPoly; i++) {
+      printf ("Poly number %d (value = %f)\n", i, poly[i].value);
+      myAssert (poly[i].numFin == 0);
+      for (j = 0; j < poly[i].numAct; j++) {
+         printf ("  %d :: ", j);
+         node = poly[i].actList[j].head;
+         next = node->next;
+         cnt = 0;
+         A = 0;
+         while (node != NULL) {
+            cnt++;
+            if (next != NULL) {
+               A += node->x * next->y - node->y * next->x;
+            }
+            printf ("(%f %f) ,", node->x, node->y);
+            if (node == poly[i].actList[j].tail) {
+               printf (":: NULL? ");
+            }
+            node = node->next;
+            if (node != NULL) {
+               next = node->next;
+            } else {
+               next = NULL;
+            }
+         }
+         printf ("<check> \n Area = %f", A);
+      }
+   }
+}
+
+/* http://www.faqs.org/faqs/graphics/algorithms-faq/ */
+/* 2.03 */
+static int pnpoly (int npol, float *xp, float *yp, float x, float y)
+{
+   int i, j, c = 0;
+   for (i = 0, j = npol-1; i < npol; j = i++) {
+      if ((((yp[i] <= y) && (y < yp[j])) ||
+           ((yp[j] <= y) && (y < yp[i]))) &&
+          (x < (xp[j] - xp[i]) * (y - yp[i]) / (yp[j] - yp[i]) + xp[i]))
+         c = !c;
+   }
+   return c;
+}
+
+/* NOT EFFICIENT!!! */
+static int pnpoly2 (chainNode *head, float x, float y)
+{
+   float *xp;
+   float *yp;
+   int cnt;
+   int ans;
+   chainNode *node;
+
+   node = head;
+   cnt = 0;
+   while (node != NULL) {
+      cnt++;
+      node = node->next;
+   }
+   xp = (float *) malloc (cnt * sizeof (float));
+   yp = (float *) malloc (cnt * sizeof (float));
+
+   node = head;
+   cnt = 0;
+   while (node != NULL) {
+      xp[cnt] = node->x;
+      yp[cnt] = node->y;
+      cnt++;
+      node = node->next;
+   }
+   ans = pnpoly (cnt, xp, yp, x, y);
+
+   free (xp);
+   free (yp);
+   return ans;
+}
+
+/* Still doesn't handle island inside a lake on an island */
+
+/* http://www.faqs.org/faqs/graphics/algorithms-faq/ */
+/* 2.07, 2.01 */
+static void FindAreas (polyType *poly, int numPoly)
+{
+   int i;               /* Loop counter over number of Polys. */
+   int j;               /* Loop counter over list of chains. */
+   int k;
+   int cnt;             /* Check if we have > 100 nodes. */
+   chainNode *node;     /* The current node (to print). */
+   chainNode *next;     /* The current node (to print). */
+   double A;            /* area of polygon. */
+   int f_found;
+
+   for (i = 0; i < numPoly; i++) {
+      myAssert (poly[i].numFin == 0);
+      if (poly[i].crossLink == NULL) {
+         poly[i].crossLink = (int *) malloc (poly[i].numAct * sizeof (int));
+      }
+      for (j = 0; j < poly[i].numAct; j++) {
+         node = poly[i].actList[j].head;
+         next = node->next;
+         cnt = 0;
+         A = 0;
+         while (node != NULL) {
+            cnt++;
+            if (next != NULL) {
+               A += node->x * next->y - node->y * next->x;
+            }
+            node = node->next;
+            if (node != NULL) {
+               next = node->next;
+            } else {
+               next = NULL;
+            }
+         }
+         if (A >= 0) {
+/*            printf ("Hole %d %d: Area %f\n", i, j, A);*/
+            f_found = -1;
+            for (k = 0; k < poly[i].numAct; k++) {
+               if (k != j) {
+                  if (pnpoly2 (poly[i].actList[k].head,
+                               poly[i].actList[j].head->x,
+                               poly[i].actList[j].head->y)) {
+                     if (f_found == -1) {
+                        f_found = k;
+                     } else {
+                        printf ("Hole inside 2 or more parents.\n");
+                     }
+                  }
+               }
+            }
+            if (f_found == -1) {
+               printf ("Hole without parent?\n");
+            } else {
+               poly[i].crossLink[j] = f_found;
+/*               printf ("Cross link Hole %d with parent %d?\n", j, k);*/
+            }
+         } else {
+            poly[i].crossLink[j] = -1;
+         }
+      }
+   }
+}
+
+static void PrintPolys2 (polyType *poly, int numPoly)
 {
    int i;               /* Loop counter over number of Polys. */
    int j;               /* Loop counter over list of chains. */
@@ -34,15 +277,15 @@ static void PrintPolys (polyType *poly, int numPoly)
    printf ("Number of poly %d\n", numPoly);
    for (i = 0; i < numPoly; i++) {
       printf ("Poly number %d (value = %f)\n", i, poly[i].value);
-      myAssert (poly[i].numFin == 0);
-      for (j = 0; j < poly[i].numAct; j++) {
+      myAssert (poly[i].numAct == 0);
+      for (j = 0; j < poly[i].numFin; j++) {
          printf ("  %d :: ", j);
-         node = poly[i].actList[j].head;
+         node = poly[i].finList[j].head;
          cnt = 0;
          while (node != NULL) {
             cnt++;
             printf ("(%f %f) ,", node->x, node->y);
-            if (node == poly[i].actList[j].tail) {
+            if (node == poly[i].finList[j].tail) {
                printf (":: NULL? ");
             }
             node = node->next;
@@ -53,10 +296,15 @@ static void PrintPolys (polyType *poly, int numPoly)
       }
    }
 }
-#endif
 
-static int ParseKMLIniFile (const char *kmlIni, SymbolType **symbol,
-                            int *numSymbol)
+typedef struct {
+   char *label;
+   char *value;
+} TxtPair;
+
+static int ParseKMLIniFile (const char *kmlIni, char *variable,
+                            SymbolType **symbol, int *numSymbol,
+                            TxtPair **desc, int *numDesc)
 {
    FILE *fp;
    char *line = NULL;
@@ -64,9 +312,14 @@ static int ParseKMLIniFile (const char *kmlIni, SymbolType **symbol,
    char *first;
    char *second;
    char *third;
-   int f_valid;
    int i;
+   int f_desc = 0;
+   int f_validVar;
+   int f_EOF;
+   int f_foundVar = 0;
 
+   myAssert (*numDesc == 0);
+   myAssert (*desc == NULL);
    if (*numSymbol != 0) {
       for (i=0; i < *numSymbol; i++) {
          freeIniSymbol (& (*symbol)[i]);
@@ -80,47 +333,132 @@ static int ParseKMLIniFile (const char *kmlIni, SymbolType **symbol,
       printf ("Unable to read %s\n", kmlIni);
       return -1;
    }
-   f_valid = 0;
+   /* Make sure version number is correct. */
    while (reallocFGets (&line, &lineLen, fp) > 0) {
       first = line;
       while ((isspace (*first)) && (*first != '\0')) {
          first++;
       }
       if ((first != NULL) && (*first != '#')) {
-         if (! f_valid) {
-            strTrim (line);
-            if (strcmp (line, "TYPE=DEGRIB-KMLINI-1.0") != 0) {
-               printf ("Bad kmlIni version information\n");
-               fclose (fp);
-               free (line);
+         strTrim (line);
+         if (strcmp (line, "TYPE=DEGRIB-KMLINI-1.0") != 0) {
+            printf ("Bad kmlIni version information\n");
+            fclose (fp);
+            free (line);
+            return -1;
+         } else {
+            break;
+         }
+      }
+   }
+   /* Read file. */
+   f_validVar = 0;
+   while (reallocFGets (&line, &lineLen, fp) > 0) {
+      first = line;
+      while ((isspace (*first)) && (*first != '\0')) {
+         first++;
+      }
+      if ((*first == '\0') || (*first == '#')) {
+         continue;
+      }
+      if (*first == '<') {
+         first ++;
+         second = strchr (first, '>');
+         if (second == NULL) {
+            printf ("Bad kmlIni section info\n"); fclose (fp); free (line);
+            return -1;
+         }
+         *second = '\0';
+         if (strncmp (first, "Variable", 8) == 0) {
+            third = strchr (first, '=');
+            if (third != NULL) {
+               if (strcmp (third + 1, variable) == 0) {
+                  f_validVar = 1;
+                  f_foundVar = 1;
+               }
+            } else {
+               f_validVar = 1;
+               f_foundVar = 1;
+            }
+         } else if (strcmp (first, "/Variable") == 0) {
+            if (f_validVar) {
+               break;
+            }
+         } else if (f_validVar) {
+            if (strcmp (first, "description") == 0) {
+               f_desc = 1;
+            } else if (strcmp (first, "/description") == 0) {
+               f_desc = 0;
+            }
+         }
+      } else if (f_validVar) {
+         second = strchr (first, '=');
+         if (second == NULL) {
+            printf ("Bad kmlIni Symbol info\n"); fclose (fp); free (line);
+            return -1;
+         }
+         *second = '\0';
+         second++;
+         if (f_desc) {
+            if (*second != '[') {
+               printf ("values should start with a [\n"); fclose (fp);
+               free (line); return -1;
+            }
+            second++;
+            *numDesc = *numDesc + 1;
+            *desc = (TxtPair *) realloc ((void *) *desc,
+                                         *numDesc * sizeof (TxtPair));
+            (*desc)[*numDesc - 1].label = malloc ((strlen (first) + 1) * sizeof (char));
+            strcpy ((*desc)[*numDesc - 1].label, first);
+            third = strchr (second, ']');
+            if (third != NULL) {
+               *third = '\0';
+            }
+            (*desc)[*numDesc - 1].value = malloc ((strlen (first) + 1) * sizeof (char));
+            strcpy ((*desc)[*numDesc - 1].value, first);
+            f_EOF = 0;
+            while (!f_EOF && (third == NULL)) {
+               if (reallocFGets (&line, &lineLen, fp) == 0) {
+                  f_EOF = 1;
+               } else {
+                  third = strchr (second, ']');
+                  if (third != NULL) {
+                     *third = '\0';
+                  }
+                  (*desc)[*numDesc - 1].value = realloc ((void *) (*desc)[*numDesc - 1].value,
+                                                         (strlen ((*desc)[*numDesc - 1].value) +
+                                                          strlen (line) + 1) * sizeof (char));
+                  strcat ((*desc)[*numDesc - 1].value, line);
+               }
+            }
+
+         } else {
+            if (strcmp (first, "Symbol") != 0) {
+               printf ("Bad kmlIni Symbol info\n"); fclose (fp); free (line);
                return -1;
             }
-            f_valid = 1;
-         } else {
-            second = strchr (first, '=');
-            if (second != NULL) {
-               *second = '\0';
-               second++;
-               third = strchr (second, '#');
-               if (third != NULL) {
-                  *third = '\0';
-               }
-               third = strchr (second, '\n');
-               if (third != NULL) {
-                  *third = '\0';
-               }
+            *numSymbol = *numSymbol + 1;
+            *symbol = (SymbolType *) realloc ((void *) *symbol,
+                                              *numSymbol * sizeof (SymbolType));
+            third = strchr (second, '#');
+            if (third != NULL) {
+               *third = '\0';
             }
-            if (strcmp (first, "Symbol") == 0) {
-               *numSymbol = *numSymbol + 1;
-               *symbol = (SymbolType *) realloc ((void *) *symbol,
-                                                 *numSymbol * sizeof (SymbolType));
-               ParseSymbol (&((*symbol)[*numSymbol - 1]), second);
+            third = strchr (second, '\n');
+            if (third != NULL) {
+               *third = '\0';
             }
+            ParseSymbol (&((*symbol)[*numSymbol - 1]), second);
          }
       }
    }
    fclose (fp);
    free (line);
+   if (! f_foundVar) {
+      printf ("Unable to find a <Variable> or <Variable name=%s> section\n",
+              variable);
+      return -1;
+   }
    return 0;
 }
 
@@ -133,7 +471,8 @@ static int ParseKMLIniFile (const char *kmlIni, SymbolType **symbol,
 static int savePolysKmlFast (char *filename, polyType *poly, int numPoly,
                              grib_MetaData *meta, sChar decimal,
                              sChar LatLon_Decimal, SymbolType *symbol,
-                             int numSymbol, int f_kmz)
+                             int numSymbol, int f_kmz, TxtPair *desc,
+                             int numDesc)
 {
    myZipFile *zp;
    char buf[256];
@@ -143,7 +482,7 @@ static int savePolysKmlFast (char *filename, polyType *poly, int numPoly,
    char styleUrl[256];
    int styleIndex;
    chainNode *Pnode;     /* The current node (to print). */
-   int i, j;
+   int i, j, k;
    sInt4 deltSec;
 
    if (f_kmz) {
@@ -176,6 +515,31 @@ static int savePolysKmlFast (char *filename, polyType *poly, int numPoly,
    myZip_fputs ("<open>1</open>", zp); KML_NEWLINE
 
    myZip_fputs ("<description>", zp);
+   myZip_fputs ("<![CDATA[<TABLE>\n", zp);
+   if (meta->convert != UC_NONE) {
+      sprintf (buf, "<TR><TD><B>Title</B></TD><TD><B>%s (converted to %s)"
+               "</B></TD></TR>\n", meta->comment, meta->unitName);
+      myZip_fputs (buf, zp);
+
+   } else {
+      sprintf (buf, "<TR><TD><B>Title</B></TD><TD><B>%s</B></TD></TR>\n",
+               meta->comment); myZip_fputs (buf, zp);
+   }
+   for (i = 0; i < numDesc; i++) {
+      sprintf (buf, "<TR><TD><B>%s</B></TD><TD><B>%s</B></TD></TR>\n",
+               desc[i].label, desc[i].value);
+      myZip_fputs (buf, zp);
+   }
+   Clock_Print (buf2, 25, meta->pds2.refTime, "%m/%d/%Y %H:%M:%S UTC", 0);
+   sprintf (buf, "<TR><TD><B>Date Created</B></TD><TD><B>%s</B></TD></TR>\n",
+            buf2); myZip_fputs (buf, zp);
+   sprintf (buf, "<TR><TD><B>Valid</B></TD><TD><B>%s</B></TD></TR>\n",
+            valTime); myZip_fputs (buf, zp);
+   sprintf (buf, "<TR><TD><B>Surface</B></TD><TD><B>%s</B></TD></TR>\n",
+            meta->longFstLevel); myZip_fputs (buf, zp);
+   myZip_fputs ("</TABLE>]]>", zp);
+
+/*
    sprintf (buf, "<![CDATA[%s\n", meta->comment); myZip_fputs (buf, zp);
    if (meta->convert != UC_NONE) {
       sprintf (buf, "Converted to %s\n", meta->unitName); myZip_fputs (buf, zp);
@@ -184,6 +548,7 @@ static int savePolysKmlFast (char *filename, polyType *poly, int numPoly,
    sprintf (buf, "Made %s\n", buf2); myZip_fputs (buf, zp);
    sprintf (buf, "Valid %s\n", valTime); myZip_fputs (buf, zp);
    sprintf (buf, "Surface: %s]]>", meta->longFstLevel); myZip_fputs (buf, zp);
+*/
    myZip_fputs ("</description>", zp); KML_NEWLINE
 
    /* Try to handle the time stamp. */
@@ -291,35 +656,55 @@ static int savePolysKmlFast (char *filename, polyType *poly, int numPoly,
          sprintf (styleUrl, "#%d", styleIndex);
       }
       for (j = 0; j < poly[i].numAct; j++) {
-         myZip_fputs ("<Placemark>", zp); KML_NEWLINE
-         myZip_fputs ("<name>", zp);
-         sprintf (buf, "<![CDATA[%.*f]]>", decimal, poly[i].value);
-         myZip_fputs (buf, zp);
-         myZip_fputs ("</name>", zp); KML_NEWLINE
-         myZip_fputs ("<description>", zp);
-         myZip_fputs ("<![CDATA[]]>", zp);
-         myZip_fputs ("</description>", zp); KML_NEWLINE
-         if (styleIndex != -1) {
-            sprintf (buf, "<styleUrl>%s</styleUrl>", styleUrl);
-            myZip_fputs (buf, zp); KML_NEWLINE
+         if (poly[i].crossLink[j] == -1) {
+            myZip_fputs ("<Placemark>", zp); KML_NEWLINE
+            myZip_fputs ("<name>", zp);
+            sprintf (buf, "<![CDATA[%.*f]]>", decimal, poly[i].value);
+            myZip_fputs (buf, zp);
+            myZip_fputs ("</name>", zp); KML_NEWLINE
+            myZip_fputs ("<description>", zp);
+            myZip_fputs ("<![CDATA[]]>", zp);
+            myZip_fputs ("</description>", zp); KML_NEWLINE
+            if (styleIndex != -1) {
+               sprintf (buf, "<styleUrl>%s</styleUrl>", styleUrl);
+               myZip_fputs (buf, zp); KML_NEWLINE
+            }
+            myZip_fputs ("<Polygon>", zp); KML_NEWLINE
+            myZip_fputs ("<extrude>0</extrude>", zp); KML_NEWLINE
+            myZip_fputs ("<altitudeMode>clampedToGround</altitudeMode>", zp); KML_NEWLINE
+            myZip_fputs ("<outerBoundaryIs>", zp); KML_NEWLINE
+            myZip_fputs ("<LinearRing>", zp); KML_NEWLINE
+            myZip_fputs ("<coordinates>", zp);
+            Pnode = poly[i].actList[j].head;
+            while (Pnode != NULL) {
+               sprintf (buf, "%.*f,%.*f,0\n", LatLon_Decimal, Pnode->x,
+                        LatLon_Decimal, Pnode->y); myZip_fputs (buf, zp);
+               Pnode = Pnode->next;
+            }
+            myZip_fputs ("</coordinates>", zp); KML_NEWLINE
+            myZip_fputs ("</LinearRing>", zp); KML_NEWLINE
+            myZip_fputs ("</outerBoundaryIs>", zp); KML_NEWLINE
+
+            for (k = 0; k < poly[i].numAct; k++) {
+               if (poly[i].crossLink[k] == j) {
+                  myZip_fputs ("<innerBoundaryIs>", zp); KML_NEWLINE
+                  myZip_fputs ("<LinearRing>", zp); KML_NEWLINE
+                  myZip_fputs ("<coordinates>", zp);
+                  Pnode = poly[i].actList[k].head;
+                  while (Pnode != NULL) {
+                     sprintf (buf, "%.*f,%.*f,0\n", LatLon_Decimal, Pnode->x,
+                             LatLon_Decimal, Pnode->y); myZip_fputs (buf, zp);
+                     Pnode = Pnode->next;
+                  }
+                  myZip_fputs ("</coordinates>", zp); KML_NEWLINE
+                  myZip_fputs ("</LinearRing>", zp); KML_NEWLINE
+                  myZip_fputs ("</innerBoundaryIs>", zp); KML_NEWLINE
+               }
+            }
+
+            myZip_fputs ("</Polygon>", zp); KML_NEWLINE
+            myZip_fputs ("</Placemark>", zp); KML_NEWLINE
          }
-         myZip_fputs ("<Polygon>", zp); KML_NEWLINE
-         myZip_fputs ("<extrude>0</extrude>", zp); KML_NEWLINE
-         myZip_fputs ("<altitudeMode>clampedToGround</altitudeMode>", zp); KML_NEWLINE
-         myZip_fputs ("<outerBoundaryIs>", zp); KML_NEWLINE
-         myZip_fputs ("<LinearRing>", zp); KML_NEWLINE
-         myZip_fputs ("<coordinates>", zp);
-         Pnode = poly[i].actList[j].head;
-         while (Pnode != NULL) {
-            sprintf (buf, "%.*f,%.*f,0\n", LatLon_Decimal, Pnode->x,
-                     LatLon_Decimal, Pnode->y); myZip_fputs (buf, zp);
-            Pnode = Pnode->next;
-         }
-         myZip_fputs ("</coordinates>", zp); KML_NEWLINE
-         myZip_fputs ("</LinearRing>", zp); KML_NEWLINE
-         myZip_fputs ("</outerBoundaryIs>", zp); KML_NEWLINE
-         myZip_fputs ("</Polygon>", zp); KML_NEWLINE
-         myZip_fputs ("</Placemark>", zp); KML_NEWLINE
       }
       myZip_fputs ("</Folder>", zp); KML_NEWLINE
    }
@@ -563,6 +948,8 @@ int gribWriteKml (const char *Filename, double *grib_Data,
    SymbolType *symbol = NULL;
    int numSymbol = 0;
    int i;
+   TxtPair *desc = NULL;
+   int numDesc = 0;
 
    nameLen = strlen (Filename);
    if (nameLen < 4) {
@@ -585,7 +972,12 @@ int gribWriteKml (const char *Filename, double *grib_Data,
    SetMapParamGDS (&map, gds);
 
    if (kmlIni != NULL) {
-      ParseKMLIniFile (kmlIni, &symbol, &numSymbol);
+      if (ParseKMLIniFile (kmlIni, meta->element, &symbol, &numSymbol, &desc,
+                           &numDesc) != 0) {
+         errSprintf ("Had problems parsing %s", Filename);
+         free (filename);
+         return -2;
+      }
    }
 
    if (f_poly == 1) {   /* Small poly */
@@ -601,6 +993,11 @@ int gribWriteKml (const char *Filename, double *grib_Data,
       gribCompactPolys (poly, &numPoly, f_nMissing, &(meta->gridAttrib),
                         &polyData);
 
+/*
+      PrintPolys2 (poly, numPoly);
+      printf ("\n");
+*/
+
       /* Following is for experimenting with dateline issue. */
       ConvertChain2LtLn (poly, numPoly, &map, LatLon_Decimal);
 
@@ -608,9 +1005,11 @@ int gribWriteKml (const char *Filename, double *grib_Data,
       PrintPolys (poly, numPoly);
       printf ("\n");
 */
+
+      FindAreas (poly, numPoly);
+
       savePolysKmlFast (filename, poly, numPoly, meta, decimal, LatLon_Decimal,
-                        symbol, numSymbol, f_kmz);
-      printf ("\n\n Saved to file %s\n", filename);
+                        symbol, numSymbol, f_kmz, desc, numDesc);
 
       FreePolys (poly, numPoly);
       free (polyData);
@@ -619,6 +1018,12 @@ int gribWriteKml (const char *Filename, double *grib_Data,
       printf ("point does not currently work\n");
    }
 
+   for (i=0; i < numDesc; i++) {
+      free (desc[i].label);
+      free (desc[i].value);
+   }
+   free (desc);
+
    for (i=0; i < numSymbol; i++) {
       freeIniSymbol (&(symbol[i]));
    }
@@ -626,3 +1031,4 @@ int gribWriteKml (const char *Filename, double *grib_Data,
    free (filename);
    return 0;
 }
+
