@@ -646,8 +646,10 @@ static int savePolysKmlFast (char *filename, polyType *poly, int numPoly,
       /* Determine style URL here. */
       styleIndex = -1;
       for (j=0; j < numSymbol; j++) {
-         if ((poly[i].value >= symbol[j].min) &&
-             (poly[i].value <= symbol[j].max)) {
+         if (((poly[i].value < symbol[j].Max) ||
+              (symbol[j].f_maxInc && (poly[i].value == symbol[j].Max))) &&
+             ((poly[i].value > symbol[j].Min) ||
+              (symbol[j].f_minInc && (poly[i].value == symbol[j].Min)))) {
             styleIndex = j;
             break;
          }
@@ -933,6 +935,35 @@ static int savePolysKml (const char *filename, polyType *poly, int numPoly,
 }
 #endif
 
+/* This procedure reduces the complexity of the grid by choosing one
+ * value in each color range as the representative value.  This will
+ * result in fewer polygons which should result in Google maps/earth
+ * redrawing the images faster. */
+static void ShrinkGrid (int Nx, int Ny, double *Data, SymbolType *symbol,
+                        int numSymbol)
+{
+   int x;
+   int i;
+
+   for (x = 0; x < Nx*Ny; ++x) {
+      for (i = 0; i < numSymbol; ++i) {
+         if (((Data[x] < symbol[i].Max) ||
+              (symbol[i].f_maxInc && (Data[x] == symbol[i].Max))) &&
+             ((Data[x] > symbol[i].Min) ||
+              (symbol[i].f_minInc && (Data[x] == symbol[i].Min)))) {
+            if (symbol[i].f_minInc) {
+               Data[x] = symbol[i].Min;
+            } else if (symbol[i].f_maxInc) {
+               Data[x] = symbol[i].Max;
+            } else {
+               Data[x] = (symbol[i].Min + symbol[i].Max) / 2.;
+            }
+            break;
+         }
+      }
+   }
+}
+
 int gribWriteKml (const char *Filename, double *grib_Data,
                   grib_MetaData *meta, sChar f_poly, sChar f_nMissing,
                   sChar decimal, sChar LatLon_Decimal, const char *kmlIni,
@@ -950,6 +981,7 @@ int gribWriteKml (const char *Filename, double *grib_Data,
    int i;
    TxtPair *desc = NULL;
    int numDesc = 0;
+   int f_reduce = 1;
 
    nameLen = strlen (Filename);
    if (nameLen < 4) {
@@ -984,6 +1016,10 @@ int gribWriteKml (const char *Filename, double *grib_Data,
       printf ("Small poly does not currently work\n");
    } else if (f_poly == 2) { /* Big poly */
       NewPolys (&poly, &numPoly);
+
+      if (f_reduce) {
+         ShrinkGrid (gds->Nx, gds->Ny, grib_Data, symbol, numSymbol);
+      }
 
       /* Convert the grid to a list of polygon chains. */
       /* Assumes data came from ParseGrid() so scan flag == "0100". */
