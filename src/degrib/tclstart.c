@@ -166,7 +166,11 @@ int Tcl_AppInit (Tcl_Interp * interp)
  */
 int main (int argc, char *argv[])
 {
+#ifdef NO_TK
+   Tcl_Main (argc, argv, Tcl_AppInit);
+#else
    Tk_Main (argc, argv, Tcl_AppInit);
+#endif
    return 0;
 }
 
