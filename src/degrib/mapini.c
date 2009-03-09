@@ -587,8 +587,10 @@ int ParseSymbol (SymbolType * symbol, char *value)
       symbol->fg.b = 0;
       symbol->fg.alpha = 255;
       symbol->f_mark = 0;
-      symbol->max = 0;
-      symbol->min = 0;
+      symbol->Max = 0;
+      symbol->Min = 0;
+      symbol->f_maxInc = 1;
+      symbol->f_minInc = 1;
       symbol->decimal = 1;
       symbol->thick = 1;
       while ((ptr2 = strchr (ptr, ']')) != NULL) {
@@ -631,12 +633,20 @@ int ParseSymbol (SymbolType * symbol, char *value)
                break;
             case MAX:
                if (strcmp ((ptr), "-") != 0) {
-                  symbol->max = atof (ptr);
+                  if (ptr[0] == '<') {
+                     ptr ++;
+                     symbol->f_maxInc = 0;
+                  }
+                  symbol->Max = atof (ptr);
                }
                break;
             case MIN:
                if (strcmp ((ptr), "-") != 0) {
-                  symbol->min = atof (ptr);
+                  if (ptr[0] == '>') {
+                     ptr ++;
+                     symbol->f_minInc = 0;
+                  }
+                  symbol->Min = atof (ptr);
                }
                break;
             case DECIMAL:
@@ -1490,17 +1500,24 @@ int SaveMapIniFile (mapIniType * mapIni, char *filename)
                break;
             case GRADUATED:
                for (j = 0; j < mapIni->all.layers[i].grad.numSymbol; j++) {
-                  fprintf (fp, "Symbol=[%d,%d,%d][%d,%d,%d][%s][%f][%f][%d]"
-                           "[%d]\n",
+                  fprintf (fp, "Symbol=[%d,%d,%d][%d,%d,%d][%s][",
                            mapIni->all.layers[i].grad.symbol[j].out.r,
                            mapIni->all.layers[i].grad.symbol[j].out.g,
                            mapIni->all.layers[i].grad.symbol[j].out.b,
                            mapIni->all.layers[i].grad.symbol[j].fg.r,
                            mapIni->all.layers[i].grad.symbol[j].fg.g,
                            mapIni->all.layers[i].grad.symbol[j].fg.b,
-                           mapIni->all.layers[i].grad.symbol[j].mark,
-                           mapIni->all.layers[i].grad.symbol[j].min,
-                           mapIni->all.layers[i].grad.symbol[j].max,
+                           mapIni->all.layers[i].grad.symbol[j].mark);
+                  if (! mapIni->all.layers[i].grad.symbol[j].f_minInc) {
+                     fprintf (fp, ">");
+                  }
+                  fprintf (fp, "%f][",
+                           mapIni->all.layers[i].grad.symbol[j].Min);
+                  if (! mapIni->all.layers[i].grad.symbol[j].f_maxInc) {
+                     fprintf (fp, "<");
+                  }
+                  fprintf (fp, "%f][%d][%d]\n",
+                           mapIni->all.layers[i].grad.symbol[j].Max,
                            mapIni->all.layers[i].grad.symbol[j].decimal,
                            mapIni->all.layers[i].grad.symbol[j].thick);
                }
@@ -1540,7 +1557,7 @@ int SaveMapIniFile (mapIniType * mapIni, char *filename)
                      mapIni->all.layers[i].lattice.fg.b,
                      mapIni->all.layers[i].lattice.spacing,
                      mapIni->all.layers[i].lattice.style,
-                     mapIni->all.layers[i].lattice.labelSite); 
+                     mapIni->all.layers[i].lattice.labelSite);
          }
          if (mapIni->all.layers[i].legend.f_valid) {
             fprintf (fp, "Legend=[%d,%d,%d][%d,%d,%d][%d][%d][%d]\n",

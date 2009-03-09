@@ -92,7 +92,8 @@ typedef struct {
    char *mark;
    char f_mark; /* 0 use mark, 1 use dot, 2 use value, 3 pixel, 4 dot3, 5 dot2 */
                 /* dot is 5 x 5, dot3 is 3 x 3, dot2 is 2 x 2, pixel is 1x1 */
-   double max, min;
+   double Max, Min;
+   char f_maxInc, f_minInc; /* Whether to include or not the min/max value */
    char decimal; /* how many decimals to print with. */
    char thick;   /* how thick to make the outline. */
 } SymbolType;

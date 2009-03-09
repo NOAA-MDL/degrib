@@ -646,7 +646,6 @@ static void DrawLegend (layerType *layer, gdImagePtr im)
    size_t i, j;
    size_t len;
    char buffer[100];
-   char format[50];
    double val;
    double tic;
 
@@ -770,24 +769,31 @@ static void DrawLegend (layerType *layer, gdImagePtr im)
             AllocGDColor (&layer->grad.symbol[i].out, im);
          }
 
-         if (layer->legend.style == 0) {
-            sprintf (format, "[%%.%df %%.%df]", layer->legend.decimal,
-                     layer->legend.decimal);
-         } else if (layer->legend.style == 1) {
-            sprintf (format, ">= %%.%df", layer->legend.decimal);
-         } else if (layer->legend.style == 2) {
-            sprintf (format, "<= %%.%df", layer->legend.decimal);
-         }
          h = layer->grad.numSymbol * 13 + 8;
          len = 0;
          for (i = 0; i < layer->grad.numSymbol; i++) {
             if (layer->legend.style == 0) {
-               sprintf (buffer, format, layer->grad.symbol[i].min,
-                        layer->grad.symbol[i].max);
+               sprintf (buffer, "%c%.*f %.*f%c",
+                        (layer->grad.symbol[i].f_minInc) ? '[' : '(',
+                        layer->legend.decimal, layer->grad.symbol[i].Min,
+                        layer->legend.decimal, layer->grad.symbol[i].Max,
+                        (layer->grad.symbol[i].f_maxInc) ? ']' : ')');
             } else if (layer->legend.style == 1) {
-               sprintf (buffer, format, layer->grad.symbol[i].min);
+               if (layer->grad.symbol[i].f_minInc) {
+                  sprintf (buffer, ">= %.*f",
+                           layer->legend.decimal, layer->grad.symbol[i].Min);
+               } else {
+                  sprintf (buffer, "> %.*f",
+                           layer->legend.decimal, layer->grad.symbol[i].Min);
+               }
             } else if (layer->legend.style == 2) {
-               sprintf (buffer, format, layer->grad.symbol[i].max);
+               if (layer->grad.symbol[i].f_maxInc) {
+                  sprintf (buffer, "<= %.*f",
+                           layer->legend.decimal, layer->grad.symbol[i].Max);
+               } else {
+                  sprintf (buffer, "< %.*f",
+                           layer->legend.decimal, layer->grad.symbol[i].Max);
+               }
             }
             if (len < strlen (buffer)) {
                len = strlen (buffer);
@@ -826,12 +832,27 @@ static void DrawLegend (layerType *layer, gdImagePtr im)
 
             /* Draw the text */
             if (layer->legend.style == 0) {
-               sprintf (buffer, format, layer->grad.symbol[i].min,
-                        layer->grad.symbol[i].max);
+               sprintf (buffer, "%c%.*f %.*f%c",
+                        (layer->grad.symbol[i].f_minInc) ? '[' : '(',
+                        layer->legend.decimal, layer->grad.symbol[i].Min,
+                        layer->legend.decimal, layer->grad.symbol[i].Max,
+                        (layer->grad.symbol[i].f_maxInc) ? ']' : ')');
             } else if (layer->legend.style == 1) {
-               sprintf (buffer, format, layer->grad.symbol[i].min);
+               if (layer->grad.symbol[i].f_minInc) {
+                  sprintf (buffer, ">= %.*f",
+                           layer->legend.decimal, layer->grad.symbol[i].Min);
+               } else {
+                  sprintf (buffer, "> %.*f",
+                           layer->legend.decimal, layer->grad.symbol[i].Min);
+               }
             } else if (layer->legend.style == 2) {
-               sprintf (buffer, format, layer->grad.symbol[i].max);
+               if (layer->grad.symbol[i].f_maxInc) {
+                  sprintf (buffer, "<= %.*f",
+                           layer->legend.decimal, layer->grad.symbol[i].Max);
+               } else {
+                  sprintf (buffer, "< %.*f",
+                           layer->legend.decimal, layer->grad.symbol[i].Max);
+               }
             }
             if (layer->legend.textC.r == -1) {
                gdImageString (im, gdFontMediumBold, x - 3 + 10, y - 6,
@@ -1469,8 +1490,10 @@ static int DrawGradPointShpFile (char *filename, maparam *map,
 
          value = Data[recNum];
          for (i = 0; i < grad->numSymbol; i++) {
-            if ((value <= grad->symbol[i].max) &&
-                (value >= grad->symbol[i].min)) {
+            if (((value < grad->symbol[i].Max) ||
+                 (grad->symbol[i].f_maxInc && (value == grad->symbol[i].Max))) &&
+                ((value > grad->symbol[i].Min) ||
+                 (grad->symbol[i].f_minInc && (value == grad->symbol[i].Min)))) {
                if (grad->symbol[i].f_mark == 1) {
                   gdImageFilledRectangle (im, x - 2, y - 2, x + 2, y + 2,
                                           grad->symbol[i].fg.gdIndex);
@@ -2414,8 +2437,10 @@ static int DrawGradPolyShpFile (char *filename, maparam *map, gdImagePtr im,
             /* Draw exter list of polygons... */
             value = Data[recNum];
             for (ii = 0; ii < grad->numSymbol; ii++) {
-               if ((value <= grad->symbol[ii].max) &&
-                   (value >= grad->symbol[ii].min)) {
+               if (((value < grad->symbol[ii].Max) ||
+                    (grad->symbol[ii].f_maxInc && (value == grad->symbol[ii].Max))) &&
+                   ((value > grad->symbol[ii].Min) ||
+                    (grad->symbol[ii].f_minInc && (value == grad->symbol[ii].Min)))) {
                   if (!grad->symbol[ii].fg.f_null) {
                      for (i = 0; i < numExter; i++) {
 /* Join parts together. */
