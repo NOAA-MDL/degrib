@@ -253,7 +253,7 @@ distclean: clean
 ../minizip/libminizip.a:
 	@echo "-----------------------------"
 	@echo "Attempting to compile minizip..."
-	(cd ../minizip && export CC='$(CC)' && export CFLAGS='$(CFLAGS)' && make -f Makefile ARFLAGS='@ARFLAGS@ -ruv' libminizip.a)
+	(cd ../minizip && export CC='$(CC)' && export CFLAGS='$(CFLAGS)' && make -f makefile.linux ARFLAGS='@ARFLAGS@ -ruv' libminizip.a)
 	@echo "Finished with dwmllib..."
 	@echo "-----------------------------"
 
