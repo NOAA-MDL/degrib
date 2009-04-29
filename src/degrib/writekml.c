@@ -1,6 +1,6 @@
 /* #include <stdio.h> */
 #include <string.h>
-/* #include <stdlib.h> */
+#include <stdlib.h> 
 #include "mymapf.h"
 /* #include "tendian.h" */
 #include "write.h"
@@ -414,8 +414,8 @@ static int ParseKMLIniFile (const char *kmlIni, char *variable,
             if (third != NULL) {
                *third = '\0';
             }
-            (*desc)[*numDesc - 1].value = malloc ((strlen (first) + 1) * sizeof (char));
-            strcpy ((*desc)[*numDesc - 1].value, first);
+            (*desc)[*numDesc - 1].value = malloc ((strlen (second) + 1) * sizeof (char));
+            strcpy ((*desc)[*numDesc - 1].value, second);
             f_EOF = 0;
             while (!f_EOF && (third == NULL)) {
                if (reallocFGets (&line, &lineLen, fp) == 0) {
@@ -472,7 +472,7 @@ static int savePolysKmlFast (char *filename, polyType *poly, int numPoly,
                              grib_MetaData *meta, sChar decimal,
                              sChar LatLon_Decimal, SymbolType *symbol,
                              int numSymbol, int f_kmz, TxtPair *desc,
-                             int numDesc)
+                             int numDesc, char f_reduce)
 {
    myZipFile *zp;
    char buf[256];
@@ -484,6 +484,7 @@ static int savePolysKmlFast (char *filename, polyType *poly, int numPoly,
    chainNode *Pnode;     /* The current node (to print). */
    int i, j, k;
    sInt4 deltSec;
+   char rangeTxt[100];
 
    if (f_kmz) {
       strncpy (filename + strlen (filename) - 3, "kmz", 3);
@@ -525,11 +526,16 @@ static int savePolysKmlFast (char *filename, polyType *poly, int numPoly,
       sprintf (buf, "<TR><TD><B>Title</B></TD><TD><B>%s</B></TD></TR>\n",
                meta->comment); myZip_fputs (buf, zp);
    }
+
    for (i = 0; i < numDesc; i++) {
-      sprintf (buf, "<TR><TD><B>%s</B></TD><TD><B>%s</B></TD></TR>\n",
-               desc[i].label, desc[i].value);
-      myZip_fputs (buf, zp);
+      printf ("%s :: %s\n", desc[i].label, desc[i].value);
+      sprintf (buf, "<TR><TD><B>"); myZip_fputs (buf, zp);
+      myZip_fputs (desc[i].label, zp);
+      sprintf (buf, "</B></TD><TD><B>"); myZip_fputs (buf, zp);
+      myZip_fputs (desc[i].value, zp);
+      sprintf (buf, "</B></TD></TR>\n"); myZip_fputs (buf, zp);
    }
+
    Clock_Print (buf2, 25, meta->pds2.refTime, "%m/%d/%Y %H:%M:%S UTC", 0);
    sprintf (buf, "<TR><TD><B>Date Created</B></TD><TD><B>%s</B></TD></TR>\n",
             buf2); myZip_fputs (buf, zp);
@@ -639,10 +645,6 @@ static int savePolysKmlFast (char *filename, polyType *poly, int numPoly,
    myZip_fputs ("<open>0</open>", zp); KML_NEWLINE
    for (i=0; i < numPoly; i++) {
       myZip_fputs ("<Folder>", zp); KML_NEWLINE
-      myZip_fputs ("<name>", zp);
-      sprintf (buf, "<![CDATA[%.*f]]>", decimal, poly[i].value);
-      myZip_fputs (buf, zp);
-      myZip_fputs ("</name>", zp); KML_NEWLINE
       /* Determine style URL here. */
       styleIndex = -1;
       for (j=0; j < numSymbol; j++) {
@@ -656,12 +658,25 @@ static int savePolysKmlFast (char *filename, polyType *poly, int numPoly,
       }
       if (styleIndex != -1) {
          sprintf (styleUrl, "#%d", styleIndex);
+         if (f_reduce) {
+            sprintf (rangeTxt, "%c%.*f,%.*f%c", symbol[j].f_minInc ? '[' : '(',
+                     decimal, symbol[j].Min, decimal, symbol[j].Max,
+                     symbol[j].f_maxInc ? ']' : ')');
+         } else {
+            sprintf (rangeTxt, "%.*f", decimal, poly[i].value);
+         }
+      } else {
+         sprintf (rangeTxt, "%.*f", decimal, poly[i].value);
       }
+      myZip_fputs ("<name>", zp);
+      sprintf (buf, "<![CDATA[%s]]>", rangeTxt);
+      myZip_fputs (buf, zp);
+      myZip_fputs ("</name>", zp); KML_NEWLINE
       for (j = 0; j < poly[i].numAct; j++) {
          if (poly[i].crossLink[j] == -1) {
             myZip_fputs ("<Placemark>", zp); KML_NEWLINE
             myZip_fputs ("<name>", zp);
-            sprintf (buf, "<![CDATA[%.*f]]>", decimal, poly[i].value);
+            sprintf (buf, "<![CDATA[%s]]>", rangeTxt);
             myZip_fputs (buf, zp);
             myZip_fputs ("</name>", zp); KML_NEWLINE
             myZip_fputs ("<description>", zp);
@@ -967,7 +982,7 @@ static void ShrinkGrid (int Nx, int Ny, double *Data, SymbolType *symbol,
 int gribWriteKml (const char *Filename, double *grib_Data,
                   grib_MetaData *meta, sChar f_poly, sChar f_nMissing,
                   sChar decimal, sChar LatLon_Decimal, const char *kmlIni,
-                  int f_kmz)
+                  int f_kmz, sChar f_kmlMerge)
 {
    myMaparam map;       /* Used to compute the grid lat/lon points. */
    char *filename;      /* local copy of the filename. */
@@ -981,7 +996,6 @@ int gribWriteKml (const char *Filename, double *grib_Data,
    int i;
    TxtPair *desc = NULL;
    int numDesc = 0;
-   int f_reduce = 1;
 
    nameLen = strlen (Filename);
    if (nameLen < 4) {
@@ -1017,7 +1031,7 @@ int gribWriteKml (const char *Filename, double *grib_Data,
    } else if (f_poly == 2) { /* Big poly */
       NewPolys (&poly, &numPoly);
 
-      if (f_reduce) {
+      if (f_kmlMerge) {
          ShrinkGrid (gds->Nx, gds->Ny, grib_Data, symbol, numSymbol);
       }
 
@@ -1045,7 +1059,7 @@ int gribWriteKml (const char *Filename, double *grib_Data,
       FindAreas (poly, numPoly);
 
       savePolysKmlFast (filename, poly, numPoly, meta, decimal, LatLon_Decimal,
-                        symbol, numSymbol, f_kmz, desc, numDesc);
+                        symbol, numSymbol, f_kmz, desc, numDesc, f_kmlMerge);
 
       FreePolys (poly, numPoly);
       free (polyData);

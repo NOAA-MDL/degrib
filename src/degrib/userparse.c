@@ -74,6 +74,7 @@ void UserInit (userType *usr)
    usr->f_Map = -1;
    usr->f_Shp = -1;
    usr->f_Kml = -1;
+   usr->f_kmlMerge = -1;
    usr->f_Csv = -1;
    usr->f_Tdl = -1;
    usr->f_Grib2 = -1;
@@ -423,6 +424,8 @@ int UserValidate (userType *usr)
       usr->f_Shp = 0;
    if (usr->f_Kml == -1)
       usr->f_Kml = 0;
+   if (usr->f_kmlMerge == -1)
+      usr->f_kmlMerge = 0;
    if (usr->f_Csv == -1)
       usr->f_Csv = 0;
    if (usr->f_Tdl == -1)
@@ -705,7 +708,7 @@ static char *UsrOpt[] = { "-cfg", "-in", "-I", "-C", "-P", "-V", "-Flt",
    "-XML", "-MOTD", "-Graph", "-startTime", "-endTime", "-startDate",
    "-numDays", "-ndfdVars", "-geoData", "-gribFilter", "-ndfdConven", "-Freq",
    "-Icon", "-curTime", "-rtmaDir", "-avgInterp", "-cwa", "-SimpleWWA",
-   "-TxtParse", "-Kml", "-KmlIni", "-Kmz", NULL
+   "-TxtParse", "-Kml", "-KmlIni", "-Kmz", "-kmlMerge", NULL
 };
 
 int IsUserOpt (char *str)
@@ -728,7 +731,7 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
       MAPINIFILE, MAPINIOPTIONS, XML, MOTD, GRAPH, STARTTIME, ENDTIME,
       STARTDATE, NUMDAYS, NDFDVARS, GEODATA, GRIBFILTER, NDFDCONVEN,
       FREQUENCY, ICON, CURTIME, RTMADIR, AVGINTERP, CWA, SIMPLEWWA, TXTPARSE,
-      KML, KMLINIFILE, KMZ
+      KML, KMLINIFILE, KMZ, KMLMERGE
    };
    int index;           /* "cur"'s index into Opt, which matches enum val. */
    double lat, lon;     /* Used to check on the -pnt option. */
@@ -878,6 +881,10 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
       case KMZ:
          if (usr->f_Kml == -1)
             usr->f_Kml = 2;
+         return 1;
+      case KMLMERGE:
+         if (usr->f_kmlMerge == -1)
+            usr->f_kmlMerge = 1;
          return 1;
       case SHP2:
          if (usr->f_Shp == -1)

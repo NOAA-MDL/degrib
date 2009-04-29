@@ -449,7 +449,7 @@ int MainConvert (userType *usr, IS_dataType *is, grib_MetaData *meta,
        * while ->f_Kml is 0 none, 1 kml, 2 kmz. */
       if (gribWriteKml (outName, Data, meta, usr->f_poly,
                         usr->f_nMissing, usr->decimal, usr->LatLon_Decimal,
-                        usr->kmlIniFile, usr->f_Kml - 1)
+                        usr->kmlIniFile, usr->f_Kml - 1, usr->f_kmlMerge)
           != 0) {
          free (outName);
          return 1;
