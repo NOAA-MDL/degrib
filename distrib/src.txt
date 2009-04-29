@@ -320,6 +320,13 @@ S:degrib/src/dwmllib/makefile*
 S:degrib/src/dwmllib/*.c
 S:degrib/src/dwmllib/*.h
 
+# xyz2shp source
+S:degrib/src/xyz2shp/Makefile.in
+S:degrib/src/xyz2shp/readme.txt
+S:degrib/src/xyz2shp/NEWS.txt
+S:degrib/src/xyz2shp/*.c
+S:degrib/src/xyz2shp/*.h
+
 # degrib source
 S:degrib/src/degrib/readme.txt
 S:degrib/src/degrib/Makefile.in
