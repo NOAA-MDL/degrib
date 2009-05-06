@@ -627,6 +627,18 @@ int ParseSymbol (SymbolType * symbol, char *value)
                   symbol->f_mark = 4;
                } else if (strcmp (ptr, "dot2") == 0) {
                   symbol->f_mark = 5;
+               } else if (strcmp (ptr, "dot4") == 0) {
+                  symbol->f_mark = 6;
+               } else if (strcmp (ptr, "dot5") == 0) {
+                  symbol->f_mark = 7;
+               } else if (strcmp (ptr, "dot6") == 0) {
+                  symbol->f_mark = 8;
+               } else if (strcmp (ptr, "dot7") == 0) {
+                  symbol->f_mark = 9;
+               } else if (strcmp (ptr, "dot8") == 0) {
+                  symbol->f_mark = 10;
+               } else if (strcmp (ptr, "dot9") == 0) {
+                  symbol->f_mark = 11;
                } else {
                   symbol->f_mark = 0;
                }

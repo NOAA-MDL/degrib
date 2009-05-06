@@ -1513,6 +1513,24 @@ static int DrawGradPointShpFile (char *filename, maparam *map,
                } else if (grad->symbol[i].f_mark == 5) {
                   gdImageFilledRectangle (im, x, y, x + 1, y + 1,
                                           grad->symbol[i].fg.gdIndex);
+               } else if (grad->symbol[i].f_mark == 6) {
+                  gdImageFilledRectangle (im, x - 1, y - 1, x + 2, y + 2,
+                                          grad->symbol[i].fg.gdIndex);
+               } else if (grad->symbol[i].f_mark == 7) {
+                  gdImageFilledRectangle (im, x - 2, y - 2, x + 2, y + 2,
+                                          grad->symbol[i].fg.gdIndex);
+               } else if (grad->symbol[i].f_mark == 8) {
+                  gdImageFilledRectangle (im, x - 2, y - 2, x + 3, y + 3,
+                                          grad->symbol[i].fg.gdIndex);
+               } else if (grad->symbol[i].f_mark == 9) {
+                  gdImageFilledRectangle (im, x - 3, y - 3, x + 3, y + 3,
+                                          grad->symbol[i].fg.gdIndex);
+               } else if (grad->symbol[i].f_mark == 10) {
+                  gdImageFilledRectangle (im, x - 3, y - 3, x + 4, y + 4,
+                                          grad->symbol[i].fg.gdIndex);
+               } else if (grad->symbol[i].f_mark == 11) {
+                  gdImageFilledRectangle (im, x - 4, y - 4, x + 4, y + 4,
+                                          grad->symbol[i].fg.gdIndex);
                } else {
                   gdImageString (im, gdFontMediumBold, x - 3, y - 6,
                                  (unsigned char *) (grad->symbol[i].mark),
