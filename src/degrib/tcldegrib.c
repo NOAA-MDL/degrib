@@ -1224,7 +1224,7 @@ static int Grib2CmdObj (ClientData clientData, Tcl_Interp * interp,
  * NOTES
  *****************************************************************************
  */
-API int Grib2Init_CmdObj (ClientData clientData, Tcl_Interp * interp,
+API int DLLEXPORT Grib2Init_CmdObj (ClientData clientData, Tcl_Interp * interp,
                           int objc, Tcl_Obj * CONST objv[])
 {
    Grib2Type *grib;     /* Data structure associated with this command. */
@@ -1273,7 +1273,7 @@ API int Grib2Init_CmdObj (ClientData clientData, Tcl_Interp * interp,
  *****************************************************************************
  */
 
-API int Grib2_Init (Tcl_Interp * interp)
+API int DLLEXPORT Grib2_Init (Tcl_Interp * interp)
 {
 /* If we are using stub libraries, we need the Tcl ones... */
 #ifdef USE_TCL_STUBS
@@ -1285,7 +1285,7 @@ API int Grib2_Init (Tcl_Interp * interp)
    Tcl_CreateObjCommand (interp, "Grib2Init", Grib2Init_CmdObj,
                          (ClientData) NULL, (Tcl_CmdDeleteProc *) NULL);
 
-   /* 
+   /*
     * If we are using packages, tell people we have provided
     * grib2 version 1.0
     */

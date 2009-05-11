@@ -1,0 +1,205 @@
+SHELL = /bin/sh
+
+top_srcdir = ..
+TCL_PREFIX = c:/tcl832
+TK_PREFIX = c:/tcl832
+TCL_PREFIX = ../tcl853_include_win
+TK_PREFIX = $(TCL_PREFIX)
+#TCL_VERSION = 83
+TCL_VERSION = 85
+
+CC = gcc
+STRIP = /cygdrive/c/mingw/bin/strip
+STRIP_FLAGS = -s
+STD_FLAGS = -O3 -Wall -fsigned-char -mno-cygwin -ansi -pedantic
+EXEEXT = .exe
+LD_FLAGS =
+TCL_LDFLAGS = ${LD_FLAGS} -mconsole
+TK_LDFLAGS = ${LD_FLAGS} -mconsole
+
+STD_DEF = -DSIZEOF_LONG_INT=4  -DMEMWATCH -DMEMWATCH_STDIO -DDEBUG -D_WINDOWS_
+STUB_DEF = -DUSE_TCL_STUBS -DUSE_TK_STUBS
+STD_INC = -I$(top_srcdir)/memwatch-2.71 -I../emapf-c -I../mdl_g2c -I../libaat -I../netcdf/libsrc -I../gd -I../minizip -I../zlib
+TCL_INC = -I$(TCL_PREFIX)/include
+TK_INC = -I$(TK_PREFIX)/include
+GUI_INC = $(TCL_INC) $(TK_INC) $(STD_INC)
+
+# Found that gd has to come before tk (on some linux machines)
+STD_LIB1 = -L../mdl_g2c -lmdl_g2c -L../emapf-c/ -lemapf \
+          -L../netcdf/libsrc/ -lnetcdf \
+          -L../jpeg2000/src/libjasper/jpc/.libs/ -ljpc \
+          -L../jpeg2000/src/libjasper/base/.libs/ -lbase \
+          -L../libpng -lpng -L../minizip -lminizip -L../zlib -lz \
+          -L../libaat -laat -L$(top_srcdir)/memwatch-2.71 -lmemwatch \
+          -L/usr/lib -lm
+STD_LIB = -L../gd -lgd $(STD_LIB1)
+
+TCL_LIB = -Lc:/tcl832/lib -ltcl83
+TK_LIB = -Lc:/tcl832/lib -ltk83
+X_LIB =
+DYNAMIC_LIB =
+GUI_LIB = -L../gd -lgd $(TK_LIB) $(TCL_LIB) $(X_LIB) $(DYNAMIC_LIB) $(STD_LIB1)
+TKSTUB_LIB=-L$(TK_PREFIX)/lib -ltkstub$(TCL_VERSION)
+TCLSTUB_LIB=-L$(TCL_PREFIX)/lib -ltclstub$(TCL_VERSION)
+STUB_LIB = -L../gd -lgd $(TKSTUB_LIB) $(TCLSTUB_LIB) $(X_LIB) $(DYNAMIC_LIB) $(STD_LIB1)
+
+PRJ_NAME = degrib
+TCL_NAME = tcldegrib
+TK_NAME = tkdegrib
+MYTEST = mytest
+PRJ_DLL = libdegrib$(TCL_VERSION).dll
+PRJ_A = libdegrib$(TCL_VERSION).a
+
+CFLAGS = $(STD_FLAGS) $(STD_DEF) $(STD_INC)
+GUIFLAGS = $(STD_FLAGS) $(STD_DEF) $(GUI_INC)
+
+############################
+# FILES
+############################
+C_OBJECTS = myutil.o \
+            clock.o \
+            mymapf.o \
+            myerror.o \
+            myassert.o \
+            tendian.o \
+            scan.o \
+            metaname.o \
+            metaparse.o \
+            hazard.o \
+            weather.o \
+            grib1tab.o \
+            metaprint.o \
+            writeflt.o \
+            chain.o \
+            writecsv.o \
+            writeshp.o \
+            writegra.o \
+            writenc.o \
+            readnc.o \
+            interp.o \
+            inventory.o \
+            probe.o \
+            userparse.o \
+            tdlpack.o \
+            degrib1.o \
+            degrib2.o \
+            pack.o \
+            cube.o \
+            drawgrib.o \
+            commands.o \
+            database.o \
+            mapini.o \
+            drawlib.o \
+            genprobe.o \
+            solar.o \
+            grpprobe.o \
+            sector.o \
+            writekml.o \
+            myzip.o
+
+H_SOURCES = type.h \
+            myutil.h \
+            clock.h \
+            myerror.h \
+            myassert.h \
+            mymapf.h \
+            tendian.h \
+            scan.h \
+            meta.h \
+            metaname.h \
+            hazard.h \
+            weather.h \
+            chain.h \
+            write.h \
+            interp.h \
+            inventory.h \
+            probe.h \
+            userparse.h \
+            tdlpack.h \
+            degrib1.h \
+            degrib2.h \
+            pack.h \
+            drawgrib.h \
+            commands.h \
+            database.h \
+            mapini.h \
+            drawlib.h \
+            genprobe.h \
+            solar.h \
+            grpprobe.h \
+            sector.h \
+            myzip.h
+
+GUI_OBJECTS = $(C_OBJECTS) \
+            tcldegrib.o
+
+C_MAIN = cstart.c
+
+GUI_MAIN = tclstart.c
+
+LIB_DEPENDS = ../emapf-c/libemapf.a ../mdl_g2c/libmdl_g2c.a ../libaat/libaat.a \
+            ../libpng/libpng.a ../zlib/libz.a ../minizip/libminizip.a \
+            ../jpeg2000/src/libjasper/jpc/.libs/libjpc.a \
+            ../jpeg2000/src/libjasper/base/.libs/libbase.a \
+            ../netcdf/libsrc/libnetcdf.a ../gd/libgd.a
+
+############################
+# TARGETS
+############################
+#all: $(PRJ_NAME) $(TCL_NAME) $(TK_NAME) $(MYTEST)
+all: $(PRJ_DLL)
+
+# In order for PRJ_DLL to work we need to compile with STUB_LIB / STUB_DEF
+$(PRJ_DLL): $(GUI_OBJECTS) $(LIB_DEPENDS) $(H_SOURCES)
+	$(CC) -shared $(GUI_OBJECTS) $(STUB_LIB) -o $(PRJ_DLL) \
+         -Wl,--output-def,$(PRJ_NAME).def,--out-implib,$(PRJ_A)
+	$(STRIP) $(STRIP_FLAGS)  $(PRJ_DLL)
+
+$(PRJ_NAME): $(C_OBJECTS) $(C_MAIN) $(LIB_DEPENDS) $(H_SOURCES)
+	$(CC) $(C_MAIN) $(CFLAGS) $(LD_FLAGS) $(C_OBJECTS) $(STD_LIB) -o $(PRJ_NAME)
+	$(STRIP) $(STRIP_FLAGS) $(PRJ_NAME)$(EXEEXT)
+
+$(MYTEST): myzip.c $(LIB_DEPENDS) $(H_SOURCES)
+	$(CC) myzip.c -DTEST_MYZIP $(CFLAGS) $(LD_FLAGS) $(STD_LIB) -o $(MYTEST)
+	$(STRIP) $(STRIP_FLAGS) $(MYTEST)$(EXEEXT)
+
+$(TK_NAME): $(GUI_OBJECTS) $(GUI_MAIN) $(LIB_DEPENDS) $(H_SOURCES)
+	$(CC) $(GUI_MAIN) $(GUIFLAGS) $(TK_LDFLAGS) $(GUI_OBJECTS) $(GUI_LIB) -o $(TK_NAME)
+	$(STRIP) $(STRIP_FLAGS) $(TK_NAME)$(EXEEXT)
+
+$(TCL_NAME): $(GUI_OBJECTS) $(GUI_MAIN) $(LIB_DEPENDS) $(H_SOURCES)
+	$(CC) $(GUI_MAIN) $(GUIFLAGS) -DNO_TK $(TCL_LDFLAGS) $(GUI_OBJECTS) $(GUI_LIB) -o $(TCL_NAME)
+	$(STRIP) $(STRIP_FLAGS) $(TCL_NAME)$(EXEEXT)
+
+# Note: Absence of TCL_NAME and TK_NAME intentional (so degrib can be built
+# and installed without Tcl/Tk).
+install: $(PRJ_NAME)
+	cp $(PRJ_NAME)$(EXEEXT) ../../bin
+	cp $(TCL_NAME)$(EXEEXT) ../../bin
+	cp $(TK_NAME)$(EXEEXT) ../../bin
+
+clean:
+	rm -f *.o *.bak *.BAK *.obj
+	rm -f $(PRJ_NAME)$(EXEEXT)
+	rm -f $(TCL_NAME)$(EXEEXT)
+	rm -f $(TK_NAME)$(EXEEXT)
+	(cd ../minizip && make -f Makefile clean)
+
+distclean: clean
+	rm -r -f Makefile
+
+../minizip/libminizip.a:
+	@echo "-----------------------------"
+	@echo "Attempting to compile minizip..."
+	(cd ../minizip && export CC='$(CC)' && export CFLAGS='$(CFLAGS)' && make -f Makefile ARFLAGS=' -ruv' libminizip.a)
+	@echo "-----------------------------"
+
+############################
+# SUFFIXES
+############################
+tcldegrib.o: tcldegrib.c tcldegrib.h $(H_SOURCES)
+	$(CC) -c $(STUB_DEF) $(GUIFLAGS) $<
+
+.c.o : $(H_SOURCES)
+	$(CC) -c $(CFLAGS) $(STUB_DEF) $<
+
