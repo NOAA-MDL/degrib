@@ -1700,6 +1700,15 @@ GRIB2LocalTable NCEP_LclTable[] = {
            {10, 3, 201, "KENG", "Kinetic Energy", "J/kg", UC_NONE},
            {10, 3, 202, "SLTFL", "Salt Flux", "kg/(m^2*s)", UC_NONE},
 
+           {10, 3, 242, "TCSRG20", "20% Tropical Cyclone Storm Surge Exceedance", "m", UC_M2Feet},
+           {10, 3, 243, "TCSRG30", "30% Tropical Cyclone Storm Surge Exceedance", "m", UC_M2Feet},
+           {10, 3, 244, "TCSRG40", "40% Tropical Cyclone Storm Surge Exceedance", "m", UC_M2Feet},
+           {10, 3, 245, "TCSRG50", "50% Tropical Cyclone Storm Surge Exceedance", "m", UC_M2Feet},
+           {10, 3, 246, "TCSRG60", "60% Tropical Cyclone Storm Surge Exceedance", "m", UC_M2Feet},
+           {10, 3, 247, "TCSRG70", "70% Tropical Cyclone Storm Surge Exceedance", "m", UC_M2Feet},
+           {10, 3, 248, "TCSRG80", "80% Tropical Cyclone Storm Surge Exceedance", "m", UC_M2Feet},
+           {10, 3, 249, "TCSRG90", "90% Tropical Cyclone Storm Surge Exceedance", "m", UC_M2Feet},
+
            {10, 4, 192, "WTMPC", "3-D Temperature", "deg C", UC_NONE},
            {10, 4, 193, "SALIN", "3-D Salinity", "", UC_NONE},
            {10, 4, 194, "BKENG", "Barotropic Kinetic Energy", "J/kg", UC_NONE},
