@@ -3,8 +3,8 @@
 # DEGRIB configure.ac : version 20070705
 
 AC_PREREQ(2.59)
-AC_INIT([degrib],[1.93d],[arthur.taylor@noaa.gov])
-AC_SUBST(PACKAGE_DATE,'20081016')
+AC_INIT([degrib],[1.93],[arthur.taylor@noaa.gov])
+AC_SUBST(PACKAGE_DATE,'20090501')
 AC_CONFIG_SRCDIR([Makefile.in])
 AC_CONFIG_HEADERS([gd/config.h:gd/scripts/config.hin])
 AC_CANONICAL_HOST()
@@ -76,7 +76,7 @@ OPT_MEMWATCH()
 AC_PATH_XTRA()
 if test "$X_LIBS" != ""
 then
-  X_LIBS="${X_LIBS} -lX11"
+  X_LIBS="${X_LIBS} -lX11 -lXext"
 fi
 
 # ................................
@@ -85,7 +85,7 @@ fi
 
 AC_ARG_VAR([TCL_PREFIX],[Base Directory for TCL/TK])
 AC_ARG_VAR([TK_PREFIX],[Base Directory for TCL/TK])
-AC_ARG_VAR([TCL_VERSION],[Current version of Tcl/Tk (8.3 or 8.4)])
+AC_ARG_VAR([TCL_VERSION],[Current version of Tcl/Tk (8.3, 8.4, or 8.5)])
 
 # Attempt to set up Tcl/Tk libraries on the current system.
 # Possible adjustment to TCL_PREFIX
@@ -105,8 +105,8 @@ OPT_TKPUTS()
 
 # Set @TCL_VERSION@ variable (current version of Tcl/Tk)
 # Not needed since TK_LIBS and TCL_LIBS are already set.
-# AC_ARG_VAR([TCL_VERSION],[Version of TCL/TK])
-# SET_TCL_VERSION()
+AC_ARG_VAR([TCL_VERSION],[Version of TCL/TK])
+SET_TCL_VERSION()
 
 # ................................
 # ....Local modifications     ....
@@ -175,6 +175,7 @@ AC_SUBST([LD_FLAGS])
 
 AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([zlib/Makefile:zlib/scripts/Makefile.in])
+AC_CONFIG_FILES([zlib/contrib/minizip/Makefile])
 AC_CONFIG_FILES([libpng/Makefile:libpng/scripts/Makefile.in])
 AC_CONFIG_FILES([libaat/Makefile])
 AC_CONFIG_FILES([mdl_g2c/Makefile])

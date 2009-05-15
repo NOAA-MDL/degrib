@@ -10,10 +10,11 @@ ARFLAGS = @ARFLAGS@
 EXEEXT = @EXEEXT@
 
 LIB_DEP1 = @MEM_LIBDEP@ \
-           ./libaat/libaat.a 
+           ./libaat/libaat.a
 
 LIB_DEPENDS = $(LIB_DEP1) \
               ./zlib/libz.a \
+              ./zlib/contrib/minizip/libminizip.a \
               ./libpng/libpng.a \
               ./jpeg2000/src/libjasper/jpc/.libs/libjpc.a \
               ./jpeg2000/src/libjasper/base/.libs/libbase.a \
@@ -61,6 +62,14 @@ $(PRJ_NAME)/$(PRJ_NAME): $(LIB_DEPENDS)
 	@echo "   the makefiles in ./degrib to use it, skipping this step"
 	(cd ./zlib @OBJECT_MODE@ && make)
 	@echo "Finished with Zlib..."
+	@echo "-----------------------------"
+	@echo ""
+
+./zlib/contrib/minizip/libminizip.a: ./zlib/contrib/minizip/Makefile
+	@echo "-----------------------------"
+	@echo "Attempting to compile minizip lib (for kmz)..."
+	(cd ./zlib/contrib/minizip @OBJECT_MODE@ && make)
+	@echo "Finished with minizip lib..."
 	@echo "-----------------------------"
 	@echo ""
 
@@ -231,6 +240,7 @@ install:
 # clean: ./emapf-c/Makefile ./netcdf/Makefile ./jpeg2000/Makefile ./libxml/Makefile
 clean: ./emapf-c/Makefile ./netcdf/Makefile
 	- (cd ./zlib && make clean && rm -f example$(EXEEXT) minigzip$(EXEEXT))
+	- (cd ./zlib/contrib/minizip && make clean)
 	- (cd ./libpng && make clean)
 	(cd ./libaat && make clean)
 	(cd ./mdl_g2c && make clean)
@@ -250,6 +260,7 @@ clean: ./emapf-c/Makefile ./netcdf/Makefile
 #distclean: ./emapf-c/Makefile ./netcdf/Makefile ./jpeg2000/Makefile ./libxml/Makefile
 distclean: ./emapf-c/Makefile ./netcdf/Makefile
 	- (cd ./zlib && make distclean)
+	- (cd ./zlib/contrib/minizip && make distclean)
 	- (cd ./libpng && make distclean)
 	(cd ./libaat && make distclean)
 	(cd ./mdl_g2c && make distclean)
