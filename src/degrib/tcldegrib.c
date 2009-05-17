@@ -51,6 +51,9 @@
 #include "userparse.h"
 #include "commands.h"
 #include "clock.h"
+#ifdef HALO
+#include "imgpix.h"
+#endif
 
 /* A structure containing what this particular command knows about the current
  * (or last) grib2 file it was working with.  */
@@ -168,7 +171,7 @@ static int Grib2ParseObj (Grib2Type * grib, Tcl_Interp * interp, int objc,
                           Tcl_Obj * CONST objv[], userType *usr)
 {
    Tcl_Obj *CONST * objPtr = objv; /* Used to help parse objv. */
-   static char *Opt[] = {
+   const char *Opt[] = {
       "-in", "-Flt", "-Shp", "-Met", "-msg", "-nameStyle", "-out", "-Interp",
       "-revFlt", "-MSB", "-Unit", "-namePath", "-nMSB", "-nFlt", "-nShp",
       "-nMet", "-reset", "-poly", "-nMissing", "-Decimal", "-IS0", "-GrADS",
@@ -938,6 +941,91 @@ static int Grib2IsGrib2Obj (userType *usr, Tcl_Interp * interp)
    return TCL_OK;
 }
 
+static int GribDraw (Tcl_Obj *resPtr, userType *usr, FILE *grib_fp, IS_dataType *is,
+                     grib_MetaData *meta, int UID, int zoomID, int drawPen,
+                     int fillPen, double min_lon, double min_lat,
+                     double max_lon, double max_lat) {
+
+   double *grib_Data;   /* The read in GRIB2 grid. */
+   uInt4 grib_DataLen;  /* Size of Grib_Data. */
+   int c;               /* Determine if end of the file without fileLen. */
+   sInt4 f_endMsg = 1;  /* 1 if we read the last grid in a GRIB message, or
+                         * we haven't read any messages. */
+   int subgNum;         /* The subgrid that we are looking for */
+   int msgNum = 1;      /* The message number we are working on. */
+   int f_first = 1;     /* Is this the first message? */
+
+   /* Set up inital state of data for unpacker. */
+   grib_DataLen = 0;
+   grib_Data = NULL;
+   if (usr->msgNum == 0) {
+      subgNum = 0;
+   } else {
+      subgNum = usr->subgNum;
+   }
+
+/* Start loop for all messages. */
+   while (((c = fgetc (grib_fp)) != EOF) || (f_endMsg != 1)) {
+      if (c != EOF) {
+         ungetc (c, grib_fp);
+      }
+      /* Read the GRIB message. */
+      if (ReadGrib2Record (grib_fp, usr->f_unit, &grib_Data, &grib_DataLen,
+                           meta, is, subgNum, usr->majEarth, usr->minEarth,
+                           usr->f_SimpleVer, usr->f_SimpleWWA, &f_endMsg, &(usr->lwlf),
+                           &(usr->uprt)) != 0) {
+         preErrSprintf ("ERROR: In call to ReadGrib2Record.\n");
+         free (grib_Data);
+         return 1;
+      }
+      if (usr->f_validRange > 0) {
+         /* valid max. */
+         if (usr->f_validRange > 1) {
+            if (meta->gridAttrib.max > usr->validMax) {
+               errSprintf ("ERROR: %f > valid Max of %f\n",
+                           meta->gridAttrib.max, usr->validMax);
+               free (grib_Data);
+               return 1;
+            }
+         }
+         /* valid min. */
+         if (usr->f_validRange % 2) {
+            if (meta->gridAttrib.min < usr->validMin) {
+               errSprintf ("ERROR: %f < valid Min of %f\n",
+                           meta->gridAttrib.min, usr->validMin);
+               free (grib_Data);
+               return 1;
+            }
+         }
+      }
+      if (MainConvert (usr, is, meta, grib_Data, grib_DataLen,
+                       usr->f_unit, f_first) != 0) {
+         preErrSprintf ("ERROR: In call to MainConvert.\n");
+         free (grib_Data);
+         return 1;
+      }
+      f_first = 0;
+
+      /* Break out if we're only converting one message. */
+      if (usr->msgNum != 0) {
+         break;
+      }
+
+      /* If we haven't found the end of the message, increase the subgrid
+       * we're interested in. */
+      if (f_endMsg != 1) {
+         subgNum++;
+      } else {
+         subgNum = 0;
+         msgNum++;
+      }
+   }
+/* End loop for all messages. */
+
+   free (grib_Data);
+   return 0;
+}
+
 /*****************************************************************************
  * Grib2ConvertObj() --
  *
@@ -949,9 +1037,13 @@ static int Grib2IsGrib2Obj (userType *usr, Tcl_Interp * interp)
  * possibility of generating meta data.
  *
  * ARGUMENTS
- *   grib = The structure associated with this tcl grib command. (In/Out)
- *    usr = holds the user's options. (Input)
- * resPtr = Used to push error messages onto Tcl Error stack. (Output)
+ *     grib = The structure associated with this tcl grib command. (In/Out)
+ *      usr = holds the user's options. (Input)
+ * haloName = NULL, or if drawing, then name of image to draw to. (Input)
+ *   zoomID = if drawing, unique id for zoom (Input)
+ *  drawPen = if drawing, unique id for draw pen (Input)
+ *  fillPen = if drawing, unique id for fill pen (Input)
+ *   resPtr = Used to push error messages onto Tcl Error stack. (Output)
  *
  * FILES/DATABASES:
  *   The grib2 file specified in grib->inName
@@ -969,6 +1061,7 @@ static int Grib2IsGrib2Obj (userType *usr, Tcl_Interp * interp)
  *   7/2003 AAT: Shifted to MetaInit / MetaFree here, instead of as part
  *          of the grib data structure.  Helps Wx for some reason.
  *   8/2003 AAT Shifted most of this code to "commands.c::Grib2Convert()"
+ *   5/2009 AAT Added f_draw.
  *
  * NOTES
  * 1) May need to be more strict about options passed into this command.
@@ -979,7 +1072,9 @@ static int Grib2IsGrib2Obj (userType *usr, Tcl_Interp * interp)
  *    elements from the message in the file name.
  *****************************************************************************
  */
-static int Grib2ConvertObj (Grib2Type * grib, userType *usr, Tcl_Obj * resPtr)
+static int Grib2ConvertObj (Grib2Type * grib, userType *usr,
+                            const char *haloName, int zoomID, int drawPen,
+                            int fillPen, Tcl_Obj * resPtr)
 {
    char *msg;           /* Used to pop messages off the error Stack. */
    FILE *grib_fp;       /* A file pointer to the GRIB2 file in question. */
@@ -987,8 +1082,10 @@ static int Grib2ConvertObj (Grib2Type * grib, userType *usr, Tcl_Obj * resPtr)
    int i;               /* Loop counter to figure out the desired GRIB2
                          * Message. */
    grib_MetaData meta;  /* The meta structure for this GRIB2 message. */
+   int UID;             /* If drawing, then Unique ID for the image */
+   double min_lat, min_lon, max_lat, max_lon, split_lon;
 
-   /* 
+   /*
     * Inventory this file, if we haven't inventoried it before.  This is so
     * we can find a 2nd or 3rd message without having to do any work.
     */
@@ -1035,14 +1132,43 @@ static int Grib2ConvertObj (Grib2Type * grib, userType *usr, Tcl_Obj * resPtr)
    }
    MetaInit (&meta);
 
-   if (Grib2Convert (usr, grib_fp, &(grib->is), &meta) != 0) {
-      msg = errSprintf (NULL);
-      Tcl_AppendStringsToObj (resPtr, "\nERROR: In call to "
-                              "Grib2Convert().\n", msg, NULL);
-      free (msg);
-      MetaFree (&meta);
-      fclose (grib_fp);
-      return TCL_ERROR;
+   if (haloName != NULL) {
+      #ifdef HALO
+      UID = Halo_UID(haloName);
+      if (UID == -1) {
+         Tcl_AppendStringsToObj (resPtr, "Couldn't find image: ",
+                                 haloName, (char *) NULL);
+         return TCL_ERROR;
+      }
+      Zoom_Bounds (zoomID, &min_lon, &min_lat, &max_lon, &max_lat);
+      llm2llx_a (zoomID, &min_lat, &min_lon);
+      llm2llx_a (zoomID, &max_lat, &max_lon);
+      if (max_lon < min_lon) {
+         min_lon -= 360;
+      }
+/* min_lon and max_lon are in range of -360..360 going east, but sma_lon and
+	big_lon will be in range of -180..180 going east*/
+      if ((min_lon < 0) && (max_lon > 0)) split_lon = min_lon;
+      else                                split_lon = 0;
+      while (split_lon <= -180) split_lon += 360;
+      if (GribDraw (resPtr, usr, grib_fp, &(grib->is), &meta, UID, zoomID,
+                    drawPen, fillPen, min_lon, min_lat, max_lon, max_lat) != 0) {
+         MetaFree (&meta);
+         fclose (grib_fp);
+         return TCL_ERROR;
+      }
+      #endif
+   } else {
+      printf ("%ld\n", ftell (grib_fp));
+      if (Grib2Convert (usr, grib_fp, &(grib->is), &meta) != 0) {
+         msg = errSprintf (NULL);
+         Tcl_AppendStringsToObj (resPtr, "\nERROR: In call to "
+                                 "Grib2Convert().\n", msg, NULL);
+         free (msg);
+         MetaFree (&meta);
+         fclose (grib_fp);
+         return TCL_ERROR;
+      }
    }
 
    MetaFree (&meta);
@@ -1084,10 +1210,11 @@ static int Grib2CmdObj (ClientData clientData, Tcl_Interp * interp,
                         int objc, Tcl_Obj * CONST objv[])
 {
    enum {
-      INQUIRE, CONVERT, ABOUT, INQUIRE2, CONVERT2, ABOUT2, ISGRIB2, REFTIME
+      INQUIRE, CONVERT, ABOUT, INQUIRE2, CONVERT2, ABOUT2, ISGRIB2, REFTIME,
+      DRAW
    };
-   static char *Cmd[] = { "inquire", "convert", "about", "-I", "-C", "-V",
-      "isGrib2", "-refTime", NULL
+   const char *Cmd[] = { "inquire", "convert", "about", "-I", "-C", "-V",
+      "isGrib2", "-refTime", "Draw", NULL
    };
 
    Grib2Type *grib = (Grib2Type *) clientData;
@@ -1097,6 +1224,10 @@ static int Grib2CmdObj (ClientData clientData, Tcl_Interp * interp,
    Tcl_Obj *resPtr;     /* Used to push error messages onto Tcl Error stack */
    userType usr;        /* holds the user's options. */
    int ans;             /* Return value of running the command */
+   const char * haloName; /* For draw option, is the image's Unique ID */
+   int zoomID = -1;     /* For draw option, is the zoom Unique ID */
+   int drawPen = -1;    /* For draw option, is the drawPen Unique ID */
+   int fillPen = -1;    /* For draw option, is the fillPen Unique ID */
 
    /* Set errno to 0 when we start, if it is not already. */
    if (errno != 0) {
@@ -1112,6 +1243,14 @@ static int Grib2CmdObj (ClientData clientData, Tcl_Interp * interp,
        != TCL_OK) {
       /* GetIndex puts a resonable return message in the interp. */
       return TCL_ERROR;
+   }
+
+   if (index == DRAW) {
+      haloName = Tcl_GetString(objv[2]);
+      zoomID = atoi (Tcl_GetString(objv[3]));
+      drawPen = atoi (Tcl_GetString(objv[4]));
+      fillPen = atoi (Tcl_GetString(objv[5]));
+      objc -= 4;
    }
 
    resPtr = Tcl_GetObjResult (interp);
@@ -1141,6 +1280,7 @@ static int Grib2CmdObj (ClientData clientData, Tcl_Interp * interp,
          break;
       case CONVERT:
       case CONVERT2:
+      case DRAW:
          usr.f_Command = CMD_CONVERT;
          break;
       case ABOUT:
@@ -1148,13 +1288,13 @@ static int Grib2CmdObj (ClientData clientData, Tcl_Interp * interp,
          usr.f_Command = CMD_VERSION;
          break;
       case ISGRIB2:
-         /* Don't have this in C side... Use CMD_INQUIRE. */
+         /* Don't have this on C side... Use CMD_INQUIRE. */
          usr.f_Command = CMD_INVENTORY;
          break;
       default:
          ans = TCL_ERROR; /* Should never be reached. */
    }
-   /* 
+   /*
     * Validate that the options passed in won't break anything, and set some
     * defaults if needed.
     */
@@ -1176,7 +1316,10 @@ static int Grib2CmdObj (ClientData clientData, Tcl_Interp * interp,
          break;
       case CONVERT:
       case CONVERT2:
-         ans = Grib2ConvertObj (grib, &usr, resPtr);
+         ans = Grib2ConvertObj (grib, &usr, NULL, zoomID, drawPen, fillPen, resPtr);
+         break;
+      case DRAW:
+         ans = Grib2ConvertObj (grib, &usr, haloName, zoomID, drawPen, fillPen, resPtr);
          break;
       case ABOUT:
       case ABOUT2:

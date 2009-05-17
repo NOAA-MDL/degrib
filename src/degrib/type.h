@@ -39,11 +39,11 @@
 #endif
 
 /* #define LATLON_DECIMALS 6 */
-#ifndef LATLON
+#ifndef LATLON_STRUCT
 typedef struct {
    double lat, lon;
 } LatLon;
-#define LATLON
+#define LATLON_STRUCT
 #endif
 
 typedef struct {
