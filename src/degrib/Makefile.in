@@ -25,7 +25,7 @@ XML_CLEAN = (cd ../dwmllib && make -f makefile clean)
 ############################
 
 STD_DEF = @DSIZEOF_LONG_INT@ @DWORDS_BIGENDIAN@ @MEM_DEF@ @DDEBUG@ @DWINDOWS@ @DBAD_TCLSSH@ $(XML_DEF)
-STUB_DEF = -DUSE_TCL_STUBS
+STUB_DEF = -DUSE_TCL_STUBS @HALO_DEF@
 STD_INC = @MEM_STDINC@ -I../emapf-c -I../mdl_g2c -I../libaat -I../netcdf/libsrc -I../gd -I../zlib/contrib/minizip -I../zlib $(XML_INC)
 TCL_INC = -I$(TCL_PREFIX)/include
 TK_INC = -I$(TK_PREFIX)/include
@@ -48,10 +48,10 @@ STD_LIB = -L../gd -lgd $(STD_LIB1)
 
 TCL_LIB = @TCL_LIBS@
 TK_LIB = @TK_LIBS@
-TCLSTUB_LIB=-L$(TCL_PREFIX)/lib -ltclstub$(TCL_VERSION)
+TCLSTUB_LIB=-L$(TCL_PREFIX)/lib -ltclstub$(TCL_VERSION) @HALO_STDLIB@
 ifeq (@DWINDOWS@,-D_WINDOWS_)
   X_LIB =
-  DYNAMIC_LIB = 
+  DYNAMIC_LIB =
 else
   X_LIB = @X_LIBS@
   DYNAMIC_LIB = @DYNAMIC_LIB@
@@ -197,7 +197,7 @@ LIB_DEPENDS = ../emapf-c/libemapf.a ../mdl_g2c/libmdl_g2c.a ../libaat/libaat.a \
             ../libpng/libpng.a ../zlib/libz.a ../zlib/contrib/minizip/libminizip.a \
             ../jpeg2000/src/libjasper/jpc/.libs/libjpc.a \
             ../jpeg2000/src/libjasper/base/.libs/libbase.a \
-            ../netcdf/libsrc/libnetcdf.a ../gd/libgd.a $(XML_LIBDEP)
+            ../netcdf/libsrc/libnetcdf.a ../gd/libgd.a $(XML_LIBDEP) @HALO_LIBDEP@
 
 ############################
 # TARGETS
@@ -268,7 +268,7 @@ distclean: clean
 # SUFFIXES
 ############################
 tcldegrib.o: tcldegrib.c tcldegrib.h $(H_SOURCES)
-	$(CC) -c $(STUB_DEF) $(GUIFLAGS) $<
+	$(CC) -c $(STUB_DEF) $(GUIFLAGS) @HALO_STDINC@ $<
 
 tcldegrib.obj: tcldegrib.c tcldegrib.h $(H_SOURCES)
 	$(CC) -c $(GUIFLAGS) -o $@ $<

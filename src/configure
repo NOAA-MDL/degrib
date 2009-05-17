@@ -665,6 +665,10 @@ X_LIBS
 X_PRE_LIBS
 X_CFLAGS
 XMKMF
+HALO_STDLIB
+HALO_STDINC
+HALO_LIBDEP
+HALO_DEF
 MEM_STDLIB
 MEM_STDINC
 MEM_LIBDEP
@@ -748,6 +752,7 @@ with_aixsize
 with_cygwin
 with_strip
 with_memwatch
+with_halo
 with_x
 with_badtclssh
 with_tkputs
@@ -1404,6 +1409,7 @@ Optional Packages:
   --with-cygwin           Create executables which use cygwin1.dll
   --without-strip         disable symbol stripping in binaries.
   --with-memwatch         enable memory watching library.
+  --with-halo             enable drawing to image library.
   --with-x                use the X Window System
   --with-badtclssh        enable special exit for Tcl/Tk.
   --with-tkputs           enable puts from a Tk app (ie create a console
@@ -4833,6 +4839,31 @@ fi
 
 
 
+# Provides --with-halo option (Default is --without-halo)
+
+
+# Check whether --with-halo was given.
+if test "${with_halo+set}" = set; then
+  withval=$with_halo;
+else
+  with_halo=no
+fi
+
+  if test "x$with_halo" != xno; then
+
+      HALO_DEF="-DHALO"
+
+  # Single quotes are the key to the following.
+      HALO_LIBDEP='$(top_srcdir)/halo/libhalo85.a'
+
+      HALO_STDINC='-I$(top_srcdir)/halo'
+
+      HALO_STDLIB='-L$(top_srcdir)/halo -lhalo85'
+
+
+fi
+
+
 
 # ................................
 # ....Graphics Display configs....
@@ -6546,8 +6577,8 @@ $as_echo "TCL_LIB = \"$TCL_LIBS\", TK_LIBS = \"$TK_LIBS\"" >&6; }
     then
       TK_PREFIX=$TCL_PREFIX
     fi
-    TCL_LIBS="-L$TCL_PREFIX/lib -ltcl$TCL_VERSION"
-    TK_LIBS="-L$TK_PREFIX/lib -ltk$TCL_VERSION"
+    TCL_LIBS="-L$TCL_PREFIX/lib -ltcl$TCL_VERSION -ltclstub$TCL_VERSION"
+    TK_LIBS="-L$TK_PREFIX/lib -ltk$TCL_VERSION -ltkstub$TCL_VERSION"
 
 
   fi
@@ -6606,20 +6637,7 @@ fi
 # Set @TCL_VERSION@ variable (current version of Tcl/Tk)
 # Not needed since TK_LIBS and TCL_LIBS are already set.
 
-if test "$TCL_VERSION" = ""
- then
-  { $as_echo "$as_me:$LINENO: checking Tcl/Tk version" >&5
-$as_echo_n "checking Tcl/Tk version... " >&6; }
-  if test "$TCL_BINARY" = "" || test "$TCL_BINARY" = "not_found"
-  then
-    TCL_VERSION="not_found"
-  else
-    TCL_VERSION=`echo puts \\$tcl_version | $TCL_BINARY`
-  fi
-  { $as_echo "$as_me:$LINENO: result: $TCL_VERSION" >&5
-$as_echo "$TCL_VERSION" >&6; }
- fi
-
+SET_TCL_VERSION()
 
 # ................................
 # ....Local modifications     ....

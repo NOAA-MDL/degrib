@@ -66,6 +66,8 @@ OPT_NOSTRIP()
 # Set @MEM_STDLIB@ variable
 OPT_MEMWATCH()
 
+# Provides --with-halo option (Default is --without-halo)
+OPT_HALO()
 
 # ................................
 # ....Graphics Display configs....
