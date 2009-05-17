@@ -178,9 +178,7 @@ metawidget proc Iconbox _setTabs { {bAll 1} } {
     incr iX $iWidth
   }
 
-  puts $lTabs
   $this.cols config -tabs $lTabs
-  puts here
 
   # set for main window, if indicated (depends on -update)
   if { $bAll } {
@@ -1194,9 +1192,7 @@ proc test {} {
   pack [button .ctrl.back -text "Back"  -command {set sPath [file dirname $sPath]; testGetFiles}] -side right
   pack [button .ctrl.brws -text "Browse" -command testGetFiles] -side right
   pack [entry  .ctrl.path -textvariable sPath] -side left -fill x -expand 1
-puts "HERE 1"
   pack [iconbox .ibox -columns {{Name l 100} {Size r} {Modified}}] -side bottom -fill both -expand 1
-puts "HERE 2"
 }
 
 #test
