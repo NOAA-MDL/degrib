@@ -52,9 +52,11 @@ TCLSTUB_LIB=-L$(TCL_PREFIX)/lib -ltclstub$(TCL_VERSION) @HALO_STDLIB@
 ifeq (@DWINDOWS@,-D_WINDOWS_)
   X_LIB =
   DYNAMIC_LIB =
+  PRJ_DLL = libdegrib$(TCL_VERSION).dll
 else
   X_LIB = @X_LIBS@
   DYNAMIC_LIB = @DYNAMIC_LIB@
+  PRJ_DLL = libdegrib$(TCL_VERSION).so
 endif
 GUI_LIB1 = -L../gd -lgd $(TK_LIB) $(TCL_LIB) $(X_LIB) $(DYNAMIC_LIB) $(STD_LIB1)
 GUI_LIB2 = -L../gd -lgd $(TK_LIB) $(TCL_LIB) $(X_LIB) $(DYNAMIC_LIB) $(STD_LIB1)
@@ -66,7 +68,6 @@ DRAWSHP_NAME = drawshp
 PRJ_NAME = degrib
 TCL_NAME = tcldegrib
 TK_NAME = tkdegrib
-PRJ_DLL = libdegrib$(TCL_VERSION).dll
 PRJ_A = libdegrib$(TCL_VERSION).a
 
 CFLAGS = $(STD_FLAGS) $(STD_DEF) $(STD_INC)
@@ -206,8 +207,9 @@ all: $(PRJ_NAME) $(CLOCK_NAME) $(DP_NAME) $(DRAWSHP_NAME) $(PRJ_DLL) $(TCL_NAME)
 
 # In order for PRJ_DLL to work we need to compile with STUB_LIB / STUB_DEF
 $(PRJ_DLL): $(STUB_OBJECTS) $(LIB_DEPENDS) $(H_SOURCES)
-	$(CC) -shared $(STUB_OBJECTS) $(STUB_LIB) -o $(PRJ_DLL) \
-         -Wl,--output-def,$(PRJ_NAME).def,--out-implib,$(PRJ_A)
+#	$(CC) -shared $(STUB_OBJECTS) $(STUB_LIB) -o $(PRJ_DLL) \
+#         -Wl,--output-def,$(PRJ_NAME).def,--out-implib,$(PRJ_A)
+	$(CC) -shared $(STUB_OBJECTS) $(STUB_LIB) -o $(PRJ_DLL)
 	$(STRIP) $(STRIP_FLAGS) $(PRJ_DLL)
 
 $(PRJ_NAME): $(C_OBJECTS) $(C_MAIN) $(LIB_DEPENDS) $(H_SOURCES)
