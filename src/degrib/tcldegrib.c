@@ -52,7 +52,16 @@
 #include "commands.h"
 #include "clock.h"
 #ifdef HALO
-#include "imgpix.h"
+  #include "imgpix.h"
+  #include "mercator.h"
+  #include "halo2.h"
+  #include "scan.h"
+#else
+typedef struct {
+  int pen;
+  double min, max;
+  int f_type; /* 0 = (a,b), 1=(a,b], 2=[a,b), 3=[a,b] */
+} penRangeType;
 #endif
 
 /* A structure containing what this particular command knows about the current
@@ -171,6 +180,7 @@ static int Grib2ParseObj (Grib2Type * grib, Tcl_Interp * interp, int objc,
                           Tcl_Obj * CONST objv[], userType *usr)
 {
    Tcl_Obj *CONST * objPtr = objv; /* Used to help parse objv. */
+/* Following is const char in 8.5 but plain char in 8.3 */
    const char *Opt[] = {
       "-in", "-Flt", "-Shp", "-Met", "-msg", "-nameStyle", "-out", "-Interp",
       "-revFlt", "-MSB", "-Unit", "-namePath", "-nMSB", "-nFlt", "-nShp",
@@ -943,17 +953,28 @@ static int Grib2IsGrib2Obj (userType *usr, Tcl_Interp * interp)
 
 static int GribDraw (Tcl_Obj *resPtr, userType *usr, FILE *grib_fp, IS_dataType *is,
                      grib_MetaData *meta, int UID, int zoomID, int drawPen,
-                     int fillPen, double min_lon, double min_lat,
-                     double max_lon, double max_lat) {
-
+                     int numRanges, penRangeType *ranges) {
+#ifdef HALO
    double *grib_Data;   /* The read in GRIB2 grid. */
    uInt4 grib_DataLen;  /* Size of Grib_Data. */
-   int c;               /* Determine if end of the file without fileLen. */
    sInt4 f_endMsg = 1;  /* 1 if we read the last grid in a GRIB message, or
                          * we haven't read any messages. */
    int subgNum;         /* The subgrid that we are looking for */
-   int msgNum = 1;      /* The message number we are working on. */
    int f_first = 1;     /* Is this the first message? */
+   double min_lat, min_lon, max_lat, max_lon, split_lon;
+   uInt4 i, j;          /* Loop over the grid cells. */
+   myMaparam map;       /* Used to compute the grid lat/lon points. */
+   sInt4 row;           /* The index into grib_Data for a given x,y pair *
+                         * using scan-mode = 0100 = GRIB2BIT_2 */
+   float ans;          /* The interpolated value at a given point. */
+   LatLon point;
+   XPoint pts[5];
+   int pen;
+   sInt4 * iain;
+   float *ain;
+   int k;
+   double unitM, unitB; /* values in y = m x + b used for unit conversion. */
+   char unitName[15];   /* Holds the string name of the current unit. */
 
    /* Set up inital state of data for unpacker. */
    grib_DataLen = 0;
@@ -964,65 +985,132 @@ static int GribDraw (Tcl_Obj *resPtr, userType *usr, FILE *grib_fp, IS_dataType 
       subgNum = usr->subgNum;
    }
 
-/* Start loop for all messages. */
-   while (((c = fgetc (grib_fp)) != EOF) || (f_endMsg != 1)) {
-      if (c != EOF) {
-         ungetc (c, grib_fp);
-      }
-      /* Read the GRIB message. */
-      if (ReadGrib2Record (grib_fp, usr->f_unit, &grib_Data, &grib_DataLen,
-                           meta, is, subgNum, usr->majEarth, usr->minEarth,
-                           usr->f_SimpleVer, usr->f_SimpleWWA, &f_endMsg, &(usr->lwlf),
-                           &(usr->uprt)) != 0) {
-         preErrSprintf ("ERROR: In call to ReadGrib2Record.\n");
-         free (grib_Data);
-         return 1;
-      }
-      if (usr->f_validRange > 0) {
-         /* valid max. */
-         if (usr->f_validRange > 1) {
-            if (meta->gridAttrib.max > usr->validMax) {
-               errSprintf ("ERROR: %f > valid Max of %f\n",
-                           meta->gridAttrib.max, usr->validMax);
-               free (grib_Data);
-               return 1;
+   /* Read the GRIB message. */
+   if (ReadGrib2RecordFast (grib_fp, usr->f_unit, &grib_Data, &grib_DataLen,
+                        meta, is, subgNum, usr->majEarth, usr->minEarth,
+                        usr->f_SimpleVer, usr->f_SimpleWWA, &f_endMsg, &(usr->lwlf),
+                        &(usr->uprt)) != 0) {
+      free (grib_Data);
+      return 1;
+   }
+   ComputeUnit (meta->convert, meta->unitName, usr->f_unit, &unitM, &unitB,
+                unitName);
+
+   /* Check that gds is valid before setting up map projection. */
+   if (GDSValid (&meta->gds) != 0) {
+      free (grib_Data);
+      return 1;
+   }
+   /* Set up the map projection. */
+   SetMapParamGDS (&map, &(meta->gds));
+   Zoom_Bounds (zoomID, &min_lon, &min_lat, &max_lon, &max_lat);
+   llm2llx_a (zoomID, &min_lat, &min_lon);
+   llm2llx_a (zoomID, &max_lat, &max_lon);
+   if (max_lon < min_lon) {
+      min_lon -= 360;
+   }
+/* min_lon and max_lon are in range of -360..360 going east, but sma_lon and
+	big_lon will be in range of -180..180 going east*/
+   if ((min_lon < 0) && (max_lon > 0)) split_lon = min_lon;
+   else                                split_lon = 0;
+   while (split_lon <= -180) split_lon += 360;
+
+   iain = is->iain;
+   ain = (float *) is->iain;
+   for (j = 1; j <= meta->gds.Ny; j++) {
+      for (i = 1; i <= meta->gds.Nx; i++) {
+         /* Get the i, j value. */
+         XY2ScanIndex (&row, i, j, GRIB2BIT_2, meta->gds.Nx, meta->gds.Ny);
+         if (meta->gridAttrib.fieldType) {
+            ans = iain[row];
+         } else {
+            ans = ain[row];
+         }
+         if (meta->gridAttrib.f_miss == 1) {
+            if (ans == meta->gridAttrib.missPri) {
+               continue;
+            }
+         } else if (meta->gridAttrib.f_miss == 2) {
+            if ((ans == meta->gridAttrib.missSec) ||
+                (ans == meta->gridAttrib.missPri)) {
+               continue;
             }
          }
-         /* valid min. */
-         if (usr->f_validRange % 2) {
-            if (meta->gridAttrib.min < usr->validMin) {
-               errSprintf ("ERROR: %f < valid Min of %f\n",
-                           meta->gridAttrib.min, usr->validMin);
-               free (grib_Data);
-               return 1;
+
+         /* Convert the units. */
+         if (unitM == -10) {
+            ans = pow (10, ans);
+         } else {
+            ans = unitM * ans + unitB;
+         }
+
+         /* Use ans to determine pen */
+         pen = -2;
+         for (k=0; k < numRanges; k++) {
+            if (ranges[k].f_type == 0) {
+               if ((ans > ranges[k].min) && (ans < ranges[k].max)) {
+                  pen = ranges[k].pen;
+                  break;
+               }
+            } else if (ranges[k].f_type == 1) {
+               if ((ans > ranges[k].min) && (ans <= ranges[k].max)) {
+                  pen = ranges[k].pen;
+                  break;
+               }
+            } else if (ranges[k].f_type == 2) {
+               if ((ans >= ranges[k].min) && (ans < ranges[k].max)) {
+                  pen = ranges[k].pen;
+                  break;
+               }
+            } else {
+               if ((ans >= ranges[k].min) && (ans <= ranges[k].max)) {
+                  pen = ranges[k].pen;
+                  break;
+               }
             }
          }
-      }
-      if (MainConvert (usr, is, meta, grib_Data, grib_DataLen,
-                       usr->f_unit, f_first) != 0) {
-         preErrSprintf ("ERROR: In call to MainConvert.\n");
-         free (grib_Data);
-         return 1;
-      }
-      f_first = 0;
+         if (pen < 0) {
+            continue;
+         }
 
-      /* Break out if we're only converting one message. */
-      if (usr->msgNum != 0) {
-         break;
-      }
+         /* No point concering ourselves with usr->f_interp, since the
+          * bilinear value at a grid cell latice should be the same as the
+          * nearest point which is the value at that grid cell. */
+         myCxy2ll (&map, i, j, &point.lat, &point.lon);
+         if ((point.lat < min_lat) || (point.lat > max_lat) ||
+             (point.lon < min_lon) || (point.lon > max_lon)) {
+            continue;
+         }
 
-      /* If we haven't found the end of the message, increase the subgrid
-       * we're interested in. */
-      if (f_endMsg != 1) {
-         subgNum++;
-      } else {
-         subgNum = 0;
-         msgNum++;
+         myCxy2ll (&map, i - .5, j  - .5, &point.lat, &point.lon);
+         llx2llm (zoomID, &point);
+         pts[0] = Zoom_ltln2xy (zoomID, point);
+         myCxy2ll (&map, i + .5, j  - .5, &point.lat, &point.lon);
+         llx2llm (zoomID, &point);
+         pts[1] = Zoom_ltln2xy (zoomID, point);
+         myCxy2ll (&map, i + .5, j  + .5, &point.lat, &point.lon);
+         llx2llm (zoomID, &point);
+         pts[2] = Zoom_ltln2xy (zoomID, point);
+         myCxy2ll (&map, i - .5, j  + .5, &point.lat, &point.lon);
+         llx2llm (zoomID, &point);
+         pts[3] = Zoom_ltln2xy (zoomID, point);
+         pts[4] = pts[0];
+         Halo_FillPolygon (UID, pen, pts, 5);
+         if (drawPen >= 0) {
+            Halo_lines (UID, drawPen, pts, 5);
+         }
       }
    }
-/* End loop for all messages. */
+/*
+   if (MainConvert (usr, is, meta, grib_Data, grib_DataLen,
+                    usr->f_unit, f_first) != 0) {
+      free (grib_Data);
+      return 1;
+   }
+*/
 
    free (grib_Data);
+#endif
    return 0;
 }
 
@@ -1074,7 +1162,7 @@ static int GribDraw (Tcl_Obj *resPtr, userType *usr, FILE *grib_fp, IS_dataType 
  */
 static int Grib2ConvertObj (Grib2Type * grib, userType *usr,
                             const char *haloName, int zoomID, int drawPen,
-                            int fillPen, Tcl_Obj * resPtr)
+                            int numRanges, penRangeType *ranges, Tcl_Obj * resPtr)
 {
    char *msg;           /* Used to pop messages off the error Stack. */
    FILE *grib_fp;       /* A file pointer to the GRIB2 file in question. */
@@ -1082,8 +1170,9 @@ static int Grib2ConvertObj (Grib2Type * grib, userType *usr,
    int i;               /* Loop counter to figure out the desired GRIB2
                          * Message. */
    grib_MetaData meta;  /* The meta structure for this GRIB2 message. */
+#ifdef HALO
    int UID;             /* If drawing, then Unique ID for the image */
-   double min_lat, min_lon, max_lat, max_lon, split_lon;
+#endif
 
    /*
     * Inventory this file, if we haven't inventoried it before.  This is so
@@ -1140,19 +1229,8 @@ static int Grib2ConvertObj (Grib2Type * grib, userType *usr,
                                  haloName, (char *) NULL);
          return TCL_ERROR;
       }
-      Zoom_Bounds (zoomID, &min_lon, &min_lat, &max_lon, &max_lat);
-      llm2llx_a (zoomID, &min_lat, &min_lon);
-      llm2llx_a (zoomID, &max_lat, &max_lon);
-      if (max_lon < min_lon) {
-         min_lon -= 360;
-      }
-/* min_lon and max_lon are in range of -360..360 going east, but sma_lon and
-	big_lon will be in range of -180..180 going east*/
-      if ((min_lon < 0) && (max_lon > 0)) split_lon = min_lon;
-      else                                split_lon = 0;
-      while (split_lon <= -180) split_lon += 360;
       if (GribDraw (resPtr, usr, grib_fp, &(grib->is), &meta, UID, zoomID,
-                    drawPen, fillPen, min_lon, min_lat, max_lon, max_lat) != 0) {
+                    drawPen, numRanges, ranges) != 0) {
          MetaFree (&meta);
          fclose (grib_fp);
          return TCL_ERROR;
@@ -1213,6 +1291,7 @@ static int Grib2CmdObj (ClientData clientData, Tcl_Interp * interp,
       INQUIRE, CONVERT, ABOUT, INQUIRE2, CONVERT2, ABOUT2, ISGRIB2, REFTIME,
       DRAW
    };
+/* Following is const char in 8.5 but plain char in 8.3 */
    const char *Cmd[] = { "inquire", "convert", "about", "-I", "-C", "-V",
       "isGrib2", "-refTime", "Draw", NULL
    };
@@ -1224,10 +1303,16 @@ static int Grib2CmdObj (ClientData clientData, Tcl_Interp * interp,
    Tcl_Obj *resPtr;     /* Used to push error messages onto Tcl Error stack */
    userType usr;        /* holds the user's options. */
    int ans;             /* Return value of running the command */
-   const char * haloName; /* For draw option, is the image's Unique ID */
+   const char * haloName = NULL; /* For draw option, is the image's Unique ID */
    int zoomID = -1;     /* For draw option, is the zoom Unique ID */
    int drawPen = -1;    /* For draw option, is the drawPen Unique ID */
-   int fillPen = -1;    /* For draw option, is the fillPen Unique ID */
+   const char **argvPtr;
+   const char **argvPtr2;
+   int argcPtr;
+   int argcPtr2;
+   int numRanges = 0;
+   int i;
+   penRangeType *ranges = NULL;
 
    /* Set errno to 0 when we start, if it is not already. */
    if (errno != 0) {
@@ -1249,8 +1334,21 @@ static int Grib2CmdObj (ClientData clientData, Tcl_Interp * interp,
       haloName = Tcl_GetString(objv[2]);
       zoomID = atoi (Tcl_GetString(objv[3]));
       drawPen = atoi (Tcl_GetString(objv[4]));
-      fillPen = atoi (Tcl_GetString(objv[5]));
+      Tcl_SplitList (interp, Tcl_GetString(objv[5]), &argcPtr, &argvPtr);
+      numRanges = argcPtr;
+      ranges = (penRangeType *) malloc (numRanges * sizeof (penRangeType));
+      for (i = 0; i < numRanges; i++) {
+         Tcl_SplitList (interp, argvPtr[i], &argcPtr2, &argvPtr2);
+         ranges[i].pen = atoi (argvPtr2[0]);
+         ranges[i].min = atof (argvPtr2[1]);
+         ranges[i].max = atof (argvPtr2[2]);
+         ranges[i].f_type = atoi (argvPtr2[3]);
+         Tcl_Free((char *)argvPtr2);
+      }
+      Tcl_Free((char *)argvPtr);
+
       objc -= 4;
+      objv += 4;
    }
 
    resPtr = Tcl_GetObjResult (interp);
@@ -1316,10 +1414,11 @@ static int Grib2CmdObj (ClientData clientData, Tcl_Interp * interp,
          break;
       case CONVERT:
       case CONVERT2:
-         ans = Grib2ConvertObj (grib, &usr, NULL, zoomID, drawPen, fillPen, resPtr);
+         ans = Grib2ConvertObj (grib, &usr, NULL, zoomID, drawPen, 0, NULL, resPtr);
          break;
       case DRAW:
-         ans = Grib2ConvertObj (grib, &usr, haloName, zoomID, drawPen, fillPen, resPtr);
+         ans = Grib2ConvertObj (grib, &usr, haloName, zoomID, drawPen,
+                                numRanges, ranges, resPtr);
          break;
       case ABOUT:
       case ABOUT2:
