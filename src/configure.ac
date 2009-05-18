@@ -108,12 +108,11 @@ OPT_TKPUTS()
 # Set @TCL_VERSION@ variable (current version of Tcl/Tk)
 # Not needed since TK_LIBS and TCL_LIBS are already set.
 AC_ARG_VAR([TCL_VERSION],[Version of TCL/TK])
-SET_TCL_VERSION()
+#SET_TCL_VERSION()
 
 # ................................
 # ....Local modifications     ....
 # ................................
-
 AC_ARG_WITH([zlib],
   [AS_HELP_STRING([--with-zlib], [Path to the include directory for zlib])],
   [AC_SUBST([ZLIB_PATH],$with_zlib)],
