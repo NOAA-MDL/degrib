@@ -56,6 +56,7 @@
   #include "mercator.h"
   #include "halo2.h"
   #include "scan.h"
+  #include "metaname.h"
 #else
 typedef struct {
   int pen;
