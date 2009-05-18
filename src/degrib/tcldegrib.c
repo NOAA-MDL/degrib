@@ -952,10 +952,10 @@ static int Grib2IsGrib2Obj (userType *usr, Tcl_Interp * interp)
    return TCL_OK;
 }
 
+#ifdef HALO
 static int GribDraw (Tcl_Obj *resPtr, userType *usr, FILE *grib_fp, IS_dataType *is,
                      grib_MetaData *meta, int UID, int zoomID, int drawPen,
                      int numRanges, penRangeType *ranges) {
-#ifdef HALO
    double *grib_Data;   /* The read in GRIB2 grid. */
    uInt4 grib_DataLen;  /* Size of Grib_Data. */
    sInt4 f_endMsg = 1;  /* 1 if we read the last grid in a GRIB message, or
@@ -1111,9 +1111,9 @@ static int GribDraw (Tcl_Obj *resPtr, userType *usr, FILE *grib_fp, IS_dataType 
 */
 
    free (grib_Data);
-#endif
    return 0;
 }
+#endif
 
 /*****************************************************************************
  * Grib2ConvertObj() --
