@@ -108,7 +108,7 @@ OPT_TKPUTS()
 # Set @TCL_VERSION@ variable (current version of Tcl/Tk)
 # Not needed since TK_LIBS and TCL_LIBS are already set.
 AC_ARG_VAR([TCL_VERSION],[Version of TCL/TK])
-#SET_TCL_VERSION()
+SET_TCL_VERSION()
 
 # ................................
 # ....Local modifications     ....
