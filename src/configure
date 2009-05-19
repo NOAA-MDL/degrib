@@ -650,6 +650,7 @@ JPEG2000_PATH
 LIBAAT_PATH
 LIBPNG_PATH
 ZLIB_PATH
+DLLFLAGS
 DLLEXT
 MINIZIP32
 TK_LDFLAGS
@@ -6687,6 +6688,12 @@ $as_echo "$TCL_VERSION" >&6; }
   case $host in
     *-*-cygwin*|*-*-mingw*)
       DLLEXT=".dll";;
+  esac
+
+  DLLFLAGS="-shared"
+  case $host in
+    *-*-aix*) DLLFLAGS="/usr/bin/ld -b$aixsize -bM:SRE -bE:lib.exp -G -bnoentry";;
+    *-*-cygwin*|*-*-mingw*) DLLFLAGS="-shared -Wl,--output-def,lib.def,--out-implib,lib.a";;
   esac
 
 
