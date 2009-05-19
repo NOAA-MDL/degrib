@@ -6,7 +6,7 @@ libaat -r153 http://slosh.nws.noaa.gov/svn/libpub/libaat/libaat
 aclocal -r207 http://slosh.nws.noaa.gov/svn/libpub/aclocal/aclocal
 memwatch-2.71 -r134 http://slosh.nws.noaa.gov/svn/libpub/memwatch-2.71
 #zlib -r134 http://slosh.nws.noaa.gov/svn/libpub/zlib-1.1.4
-zlib -r209 http://slosh.nws.noaa.gov/svn/libpub/zlib-1.1.4
+zlib -r211 http://slosh.nws.noaa.gov/svn/libpub/zlib-1.1.4
 libpng -r134 http://slosh.nws.noaa.gov/svn/libpub/libpng-1.2.5
 tcl853_include_win -r198 http://slosh.nws.noaa.gov/svn/libpub/Tcl853/include-win
 
