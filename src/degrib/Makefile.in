@@ -49,15 +49,10 @@ STD_LIB = -L../gd -lgd $(STD_LIB1)
 TCL_LIB = @TCL_LIBS@
 TK_LIB = @TK_LIBS@
 TCLSTUB_LIB=-L$(TCL_PREFIX)/lib -ltclstub$(TCL_VERSION) @HALO_STDLIB@
-ifeq (@DWINDOWS@,-D_WINDOWS_)
-  X_LIB =
-  DYNAMIC_LIB =
-  PRJ_DLL = libdegrib$(TCL_VERSION).dll
-else
-  X_LIB = @X_LIBS@
-  DYNAMIC_LIB = @DYNAMIC_LIB@
-  PRJ_DLL = libdegrib$(TCL_VERSION).so
-endif
+X_LIB = @X_LIBS@
+DYNAMIC_LIB = @DYNAMIC_LIB@
+
+PRJ_DLL = libdegrib$(TCL_VERSION)@DLLEXT@
 GUI_LIB1 = -L../gd -lgd $(TK_LIB) $(TCL_LIB) $(X_LIB) $(DYNAMIC_LIB) $(STD_LIB1)
 GUI_LIB2 = -L../gd -lgd $(TK_LIB) $(TCL_LIB) $(X_LIB) $(DYNAMIC_LIB) $(STD_LIB1)
 STUB_LIB = -L../gd -lgd $(TCLSTUB_LIB) $(X_LIB) $(DYNAMIC_LIB) $(STD_LIB1)

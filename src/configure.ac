@@ -81,6 +81,12 @@ then
   X_LIBS="${X_LIBS} -lX11 -lXext"
 fi
 
+case $host in
+  *-*-cygwin*|*-*-mingw*)
+    X_LIBS="";;
+  *)
+esac
+
 # ................................
 # ....Tcl/Tk configurations   ....
 # ................................
@@ -109,6 +115,8 @@ OPT_TKPUTS()
 # Not needed since TK_LIBS and TCL_LIBS are already set.
 AC_ARG_VAR([TCL_VERSION],[Version of TCL/TK])
 SET_TCL_VERSION()
+
+SET_MINIZIP32()
 
 # ................................
 # ....Local modifications     ....
