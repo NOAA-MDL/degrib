@@ -204,7 +204,8 @@ all: $(PRJ_NAME) $(CLOCK_NAME) $(DP_NAME) $(DRAWSHP_NAME) $(TCL_NAME) $(TK_NAME)
 $(PRJ_DLL): $(STUB_OBJECTS) $(LIB_DEPENDS) $(H_SOURCES)
 #	$(CC) -shared $(STUB_OBJECTS) $(STUB_LIB) -o $(PRJ_DLL) \
 #         -Wl,--output-def,$(PRJ_NAME).def,--out-implib,$(PRJ_A)
-	$(CC) -shared $(STUB_OBJECTS) $(STUB_LIB) -o $(PRJ_DLL)
+#	$(CC) -shared $(STUB_OBJECTS) $(STUB_LIB) -o $(PRJ_DLL)
+	$(CC) @DLLFLAGS@ $(STUB_OBJECTS) $(STUB_LIB) -o $(PRJ_DLL)
 	$(STRIP) $(STRIP_FLAGS) $(PRJ_DLL)
 
 $(PRJ_NAME): $(C_OBJECTS) $(C_MAIN) $(LIB_DEPENDS) $(H_SOURCES)
