@@ -76,15 +76,20 @@ OPT_HALO()
 # Provides X linker flags to X_LIBS
 # Probably should chek into X_CFLAGS
 AC_PATH_XTRA()
+if test "$X_LIBS" == ""
+then
+  case $host in
+    *-*-aix*) X_LIBS="/usr/lib -lX11 -lXext";;
+  esac
+fi
+
 if test "$X_LIBS" != ""
 then
   X_LIBS="${X_LIBS} -lX11 -lXext"
 fi
 
 case $host in
-  *-*-cygwin*|*-*-mingw*)
-    X_LIBS="";;
-  *)
+  *-*-cygwin*|*-*-mingw*) X_LIBS="";;
 esac
 
 # ................................
