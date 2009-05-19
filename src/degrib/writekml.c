@@ -948,7 +948,8 @@ static int savePolysKml (const char *filename, polyType *poly, int numPoly,
    xmlMemoryDump ();
    return 0;
 }
-#endif
+
+#endif
 
 /* This procedure reduces the complexity of the grid by choosing one
  * value in each color range as the representative value.  This will
@@ -1081,4 +1082,3 @@ int gribWriteKml (const char *Filename, double *grib_Data,
    free (filename);
    return 0;
 }
-
