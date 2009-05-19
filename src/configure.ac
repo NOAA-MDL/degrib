@@ -117,6 +117,7 @@ AC_ARG_VAR([TCL_VERSION],[Version of TCL/TK])
 SET_TCL_VERSION()
 
 SET_MINIZIP32()
+SET_DLLEXT()
 
 # ................................
 # ....Local modifications     ....

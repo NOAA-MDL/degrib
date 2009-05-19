@@ -650,6 +650,7 @@ JPEG2000_PATH
 LIBAAT_PATH
 LIBPNG_PATH
 ZLIB_PATH
+DLLEXT
 MINIZIP32
 TK_LDFLAGS
 TCL_LDFLAGS
@@ -6678,6 +6679,14 @@ $as_echo "$TCL_VERSION" >&6; }
       MINIZIP32="iowin32.o";;
     *)
       MINIZIP32="";;
+  esac
+
+
+
+  DLLEXT=".so"
+  case $host in
+    *-*-cygwin*|*-*-mingw*)
+      DLLEXT=".dll";;
   esac
 
 
