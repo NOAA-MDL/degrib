@@ -79,12 +79,9 @@ AC_PATH_XTRA()
 if test "$X_LIBS" == ""
 then
   case $host in
-    *-*-aix*) X_LIBS="/usr/lib -lX11 -lXext";;
+    *-*-aix*) X_LIBS="-L/usr/lib -lX11 -lXext";;
   esac
-fi
-
-if test "$X_LIBS" != ""
-then
+else
   X_LIBS="${X_LIBS} -lX11 -lXext"
 fi
 
