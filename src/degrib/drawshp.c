@@ -1,5 +1,5 @@
-#define PROGRAM_VERSION "1.06"
-#define PROGRAM_DATE "5/6/2009"
+#define PROGRAM_VERSION "1.07"
+#define PROGRAM_DATE "5/20/2009"
 #include <stdio.h>
 #include <string.h>
 #include <time.h>

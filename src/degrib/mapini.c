@@ -639,6 +639,68 @@ int ParseSymbol (SymbolType * symbol, char *value)
                   symbol->f_mark = 10;
                } else if (strcmp (ptr, "dot9") == 0) {
                   symbol->f_mark = 11;
+               } else if (strcmp (ptr, "dot10") == 0) {
+                  symbol->f_mark = 12;
+               } else if (strcmp (ptr, "dot11") == 0) {
+                  symbol->f_mark = 13;
+               } else if (strcmp (ptr, "dot12") == 0) {
+                  symbol->f_mark = 14;
+               } else if (strcmp (ptr, "dot13") == 0) {
+                  symbol->f_mark = 15;
+               } else if (strcmp (ptr, "dot14") == 0) {
+                  symbol->f_mark = 16;
+               } else if (strcmp (ptr, "dot15") == 0) {
+                  symbol->f_mark = 17;
+               } else if (strcmp (ptr, "dot16") == 0) {
+                  symbol->f_mark = 18;
+               } else if (strcmp (ptr, "dot17") == 0) {
+                  symbol->f_mark = 19;
+               } else if (strcmp (ptr, "dot18") == 0) {
+                  symbol->f_mark = 20;
+               } else if (strcmp (ptr, "dot19") == 0) {
+                  symbol->f_mark = 21;
+               } else if (strcmp (ptr, "dot20") == 0) {
+                  symbol->f_mark = 22;
+               } else if (strcmp (ptr, "dot21") == 0) {
+                  symbol->f_mark = 23;
+               } else if (strcmp (ptr, "dot22") == 0) {
+                  symbol->f_mark = 24;
+               } else if (strcmp (ptr, "dot23") == 0) {
+                  symbol->f_mark = 25;
+               } else if (strcmp (ptr, "dot24") == 0) {
+                  symbol->f_mark = 26;
+               } else if (strcmp (ptr, "dot25") == 0) {
+                  symbol->f_mark = 27;
+               } else if (strcmp (ptr, "dot26") == 0) {
+                  symbol->f_mark = 28;
+               } else if (strcmp (ptr, "dot27") == 0) {
+                  symbol->f_mark = 29;
+               } else if (strcmp (ptr, "dot28") == 0) {
+                  symbol->f_mark = 30;
+               } else if (strcmp (ptr, "dot29") == 0) {
+                  symbol->f_mark = 31;
+               } else if (strcmp (ptr, "dot30") == 0) {
+                  symbol->f_mark = 32;
+               } else if (strcmp (ptr, "dot31") == 0) {
+                  symbol->f_mark = 33;
+               } else if (strcmp (ptr, "dot32") == 0) {
+                  symbol->f_mark = 34;
+               } else if (strcmp (ptr, "dot33") == 0) {
+                  symbol->f_mark = 35;
+               } else if (strcmp (ptr, "dot34") == 0) {
+                  symbol->f_mark = 36;
+               } else if (strcmp (ptr, "dot35") == 0) {
+                  symbol->f_mark = 37;
+               } else if (strcmp (ptr, "dot36") == 0) {
+                  symbol->f_mark = 38;
+               } else if (strcmp (ptr, "dot37") == 0) {
+                  symbol->f_mark = 39;
+               } else if (strcmp (ptr, "dot38") == 0) {
+                  symbol->f_mark = 40;
+               } else if (strcmp (ptr, "dot39") == 0) {
+                  symbol->f_mark = 41;
+               } else if (strcmp (ptr, "dot40") == 0) {
+                  symbol->f_mark = 42;
                } else {
                   symbol->f_mark = 0;
                }
