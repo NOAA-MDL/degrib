@@ -485,6 +485,7 @@ static int savePolysKmlFast (char *filename, polyType *poly, int numPoly,
    int i, j, k;
    sInt4 deltSec;
    char rangeTxt[100];
+   char *ptr;
 
    if (f_kmz) {
       strncpy (filename + strlen (filename) - 3, "kmz", 3);
@@ -494,7 +495,16 @@ static int savePolysKmlFast (char *filename, polyType *poly, int numPoly,
       return -1;
    }
    strncpy (filename + strlen (filename) - 3, "kml", 3);
-   if (myZip_fopen (zp, filename, "wb", 2009, 0, 16, 1, 58, 59)) {
+   if ((ptr = strrchr (filename, '/')) == NULL) {
+      if ((ptr = strrchr (filename, '\\')) == NULL) {
+         ptr = filename;
+      } else {
+         ptr++;
+      }
+   } else {
+      ptr++;
+   }
+   if (myZip_fopen (zp, ptr, "wb", 2009, 0, 16, 1, 58, 59)) {
       printf ("Problems opening file %s\n", filename);
       return -1;
    }
