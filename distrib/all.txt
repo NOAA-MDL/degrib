@@ -113,8 +113,9 @@ S:degrib/src/zlib/contrib/delphi/*.*
 S:degrib/src/zlib/contrib/delphi2/*.*
 S:degrib/src/zlib/contrib/iostream/*.*
 S:degrib/src/zlib/contrib/iostream2/*.*
-S:degrib/src/zlib/contrib/minizip/*.*
-S:degrib/src/zlib/contrib/minizip/Makefile
+S:degrib/src/zlib/contrib/minizip/*.c
+S:degrib/src/zlib/contrib/minizip/*.h
+S:degrib/src/zlib/contrib/minizip/Makefile.in
 S:degrib/src/zlib/contrib/minizip/ChangeLogUnzip
 S:degrib/src/zlib/contrib/untgz/Makefile
 S:degrib/src/zlib/contrib/untgz/*.*
@@ -479,5 +480,5 @@ A:degrib/geodata/npacocndaylight.ind
 A:degrib/geodata/npacocndaylight.flt
 
 # Draw Shp Control files.
-A:degrib/MapIni/*
+A:degrib/MapIni/*.ini
 
