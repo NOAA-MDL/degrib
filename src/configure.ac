@@ -4,7 +4,7 @@
 
 AC_PREREQ(2.59)
 AC_INIT([degrib],[1.93],[arthur.taylor@noaa.gov])
-AC_SUBST(PACKAGE_DATE,'20090501')
+AC_SUBST(PACKAGE_DATE,'20090527')
 AC_CONFIG_SRCDIR([Makefile.in])
 AC_CONFIG_HEADERS([gd/config.h:gd/scripts/config.hin])
 AC_CANONICAL_HOST()
