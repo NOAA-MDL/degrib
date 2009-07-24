@@ -305,203 +305,114 @@ static int HazTable1 (HazardStringType * haz)
 /* Based on Michael Allard email: 9/12/2008 */
 static int HazardRank2 (uChar haz, uChar sig)
 {
-   if ((haz == HAZ_TS) && (sig == SIG_W))
-      return 1;
+   if ((haz == HAZ_TS) && (sig == SIG_W)) return 1;
 
-   if ((haz == HAZ_HF) && (sig == SIG_W))
-      return 15;
-   if ((haz == HAZ_HI) && (sig == SIG_W))
-      return 16;
-   if ((haz == HAZ_HU) && (sig == SIG_W))
-      return 17;
+   if ((haz == HAZ_HF) && (sig == SIG_W)) return 15;
+   if ((haz == HAZ_HI) && (sig == SIG_W)) return 16;
+   if ((haz == HAZ_HU) && (sig == SIG_W)) return 17;
 
-   if ((haz == HAZ_TY) && (sig == SIG_W))
-      return 19;
+   if ((haz == HAZ_TY) && (sig == SIG_W)) return 19;
 
-   if ((haz == HAZ_BZ) && (sig == SIG_W))
-      return 23;
-   if ((haz == HAZ_IS) && (sig == SIG_W))
-      return 24;
-   if ((haz == HAZ_TI) && (sig == SIG_W))
-      return 25;
-   if ((haz == HAZ_HS) && (sig == SIG_W))
-      return 26;
-   if ((haz == HAZ_WS) && (sig == SIG_W))
-      return 27;
-   if ((haz == HAZ_HW) && (sig == SIG_W))
-      return 28;
-   if ((haz == HAZ_TR) && (sig == SIG_W))
-      return 29;
+   if ((haz == HAZ_BZ) && (sig == SIG_W)) return 23;
+   if ((haz == HAZ_IS) && (sig == SIG_W)) return 24;
+   if ((haz == HAZ_TI) && (sig == SIG_W)) return 25;
+   if ((haz == HAZ_HS) && (sig == SIG_W)) return 26;
+   if ((haz == HAZ_WS) && (sig == SIG_W)) return 27;
+   if ((haz == HAZ_HW) && (sig == SIG_W)) return 28;
+   if ((haz == HAZ_TR) && (sig == SIG_W)) return 29;
 
-   if ((haz == HAZ_SR) && (sig == SIG_W))
-      return 31;
-   if ((haz == HAZ_TS) && (sig == SIG_A))
-      return 32;
+   if ((haz == HAZ_SR) && (sig == SIG_W)) return 31;
+   if ((haz == HAZ_TS) && (sig == SIG_A)) return 32;
 
-   if ((haz == HAZ_CF) && (sig == SIG_W))
-      return 36;
-   if ((haz == HAZ_LS) && (sig == SIG_W))
-      return 37;
+   if ((haz == HAZ_CF) && (sig == SIG_W)) return 36;
+   if ((haz == HAZ_LS) && (sig == SIG_W)) return 37;
 
-   if ((haz == HAZ_SU) && (sig == SIG_W))
-      return 40;
-   if ((haz == HAZ_IP) && (sig == SIG_W))
-      return 41;
-   if ((haz == HAZ_LE) && (sig == SIG_W))
-      return 42;
-   if ((haz == HAZ_EH) && (sig == SIG_W))
-      return 43;
-   if ((haz == HAZ_DS) && (sig == SIG_W))
-      return 44;
-   if ((haz == HAZ_TO) && (sig == SIG_A))
-      return 45;
+   if ((haz == HAZ_SU) && (sig == SIG_W)) return 40;
+   if ((haz == HAZ_IP) && (sig == SIG_W)) return 41;
+   if ((haz == HAZ_LE) && (sig == SIG_W)) return 42;
+   if ((haz == HAZ_EH) && (sig == SIG_W)) return 43;
+   if ((haz == HAZ_DS) && (sig == SIG_W)) return 44;
+   if ((haz == HAZ_TO) && (sig == SIG_A)) return 45;
 
-   if ((haz == HAZ_SV) && (sig == SIG_A))
-      return 47;
+   if ((haz == HAZ_SV) && (sig == SIG_A)) return 47;
 
-   if ((haz == HAZ_FF) && (sig == SIG_A))
-      return 49;
+   if ((haz == HAZ_FF) && (sig == SIG_A)) return 49;
 
-   if ((haz == HAZ_GL) && (sig == SIG_W))
-      return 53;
+   if ((haz == HAZ_GL) && (sig == SIG_W)) return 53;
 
-   if ((haz == HAZ_WC) && (sig == SIG_W))
-      return 57;
-   if ((haz == HAZ_EC) && (sig == SIG_W))
-      return 58;
-   if ((haz == HAZ_HZ) && (sig == SIG_W))
-      return 59;
-   if ((haz == HAZ_FZ) && (sig == SIG_W))
-      return 60;
-   if ((haz == HAZ_FW) && (sig == SIG_W))
-      return 61;
-   if ((haz == HAZ_HU) && (sig == SIG_A))
-      return 62;
+   if ((haz == HAZ_WC) && (sig == SIG_W)) return 57;
+   if ((haz == HAZ_EC) && (sig == SIG_W)) return 58;
+   if ((haz == HAZ_HZ) && (sig == SIG_W)) return 59;
+   if ((haz == HAZ_FZ) && (sig == SIG_W)) return 60;
+   if ((haz == HAZ_FW) && (sig == SIG_W)) return 61;
+   if ((haz == HAZ_HU) && (sig == SIG_A)) return 62;
 
-   if ((haz == HAZ_TY) && (sig == SIG_A))
-      return 64;
+   if ((haz == HAZ_TY) && (sig == SIG_A)) return 64;
 
-   if ((haz == HAZ_SB) && (sig == SIG_Y))
-      return 68;
-   if ((haz == HAZ_ZR) && (sig == SIG_Y))
-      return 69;
+   if ((haz == HAZ_SB) && (sig == SIG_Y)) return 68;
+   if ((haz == HAZ_ZR) && (sig == SIG_Y)) return 69;
 
-   if ((haz == HAZ_IP) && (sig == SIG_Y))
-      return 71;
-   if ((haz == HAZ_WW) && (sig == SIG_Y))
-      return 72;
-   if ((haz == HAZ_LB) && (sig == SIG_Y))
-      return 73;
-   if ((haz == HAZ_LE) && (sig == SIG_Y))
-      return 74;
-   if ((haz == HAZ_WC) && (sig == SIG_Y))
-      return 75;
-   if ((haz == HAZ_HT) && (sig == SIG_Y))
-      return 76;
+   if ((haz == HAZ_IP) && (sig == SIG_Y)) return 71;
+   if ((haz == HAZ_WW) && (sig == SIG_Y)) return 72;
+   if ((haz == HAZ_LB) && (sig == SIG_Y)) return 73;
+   if ((haz == HAZ_LE) && (sig == SIG_Y)) return 74;
+   if ((haz == HAZ_WC) && (sig == SIG_Y)) return 75;
+   if ((haz == HAZ_HT) && (sig == SIG_Y)) return 76;
 
-   if ((haz == HAZ_LS) && (sig == SIG_Y))
-      return 83;
-   if ((haz == HAZ_CF) && (sig == SIG_Y))
-      return 84;
-   if ((haz == HAZ_SU) && (sig == SIG_Y))
-      return 85;
-   if ((haz == HAZ_BS) && (sig == SIG_Y))
-      return 86;
-   if ((haz == HAZ_SN) && (sig == SIG_Y))
-      return 87;
-   if ((haz == HAZ_UP) && (sig == SIG_W))
-      return 88;
-   if ((haz == HAZ_SM) && (sig == SIG_Y))
-      return 89;
-   if ((haz == HAZ_MS) && (sig == SIG_Y))
-      return 90;
-   if ((haz == HAZ_SW) && (sig == SIG_Y))
-      return 91;
-   if ((haz == HAZ_RB) && (sig == SIG_Y))
-      return 92;
-   if ((haz == HAZ_SI) && (sig == SIG_Y))
-      return 93;
-   if ((haz == HAZ_SC) && (sig == SIG_Y))
-      return 94;
-   if ((haz == HAZ_BW) && (sig == SIG_Y))
-      return 95;
-   if ((haz == HAZ_SE) && (sig == SIG_W))
-      return 96;
-   if ((haz == HAZ_FG) && (sig == SIG_Y))
-      return 97;
-   if ((haz == HAZ_MF) && (sig == SIG_Y))
-      return 98;
-   if ((haz == HAZ_LW) && (sig == SIG_Y))
-      return 99;
-   if ((haz == HAZ_WI) && (sig == SIG_Y))
-      return 100;
-   if ((haz == HAZ_DU) && (sig == SIG_Y))
-      return 101;
-   if ((haz == HAZ_FR) && (sig == SIG_Y))
-      return 102;
-   if ((haz == HAZ_AF) && (sig == SIG_Y))
-      return 103;
-   if ((haz == HAZ_MH) && (sig == SIG_Y))
-      return 104;
-   if ((haz == HAZ_ZF) && (sig == SIG_Y))
-      return 105;
-   if ((haz == HAZ_UP) && (sig == SIG_Y))
-      return 106;
-   if ((haz == HAZ_ZY) && (sig == SIG_Y))
-      return 107;
+   if ((haz == HAZ_LS) && (sig == SIG_Y)) return 83;
+   if ((haz == HAZ_CF) && (sig == SIG_Y)) return 84;
+   if ((haz == HAZ_SU) && (sig == SIG_Y)) return 85;
+   if ((haz == HAZ_BS) && (sig == SIG_Y)) return 86;
+   if ((haz == HAZ_SN) && (sig == SIG_Y)) return 87;
+   if ((haz == HAZ_UP) && (sig == SIG_W)) return 88;
+   if ((haz == HAZ_SM) && (sig == SIG_Y)) return 89;
+   if ((haz == HAZ_MS) && (sig == SIG_Y)) return 90;
+   if ((haz == HAZ_SW) && (sig == SIG_Y)) return 91;
+   if ((haz == HAZ_RB) && (sig == SIG_Y)) return 92;
+   if ((haz == HAZ_SI) && (sig == SIG_Y)) return 93;
+   if ((haz == HAZ_SC) && (sig == SIG_Y)) return 94;
+   if ((haz == HAZ_BW) && (sig == SIG_Y)) return 95;
+   if ((haz == HAZ_SE) && (sig == SIG_W)) return 96;
+   if ((haz == HAZ_FG) && (sig == SIG_Y)) return 97;
+   if ((haz == HAZ_MF) && (sig == SIG_Y)) return 98;
+   if ((haz == HAZ_LW) && (sig == SIG_Y)) return 99;
+   if ((haz == HAZ_WI) && (sig == SIG_Y)) return 100;
+   if ((haz == HAZ_DU) && (sig == SIG_Y)) return 101;
+   if ((haz == HAZ_FR) && (sig == SIG_Y)) return 102;
+   if ((haz == HAZ_AF) && (sig == SIG_Y)) return 103;
+   if ((haz == HAZ_MH) && (sig == SIG_Y)) return 104;
+   if ((haz == HAZ_ZF) && (sig == SIG_Y)) return 105;
+   if ((haz == HAZ_UP) && (sig == SIG_Y)) return 106;
+   if ((haz == HAZ_ZY) && (sig == SIG_Y)) return 107;
 
-   if ((haz == HAZ_AS) && (sig == SIG_Y))
-      return 109;
-   if ((haz == HAZ_LO) && (sig == SIG_Y))
-      return 110;
+   if ((haz == HAZ_AS) && (sig == SIG_Y)) return 109;
+   if ((haz == HAZ_LO) && (sig == SIG_Y)) return 110;
 
-   if ((haz == HAZ_BZ) && (sig == SIG_A))
-      return 113;
-   if ((haz == HAZ_TI) && (sig == SIG_A))
-      return 114;
-   if ((haz == HAZ_HF) && (sig == SIG_A))
-      return 115;
-   if ((haz == HAZ_HI) && (sig == SIG_A))
-      return 116;
-   if ((haz == HAZ_TR) && (sig == SIG_A))
-      return 117;
+   if ((haz == HAZ_BZ) && (sig == SIG_A)) return 113;
+   if ((haz == HAZ_TI) && (sig == SIG_A)) return 114;
+   if ((haz == HAZ_HF) && (sig == SIG_A)) return 115;
+   if ((haz == HAZ_HI) && (sig == SIG_A)) return 116;
+   if ((haz == HAZ_TR) && (sig == SIG_A)) return 117;
 
-   if ((haz == HAZ_SR) && (sig == SIG_A))
-      return 119;
-   if ((haz == HAZ_GL) && (sig == SIG_A))
-      return 120;
-   if ((haz == HAZ_WS) && (sig == SIG_A))
-      return 121;
-   if ((haz == HAZ_SE) && (sig == SIG_A))
-      return 122;
-   if ((haz == HAZ_UP) && (sig == SIG_A))
-      return 123;
-   if ((haz == HAZ_CF) && (sig == SIG_A))
-      return 124;
-   if ((haz == HAZ_LS) && (sig == SIG_A))
-      return 125;
+   if ((haz == HAZ_SR) && (sig == SIG_A)) return 119;
+   if ((haz == HAZ_GL) && (sig == SIG_A)) return 120;
+   if ((haz == HAZ_WS) && (sig == SIG_A)) return 121;
+   if ((haz == HAZ_SE) && (sig == SIG_A)) return 122;
+   if ((haz == HAZ_UP) && (sig == SIG_A)) return 123;
+   if ((haz == HAZ_CF) && (sig == SIG_A)) return 124;
+   if ((haz == HAZ_LS) && (sig == SIG_A)) return 125;
 
-   if ((haz == HAZ_FA) && (sig == SIG_A))
-      return 127;
-   if ((haz == HAZ_HW) && (sig == SIG_A))
-      return 128;
-   if ((haz == HAZ_EH) && (sig == SIG_A))
-      return 129;
-   if ((haz == HAZ_EC) && (sig == SIG_A))
-      return 130;
-   if ((haz == HAZ_WC) && (sig == SIG_A))
-      return 131;
-   if ((haz == HAZ_LE) && (sig == SIG_A))
-      return 132;
-   if ((haz == HAZ_HZ) && (sig == SIG_A))
-      return 133;
-   if ((haz == HAZ_FZ) && (sig == SIG_A))
-      return 134;
-   if ((haz == HAZ_FW) && (sig == SIG_A))
-      return 135;
+   if ((haz == HAZ_FA) && (sig == SIG_A)) return 127;
+   if ((haz == HAZ_HW) && (sig == SIG_A)) return 128;
+   if ((haz == HAZ_EH) && (sig == SIG_A)) return 129;
+   if ((haz == HAZ_EC) && (sig == SIG_A)) return 130;
+   if ((haz == HAZ_WC) && (sig == SIG_A)) return 131;
+   if ((haz == HAZ_LE) && (sig == SIG_A)) return 132;
+   if ((haz == HAZ_HZ) && (sig == SIG_A)) return 133;
+   if ((haz == HAZ_FZ) && (sig == SIG_A)) return 134;
+   if ((haz == HAZ_FW) && (sig == SIG_A)) return 135;
 
-   if ((haz == HAZ_CF) && (sig == SIG_S))
-      return 139;
+   if ((haz == HAZ_CF) && (sig == SIG_S)) return 139;
 
    return 9999;
 }
@@ -524,7 +435,142 @@ static int HazTable2 (HazardStringType * haz)
    return minVal;
 }
 
- static void InitHazardString (HazardStringType * haz)
+/* Based on the method used in "matchHazImageCodes()" */
+/* Based on Michael Allard email: 7/13/2009 */
+static int HazardRank3 (uChar haz, uChar sig)
+{
+   if ((haz == HAZ_TS) && (sig == SIG_W)) return 1;
+
+   if ((haz == HAZ_HF) && (sig == SIG_W)) return 15;
+   if ((haz == HAZ_HI) && (sig == SIG_W)) return 16;
+   if ((haz == HAZ_HU) && (sig == SIG_W)) return 17;
+
+   if ((haz == HAZ_TY) && (sig == SIG_W)) return 19;
+
+   if ((haz == HAZ_BZ) && (sig == SIG_W)) return 23;
+   if ((haz == HAZ_IS) && (sig == SIG_W)) return 24;
+   if ((haz == HAZ_TI) && (sig == SIG_W)) return 25;
+   if ((haz == HAZ_HS) && (sig == SIG_W)) return 26;
+   if ((haz == HAZ_WS) && (sig == SIG_W)) return 27;
+   if ((haz == HAZ_HW) && (sig == SIG_W)) return 28;
+   if ((haz == HAZ_TR) && (sig == SIG_W)) return 29;
+
+   if ((haz == HAZ_SR) && (sig == SIG_W)) return 31;
+   if ((haz == HAZ_TS) && (sig == SIG_A)) return 32;
+
+   if ((haz == HAZ_AF) && (sig == SIG_W)) return 36;
+   if ((haz == HAZ_CF) && (sig == SIG_W)) return 37;
+   if ((haz == HAZ_LS) && (sig == SIG_W)) return 38;
+
+   if ((haz == HAZ_SU) && (sig == SIG_W)) return 41;
+   if ((haz == HAZ_IP) && (sig == SIG_W)) return 42;
+   if ((haz == HAZ_LE) && (sig == SIG_W)) return 43;
+   if ((haz == HAZ_EH) && (sig == SIG_W)) return 44;
+   if ((haz == HAZ_DS) && (sig == SIG_W)) return 45;
+   if ((haz == HAZ_TO) && (sig == SIG_A)) return 46;
+
+   if ((haz == HAZ_SV) && (sig == SIG_A)) return 48;
+
+   if ((haz == HAZ_FF) && (sig == SIG_A)) return 50;
+
+   if ((haz == HAZ_GL) && (sig == SIG_W)) return 54;
+
+   if ((haz == HAZ_WC) && (sig == SIG_W)) return 58;
+   if ((haz == HAZ_EC) && (sig == SIG_W)) return 59;
+   if ((haz == HAZ_HZ) && (sig == SIG_W)) return 60;
+   if ((haz == HAZ_FZ) && (sig == SIG_W)) return 61;
+   if ((haz == HAZ_FW) && (sig == SIG_W)) return 62;
+   if ((haz == HAZ_HU) && (sig == SIG_A)) return 63;
+
+   if ((haz == HAZ_TY) && (sig == SIG_A)) return 65;
+
+   if ((haz == HAZ_SB) && (sig == SIG_Y)) return 69;
+   if ((haz == HAZ_ZR) && (sig == SIG_Y)) return 70;
+
+   if ((haz == HAZ_IP) && (sig == SIG_Y)) return 72;
+   if ((haz == HAZ_WW) && (sig == SIG_Y)) return 73;
+   if ((haz == HAZ_LB) && (sig == SIG_Y)) return 74;
+   if ((haz == HAZ_LE) && (sig == SIG_Y)) return 75;
+   if ((haz == HAZ_WC) && (sig == SIG_Y)) return 76;
+   if ((haz == HAZ_HT) && (sig == SIG_Y)) return 77;
+
+   if ((haz == HAZ_LS) && (sig == SIG_Y)) return 84;
+   if ((haz == HAZ_CF) && (sig == SIG_Y)) return 85;
+   if ((haz == HAZ_SU) && (sig == SIG_Y)) return 86;
+   if ((haz == HAZ_BS) && (sig == SIG_Y)) return 87;
+   if ((haz == HAZ_SN) && (sig == SIG_Y)) return 88;
+   if ((haz == HAZ_UP) && (sig == SIG_W)) return 89;
+   if ((haz == HAZ_SM) && (sig == SIG_Y)) return 90;
+   if ((haz == HAZ_MS) && (sig == SIG_Y)) return 91;
+   if ((haz == HAZ_SW) && (sig == SIG_Y)) return 92;
+   if ((haz == HAZ_RB) && (sig == SIG_Y)) return 93;
+   if ((haz == HAZ_SI) && (sig == SIG_Y)) return 94;
+   if ((haz == HAZ_SC) && (sig == SIG_Y)) return 95;
+   if ((haz == HAZ_BW) && (sig == SIG_Y)) return 96;
+   if ((haz == HAZ_SE) && (sig == SIG_W)) return 97;
+   if ((haz == HAZ_FG) && (sig == SIG_Y)) return 98;
+   if ((haz == HAZ_MF) && (sig == SIG_Y)) return 99;
+   if ((haz == HAZ_LW) && (sig == SIG_Y)) return 100;
+   if ((haz == HAZ_WI) && (sig == SIG_Y)) return 101;
+   if ((haz == HAZ_DU) && (sig == SIG_Y)) return 102;
+   if ((haz == HAZ_FR) && (sig == SIG_Y)) return 103;
+   if ((haz == HAZ_AF) && (sig == SIG_Y)) return 104;
+   if ((haz == HAZ_MH) && (sig == SIG_Y)) return 105;
+   if ((haz == HAZ_ZF) && (sig == SIG_Y)) return 106;
+   if ((haz == HAZ_UP) && (sig == SIG_Y)) return 107;
+   if ((haz == HAZ_ZY) && (sig == SIG_Y)) return 108;
+
+   if ((haz == HAZ_AS) && (sig == SIG_Y)) return 110;
+   if ((haz == HAZ_LO) && (sig == SIG_Y)) return 111;
+
+   if ((haz == HAZ_BZ) && (sig == SIG_A)) return 114;
+   if ((haz == HAZ_TI) && (sig == SIG_A)) return 115;
+   if ((haz == HAZ_HF) && (sig == SIG_A)) return 116;
+   if ((haz == HAZ_HI) && (sig == SIG_A)) return 117;
+   if ((haz == HAZ_TR) && (sig == SIG_A)) return 118;
+
+   if ((haz == HAZ_SR) && (sig == SIG_A)) return 120;
+   if ((haz == HAZ_GL) && (sig == SIG_A)) return 121;
+   if ((haz == HAZ_WS) && (sig == SIG_A)) return 122;
+   if ((haz == HAZ_SE) && (sig == SIG_A)) return 123;
+   if ((haz == HAZ_UP) && (sig == SIG_A)) return 124;
+   if ((haz == HAZ_CF) && (sig == SIG_A)) return 125;
+   if ((haz == HAZ_LS) && (sig == SIG_A)) return 126;
+
+   if ((haz == HAZ_FA) && (sig == SIG_A)) return 128;
+   if ((haz == HAZ_HW) && (sig == SIG_A)) return 129;
+   if ((haz == HAZ_EH) && (sig == SIG_A)) return 130;
+   if ((haz == HAZ_EC) && (sig == SIG_A)) return 131;
+   if ((haz == HAZ_WC) && (sig == SIG_A)) return 132;
+   if ((haz == HAZ_LE) && (sig == SIG_A)) return 133;
+   if ((haz == HAZ_HZ) && (sig == SIG_A)) return 134;
+   if ((haz == HAZ_FZ) && (sig == SIG_A)) return 135;
+   if ((haz == HAZ_FW) && (sig == SIG_A)) return 136;
+
+   if ((haz == HAZ_CF) && (sig == SIG_S)) return 140;
+
+   return 9999;
+}
+
+static int HazTable3 (HazardStringType * haz)
+{
+   int minVal;
+   int i;
+   int ans;
+
+   minVal = 9999;
+   for (i = 0; i < haz->numValid; i++) {
+      ans = HazardRank3 (haz->haz[i], haz->sig[i]);
+      if (minVal > ans) {
+         minVal = ans;
+      }
+   }
+   if (minVal > 148)
+      minVal = 0;
+   return minVal;
+}
+
+static void InitHazardString (HazardStringType * haz)
 {
    int i;               /* Used to traverse all the words. */
 
@@ -600,6 +646,8 @@ void ParseHazardString (HazardStringType * haz, char *data, int simpleVer)
          haz->SimpleCode = HazTable1 (haz);
       } else if (simpleVer == 2) {
          haz->SimpleCode = HazTable2 (haz);
+      } else if (simpleVer == 3) {
+         haz->SimpleCode = HazTable3 (haz);
       }
       return;
    }
@@ -687,6 +735,8 @@ void ParseHazardString (HazardStringType * haz, char *data, int simpleVer)
          haz->SimpleCode = HazTable1 (haz);
       } else if (simpleVer == 2) {
          haz->SimpleCode = HazTable2 (haz);
+      } else if (simpleVer == 3) {
+         haz->SimpleCode = HazTable3 (haz);
       }
       return;
    }
@@ -697,6 +747,8 @@ void ParseHazardString (HazardStringType * haz, char *data, int simpleVer)
       haz->SimpleCode = HazTable1 (haz);
    } else if (simpleVer == 2) {
       haz->SimpleCode = HazTable2 (haz);
+   } else if (simpleVer == 3) {
+      haz->SimpleCode = HazTable3 (haz);
    }
 /*
    printf ("%s\n", data);
