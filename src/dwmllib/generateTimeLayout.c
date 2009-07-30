@@ -224,7 +224,7 @@ void generateTimeLayout(numRowsInfo numRows, uChar parameterName,
       }
       else if (period == 1 && parameterName == NDFD_WWA)
       {
-         sprintf(layoutKey, "k-p%sh-n%d-%d", "0", *numFmtdRows, 
+         sprintf(layoutKey, "k-p%sh-n%d-%d", "1", *numFmtdRows, 
 	         *numLayoutSoFar);
       }
       else
@@ -420,7 +420,7 @@ void generateTimeLayout(numRowsInfo numRows, uChar parameterName,
       }
       else if (period == 1 && parameterName == NDFD_WWA)
       {
-         sprintf(layoutKey, "k-p%sh-n%d-%d", "0", *numFmtdRows, 
+         sprintf(layoutKey, "k-p%sh-n%d-%d", "1", *numFmtdRows, 
 	         *numCurrentLayout);
       }
       else

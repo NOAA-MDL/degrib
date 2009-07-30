@@ -128,6 +128,10 @@ void genRtmaValues(size_t pnt, char *layoutKey, uChar parameterName,
 
                      if (match[j].value[pnt].valueType == 2)
                      {
+                        printf ("are we here 1\n");
+                        xmlNewProp(uncertainty, BAD_CAST "type", BAD_CAST
+                                   "analysis error");
+                        printf ("are we here 2\n");
                         xmlNewProp(uncertainty, BAD_CAST "xsi:nil", BAD_CAST "true" );
                      }
 
@@ -165,7 +169,10 @@ void genRtmaValues(size_t pnt, char *layoutKey, uChar parameterName,
                   }
                }
                if (!f_uncertaintyAttributeWasSet)
-                  xmlNewProp(uncertainty, BAD_CAST "xsi:nil", BAD_CAST "true" );           
+               {
+                  xmlNewProp(uncertainty, BAD_CAST "type", BAD_CAST
+                             "analysis error");
+                  xmlNewProp(uncertainty, BAD_CAST "xsi:nil", BAD_CAST "true" );                           } 
             }
          }
          else /* precipa_r and sky_r don't have associated uncertainties. */

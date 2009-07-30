@@ -123,6 +123,8 @@
  *  3/2008 Paul Hershberg (MDL): Added maxWindSpeedValTimes for determination 
  *                               of Cold vs Warm season in windExtremePhrase.c 
  *                               routine.
+ *  4/2009 Paul Hershberg (MDL): Added code to deal with the missing colon 
+ *                               delimiter in the ugly wx strings.
  *
  * NOTES:
  *****************************************************************************
@@ -291,7 +293,9 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
    char tempCurrentIntensity[10]; /* Temporary holder for intensity due to T-storm 
                                    * dominance check. Holds the current group's 
                                    * intensity string. */
-   
+   char None[] = "<NoCov>:<NoWx>:<NoInten>:<NoVis>:"; /* Used as ugly wx string 
+                                                         when ugly wx string 
+                                                         consists of <None>. */
    /* Initialize the location where the weather icons are found. */
    char baseURL[] = "http://www.nws.noaa.gov/weather/images/fcicons/";
 
@@ -534,9 +538,8 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
          f_blizzardVisibility = 0;
 	 
          /* First, determine if this row of weather has valid data. */
-	 if (wxInfo[wxIndex].valueType != 2)
+	 if (wxInfo[wxIndex].valueType != 2) 
          {
-	 
             /* Determine if the data is between the user supplied start day and a 
              * calculated end time (based on user provided number of days and the 
              * period length implied by user requested format (make sure the 
@@ -550,6 +553,20 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
 
                /* We found a data row to process, so count it. */
 	       numDataRows++;
+
+               /* if the "ugly weather string" consists solely of "<None>" 
+                * then treat it as if it is "<NoCov>:<NoWx>:<NoInten>:<NoVis>:".
+                * Next, check if there are no delimiters (colons) after looking 
+                * for <None>. If this is the case, treat current weather row as 
+                * non-valid data and continue on to next weather row.
+                */
+               if (strstr(wxInfo[wxIndex].str, ":") == '\0')
+               {
+                  if (strstr(wxInfo[wxIndex].str, "<None>") != '\0')
+                     strcpy(wxInfo[wxIndex].str, None);
+                  else
+                     continue;
+               }
 	    
                /* Lets remove the <> that surround the fields (type, intensity, 
                 * coverge, visibility, and qualifier) that make up each weather 
@@ -605,9 +622,7 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
                   for (j = 1; pstr[j]; j++)
                   {
                      if (pstr[j] != '^')
-                     {
                         WxGroups[groupIndex][j - 1] = pstr[j];
-                     }
                      else if (pstr[j] == '^')
                      {
                         WxGroups[groupIndex][j - 1] = '\0';
@@ -621,13 +636,9 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
                {
                   if (WxGroups[numGroups][1] == 'N'
                       && WxGroups[numGroups][2] == 'o')
-                  {
                      WxGroups[numGroups][j - 1] = '\0';
-                  }
                   else
-                  {
                      WxGroups[numGroups][j] = '\0';
-                  }
                }
                else
                {

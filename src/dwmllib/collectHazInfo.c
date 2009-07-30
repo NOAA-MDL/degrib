@@ -95,10 +95,13 @@ void collectHazInfo(genMatchType *match, size_t numMatch, int startNum,
                               * current row. */
    int numGroupsNextRow = 0; /* Number of groups (hazards in ugly string) per 
                               * next row. */
-   int f_combinedHaz = 0; /* Denotes two hazards could be combined in the post 
-                           * proccessing. */
+   int f_combinedCurrHaz = 0; /* Denotes two hazards could be combined in the post 
+                               * proccessing. */
+   int f_combinedPreviousHaz = 0; /* Denotes during the previous looping, a 
+                                   * hazard was combined in the post proccessing. 
+                                   */
    int f_currHazClosed = 0; /* Denotes whether current hazard has been closed 
-                             * (end was found). */
+                             * (an end was found). */
 
    /* Remove any data user might have requested to cut off. */
    numActualRowsHZ = numRowsHZ.total-numRowsHZ.skipBeg-numRowsHZ.skipEnd;
@@ -389,7 +392,14 @@ void collectHazInfo(genMatchType *match, size_t numMatch, int startNum,
    {
       for (i = 0; i < *numHazards; i++)
       {
-         f_combinedHaz = 0;
+         f_combinedCurrHaz = 0;
+
+         /* If there were hazards that were combined previously, start the loop
+          * again to see if this newly combined hazard can further be combined.
+          */
+         if (f_combinedPreviousHaz)
+            i = 0;
+         f_combinedPreviousHaz = 0;
           
          for (j = *numHazards-1; j >= i+1; j--)
          {
@@ -411,11 +421,11 @@ void collectHazInfo(genMatchType *match, size_t numMatch, int startNum,
                   
                   /* Boggie up this [j] hazard in the ptsIndivHaz array. */
                   (*ptsIndivHazs)[j].numConsecRows = 0;
-                  f_combinedHaz = 1;
+                  f_combinedCurrHaz = 1;
                }
             }
          }
-         if (!f_combinedHaz) /* Go the other way and look to combine. */
+         if (!f_combinedCurrHaz) /* Go the other way and look to combine. */
          {
             for (j = i+1; j < *numHazards; j++)
             {
@@ -437,11 +447,13 @@ void collectHazInfo(genMatchType *match, size_t numMatch, int startNum,
                   
                      /* Boggie up this [j] hazard in the ptsIndivHaz array. */
                      (*ptsIndivHazs)[j].numConsecRows = 0;
-                     f_combinedHaz = 1;
+                     f_combinedCurrHaz = 1;
                   }
                }
             }
          }
+         if (f_combinedCurrHaz)
+            f_combinedPreviousHaz = 1;
       }
    }
   

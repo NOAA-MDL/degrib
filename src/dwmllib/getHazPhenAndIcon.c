@@ -26,6 +26,7 @@
  * HISTORY
  *   6/2008 Paul Hershberg (MDL): Created
  *  11/2008 Paul Hershberg (MDL): Added "Snow" to "Lake Effect".
+ *   2/2009 Paul Hershberg (MDL): Added 3 new Marine Hazards. 
  *
  * NOTES
  ******************************************************************************
@@ -428,6 +429,24 @@ void  getHazPhenAndIcon(char *uglyStr, char *significance, char *transStr,
    else if (strcmp(uglyStr, "RECLOP") == 0)
    {
       strcpy(transStr, "Record Low Temperature Possible");
+      return;
+   }
+
+   else if (strcmp(uglyStr, "MF") == 0)
+   {
+      strcpy(transStr, "Marine Dense Fog");
+      return;
+   }
+
+   else if (strcmp(uglyStr, "MS") == 0)
+   {
+      strcpy(transStr, "Marine Dense Smoke");
+      return;
+   }
+
+   else if (strcmp(uglyStr, "MH") == 0)
+   {
+      strcpy(transStr, "Marine Volcanic Ashfall");
       return;
    }
 

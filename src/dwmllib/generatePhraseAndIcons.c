@@ -153,6 +153,8 @@
  *  3/2008 Paul Hershberg (MDL): Added maxWindSpeedValTimes for determination 
  *                               of Cold vs Warm season in windExtremePhrase.c 
  *                               routine.
+ *  7/2009 Paul Hershberg (MDL): Added weather summary phrase for 
+ *                               "Isolated Thunderstorms" 
  *
  * NOTES:
  *****************************************************************************
@@ -955,7 +957,9 @@ void generatePhraseAndIcons (int dayIndex, char *frequency,
 			          maxDailyPop[dayIndex], baseURL);
       }
 
-      if (strcmp(dominantWeather[0], "SChc") == 0)
+      if (strcmp(dominantWeather[0], "Iso") == 0)
+         strcpy (phrase[dayIndex], "Isolated Thunderstorms");	
+      else if (strcmp(dominantWeather[0], "SChc") == 0)
          strcpy (phrase[dayIndex], "Slight Chance Thunderstorms");	      	 
       else if (strcmp(dominantWeather[0], "Chc") == 0)
          strcpy (phrase[dayIndex], "Chance Thunderstorms");

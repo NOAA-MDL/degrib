@@ -47,6 +47,7 @@
  *
  * HISTORY
  *   3/2006 Paul Hershberg (MDL): Created
+ *   7/2009 Paul Hershberg (MDL): Put some common sense checks on data. 
  *
  * NOTES
  ******************************************************************************
@@ -81,7 +82,9 @@ void genTempValues(size_t pnt, char *layoutKey, genMatchType * match,
 	  match[i].validTime <= numRows.lastUserTime)
       {
          /* If the data is missing, so indicate in the XML (nil=true). */
-         if (match[i].value[pnt].valueType == 2)
+         if (match[i].value[pnt].valueType == 2 || 
+             match[i].value[pnt].data > 199 || 
+             match[i].value[pnt].data < -199)
          {
             value = xmlNewChild(temperature, NULL, BAD_CAST "value", NULL);
             xmlNewProp(value, BAD_CAST "xsi:nil", BAD_CAST "true");

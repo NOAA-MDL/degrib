@@ -52,6 +52,7 @@
  *
  * HISTORY
  *   9/2006 Paul Hershberg (MDL): Created
+ *   7/2009 Paul Hershberg (MDL): Put some common sense checks on data. 
  *
  * NOTES
  ******************************************************************************
@@ -88,7 +89,9 @@ void genWindIncCumValues(size_t pnt, char *layoutKey, uChar parameterName,
           match[i].validTime <= numRows.lastUserTime)
       {
          /* If the data is missing, so indicate in the XML (nil=true). */
-         if (match[i].value[pnt].valueType == 2)
+         if (match[i].value[pnt].valueType == 2 ||
+             match[i].value[pnt].data > 101 || 
+             match[i].value[pnt].data < -1)
          {
             value = xmlNewChild(wind_speed_prob, NULL, BAD_CAST "value", NULL);
             xmlNewProp(value, BAD_CAST "xsi:nil", BAD_CAST "true");

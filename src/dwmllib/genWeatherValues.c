@@ -44,6 +44,8 @@
  *  7/5/2006 Carl McCalla (MDL): Modified to handle up to five comma delimited 
  *                               hazards/qualifier strings
  *  7/2008 Paul Hershberg (MDL): Initialized valueIsMissing in wx index loop.
+ *  4/2009 Paul Hershberg (MDL): Added code to deal with the missing colon 
+ *                               delimiter in the ugly wx strings.
  *
  * NOTES:
  *****************************************************************************
@@ -131,6 +133,9 @@ void genWeatherValues(size_t pnt, char *layoutKey, genMatchType *match,
                                    * weather visibility. */
    char transQualifierStr[200]; /* String holding english translation of
                                  * weather qualifiers. */
+   char None[] = "<NoCov>:<NoWx>:<NoInten>:<NoVis>:"; /* Used as ugly wx string 
+                                                         when ugly wx string 
+                                                         consists of <None>. */
    xmlNodePtr weather = NULL; /* Xml Node Pointer for node "weather". */
    xmlNodePtr value = NULL;   /* Xml Node Pointer for node "value". */
    xmlNodePtr visibility = NULL;  /* Xml Node Pointer for node "visibility". */
@@ -313,6 +318,20 @@ void genWeatherValues(size_t pnt, char *layoutKey, genMatchType *match,
 
          if (wxInfo[wxIndex].valueType == 2)
             valueIsMissing = 1;
+
+         /* if the "ugly weather string" consists solely of "<None>" 
+          * then treat it as if it is "<NoCov>:<NoWx>:<NoInten>:<NoVis>:".
+          * Next, check if there are no delimiters (colons) after looking 
+          * for <None>. If this is the case, treat current weather row as 
+          * non-valid data. 
+          */
+         if (strstr(wxInfo[wxIndex].str, ":") == '\0')
+         {
+            if (strstr(wxInfo[wxIndex].str, "<None>") != '\0')
+               strcpy(wxInfo[wxIndex].str, None);
+            else
+               valueIsMissing = 1;
+         }
 
          if (valueIsMissing != 1)
          {

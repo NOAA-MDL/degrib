@@ -46,6 +46,7 @@
  *
  * HISTORY
  *   3/2006 Paul Hershberg (MDL): Created
+ *   4/2009 Paul Hershberg (MDL): Put some common sense checks on data. 
  *
  * NOTES
  ******************************************************************************
@@ -80,8 +81,12 @@ void genDewPointTempValues(size_t pnt, char *layoutKey, genMatchType *match,
 	  match[i].validTime >= numRows.firstUserTime &&
 	  match[i].validTime <= numRows.lastUserTime)
       {
-         /* If the data is missing, so indicate in the XML (nil=true). */
-         if (match[i].value[pnt].valueType == 2)
+         /* If the data is missing, so indicate in the XML (nil=true). 
+          * Also, put some common sense checks on the data.
+          */
+         if (match[i].value[pnt].valueType == 2 || 
+             match[i].value[pnt].data > 300 || 
+             match[i].value[pnt].data < -300)
          {
             value = xmlNewChild(temperature, NULL, BAD_CAST "value", NULL);
             xmlNewProp(value, BAD_CAST "xsi:nil", BAD_CAST "true");

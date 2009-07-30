@@ -63,6 +63,7 @@
  *
  * HISTORY
  *   3/2006 Paul Hershberg (MDL): Created
+ *   4/2009 Paul Hershberg (MDL): Put some common sense checks on data. 
  *
  * NOTES
  ******************************************************************************
@@ -169,11 +170,12 @@ void genMinTempValues(size_t pnt, char *layoutKey, genMatchType *match,
                   /* If the data is missing, so indicate in the XML (nil=true).
 		   * Also, add a check to make sure the counter does not cause
 		   * a bleed over and pick up the next element in the match
-		   * structure.
-		   */
+		   * structure. Also, put some common sense checks on the data.
+                   */ 
                   if ((match[i + counter].value[pnt].valueType == 2) || 
-		      (match[i + counter].elem.ndfdEnum != NDFD_MIN))
- 
+		      (match[i + counter].elem.ndfdEnum != NDFD_MIN) ||
+                      (match[i + counter].value[pnt].data > 300) || 
+                      (match[i + counter].value[pnt].data < -300))
                   {
                      value = xmlNewChild(temperature, NULL, BAD_CAST "value",
                                          NULL);
@@ -192,8 +194,12 @@ void genMinTempValues(size_t pnt, char *layoutKey, genMatchType *match,
             /* DWMLgen products: */
             else if (f_XML == 1 || f_XML == 2 || f_XML == 6)
             {
-               /* If the data is missing, so indicate in the XML (nil=true). */
-               if (match[i].value[pnt].valueType == 2)
+               /* If the data is missing, so indicate in the XML (nil=true). 
+                * Also, put some common sense checks on the data.
+                */
+               if (match[i].value[pnt].valueType == 2 ||
+                   match[i].value[pnt].data > 300 || 
+                   match[i].value[pnt].data < -300)
                {
                   value = xmlNewChild(temperature, NULL, BAD_CAST "value", NULL);
                   xmlNewProp(value, BAD_CAST "xsi:nil", BAD_CAST "true");

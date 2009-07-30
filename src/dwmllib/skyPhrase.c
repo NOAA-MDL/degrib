@@ -70,6 +70,8 @@
  *                               but 4 index or category differences. We changed 
  *                               the 4 to 1 index or category difference, which
  *                               signifies a 3 hour difference.
+ *  7/2009 Paul Hershberg (MDL): Changed day time error of "Partly Cloudy" to 
+ *                               "Partly Sunny".
  *
  * NOTES:
  *****************************************************************************
@@ -226,7 +228,7 @@ void skyPhrase(int *maxSkyCover, int *minSkyCover, int *averageSkyCover,
       else if ((averageSkyCover[dayIndex] <= 50) && f_isDayTime)     
       {
           sprintf(iconInfo[dayIndex].str, "%s%s", baseURL, "sct.jpg");        
-          strcpy (phrase[dayIndex], "Partly Cloudy");
+          strcpy (phrase[dayIndex], "Partly Sunny");
       }
       else if ((averageSkyCover[dayIndex] <= 50) && f_isNightTime)     
       {

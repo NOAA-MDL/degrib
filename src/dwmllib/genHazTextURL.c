@@ -24,6 +24,8 @@
  *
  * HISTORY
  *   6/2008 Paul Hershberg (MDL): Created
+ *   7/2008 Paul Hershberg (MDL): Accounted for special cases of "Small Craft"
+ *                                and "Areal Flood" hazards.
  *
  * NOTES
  ******************************************************************************
@@ -94,6 +96,55 @@ void  genHazTextURL(char *baseTextURL, char *cwaStr, char *phenomena,
    if ((strstr(phenomena, "Areal Flood") != '\0'))
    {       
       strcat (hazardTextURL, "Flood");
+      strcat (hazardTextURL, "%20");
+
+      /* Append the significance to the hazartTextURL string as long as it is 
+       * not "none". 
+       */
+      if (strcmp(significance, "none") != 0)
+         strcat (hazardTextURL, significance);
+
+      return;
+   }
+ 
+   /* A special case concerning the three new Marine hazards. The "Marine" part
+    * of the hazard needs to be dropped when making the URL. 
+    */
+   if ((strstr(phenomena, "Marine Dense Fog") != '\0'))
+   {       
+      strcat (hazardTextURL, "Dense");
+      strcat (hazardTextURL, "%20");
+      strcat (hazardTextURL, "Fog");
+      strcat (hazardTextURL, "%20");
+
+      /* Append the significance to the hazartTextURL string as long as it is 
+       * not "none". 
+       */
+      if (strcmp(significance, "none") != 0)
+         strcat (hazardTextURL, significance);
+
+      return;
+   }
+   if ((strstr(phenomena, "Marine Dense Smoke") != '\0'))
+   {       
+      strcat (hazardTextURL, "Dense");
+      strcat (hazardTextURL, "%20");
+      strcat (hazardTextURL, "Smoke");
+      strcat (hazardTextURL, "%20");
+
+      /* Append the significance to the hazartTextURL string as long as it is 
+       * not "none". 
+       */
+      if (strcmp(significance, "none") != 0)
+         strcat (hazardTextURL, significance);
+
+      return;
+   }
+   if ((strstr(phenomena, "Marine Volcanic Ashfall") != '\0'))
+   {       
+      strcat (hazardTextURL, "Volcanic");
+      strcat (hazardTextURL, "%20");
+      strcat (hazardTextURL, "Ashfall");
       strcat (hazardTextURL, "%20");
 
       /* Append the significance to the hazartTextURL string as long as it is 

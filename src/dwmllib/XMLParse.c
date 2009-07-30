@@ -2,7 +2,7 @@
 /* XMLParse () --
  * 
  * Paul Hershberg / MDL
- * Linux/
+ * Linux
  *
  * PURPOSE
  *   The driver program that ultimately formats the DWMLgen products 
@@ -63,7 +63,6 @@
  *                                the period length (bug from php code)
  *  11/2007 Paul Hershberg (MDL): Added 10 RTMA Elements.
  *   7/2008 Paul Hershberg (MDL): Accommodates Hazard Element (NDFD_WWA).
- *  10/2008 Paul Hershberg (MDL): Accommodates Hazards in Summary Products.
  *
  * NOTES: The NDFD/RTMA element list is below. This contains all elements
  *        data can be returned for in DWML.
@@ -121,9 +120,9 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
    int *numDays = NULL; /* The number of days the validTimes for all the data
                          * rows (values) consist of, per point. Used for the
                          * DWMLgenByDay products only. */
-   int startNum = 0;    /* First index in match structure an individual point's
+   int startNum;        /* First index in match structure an individual point's
                          * data matches can be found. */
-   int endNum = 0;      /* Last index in match structure an individual point's
+   int endNum;          /* Last index in match structure an individual point's
                          * data matches can be found. */
    int numPopLines = 0; /* Since Pop, in the 24 hourly (f_MXL = 4) product still has 
 		         * formatted data every 12 hours, we use this variable and 
@@ -161,7 +160,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                      *      "24 hourly" products. "numRows" is determined 
                      *      using numDays and is used as an added criteria
                      *      (above and beyond simply having data exist for a 
-                     *       certain row) in formatting XML for these two m
+                     *       certain row) in formatting XML for these two 
                      *       products. (Input)
                      * skipBeg: the number of beginning rows not formatted due 
                      *       to a user supplied reduction in time (startTime
@@ -373,13 +372,6 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                            * Sky Cover and RTMA Sky Cover. Thus, the two
                            * will be conjoined into one element. */
    int *pnt_rtmaNdfdSky = NULL; /* Point specific f_rtmaNdfdSky */
-   hazInfo **indivHaz = NULL; /* Array holding info about each hazard in the
-                               * summary products. */
-   int *numHazards = NULL; /* The number of hazards existing, per point. */
-   double **periodTimes = NULL; /* The times bordering each forecast period. */
-   int *numPeriodTimes = NULL;
-   char tempBuff[30];  /* Temp string used when f_XML =3 or 4 and there are no 
-                        * active hazards. */
 
    /* XML Document pointer */
    xmlDocPtr doc = NULL;      /* An xml Node Pointer denoting the top-level
@@ -463,7 +455,9 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
             #endif
          }
 	 if (endTime - startTime == (12 * 3600))
+         {
             endTime = endTime + (24 * 3600);
+         }
       }
    }
 
@@ -496,6 +490,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
       #ifdef PRINT_DIAG
       printf("No data retrieved from NDFD (matches = 0).\n");
       #endif
+
       for (i = 0; i < numElem; i++)
       {
          genElemFree(elem + i);
@@ -548,6 +543,30 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
       }
    }
 
+/*
+   for (i =0; i<numMatch;i++)
+   {
+      if (match[i].elem.ndfdEnum == NDFD_WWA)
+      {
+         for (j = 0; j<numPnts;j++)
+         {
+            if (j == 0)
+            {
+               match[i].value[j].str = (char *)malloc(25 * sizeof(char));
+               strcpy (match[i].value[j].str, "SI.A.1002^TS.A^RB.A.1005");
+               match[i].value[j].valueType = 1;
+            }
+            else if (j == 2)
+            {
+               match[i].value[j].str = (char *)malloc(11 * sizeof(char));
+               strcpy (match[i].value[j].str, "EH.A.32244");
+               match[i].value[j].valueType = 1;
+            }
+         }
+      }
+   }
+*/
+
 #ifdef PRINT_DIAG
    /* Loop by point to check if any data at point at all. */
    for (j = 0; j < numPnts; j++)
@@ -564,6 +583,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
          printf("-----------------\n");
       }
    }
+ 
 #endif
 
    /**************** DEAL WITH POINTS IN DIFFERENT SECTORS. ******************/
@@ -700,11 +720,6 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
    pnt_rtmaNdfdWspd = (int *)malloc(numPnts * sizeof(int)); 
    pnt_rtmaNdfdPrecipa = (int *)malloc(numPnts * sizeof(int)); 
    pnt_rtmaNdfdSky = (int *)malloc(numPnts * sizeof(int));
-   if (f_XML == 3 || f_XML == 4)
-   {
-      indivHaz = (hazInfo **)malloc(numPnts * sizeof(hazInfo *));
-      numHazards = (int *)calloc(numPnts,  sizeof(int));
-   }
 
    for (j = 0; j < numPnts; j++)
    {
@@ -743,17 +758,8 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                     &f_formatIconForPnt[j], &f_formatSummarizations[j], j, 
                     &pnt_rtmaNdfdTemp[j], &pnt_rtmaNdfdTd[j], 
                     &pnt_rtmaNdfdWdir[j], &pnt_rtmaNdfdWspd[j], 
-                    &pnt_rtmaNdfdPrecipa[j], &pnt_rtmaNdfdSky[j],
+                    &pnt_rtmaNdfdPrecipa[j], &pnt_rtmaNdfdSky[j], 
                     currentDoubTime);
-
-         /* Gather up needed Hazard Info if a Summary Product was chosen. */
-         if ((f_XML == 3 || f_XML == 4) && 
-             (numRowsForPoint[j][NDFD_WWA].total != 0))
-         {
-            collectHazInfo(match, numMatch, pntInfo[j].startNum, 
-                           pntInfo[j].endNum, numRowsForPoint[j][NDFD_WWA], j,
-                           &(indivHaz[j]), &numHazards[j]);
-         }
       }
    }
 
@@ -833,9 +839,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
 
          if (f_firstPointLoopIteration || f_formatNewPointTimeLayouts)
          {
-            /* Generate a new set of time-layouts, for each element, for the 
-             * point. 
-             */
+            /* Generate a new set of time-layouts for the point. */
             for (k = 0; k < XML_MAX; k++)
             {
                /* Pass on the RTMA errors. They'll share the time-layouts of 
@@ -897,11 +901,10 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                         layoutKeys[j][k] = malloc(strlen(layoutKey) + 1);
                         strcpy(layoutKeys[j][k], layoutKey);
                      }
-
-                     /* For DWMLgenByDay product w/ format == "12 hourly". */
                      else if (f_XML == 3 && numRowsForPoint[j][k].total != 0)
                      {
-                        if (k == NDFD_MAX || k == NDFD_MIN) /* MaxT and MinT. */
+                        /* For DWMLgenByDay product w/ format == "12 hourly". */
+                        if (k == NDFD_MAX || k == NDFD_MIN)
                         {
                            generateTimeLayout(numRowsForPoint[j][k], k, layoutKey,
                                               whichTimeCoordinate,
@@ -916,11 +919,10 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                            layoutKeys[j][k] = malloc(strlen(layoutKey) + 1);
                            strcpy(layoutKeys[j][k], layoutKey);
                         }
-                        else /* POP, Wx, Hazards, and Icons. */
+                        else
                         {
                            /* The other element's (Wx and Icons) will share 
-		   	    * Pop's layout. Hazards will if there are no active 
-                            * hazards.
+		   	    * Pop's layout.
 			    */
                            if (numRowsForPoint[j][NDFD_POP].total != 0)
                            {
@@ -940,53 +942,17 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                               strcpy(layoutKeys[j][k], layoutKey);
                            }
                         }
-                        /* Check to see if this is a case when no active hazards
-                         * occurring. Then we need to create a time-layout for
-                         * this occurrence. We'll need to use the POP, MAXT, or
-                         * MINT time layout.
-                         */
-                        if (k == NDFD_WWA && numHazards[j] == 0)
-                        {
-                           /* First, see if we can use the POP time layout to 
-                            * create the new "entire" forecast period duration 
-                            * layout. If not, use MAXT or MINT time layout.
-                            */
-                           if (numRowsForPoint[j][NDFD_POP].total != 0)
-                              strcpy (tempBuff, layoutKeys[j][NDFD_POP]);  
-                           else if (f_useMinTempTimes[j] && 
-                                    numRowsForPoint[j][NDFD_MIN].total != 0)
-                              strcpy (tempBuff, layoutKeys[j][NDFD_MIN]);  
-                           else if (!f_useMinTempTimes[j]) 
-                           {
-                              if (numRowsForPoint[j][NDFD_MAX].total != 0)
-                                 strcpy (tempBuff, layoutKeys[j][NDFD_MAX]);
-                              else if (numRowsForPoint[j][NDFD_MIN].total != 0)
-                                 strcpy (tempBuff, layoutKeys[j][NDFD_MIN]);  
-                           }
-                           generateNoHazTimeLayout(tempBuff, layoutKey, 
-                                                   whichTimeCoordinate, 
-                                                   whatSummarization, 
-                                                   TZoffset[j], f_observeDST,
-                                                   &numLayoutSoFar, 
-                                                   &numCurrentLayout,
-                                                   timeUserStart[j], 
-                                                   numDays[j], data);
-
-                           layoutKeys[j][k] = malloc(strlen(layoutKey) + 1);
-                           strcpy(layoutKeys[j][k], layoutKey);
-                        }   
                      }
-
-                     /* For DWMLgenByDay product w/ format == "24 hourly".
-                      * Since the product is DWMLgenByDay's "24 hourly"
-                      * format, force the weather (and icon) elements so that
-                      * their time layout equals that of MaxT and/or MinT
-                      * since their periods are = to 24 hours also (the
-                      * exception is Pop, since it still has to use a 12
-                      * hourly summariztion). 
-                      */
                      else if (f_XML == 4 && numRowsForPoint[j][k].total != 0)
                      {
+                        /* For DWMLgenByDay product w/ format == "24 hourly".
+                         * Since the product is DWMLgenByDay's "24 hourly"
+                         * format, force the weather (and icon) elements so that
+                         * their time layout equals that of MaxT and/or MinT
+                         * since their periods are = to 24 hours also (the
+                         * exception is Pop, since it still has to use a 12
+                         * hourly summariztion). 
+		         */
                         if (k != NDFD_POP)
                         {
                            /* If the request for MaxT's is late in the day, then
@@ -1084,8 +1050,8 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
 		   	   numPopLines = numDays[j] * 2;
                            generateTimeLayout(numRowsForPoint[j][k], 
 					      NDFD_POP, layoutKey, 
-					      whichTimeCoordinate,
-                                              "12hourly", match, numMatch,
+					      whichTimeCoordinate, "12hourly",
+                                              match, numMatch,
                                               f_formatPeriodName, TZoffset[j],
                                               f_observeDST, &numLayoutSoFar,
                                               &numCurrentLayout, currentHour[j],
@@ -1097,41 +1063,6 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                            layoutKeys[j][k] = malloc(strlen(layoutKey) + 1);
                            strcpy(layoutKeys[j][k], layoutKey);
                         }
-                        /* Check to see if this is a case when no active hazards
-                         * occurring. Then we need to create a time-layout for
-                         * this occurrence. We'll need to use the POP, MAXT, or
-                         * MINT time layout.
-                         */
-                        if (k == NDFD_WWA && numHazards[j] == 0)
-                        {
-                           /* First, see if we can use the POP time layout to 
-                            * create the new "entire" forecast period duration 
-                            * layout. If not, use MAXT or MINT time layout.
-                            */
-                           if (numRowsForPoint[j][NDFD_POP].total != 0)
-                              strcpy (tempBuff, layoutKeys[j][NDFD_POP]);  
-                           else if (f_useMinTempTimes[j] && 
-                                    numRowsForPoint[j][NDFD_MIN].total != 0)
-                              strcpy (tempBuff, layoutKeys[j][NDFD_MIN]);  
-                           else if (!f_useMinTempTimes[j]) 
-                           {
-                              if (numRowsForPoint[j][NDFD_MAX].total != 0)
-                                 strcpy (tempBuff, layoutKeys[j][NDFD_MAX]);
-                              else if (numRowsForPoint[j][NDFD_MIN].total != 0)
-                                 strcpy (tempBuff, layoutKeys[j][NDFD_MIN]);  
-                           }
-                           generateNoHazTimeLayout(tempBuff, layoutKey, 
-                                                   whichTimeCoordinate, 
-                                                   whatSummarization, 
-                                                   TZoffset[j], f_observeDST,
-                                                   &numLayoutSoFar, 
-                                                   &numCurrentLayout,
-                                                   timeUserStart[j], 
-                                                   numDays[j], data);
-
-                           layoutKeys[j][k] = malloc(strlen(layoutKey) + 1);
-                           strcpy(layoutKeys[j][k], layoutKey);
-                        }   
                      } /* End of "f_XML type" check. */
                   } /* End weatherParameters "if" statement. */
                } /* End passing RTMA errors & individual concatenated elements. */
@@ -1180,32 +1111,6 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
 	 
       }  /* End of "is Point in Sector" check. */
    }  /* End "Point Loop" for Time-Layouts. */
-
-   /* If the product is a summary, a point's individual hazards can have 
-    * differing time layouts. They can also differ from previous points' time 
-    * layouts for the individual hazards. Account for this, and, retrieve the 
-    * times that border each forecast period. Only applicable when there are 
-    * active hazards. 
-    */
-   if (f_XML == 3 || f_XML == 4)
-   {
-      periodTimes = (double **)malloc(numPnts * sizeof(double *));
-      numPeriodTimes = (int *)malloc(numPnts * sizeof(int));
-      for (j = 0; j < numPnts; j++)
-      {
-         if (numHazards[j] != 0) /* Point contains active hazards. */
-         {
-            hazTimeInfo(&(numRowsForPoint[j][NDFD_WWA].multiLayouts), 
-                        whichTimeCoordinate, indivHaz[j], numHazards[j], 
-                        whatSummarization, match, numMatch, pntInfo[j].timeZone, 
-                        pntInfo[j].f_dayLight, currentHour[j], currentDay[j], 
-                        format, data, startTime, currentDoubTime, f_XML, startNum, 
-                        endNum, timeUserStart[j], timeUserEnd[j], timeInterval,
-                        &(periodTimes[j]), &(numPeriodTimes[j]), &numLayoutSoFar,
-                        &numCurrentLayout);
-         }
-      }
-   }
 
    /************** FORMAT PARAMETER <ELEMENT> IN XML/DWML ********************/
    /**************************************************************************/
@@ -1874,14 +1779,13 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                                numRowsForPoint[j][NDFD_WWA], parameters,
                                pntInfo[j].startNum, pntInfo[j].endNum, 
                                pntInfo[j].cwa);
+
          }
-	 else if (f_XML == 3 || f_XML == 4) /* Summarized Products. */
+	 else if (f_XML == 3 || f_XML == 4)
          { 
             if (f_formatSummarizations[j])
             {
-	    /**************************** WEATHER ****************************/
-
-               genWeatherValuesByDay(j, layoutKeys[j][NDFD_WX], match, numMatch,
+	       genWeatherValuesByDay(j, layoutKeys[j][NDFD_WX], match, numMatch,
 	                             numRowsForPoint[j][NDFD_WG],
                                      numRowsForPoint[j][NDFD_WS],
 			             numRowsForPoint[j][NDFD_POP],
@@ -1906,15 +1810,6 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                printf ("available.\n");
                printf ("******************************************************\n");
                #endif
-            }
-
-            /**************************** HAZARDS *****************************/
-            if (numRowsForPoint[j][NDFD_WWA].total != 0) {
-               genHazardSummaryValues(j, numRowsForPoint[j][NDFD_WWA].multiLayouts,
-                                   match, numRowsForPoint[j][NDFD_WWA], 
-                                   parameters, pntInfo[j].startNum, pntInfo[j].
-                                   endNum, pntInfo[j].cwa, indivHaz[j], 
-                                   numHazards[j], layoutKeys[j][NDFD_WWA]);
             }
          }
 
@@ -1949,8 +1844,6 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
             if (weatherParameters[j][NDFD_WD] == 1 || 
                 weatherParameters[j][NDFD_WD] == 2)
 	       free(maxWindDirection);
-            if (numHazards[j] != 0)
-               free(periodTimes[j]);     
 	 }
 
          /* Free layoutKeys element array, if allocated. */
@@ -1985,32 +1878,23 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
             }
          }
 
-         if ((f_XML == 3 || f_XML == 4) && (numHazards[j] != 0))
-         {
-            free(indivHaz[j]);
-            for (i = 0; i < numHazards[j]; i++)
-            {
-               if (numRowsForPoint[j][NDFD_WWA].multiLayouts[i] != NULL)
-                  free(numRowsForPoint[j][NDFD_WWA].multiLayouts[i]);
-            }
-            free(numRowsForPoint[j][NDFD_WWA].multiLayouts);
-         }
-        
 	 free(numRowsForPoint[j]);
          free(weatherParameters[j]);
          free(startDate[j]);
          free(currentDay[j]);
          free(currentHour[j]);
-
       }                       /* End of "is Point in Sectors" check. */
 
-   }                       /* Close Parameters Point Loop. */
+   }
+                          /* Close Parameters Point Loop. */
 
    /* Free layoutKeys point array. */
    for (j = 0; j < numPnts; j++)
    {
       if (isPntInASector(pnts[j]))
+      {
          free(layoutKeys[j]);
+      }
    }
 
    /* Free the static array "timeLayoutDefinitions" by destroying it. */
@@ -2036,13 +1920,6 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
 
    /* Free some more memory. */
    free(layoutKeys);
-   if (f_XML == 3 || f_XML == 4)
-   {
-      free(indivHaz);
-      free(numHazards);
-      free(periodTimes);
-      free(numPeriodTimes);
-   }
    free(numRowsForPoint);
    free(weatherParameters);
    free(TZoffset);
