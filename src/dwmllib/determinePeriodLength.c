@@ -65,6 +65,9 @@ int determinePeriodLength(double firstValidTime, double secondValidTime,
                parameterName == NDFD_CUM50 || parameterName == NDFD_CUM64)
          period = 6;
 
+      else if (parameterName == LAMP_TSTMPRB)
+         period = 2;
+
       else if (parameterName == NDFD_TMPABV14D || parameterName == NDFD_TMPBLW14D ||
                parameterName == NDFD_PRCPABV14D || parameterName == NDFD_PRCPBLW14D)
 

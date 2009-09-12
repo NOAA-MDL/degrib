@@ -42,16 +42,17 @@
  *  8/2007 Paul Hershberg (MDL): Added 6 RTMA+NDFD Concatenated Elements.
  *  6/2008 Paul Hershberg (MDL): Added Hazard Element.
  *  8/2008 Paul Hershberg (MDL): Added Hazard Element for summary products.
+ *  8/2009 Paul Hershberg (MDL): Added Lamp Tstm element.
  *
  * NOTES:
  *****************************************************************************
  */
 #include "xmlparse.h"
 void setVarFilter(sChar f_XML, sChar *f_icon, size_t numNdfdVars, 
-                  const uChar *ndfdVars, uChar varFilter[NDFD_MATCHALL + 1])
+                  const uChar *ndfdVars, uChar varFilter[XML_MAX+1])
 {
    int i;
-   memset(varFilter, 0, NDFD_MATCHALL + 1);
+   memset(varFilter, 0, XML_MAX + 1);
 
    /* Initialize all elements to 1. */
 
@@ -105,6 +106,9 @@ void setVarFilter(sChar f_XML, sChar *f_icon, size_t numNdfdVars,
    varFilter[NDFD_TMPBLW90D] = 1;
    varFilter[NDFD_PRCPABV90D] = 1;
    varFilter[NDFD_PRCPBLW90D] = 1;
+
+   /* 1 LAMP Element. */
+   varFilter[LAMP_TSTMPRB] = 1;
 
    /* 10 RTMA Elements. */
    varFilter[RTMA_PRECIPA] = 1;

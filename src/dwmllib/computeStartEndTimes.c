@@ -77,7 +77,8 @@
  *  2/2008 Paul Hershberg (MDL): -- Added special case of RTMA_PRECIPA when 
  *                                  concatenated to NDFD_QPF
  *  6/2008 Paul Hershberg (MDL): -- Added Hazard Element 
- *                                  
+ *  8/2009 Paul Hershberg (MDL): Added Lamp Tstm element. 
+*                                  
  * NOTES:
  *****************************************************************************
  */
@@ -303,6 +304,7 @@ void computeStartEndTimes(uChar parameterName, int numFmtdRows,
          case NDFD_CUM34:
          case NDFD_CUM50:
          case NDFD_CUM64:
+         case LAMP_TSTMPRB:
 
             /* Loop over matches of the data. */
             priorElemCount = startNum;
@@ -656,7 +658,7 @@ void computeStartEndTimes(uChar parameterName, int numFmtdRows,
             break;
 
          default: /* All RTMA elements and the Hazard element are here (other
-                   * than above RTMA exception. 
+                   * than above RTMA exception for RTMA_PRECIPA). 
                    */
 
             /* Loop over matches of the data. */

@@ -64,6 +64,7 @@
  *  11/2007 Paul Hershberg (MDL): Added 10 RTMA Elements.
  *   7/2008 Paul Hershberg (MDL): Accommodates Hazard Element (NDFD_WWA).
  *  10/2008 Paul Hershberg (MDL): Accommodates Hazards in Summary Products.
+ *   9/2009 Paul Hershberg (MDL): Accomodates LAMP Tstm Prob.
  *
  * NOTES: The NDFD/RTMA element list is below. This contains all elements
  *        data can be returned for in DWML.
@@ -100,7 +101,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
              double startTime, double endTime, size_t numNdfdVars, 
              uChar *ndfdVars, char *f_inTypes, char *gribFilter, 
              size_t numSector, char **sector, sChar f_ndfdConven, 
-             char *rtmaDataDir, sChar f_avgInterp)
+             char *rtmaDataDir, sChar f_avgInterp, char *lampDataDir)
 {
    size_t numElem = 0;        /* Num of elements returned by degrib. */
    genElemDescript *elem = NULL;  /* Structure with info about the element. */
@@ -400,11 +401,17 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
     * which can encompass both f_XML = 5 or 6. If query has RTMA elements, 
     * upate the inFiles array and numInFiles accordingly.
     */
-   if (f_XML == 1)
+   if (f_XML == 1) 
+   {
       anyRtmaElements(&f_XML, numInFiles, inFiles, numNdfdVars, ndfdVars,
                       rtmaDataDir, f_icon, numSector, sector, &f_rtmaNdfdTemp, 
                       &f_rtmaNdfdTd, &f_rtmaNdfdWdir, &f_rtmaNdfdWspd, 
                       &f_rtmaNdfdPrecipa, &f_rtmaNdfdSky);
+
+      /* Check to see if there were any LAMP elements. */
+      anyLampElements(numInFiles, inFiles, numNdfdVars, ndfdVars,
+                      lampDataDir);
+   }
 
    /* Prepare the variable filter array to show what NDFD variables are of
     * interest(1) or vital(2) to this procedure. Also, manipulate the varFilter
@@ -1923,6 +1930,12 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
             genWaveHeightValues(j, layoutKeys[j][NDFD_WH], match, parameters,
                                 numRowsForPoint[j][NDFD_WH], 
                                 pntInfo[j].startNum, pntInfo[j].endNum);
+
+         /* Format Lamp Thunderstorm Probability Values, if applicable. */
+         if (weatherParameters[j][LAMP_TSTMPRB] == 1)
+            genLampTstmValues(j, layoutKeys[j][LAMP_TSTMPRB], match, parameters,
+                              numRowsForPoint[j][LAMP_TSTMPRB], pntInfo[j].startNum, 
+                              pntInfo[j].endNum);
 
          /* Free some things before leaving this iteration of the point loop. */
          if (f_XML == 3 || f_XML == 4)

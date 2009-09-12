@@ -388,6 +388,12 @@ void PrintTime(genMatchType * match, size_t pntIndex, int *allElem,
        printf("hazard: \t%s ", match[allElem[NDFD_WWA]].value[pntIndex].str);
        printf ("match[%d].f_sector = %d\n",allElem[NDFD_WWA],match[allElem[NDFD_WWA]].f_sector);
    }
+   if ((allElem[LAMP_TSTMPRB] != -1) &&
+       (match[allElem[LAMP_TSTMPRB]].value[pntIndex].valueType != 2))
+   {
+       printf("LAMP Tstrm Prb:%.0f ", match[allElem[LAMP_TSTMPRB]].value[pntIndex].data);
+       printf ("match[%d].f_sector = %d\n",allElem[LAMP_TSTMPRB],match[allElem[LAMP_TSTMPRB]].f_sector);
+   }
 
    printf("\n");
 }

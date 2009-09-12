@@ -45,7 +45,8 @@
  *  9/2007 Paul Hershberg (MDL): Added 12 Climate Outlook Elements
  * 12/2007 Paul Hershberg (MDL): Added 10 RTMA Elements
  *  5/2008 Paul Hershberg (MDL): Added Hazard Element
- *
+ *  8/2009 Paul Hershberg (MDL): Added Lamp Tstm element. 
+*
  * NOTES:
  *****************************************************************************
  */
@@ -152,6 +153,8 @@ void prepareDWMLgen(uChar f_XML, uChar * f_formatPeriodName,
             wxParameters[j][NDFD_PRCPBLW90D] = 1;
          if (varFilter[NDFD_WWA] == 2)
             wxParameters[j][NDFD_WWA] = 1;
+         if (varFilter[LAMP_TSTMPRB] == 2)
+            wxParameters[j][LAMP_TSTMPRB] = 1;
 
          /* We need to create a time layout for the icons in the case that only
           * icons is to be formatted. When this occurs, make Icons use the

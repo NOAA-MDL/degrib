@@ -78,9 +78,9 @@ void hazStartEndTimes(char ***startTimes, char ***endTimes, int **numFmtdRows,
    else
       period = 1;
 
-   hazStartTimeToCompareStart = consecHazRows.startHour - (((double)period) * 3600);
-   hazStartTimeToCompareMid = consecHazRows.startHour - (((double)period * 0.5) * 3600);
-   hazStartTimeToCompareEnd = consecHazRows.startHour;
+   hazStartTimeToCompareStart = consecHazRows.startHour;
+   hazStartTimeToCompareMid = consecHazRows.startHour + (((double)period * 0.5) * 3600);
+   hazStartTimeToCompareEnd = consecHazRows.startHour + (((double)period) * 3600);
 
    if (consecHazRows.endHour > consecHazRows.valTimeResSplit && 
        consecHazRows.valTimeResSplit > 0)
@@ -88,8 +88,8 @@ void hazStartEndTimes(char ***startTimes, char ***endTimes, int **numFmtdRows,
    else
       period = 1;
 
-   hazEndTimeToCompareMid = consecHazRows.endHour - (((double)period * 0.5) * 3600);
-   hazEndTimeToCompareEnd = consecHazRows.endHour;
+   hazEndTimeToCompareMid = consecHazRows.endHour + (((double)period * 0.5) * 3600);
+   hazEndTimeToCompareEnd = consecHazRows.endHour + (((double)period) * 3600);
 
    for (i = 1; i < *numPeriodTimes; i++) /* Search thru periods until we find 
                                           * which one this particular

@@ -188,6 +188,12 @@ void generateTimeLayout(numRowsInfo numRows, uChar parameterName,
       period = 24;
    else if (parameterName == NDFD_POP)
       period = 12;
+   /* Force the LAMP Tstorm Probabilities to 2 hrs (since the first 6 hours are 
+    * only one hours apart, and determinePeriodLength routine will format this
+    * 1hr period).
+    */
+   else if (parameterName == LAMP_TSTMPRB)
+      period = 2;
    else if (parameterName == RTMA_TEMP || parameterName == RTMA_TD || 
             parameterName == RTMA_WSPD || parameterName == RTMA_WDIR || 
             parameterName == RTMA_PRECIPA || parameterName == RTMA_SKY ||

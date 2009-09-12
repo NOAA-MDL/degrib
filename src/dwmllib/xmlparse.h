@@ -131,6 +131,9 @@ typedef struct                /* Denotes structure of sector info for use in a
 } sectInfo;
  
 /* Declare XMLParse() interfaces. */
+void anyLampElements(size_t *numInFiles, char ***inFiles, size_t numNdfdVars,
+                     uChar *ndfdVars, char *lampDataDir);
+
 void anyRtmaElements(uChar *f_XML, size_t *numInFiles, char ***inFiles, 
                      size_t numNdfdVars, uChar *ndfdVars, 
                      char *rtmaDataDir, int f_icon, size_t numSector, 
@@ -247,6 +250,10 @@ void genHazTextURL(char *baseTextURL, char *cwaStr, char *phenomena,
 
 void genIconLinks(icon_def *iconInfo, uChar numRows, char *layoutKey, 
                   xmlNodePtr parameters);
+
+void genLampTstmValues(size_t pnt, char *layoutKey, genMatchType *match, 
+                       xmlNodePtr parameters, numRowsInfo numRows, 
+                       int startNum, int endNum);
 
 void genMaxTempValues(size_t pnt, char *layoutKey, genMatchType * match,
                       xmlNodePtr parameters, int f_formatNIL, uChar f_XML, 
@@ -582,6 +589,6 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
              double startTime, double endTime, size_t numNdfdVars, 
              uChar *ndfdVars, char *f_inTypes, char *gribFilter, 
              size_t numSector, char **sector, sChar f_ndfdConven, 
-             char *rtmaDataDir, sChar f_avgInterp);
+             char *rtmaDataDir, sChar f_avgInterp, char *lampDataDir);
 
 #endif

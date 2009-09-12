@@ -72,6 +72,7 @@ int checkNeedForEndTime(uChar parameterName, uChar f_XML)
       case NDFD_TMPBLW90D:
       case NDFD_PRCPABV90D:
       case NDFD_PRCPBLW90D:
+      case LAMP_TSTMPRB:
 
          return 1;
          break;

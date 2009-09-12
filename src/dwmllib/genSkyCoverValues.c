@@ -101,8 +101,9 @@
  *                                not (JimC's TPEX, SSC, etc). 
  *   2/2008 Paul Hershberg (MDL): Added code to detect if change from DST to 
  *                                Standard Time (or vice versa) occurred sometime 
- *                                in the forecast. 
- *   4/2009 Paul Hershberg (MDL): Put some common sense checks on data.
+ *                                in the forecast.
+ *   9/2009 Paul Hershberg (MDL): Added check so a value of zero is not treated as
+ *                                xsi:nil = "true".  
  *
  * NOTES
  ******************************************************************************
@@ -150,7 +151,7 @@ void genSkyCoverValues(size_t pnt, char *layoutKey, genMatchType * match,
                                * data. */
    char month[3];             /* String holding formatted month to see if a 
                                  change from standard to daylight savings time
-                                 (or vice versa) occurs within forecast period
+                                 (or vice
                                  in question. */
    int interval = timeInterval; /* Used in case DST to Standard time (or vice 
                                  * versa) occurs sometime in the forecast. */
@@ -194,19 +195,13 @@ void genSkyCoverValues(size_t pnt, char *layoutKey, genMatchType * match,
       {
          if (f_XML == 1 || f_XML == 2 || f_XML == 6)  /* DWMLgen products. */
          {
-            /* If the data is missing, so indicate in the XML (nil=true).
-             * Also, put some common sense checks on the data. 
-             */
-            if (match[i].value[pnt].valueType == 2 || 
-                match[i].value[pnt].data >= 101 || 
-                match[i].value[pnt].data < -1 || 
-                match[i].value[pnt].data == '\0')
+            /* If the data is missing, so indicate in the XML (nil=true). */
+            if (match[i].value[pnt].valueType == 2 && match[i].value[pnt].data != 0)
             {
                value = xmlNewChild(cloud_amount, NULL, BAD_CAST "value", NULL);
                xmlNewProp(value, BAD_CAST "xsi:nil", BAD_CAST "true");
-            }
-            else if (match[i].value[pnt].valueType == 0)  /* Format good
-                                                           * data. */
+            } /* Format good data. */
+            else if (match[i].value[pnt].valueType == 0 || match[i].value[pnt].data == 0)
             {
                roundedSkyCoverData = (int)myRound(match[i].value[pnt].data, 0);
                sprintf(strBuff, "%d", roundedSkyCoverData);
@@ -279,8 +274,10 @@ void genSkyCoverValues(size_t pnt, char *layoutKey, genMatchType * match,
                   if ((Clock_IsDaylightSaving2(timeUserStartStep, TZoffset) == 1) 
                      && (Clock_IsDaylightSaving2(timeUserStartStep + interval, 
                      TZoffset) != 1))
+                  {
                      interval = interval + 3600;
                      f_DSTswitchFound = 1;
+                  }
                }
             }
 
@@ -294,7 +291,7 @@ void genSkyCoverValues(size_t pnt, char *layoutKey, genMatchType * match,
                 * forecast period (12 or 24 hours) for weather phrase/icon
                 * determination later on. 
 		*/
-               if (match[i].value[pnt].valueType == 0)
+               if (match[i].value[pnt].valueType == 0 || match[i].value[pnt].data == 0)
                {
                   roundedSkyCoverData =
                         (int)myRound(match[i].value[pnt].data, 0);
