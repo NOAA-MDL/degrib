@@ -823,6 +823,7 @@ GRIB2ParmTable MeteoCloud[] = {
 /* 22 */    {"CDCC", "Cloud cover", "%", UC_NONE},
 /* 23 */    {"CDCIMR", "Cloud ice mixing ratio", "kg/kg", UC_NONE},
 /* 24 */    {"SUNS", "Sunshine", "Numeric", UC_NONE},
+/* 25 */    {"CBHE", "Horizontal extent of cumulonimbus (CB)", "%", UC_NONE},
 };
 
 /* GRIB2 Code table 4.2 : 0.7 */
@@ -1485,6 +1486,7 @@ GRIB2LocalTable NCEP_LclTable[] = {
    /* 37 */ {0, 6, 198, "TCOLC", "Total Column-Integrated Condensate", "kg/(m^2)", UC_NONE},
    /* 38 */ {0, 6, 199, "FICE", "Ice fraction of total condensate", "-", UC_NONE},
             {0, 6, 200, "MFLUX", "Convective Cloud Mass Flux", "Pa/s", UC_NONE},
+            {0, 6, 201, "SUNSD", "SunShine duration", "s", UC_NONE},
 
    /* 39 */ {0, 7, 192, "LFTX", "Surface Lifted Index", "K", UC_NONE},
    /* 40 */ {0, 7, 193, "4LFTX", "Best (4 layer) Lifted Index", "K", UC_NONE},
