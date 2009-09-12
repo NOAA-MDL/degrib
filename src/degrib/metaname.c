@@ -1471,7 +1471,7 @@ GRIB2LocalTable NCEP_LclTable[] = {
 
    /* 29 */ {0, 5, 192, "DLWRF", "Downward Long-Wave Rad. Flux", "W/(m^2)", UC_NONE},
    /* 30 */ {0, 5, 193, "ULWRF", "Upward Long-Wave Rad. Flux", "W/(m^2)", UC_NONE},
-            {0, 5, 194, "LWHRF", "Long-Wave Radiative Heating Rate", "W/(m^2)", UC_NONE},
+            {0, 5, 194, "LWHR", "Long-Wave Radiative Heating Rate", "K/s", UC_NONE},
             {0, 5, 195, "CSULF", "Clear Sky Upward Long Wave Flux", "W/(m^2)", UC_NONE},
             {0, 5, 196, "CSDLF", "Clear Sky Downward Long Wave Flux", "W/(m^2)", UC_NONE},
             {0, 5, 197, "CFNLF", "Cloud Forcing Net Long Wave Flux", "W/(m^2)", UC_NONE},
