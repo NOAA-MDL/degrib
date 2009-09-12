@@ -1521,6 +1521,7 @@ GRIB2LocalTable NCEP_LclTable[] = {
             {0, 16, 194, "REFZC", "Derived radar reflectivity backscatter from parameterized convection", "mm^6/m^3", UC_NONE},
             {0, 16, 195, "REFD", "Derived radar reflectivity", "dB", UC_NONE},
             {0, 16, 196, "REFC", "Maximum / Composite radar reflectivity", "dB", UC_NONE},
+            {0, 16, 197, "RETOP", "Radar Echo Top (18.3 DBZ)", "m", UC_NONE},
 
             {0, 17, 192, "LTNG", "Lightning", "-", UC_NONE},
 
