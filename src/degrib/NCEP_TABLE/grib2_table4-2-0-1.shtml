@@ -20,9 +20,9 @@ moisture category)</small><br>
 </big></big></center>
 <br>
 <center>
-<center><b>Revised 10/30/2008</b><br>
+<center><b>Revised 01/14/2009</b><br>
 <span style="color: red; font-size: 10pt;"><b>Red text depicts changes
-made since 03/12/2008</b></span><b><br>
+made since 10/30/2008</b></span><b><br>
 </b></center>
 <b></b></center>
 <br>
@@ -803,6 +803,12 @@ no=0)</td>
       <td style="vertical-align: top; color: red;">Convective precipitation (nearest grid point)</td>
       <td style="vertical-align: top; color: red;">kg/m<sup>2</sup></td>
       <td style="vertical-align: top; color: red;">ACPCPN</td>
+    </tr>
+    <tr>
+      <td style="text-align: center; color: red;">225</td>
+      <td style="vertical-align: top; color: red;">Freezing Rain</td>
+      <td style="vertical-align: top; color: red;">kg/m<sup>2</sup></td>
+      <td style="vertical-align: top; color: red;">FRZR</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">255<br>

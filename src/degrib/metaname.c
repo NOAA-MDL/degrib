@@ -1400,6 +1400,7 @@ GRIB2LocalTable NCEP_LclTable[] = {
             {0, 1, 222, "SNOWT", "Snow temperature, depth-avg", "K", UC_NONE},
             {0, 1, 223, "APCPN", "Total precipitation (nearest grid point)", "kg/(m^2)", UC_NONE},
             {0, 1, 224, "ACPCPN", "Convective precipitation (nearest grid point)", "kg/(m^2)", UC_NONE},
+            {0, 1, 225, "FRZR", "Freezing rain", "kg/(m^2)", UC_NONE},
 
    /* 15 */ {0, 2, 192, "VWSH", "Vertical speed sheer", "1/s", UC_NONE},
    /* 16 */ {0, 2, 193, "MFLX", "Horizontal Momentum Flux", "N/(m^2)", UC_NONE},
