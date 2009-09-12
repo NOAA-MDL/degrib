@@ -1801,6 +1801,9 @@ GRIB2LocalTable NCEP_LclTable[] = {
             {2, 0, 225, "WVVFLX", "Water vapor meridional flux (vertical int)", "kg/m^2", UC_NONE},
             {2, 0, 226, "WCUFLX", "Water condensate zonal flux (vertical int)", "kg/m^2", UC_NONE},
             {2, 0, 227, "WCVFLX", "Water condensate meridional flux (vertical int)", "kg/m^2", UC_NONE},
+            {2, 0, 228, "ACOND", "Aerodynamic conductance", "m/s", UC_NONE},
+            {2, 0, 229, "EVCW", "Canopy water evaporation", "W/(m^2)", UC_NONE},
+            {2, 0, 230, "TRANS", "Transpiration", "W/(m^2)", UC_NONE},
 
    /* 66 */ {2, 3, 192, "SOILL", "Liquid Volumetric Soil Moisture (non Frozen)", "Proportion", UC_NONE},
    /* 67 */ {2, 3, 193, "RLYRS", "Number of Soil Layers in Root Zone", "-", UC_NONE},
