@@ -20,9 +20,9 @@ category)</small><br>
 </small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 3<br>
 </big></big></center>
 <br>
-<center><b>Revised 11/02/2007</b><br>
+<center><b>Revised 04/07/2009</b><br>
 <span style="color: red; font-size: 10pt;"><b>Red text depicts changes
-made since</b></span><b><span style="color: rgb(255, 0, 0);">08/14/2007</span><br>
+made since</b></span><b><span style="color: rgb(255, 0, 0);">11/02/2007</span><br>
 </b></center>
 <br>
 <br>
@@ -85,16 +85,10 @@ for Local Use<br>
       </td>
     </tr>
     <tr>
-      <td
- style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">192<br>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Storm
-Surge<br>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">m<br>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">SURGE<br>
-      </td>
+      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">192<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Storm Surge<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">m<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">SURGE<br></td>
     </tr>
     <tr>
       <td
@@ -172,8 +166,54 @@ Tropical Storm Surge<br>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">kg m<sup>-2</sup>s<sup>-1</sup><br></td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">SLTFL<br></td>
     </tr>
-
-
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">242<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">20% Tropical Cyclone Storm Surge Exceedance<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">m<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">TCSRG20<br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">243<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">30% Tropical Cyclone Storm Surge Exceedance<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">m<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">TCSRG30<br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">244<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">40% Tropical Cyclone Storm Surge Exceedance<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">m<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">TCSRG40<br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">245<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">50% Tropical Cyclone Storm Surge Exceedance<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">m<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">TCSRG50<br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">246<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">60% Tropical Cyclone Storm Surge Exceedance<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">m<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">TCSRG60<br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">247<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">70% Tropical Cyclone Storm Surge Exceedance<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">m<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">TCSRG70<br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">248<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">80% Tropical Cyclone Storm Surge Exceedance<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">m<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">TCSRG80<br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">249<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">90% Tropical Cyclone Storm Surge Exceedance<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">m<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">TCSRG90<br></td>
+    </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">255<br>
       </td>
