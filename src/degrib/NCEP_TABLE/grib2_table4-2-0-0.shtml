@@ -19,9 +19,9 @@ temperature category)</small><br>
 </small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 0<br>
 </big></big></center>
 <br>
-<center><b>Revised 06/20/2008</b><br>
+<center><b>Revised 04/21/2009</b><br>
 <span style="color: red; font-size: 10pt;"><b>Red text depicts changes
-made since 03/12/2008</b></span><b><br>
+made since 06/20/2008</b></span><b><br>
 </b></center>
 <br>
 <br>
@@ -78,7 +78,7 @@ Temperature<br>
     <tr>
       <td style="vertical-align: top; text-align: center;">4<br>
       </td>
-      <td style="vertical-align: top;">Maximum Temperature</td>
+      <td style="vertical-align: top;">Maximum Temperature<sup>*</sup></td>
       <td style="vertical-align: top;">K<br>
       </td>
       <td style="vertical-align: top;">T MAX </td>
@@ -86,7 +86,7 @@ Temperature<br>
     <tr>
       <td style="vertical-align: top; text-align: center;">5<br>
       </td>
-      <td style="vertical-align: top;">Minimum Temperature</td>
+      <td style="vertical-align: top;">Minimum Temperature<sup>*</sup></td>
       <td style="vertical-align: top;">K<br>
       </td>
       <td style="vertical-align: top;">T MIN </td>
@@ -162,7 +162,7 @@ Temperature<br>
     <tr>
       <td style="vertical-align: top; text-align: center;">14<br>
       </td>
-      <td style="vertical-align: top;">Minimum Dew Point depression</td>
+      <td style="vertical-align: top;">Minimum Dew Point depression<sup>*</sup></td>
       <td style="vertical-align: top;">K<br>
       </td>
       <td style="vertical-align: top;">MINDPD</td>
@@ -312,7 +312,9 @@ for Local Use<br>
     </tr>
   </tbody>
 </table>
-</center>
+<tr>
+<td style="vertical-align: top;"><b>Notes:&nbsp;<b>*</b>Parameter deprecated - See Regulation 92.6.2 and use another parameter instead.<br><br>
+</tr>
 <br>
 <br>
 <center><a href="/pmb/docs/grib2/grib2_doc.shtml">Back</a></center>
