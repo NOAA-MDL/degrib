@@ -91,7 +91,8 @@ void genWindIncCumValues(size_t pnt, char *layoutKey, uChar parameterName,
          /* If the data is missing, so indicate in the XML (nil=true). */
          if (match[i].value[pnt].valueType == 2 ||
              match[i].value[pnt].data > 101 || 
-             match[i].value[pnt].data < -1)
+             match[i].value[pnt].data < -1 || 
+             match[i].value[pnt].data == '\0')
          {
             value = xmlNewChild(wind_speed_prob, NULL, BAD_CAST "value", NULL);
             xmlNewProp(value, BAD_CAST "xsi:nil", BAD_CAST "true");

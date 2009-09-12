@@ -116,7 +116,8 @@ void genMaxTempValues(size_t pnt, char *layoutKey, genMatchType * match,
                    */   
                   if (match[i].value[pnt].valueType == 2 || 
                       match[i].value[pnt].data > 300 || 
-                      match[i].value[pnt].data < -300)
+                      match[i].value[pnt].data < -300 || 
+                      match[i].value[pnt].data == '\0')
                   {
                      value = xmlNewChild(temperature, NULL, BAD_CAST "value",
                                          NULL);
@@ -138,7 +139,8 @@ void genMaxTempValues(size_t pnt, char *layoutKey, genMatchType * match,
                 */ 
                if (match[i].value[pnt].valueType == 2 ||
                    match[i].value[pnt].data > 300 || 
-                   match[i].value[pnt].data < -300)
+                   match[i].value[pnt].data < -300 || 
+                   match[i].value[pnt].data == '\0')
                {
                   value = xmlNewChild(temperature, NULL, BAD_CAST "value", NULL);
                   xmlNewProp(value, BAD_CAST "xsi:nil", BAD_CAST "true");

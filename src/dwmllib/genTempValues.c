@@ -83,8 +83,9 @@ void genTempValues(size_t pnt, char *layoutKey, genMatchType * match,
       {
          /* If the data is missing, so indicate in the XML (nil=true). */
          if (match[i].value[pnt].valueType == 2 || 
-             match[i].value[pnt].data > 199 || 
-             match[i].value[pnt].data < -199)
+             match[i].value[pnt].data > 300 || 
+             match[i].value[pnt].data < -300 || 
+             match[i].value[pnt].data == '\0')
          {
             value = xmlNewChild(temperature, NULL, BAD_CAST "value", NULL);
             xmlNewProp(value, BAD_CAST "xsi:nil", BAD_CAST "true");
