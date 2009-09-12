@@ -372,7 +372,8 @@ static void PrintSect4_Category (grib_MetaData *meta)
       "Moisture Probabilities", "Momentum Probabilities",
       "Mass Probabilities", "Aerosols", "Trace gases (e.g. ozone, C02)",
       "Radar", "Forecast Radar Imagery", "Electro-dynamics",
-      "Nuclear/radiology", "Physical atmospheric properties"
+      "Nuclear/radiology", "Physical atmospheric properties",
+      "Atmospheric chemical Constituents",
    };
    /* Based on Grib2 Code Table 4.1 discipline 1 */
    static char *tbl41_1[] = {
@@ -404,6 +405,10 @@ static void PrintSect4_Category (grib_MetaData *meta)
                Print ("PDS-S4", "Category Description", Prt_DS, sect4->cat,
                       "Miscellaneous");
                break;
+            case 192:
+               Print ("PDS-S4", "Category Description", Prt_DS, sect4->cat,
+                      "Covariance");
+               break;
             default:
                Print ("PDS-S4", "Category Description", Prt_DS, sect4->cat,
                       Lookup (tbl41_0, sizeof (tbl41_0), sect4->cat));
@@ -418,12 +423,26 @@ static void PrintSect4_Category (grib_MetaData *meta)
                 Lookup (tbl41_2, sizeof (tbl41_2), sect4->cat));
          break;
       case 3:          /* Space */
-         Print ("PDS-S4", "Category Description", Prt_DS, sect4->cat,
-                Lookup (tbl41_3, sizeof (tbl41_3), sect4->cat));
+         switch (sect4->cat) {
+            case 192:
+               Print ("PDS-S4", "Category Description", Prt_DS, sect4->cat,
+                      "Forecast Satellite Imagery");
+               break;
+            default:
+               Print ("PDS-S4", "Category Description", Prt_DS, sect4->cat,
+                      Lookup (tbl41_3, sizeof (tbl41_3), sect4->cat));
+         }
          break;
       case 10:         /* Oceanographic */
-         Print ("PDS-S4", "Category Description", Prt_DS, sect4->cat,
-                Lookup (tbl41_10, sizeof (tbl41_10), sect4->cat));
+         switch (sect4->cat) {
+            case 191:
+               Print ("PDS-S4", "Category Description", Prt_DS, sect4->cat,
+                      "Miscellaneous");
+               break;
+            default:
+               Print ("PDS-S4", "Category Description", Prt_DS, sect4->cat,
+                      Lookup (tbl41_10, sizeof (tbl41_10), sect4->cat));
+         }
          break;
       default:
          Print ("PDS-S4", "PrintSect4() does not handle this prodType",
