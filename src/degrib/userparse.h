@@ -160,6 +160,7 @@ typedef struct {
                          * (timezone,daylightsavings) */
    char *gribFilter;    /* -gribFilter *.bin (pattern to use when filtering
                          * files for grib files. */
+   char *lampDataDir;   /* Directory to look in for LAMP data. */
    char *rtmaDataDir;   /* Directory to look in for RTMA data. */
    char **cwaBuff;       /* Array holding 3 letter CWA's each point fall in. */
 /* filter... for *.bin or *.ind or .. */

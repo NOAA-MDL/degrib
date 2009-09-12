@@ -106,6 +106,7 @@ void UserInit (userType *usr)
    usr->numPnt = 0;
    usr->ndfdVars = NULL;
    usr->numNdfdVars = 0;
+   usr->lampDataDir = NULL;
    usr->rtmaDataDir = NULL;
    usr->geoDataDir = NULL;
    usr->gribFilter = NULL;
@@ -202,6 +203,8 @@ void UserFree (userType *usr)
       free (usr->pnt);
    if (usr->ndfdVars != NULL)
       free (usr->ndfdVars);
+   if (usr->lampDataDir != NULL)
+      free (usr->lampDataDir);
    if (usr->rtmaDataDir != NULL)
       free (usr->rtmaDataDir);
    if (usr->geoDataDir != NULL)
@@ -508,6 +511,20 @@ int UserValidate (userType *usr)
          }
       }
    }
+   if (usr->lampDataDir == NULL) {
+      char perm;
+      char *defDir = "/www/ndfd/public/database/cube/lamp";
+
+      /* check if it is a directory */
+      if (myStat (defDir, &perm, NULL, NULL) == MYSTAT_ISDIR) {
+         /* check that it is readable */
+         if ((perm & 4)) {
+            usr->lampDataDir = (char *) malloc ((strlen (defDir) + 1) *
+                                                 sizeof (char));
+            strcpy (usr->lampDataDir, defDir);
+         }
+      }
+   }
    if (usr->separator == NULL) {
       usr->separator = (char *) malloc (3 * sizeof (char));
       strcpy (usr->separator, ", ");
@@ -708,7 +725,7 @@ static char *UsrOpt[] = { "-cfg", "-in", "-I", "-C", "-P", "-V", "-Flt",
    "-XML", "-MOTD", "-Graph", "-startTime", "-endTime", "-startDate",
    "-numDays", "-ndfdVars", "-geoData", "-gribFilter", "-ndfdConven", "-Freq",
    "-Icon", "-curTime", "-rtmaDir", "-avgInterp", "-cwa", "-SimpleWWA",
-   "-TxtParse", "-Kml", "-KmlIni", "-Kmz", "-kmlMerge", NULL
+   "-TxtParse", "-Kml", "-KmlIni", "-Kmz", "-kmlMerge", "-lampDir", NULL
 };
 
 int IsUserOpt (char *str)
@@ -731,7 +748,7 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
       MAPINIFILE, MAPINIOPTIONS, XML, MOTD, GRAPH, STARTTIME, ENDTIME,
       STARTDATE, NUMDAYS, NDFDVARS, GEODATA, GRIBFILTER, NDFDCONVEN,
       FREQUENCY, ICON, CURTIME, RTMADIR, AVGINTERP, CWA, SIMPLEWWA, TXTPARSE,
-      KML, KMLINIFILE, KMZ, KMLMERGE
+      KML, KMLINIFILE, KMZ, KMLMERGE, LAMPDIR
    };
    int index;           /* "cur"'s index into Opt, which matches enum val. */
    double lat, lon;     /* Used to check on the -pnt option. */
@@ -1369,6 +1386,24 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
             usr->rtmaDataDir = (char *) malloc ((strlen (next) + 1) *
                                                  sizeof (char));
             strcpy (usr->rtmaDataDir, next);
+            return 2;
+         }
+      case LAMPDIR:
+         if (usr->lampDataDir == NULL) {
+            type = myStat (next, &perm, NULL, NULL);
+            /* check if it is a directory */
+            if (type != MYSTAT_ISDIR) {
+               errSprintf ("'%s' is not a directory\n", next);
+               return -1;
+            }
+            /* check that it is readable */
+            if (!(perm & 4)) {
+               errSprintf ("No read permissions on '%s'\n", next);
+               return -1;
+            }
+            usr->lampDataDir = (char *) malloc ((strlen (next) + 1) *
+                                                 sizeof (char));
+            strcpy (usr->lampDataDir, next);
             return 2;
          }
       case GRIBFILTER:

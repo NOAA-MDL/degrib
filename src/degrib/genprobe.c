@@ -94,24 +94,25 @@ static const genElemDescript NdfdElements[] = {
 /* 39 */   {NDFD_TMPBLW90D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,3, 1,0.0,0.0, 0,0,0,0,0},
 /* 40 */   {NDFD_PRCPABV90D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,3, 1,0.0,0.0, 3,0,0,0,0},
 /* 41 */   {NDFD_PRCPBLW90D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,3, 1,0.0,0.0, 0,0,0,0,0},
+/* 42 */   {LAMP_TSTMPRB,2, 7,14,5,108, 0,8,19,2,-1,2, 1,0.0,0.0, 0,-1,-1,-1,-1},
 
-/* 42 */  {RTMA_PRECIPA,2, 7,0,2,109, 0,8,1,8,-1,1, 1,0.0,0.0, 0,-1,-1,-1,-1}, /* genProcess = 2 forecast? */
-/* 43 */  {RTMA_SKY,2, 7,0,8,109, 0,0,6,1,-1,0, 200,0.0,0.0, 0,-1,-1,-1,-1},  /* genProcess = 8 observation */
-/* 44 */  {RTMA_TD,2,  7,4,0,109, 0,0,0,6,-1,0, 103,2.0,0.0, 0,-1,-1,-1,-1},
-/* 45 */  {RTMA_TEMP,2, 7,4,0,109, 0,0,0,0,-1,0, 103,2.0,0.0, 0,-1,-1,-1,-1},
-/* 46 */  {RTMA_UTD,2, 7,4,7,109, 0,0,0,6,-1,0, 103,2.0,0.0, 0,-1,-1,-1,-1},
-/* 47 */  {RTMA_UTEMP,2, 7,4,7,109, 0,0,0,0,-1,0, 103,2.0,0.0, 0,-1,-1,-1,-1},
-/* 48 */  {RTMA_UWDIR,2, 7,4,7,109, 0,0,2,0,-1,0, 103,10.0,0.0, 0,-1,-1,-1,-1},
-/* 49 */  {RTMA_UWSPD,2, 7,4,7,109, 0,0,2,1,-1,0, 103,10.0,0.0, 0,-1,-1,-1,-1},
-/* 50 */  {RTMA_WDIR,2, 7,4,0,109, 0,0,2,0,-1,0, 103,10.0,0.0, 0,-1,-1,-1,-1},
-/* 51 */  {RTMA_WSPD,2, 7,4,0,109, 0,0,2,1,-1,0, 103,10.0,0.0, 0,-1,-1,-1,-1},
+/* 43 */  {RTMA_PRECIPA,2, 7,0,2,109, 0,8,1,8,-1,1, 1,0.0,0.0, 0,-1,-1,-1,-1}, /* genProcess = 2 forecast? */
+/* 44 */  {RTMA_SKY,2, 7,0,8,109, 0,0,6,1,-1,0, 200,0.0,0.0, 0,-1,-1,-1,-1},  /* genProcess = 8 observation */
+/* 45 */  {RTMA_TD,2,  7,4,0,109, 0,0,0,6,-1,0, 103,2.0,0.0, 0,-1,-1,-1,-1},
+/* 46 */  {RTMA_TEMP,2, 7,4,0,109, 0,0,0,0,-1,0, 103,2.0,0.0, 0,-1,-1,-1,-1},
+/* 47 */  {RTMA_UTD,2, 7,4,7,109, 0,0,0,6,-1,0, 103,2.0,0.0, 0,-1,-1,-1,-1},
+/* 48 */  {RTMA_UTEMP,2, 7,4,7,109, 0,0,0,0,-1,0, 103,2.0,0.0, 0,-1,-1,-1,-1},
+/* 49 */  {RTMA_UWDIR,2, 7,4,7,109, 0,0,2,0,-1,0, 103,10.0,0.0, 0,-1,-1,-1,-1},
+/* 50 */  {RTMA_UWSPD,2, 7,4,7,109, 0,0,2,1,-1,0, 103,10.0,0.0, 0,-1,-1,-1,-1},
+/* 51 */  {RTMA_WDIR,2, 7,4,0,109, 0,0,2,0,-1,0, 103,10.0,0.0, 0,-1,-1,-1,-1},
+/* 52 */  {RTMA_WSPD,2, 7,4,0,109, 0,0,2,1,-1,0, 103,10.0,0.0, 0,-1,-1,-1,-1},
 
 #ifdef GFSEKD
-/* 52 */  {GFSEKDMOS_MAXT,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
-/* 53 */  {GFSEKDMOS_MINT,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
-/* 54 */  {GFSEKDMOS_TEMP,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
-/* 55 */  {GFSEKDMOS_TD,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
-/* 56 */  {GFSEKDMOS_QPF,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
+/* 53 */  {GFSEKDMOS_MAXT,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
+/* 54 */  {GFSEKDMOS_MINT,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
+/* 55 */  {GFSEKDMOS_TEMP,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
+/* 56 */  {GFSEKDMOS_TD,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
+/* 57 */  {GFSEKDMOS_QPF,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
 #endif
 
    {NDFD_UNDEF,2, MISSING_2,MISSING_2,MISSING_1,MISSING_1,
@@ -170,8 +171,8 @@ static char *NDFD_Type[] = { "maxt", "mint", "pop12", "t", "winddir",
    "probtmpabv144", "probtmpblw144", "probprcpabv144", "probprcpblw144",
    "probtmpabv01m", "probtmpblw01m", "probprcpabv01m", "probprcpblw01m",
    "probtmpabv03m", "probtmpblw03m", "probprcpabv03m", "probprcpblw03m",
-   "apcp01", "tcdc", "dpt", "tmp", "dpterr", "tmperr", "wdirerr", "winderr",
-   "wdir", "wind", NULL
+   "tstm02", "apcp01", "tcdc", "dpt", "tmp", "dpterr", "tmperr",
+   "wdirerr", "winderr", "wdir", "wind", NULL
 };
 /* These match the convention on official download pages (cube names). */
 static char *NDFD_File[] = { "maxt", "mint", "pop12", "temp", "wdir",
@@ -181,8 +182,8 @@ static char *NDFD_File[] = { "maxt", "mint", "pop12", "temp", "wdir",
    "phail", "ptstmwinds", "pxtornado", "pxhail", "pxtstmwinds",
    "ptotsvrtstm", "ptotxsvrtstm", "tmpabv14d", "tmpblw14d", "prcpabv14d",
    "prcpblw14d", "tmpabv30d", "tmpblw30d", "prcpabv30d", "prcpblw30d",
-   "tmpabv90d", "tmpblw90d", "prcpabv90d", "prcpblw90d", "precipa_r",
-   "sky_r", "td_r", "temp_r", "utd", "utemp", "uwdir", "uwspd",
+   "tmpabv90d", "tmpblw90d", "prcpabv90d", "prcpblw90d", "tstmprb",
+   "precipa_r", "sky_r", "td_r", "temp_r", "utd", "utemp", "uwdir", "uwspd",
    "wdir_r", "wspd_r", NULL
 };
 /* A (mostly) 2 letter abreviation scheme created with/for the verification
@@ -191,7 +192,7 @@ static char *NDFD_File2[] = { "mx", "mn", "po", "tt", "wd",
    "ws", "dp", "cl", "qp", "sn", "wx", "wh", "at", "rh", "wg", "wwa", "i3",
    "i5", "i6", "c3", "c5", "c6", "ch", "pt", "ph", "pw", "xt", "xh", "xw",
    "ps", "xs", "ta6d", "tb6d", "pa6d", "pb6d",
-   "ta1m", "tb1m", "pa1m", "pb1m", "ta3m", "tb3m", "pa3m", "pb3m",
+   "ta1m", "tb1m", "pa1m", "pb1m", "ta3m", "tb3m", "pa3m", "pb3m", "tstmprb",
    "apcp01", "tcdc", "dpt", "tmp", "dpterr", "tmperr", "wdirerr", "winderr",
    "wdir", "wind", NULL
 };
@@ -256,6 +257,7 @@ uChar gen_NDFD_NDGD_Lookup (char *str, char f_toLower, char f_ndfdConven)
  * 11/2007 Paul Hershberg (MDL): Created.
  * 11/2007 Paul Hershberg (MDL): Added RTMA elements.
  *  6/2008 Paul Hershberg (MDL): Added Hazard element.
+ *  8/2009 Paul Hershberg (MDL): Added Lamp Tstm element. 
  *
  * NOTES:
  *****************************************************************************
@@ -358,7 +360,7 @@ int validMatch(double elemEndTime, double elemRefTime, int elemEnum,
       }
    }
 
-   /* 10 RTMA elements and the instantaneous Hazard element. 1-hour period.  */
+   /* 10 RTMA elements and the instantaneous Hazard element. 1-hour period. */
    if ((elemEnum == RTMA_PRECIPA) || (elemEnum == RTMA_SKY) ||
        (elemEnum == RTMA_TD) || (elemEnum == RTMA_TEMP) ||
        (elemEnum == RTMA_UTD) || (elemEnum == RTMA_UTEMP) ||
@@ -371,6 +373,15 @@ int validMatch(double elemEndTime, double elemRefTime, int elemEnum,
        * from NDFD element. This allows top of hour times to be chosen.
        */
       if (((f_valTime & 1) && (elemEndTime < startTime)) ||
+          ((f_valTime & 2) && (elemStartTime >= endTime))) {
+         return 0;
+      }
+   }
+
+   /* LAMP Tstm Prob. 2-hour period. */
+   if (elemEnum == LAMP_TSTMPRB) {
+      elemStartTime = elemEndTime - (2*3600);
+      if (((f_valTime & 1) && (elemEndTime <= startTime)) ||
           ((f_valTime & 2) && (elemStartTime >= endTime))) {
          return 0;
       }
@@ -3241,7 +3252,8 @@ int ProbeCmd (sChar f_Command, userType *usr)
                          usr->f_valTime, usr->startTime, usr->endTime,
                          usr->numNdfdVars, usr->ndfdVars, usr->f_inTypes,
                          usr->gribFilter, numSector, sector,
-                         usr->f_ndfdConven, usr->rtmaDataDir, usr->f_avgInterp);
+                         usr->f_ndfdConven, usr->rtmaDataDir, usr->f_avgInterp,
+                         usr->lampDataDir);
 #endif
       }
       if (usr->f_Graph != 0) {
