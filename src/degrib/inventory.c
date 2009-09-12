@@ -911,6 +911,8 @@ int GRIB2Inventory (char *filename, inventoryType **Inv, uInt4 *LenInv,
             free (buffer);
             free (buff);
             fclose (fp);
+            msgNum --;
+            *MsgNum = msgNum;
             return msgNum;
          }
       }
