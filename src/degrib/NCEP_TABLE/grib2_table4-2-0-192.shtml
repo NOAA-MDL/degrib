@@ -1,0 +1,164 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta name="Keywords" content="GRIB">
+  <title>GRIBv2 - Table 4.2-0-192 Meteorological - Covariance</title>
+</head>
+<body style="color: rgb(0, 0, 0); background-color: white;"
+ alink="#ff0000" link="#0000ff" vlink="#551a8b">
+<br>
+<center>
+<big><big><big><b>GRIB2 - TABLE 4.2-0-192</b></big></big></big><br>
+<span style="font-weight: bold;"><br>
+</span><b>&nbsp;<big><big> PARAMETERS FOR DISCIPLINE 0<br>
+CATEGORY 192<br>
+<small style="color: rgb(51, 51, 255);">(Meteorological products,
+Covariance</small></big></big></b><b><big><big><small
+ style="color: rgb(51, 51, 255);"> category)</small><br>
+</big></big></b><big><big><br>
+</big></big><big><big><big><small>Section 0 , Octet 7 = 0</small></big></big></big><b><big><big><big><small><br>
+</small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 192<br>
+</big></big></center>
+<br>
+<div style="text-align: center;"><b>Created 03/12/2008</b><br>
+<br>
+</b></span></div>
+<br>
+<center>
+<table style="width: 90%;" border="1" cellpadding="5" cellspacing="0">
+  <tbody>
+    <tr>
+      <th>Number<br>
+(Section 4, octet 11)<br>
+      </th>
+      <th>Parameter</th>
+      <td
+ style="text-align: center; vertical-align: middle; font-weight: bold;">Units<br>
+      </td>
+      <td
+ style="vertical-align: middle; font-weight: bold; text-align: center;">Abbrev</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">1</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Covariance between zonal and meridional components of
+       the wind. Defined as [uv]-[u][v], where "[]" indicates the mean over the indicated time span.</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">m<sup>2</sup>/s<sup>2</sup></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">COVMZ</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">2</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Covariance between izonal component of the wind and temperature.
+       Defined as [uT]-[u][T], where "[]" indicates the mean over the indicated time span.</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">K*m/s</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">COVTZ</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">3</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Covariance between meridional component of the wind and temperature.
+       Defined as [vT]-[v][T], where "[]" indicates the mean over the indicated time span.</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">K*m/s</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">COVTM</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">4</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Covariance between temperature and vertical component of
+       the wind. Defined as [wT]-[w][T], where "[]" indicates the mean over the indicated time span.</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">K*m/s</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">COVTW</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">5</td>
+      <td style="vertical-align: top; color: red;">Covariance between zonal and zonal
+       components of the wind. Defined as [uu]-[u][u], where "[]" indicates
+       the mean over the indicated time span.</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">m<sup>2</sup>/s<sup>2</sup></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">COVZZ</td>
+    </tr>
+    <tr>
+      <td style="text-align: center; color: red;">6</td>
+      <td style="vertical-align: top; color: red;">Covariance between meridional and meridional
+       components of the wind. Defined as [vv]-[v][v], where "[]" indicates
+       the mean over the indicated time span.</td>
+      <td style="vertical-align: top; color: red;">m<sup>2</sup>/s<sup>2</sup><br>
+      </td>
+      <td style="vertical-align: top; color: red;">COVMM<br>
+    </tr>
+    <tr>
+      <td style="text-align: center; color: red;">7</td>
+      <td style="vertical-align: top; color: red;">Covariance between specific humidity and zonal
+       components of the wind. Defined as [uq]-[u][q], where "[]" indicates
+       the mean over the indicated time span.</td>
+      <td style="vertical-align: top; color: red;">kg/kg*m/s</td>
+      <td style="vertical-align: top; color: red;">COVQZ</td>
+    </tr>
+    <tr>
+      <td style="text-align: center; color: red;">8</td>
+      <td style="vertical-align: top; color: red;">Covariance between specific humidity and meridional
+       components of the wind. Defined as [vq]-[v][q], where "[]" indicates
+       the mean over the indicated time span.</td>
+      <td style="vertical-align: top; color: red;">kg/kg*m/s</td>
+      <td style="vertical-align: top; color: red;">COVQM</td>
+    </tr>
+    <tr>
+      <td style="text-align: center; color: red;">9</td>
+      <td style="vertical-align: top; color: red;">Covariance between temperature and vertical
+       components of the wind. Defined as [&#937T]-[&#937][T], where "[]" indicates
+       the mean over the indicated time span.</td>
+      <td style="vertical-align: top; color: red;">K*Pa/s</td>
+      <td style="vertical-align: top; color: red;">COVTVV</td>
+    </tr>
+    <tr>
+      <td style="text-align: center; color: red;">10<br></td>
+      <td style="vertical-align: top; color: red;">Covariance between specific humidity and vertical
+       components of the wind. Defined as [&#937q]-[&#937][q], where "[]" indicates
+       the mean over the indicated time span.</td>
+      <td style="vertical-align: top; color: red;">kg/kg*Pa/s</td>
+      <td style="vertical-align: top; color: red;">COVQVV</td>
+    </tr>
+    <tr>
+      <td style="text-align: center; color: red;">11</td>
+      <td style="vertical-align: top; color: red;">Covariance between surface pressure and surface pressure.
+       Defined as [Psfc]-[Psfc][Psfc], where "[]" indicates the mean over the indicated time span.</td>
+      <td style="vertical-align: top; color: red;">Pa*Pa</td>
+      <td style="vertical-align: top; color: red;">COVPSPS</td>
+    </tr>
+    <tr>
+      <td style="text-align: center; color: red;">12</td>
+      <td style="vertical-align: top; color: red;">Covariance between specific humidity and specific
+       humidy.  Defined as [qq]-[q][q], where "[]" indicates the mean over the indicated time span.</td>
+      <td style="vertical-align: top; color: red;">kg/kg*kg/kg</td>
+      <td style="vertical-align: top; color: red;">COVQQ</td>
+    </tr>
+    <tr>
+      <td style="text-align: center; color: red;">13</td>
+      <td style="vertical-align: top; color: red;">Covariance between vertical and vertical
+       components of the wind. Defined as [&#937&#937]-[&#937][&#937], where "[]" indicates
+       the mean over the indicated time span.</td>
+      <td style="vertical-align: top; color: red;">Pa<sup>2</sup>/s<sup>2</sup></td>
+      <td style="vertical-align: top; color: red;">COVVVVV</td>
+    </tr>
+    <tr>
+      <td style="text-align: center; color: red;">14</td>
+      <td style="vertical-align: top; color: red;">Covariance between temperature and temperature.
+       Defined as [TT]-[T][T], where "[]" indicates the mean over the indicated time span.</td>
+      <td style="vertical-align: top; color: red;">K*K</td>
+      <td style="vertical-align: top; color: red;">COVTT</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">255<br>
+      </td>
+      <td style="vertical-align: top;">Missing<br>
+      </td>
+      <td style="vertical-align: top;"><br></td>
+      <td style="vertical-align: top;"><br></td>
+    </tr>
+  </tbody>
+</table>
+</center>
+<br>
+<br>
+<center><a href="/pmb/docs/grib2/grib2_doc.shtml">Back</a></center>
+<br>
+<br>
+</body>
+</html>
