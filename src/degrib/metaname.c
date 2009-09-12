@@ -1908,12 +1908,20 @@ static void ElemNameProb (uShort2 center, uShort2 subcenter, int prodType,
                   }
                   mallocSprintf (comment, "%02d yr Prob of Precip > %g In.", lenTime, upperProb / 25.4);
                } else {
-                  if (upperProb != .254) {
+                  /* The 300 is to deal with an old NDFD encoding bug from 2002:
+                   * PDS-S4 | Upper limit (scale value, scale factor) | 300 (3, -2)
+                   * 25.4 mm = 1 inch.  Rain typically .01 inches = .254 mm
+                   */
+                  if ((upperProb != .254) && (upperProb != 300)) {
                      mallocSprintf (name, "PoP%02d-%03d", lenTime, (int) (upperProb / .254 + .5));
                   } else {
                      mallocSprintf (name, "PoP%02d", lenTime);
                   }
-                  mallocSprintf (comment, "%02d hr Prob of Precip > %g In.", lenTime, upperProb / 25.4);
+                  if (upperProb != 300) {
+                     mallocSprintf (comment, "%02d hr Prob of Precip > %g In.", lenTime, upperProb / 25.4);
+                  } else {
+                     mallocSprintf (comment, "%02d hr Prob of Precip > 0.01 In.", lenTime);
+                  }
                }
             } else {
                if (upperProb != .254) {
