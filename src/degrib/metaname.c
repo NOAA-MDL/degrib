@@ -914,6 +914,10 @@ GRIB2ParmTable MeteoAtmos[] = {
 /* 17 */    {"MXSALB", "Maximum snow albedo", "%", UC_NONE},
 /* 18 */    {"SNFALB", "Snow free albedo", "%", UC_NONE},
 /* 19 */    {"SALBD", "Snow albedo", "%", UC_NONE},
+            {"ICIP", "Icing", "%", UC_NONE},
+            {"CTP", "In-Cloud Turbulence", "%", UC_NONE},
+            {"CAT", "Clear Air Turbulence", "%", UC_NONE},
+            {"SLDP", "Supercooled Large Droplet Potential", "%", UC_NONE},
 };
 
 /* GRIB2 Code table 4.2 : 0.190 */
@@ -1550,8 +1554,10 @@ GRIB2LocalTable NCEP_LclTable[] = {
             {0, 19, 214, "NWSALB", "Near IR; White Sky Albedo", "%", UC_NONE},
             {0, 19, 215, "PRSVR", "Total Probability of Severe Thunderstorms (Days 2,3)", "%", UC_NONE},
             {0, 19, 216, "PRSIGSVR", "Total Probability of Extreme Severe Thunderstorms (Days 2,3)", "%", UC_NONE},
+/*
             {0, 19, 217, "SIPD", "Supercooled Large Droplet Icing Potential",
                          "0=None; 1=Light; 2=Moderate; 3=Severe; 192=Trace; 193=Heavy; 255=missing; -0.1=Icing with unknown SLD", UC_NONE},
+*/
             {0, 19, 218, "EPSR", "Radiative emissivity", "", UC_NONE},
             {0, 19, 219, "TPFI", "Turbulence potential forecast index", "-", UC_NONE},
             {0, 19, 220, "", "Reserved", "-", UC_NONE},
