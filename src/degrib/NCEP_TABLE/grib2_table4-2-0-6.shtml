@@ -19,9 +19,9 @@ category)</small><br>
 </small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 6<br>
 </big></big></center>
 <br>
-<center><b>Revised 07/29/2008</b><br>
+<center><b>Revised 05/13/2009</b><br>
 <span style="color: red; font-size: 10pt;"><b>Red text depicts changes
-made since 10/30/2007</b></span></center>
+made since 04/21/2009</b></span></center>
 <br>
 <br>
 <center>
@@ -68,7 +68,7 @@ made since 10/30/2007</b></span></center>
     <tr>
       <td style="vertical-align: top; text-align: center;">3<br>
       </td>
-      <td style="vertical-align: top;">Low Cloud Cover</td>
+      <td style="vertical-align: top;">Low Cloud Cover<sup>*</sup></td>
       <td style="vertical-align: top;">%<br>
       </td>
       <td style="vertical-align: top;">L CDC </td>
@@ -76,7 +76,7 @@ made since 10/30/2007</b></span></center>
     <tr>
       <td style="vertical-align: top; text-align: center;">4<br>
       </td>
-      <td style="vertical-align: top;">Medium Cloud Cover</td>
+      <td style="vertical-align: top;">Medium Cloud Cover<sup>*</sup></td>
       <td style="vertical-align: top;">%<br>
       </td>
       <td style="vertical-align: top;">M CDC </td>
@@ -84,7 +84,7 @@ made since 10/30/2007</b></span></center>
     <tr>
       <td style="vertical-align: top; text-align: center;">5<br>
       </td>
-      <td style="vertical-align: top;">High Cloud Cover</td>
+      <td style="vertical-align: top;">High Cloud Cover<sup>*</sup></td>
       <td style="vertical-align: top;">%<br>
       </td>
       <td style="vertical-align: top;">H CDC </td>
@@ -241,6 +241,12 @@ Condensate</td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">SUNS</td>
     </tr>
     <tr>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">25<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Horizontal Extent of Cumulonimbus (CB)</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">%<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">CBHE<br></td>
+    </tr>
+    <tr>
       <td style="vertical-align: top; text-align: center;">25-191<br>
       </td>
       <td style="vertical-align: top;">Reserved</td>
@@ -329,6 +335,12 @@ Water</td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">MFLUX</td>
     </tr>
     <tr>
+      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">201<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">SunShine Duration</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Second<br></td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">SUNSD</td>
+    </tr>
+    <tr>
       <td style="vertical-align: top; text-align: center;">255<br>
       </td>
       <td style="vertical-align: top;">Missing<br>
@@ -340,6 +352,9 @@ Water</td>
     </tr>
   </tbody>
 </table>
+<tr>
+<td style="vertical-align: top;"><b>Notes:&nbsp;<b>*</b>Parameter deprecated - See Regulation 92.6.2 and use another parameter instead.<br><br>
+</tr>
 </center>
 <br>
 <br>
