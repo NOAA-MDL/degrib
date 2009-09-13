@@ -149,7 +149,7 @@ proc DoIt {filename} {
   set Zip_Also false
 
   set StartDir [file dirname [file dirname $src_dir]]
-  set DestDir $StartDir/degrib.web/degrib2/download
+  set DestDir $StartDir/degrib/distrib/webdir/download
   set UpdatePages ""         ;# intended to be a list.
   set Version [FindVersion $StartDir/degrib]
   set DoGeneric true

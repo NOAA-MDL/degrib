@@ -335,7 +335,8 @@ puts [exec bash pack.tcl no-tests]
 #####
 # 7) Update some of the pages on the web site.
 #####
-set webDir [file dirname [file dirname $src_dir]]/degrib.web/degrib2/
+set webDir [file dirname $src_dir]/distrib/webDir/
+# set webDir [file dirname [file dirname $src_dir]]/degrib.web/degrib2/
 # set webDir e:/www/htdocs/degrib2/
 set date [lindex $argv 1]
 set date2 [clock format [clock scan $date] -format "%Y%m%d"]
