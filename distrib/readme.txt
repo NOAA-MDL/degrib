@@ -3,6 +3,7 @@ To make a distribution as of 9/12/2009:
 cd distrib
 ./distrib.tcl 1.94 9/13/2009
 ./nsi.tcl 1.94 9/13/2009
+cp degrib-install.exe ./webDir/download
 ./transfer.sh
 
 ---------------------
