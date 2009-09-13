@@ -1,9 +1,21 @@
 #
-#----- Release: Version 1.93d 10/16/2008 -----
+#----- Release: Version 1.94 09/13/2009 -----
 #
+ 9/17 AAT REMOVED experimentation with GFSEKDMOS elements (r767)
+ 9/17 AAT Updated hazard grid to match Mike's current hazard grids (r766)
+ 8/25 AAT Added 3 GRIB1 tables for Tim Boyer for 4d aviation grids (r765)
+ 8/25 Paul Fixed a segfault (r763)
+ 8/19 AAT Experimented with adding GFSEKDMOS elements (r762)
+ 8/19 AAT Updated the NCEP tables (r761)
+ 8/19 AAT Upgraded to opnl vs expr Climate's elements (r757)
+ 8/19 AAT Removed old error check on "non-sphereical" earth messages (r756)
+ 8/18 AAT Updating hazard.c to match Mike's current tables (r754)
+ 8/6  Paul Checking in latest dwmllib (ETN support) (r749)
+ 8/6  Paul/AAT Adjusted CWA option to make the CWA's lower case (r748)
 #
 #----- Release: Version 1.92 07/24/2008 -----
 #
+ 7/24 AAT Fixed a type conflict caused by HZ when compiling on AIX
  7/23 AAT Updated the status of sky, snow, wwa, and qpf (r742)
  7/23 AAT Added hazards to the download file for tkdegrib (r741)
  7/22 AAT Updating the tables based on NCEPs current web pages. (r739)
@@ -579,7 +591,7 @@
           files or valid arguments.
  1/26 AAT Finished -NDFDvars option.
  1/25 AAT Introduced -NDFDvars option (primarily for XML parse)
- 1/25 AAT Worked on adding ability to convert log10(Âµg/m^3) to Âµg/m^3
+ 1/25 AAT Worked on adding ability to convert log10(µg/m^3) to µg/m^3
  1/25 AAT Introduced multiple point option. (-pnt x1,y1 -pnt x2,y2 ...)
  1/25 AAT Introduced -startTime and -endTime options.
  1/25 AAT Did a little work on "MOTD" option.
