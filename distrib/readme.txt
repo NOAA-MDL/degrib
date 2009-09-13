@@ -1,3 +1,12 @@
+To make a distribution as of 9/12/2009:
+
+cd distrib
+./distrib.tcl 1.94 9/13/2009
+./nsi.tcl 1.94 9/13/2009
+./transfer.sh
+
+---------------------
+
 To make a distribution:
 
 From cygwin the following will create all the source distributions but not
