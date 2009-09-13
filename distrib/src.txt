@@ -330,6 +330,7 @@ S:degrib/src/xyz2shp/*.h
 
 # degrib source
 S:degrib/src/degrib/readme.txt
+S:degrib/src/degrib/genelem.txt
 S:degrib/src/degrib/Makefile.in
 S:degrib/src/degrib/*.c
 S:degrib/src/degrib/*.h
@@ -391,6 +392,7 @@ E:degrib/bin/degrib_DP.exe
 E:degrib/bin/drawshp.exe
 E:degrib/bin/clock.exe
 E:degrib/bin/ncdump.exe
+E:degrib/bin/xyz2shp.exe
 A,E:degrib/bin/MakeDataBase.sh
 A,E:degrib/bin/sector.tbl
 A,E:degrib/bin/grb2shp.sh
