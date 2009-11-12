@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "hazard.h"
+#include "myassert.h"
 
 /*
  * Uncomment the following to have error messages sent to stdout.
@@ -658,6 +659,7 @@ void ParseHazardString (HazardStringType * haz, char *data, int simpleVer)
 #ifdef VERBOSE
          fprintf (stderr, "More than 5 hazards in '%s', ignoring the rest\n", data);
 #endif
+         f_continue = 0;
          continue;
       }
       if ((end = strchr (start, '^')) != NULL) {
