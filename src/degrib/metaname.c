@@ -1462,6 +1462,9 @@ GRIB2LocalTable NDFD_LclTable[] = {
             "log10(µg/m^3)", UC_LOG10},
    /* 3 */ {0, 14, 192, "O3MR", "Ozone Mixing Ratio", "kg/kg", UC_NONE},
    /* 4 */ {0, 14, 193, "OZCON", "Ozone Concentration", "PPB", UC_NONE},
+   /* Arthur adopted NCEP ozone values from NCEP local table to NDFD local tables. (11/14/2009) */
+           {0, 14, 200, "OZMAX1", "Ozone Daily Max from 1-hour Average", "ppbV", UC_NONE},
+           {0, 14, 201, "OZMAX8", "Ozone Daily Max from 8-hour Average", "ppbV", UC_NONE},
    /* Added 1/23/2007 in preparation for SPC NDFD Grids */
            {0, 19, 194, "ConvOutlook", "Convective Hazard Outlook", "0=none; 2=tstm; 4=slight; 6=moderate; 8=high", UC_NONE},
            {0, 19, 197, "TornadoProb", "Tornado Probability", "%", UC_NONE},
