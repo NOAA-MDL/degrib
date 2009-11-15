@@ -15,6 +15,7 @@
  */
 #include <string.h>
 #include <stdlib.h>
+#include <ctype.h>
 #include "meta.h"
 #include "metaname.h"
 #include "myerror.h"
@@ -2345,6 +2346,7 @@ static void ElemNamePerc (uShort2 center, uShort2 subcenter, int prodType,
    GRIB2LocalTable *local;
    size_t tableLen;
    size_t i;
+   size_t len;
 
    /* Generic tables. */
    table = Choose_GRIB2ParmTable (prodType, cat, &tableLen);
@@ -2411,7 +2413,21 @@ static void ElemNamePerc (uShort2 center, uShort2 subcenter, int prodType,
       for (i = 0; i < tableLen; i++) {
          if ((prodType == local[i].prodType) && (cat == local[i].cat) &&
              (subcat == local[i].subcat)) {
-            mallocSprintf (name, "%s%02d", local[i].name, percentile);
+/* If last two characters in name are numbers, then the name contains
+ * the percentile (or exceedance value) so don't tack on percentile here.*/
+            len = strlen(local[i].name);
+            if (isdigit(local[i].name[len -1]) && isdigit(local[i].name[len -2])) {
+               mallocSprintf (name, "%s", local[i].name);
+            } else if ((strcmp (local[i].name, "Surge") == 0) ||
+                       (strcmp (local[i].name, "SURGE") == 0)) {
+/* Provide a special exception for storm surge exceedance.
+ * Want exceedance value rather than percentile value.
+ */
+               mallocSprintf (name, "%s%02d", local[i].name, 100 - percentile);
+            } else {
+               mallocSprintf (name, "%s%02d", local[i].name, percentile);
+            }
+
             if (lenTime > 0) {
                if (timeRangeUnit == 3) {
                   mallocSprintf (comment, "%02d mon %s Percentile(%d)",
