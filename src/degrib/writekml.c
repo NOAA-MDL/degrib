@@ -813,6 +813,7 @@ static int savePolysKml (const char *filename, polyType *poly, int numPoly,
      if (meta->GribVersion == 2) {
         switch (meta->pds2.sect4.templat) {
 /*           case GS4_ANALYSIS:*/
+/*           case GS4_ERROR:*/
 /*           case GS4_ENSEMBLE:*/
 /*           case GS4_DERIVED:*/
 /*           case GS4_PROBABIL_PNT:*/

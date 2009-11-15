@@ -1422,7 +1422,7 @@ static int ParseSect4 (sInt4 *is4, sInt4 ns4, grib_MetaData *meta)
    }
    if ((is4[7] != GS4_ANALYSIS) && (is4[7] != GS4_ENSEMBLE) &&
        (is4[7] != GS4_DERIVED) && (is4[7] != GS4_PROBABIL_PNT) &&
-       (is4[7] != GS4_PERCENT_PNT) &&
+       (is4[7] != GS4_PERCENT_PNT) && (is4[7] != GS4_ERROR) &&
        (is4[7] != GS4_STATISTIC) && (is4[7] != GS4_PROBABIL_TIME) &&
        (is4[7] != GS4_PERCENT_TIME) && (is4[7] != GS4_ENSEMBLE_STAT) &&
        (is4[7] != GS4_SATELLITE) && (is4[7] != GS4_DERIVED_INTERVAL)) {
@@ -1524,6 +1524,7 @@ static int ParseSect4 (sInt4 *is4, sInt4 ns4, grib_MetaData *meta)
    }
    switch (meta->pds2.sect4.templat) {
       case GS4_ANALYSIS: /* 4.0 */
+      case GS4_ERROR: /* 4.7 */
          break;
       case GS4_ENSEMBLE: /* 4.1 */
          meta->pds2.sect4.typeEnsemble = (uChar) is4[34];

@@ -488,6 +488,7 @@ int WriteGrib2Record (grib_MetaData *meta, double *Grib_Data,
       }
       switch (meta->pds2.sect4.templat) {
          case GS4_ANALYSIS: /* 4.0 */
+         case GS4_ERROR: /* 4.7 */
             break;
          case GS4_ENSEMBLE: /* 4.1 */
             is->is[4][35 - 1] = meta->pds2.sect4.typeEnsemble;

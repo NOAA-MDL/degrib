@@ -471,12 +471,13 @@ enum { GS4_ANALYSIS, GS4_ENSEMBLE, GS4_DERIVED, GS4_PROBABIL_PNT = 5,
    if ((templat != GS4_ANALYSIS) && (templat != GS4_ENSEMBLE)
        && (templat != GS4_DERIVED)
        && (templat != GS4_PROBABIL_PNT) && (templat != GS4_PERCENT_PNT)
+       && (templat != GS4_ERROR)
        && (templat != GS4_STATISTIC)
        && (templat != GS4_PROBABIL_TIME) && (templat != GS4_PERCENT_TIME)
        && (templat != GS4_ENSEMBLE_STAT)
        && (templat != GS4_RADAR) && (templat != GS4_SATELLITE)
        && (templat != GS4_DERIVED_INTERVAL)) {
-      errSprintf ("This was only designed for templates 0, 1, 2, 5, 6, 8, 9, "
+      errSprintf ("This was only designed for templates 0, 1, 2, 5, 6, 7, 8, 9, "
                   "10, 11, 12, 20, 30\n");
       return -8;
    }

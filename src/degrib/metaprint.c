@@ -588,6 +588,7 @@ static int PrintSect4 (grib_MetaData *meta, sChar f_unit)
 
    switch (sect4->templat) {
       case GS4_ANALYSIS:
+      case GS4_ERROR:
       case GS4_ENSEMBLE:
       case GS4_DERIVED:
          Print ("PDS-S4", "Product type", Prt_DS, sect4->templat,
@@ -702,6 +703,7 @@ static int PrintSect4 (grib_MetaData *meta, sChar f_unit)
    }
    switch (sect4->templat) {
       case GS4_ANALYSIS:
+      case GS4_ERROR:
          break;
       case GS4_ENSEMBLE:
          Print ("PDS-S4", "Type of Ensemble forecast", Prt_DS,
