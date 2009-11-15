@@ -1164,6 +1164,7 @@ static int ParseSect3 (sInt4 *is3, sInt4 ns3, grib_MetaData *meta)
  *          instead of 0.
  *
  * NOTES
+ * http://www.nco.ncep.noaa.gov/pmb/docs/on388/table4.html
  *****************************************************************************
  */
 int ParseSect4Time2secV1 (sInt4 time, int unit, double *ans)
