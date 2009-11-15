@@ -773,7 +773,7 @@ GRIB2ParmTable MeteoShortRadiate[] = {
 /* 48 */   {"", "Reserved", "-", UC_NONE},
 /* 49 */   {"", "Reserved", "-", UC_NONE},
 /* 50 */   {"UVIUCS", "UV index (under clear sky)", "Numeric", UC_NONE},
-/* 51 */   {"UVI", "UV index", "J/(m^2)", UC_NONE},
+/* 51 */   {"UVI", "UV index", "J/(m^2)", UC_UVIndex},
 };
 
 /* GRIB2 Code table 4.2 : 0.5 */
@@ -1642,7 +1642,7 @@ GRIB2LocalTable NCEP_LclTable[] = {
    /* 40 */ {0, 7, 193, "4LFTX", "Best (4 layer) Lifted Index", "K", UC_NONE},
    /* 41 */ {0, 7, 194, "RI", "Richardson Number", "-", UC_NONE},
             {0, 7, 195, "CWDI", "Convective Weather Detection Index", "-", UC_NONE},
-            {0, 7, 196, "UVI", "Ultra Violet Index", "J/(m^2)", UC_NONE},
+            {0, 7, 196, "UVI", "Ultra Violet Index", "J/(m^2)", UC_UVIndex},
             {0, 7, 197, "UPHL", "Updraft Helicity", "m^2/s^2", UC_NONE},
             {0, 7, 198, "LAI", "Leaf area index", "-", UC_NONE},
 
@@ -2971,6 +2971,14 @@ int ComputeUnit (int convert, char *origName, sChar f_unit, double *unitM,
          if (f_unit == 1) {
             strcpy (name, "[knots]");
             *unitM = 3600. / 1852.; /* knot / m s**-1 */
+            *unitB = 0;
+            return 0;
+         }
+         break;
+      case UC_UVIndex: /* multiply by Watts/ m**2 by 40 for the UV index. */
+         if (f_unit == 1) {
+            strcpy (name, "[UVI]");
+            *unitM = 40;
             *unitB = 0;
             return 0;
          }

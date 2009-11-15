@@ -33,7 +33,7 @@ enum {GRIB2BIT_1=128, GRIB2BIT_2=64, GRIB2BIT_3=32, GRIB2BIT_4=16,
 #ifndef UNITCONVERT_ENUM
 #define UNITCONVERT_ENUM
 typedef enum { UC_NONE, UC_K2F, UC_InchWater, UC_M2Feet, UC_M2Inch,
-   UC_MS2Knots, UC_LOG10
+   UC_MS2Knots, UC_LOG10, UC_UVIndex
 } unit_convert;
 #endif
 

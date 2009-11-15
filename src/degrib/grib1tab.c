@@ -538,7 +538,7 @@ GRIB1ParmTable parm_table_ncep_opn[256] = {
    /* 204 */ {"DSWRF", "Downward short wave rad. flux", "W/m^2", UC_NONE},
    /* 205 */ {"DLWRF", "Downward long wave rad. flux", "W/m^2", UC_NONE},
    /* 206 */ {"UVI", "Ultra violet index (1 hour centered at solar noon)",
-              "J/m^2", UC_NONE},
+              "J/m^2", UC_UVIndex},
    /* 207 */ {"MSTAV", "Moisture availability", "%", UC_NONE},
    /* 208 */ {"SFEXC", "Exchange coefficient", "(kg/m^3)(m/s)", UC_NONE},
    /* 209 */ {"MIXLY", "No. of mixed layers next to surface", "integer",
