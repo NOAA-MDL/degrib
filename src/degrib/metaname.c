@@ -810,9 +810,9 @@ GRIB2ParmTable MeteoCloud[] = {
    /* 10 */ {"THUNC", "Thunderstorm coverage", "0=none; 1=isolated (1%-2%); "
              "2=few (3%-15%); 3=scattered (16%-45%); 4=numerous (> 45%); "
              "255=missing", UC_NONE},
-   /* 11 */ {"CDCB", "Cloud base", "m", UC_NONE},
-   /* 12 */ {"CDCT", "Cloud top", "m", UC_NONE},
-   /* 13 */ {"CEIL", "Ceiling", "m", UC_NONE},
+   /* 11 */ {"CDCB", "Cloud base", "m", UC_M2Feet},
+   /* 12 */ {"CDCT", "Cloud top", "m", UC_M2Feet},
+   /* 13 */ {"CEIL", "Ceiling", "m", UC_M2Feet},
 /* 14 */    {"CDLYR", "Non-convective cloud cover", "%", UC_NONE},
 /* 15 */    {"CWORK", "Cloud work function", "J/kg", UC_NONE},
 /* 16 */    {"CUEFI", "Convective cloud efficiency", "-", UC_NONE},
