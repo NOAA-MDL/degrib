@@ -6,6 +6,21 @@ cd distrib
 cp degrib-install.exe ./webDir/download
 ./transfer.sh
 
+The ./distrib.tcl guidance at the end is:
+Recommend in degrib/src:
+   A) svn update
+   B) autoconf.sh
+   C) config-win.sh
+   D) make
+Then rerun the distrib.tcl again
+
+Add the full download URL to the Release notes
+
+When finished, remember to tag it using:
+svn copy -r747 http://slosh.nws.noaa.gov/svn/degrib/degrib
+  http://slosh.nws.noaa.gov/svn/degrib/tags/20080724-1.92-747
+  -m 'Tagging release 1.92 (revision 747)'
+
 ---------------------
 
 To make a distribution:
