@@ -1225,10 +1225,7 @@ static int ReadGrib1Sect3 (uChar *bms, uInt4 gribLen, uInt4 *curLoc,
    }
    bms += 3;
    /* Assert: *bms currently points to number of unused bits at end of BMS. */
-/*
-   if (NxNy + *bms + 6 * 8 != sectLen * 8) {
-*/
-   if (((NxNy + *bms + 6 * 8) / 8) * 8 != sectLen * 8) {
+   if (NxNy + *bms + 6 * 8 > sectLen * 8) {
       errSprintf ("NxNy + # of unused bits %ld != # of available bits %ld\n",
                   (sInt4) (NxNy + *bms), (sInt4) ((sectLen - 6) * 8));
       return -2;
