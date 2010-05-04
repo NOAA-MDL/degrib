@@ -20,9 +20,9 @@ moisture category)</small><br>
 </big></big></center>
 <br>
 <center>
-<center><b>Revised 01/14/2009</b><br>
+<center><b>Revised 03/08/2010</b><br>
 <span style="color: red; font-size: 10pt;"><b>Red text depicts changes
-made since 10/30/2008</b></span><b><br>
+made since 01/14/2010</b></span><b><br>
 </b></center>
 <b></b></center>
 <br>
@@ -207,8 +207,7 @@ Snow Depth<br>
       </td>
       <td style="vertical-align: top;">Precipitation Type<br>
       </td>
-      <td style="vertical-align: top;">See <a
- href="grib2_table4-201.shtml">Table 4.201</a><br>
+      <td style="vertical-align: top;">See <a href="grib2_table4-201.shtml">Table 4.201</a><br>
       </td>
       <td style="vertical-align: top;">PTYPE</td>
     </tr>
@@ -811,6 +810,12 @@ no=0)</td>
       <td style="vertical-align: top; color: red;">FRZR</td>
     </tr>
     <tr>
+      <td style="text-align: center; color: red;">226</td>
+      <td style="vertical-align: top; color: red;">Predominant Weather</td>
+      <td style="vertical-align: top; color: red;">Numeric <br>(See note 3)</td>
+      <td style="vertical-align: top; color: red;">PWTHER</td>
+    </tr>
+    <tr>
       <td style="vertical-align: top; text-align: center;">255<br>
       </td>
       <td style="vertical-align: top;">Missing<br>
@@ -827,11 +832,16 @@ no=0)</td>
   <tbody>
     <tr>
       <td style="vertical-align: top;"><b>Notes:</b><br>
-      <br>
+<p>
 (1) Parameter deprecated - See Regulation 92.6.2 and use another
 parameter instead.  <br>
 (2) Total precipitation/snowfall rate stands for the sum of convective
 and large-scale precipitation/snowfall rate.<br>
+(3) The numeric value is a reference to a weather string and key table 
+stored in the Local Use Section (Section 2) of the same GRIB2 message. 
+See <a href="grib2_mdl_temp2-1.shtml">MDL Template 2.1</a> page and 
+<a href="http://www.weather.gov/mdl/synop/gmos/gmosgrib2_wxinfo.html">this page
+</a>for more details.<br></P>
     </tr>
   </tbody>
 </table>

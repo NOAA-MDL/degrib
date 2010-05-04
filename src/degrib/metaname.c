@@ -783,7 +783,7 @@ GRIB2ParmTable MeteoShortRadiate[] = {
 /* 48 */   {"", "Reserved", "-", UC_NONE},
 /* 49 */   {"", "Reserved", "-", UC_NONE},
 /* 50 */   {"UVIUCS", "UV index (under clear sky)", "Numeric", UC_NONE},
-/* 51 */   {"UVI", "UV index", "J/(m^2)", UC_UVIndex},
+/* 51 */   {"UVI", "UV index", "W/(m^2)", UC_UVIndex},
 };
 
 /* GRIB2 Code table 4.2 : 0.5 */
@@ -835,6 +835,15 @@ GRIB2ParmTable MeteoCloud[] = {
 /* 23 */    {"CDCIMR", "Cloud ice mixing ratio", "kg/kg", UC_NONE},
 /* 24 */    {"SUNS", "Sunshine", "Numeric", UC_NONE},
 /* 25 */    {"CBHE", "Horizontal extent of cumulonimbus (CB)", "%", UC_NONE},
+/* 26 */   {"", "Reserved", "-", UC_NONE},
+/* 27 */   {"", "Reserved", "-", UC_NONE},
+/* 28 */   {"", "Reserved", "-", UC_NONE},
+/* 29 */   {"", "Reserved", "-", UC_NONE},
+/* 30 */   {"", "Reserved", "-", UC_NONE},
+/* 31 */   {"", "Reserved", "-", UC_NONE},
+/* 32 */   {"", "Reserved", "-", UC_NONE},
+/* 33 */    {"SUNSD", "SunShine Duration", "s", UC_NONE},
+
 };
 
 /* GRIB2 Code table 4.2 : 0.7 */
@@ -878,6 +887,16 @@ GRIB2ParmTable MeteoRadar[] = {
    /* 6 */ {"RDSP1", "Radar spectra (1)", "-", UC_NONE},
    /* 7 */ {"RDSP2", "Radar spectra (2)", "-", UC_NONE},
    /* 8 */ {"RDSP3", "Radar spectra (3)", "-", UC_NONE},
+};
+
+/* GRIB2 Code table 4.2 : 0.16 */
+GRIB2ParmTable MeteoRadarImagery[] = {
+   /* 0 */ {"REFZR", "Equivalent radar reflectivity for rain", "mm^6/m^3", UC_NONE},
+   /* 1 */ {"REFZI", "Equivalent radar reflectivity for snow", "mm^6/m^3", UC_NONE},
+   /* 2 */ {"REFZC", "Equivalent radar reflectivity for parameterized convection", "mm^6/m^3", UC_NONE},
+   /* 3 */ {"RETOP", "Echo Top", "m", UC_NONE},
+   /* 4 */ {"REFD", "Reflectivity", "dB", UC_NONE},
+   /* 5 */ {"REFC", "Composity reflectivity", "dB", UC_NONE},
 };
 
 /* GRIB2 Code table 4.2 : 0.18 */
@@ -928,7 +947,7 @@ GRIB2ParmTable MeteoAtmos[] = {
             {"ICIP", "Icing", "%", UC_NONE},
             {"CTP", "In-Cloud Turbulence", "%", UC_NONE},
             {"CAT", "Clear Air Turbulence", "%", UC_NONE},
-            {"SLDP", "Supercooled Large Droplet Potential", "%", UC_NONE},
+            {"SLDP", "Supercooled Large Droplet Probability", "%", UC_NONE},
 };
 
 /* GRIB2 Code table 4.2 : 0.20 */
@@ -1265,6 +1284,7 @@ GRIB2ParmTable OceanSubSurface[] = {
 GRIB2ParmTable OceanMisc[] = {
    /* 0 */ {"TSEC", "Seconds prior to initial reference time (defined in Section"
             " 1)", "s", UC_NONE},
+   /* 1 */ {"MOSF", "Meridonal Overturning Stream Function", "m^3/s", UC_NONE},
 };
 
 /* *INDENT-ON* */
@@ -1358,6 +1378,8 @@ static GRIB2ParmTable *Choose_GRIB2ParmTable (int prodType, int cat,
                *tableLen = sizeof (MeteoRadar) / sizeof (GRIB2ParmTable);
                return &MeteoRadar[0];
             case METEO_RADAR_IMAGERY:
+               *tableLen = sizeof (MeteoRadarImagery) / sizeof (GRIB2ParmTable);
+               return &MeteoRadarImagery[0];
             case METEO_ELECTRO:
                *tableLen = 0;
                return NULL;
@@ -1562,6 +1584,7 @@ GRIB2LocalTable NCEP_LclTable[] = {
             {0, 1, 223, "APCPN", "Total precipitation (nearest grid point)", "kg/(m^2)", UC_NONE},
             {0, 1, 224, "ACPCPN", "Convective precipitation (nearest grid point)", "kg/(m^2)", UC_NONE},
             {0, 1, 225, "FRZR", "Freezing rain", "kg/(m^2)", UC_NONE},
+            {0, 1, 226, "PWTHER", "Predominant Weather", "-", UC_NONE},
 
    /* 15 */ {0, 2, 192, "VWSH", "Vertical speed sheer", "1/s", UC_NONE},
    /* 16 */ {0, 2, 193, "MFLX", "Horizontal Momentum Flux", "N/(m^2)", UC_NONE},
@@ -1652,7 +1675,7 @@ GRIB2LocalTable NCEP_LclTable[] = {
    /* 40 */ {0, 7, 193, "4LFTX", "Best (4 layer) Lifted Index", "K", UC_NONE},
    /* 41 */ {0, 7, 194, "RI", "Richardson Number", "-", UC_NONE},
             {0, 7, 195, "CWDI", "Convective Weather Detection Index", "-", UC_NONE},
-            {0, 7, 196, "UVI", "Ultra Violet Index", "J/(m^2)", UC_UVIndex},
+            {0, 7, 196, "UVI", "Ultra Violet Index", "W/(m^2)", UC_UVIndex},
             {0, 7, 197, "UPHL", "Updraft Helicity", "m^2/s^2", UC_NONE},
             {0, 7, 198, "LAI", "Leaf area index", "-", UC_NONE},
 
@@ -1710,10 +1733,8 @@ GRIB2LocalTable NCEP_LclTable[] = {
             {0, 19, 214, "NWSALB", "Near IR; White Sky Albedo", "%", UC_NONE},
             {0, 19, 215, "PRSVR", "Total Probability of Severe Thunderstorms (Days 2,3)", "%", UC_NONE},
             {0, 19, 216, "PRSIGSVR", "Total Probability of Extreme Severe Thunderstorms (Days 2,3)", "%", UC_NONE},
-/*
-            {0, 19, 217, "SIPD", "Supercooled Large Droplet Icing Potential",
-                         "0=None; 1=Light; 2=Moderate; 3=Severe; 192=Trace; 193=Heavy; 255=missing; -0.1=Icing with unknown SLD", UC_NONE},
-*/
+            {0, 19, 217, "SIPD", "Supercooled Large Droplet Icing",
+                         "0=None; 1=Light; 2=Moderate; 3=Severe; 4=Trace; 5=Heavy; 255=missing", UC_NONE},
             {0, 19, 218, "EPSR", "Radiative emissivity", "", UC_NONE},
             {0, 19, 219, "TPFI", "Turbulence potential forecast index", "-", UC_NONE},
             {0, 19, 220, "", "Reserved", "-", UC_NONE},

@@ -20,9 +20,9 @@ Imagery category)</small><br>
 </small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 16<br>
 </big></big></center>
 <br>
-<center><b>Revised 05/13/2009</b><br>
+<center><b>Revised 01/22/2010</b><br>
 <span style="color: red; font-size: 10pt;"><b>Red text depicts changes
-made since 03/14/2006</b></span></center>
+made since 05/13/2009</b></span></center>
 </b></center>
 <br>
 <br>
@@ -41,7 +41,43 @@ made since 03/14/2006</b></span></center>
  style="vertical-align: middle; font-weight: bold; text-align: center;">Abbrev</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center;">0-191<br>
+      <td style="vertical-align: top; text-align: center; color: red;">0<br></td>
+      <td style="vertical-align: top; color: red;">Equivalent radar reflectivity factor for rain</td>
+      <td style="vertical-align: top; color: red;">mm<sup>6</sup>m<sup>-3</sup><br></td>
+      <td style="vertical-align: top; color: red;">REFZR<br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">1<br></td>
+      <td style="vertical-align: top; color: red;">Equivalent radar reflectivity factor for snow</td>
+      <td style="vertical-align: top; color: red;">mm<sup>6</sup>m<sup>-3</sup><br></td>
+      <td style="vertical-align: top; color: red;">REFZI<br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">2<br></td>
+      <td style="vertical-align: top; color: red;">Equivalent radar reflectivity factor for parameterized convection</td>
+      <td style="vertical-align: top; color: red;">mm<sup>6</sup>m<sup>-3</sup><br></td>
+      <td style="vertical-align: top; color: red;">REFZC<br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">3<br></td>
+      <td style="vertical-align: top; color: red;">Echo Top    (See Note 1)</td>
+      <td style="vertical-align: top; color: red;">m<br></td>
+      <td style="vertical-align: top; color: red;">RETOP<br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">4<br></td>
+      <td style="vertical-align: top; color: red;">Reflectivity</td>
+      <td style="vertical-align: top; color: red;">dB<br></td>
+      <td style="vertical-align: top; color: red;">REFD<br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">5<br></td>
+      <td style="vertical-align: top; color: red;">Composite reflectivity</td>
+      <td style="vertical-align: top; color: red;">dB<br></td>
+      <td style="vertical-align: top; color: red;">REFC<br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">6-191<br>
       </td>
       <td style="vertical-align: top;">Reserved</td>
       <td style="vertical-align: top;"><br>
@@ -67,47 +103,43 @@ for Local Use<br>
     <tr>
       <td style="vertical-align: top; text-align: center;">192<br>
       </td>
-      <td style="vertical-align: top;">Derived
-radar reflectivity backscatter from rain</td>
+      <td style="vertical-align: top;">Equivalent radar reflectivity factor for rain</td>
       <td style="vertical-align: top;">mm<sup>6</sup>/m<sup>3</sup></td>
       <td style="vertical-align: top;">REFZR</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">193<br>
       </td>
-      <td style="vertical-align: top;">Derived
-radar reflectivity backscatter from ice</td>
+      <td style="vertical-align: top;">Equivalent radar reflectivity factor for snow</td>
       <td style="vertical-align: top;">mm<sup>6</sup>/m<sup>3</sup></td>
       <td style="vertical-align: top;">REFZI</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">194<br>
       </td>
-      <td style="vertical-align: top;">Derived
-radar reflectivity backscatter from parameterized convection</td>
+      <td style="vertical-align: top;">Equivalent radar reflectivity factor for parameterized convection</td>
       <td style="vertical-align: top;">mm<sup>6</sup>/m<sup>3</sup></td>
       <td style="vertical-align: top;">REFZC</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">195<br>
       </td>
-      <td style="vertical-align: top;">Derived
-radar reflectivity</td>
+      <td style="vertical-align: top;">Reflectivity</td>
       <td style="vertical-align: top;">dB<br>
       </td>
       <td style="vertical-align: top;">REFD</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">196<br></td>
-      <td style="vertical-align: top;">Maximum/Composite radar reflectivity</td>
+      <td style="vertical-align: top;">Composite reflectivity</td>
       <td style="vertical-align: top;">dB<br> </td>
       <td style="vertical-align: top;">REFC</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">197<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Radar Echo Top (18.3 DBZ)</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">m<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">RETOP<br></td>
+      <td style="vertical-align: top; text-align: center; color: red;">197<br></td>
+      <td style="vertical-align: top; color: red;">Echo Top    (See Note 1)</td>
+      <td style="vertical-align: top; color: red;">m<br></td>
+      <td style="vertical-align: top; color: red;">RETOP<br></td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">255<br>
@@ -122,6 +154,21 @@ radar reflectivity</td>
   </tbody>
 </table>
 </center>
+<br>
+<br>
+<table
+ style="margin-left: auto; margin-right: auto; width: 80%; text-align: left;"
+ border="0" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;"><b>Notes:</b><br>
+      <br><p>
+      (1) For Echo Top product, Use octet number 38 to store threshold value (for example, 18.3 dB)
+       in Product Definition Template 4.20. See <a href="grib2_temp4-20.shtml">Template 4.20</a>.
+      </P><br>
+    </tr>
+  </tbody>
+</table>
 <br>
 <br>
 <center><a href="/pmb/docs/grib2/grib2_doc.shtml">Back</a></center>

@@ -19,9 +19,9 @@ Physical Atmospheric category)</small><br>
 </small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 19<br>
 </big></big></center>
 <br>
-<center><b>Revised 04/21/2009</b><br>
+<center><b>Revised 09/14/2009</b><br>
 <span style="color: red; font-size: 10pt;"><b>Red text depicts changes
-made since 07/29/2008</b></span><span style="font-weight: bold;"><br>
+made since 04/21/2009</b></span><span style="font-weight: bold;"><br>
 <br>
 <br>
 </span></center>
@@ -247,7 +247,7 @@ made since 07/29/2008</b></span><span style="font-weight: bold;"><br>
     <tr>
       <td style="text-align: center; vertical-align: top; color: rgb(255, 0, 0);">23</td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">Supercooled Large Droplet (SLD) 
-      Potential<sup>see note 1 </sup></td>
+      Probability<sup>see note 1 </sup></td>
       <td style="vertical-align: top;">%<br></td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">SLDP<br></td>
     </tr>
@@ -541,6 +541,12 @@ Probability of Extreme Severe Thunderstorms (Days 2,3)</td>
       </td>
       <td style="vertical-align: top; color: rgb(255, 0, 0);">PRSIGSVR<br>
       </td>
+    </tr>
+    <tr>
+      <td style="text-align: center; vertical-align: top; color: rgb(255, 0, 0);">217</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">Supercooled Large Droplet (SLD) Icing</td>
+      <td style="vertical-align: top;">See <a href="grib2_table4-207.shtml">Table 4.207</a><br>See Note (1)</td>
+      <td style="vertical-align: top; color: rgb(255, 0, 0);">SIPD</td>
     </tr>
     <tr>
       <td style="text-align: center; color: red;">218<br> </td>
