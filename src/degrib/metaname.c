@@ -1584,7 +1584,13 @@ GRIB2LocalTable NCEP_LclTable[] = {
             {0, 1, 223, "APCPN", "Total precipitation (nearest grid point)", "kg/(m^2)", UC_NONE},
             {0, 1, 224, "ACPCPN", "Convective precipitation (nearest grid point)", "kg/(m^2)", UC_NONE},
             {0, 1, 225, "FRZR", "Freezing rain", "kg/(m^2)", UC_NONE},
-            {0, 1, 226, "PWTHER", "Predominant Weather", "-", UC_NONE},
+/* It is important to use 'Wx' instead of 'PWTHER' since the rest of the code
+ * uses "Wx" to test if it should be dealing with weather strings.  Since these
+ * are the same as the NDFD "Wx" strings, it was simpler to maintain the NDFD
+ * convention on abbrevations.  We could use 'Predominant Weather' as the long
+ * descriptor, but the NDFD 'Weather String' seems quite reasonable.
+/*            {0, 1, 226, "PWTHER", "Predominant Weather", "-", UC_NONE},*/
+            {0, 1, 226, "Wx", "Weather String", "-", UC_NONE},
 
    /* 15 */ {0, 2, 192, "VWSH", "Vertical speed sheer", "1/s", UC_NONE},
    /* 16 */ {0, 2, 193, "MFLX", "Horizontal Momentum Flux", "N/(m^2)", UC_NONE},
