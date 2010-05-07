@@ -7,10 +7,28 @@
 
 typedef struct {
 /*   int index;*/    /* was an index into which sector this was.*/
-   sChar timeZone;   /* hours to add to local time to get UTC */
-   sChar f_dayLight; /* daylight flag (pnt observes daylight savings time) */
    sChar f_sector[NDFD_OCONUS_UNDEF]; /* Array of oconus sectors that the
-                      * point falls in.  Initialized to values of UNDEF */
+                      * point falls in.  Initialized to values of UNDEF.
+                      * This is a sorted list.  The first entry is the value
+                      * of the 'primary' sector.  The second is the
+                      * 'secondary' sector, trailing off to NDFD_OCONUS_UNDEF
+                      * values */
+   double X[NDFD_OCONUS_UNDEF]; /* Array of X grid cell locations for the
+                      * points in the sector defined by f_sector[i],
+                      * If f_sector[i] is NDFD_OCONUS_UNDEF, then -1. */
+   double Y[NDFD_OCONUS_UNDEF]; /* Array of Y grid cell locations for the
+                      * points in the sector defined by f_sector[i],
+                      * If f_sector[i] is NDFD_OCONUS_UNDEF, then -1. */
+   sChar timeZone;   /* hours to add to local time to get UTC based on
+                      * primary sector (aka f_sector[0]) */
+   sChar f_dayLight; /* daylight flag (pnt observes daylight savings time)
+                      * based on primary sector (aka f_sector[0]) */
+   float elev;       /* Elevation for a cell based on 'primary' sector
+                      * (aka f_sector[0]), or -9999 if it can't be
+                      * determined. */
+    /* Array of elevations for a cell in each
+                      * sector it falls in, or -9999 if it can't be
+                      * determined. */
    sChar numSector;  /* number of sectors point falls in */
    char *cwa;        /* The CWA the point fall in. */
    int startNum;     /* The first index in the match structure in which

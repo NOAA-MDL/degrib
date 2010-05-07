@@ -515,22 +515,26 @@ static int SectorFillPnt (sChar f_sector, const gdsType *gds, sChar f_first,
          pntInfo[j].numSector = 0;
          for (k = 0; k < NDFD_OCONUS_UNDEF; k++) {
             pntInfo[j].f_sector[k] = NDFD_OCONUS_UNDEF;
+            pntInfo[j].X[k] = -1;
+            pntInfo[j].Y[k] = -1;
          }
       }
       /* Find x1, y1 as integers in range of 1,NX 1,NY */
       if (f_cells != 1) {
          myCll2xy (&map, pnts[j].Y, pnts[j].X, &x, &y);
-         x1 = (sInt4) (x + .5);
-         y1 = (sInt4) (y + .5);
       } else {
-         x1 = (sInt4) (pnts[j].X + .5);
-         y1 = (sInt4) (pnts[j].Y + .5);
+         x = pnts[j].X;
+         y = pnts[j].Y;
       }
+      x1 = (sInt4) (x + .5);
+      y1 = (sInt4) (y + .5);
       /* Determine if they are in the grid */
       if ((x1 >= 1) && (x1 <= (sInt4) gds->Nx) && (y1 >= 1)
           && (y1 <= (sInt4) gds->Ny)) {
          /* Update f_sector[] and numSector */
          pntInfo[j].f_sector[pntInfo[j].numSector] = f_sector;
+         pntInfo[j].X[pntInfo[j].numSector] = x;
+         pntInfo[j].Y[pntInfo[j].numSector] = y;
          pntInfo[j].numSector++;
 
          /* We update f_foundOne if this is the first (primary) sector a
@@ -546,6 +550,106 @@ static int SectorFillPnt (sChar f_sector, const gdsType *gds, sChar f_first,
       }
    }
    return f_foundOne;
+}
+
+/*****************************************************************************
+ * SectorElev() -- Arthur Taylor / MDL
+ *
+ * PURPOSE
+ *   For a given sector, determine the elevations for each point based on its
+ * primary sector (aka pntInfo[i].f_sector[0])
+ *
+ * ARGUMENTS
+ *   f_sector = Enumerated value of this sector (Input)
+ *   sectName = Sector name (For the file to look in) (Input)
+ *    numPnts = number of input points (Input)
+ *       pnts = The points to look at (Input)
+ * geoDataDir = The user defined directory to look for geoData. (Input)
+ *    pntInfo = pointInfo structure we're updating (Out)
+ *
+ * RETURNS: void
+ *
+ * NOTES
+ *   The elevation GDS sections can differ from the current default
+ * GDS for a sector (because the elevation ones are stale).
+ *****************************************************************************
+ */
+static void SectorElev (sChar f_sector, const char *sectName,
+                        size_t numPnts, Point * pnts,
+                        const char *geoDataDir, PntSectInfo * pntInfo)
+{
+   size_t i;            /* loop counter. */
+   char *fileName = NULL; /* used to create the timezone/daylight filename. */
+   FILE *Flt;           /* Open elevation file */
+   char *flxArray;      /* Array containing contents of .ind file */
+   int flxArrayLen;     /* Length of flxArray */
+   sInt4 x1, y1;        /* nearest integer values of X,Y. */
+   float value;         /* The current value from .flt file. */
+   sInt4 offset;        /* Where to read in the .flt file. */
+   int gdsIndex = 1;    /* Which gds to use in the .ind file. */
+   gdsType gds;         /* GDS section associated with Flt/Ind files. */
+   char f_bad;          /* flag to check if we had problems opening the files.*/
+
+   /* Open the files */
+   f_bad = 0;
+   if (geoDataDir == NULL) {
+      f_bad = 1;
+   } else {
+      fileName = (char *) malloc (strlen (geoDataDir) + 1 + strlen (sectName)
+                                  + strlen ("elev.flt") + 1);
+      /* Try to open elev files */
+      sprintf (fileName, "%s/%selev.flt", geoDataDir, sectName);
+      if ((Flt = fopen (fileName, "rb")) == NULL) {
+         f_bad = 1;
+      } else {
+         sprintf (fileName, "%s/%selev.ind", geoDataDir, sectName);
+         if (ReadFLX (fileName, &flxArray, &flxArrayLen) != 0) {
+            f_bad = 1;
+            fclose (Flt);
+         } else {
+            /* Read gds projection. */
+            ReadGDSBuffer (flxArray + HEADLEN + 2 + (gdsIndex - 1) * 129, &gds);
+            free (flxArray);
+         }
+      }
+      free (fileName);
+   }
+
+   /* Handle bad fileOpen case. */
+   if (f_bad) {
+      for (i = 0; i < numPnts; i++) {
+         /* Don't need to look at numSector, because array is init to UNDEF. */
+         /* Only care if this is the "primary" sector for the point */
+         if (pntInfo[i].f_sector[0] == f_sector) {
+            pntInfo[i].elev = -9999;
+         }
+      }
+      return;
+   }
+
+   /* Convert point, seek to correct location, read file, store value. */
+   for (i = 0; i < numPnts; i++) {
+      if (pntInfo[i].f_sector[0] == f_sector) {
+         x1 = (sInt4) (pntInfo[i].X[0] + .5);
+         y1 = (sInt4) (pntInfo[i].Y[0] + .5);
+         /* Possible point could fall outside the elevation grid, but still
+          * be inside the NDFD grid (stale definition of elevation file). */
+         if ((x1 >= 1) && (x1 <= (sInt4) gds.Nx) && (y1 >= 1)
+             && (y1 <= (sInt4) gds.Ny)) {
+            if (gds.scan == 0) {
+               offset = ((x1 - 1) + (gds.Ny - y1) * gds.Nx) * sizeof (float);
+            } else {
+               offset = ((x1 - 1) + (y1 - 1) * gds.Nx) * sizeof (float);
+            }
+            fseek (Flt, offset, SEEK_SET);
+            FREAD_LIT (&value, sizeof (float), 1, Flt);
+            pntInfo[i].elev = value;
+         } else {
+            pntInfo[i].elev = -9999;
+         }
+      }
+   }
+   fclose (Flt);
 }
 
 /*****************************************************************************
@@ -741,6 +845,7 @@ int GetSectorList (char *sectFile, size_t numPnts, Point * pnts,
             *NumSect = *NumSect + 1;
             SectorTimeZones (i, NdfdDefSect[i], numPnts, pnts, f_cells, geoDataDir,
                              NdfdDefTimeZone[i], NdfdDefDayLight[i], pntInfo);
+            SectorElev (i, NdfdDefSect[i], numPnts, pnts, geoDataDir, pntInfo);
          }
       }
       return 0;
@@ -790,6 +895,8 @@ int GetSectorList (char *sectFile, size_t numPnts, Point * pnts,
          SectorTimeZones (f_sector, NdfdDefSect[f_sector], numPnts, pnts, f_cells, geoDataDir,
                           NdfdDefTimeZone[f_sector], NdfdDefDayLight[f_sector],
                           pntInfo);
+         SectorElev (f_sector, NdfdDefSect[f_sector], numPnts, pnts, geoDataDir,
+                     pntInfo);
       }
 
       for (i = 0; i < numList; i++) {
