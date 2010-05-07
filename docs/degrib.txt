@@ -261,7 +261,7 @@ FLT SPECIFIC OPTIONS (see above for "-C" or "-DC" and "-Flt")
           Needed if we are to implement multiple grids using a single .ctl
           file.
 
-   -ESRIAsc
+   -AscGrid
       Create an ESRI ASCII Grid instead of a binary grid.  The binary grid
       consists of a .flt and a .hdr file.  The ASCII grid combines the two
       together. 
