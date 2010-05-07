@@ -3244,6 +3244,9 @@ int ProbeCmd (sChar f_Command, userType *usr)
        * f_ndfdConven * NDFD naming convention to use. * numNdfdVars,
        * ndfdVars <check> */
       if (usr->f_XML != 0) {
+         printf ("%f %f : %d, %f, %f, %f\n", pnts[0].X, pnts[0].Y,
+                 pntInfo[0].f_sector[0], pntInfo[0].X[0], pntInfo[0].Y[0],
+                 pntInfo[0].elev);
 #ifdef _DWML_
          ans = XMLParse (usr->f_XML, numPnts, pnts, pntInfo, usr->f_pntType,
                          labels, &(usr->numInNames), &(usr->inNames),

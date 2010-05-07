@@ -24,10 +24,10 @@ typedef struct {
    sChar f_dayLight; /* daylight flag (pnt observes daylight savings time)
                       * based on primary sector (aka f_sector[0]) */
    float elev;       /* Elevation for a cell based on 'primary' sector
-                      * (aka f_sector[0]), or -9999 if it can't be
+                      * (aka f_sector[0]), or 9999 if it can't be
                       * determined. */
     /* Array of elevations for a cell in each
-                      * sector it falls in, or -9999 if it can't be
+                      * sector it falls in, or 9999 if it can't be
                       * determined. */
    sChar numSector;  /* number of sectors point falls in */
    char *cwa;        /* The CWA the point fall in. */

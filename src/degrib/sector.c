@@ -621,7 +621,7 @@ static void SectorElev (sChar f_sector, const char *sectName,
          /* Don't need to look at numSector, because array is init to UNDEF. */
          /* Only care if this is the "primary" sector for the point */
          if (pntInfo[i].f_sector[0] == f_sector) {
-            pntInfo[i].elev = -9999;
+            pntInfo[i].elev = 9999;
          }
       }
       return;
@@ -645,7 +645,7 @@ static void SectorElev (sChar f_sector, const char *sectName,
             FREAD_LIT (&value, sizeof (float), 1, Flt);
             pntInfo[i].elev = value;
          } else {
-            pntInfo[i].elev = -9999;
+            pntInfo[i].elev = 9999;
          }
       }
    }
