@@ -57,62 +57,62 @@ static const genElemDescript NdfdElements[] = {
 /* 12 */  {NDFD_AT,2, 8,MISSING_2,2,0, 0,0,0,193,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
 /* 13 */  {NDFD_RH,2, 8,MISSING_2,2,0, 0,0,1,1,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
 /* 14 */  {NDFD_WG,2, 8,MISSING_2,2,0, 0,0,2,22,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
-/* 14b */ {NDFD_WWA,2, 8,MISSING_2,2,0, 0,0,19,217,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+/* 15 */  {NDFD_WWA,2, 8,MISSING_2,2,0, 0,0,19,217,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
 
-/* 15 */  {NDFD_INC34,2, 8,MISSING_2,2,0, 0,9,2,1,-1,6, 103,10.0,0.0 ,1,0,0,17491,3},
-/* 16 */  {NDFD_INC50,2, 8,MISSING_2,2,0, 0,9,2,1,-1,6, 103,10.0,0.0 ,1,0,0,25722,3},
-/* 17 */  {NDFD_INC64,2, 8,MISSING_2,2,0, 0,9,2,1,-1,6, 103,10.0,0.0 ,1,0,0,32924,3},
-/* 18 */  {NDFD_CUM34,2, 8,MISSING_2,2,0, 0,9,2,1,0,0, 103,10.0,0.0 ,1,0,0,17491,3},
-/* 19 */  {NDFD_CUM50,2, 8,MISSING_2,2,0, 0,9,2,1,0,0, 103,10.0,0.0 ,1,0,0,25722,3},
-/* 20 */  {NDFD_CUM64,2, 8,MISSING_2,2,0, 0,9,2,1,0,0, 103,10.0,0.0 ,1,0,0,32924,3},
+/* 16 */  {NDFD_INC34,2, 8,MISSING_2,2,0, 0,9,2,1,-1,6, 103,10.0,0.0 ,1,0,0,17491,3},
+/* 17 */  {NDFD_INC50,2, 8,MISSING_2,2,0, 0,9,2,1,-1,6, 103,10.0,0.0 ,1,0,0,25722,3},
+/* 18 */  {NDFD_INC64,2, 8,MISSING_2,2,0, 0,9,2,1,-1,6, 103,10.0,0.0 ,1,0,0,32924,3},
+/* 19 */  {NDFD_CUM34,2, 8,MISSING_2,2,0, 0,9,2,1,0,0, 103,10.0,0.0 ,1,0,0,17491,3},
+/* 20 */  {NDFD_CUM50,2, 8,MISSING_2,2,0, 0,9,2,1,0,0, 103,10.0,0.0 ,1,0,0,25722,3},
+/* 21 */  {NDFD_CUM64,2, 8,MISSING_2,2,0, 0,9,2,1,0,0, 103,10.0,0.0 ,1,0,0,32924,3},
 
-/* 21 */  {NDFD_CONHAZ,2, 8,MISSING_2,2,0, 0,8,19,194,-1,24, 1,0.0,0.0 ,0,-1,-1,-1,-1},
-/* 22 */  {NDFD_PTORN,2, 8,MISSING_2,2,0, 0,9,19,197,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
-/* 23 */  {NDFD_PHAIL,2, 8,MISSING_2,2,0, 0,9,19,198,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
-/* 24 */  {NDFD_PTSTMWIND,2, 8,MISSING_2,2,0, 0,9,19,199,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
-/* 25 */  {NDFD_PXTORN,2, 8,MISSING_2,2,0, 0,9,19,200,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
-/* 26 */  {NDFD_PXHAIL,2, 8,MISSING_2,2,0, 0,9,19,201,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
-/* 27 */  {NDFD_PXTSTMWIND,2, 8,MISSING_2,2,0, 0,9,19,202,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+/* 22 */  {NDFD_CONHAZ,2, 8,MISSING_2,2,0, 0,8,19,194,-1,24, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+/* 23 */  {NDFD_PTORN,2, 8,MISSING_2,2,0, 0,9,19,197,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+/* 24 */  {NDFD_PHAIL,2, 8,MISSING_2,2,0, 0,9,19,198,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+/* 25 */  {NDFD_PTSTMWIND,2, 8,MISSING_2,2,0, 0,9,19,199,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+/* 26 */  {NDFD_PXTORN,2, 8,MISSING_2,2,0, 0,9,19,200,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+/* 27 */  {NDFD_PXHAIL,2, 8,MISSING_2,2,0, 0,9,19,201,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+/* 28 */  {NDFD_PXTSTMWIND,2, 8,MISSING_2,2,0, 0,9,19,202,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
 /* Following two lines changed from 203->215 and 204->216 9/19/2007 */
-/* 28 */  {NDFD_PSTORM,2, 8,MISSING_2,2,0, 0,9,19,215,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
-/* 29 */  {NDFD_PXSTORM,2, 8,MISSING_2,2,0, 0,9,19,216,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+/* 29 */  {NDFD_PSTORM,2, 8,MISSING_2,2,0, 0,9,19,215,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+/* 30 */  {NDFD_PXSTORM,2, 8,MISSING_2,2,0, 0,9,19,216,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
 
 /* If we have to change the 0,0,0,0 for lower/upper Value/Factor, also update
  * cube.c :: line 634, 655 */
    /* the 6 in the length of time column stands for 6 days... */
-/* 30 */   {NDFD_TMPABV14D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,6, 1,0.0,0.0, 3,0,0,0,0},
-/* 31 */   {NDFD_TMPBLW14D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,6, 1,0.0,0.0, 0,0,0,0,0},
-/* 32 */   {NDFD_PRCPABV14D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,6, 1,0.0,0.0, 3,0,0,0,0},
-/* 33 */   {NDFD_PRCPBLW14D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,6, 1,0.0,0.0, 0,0,0,0,0},
+/* 31 */   {NDFD_TMPABV14D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,6, 1,0.0,0.0, 3,0,0,0,0},
+/* 32 */   {NDFD_TMPBLW14D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,6, 1,0.0,0.0, 0,0,0,0,0},
+/* 33 */   {NDFD_PRCPABV14D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,6, 1,0.0,0.0, 3,0,0,0,0},
+/* 34 */   {NDFD_PRCPBLW14D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,6, 1,0.0,0.0, 0,0,0,0,0},
    /* the 1 in the length of time column stands for 1 month... */
-/* 34 */   {NDFD_TMPABV30D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,1, 1,0.0,0.0, 3,0,0,0,0},
-/* 35 */   {NDFD_TMPBLW30D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,1, 1,0.0,0.0, 0,0,0,0,0},
-/* 36 */   {NDFD_PRCPABV30D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,1, 1,0.0,0.0, 3,0,0,0,0},
-/* 37 */   {NDFD_PRCPBLW30D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,1, 1,0.0,0.0, 0,0,0,0,0},
+/* 35 */   {NDFD_TMPABV30D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,1, 1,0.0,0.0, 3,0,0,0,0},
+/* 36 */   {NDFD_TMPBLW30D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,1, 1,0.0,0.0, 0,0,0,0,0},
+/* 37 */   {NDFD_PRCPABV30D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,1, 1,0.0,0.0, 3,0,0,0,0},
+/* 38 */   {NDFD_PRCPBLW30D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,1, 1,0.0,0.0, 0,0,0,0,0},
    /* the 3 in the length of time column stands for 3 months... */
-/* 38 */   {NDFD_TMPABV90D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,3, 1,0.0,0.0, 3,0,0,0,0},
-/* 39 */   {NDFD_TMPBLW90D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,3, 1,0.0,0.0, 0,0,0,0,0},
-/* 40 */   {NDFD_PRCPABV90D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,3, 1,0.0,0.0, 3,0,0,0,0},
-/* 41 */   {NDFD_PRCPBLW90D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,3, 1,0.0,0.0, 0,0,0,0,0},
-/* 42 */   {LAMP_TSTMPRB,2, 7,14,5,108, 0,8,19,2,-1,2, 1,0.0,0.0, 0,-1,-1,-1,-1},
+/* 39 */   {NDFD_TMPABV90D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,3, 1,0.0,0.0, 3,0,0,0,0},
+/* 40 */   {NDFD_TMPBLW90D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,3, 1,0.0,0.0, 0,0,0,0,0},
+/* 41 */   {NDFD_PRCPABV90D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,3, 1,0.0,0.0, 3,0,0,0,0},
+/* 42 */   {NDFD_PRCPBLW90D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,3, 1,0.0,0.0, 0,0,0,0,0},
+/* 43 */   {LAMP_TSTMPRB,2, 7,14,5,108, 0,8,19,2,-1,2, 1,0.0,0.0, 0,-1,-1,-1,-1},
 
-/* 43 */  {RTMA_PRECIPA,2, 7,0,2,109, 0,8,1,8,-1,1, 1,0.0,0.0, 0,-1,-1,-1,-1}, /* genProcess = 2 forecast? */
-/* 44 */  {RTMA_SKY,2, 7,0,8,109, 0,0,6,1,-1,0, 200,0.0,0.0, 0,-1,-1,-1,-1},  /* genProcess = 8 observation */
-/* 45 */  {RTMA_TD,2,  7,4,0,109, 0,0,0,6,-1,0, 103,2.0,0.0, 0,-1,-1,-1,-1},
-/* 46 */  {RTMA_TEMP,2, 7,4,0,109, 0,0,0,0,-1,0, 103,2.0,0.0, 0,-1,-1,-1,-1},
-/* 47 */  {RTMA_UTD,2, 7,4,7,109, 0,0,0,6,-1,0, 103,2.0,0.0, 0,-1,-1,-1,-1},
-/* 48 */  {RTMA_UTEMP,2, 7,4,7,109, 0,0,0,0,-1,0, 103,2.0,0.0, 0,-1,-1,-1,-1},
-/* 49 */  {RTMA_UWDIR,2, 7,4,7,109, 0,0,2,0,-1,0, 103,10.0,0.0, 0,-1,-1,-1,-1},
-/* 50 */  {RTMA_UWSPD,2, 7,4,7,109, 0,0,2,1,-1,0, 103,10.0,0.0, 0,-1,-1,-1,-1},
-/* 51 */  {RTMA_WDIR,2, 7,4,0,109, 0,0,2,0,-1,0, 103,10.0,0.0, 0,-1,-1,-1,-1},
-/* 52 */  {RTMA_WSPD,2, 7,4,0,109, 0,0,2,1,-1,0, 103,10.0,0.0, 0,-1,-1,-1,-1},
+/* 44 */  {RTMA_PRECIPA,2, 7,0,2,109, 0,8,1,8,-1,1, 1,0.0,0.0, 0,-1,-1,-1,-1}, /* genProcess = 2 forecast? */
+/* 45 */  {RTMA_SKY,2, 7,0,8,109, 0,0,6,1,-1,0, 200,0.0,0.0, 0,-1,-1,-1,-1},  /* genProcess = 8 observation */
+/* 46 */  {RTMA_TD,2,  7,4,0,109, 0,0,0,6,-1,0, 103,2.0,0.0, 0,-1,-1,-1,-1},
+/* 47 */  {RTMA_TEMP,2, 7,4,0,109, 0,0,0,0,-1,0, 103,2.0,0.0, 0,-1,-1,-1,-1},
+/* 48 */  {RTMA_UTD,2, 7,4,7,109, 0,0,0,6,-1,0, 103,2.0,0.0, 0,-1,-1,-1,-1},
+/* 49 */  {RTMA_UTEMP,2, 7,4,7,109, 0,0,0,0,-1,0, 103,2.0,0.0, 0,-1,-1,-1,-1},
+/* 50 */  {RTMA_UWDIR,2, 7,4,7,109, 0,0,2,0,-1,0, 103,10.0,0.0, 0,-1,-1,-1,-1},
+/* 51 */  {RTMA_UWSPD,2, 7,4,7,109, 0,0,2,1,-1,0, 103,10.0,0.0, 0,-1,-1,-1,-1},
+/* 52 */  {RTMA_WDIR,2, 7,4,0,109, 0,0,2,0,-1,0, 103,10.0,0.0, 0,-1,-1,-1,-1},
+/* 53 */  {RTMA_WSPD,2, 7,4,0,109, 0,0,2,1,-1,0, 103,10.0,0.0, 0,-1,-1,-1,-1},
 
 #ifdef GFSEKD
-/* 53 */  {GFSEKDMOS_MAXT,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
-/* 54 */  {GFSEKDMOS_MINT,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
-/* 55 */  {GFSEKDMOS_TEMP,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
-/* 56 */  {GFSEKDMOS_TD,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
-/* 57 */  {GFSEKDMOS_QPF,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
+/* 54 */  {GFSEKDMOS_MAXT,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
+/* 55 */  {GFSEKDMOS_MINT,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
+/* 56 */  {GFSEKDMOS_TEMP,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
+/* 57 */  {GFSEKDMOS_TD,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
+/* 58 */  {GFSEKDMOS_QPF,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
 #endif
 
    {NDFD_UNDEF,2, MISSING_2,MISSING_2,MISSING_1,MISSING_1,
@@ -171,8 +171,8 @@ static char *NDFD_Type[] = { "maxt", "mint", "pop12", "t", "winddir",
    "probtmpabv144", "probtmpblw144", "probprcpabv144", "probprcpblw144",
    "probtmpabv01m", "probtmpblw01m", "probprcpabv01m", "probprcpblw01m",
    "probtmpabv03m", "probtmpblw03m", "probprcpabv03m", "probprcpblw03m",
-   "tstm02", "apcp01", "tcdc", "dpt", "tmp", "dpterr", "tmperr",
-   "wdirerr", "winderr", "wdir", "wind", NULL
+   "tstm02", "apcp01", "tcdc", "dpt", "tmp", "dpterr", "tmperr", "wdirerr",
+   "winderr", "wdir", "wind", NULL
 };
 /* These match the convention on official download pages (cube names). */
 static char *NDFD_File[] = { "maxt", "mint", "pop12", "temp", "wdir",
@@ -284,7 +284,7 @@ int validMatch(double elemEndTime, double elemRefTime, int elemEnum,
       }
    }
 
-   /* POP12 and WaveHeight. 12-hour period. */
+   /* POP12 and WaveHeight and EKDMOS. 12-hour period. */
    if ((elemEnum == NDFD_POP) || (elemEnum == NDFD_WH)) {
       elemStartTime = elemEndTime - (12*3600);
       if (((f_valTime & 1) && (elemEndTime <= startTime)) ||
@@ -570,7 +570,7 @@ void genElemListInit2 (uChar varFilter[NDFD_MATCHALL + 1],
                        size_t *numElem, genElemDescript ** elem)
 {
    size_t i;            /* Loop variable over number of elements. */
-   size_t valElem;      /* The current location in elem to copy to. */
+/*   size_t valElem;*/  /* The current location in elem to copy to. */
    sChar f_force;       /* Flag whether the caller forced an element. */
 
    myAssert (NDFD_MATCHALL + 1 == NdfdElementsLen);
@@ -599,19 +599,18 @@ void genElemListInit2 (uChar varFilter[NDFD_MATCHALL + 1],
       }
    }
 
-   *numElem = NDFD_MATCHALL + 1;
-   *elem = (genElemDescript *) malloc (*numElem * sizeof (genElemDescript));
    /* Walk through varFilter, when it is >= 2, copy it to valElem location. */
-   valElem = 0;
+   *numElem = 0;
    for (i = 0; i < NDFD_MATCHALL + 1; i++) {
       if (varFilter[i] >= 2) {
-         memcpy (&((*elem)[valElem]), &(NdfdElements[i]),
+         (*elem) = realloc((*elem), (*numElem + 1) * sizeof (genElemDescript));
+         memcpy (&((*elem)[*numElem]), &(NdfdElements[i]),
                  sizeof (genElemDescript));
-         valElem++;
+         *numElem = *numElem + 1;
       }
    }
    /* Reduce numElem to correct valElem */
-   *numElem = valElem;
+/*   *numElem = valElem; */
 }
 
 /*****************************************************************************
@@ -3244,11 +3243,6 @@ int ProbeCmd (sChar f_Command, userType *usr)
        * f_ndfdConven * NDFD naming convention to use. * numNdfdVars,
        * ndfdVars <check> */
       if (usr->f_XML != 0) {
-/*
-         printf ("%f %f : %d, %f, %f, %f\n", pnts[0].X, pnts[0].Y,
-                 pntInfo[0].f_sector[0], pntInfo[0].X[0], pntInfo[0].Y[0],
-                 pntInfo[0].elev);
-*/
 #ifdef _DWML_
          ans = XMLParse (usr->f_XML, numPnts, pnts, pntInfo, usr->f_pntType,
                          labels, &(usr->numInNames), &(usr->inNames),
