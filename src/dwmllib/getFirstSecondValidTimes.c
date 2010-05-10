@@ -15,7 +15,7 @@
  *                    grid probe. (Input)  
  *         numMatch = The total number of matches (all sectors) returned by 
  *                    degrib. (Input)
- *    parameterName = Number denoting the NDFD element currently processed. 
+ *         ndfdEnum = Number denoting the NDFD element currently processed. 
  *                    (Input) 
  *         startNum = First index in match structure an individual point's data
  *                    matches can be found. (Input)
@@ -41,7 +41,7 @@
 #include "xmlparse.h"
 void getFirstSecondValidTimes(double *firstValidTime, double *secondValidTime,
 		              genMatchType *match, size_t numMatch, 
-                              uChar parameterName, int startNum, int endNum, 
+                              uChar ndfdEnum, int startNum, int endNum, 
                               int numRows, int numRowsSkippedBeg, 
                               int numRowsSkippedEnd)
 {
@@ -51,12 +51,12 @@ void getFirstSecondValidTimes(double *firstValidTime, double *secondValidTime,
 
    for (i = (startNum+1); i < (endNum+1); i++)
    {
-      if (match[i - 1].elem.ndfdEnum == parameterName)
+      if (match[i - 1].elem.ndfdEnum == ndfdEnum)
       {
 	 if (numRows-numRowsSkippedBeg-numRowsSkippedEnd != 1)
          {
-            elemCount ++;
-            if (match[i].elem.ndfdEnum == parameterName)
+            elemCount++;
+            if (match[i].elem.ndfdEnum == ndfdEnum)
 
             {
                *firstValidTime = match[(i-elemCount)+numRowsSkippedBeg].validTime;
@@ -70,7 +70,7 @@ void getFirstSecondValidTimes(double *firstValidTime, double *secondValidTime,
             break;
          }
 
-         if ((i == numMatch - 1) && (match[i - 1].elem.ndfdEnum == parameterName))
+         if ((i == numMatch - 1) && (match[i - 1].elem.ndfdEnum == ndfdEnum))
          {
             *firstValidTime = match[i - elemCount].validTime;
             *secondValidTime = match[i - (elemCount - 1)].validTime;

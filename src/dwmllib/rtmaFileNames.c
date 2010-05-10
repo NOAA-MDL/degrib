@@ -47,10 +47,11 @@ void rtmaFileNames(size_t *numInFiles, char ***inFiles, char *directoryTail,
          sprintf (rtmaStrBuff, "%s%s%s%d%s", rtmaDataDir, directoryTail, "0", i,
                   ".ind");
 
-      (*inFiles) = (char **) realloc((*inFiles), *numInFiles * sizeof (char *));
-      (*inFiles)[*numInFiles-1] = (char *) malloc((strlen(rtmaStrBuff)
-                                           + 1) * sizeof (char));
-      strcpy ((*inFiles)[*numInFiles-1], rtmaStrBuff);
+      (*inFiles) = (char **) realloc((*inFiles), ((*numInFiles) * 
+                             sizeof (char *)));
+      ((*inFiles)[*numInFiles-1]) = (char *) malloc((strlen(rtmaStrBuff) + 1)
+                                             * sizeof (char));
+      strcpy (((*inFiles)[*numInFiles-1]), rtmaStrBuff);
    }
 
    return;

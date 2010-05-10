@@ -114,7 +114,8 @@ void getNumRows(numRowsInfo *numRowsForPoint, double *timeUserStart,
                 int *f_formatSummarizations, size_t pnt, int *pnt_rtmaNdfdTemp, 
                 int *pnt_rtmaNdfdTd, int *pnt_rtmaNdfdWdir, 
                 int *pnt_rtmaNdfdWspd, int *pnt_rtmaNdfdPrecipa, 
-                int *pnt_rtmaNdfdSky, double currentDoubTime)
+                int *pnt_rtmaNdfdSky, double currentDoubTime, size_t numElem, 
+                genElemDescript *elem)
 {
    int i; /* Counter thru match structure. */
    int k; /* Counter thru elements */
@@ -140,9 +141,28 @@ void getNumRows(numRowsInfo *numRowsForPoint, double *timeUserStart,
                             * structure and the first POP12hr match. If so, the
                             * first 24 hr forecast period will begin on the 
                             * next day (from current day). */
+   char tempBuff[30]; /* Temp string. */
+   int numRowsPop = 0;
+   int numRowsTemp = 0;
+   int numRowsWspd = 0;
+   int numRowsSky = 0;
+   int numRowsWx = 0;
+   int f_maxtForSummary = 1;
+   int f_mintForSummary = 1;
+   int f_popForSummary = 1;
+   int f_wdirForSummary = 1;
+   int f_wspdForSummary = 1;
+   int f_skyForSummary = 1;
+   int f_wxForSummary = 1;
+   int numRowsNdfdVar = 0;
+   int numRowsRtmaVar = 0;
+   int numRowsNdfdVarSkipEnd = 0;
+   int numRowsNdfdVarLastUserTime = 0.0;
+   int numRowsRtmaVarSkipBeg = 0;
+   int numRowsRtmaVarFirstUserTime = 0.0;
 
-   /* Initialize numRowsForPoint structure to all zeros. */
-   for (k = 0; k < XML_MAX; k++)
+   /* Initialize some numRowsForPoint structure members to zeros. */
+   for (k = 0; k < numElem; k++)
    {
       numRowsForPoint[k].total = 0;
       numRowsForPoint[k].skipBeg = 0;
@@ -154,20 +174,30 @@ void getNumRows(numRowsInfo *numRowsForPoint, double *timeUserStart,
    /* Retrieve the total number of rows per element for the DWMLgen/DWMLgenByDay
     * products.
     */
-   for (i = startNum; i < endNum; i++)
-      numRowsForPoint[match[i].elem.ndfdEnum].total++;
+   for (k = 0; k < numElem; k++)
+   {
+      for (i = startNum; i < endNum; i++)
+      {
+         if (match[i].elem.ndfdEnum == elem[k].ndfdEnum)
+         {
+            numRowsForPoint[k].total++;
+         }
+      }
+   }
 
    /* Retrieve the first validTime and last validTime per element amongst all
     * matches for the point.
     */
-   for (k = 0; k < XML_MAX; k++)
+   for (k = 0; k < numElem; k++)
    {
       for (i = startNum; i < endNum; i++)
       {
-	 if (match[i].elem.ndfdEnum == k)
+	 if (match[i].elem.ndfdEnum == elem[k].ndfdEnum)
 	 {
             numRowsForPoint[k].firstUserTime = match[i].validTime;
 	    numRowsForPoint[k].lastUserTime = match[i + (numRowsForPoint[k].total-1)].validTime;
+            formatValidTime(numRowsForPoint[k].firstUserTime, tempBuff, 30, TZoffset, f_observeDST);
+            formatValidTime(numRowsForPoint[k].lastUserTime, tempBuff, 30, TZoffset, f_observeDST);
 	    break;
 	 }
       }
@@ -201,21 +231,23 @@ void getNumRows(numRowsInfo *numRowsForPoint, double *timeUserStart,
    /* Adjust the number of rows per element and the first validTime and last 
     * validTime we're interested in. 
     */
-   for (k = 0; k < XML_MAX; k++)
+   for (k = 0; k <  numElem; k++)
    {
       if (wxParameters[k] != 0)
       {
-	 if (k == NDFD_MAX || k == NDFD_MIN)
+	 if (elem[k].ndfdEnum == NDFD_MAX || elem[k].ndfdEnum == NDFD_MIN)
 	    period = 12;
-         else if (k == NDFD_WWA)
+         else if (elem[k].ndfdEnum == NDFD_WWA)
 	    period = 1;
 	 else
 	 {
             getFirstSecondValidTimes(&firstValidTime, &secondValidTime, 
-	   		             match, numMatch, k, startNum, endNum, 
-		                     numRowsForPoint[k].total, 0, 0);
+	   		             match, numMatch, elem[k].ndfdEnum, 
+                                     startNum, endNum, numRowsForPoint[k].total, 
+                                     0, 0);
 	    period = determinePeriodLength(firstValidTime, secondValidTime,
-	                                   numRowsForPoint[k].total, k);
+	                                   numRowsForPoint[k].total, 
+                                           elem[k].ndfdEnum);
          }
    	 deltaSecs = (period / 4) * 3600;
 	 
@@ -229,12 +261,13 @@ void getNumRows(numRowsInfo *numRowsForPoint, double *timeUserStart,
           */
          if (f_XML == 3 || f_XML == 4)
          {	    
-            if (atoi(currentHour) >= 6 && (k != NDFD_MIN || k != NDFD_POP))
+            if (atoi(currentHour) >= 6 && (elem[k].ndfdEnum != NDFD_MIN || 
+                elem[k].ndfdEnum != NDFD_POP))
             {
                timeUserStartPerElement = *timeUserStart + deltaSecs;
                timeUserEndPerElement = *timeUserEnd - deltaSecs;      
             }
-            if (k == NDFD_POP)
+            if (elem[k].ndfdEnum == NDFD_POP)
             {
                if (!f_POPUserStart && startTime == 0.0 &&
                (atoi(currentHour) > 20 || atoi(currentHour) < 6))
@@ -248,7 +281,7 @@ void getNumRows(numRowsInfo *numRowsForPoint, double *timeUserStart,
                   timeUserEndPerElement = *timeUserEnd - deltaSecs;
                } 
             }
-            if (k == NDFD_MIN)
+            if (elem[k].ndfdEnum == NDFD_MIN)
             {
                if (startTime == 0.0  && 
                (atoi(currentHour) > 18 || atoi(currentHour) < 6)) 
@@ -272,7 +305,7 @@ void getNumRows(numRowsInfo *numRowsForPoint, double *timeUserStart,
 	    /* Since the data's validTime is the end of the time range the data
 	     * is valid for, find the data's starting time.
 	     */
-	    if (match[i].elem.ndfdEnum == k)
+	    if (match[i].elem.ndfdEnum == elem[k].ndfdEnum)
 	    {
 	       timeDataEnd = match[i].validTime;
                timeDataStart = match[i].validTime - (3600 * period);
@@ -322,14 +355,14 @@ void getNumRows(numRowsInfo *numRowsForPoint, double *timeUserStart,
    /* Adjust the first validTime and last validTime interested in, per 
     * element. 
     */
-   for (k = 0; k < XML_MAX; k++)
+   for (k = 0; k < numElem; k++)
    {
       if ((wxParameters[k] != 0) && 
 	  (numRowsForPoint[k].skipBeg != 0 || numRowsForPoint[k].skipEnd != 0))
       {
          for (i = startNum; i < endNum; i++)
 	 {
-	    if (match[i].elem.ndfdEnum == k)
+	    if (match[i].elem.ndfdEnum == elem[k].ndfdEnum)
 	    {
                numRowsForPoint[k].firstUserTime = 
 	          match[i+numRowsForPoint[k].skipBeg].validTime;
@@ -344,115 +377,363 @@ void getNumRows(numRowsInfo *numRowsForPoint, double *timeUserStart,
 
    /* Since numRows determination is based off of what was actually returned
     * from NDFD, update the weatherParameters array accordingly to reflect
-    * this. 
-    */
-   for (k = 0; k < XML_MAX; k++)
+    * this. If a concatenated element, check numRows for both the RTMA and NDFD
+    * portion. If either is zero, we cannot format the concatenated 
+    * RTMA+NDFD element. Also, we need to compute the number of rows for 
+    * the concatenated elements by summing up their individual NDFD and RTMA
+    * components. Follow the order specified in xmlparse.h for the concatenated 
+    * elements (#55 thru #60). 
+    */   
+
+  /* If concatenated Rtma + Ndfd Sky Amount was queried for and exists. */
+   for (k = 0; k < numElem; k++)
    {
-      /* If a concatenated element, check numRows for both the RTMA and NDFD
-       * portion. 
-       */
-      if (k == RTMA_NDFD_TEMP)
+      if (elem[k].ndfdEnum == NDFD_SKY)
       {
-         if ((numRowsForPoint[RTMA_TEMP].total-
-              numRowsForPoint[RTMA_TEMP].skipBeg- 
-              numRowsForPoint[RTMA_TEMP].skipEnd == 0) || 
-              (numRowsForPoint[NDFD_TEMP].total-
-              numRowsForPoint[NDFD_TEMP].skipBeg- 
-              numRowsForPoint[NDFD_TEMP].skipEnd == 0))
-         {
-            wxParameters[k] = 0;
-            *pnt_rtmaNdfdTemp = 0;
-         }
+          numRowsNdfdVar = numRowsForPoint[k].total-
+                           numRowsForPoint[k].skipBeg-
+                           numRowsForPoint[k].skipEnd;
+          numRowsNdfdVarSkipEnd = numRowsForPoint[k].skipEnd;
+          numRowsNdfdVarLastUserTime = numRowsForPoint[k].lastUserTime;
       }
-      else if (k == RTMA_NDFD_TD)
+      if (elem[k].ndfdEnum == RTMA_SKY)
       {
-         if ((numRowsForPoint[RTMA_TD].total-
-              numRowsForPoint[RTMA_TD].skipBeg- 
-              numRowsForPoint[RTMA_TD].skipEnd == 0) || 
-              (numRowsForPoint[NDFD_TD].total-
-              numRowsForPoint[NDFD_TD].skipBeg- 
-              numRowsForPoint[NDFD_TD].skipEnd == 0))
-         {
-            wxParameters[k] = 0;
-            *pnt_rtmaNdfdTd = 0;
-         }
+          numRowsRtmaVar = numRowsForPoint[k].total-
+                           numRowsForPoint[k].skipBeg-
+                           numRowsForPoint[k].skipEnd;
+          numRowsRtmaVarSkipBeg = numRowsForPoint[k].skipBeg;
+          numRowsRtmaVarFirstUserTime = numRowsForPoint[k].firstUserTime;
       }
-      else if (k == RTMA_NDFD_WSPD)
+      if (elem[k].ndfdEnum == RTMA_NDFD_SKY)
       {
-         if ((numRowsForPoint[RTMA_WSPD].total-
-              numRowsForPoint[RTMA_WSPD].skipBeg- 
-              numRowsForPoint[RTMA_WSPD].skipEnd == 0) || 
-              (numRowsForPoint[NDFD_WS].total-
-              numRowsForPoint[NDFD_WS].skipBeg- 
-              numRowsForPoint[NDFD_WS].skipEnd == 0))
-         {
-            wxParameters[k] = 0;
-            *pnt_rtmaNdfdWspd = 0;
-         }
-      }
-      else if (k == RTMA_NDFD_WDIR)
-      {
-         if ((numRowsForPoint[RTMA_WDIR].total-
-              numRowsForPoint[RTMA_WDIR].skipBeg- 
-              numRowsForPoint[RTMA_WDIR].skipEnd == 0) || 
-              (numRowsForPoint[NDFD_WD].total-
-              numRowsForPoint[NDFD_WD].skipBeg- 
-              numRowsForPoint[NDFD_WD].skipEnd == 0))
-         {
-            wxParameters[k] = 0;
-            *pnt_rtmaNdfdWdir = 0;
-         }
-      }
-      else if (k == RTMA_NDFD_PRECIPA)
-      {
-         if ((numRowsForPoint[RTMA_PRECIPA].total-
-              numRowsForPoint[RTMA_PRECIPA].skipBeg- 
-              numRowsForPoint[RTMA_PRECIPA].skipEnd == 0) || 
-              (numRowsForPoint[NDFD_QPF].total-
-              numRowsForPoint[NDFD_QPF].skipBeg- 
-              numRowsForPoint[NDFD_QPF].skipEnd == 0))
-         {
-            wxParameters[k] = 0;
-            *pnt_rtmaNdfdPrecipa = 0;
-         }
-      }
-      else if (k == RTMA_NDFD_SKY)
-      {
-         if ((numRowsForPoint[RTMA_SKY].total-
-              numRowsForPoint[RTMA_SKY].skipBeg- 
-              numRowsForPoint[RTMA_SKY].skipEnd == 0) || 
-              (numRowsForPoint[NDFD_SKY].total-
-              numRowsForPoint[NDFD_SKY].skipBeg- 
-              numRowsForPoint[NDFD_SKY].skipEnd == 0))
+         if (numRowsRtmaVar == 0)
          {
             wxParameters[k] = 0;
             *pnt_rtmaNdfdSky = 0;
          }
-      }
-      else
-      { 
-         if (wxParameters[k] >= 1 && (numRowsForPoint[k].total -
-	   	                     numRowsForPoint[k].skipBeg -
-			   	     numRowsForPoint[k].skipEnd) == 0)
+         else
+         {
+            numRowsForPoint[k].total =  numRowsNdfdVar + numRowsRtmaVar;
+            numRowsForPoint[k].skipBeg = numRowsRtmaVarSkipBeg;
+            numRowsForPoint[k].firstUserTime = numRowsRtmaVarFirstUserTime;
+         }
+         if (numRowsNdfdVar == 0)
+         {
             wxParameters[k] = 0;
+            *pnt_rtmaNdfdSky = 0;
+         }
+         else
+         {
+            numRowsForPoint[k].skipEnd = numRowsNdfdVarSkipEnd;
+            numRowsForPoint[k].lastUserTime = numRowsNdfdVarLastUserTime;
+         }
       }
    }
 
+   numRowsNdfdVar = 0;
+   numRowsRtmaVar = 0;
+   numRowsNdfdVarSkipEnd = 0;
+   numRowsNdfdVarLastUserTime = 0.0;
+   numRowsRtmaVarSkipBeg = 0;
+   numRowsRtmaVarFirstUserTime = 0.0;
+
+   /* If concatenated Rtma + Ndfd Precip Amount was queried for and exists. */
+   for (k = 0; k < numElem; k++)
+   {
+      if (elem[k].ndfdEnum == NDFD_QPF)
+      {
+         numRowsNdfdVar = numRowsForPoint[k].total-
+                          numRowsForPoint[k].skipBeg-
+                          numRowsForPoint[k].skipEnd;
+         numRowsNdfdVarSkipEnd = numRowsForPoint[k].skipEnd;
+         numRowsNdfdVarLastUserTime = numRowsForPoint[k].lastUserTime;
+      }
+      if (elem[k].ndfdEnum == RTMA_PRECIPA)
+      {
+         numRowsRtmaVar = numRowsForPoint[k].total-
+                          numRowsForPoint[k].skipBeg-
+                          numRowsForPoint[k].skipEnd;
+         numRowsRtmaVarSkipBeg = numRowsForPoint[k].skipBeg;
+         numRowsRtmaVarFirstUserTime = numRowsForPoint[k].firstUserTime;
+      }
+      if (elem[k].ndfdEnum == RTMA_NDFD_PRECIPA)
+      {
+         if (numRowsRtmaVar == 0)
+         {
+            wxParameters[k] = 0;
+            *pnt_rtmaNdfdPrecipa = 0;
+         }
+         else
+         {
+            numRowsForPoint[k].total =  numRowsNdfdVar + numRowsRtmaVar;
+            numRowsForPoint[k].skipBeg = numRowsRtmaVarSkipBeg;
+            numRowsForPoint[k].firstUserTime = numRowsRtmaVarFirstUserTime;
+         }
+         if (numRowsNdfdVar == 0)
+         {
+            wxParameters[k] = 0;
+            *pnt_rtmaNdfdPrecipa = 0;
+         }
+         else
+         {
+            numRowsForPoint[k].skipEnd = numRowsNdfdVarSkipEnd;
+            numRowsForPoint[k].lastUserTime = numRowsNdfdVarLastUserTime;
+         }
+      }
+   }
+
+   numRowsNdfdVar = 0;
+   numRowsRtmaVar = 0;
+   numRowsNdfdVarSkipEnd = 0;
+   numRowsNdfdVarLastUserTime = 0.0;
+   numRowsRtmaVarSkipBeg = 0;
+   numRowsRtmaVarFirstUserTime = 0.0;
+ 
+   /* If concatenated Rtma + Ndfd Dew Point was queried for and exists. */
+   for (k = 0; k < numElem; k++)
+   {
+      if (elem[k].ndfdEnum == NDFD_TD)
+      {
+          numRowsNdfdVar = numRowsForPoint[k].total-
+                           numRowsForPoint[k].skipBeg-
+                           numRowsForPoint[k].skipEnd;
+          numRowsNdfdVarSkipEnd = numRowsForPoint[k].skipEnd;
+          numRowsNdfdVarLastUserTime = numRowsForPoint[k].lastUserTime;
+      }
+      if (elem[k].ndfdEnum == RTMA_TD)
+      {
+          numRowsRtmaVar = numRowsForPoint[k].total-
+                           numRowsForPoint[k].skipBeg-
+                           numRowsForPoint[k].skipEnd;
+          numRowsRtmaVarSkipBeg = numRowsForPoint[k].skipBeg;
+          numRowsRtmaVarFirstUserTime = numRowsForPoint[k].firstUserTime;
+      }
+      if (elem[k].ndfdEnum == RTMA_NDFD_TD)
+      {
+         if (numRowsRtmaVar == 0)
+         {
+            wxParameters[k] = 0;
+            *pnt_rtmaNdfdTd = 0;
+         }
+         else
+         {
+            numRowsForPoint[k].total =  numRowsNdfdVar + numRowsRtmaVar;
+            numRowsForPoint[k].skipBeg = numRowsRtmaVarSkipBeg;
+            numRowsForPoint[k].firstUserTime = numRowsRtmaVarFirstUserTime;
+         }
+         if (numRowsNdfdVar == 0)
+         {
+            wxParameters[k] = 0;
+            *pnt_rtmaNdfdTd = 0;
+         }
+         else
+         {
+            numRowsForPoint[k].skipEnd = numRowsNdfdVarSkipEnd;
+            numRowsForPoint[k].lastUserTime = numRowsNdfdVarLastUserTime;
+         }
+      }
+   }
+
+   numRowsNdfdVar = 0;
+   numRowsRtmaVar = 0;
+   numRowsNdfdVarSkipEnd = 0;
+   numRowsNdfdVarLastUserTime = 0.0;
+   numRowsRtmaVarSkipBeg = 0;
+   numRowsRtmaVarFirstUserTime = 0.0;
+
+   /* If concatenated Rtma + Ndfd Temp was queried for and exists. */
+   for (k = 0; k < numElem; k++)
+   {
+      if (elem[k].ndfdEnum == NDFD_TEMP)
+      {
+          numRowsNdfdVar = numRowsForPoint[k].total-
+                           numRowsForPoint[k].skipBeg-
+                           numRowsForPoint[k].skipEnd;
+          numRowsNdfdVarSkipEnd = numRowsForPoint[k].skipEnd;
+          numRowsNdfdVarLastUserTime = numRowsForPoint[k].lastUserTime;
+      }
+      if (elem[k].ndfdEnum == RTMA_TEMP)
+      {
+          numRowsRtmaVar = numRowsForPoint[k].total-
+                           numRowsForPoint[k].skipBeg-
+                           numRowsForPoint[k].skipEnd;
+          numRowsRtmaVarSkipBeg = numRowsForPoint[k].skipBeg;
+          numRowsRtmaVarFirstUserTime = numRowsForPoint[k].firstUserTime;
+      }
+      if (elem[k].ndfdEnum == RTMA_NDFD_TEMP)
+      {
+         if (numRowsRtmaVar == 0)
+         {
+            wxParameters[k] = 0;
+            *pnt_rtmaNdfdTemp = 0;
+         }
+         else
+         {
+            numRowsForPoint[k].total = numRowsNdfdVar + numRowsRtmaVar;
+            numRowsForPoint[k].skipBeg = numRowsRtmaVarSkipBeg;
+            numRowsForPoint[k].firstUserTime = numRowsRtmaVarFirstUserTime;
+         }
+         if (numRowsNdfdVar == 0)
+         {
+            wxParameters[k] = 0;
+            *pnt_rtmaNdfdTemp = 0;
+         }
+         else
+         {
+            numRowsForPoint[k].skipEnd = numRowsNdfdVarSkipEnd;
+            numRowsForPoint[k].lastUserTime = numRowsNdfdVarLastUserTime;
+         }
+      }
+   }
+
+   numRowsNdfdVar = 0;
+   numRowsRtmaVar = 0;
+   numRowsNdfdVarSkipEnd = 0;
+   numRowsNdfdVarLastUserTime = 0.0;
+   numRowsRtmaVarSkipBeg = 0;
+   numRowsRtmaVarFirstUserTime = 0.0;
+
+   /* If concatenated Rtma + Ndfd Wind Direction was queried for and exists. */
+   for (k = 0; k < numElem; k++)
+   {
+      if (elem[k].ndfdEnum == NDFD_WD)
+      {
+          numRowsNdfdVar = numRowsForPoint[k].total-
+                           numRowsForPoint[k].skipBeg-
+                           numRowsForPoint[k].skipEnd;
+          numRowsNdfdVarSkipEnd = numRowsForPoint[k].skipEnd;
+          numRowsNdfdVarLastUserTime = numRowsForPoint[k].lastUserTime;
+      }
+      if (elem[k].ndfdEnum == RTMA_WDIR)
+      {
+         numRowsRtmaVar = numRowsForPoint[k].total-
+                          numRowsForPoint[k].skipBeg-
+                          numRowsForPoint[k].skipEnd;
+         numRowsRtmaVarSkipBeg = numRowsForPoint[k].skipBeg;
+         numRowsRtmaVarFirstUserTime = numRowsForPoint[k].firstUserTime;
+      }
+      if (elem[k].ndfdEnum == RTMA_NDFD_WDIR)
+      {
+         if (numRowsRtmaVar == 0)
+         {
+            wxParameters[k] = 0;
+            *pnt_rtmaNdfdWdir = 0;
+         }
+         else
+         {
+            numRowsForPoint[k].total =  numRowsNdfdVar + numRowsRtmaVar;
+            numRowsForPoint[k].skipBeg = numRowsRtmaVarSkipBeg;
+            numRowsForPoint[k].firstUserTime = numRowsRtmaVarFirstUserTime;
+         }
+         if (numRowsNdfdVar == 0)
+         {
+            wxParameters[k] = 0;
+            *pnt_rtmaNdfdWdir = 0;
+         }
+         else
+         {
+            numRowsForPoint[k].skipEnd = numRowsNdfdVarSkipEnd;
+            numRowsForPoint[k].lastUserTime = numRowsNdfdVarLastUserTime;
+         }
+      }
+   }
+
+   numRowsNdfdVar = 0;
+   numRowsRtmaVar = 0;
+   numRowsNdfdVarSkipEnd = 0;
+   numRowsNdfdVarLastUserTime = 0.0;
+   numRowsRtmaVarSkipBeg = 0;
+   numRowsRtmaVarFirstUserTime = 0.0;
+
+   /* If concatenated Rtma + Ndfd Wind Speed was queried for and exists. */
+   for (k = 0; k < numElem; k++)
+   {
+      if (elem[k].ndfdEnum == NDFD_WS)
+      {
+          numRowsNdfdVar = numRowsForPoint[k].total-
+                           numRowsForPoint[k].skipBeg-
+                           numRowsForPoint[k].skipEnd;
+          numRowsNdfdVarSkipEnd = numRowsForPoint[k].skipEnd;
+          numRowsNdfdVarLastUserTime = numRowsForPoint[k].lastUserTime;
+      }
+      if (elem[k].ndfdEnum == RTMA_WSPD)
+      {
+          numRowsRtmaVar = numRowsForPoint[k].total-
+                           numRowsForPoint[k].skipBeg-
+                           numRowsForPoint[k].skipEnd;
+          numRowsRtmaVarSkipBeg = numRowsForPoint[k].skipBeg;
+          numRowsRtmaVarFirstUserTime = numRowsForPoint[k].firstUserTime;
+      }
+      if (elem[k].ndfdEnum == RTMA_NDFD_WSPD)
+      {
+         if (numRowsRtmaVar == 0)
+         {
+            wxParameters[k] = 0;
+            *pnt_rtmaNdfdWspd = 0;
+         }
+         else
+         {
+            numRowsForPoint[k].total =  numRowsNdfdVar + numRowsRtmaVar;
+            numRowsForPoint[k].skipBeg = numRowsRtmaVarSkipBeg;
+            numRowsForPoint[k].firstUserTime = numRowsRtmaVarFirstUserTime;
+         }
+         if (numRowsNdfdVar == 0)
+         {
+            wxParameters[k] = 0;
+            *pnt_rtmaNdfdWspd = 0;
+         }
+         else
+         {
+            numRowsForPoint[k].skipEnd = numRowsNdfdVarSkipEnd;
+            numRowsForPoint[k].lastUserTime = numRowsNdfdVarLastUserTime;
+         }
+      }
+   }
+
+   for (k = 0; k < numElem; k++)
+   {
+      if (wxParameters[k] >= 1 && (numRowsForPoint[k].total -
+                             numRowsForPoint[k].skipBeg -
+   	                     numRowsForPoint[k].skipEnd) == 0)
+         wxParameters[k] = 0;
+   }
+
    /* Now, check to see that Icons have all the necessary elements retrieved
-    * from NDFD to derive them. 
+    * from NDFD to derive them. Icons need Pop, Wspd, Temp, Wdir. SkyCov, and 
+    * Weather elements for derivation.
     */
    if ((f_XML == 1 || f_XML == 2 || f_XML == 6) && *f_icon == 1)
    {
-      if ((numRowsForPoint[NDFD_TEMP].total-numRowsForPoint[NDFD_TEMP].skipBeg -
-	   numRowsForPoint[NDFD_TEMP].skipEnd) == 0 || 
-          (numRowsForPoint[NDFD_WS].total-numRowsForPoint[NDFD_WS].skipBeg -
-	   numRowsForPoint[NDFD_WS].skipEnd) == 0 ||
-          (numRowsForPoint[NDFD_SKY].total-numRowsForPoint[NDFD_SKY].skipBeg -
-	   numRowsForPoint[NDFD_SKY].skipEnd) == 0 || 
-	  (numRowsForPoint[NDFD_WX].total-numRowsForPoint[NDFD_WX].skipBeg -
-	   numRowsForPoint[NDFD_WX].skipEnd) == 0 ||
-	  (numRowsForPoint[NDFD_POP].total-numRowsForPoint[NDFD_POP].skipBeg -
-	   numRowsForPoint[NDFD_POP].skipEnd) == 0)
+      for (k = 0; k < numElem; k++)
+      {
+         if (elem[k].ndfdEnum == NDFD_POP)
+         {
+            numRowsPop = numRowsForPoint[k].total-numRowsForPoint[k].skipBeg-
+	                 numRowsForPoint[k].skipEnd;
+         }
+         if (elem[k].ndfdEnum == NDFD_TEMP)
+         {
+            numRowsTemp = numRowsForPoint[k].total-numRowsForPoint[k].skipBeg-
+	                  numRowsForPoint[k].skipEnd;
+         }
+         if (elem[k].ndfdEnum == NDFD_WS)
+         {
+            numRowsWspd = numRowsForPoint[k].total-numRowsForPoint[k].skipBeg-
+	                  numRowsForPoint[k].skipEnd;
+         }
+         if (elem[k].ndfdEnum == NDFD_SKY)
+         {
+            numRowsSky = numRowsForPoint[k].total-numRowsForPoint[k].skipBeg-
+	                 numRowsForPoint[k].skipEnd;
+         }
+         if (elem[k].ndfdEnum == NDFD_WX)
+         {
+            numRowsWx = numRowsForPoint[k].total-numRowsForPoint[k].skipBeg-
+	                numRowsForPoint[k].skipEnd;
+         }
+      }
+      if (numRowsPop == 0 || numRowsTemp == 0 || numRowsWspd == 0 || 
+          numRowsSky == 0 || numRowsWx == 0)
       {
          #ifdef PRINT_DIAG
          printf("**************************************\n");
@@ -467,230 +748,42 @@ void getNumRows(numRowsInfo *numRowsForPoint, double *timeUserStart,
    }
    else if (f_XML == 3 || f_XML == 4)
    {
-      /* We need all 7 elements to have data to create weather phrase/icon for the 
-       * summarization period. If one is missing, don't format XML. This only checks
+      /* We need all 8 elements to have data to create weather phrase/icon for the 
+       * summarization periods. If one is missing, don't format XML. This only checks
        * to see if ALL an elements's data is missing (not individual projections).
        */
-      if (wxParameters[NDFD_MAX] == 0 || wxParameters[NDFD_MIN] == 0 ||
-          wxParameters[NDFD_POP] == 0 || wxParameters[NDFD_WX] == 0 ||
-          wxParameters[NDFD_SKY] == 0 || wxParameters[NDFD_WS] == 0 ||
-          wxParameters[NDFD_WD] == 0)
+      for (k = 0; k < numElem; k++)
+      {
+         if (elem[k].ndfdEnum == NDFD_MAX && wxParameters[k] == 0)
+            f_maxtForSummary = 0;
+         if (elem[k].ndfdEnum == NDFD_MIN && wxParameters[k] == 0)
+            f_mintForSummary = 0;
+         if (elem[k].ndfdEnum == NDFD_POP && wxParameters[k] == 0)
+            f_popForSummary = 0;
+         if (elem[k].ndfdEnum == NDFD_WD && wxParameters[k] == 0)
+            f_wdirForSummary = 0;
+         if (elem[k].ndfdEnum == NDFD_WS && wxParameters[k] == 0)
+            f_wspdForSummary = 0;
+         if (elem[k].ndfdEnum == NDFD_SKY && wxParameters[k] == 0)
+            f_skyForSummary = 0;
+         if (elem[k].ndfdEnum == NDFD_WX && wxParameters[k] == 0)
+            f_wxForSummary = 0;
+
+/*       Don't let Wind Gust be a show stopper with respect to formatting
+         summary weather phrases...it only exists out 52 hours. It is also
+         only used in determining weather phrase "Blizzard. 
+         if (elem[k].ndfdEnum == NDFD_WG && wxParameters[k] == 0)
+            f_wgustForSummary = 0;
+*/
+      }
+      if (!f_maxtForSummary || !f_mintForSummary || !f_popForSummary || 
+          !f_wdirForSummary || !f_wspdForSummary || !f_skyForSummary || 
+          !f_wxForSummary)
       {
          *f_formatSummarizations = 0;
       }
    }
-
-   /* Deal with the Concatenated RTMA-NDFD Elements. */
-   if (f_XML == 6)
-   {
-      /* The concatenated RTMA + NDFD Temperature element. */
-      if (wxParameters[RTMA_NDFD_TEMP] != 0)
-      {
-         if (numRowsForPoint[RTMA_TEMP].total-numRowsForPoint[RTMA_TEMP].skipBeg- 
-                                         numRowsForPoint[RTMA_TEMP].skipEnd != 0)
-         {
-            numRowsForPoint[RTMA_NDFD_TEMP].total = numRowsForPoint[RTMA_TEMP].total + 
-                                                    numRowsForPoint[NDFD_TEMP].total;
-            numRowsForPoint[RTMA_NDFD_TEMP].skipBeg = numRowsForPoint[RTMA_TEMP].skipBeg;
-            numRowsForPoint[RTMA_NDFD_TEMP].firstUserTime = 
-                                            numRowsForPoint[RTMA_TEMP].firstUserTime;
-         }
-         else
-            /* The user supplied startTime cut off all rows of the RTMA data for 
-             * the concatenated Temp element. In that case, treat as if the 
-             * concatenated element does not exist. 
-             */
-            *pnt_rtmaNdfdTemp = 0;
-
-         if (numRowsForPoint[NDFD_TEMP].total-numRowsForPoint[NDFD_TEMP].skipBeg-
-                                         numRowsForPoint[NDFD_TEMP].skipEnd != 0)
-         {
-            numRowsForPoint[RTMA_NDFD_TEMP].skipEnd = numRowsForPoint[NDFD_TEMP].skipEnd;
-            numRowsForPoint[RTMA_NDFD_TEMP].lastUserTime = 
-                                      numRowsForPoint[NDFD_TEMP].lastUserTime;
-         }
-         else
-            /* The user supplied endTime cut off all rows of NDFD data for 
-             * the concatenated Temp element. In that case, treat as if the 
-             * concatenated element does not exist. 
-             */
-            *pnt_rtmaNdfdTemp = 0;
-      }
-
-      /* The concatenated RTMA + NDFD Dew Point element. */
-      if (wxParameters[RTMA_NDFD_TD] != 0)
-      {
-         if (numRowsForPoint[RTMA_TD].total-numRowsForPoint[RTMA_TD].skipBeg-
-                                       numRowsForPoint[RTMA_TD].skipEnd != 0)
-         {
-            numRowsForPoint[RTMA_NDFD_TD].total = numRowsForPoint[RTMA_TD].total + 
-                                                    numRowsForPoint[NDFD_TD].total;
-            numRowsForPoint[RTMA_NDFD_TD].skipBeg = numRowsForPoint[RTMA_TD].skipBeg;
-            numRowsForPoint[RTMA_NDFD_TD].firstUserTime = 
-                                      numRowsForPoint[RTMA_TD].firstUserTime;
-         }
-         else
-            /* The user supplied startTime cut off all rows of RTMA data for 
-             * the concatenated Dew Point element. In that case, treat as if
-             * the concatenated element does not exist. 
-             */
-            *pnt_rtmaNdfdTd = 0;
-
-         if (numRowsForPoint[NDFD_TD].total-numRowsForPoint[NDFD_TD].skipBeg-
-                                       numRowsForPoint[NDFD_TD].skipEnd != 0)
-         {
-            numRowsForPoint[RTMA_NDFD_TD].skipEnd = numRowsForPoint[NDFD_TD].skipEnd;
-            numRowsForPoint[RTMA_NDFD_TD].lastUserTime = 
-                                      numRowsForPoint[NDFD_TD].lastUserTime;
-         }
-         else
-            /* The user supplied endTime cut off all rows of NDFD data for 
-             * the concatenated Dew Point element. In that case, treat as if 
-             * the concatenated element does not exist. 
-             */
-            *pnt_rtmaNdfdTd = 0;
-      }
-
-      /* The concatenated RTMA + NDFD Wind Speed element. */
-      if (wxParameters[RTMA_NDFD_WSPD] != 0)
-      {
-         if (numRowsForPoint[RTMA_WSPD].total-numRowsForPoint[RTMA_WSPD].skipBeg-
-                                         numRowsForPoint[RTMA_WSPD].skipEnd != 0)
-
-         {
-            numRowsForPoint[RTMA_NDFD_WSPD].total = numRowsForPoint[RTMA_WSPD].total + 
-                                                    numRowsForPoint[NDFD_WS].total;
-            numRowsForPoint[RTMA_NDFD_WSPD].skipBeg = numRowsForPoint[RTMA_WSPD].skipBeg;
-            numRowsForPoint[RTMA_NDFD_WSPD].firstUserTime = 
-                                      numRowsForPoint[RTMA_WSPD].firstUserTime;
-         }
-         else
-            /* The user supplied startTime cut off all rows of RTMA data for 
-             * the concatenated Wspd element. In that case, treat as if the 
-             * concatenated element does not exist. 
-             */
-            *pnt_rtmaNdfdWspd = 0;
-
-         if (numRowsForPoint[NDFD_WS].total-numRowsForPoint[NDFD_WS].skipBeg-
-                                       numRowsForPoint[NDFD_WS].skipEnd != 0)
-         {
-            numRowsForPoint[RTMA_NDFD_WSPD].skipEnd = numRowsForPoint[NDFD_WS].skipEnd;
-            numRowsForPoint[RTMA_NDFD_WSPD].lastUserTime = 
-                                      numRowsForPoint[NDFD_WS].lastUserTime;
-         }
-         else
-            /* The user supplied endTime cut off all rows of NDFD data for 
-             * the concatenated Wspd element. In that case, treat as if the 
-             * concatenated element does not exist. 
-             */
-            *pnt_rtmaNdfdWspd = 0;
-      }
-
-      /* The concatenated RTMA + NDFD Wind Direction element. */
-      if (wxParameters[RTMA_NDFD_WDIR] != 0)
-      {
-         if (numRowsForPoint[RTMA_WDIR].total-numRowsForPoint[RTMA_WDIR].skipBeg-
-                                         numRowsForPoint[RTMA_WDIR].skipEnd != 0)
-
-         {
-            numRowsForPoint[RTMA_NDFD_WDIR].total = numRowsForPoint[RTMA_WDIR].total + 
-                                                    numRowsForPoint[NDFD_WD].total;
-            numRowsForPoint[RTMA_NDFD_WDIR].skipBeg = numRowsForPoint[RTMA_WDIR].skipBeg;
-            numRowsForPoint[RTMA_NDFD_WDIR].firstUserTime = 
-                                      numRowsForPoint[RTMA_WDIR].firstUserTime;
-         }
-         else
-            /* The user supplied startTime cut off all rows of RTMA data for 
-             * the concatenated Wdir element. In that case, treat as if the 
-             * concatenated element does not exist. 
-             */
-            *pnt_rtmaNdfdWdir = 0;
-
-         if (numRowsForPoint[NDFD_WD].total-numRowsForPoint[NDFD_WD].skipBeg-
-                                       numRowsForPoint[NDFD_WD].skipEnd != 0)
-         {
-            numRowsForPoint[RTMA_NDFD_WDIR].skipEnd = numRowsForPoint[NDFD_WD].skipEnd;
-            numRowsForPoint[RTMA_NDFD_WDIR].lastUserTime = 
-                                      numRowsForPoint[NDFD_WD].lastUserTime;
-         }
-         else
-            /* The user supplied endTime cut off all rows of NDFD data for 
-             * the concatenated Wdir element. In that case, treat as if the 
-             * concatenated element does not exist. 
-             */
-            *pnt_rtmaNdfdWdir = 0;
-      }
-
-      /* The concatenated RTMA + NDFD Precipitation Amount element. */
-      if (wxParameters[RTMA_NDFD_PRECIPA] != 0)
-      {
-         if (numRowsForPoint[RTMA_PRECIPA].total-numRowsForPoint[RTMA_PRECIPA].skipBeg-
-                                            numRowsForPoint[RTMA_PRECIPA].skipEnd != 0)
-
-         {
-            numRowsForPoint[RTMA_NDFD_PRECIPA].total = numRowsForPoint[RTMA_PRECIPA].total + 
-                                                    numRowsForPoint[NDFD_QPF].total;
-            numRowsForPoint[RTMA_NDFD_PRECIPA].skipBeg = numRowsForPoint[RTMA_PRECIPA].skipBeg;
-            numRowsForPoint[RTMA_NDFD_PRECIPA].firstUserTime = 
-                                      numRowsForPoint[RTMA_PRECIPA].firstUserTime;
-         }
-         else
-            /* The user supplied startTime cut off all rows of RTMA data for 
-             * the concatenated Precip Amt element. In that case, treat as if
-             * the concatenated element does not exist. 
-             */
-            *pnt_rtmaNdfdPrecipa = 0;
-
-         if (numRowsForPoint[NDFD_QPF].total-numRowsForPoint[NDFD_QPF].skipBeg-
-                                        numRowsForPoint[NDFD_QPF].skipEnd != 0)
-         {
-            numRowsForPoint[RTMA_NDFD_PRECIPA].skipEnd = numRowsForPoint[NDFD_QPF].skipEnd;
-            numRowsForPoint[RTMA_NDFD_PRECIPA].lastUserTime = 
-                                      numRowsForPoint[NDFD_QPF].lastUserTime;
-         }
-         else
-            /* The user supplied endTime cut off all rows of NDFD data for 
-             * the concatenated Precip Amt element. In that case, treat as if
-             * the concatenated element does not exist. 
-             */
-            *pnt_rtmaNdfdPrecipa = 0;
-      }
-
-      /* The concatenated RTMA + NDFD Sky element. */
-      if (wxParameters[RTMA_NDFD_SKY] != 0)
-      {
-         if (numRowsForPoint[RTMA_SKY].total-numRowsForPoint[RTMA_SKY].skipBeg-
-                                        numRowsForPoint[RTMA_SKY].skipEnd != 0)
-
-         {
-            numRowsForPoint[RTMA_NDFD_SKY].total = numRowsForPoint[RTMA_SKY].total + 
-                                                    numRowsForPoint[NDFD_SKY].total;
-            numRowsForPoint[RTMA_NDFD_SKY].skipBeg = numRowsForPoint[RTMA_SKY].skipBeg;
-            numRowsForPoint[RTMA_NDFD_SKY].firstUserTime = 
-                                      numRowsForPoint[RTMA_SKY].firstUserTime;
-         }
-         else
-            /* The user supplied startTime cut off all rows of RTMA data for 
-             * the concatenated Sky element. In that case, treat as if the 
-             * concatenated element does not exist. 
-             */
-            *pnt_rtmaNdfdSky = 0;
-
-         if (numRowsForPoint[NDFD_SKY].total-numRowsForPoint[NDFD_SKY].skipBeg-
-                                        numRowsForPoint[NDFD_SKY].skipEnd != 0)
-         {
-            numRowsForPoint[RTMA_NDFD_SKY].skipEnd = numRowsForPoint[NDFD_SKY].skipEnd;
-            numRowsForPoint[RTMA_NDFD_SKY].lastUserTime = 
-                                      numRowsForPoint[NDFD_SKY].lastUserTime;
-         }
-         else
-            /* The user supplied endTime cut off all rows of NDFD data for 
-             * the concatenated Sky element. In that case, treat as if the 
-             * concatenated element does not exist. 
-             */
-            *pnt_rtmaNdfdSky = 0;
-      }
-   }
-   
+ 
+  
    return;
 }

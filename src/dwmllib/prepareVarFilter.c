@@ -46,7 +46,7 @@
  */
 #include "xmlparse.h"
 void prepareVarFilter(sChar f_XML, sChar *f_icon, size_t numNdfdVars, 
-                      uChar *ndfdVars, uChar varFilter[NDFD_MATCHALL + 1], 
+                      uChar *ndfdVars, uChar varFilter[NDFD_MATCHALL+1], 
                       size_t *numElem, genElemDescript **elem)
 {
    setVarFilter(f_XML, f_icon, numNdfdVars, ndfdVars, varFilter);

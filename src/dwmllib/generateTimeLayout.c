@@ -29,7 +29,7 @@
  *      </time-layout>              
  *
  * ARGUMENTS
- *    parameterName = Number denoting the NDFD element currently processed. 
+ *    parameterEnum = Number denoting the NDFD element currently processed. 
  *                    (Input) 
  *          numRows = Structure containing members: (Input)
  *                    total: Total number of rows data is formatted for in the 
@@ -112,7 +112,7 @@
  *****************************************************************************
  */
 #include "xmlparse.h"
-void generateTimeLayout(numRowsInfo numRows, uChar parameterName,
+void generateTimeLayout(numRowsInfo numRows, uChar parameterEnum,
                         char *layoutKey, const char *timeCoordinate,
                         char *summarization, genMatchType * match,
                         size_t numMatch, uChar f_formatPeriodName,
@@ -174,7 +174,7 @@ void generateTimeLayout(numRowsInfo numRows, uChar parameterName,
 
    /* Find first and second validTime per element (if exists) interested in. */
    getFirstSecondValidTimes(&firstValidTime, &secondValidTime, match, numMatch, 
-		            parameterName, startNum, endNum, numRows.total, 
+		            parameterEnum, startNum, endNum, numRows.total, 
                             numRows.skipBeg, numRows.skipEnd);
 
    /* Start filling in the time layout array's  with this current data. */
@@ -184,24 +184,25 @@ void generateTimeLayout(numRowsInfo numRows, uChar parameterName,
    /* Get the period length in hours using either the period name or the valid 
     * times. 
     */
-   if (parameterName == NDFD_MAX || parameterName == NDFD_MIN)
+   if (parameterEnum == NDFD_MAX || parameterEnum == NDFD_MIN)
       period = 24;
-   else if (parameterName == NDFD_POP)
+   else if (parameterEnum == NDFD_POP)
       period = 12;
+
    /* Force the LAMP Tstorm Probabilities to 2 hrs (since the first 6 hours are 
     * only one hours apart, and determinePeriodLength routine will format this
     * 1hr period).
     */
-   else if (parameterName == LAMP_TSTMPRB)
+   else if (parameterEnum == LAMP_TSTMPRB)
       period = 2;
-   else if (parameterName == RTMA_TEMP || parameterName == RTMA_TD || 
-            parameterName == RTMA_WSPD || parameterName == RTMA_WDIR || 
-            parameterName == RTMA_PRECIPA || parameterName == RTMA_SKY ||
-            parameterName == NDFD_WWA)
+   else if (parameterEnum == RTMA_TEMP || parameterEnum == RTMA_TD || 
+            parameterEnum == RTMA_WSPD || parameterEnum == RTMA_WDIR || 
+            parameterEnum == RTMA_PRECIPA || parameterEnum == RTMA_SKY ||
+            parameterEnum == NDFD_WWA)
       period = 1;
    else /* Calculate it */
       period = determinePeriodLength(firstValidTime, secondValidTime, 
-		                     numActualRows, parameterName);
+		                     numActualRows, parameterEnum);
 
    /* Fill the rest of the time layout array with current data. */
    currentTimeLayout.period = period;
@@ -228,7 +229,7 @@ void generateTimeLayout(numRowsInfo numRows, uChar parameterName,
          sprintf(layoutKey, "k-p%dd-n%d-%d", periodClimate, *numFmtdRows, 
 	         *numLayoutSoFar);
       }
-      else if (period == 1 && parameterName == NDFD_WWA)
+      else if (period == 1 && parameterEnum == NDFD_WWA)
       {
          sprintf(layoutKey, "k-p%sh-n%d-%d", "1", *numFmtdRows, 
 	         *numLayoutSoFar);
@@ -240,10 +241,10 @@ void generateTimeLayout(numRowsInfo numRows, uChar parameterName,
       *numLayoutSoFar += 1;
       
       /* See if we need to format an <end-valid-time> tag . */
-      useEndTimes = checkNeedForEndTime(parameterName, f_XML);
+      useEndTimes = checkNeedForEndTime(parameterEnum, f_XML);
 
       /* Some parameters like max and min temp don't have valid times that
-       * match the real start time.  So make the adjustment. 
+       * match the real start time. So make the adjustment. 
        */
       if (*numFmtdRows > numActualRows) /* For summary products with a set 
                                          * number of rows to format. */
@@ -251,7 +252,7 @@ void generateTimeLayout(numRowsInfo numRows, uChar parameterName,
          startTimes = (char **)malloc(*numFmtdRows * sizeof(char *));
          if (useEndTimes)
              endTimes = (char **)malloc(*numFmtdRows * sizeof(char *));
-         computeStartEndTimes(parameterName, *numFmtdRows, period, TZoffset,
+         computeStartEndTimes(parameterEnum, *numFmtdRows, period, TZoffset,
                               f_observeDST, match, useEndTimes, startTimes, 
                               endTimes, frequency, f_XML, startTime_cml, 
                               currentDoubTime, numRows, startNum, endNum);
@@ -261,7 +262,7 @@ void generateTimeLayout(numRowsInfo numRows, uChar parameterName,
          startTimes = (char **)malloc(numActualRows* sizeof(char *));
          if (useEndTimes)
             endTimes = (char **)malloc(numActualRows * sizeof(char *));
-         computeStartEndTimes(parameterName, *numFmtdRows, period, TZoffset,
+         computeStartEndTimes(parameterEnum, *numFmtdRows, period, TZoffset,
                               f_observeDST, match, useEndTimes, startTimes, 
                               endTimes, frequency, f_XML, startTime_cml, 
                               currentDoubTime, numRows, startNum, endNum);
@@ -279,7 +280,7 @@ void generateTimeLayout(numRowsInfo numRows, uChar parameterName,
        * information "issuanceType" and "numPeriodNames". 
        */
       if (f_formatPeriodName && period >= 12)
-         getPeriodInfo(parameterName, startTimes[0], currentHour, currentDay,
+         getPeriodInfo(parameterEnum, startTimes[0], currentHour, currentDay,
                        &issuanceType, &numPeriodNames, period, frequency);
       
       /* Now we get the time values for this parameter and format the valid time
@@ -319,7 +320,7 @@ void generateTimeLayout(numRowsInfo numRows, uChar parameterName,
 		      strcmp(dayName, "Saturday") == 0)
                   {
                      checkNeedForPeriodName(i, &numPeriodNames,
-                                            TZoffset, parameterName,
+                                            TZoffset, parameterEnum,
                                             startTimes[i],
                                             &outputPeriodName, issuanceType,
                                             periodName, currentHour, 
@@ -424,7 +425,7 @@ void generateTimeLayout(numRowsInfo numRows, uChar parameterName,
          sprintf(layoutKey, "k-p%dd-n%d-%d", periodClimate, *numFmtdRows, 
 	         *numCurrentLayout);
       }
-      else if (period == 1 && parameterName == NDFD_WWA)
+      else if (period == 1 && parameterEnum == NDFD_WWA)
       {
          sprintf(layoutKey, "k-p%sh-n%d-%d", "1", *numFmtdRows, 
 	         *numCurrentLayout);

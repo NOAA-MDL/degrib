@@ -30,7 +30,9 @@ enum
 };
 
 /* Set enumerations for the concatenated RTMA + NDFD elements. Append to NDFD 
- * enumeration numbers 
+ * enumeration numbers. RTMA_NDFD_SKY = NDFD_MATCHALL + 1(56), 
+ * RTMA_NDFD_PRECIPA(57), RTMA_NDFD_TD(58), RTMA_NDFD_TEMP(59), 
+ * RTMA_NDFD_WDIR(60), RTMA_NDFD_WSPD(61), XML_MAX(62) 
  */
 enum 
 { RTMA_NDFD_SKY = NDFD_MATCHALL + 1, RTMA_NDFD_PRECIPA, RTMA_NDFD_TD, 
@@ -129,7 +131,16 @@ typedef struct                /* Denotes structure of sector info for use in a
    char name[15];
    int enumNum;
 } sectInfo;
- 
+
+typedef struct                /* Denotes structure of sector info for use in a 
+                               * multiple point call in which points lie in 
+                               * different sectors. 
+                               */
+{
+   uChar Ndfd2Dwml;
+   int origNdfdIndex;
+} dwmlEnum;
+
 /* Declare XMLParse() interfaces. */
 void anyLampElements(size_t *numInFiles, char ***inFiles, size_t numNdfdVars,
                      uChar *ndfdVars, char *lampDataDir);
@@ -201,6 +212,8 @@ void determineWeatherIcons(icon_def *iconInfo, int numGroups, char **wxType,
                            int hourlyTempIndex,
                            int hourlyTempTimeEqualsWeatherTime,
                            elem_def *tempInfo, int POP12ValToPOP3);
+
+void dwmlEnumSort(size_t numElem, dwmlEnum **Dwml);
 
 void formatLocationInfo(size_t numPnts, Point * pnts, xmlNodePtr data);
 
@@ -359,8 +372,9 @@ void genWindSpeedValues(double timeUserStart, double timeUserEnd, size_t pnt,
                         double *valTimeForWindDirMatch, double startTime, 
                         int startNum, int endNum, int f_shiftData);
 
-void generateConcatTimeLayout(numRowsInfo *numRows, uChar concatElem,
-                              char *layoutKey, const char *timeCoordinate,
+void generateConcatTimeLayout(numRowsInfo *numRows, int elemIndex,
+                              uChar concatNdfdEnum, char *layoutKey, 
+                              const char *timeCoordinate,
                               char *summarization, genMatchType *match,
                               size_t numMatch, uChar f_formatPeriodName,
                               sChar TZoffset, sChar f_observeDST,
@@ -369,7 +383,8 @@ void generateConcatTimeLayout(numRowsInfo *numRows, uChar concatElem,
                               char *currentDay, char *frequency,
                               xmlNodePtr data, double startTime_cml,
                               double currentDoubTime,
-		      	      uChar f_XML, int startNum, int endNum);
+		      	      uChar f_XML, int startNum, int endNum, 
+                              size_t numElem, genElemDescript *elem);
 
 void generateHazTimeLayout(char *layoutKey, const char *timeCoordinate, 
                            hazInfo consecHazRows, char *summarization, 
@@ -412,7 +427,7 @@ void generatePhraseAndIcons (int dayIndex, char *frequency,
                              int numRowsWG, int percentTimeWithFog, 
                              double *maxWindSpeedValTimes);
 
-void generateTimeLayout(numRowsInfo numRows, uChar parameterName,
+void generateTimeLayout(numRowsInfo numRows, uChar parameterEnum,
                         char *layoutKey, const char *timeCoordinate,
                         char *summarization, genMatchType * match,
                         size_t numMatch, uChar f_formatPeriodName,
@@ -427,6 +442,17 @@ void generateTimeLayout(numRowsInfo numRows, uChar parameterName,
 void getColdSeasonTimes(genMatchType *match, numRowsInfo numRowsWS,
                         sChar TZoffset, double **springDoubleDate, 
 			double **fallDoubleDate, int startNum, int endNum);
+
+void getElemIndexes(int *ndfdMaxIndex, int *ndfdMinIndex, int *ndfdPopIndex, 
+                    int *ndfdWwaIndex, int *ndfdTempIndex, int *ndfdTdIndex, 
+                    int *ndfdQpfIndex, int *ndfdWspdIndex, int *ndfdWdirIndex, 
+                    int *ndfdSkyIndex, int *ndfdWgustIndex, 
+                    int *rtmaPrecipaIndex, int *rtmaSkyIndex, int *rtmaTdIndex,
+                    int *rtmaTempIndex, int *rtmaWdirIndex, int *rtmaWspdIndex, 
+                    int *rtmaNdfdSkyIndex, int *rtmaNdfdPrecipaIndex,
+                    int *rtmaNdfdTdIndex, int *rtmaNdfdTempIndex,
+                    int *rtmaNdfdWdirIndex, int *rtmaNdfdWspdIndex, uChar f_XML, 
+                    size_t numElem, genElemDescript *elem);
 
 void getFirstSecondValidTimes(double *firstValidTime, double *secondValidTime,
 		              genMatchType *match, size_t numMatch, 
@@ -447,9 +473,10 @@ void getNumRows(numRowsInfo *numRowsForPoint, double *timeUserStart,
                 int *f_formatSummarizations, size_t pnt, int *pnt_rtmaNdfdTemp, 
                 int *pnt_rtmaNdfdTd, int *pnt_rtmaNdfdWdir, 
                 int *pnt_rtmaNdfdWspd, int *pnt_rtmaNdfdPrecipa, 
-                int *pnt_rtmaNdfdSky, double currentDoubTime);
+                int *pnt_rtmaNdfdSky, double currentDoubTime, size_t numElem, 
+                genElemDescript *elem);
 
-void getPeriodInfo(uChar parameterName, char *firstValidTime, char *currentHour, 
+void getPeriodInfo(uChar parameterEnum, char *firstValidTime, char *currentHour, 
                    char *currentDay, uChar * issuanceType, 
                    uChar * numPeriodNames, int period, char *frequency);
 
@@ -511,10 +538,10 @@ void monthDayYearTime(genMatchType * match, size_t numMatch,
                       double *currentLocalTime_doub_adj, sChar TZoffset,
 		      int startNum, int endNum, numRowsInfo numRows);
 
-void prepareDWMLgen(uChar f_XML, uChar * f_formatPeriodName, 
-                    uChar **wxParameters, char *summarization,
+void prepareDWMLgen(uChar f_XML, uChar * f_formatPeriodName,
+                    uChar ***wxParameters, size_t numPnts, char *summarization,
                     uChar varFilter[NDFD_MATCHALL + 1], sChar * f_icon, 
-                    size_t numPnts);
+                    size_t *numElem, genElemDescript **elem);
 
 void prepareDWMLgenByDay(genMatchType *match, uChar f_XML, 
                          double *startTime_cml, double *endTime_cml,
@@ -523,10 +550,12 @@ void prepareDWMLgenByDay(genMatchType *match, uChar f_XML,
                          uChar **wxParameters, int *timeInterval,
                          int *numOutputLines, char *summarization,
 			 double currDoubTime, size_t numPnts, 
-                         PntSectInfo *pntInfo, char **currentLocalDate);
+                         PntSectInfo *pntInfo, char **currentLocalDate, 
+                         size_t numElem, genElemDescript *elem, 
+                         uChar varFilter[NDFD_MATCHALL+1]);
 
 void prepareVarFilter(sChar f_XML, sChar *f_icon, size_t numNdfdVars, 
-                      uChar *ndfdVars, uChar varFilter[NDFD_MATCHALL + 1], 
+                      uChar *ndfdVars, uChar varFilter[NDFD_MATCHALL+1], 
                       size_t *numElem, genElemDescript **elem); 
 
 void prepareWeatherValuesByDay (genMatchType *match, sChar TZoffset,
@@ -557,7 +586,7 @@ void rtmaFileNames(size_t *numInFiles, char ***inFiles, char *directoryTail,
                    char *rtmaSetDir);
 
 void setVarFilter(sChar f_XML, sChar *f_icon, size_t numNdfdVars, 
-                  const uChar *ndfdVars, uChar varFilter[NDFD_MATCHALL + 1]);
+                  const uChar *ndfdVars, uChar varFilter[NDFD_MATCHALL+1]);
 
 void skyPhrase(int *maxSkyCover, int *minSkyCover, int *averageSkyCover, 
 	       int dayIndex, int f_isDayTime, int f_isNightTime, int *maxSkyNum,  

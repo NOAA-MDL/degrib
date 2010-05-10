@@ -40,8 +40,8 @@
  *             lastUserTime: the last valid time interested per element, 
  *                           taking into consideration any data values 
  *                           (rows) skipped at end of time duration.
- *       concatElem = Enumerated number of the concatenated RTMA+NDFD element
- *                    (Input).
+ *       concatNdfdEnum = Enumerated number of the concatenated RTMA+NDFD element
+ *                        (Input).
  *        layoutKey = The key to the time layout is of the form
  *                    k-p{periodLength}h-n{numRows}-{numLayouts}    
  *                    The "k" is for "key".  The "p" is for "period" "h" is for
@@ -101,8 +101,9 @@
  *****************************************************************************
  */
 #include "xmlparse.h"
-void generateConcatTimeLayout(numRowsInfo *numRows, uChar concatElem,
-                              char *layoutKey, const char *timeCoordinate,
+void generateConcatTimeLayout(numRowsInfo *numRows, int elemIndex, 
+                              uChar concatNdfdEnum, char *layoutKey, 
+                              const char *timeCoordinate,
                               char *summarization, genMatchType *match,
                               size_t numMatch, uChar f_formatPeriodName,
                               sChar TZoffset, sChar f_observeDST,
@@ -111,11 +112,13 @@ void generateConcatTimeLayout(numRowsInfo *numRows, uChar concatElem,
                               char *currentDay, char *frequency,
                               xmlNodePtr data, double startTime_cml,
                               double currentDoubTime,
-		      	      uChar f_XML, int startNum, int endNum)
+		      	      uChar f_XML, int startNum, int endNum, 
+                              size_t numElem, genElemDescript *elem)
 {
    int i;                     /* Counter thru match structure. */
    int j;                     /* Counter */
-   int k;                     /* Counter thru start and endTimes. */
+   int k;                     /* Counter. */
+   int m;                     /* Counter thru start and endTimes. */
    int f_finalTimeLayout = 0; /* Flag denoting if this is the last time
                                * layout being processed. */
    int period = 1;            /* Length between an elements successive
@@ -150,12 +153,11 @@ void generateConcatTimeLayout(numRowsInfo *numRows, uChar concatElem,
    char periodName[30];       /* Name of special period name (i.e.
                                * "Overnight"). */
    uChar issuanceType = MAX_PERIODS;  /* Max number of issuanceTypes. */
-   int ndfdElem = concatElem; /* The enumerated number of the NDFD portion of the 
-                                 concatenated element. */
-   int rtmaElem = concatElem; /* The enumerated number of the RTMA portion of the 
-                                 concatenated element. */
-   int concatNumRows = numRows[concatElem].total - numRows[concatElem].skipBeg -
-                       numRows[concatElem].skipEnd;
+   int ndfdElemIndex = concatNdfdEnum; /* The enumerated number of the NDFD 
+                                          portion of the concatenated element. */
+   int rtmaElemIndex = concatNdfdEnum; /* The enumerated number of the RTMA 
+                                          portion of the concatenated element. */
+   int concatNumRows = numRows[elemIndex].total;
    int elemNumRows = 0; /* Variable used when accessing the time layout loop 
                            twice (once for the RTMA portion and once for the NDFD 
                            portion). */
@@ -163,45 +165,80 @@ void generateConcatTimeLayout(numRowsInfo *numRows, uChar concatElem,
    /* Which of the 6 concatenated elements do we have? Set the number of actual
     * rows and associated enumerated element numbers. 
     */
-   if (concatElem == RTMA_NDFD_TEMP)
+   if (concatNdfdEnum == RTMA_NDFD_TEMP)
    {
-      ndfdElem = NDFD_TEMP;
-      rtmaElem = RTMA_TEMP;
+      /* Find the number of the parent elements. */
+      for (k = 0; k < numElem; k++)
+      {
+         if (elem[k].ndfdEnum == NDFD_TEMP)
+            ndfdElemIndex = k;
+         if (elem[k].ndfdEnum == RTMA_TEMP)
+            rtmaElemIndex = k;
+      }
    }
-   else if (concatElem == RTMA_NDFD_TD)
+   else if (concatNdfdEnum == RTMA_NDFD_TD)
    {
-      ndfdElem = NDFD_TD;
-      rtmaElem = RTMA_TD;
+      for (k = 0; k < numElem; k++)
+      {
+         if (elem[k].ndfdEnum == NDFD_TD)
+            ndfdElemIndex = k;
+         if (elem[k].ndfdEnum == RTMA_TD)
+            rtmaElemIndex = k;
+      }
    }
-   else if (concatElem == RTMA_NDFD_WSPD)
+   else if (concatNdfdEnum == RTMA_NDFD_WSPD)
    {
-      ndfdElem = NDFD_WS;
-      rtmaElem = RTMA_WSPD;
+      for (k = 0; k < numElem; k++)
+      {
+         if (elem[k].ndfdEnum == NDFD_WS)
+            ndfdElemIndex = k;
+         if (elem[k].ndfdEnum == RTMA_WSPD)
+            rtmaElemIndex = k;
+      }
    }
-   else if (concatElem == RTMA_NDFD_WDIR)
+   else if (concatNdfdEnum == RTMA_NDFD_WDIR)
    {
-      ndfdElem = NDFD_WD;
-      rtmaElem = RTMA_WDIR;
+      for (k = 0; k < numElem; k++)
+      {
+         if (elem[k].ndfdEnum == NDFD_WD)
+            ndfdElemIndex = k;
+         if (elem[k].ndfdEnum == RTMA_WDIR)
+            rtmaElemIndex = k;
+      }
    }
-   else if (concatElem == RTMA_NDFD_PRECIPA)
+   else if (concatNdfdEnum == RTMA_NDFD_PRECIPA)
    {
-      ndfdElem = NDFD_QPF;
-      rtmaElem = RTMA_PRECIPA;
+      for (k = 0; k < numElem; k++)
+      {
+         if (elem[k].ndfdEnum == NDFD_QPF)
+            ndfdElemIndex = k;
+         if (elem[k].ndfdEnum == RTMA_PRECIPA)
+            rtmaElemIndex = k;
+      }
    }
-   else if (concatElem == RTMA_NDFD_SKY)
+   else if (concatNdfdEnum == RTMA_NDFD_SKY)
    {
-      ndfdElem = NDFD_SKY;
-      rtmaElem = RTMA_SKY;
+      for (k = 0; k < numElem; k++)
+      {
+         if (elem[k].ndfdEnum == NDFD_SKY)
+         {
+            ndfdElemIndex = k;
+         }
+         if (elem[k].ndfdEnum == RTMA_SKY)
+         {
+            rtmaElemIndex = k;
+         }
+      }
    }
-
    /* Find first and second validTime per element (if exists) interested in. 
     * This will involve the RTMA element since RTMA times start before NDFD
     * times.
     */
    getFirstSecondValidTimes(&firstValidTime, &secondValidTime, match, 
-		            numMatch, rtmaElem, startNum, endNum,
-                            numRows[rtmaElem].total, numRows[rtmaElem].skipBeg, 
-                            numRows[rtmaElem].skipEnd);
+		            numMatch, elem[rtmaElemIndex].ndfdEnum, startNum, 
+                            endNum, numRows[rtmaElemIndex].total, 
+                            numRows[rtmaElemIndex].skipBeg, 
+                            numRows[rtmaElemIndex].skipEnd);
 
    /* Start filling in the time layout array's with this current data. */
    formatValidTime(firstValidTime, currentTimeLayout.fmtdStartTime, 30, 
@@ -233,19 +270,19 @@ void generateConcatTimeLayout(numRowsInfo *numRows, uChar concatElem,
        * each time layout. Start with the RTMA portion, and then the NDFD 
        * portion. 
        */
-      for (i = rtmaElem, j = 0; j < 2; j++)
+      for (i = rtmaElemIndex, j = 0; j < 2; j++)
       {
          /* See if we need to format an <end-valid-time> tag . */
-         useEndTimes = checkNeedForEndTime(i, f_XML);
+         useEndTimes = checkNeedForEndTime(elem[i].ndfdEnum, f_XML);
 
          /* Gather the startTimes and/or endTimes. */
          elemNumRows = numRows[i].total - numRows[i].skipBeg -
-                                                numRows[i].skipEnd;
+                                          numRows[i].skipEnd;
 
          startTimes = (char **)malloc(elemNumRows * sizeof(char *));
          if (useEndTimes)
             endTimes = (char **)malloc(elemNumRows * sizeof(char *));
-         computeStartEndTimes(i, elemNumRows, period, TZoffset,
+         computeStartEndTimes(elem[i].ndfdEnum, elemNumRows, period, TZoffset,
                               f_observeDST, match, useEndTimes, startTimes, 
                               endTimes, frequency, f_XML, startTime_cml, 
                               currentDoubTime, numRows[i], startNum, endNum);
@@ -254,19 +291,20 @@ void generateConcatTimeLayout(numRowsInfo *numRows, uChar concatElem,
           * information "issuanceType" and "numPeriodNames". 
           */
          if (f_formatPeriodName && period >= 12)
-            getPeriodInfo(i, startTimes[0], currentHour, currentDay,
-                          &issuanceType, &numPeriodNames, period, frequency);
+            getPeriodInfo(elem[i].ndfdEnum, startTimes[0], currentHour, 
+                          currentDay, &issuanceType, &numPeriodNames, period, 
+                          frequency);
       
-         /* Now we get the time values for this parameter and format the valid time
-          * tags. 
+         /* Now we get the time values for the RTMA portion of this combined 
+          * parameter and format the valid time tags. 
           */
-         for (k = 0; k < elemNumRows; k++)
+         for (m = 0; m < elemNumRows; m++)
          {
-	    if (startTimes[k])
+	    if (startTimes[m])
             {
                startValTime = xmlNewChild(time_layout, NULL, BAD_CAST
                                           "start-valid-time", BAD_CAST
-                                          startTimes[k]);
+                                          startTimes[m]);
 
                /* We only format period names for parameters with period
                 * greater than 12 hours like (max and min temp, and pop12
@@ -276,7 +314,7 @@ void generateConcatTimeLayout(numRowsInfo *numRows, uChar concatElem,
                {
                   outputPeriodName = 0;
                   periodName[0] = '\0';
-                  Clock_Scan(&startTime_doub, startTimes[k], 1);
+                  Clock_Scan(&startTime_doub, startTimes[m], 1);
 		  Clock_Print2(dayName, 30, startTime_doub, "%v", 
 		               TZoffset, f_observeDST);
 
@@ -292,8 +330,8 @@ void generateConcatTimeLayout(numRowsInfo *numRows, uChar concatElem,
 		      strcmp(dayName, "Friday") == 0 ||
 		      strcmp(dayName, "Saturday") == 0)
                   {
-                     checkNeedForPeriodName(k, &numPeriodNames, TZoffset, 
-                                            i, startTimes[k],
+                     checkNeedForPeriodName(m, &numPeriodNames, TZoffset, 
+                                            elem[i].ndfdEnum, startTimes[m],
                                             &outputPeriodName, issuanceType,
                                             periodName, currentHour, 
 					    currentDay, startTime_cml, 
@@ -317,7 +355,7 @@ void generateConcatTimeLayout(numRowsInfo *numRows, uChar concatElem,
                       * match.validTimes, we need to send the double version
                       * of the string startTimes into Clock_Print2 routine. 
 		      */
-                     if (useNightPeriodName(startTimes[k]) == 0)
+                     if (useNightPeriodName(startTimes[m]) == 0)
                      {
                         xmlNewProp(startValTime, BAD_CAST "period-name",
                                    BAD_CAST dayName);
@@ -340,13 +378,12 @@ void generateConcatTimeLayout(numRowsInfo *numRows, uChar concatElem,
 	        */
                if (useEndTimes)
                   xmlNewChild(time_layout, NULL, BAD_CAST "end-valid-time",
-                              BAD_CAST endTimes[k]);
+                              BAD_CAST endTimes[m]);
 
                /* Free up the individual startTime and endTime. */
-               free(startTimes[k]);
+               free(startTimes[m]);
                if (useEndTimes)
-                  free(endTimes[k]);
-
+                  free(endTimes[m]);
             }
             else /* No startTime or the first Pop Rows is skipped. */
             {
@@ -366,9 +403,9 @@ void generateConcatTimeLayout(numRowsInfo *numRows, uChar concatElem,
           * second validTime for the NDFD Parent Element. Also, change the 
           * index to the NDFD Parent Element.
           */
-         i = ndfdElem;
+         i = ndfdElemIndex;
          getFirstSecondValidTimes(&firstValidTime, &secondValidTime, match, 
-		                  numMatch, i, startNum, endNum,
+		                  numMatch, elem[i].ndfdEnum, startNum, endNum,
                                   numRows[i].total, numRows[i].skipBeg, 
                                   numRows[i].skipEnd);
 
@@ -377,7 +414,7 @@ void generateConcatTimeLayout(numRowsInfo *numRows, uChar concatElem,
           */
          period = determinePeriodLength(firstValidTime, secondValidTime, 
 		                      (numRows[i].total-numRows[i].skipBeg-numRows[i].skipEnd), 
-                                      i); 
+                                      elem[i].ndfdEnum); 
 
          /* Free startTime & endTime arrays before next iteration of loop. */
          free(startTimes);

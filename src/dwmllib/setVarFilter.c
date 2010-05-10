@@ -49,10 +49,10 @@
  */
 #include "xmlparse.h"
 void setVarFilter(sChar f_XML, sChar *f_icon, size_t numNdfdVars, 
-                  const uChar *ndfdVars, uChar varFilter[XML_MAX+1])
+                  const uChar *ndfdVars, uChar varFilter[NDFD_MATCHALL+1])
 {
    int i;
-   memset(varFilter, 0, XML_MAX + 1);
+   memset(varFilter, 0, NDFD_MATCHALL + 1);
 
    /* Initialize all elements to 1. */
 

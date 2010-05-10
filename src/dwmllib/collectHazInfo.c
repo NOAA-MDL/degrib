@@ -217,7 +217,6 @@ void collectHazInfo(genMatchType *match, size_t numMatch, int startNum,
     * Otherwise it's undefined. 
     */
    *ptsIndivHazs = NULL;
-
    /* Loop thru each group, per row, and get info on each hazard. */
    for (group = 0; group < maxGroups; group++)
    {
@@ -322,6 +321,14 @@ void collectHazInfo(genMatchType *match, size_t numMatch, int startNum,
                      strcpy((*ptsIndivHazs)[hzIndex].code, rowHazard[row][group].code);
                      (*ptsIndivHazs)[hzIndex].numConsecRows = 1;
                   }
+                  else if ((numGroupsNextRow-1 < group) && (row == numActualRowsHZ-1) 
+                     && (strcmp(noNilorMissData[row].str, noNilorMissData[row-1].str) != 0))
+                  {
+                     (*ptsIndivHazs)[hzIndex].endHour = rowHazard[numActualRowsHZ-2][group].startHour;
+                     f_currHazClosed = 1;
+                     f_firstHazHour = 1;
+                     break;
+                  }                 
                   f_currHazClosed = 1;
                   f_firstHazHour = 1;
                   break;
@@ -341,8 +348,11 @@ void collectHazInfo(genMatchType *match, size_t numMatch, int startNum,
                f_firstHazHour = 0;
             } 
 
-            if (rowHazard[row-1][group].startHour >= timeResSplit)
-               hazRes = 3600*6;
+            if (f_timeResSplit)
+            {
+               if (rowHazard[row-1][group].startHour >= timeResSplit)
+                  hazRes = 3600*6;
+            }
 
             /* Check to see if hazard exists in next data row, and there is no 
              * gap in the hours of resolution. If so, it is consecutive. 
@@ -456,7 +466,7 @@ void collectHazInfo(genMatchType *match, size_t numMatch, int startNum,
             f_combinedPreviousHaz = 1;
       }
    }
-  
+       
    /* Free some things. */
    for (row = 0; row < numActualRowsHZ; row++)
       free(rowHazard[row]);

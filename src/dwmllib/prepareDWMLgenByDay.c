@@ -76,7 +76,9 @@ void prepareDWMLgenByDay(genMatchType *match, uChar f_XML,
                          uChar **wxParameters, int *timeInterval,
                          int *numOutputLines, char *summarization,
 			 double currDoubTime, size_t numPnts, 
-                         PntSectInfo *pntInfo, char **currentLocalDate)
+                         PntSectInfo *pntInfo, char **currentLocalDate, 
+                         size_t numElem, genElemDescript *elem, 
+                         uChar varFilter[NDFD_MATCHALL + 1])
 {
    int i; /* Counter through the match structure. */
    int j; /* Counter through points. */
@@ -221,24 +223,6 @@ void prepareDWMLgenByDay(genMatchType *match, uChar f_XML,
              }
           }
       }
-
-      /* Flag the below four elements for formatting in the ouput XML (icons
-       * will be the fifth element formatted). Set the value to = 1. 
-       */
-      wxParameters[j][NDFD_MAX] = 1;
-      wxParameters[j][NDFD_MIN] = 1;
-      wxParameters[j][NDFD_POP] = 1;
-      wxParameters[j][NDFD_WX] = 1;
-      wxParameters[j][NDFD_WWA] = 1;
-
-      /* We need to collect data for the following four elements too. They are
-       * not formatted in the output XML, but are used in icon determination.
-       * Set these values to = 2. 
-       */
-      wxParameters[j][NDFD_SKY] = 2;
-      wxParameters[j][NDFD_WS] = 2;
-      wxParameters[j][NDFD_WD] = 2;
-      wxParameters[j][NDFD_WG] = 2;
  
       /* Assign the number of output lines, if DWMLgenByDay product. */
       if (f_XML == 3)
@@ -249,6 +233,30 @@ void prepareDWMLgenByDay(genMatchType *match, uChar f_XML,
       else if (f_XML == 4)
          numOutputLines[j] = numDays[j];
 
+      /* Flag the below five elements for formatting in the ouput XML (icons
+       * will be the sixth element formatted). Set the value to = 1. 
+       */
+      for (i = 0; i < numElem; i++)
+      {
+         if (varFilter[elem[i].ndfdEnum] >= 2)
+            wxParameters[j][i] = 1;
+      }
+
+      /* We need to collect data for the following four elements too. They are
+       * not formatted in the output XML summary products, but are used in icon 
+       * determination. Set these values to = 2. 
+       */
+      for (i = 0; i < numElem; i++)
+      {
+         if (elem[i].ndfdEnum == NDFD_WD)
+            wxParameters[j][i] = 2;
+         if (elem[i].ndfdEnum == NDFD_WS)
+            wxParameters[j][i] = 2;
+         if (elem[i].ndfdEnum == NDFD_SKY)
+            wxParameters[j][i] = 2;
+         if (elem[i].ndfdEnum == NDFD_WG)
+            wxParameters[j][i] = 2;
+      }
    } /* End Point Loop. */
 
    /* DWMLgenByDay, both formats, have pre-defined sets of NDFD parameters. */	   

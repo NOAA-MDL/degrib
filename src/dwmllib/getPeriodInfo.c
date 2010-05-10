@@ -12,7 +12,7 @@
  *   firstValidTime = First valid time of element. (Input)
  *   numPeriodNames = Number period names for one of the seven issuance times.
  *                    (Input)
- *    parameterName = Number denoting the NDFD element currently processed. 
+ *    parameterEnum = Number denoting the NDFD element currently processed. 
  *                    (Input) 
  *     issuanceType = Index (dimension #1) into the period name array that 
  *                    defines the current cycle (ex. morning, afternoon, 
@@ -33,7 +33,7 @@
  *****************************************************************************
  */
 #include "xmlparse.h"
-void getPeriodInfo(uChar parameterName, char *firstValidTime, char *currentHour, 
+void getPeriodInfo(uChar parameterEnum, char *firstValidTime, char *currentHour, 
                    char *currentDay, uChar * issuanceType, 
                    uChar * numPeriodNames, int period, char *frequency)
 {
@@ -91,7 +91,7 @@ void getPeriodInfo(uChar parameterName, char *firstValidTime, char *currentHour,
       /* Determine which NDFD parameter we are processing and return TRUE if
        * it is valid for a period of time. 
        */
-      switch (parameterName)
+      switch (parameterEnum)
       {
 
          case NDFD_MAX:
@@ -117,7 +117,7 @@ void getPeriodInfo(uChar parameterName, char *firstValidTime, char *currentHour,
        * it is valid for a period of time. This section is for the DWMLgen
        * product only.  
        */
-      switch (parameterName)
+      switch (parameterEnum)
       {
 
          case NDFD_MAX:

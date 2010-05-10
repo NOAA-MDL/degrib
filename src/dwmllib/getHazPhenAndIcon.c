@@ -26,7 +26,8 @@
  * HISTORY
  *   6/2008 Paul Hershberg (MDL): Created
  *  11/2008 Paul Hershberg (MDL): Added "Snow" to "Lake Effect".
- *   2/2009 Paul Hershberg (MDL): Added 3 new Marine Hazards. 
+ *   2/2009 Paul Hershberg (MDL): Added 3 new Marine Hazards.
+ *  11/2009 Paul Hershberg (MDL): Add "Heavy" to Freezing Spray.
  *
  * NOTES
  ******************************************************************************
@@ -380,7 +381,7 @@ void  getHazPhenAndIcon(char *uglyStr, char *significance, char *transStr,
 
    else if (strcmp(uglyStr, "UP") == 0)
    {
-      strcpy(transStr, "Freezing Spray");
+      strcpy(transStr, "Heavy Freezing Spray");
       return;
    }
 

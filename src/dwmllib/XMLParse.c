@@ -2,8 +2,7 @@
 /* XMLParse () --
  * 
  * Paul Hershberg / MDL
- * Linux/
- *
+ * Linux
  * PURPOSE
  *   The driver program that ultimately formats the DWMLgen products 
  *   "time-series" (RTMA and NDFD elements )and "glance" and the DWMLgenByDay 
@@ -72,22 +71,22 @@
  * enum { NDFD_MAX(0), NDFD_MIN(1), NDFD_POP(2), NDFD_TEMP(3), NDFD_WD(4), 
  *        NDFD_WS(5), NDFD_TD(6), NDFD_SKY(7), NDFD_QPF(8), NDFD_SNOW(9), 
  *        NDFD_WX(10), NDFD_WH(11), NDFD_AT(12), NDFD_RH(13), NDFD_WG(14), 
- *        NDFD_INC34(15), NDFD_INC50(16), NDFD_INC64(17), NDFD_CUM34(18), 
- *        NDFD_CUM50(19), NDFD_CUM64(20), NDFD_CONHAZ(21), NDFD_PTORN(22),
- *        NDFD_PHAIL(23), NDFD_PTSTMWIND(24), NDFD_PXTORN(25), NDFD_PXHAIL(26), 
- *        NDFD_PXTSTMWIND(27), NDFD_PSTORM(28), NDFD_PXSTORM(29), 
- *        NDFD_TMPABV14D(30), NDFD_TMPBLW14D(31), NDFD_PRCPABV14D(32), 
- *        NDFD_PRCPBLW14D(33), NDFD_TMPABV30D(34), NDFD_TMPBLW30D(35),
- *        NDFD_PRCPABV30D(36), NDFD_PRCPBLW30D(37), NDFD_TMPABV90D(38), 
- *        NDFD_TMPBLW90D(39), NDFD_PRCPABV90D(40), NDFD_PRCPBLW90D(41), 
- *        NDFD_WWA(42), RTMA_PRECIPA(43), RTMA_SKY(44), RTMA_TD(45), RTMA_TEMP(46), 
- *        RTMA_UTD(47), RTMA_UTEMP(48), RTMA_UWDIR(49), RTMA_UWSPD(50), 
- *        RTMA_WDIR(51), RTMA_WSPD(52), NDFD_UNDEF(53), NDFD_MATCHALL(54)
+ *        NDFD_WWA(15), NDFD_INC34(16), NDFD_INC50(17), NDFD_INC64(18), NDFD_CUM34(19), 
+ *        NDFD_CUM50(20), NDFD_CUM64(21), NDFD_CONHAZ(22), NDFD_PTORN(23),
+ *        NDFD_PHAIL(24), NDFD_PTSTMWIND(25), NDFD_PXTORN(26), NDFD_PXHAIL(27), 
+ *        NDFD_PXTSTMWIND(28), NDFD_PSTORM(29), NDFD_PXSTORM(30), 
+ *        NDFD_TMPABV14D(31), NDFD_TMPBLW14D(32), NDFD_PRCPABV14D(33), 
+ *        NDFD_PRCPBLW14D(34), NDFD_TMPABV30D(35), NDFD_TMPBLW30D(36),
+ *        NDFD_PRCPABV30D(37), NDFD_PRCPBLW30D(38), NDFD_TMPABV90D(39), 
+ *        NDFD_TMPBLW90D(40), NDFD_PRCPABV90D(41), NDFD_PRCPBLW90D(42), 
+ *        LAMP_TSTMPRB(43), RTMA_PRECIPA(44), RTMA_SKY(45), RTMA_TD(46), RTMA_TEMP(47), 
+ *        RTMA_UTD(48), RTMA_UTEMP(49), RTMA_UWDIR(50), RTMA_UWSPD(51), 
+ *        RTMA_WDIR(52), RTMA_WSPD(53), NDFD_UNDEF(54), NDFD_MATCHALL(55)
  *      };
  *
- * enum { RTMA_NDFD_SKY(55) = NDFD_MATCHALL + 1, RTMA_NDFD_PRECIPA(56), 
- *        RTMA_NDFD_TD(57), RTMA_NDFD_TEMP(58), RTMA_NDFD_WDIR(59), 
- *        RTMA_NDFD_WSPD(60), XML_MAX(61) 
+ * enum { RTMA_NDFD_SKY(56) = NDFD_MATCHALL + 1, RTMA_NDFD_PRECIPA(57), 
+ *        RTMA_NDFD_TD(58), RTMA_NDFD_TEMP(59), RTMA_NDFD_WDIR(60), 
+ *        RTMA_NDFD_WSPD(61), XML_MAX(62) 
  *      };
  * 
  ****************************************************************************** 
@@ -103,10 +102,12 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
              size_t numSector, char **sector, sChar f_ndfdConven, 
              char *rtmaDataDir, sChar f_avgInterp, char *lampDataDir)
 {
-   size_t numElem = 0;        /* Num of elements returned by degrib. */
+   size_t numElem = 0;        /* Num of elements returned by genProbe (those 
+                               * formatted plus those used in deriving 
+                               * formatted elements). */
    genElemDescript *elem = NULL;  /* Structure with info about the element. */
    uChar varFilter[NDFD_MATCHALL + 1];  /* Shows what NDFD variables are of
-                                         * interest(= 1) or vital(= 2). */
+                                   * interest(= 1) or vital(= 2). */
    size_t numMatch = 0;       /* The number of matches from degrib. */
    genMatchType *match = NULL;  /* Structure of element matches returned from 
                                  * degrib. */
@@ -133,12 +134,14 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
    int format_value = 1; /* Option to turn off the formating of the value child
                           * element for weather. (TPEX sets to zero, as they 
                           * don't format this). */
-   uChar **weatherParameters = NULL;            /* Array containing the flags
-                                                 * denoting whether a certain 
-                                                 * element is formatted in
-                                                 * the output XML (=1), or
-                                                 * used in deriving another
-                                                 * formatted element (=2). */
+   uChar **weatherParameters = NULL; /* Array containing the flags denoting 
+                                      * whether a certain element is to be 
+                                      * formatted in the output XML (= 1), or
+                                      * used in deriving another formatted 
+                                      * element (= 2) or if the weather elements 
+                                      * time layout is to be used by Icons (= 3)
+                                      * (occurs when wx element not chosen but 
+                                      * Icons are (-Icon 1). */ 
    int *f_formatIconForPnt = NULL; /* Determines wether there is enough data to 
                                       icons for the particular point being 
                                       processed. */
@@ -162,7 +165,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                      *      "24 hourly" products. "numRows" is determined 
                      *      using numDays and is used as an added criteria
                      *      (above and beyond simply having data exist for a 
-                     *       certain row) in formatting XML for these two m
+                     *       certain row) in formatting XML for these two 
                      *       products. (Input)
                      * skipBeg: the number of beginning rows not formatted due 
                      *       to a user supplied reduction in time (startTime
@@ -175,7 +178,9 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                      *       (rows) skipped at beginning of time duration.
                      * lastUserTime: the last valid time interested per element, 
                      *        taking into consideration any data values 
-                     *        (rows) skipped at end of time duration. */
+                     *        (rows) skipped at end of time duration.
+                     * multiLayouts: Used in deriving individual hazards 
+                     *               different layouts. */
    uChar f_formatPeriodName = 0;  /* Flag to indicate if period names (i.e.
                                    * "today") appear in the start valid time
                                    * tag: <start-valid-time
@@ -379,8 +384,74 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
    int *numHazards = NULL; /* The number of hazards existing, per point. */
    double **periodTimes = NULL; /* The times bordering each forecast period. */
    int *numPeriodTimes = NULL;
-   char tempBuff[30];  /* Temp string used when f_XML =3 or 4 and there are no 
-                        * active hazards. */
+   char tempBuff[30]; /* Temp string. */
+   int ndfdMaxIndex = -1; /* Index in elem array holding NDFD_MAXT. */
+   int ndfdMinIndex = -1; /* Index in elem array holding NDFD_MINT. */ 
+   int ndfdPopIndex = -1; /* Index in elem array holding NDFD_POP. */ 
+   int ndfdWwaIndex = -1; /* Index in elem array holding NDFD_WWA. */
+   int ndfdTempIndex = -1; /* Index in elem array holding NDFD_TEMP. */
+   int ndfdTdIndex = -1; /* Index in elem array holding NDFD_TD. */
+   int ndfdQpfIndex = -1; /* Index in elem array holding NDFD_QPF. */
+   int ndfdSkyIndex = -1; /* Index in elem array holding NDFD_SKY. */
+   int ndfdWdirIndex = -1; /* Index in elem array holding NDFD_WDIR. */
+   int ndfdWspdIndex = -1; /* Index in elem array holding NDFD_WSPD. */
+   int ndfdWgustIndex = -1; /* Index in elem array holding NDFD_WGUST. */
+   int ndfdWgustOrWspdIndex = -1; /* Index in elem array holding either Wgust
+                                   * if available, else Wspd. */ 
+   int rtmaPrecipaIndex = -1; /* Index in elem array holding RTMA_PRECIPA. */
+   int rtmaSkyIndex = -1; /* Index in elem array holding RTMA_SKY. */
+   int rtmaTdIndex = -1; /* Index in elem array holding RTMA_TD. */ 
+   int rtmaTempIndex = -1; /* Index in elem array holding RTMA_TEMP. */
+   int rtmaWdirIndex = -1; /* Index in elem array holding RTMA_WDIR. */
+   int rtmaWspdIndex = -1; /* Index in elem array holding RTMA_WSPD. */
+   int rtmaNdfdSkyIndex = -1; /* Index in elem array holding RTMA_NDFD_SKY. */
+   int rtmaNdfdPrecipaIndex = -1; /* Index in elem array holding 
+                                   * RTMA_NDFD_PRECIPA. */
+   int rtmaNdfdTdIndex = -1; /* Index in elem array holding RTMA_NDFD_TD. */
+   int rtmaNdfdTempIndex = -1; /* Index in elem array holding RTMA_NDFD_TEMP. */
+   int rtmaNdfdWdirIndex = -1; /* Index in elem array holding RTMA_NDFD_WDIR. */
+   int rtmaNdfdWspdIndex = -1; /* Index in elem array holding RTMA_NDFD_WSPD. */
+   int f_allTempsFormatted = 0; /* Flag denoting Temps were formatted for 
+                                 * point. */
+   int f_allTdsFormatted = 0; /* Flag denoting Td's were formatted for point. */
+   int f_allQpfsFormatted = 0; /* Flag denoting QPF's were formatted for 
+                                * point. */
+   int f_allWspdsFormatted = 0; /* Flag denoting Wspd's were formatted for 
+                                 * point. */
+   int f_allWdirsFormatted = 0; /* Flag denoting Wdir's were formatted for 
+                                 * point. */
+   int f_allSkysFormatted = 0; /* Flag denoting Sky's were formatted for 
+                                * point. */
+   int numHazardsAllPts = 0; /* Used for summary products. If there are no 
+                              * hazards at all in a list of points, then we 
+                              * can copy a previous points time layouts (if 
+                              * in same time zone). But if there are active 
+                              * hazards, we can't do this copy. Set here to +1
+                              * so time-series and glance products are not 
+                              * effected. Re-initialize to 0 for summary 
+                              * products. */
+
+   /* Denote the order needed in array NDFD2DWML of the index of the enumeration. 
+    * e.g. NDFD2DWML[NDFD_POP] = NDFD2DWML[2] = 7TH Position needed in 
+    * formatting. 
+    */
+   static uChar NDFD2DWML[] = { 0, 1, 7, 2, 37, 35, 3, 38, 5, 6, 40, 42, 4, 39, 
+   36, 41, 29, 30, 31, 32, 33, 34, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+   20, 21, 22, 23, 24, 25, 26, 27, 28, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 
+   53, 54, 55, 56, 57, 58, 59, 60, 61, 62
+   };
+
+/*   static int DWML2NDFD[] = { 0, 1, 3, 6, 12, 8, 9, 2, 22, 23, 24, 25, 26, 27, 
+     28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 16, 17, 18, 
+     19, 20, 21, 5, 14, 4, 7, 13, 10, 15, 11, 43, 44, 45, 46, 47, 48, 49, 50, 
+     51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62
+     }; 
+*/
+  
+   dwmlEnum *Dwml;  /* Subset of NDFD2DWML above that holds the DWML 
+                     * enumerations (the order the elements need to be 
+                     * formatted in, dictated by schema). Array holds 
+                     * just those elemetns queried for. */
 
    /* XML Document pointer */
    xmlDocPtr doc = NULL;      /* An xml Node Pointer denoting the top-level
@@ -404,7 +475,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
    if (f_XML == 1) 
    {
       anyRtmaElements(&f_XML, numInFiles, inFiles, numNdfdVars, ndfdVars,
-                      rtmaDataDir, f_icon, numSector, sector, &f_rtmaNdfdTemp, 
+                      rtmaDataDir, f_icon, numSector, sector, &f_rtmaNdfdTemp,
                       &f_rtmaNdfdTd, &f_rtmaNdfdWdir, &f_rtmaNdfdWspd, 
                       &f_rtmaNdfdPrecipa, &f_rtmaNdfdSky);
 
@@ -470,7 +541,9 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
             #endif
          }
 	 if (endTime - startTime == (12 * 3600))
+         {
             endTime = endTime + (24 * 3600);
+         }
       }
    }
 
@@ -503,6 +576,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
       #ifdef PRINT_DIAG
       printf("No data retrieved from NDFD (matches = 0).\n");
       #endif
+
       for (i = 0; i < numElem; i++)
       {
          genElemFree(elem + i);
@@ -515,7 +589,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
       free(match);
       return 0;
    }
-
+   
    /* Sort the matches by sector, element, and then by valid time. */
    qsort(match, numMatch, sizeof(match[0]), XMLmatchCompare);
 
@@ -555,7 +629,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
       }
    }
 
-#ifdef PRINT_DIAG
+//#ifdef PRINT_DIAG
    /* Loop by point to check if any data at point at all. */
    for (j = 0; j < numPnts; j++)
    {
@@ -571,7 +645,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
          printf("-----------------\n");
       }
    }
-#endif
+//#endif
 
    /**************** DEAL WITH POINTS IN DIFFERENT SECTORS. ******************/
    /**************************************************************************/
@@ -625,11 +699,12 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
       numDays[j] = 0;
  
       /* weatherParameters array denotes those elements that will ultimately
-       * be formatted (set to 1). Those retrieved from NDFD by degrib but used
-       * only to derive other elements are set to 2.
+       * be formatted (set to 1). Those returned in genProbe via the match 
+       * structure but used only to derive other elements are set to 2.
+       * Initialize to 0. 
        */
-      weatherParameters[j] = (uChar *) malloc(XML_MAX * sizeof(uChar));
-      for (i = 0; i < XML_MAX; i++)
+      weatherParameters[j] = (uChar *) malloc(numElem * sizeof(uChar));
+      for (i = 0; i < numElem; i++)
          weatherParameters[j][i] = 0;
 
       /* Get each point's first Valid times for MaxT and Pop. */
@@ -668,11 +743,11 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
       currentHour[j][1] = currentLocalTime[12];
       currentHour[j][2] = '\0';
    }
-
+ 
    /* Prepare some data for DWMLgen's "time-series" product. */
    if ((f_XML == 1) || (f_XML == 2) || (f_XML == 5) || (f_XML == 6))
-      prepareDWMLgen(f_XML, &f_formatPeriodName, weatherParameters,
-                     whatSummarization, varFilter, &f_icon, numPnts);
+      prepareDWMLgen(f_XML, &f_formatPeriodName, &weatherParameters, numPnts,
+                     whatSummarization, varFilter, &f_icon, &numElem, &elem);
 
    /* Prepare data for DWMLgenByDay's "12 hourly" & "24 hourly" products. */
    if ((f_XML == 3) || (f_XML == 4))
@@ -680,7 +755,8 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
 		          firstValidTimeMatch, numDays, format, 
 			  &f_formatPeriodName, weatherParameters, 
 			  &timeInterval, numOutputLines, whatSummarization,
-			  currentDoubTime, numPnts, pntInfo, currentDay);
+			  currentDoubTime, numPnts, pntInfo, currentDay, 
+                          numElem, elem, varFilter);
 
    /************************* FORMAT DATA INFO *******************************/
    /**************************************************************************/ 
@@ -707,6 +783,19 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
    pnt_rtmaNdfdWspd = (int *)malloc(numPnts * sizeof(int)); 
    pnt_rtmaNdfdPrecipa = (int *)malloc(numPnts * sizeof(int)); 
    pnt_rtmaNdfdSky = (int *)malloc(numPnts * sizeof(int));
+
+   /* See if some elements were queried for. If so, denote the index they 
+    * occur in in the elem array. 
+    */
+   getElemIndexes(&ndfdMaxIndex, &ndfdMinIndex, &ndfdPopIndex, &ndfdWwaIndex, 
+                  &ndfdTempIndex, &ndfdTdIndex, &ndfdQpfIndex, &ndfdWspdIndex, 
+                  &ndfdWdirIndex, &ndfdSkyIndex, &ndfdWgustIndex, 
+                  &rtmaPrecipaIndex, &rtmaSkyIndex, &rtmaTdIndex, 
+                  &rtmaTempIndex, &rtmaWdirIndex, &rtmaWspdIndex, 
+                  &rtmaNdfdSkyIndex, &rtmaNdfdPrecipaIndex, &rtmaNdfdTdIndex, 
+                  &rtmaNdfdTempIndex, &rtmaNdfdWdirIndex, &rtmaNdfdWspdIndex, 
+                  f_XML, numElem, elem);
+
    if (f_XML == 3 || f_XML == 4)
    {
       indivHaz = (hazInfo **)malloc(numPnts * sizeof(hazInfo *));
@@ -733,7 +822,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
       if (isPntInASector(pnts[j]))
       {
 	 /* Open up each point's # of Rows to an element allocation. */
-         numRowsForPoint[j] = (numRowsInfo *) malloc(XML_MAX *
+         numRowsForPoint[j] = (numRowsInfo *) malloc(numElem *
                                                sizeof(numRowsInfo));
 
 	 /* Fill/Get the startDate array. */
@@ -750,41 +839,24 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                     &f_formatIconForPnt[j], &f_formatSummarizations[j], j, 
                     &pnt_rtmaNdfdTemp[j], &pnt_rtmaNdfdTd[j], 
                     &pnt_rtmaNdfdWdir[j], &pnt_rtmaNdfdWspd[j], 
-                    &pnt_rtmaNdfdPrecipa[j], &pnt_rtmaNdfdSky[j],
-                    currentDoubTime);
+                    &pnt_rtmaNdfdPrecipa[j], &pnt_rtmaNdfdSky[j], 
+                    currentDoubTime, numElem, elem);
 
          /* Gather up needed Hazard Info if a Summary Product was chosen. */
-         if ((f_XML == 3 || f_XML == 4) && 
-             (numRowsForPoint[j][NDFD_WWA].total != 0))
+         if ((f_XML == 3 || f_XML == 4) && ndfdWwaIndex >= 0)
          {
-            collectHazInfo(match, numMatch, pntInfo[j].startNum, 
-                           pntInfo[j].endNum, numRowsForPoint[j][NDFD_WWA], j,
-                           &(indivHaz[j]), &numHazards[j]);
+            if (numRowsForPoint[j][ndfdWwaIndex].total != 0)
+            {
+               collectHazInfo(match, numMatch, pntInfo[j].startNum, 
+                              pntInfo[j].endNum, numRowsForPoint[j][ndfdWwaIndex],
+                              j, &(indivHaz[j]), &numHazards[j]);
+
+               /* Count up total number of hazards if a summary product. */
+               numHazardsAllPts = numHazardsAllPts + numHazards[j];
+            }
          }
       }
    }
-
-#ifdef PRINT_DIAG
-   for (j = 0; j < numPnts; j++)
-   {
-      for (i = 0; i < XML_MAX; i++)
-      {
-         if (isPntInASector(pnts[j]))
-            printf("numRowsForPoint[%d][%d].total check = %d\n",j, i, 
-	            numRowsForPoint[j][i].total);
-      }
-   }
-   for (j = 0; j < numPnts; j++)
-   {
-      for (i = 0; i < XML_MAX; i++)
-      {
-         if (isPntInASector(pnts[j]))
-            printf("weatherParameters [%d][%d] = %d\n", j, i, 
-                    weatherParameters[j][i]);
-      }
-   }
-   fflush (stdout);
-#endif
 
    /**********FORMAT <MOREWEATHERINFORMATION> ELEMENT IN XML/DWML*************/
    /**************************************************************************/
@@ -799,7 +871,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
     */
    layoutKeys = (char ***)malloc(numPnts * sizeof(char **));
    TZoffset = (sChar *) malloc(numPnts * sizeof(sChar));
-
+ 
    /* Begin point loop for time-layout generation. */
    for (j = 0; j < numPnts; j++)
    { 
@@ -836,32 +908,34 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                }     
             }
          }
-         layoutKeys[j] = (char **)malloc(XML_MAX * sizeof(char *));
+         layoutKeys[j] = (char **)malloc(numElem * sizeof(char *));
 
-         if (f_firstPointLoopIteration || f_formatNewPointTimeLayouts)
+         if (f_firstPointLoopIteration || f_formatNewPointTimeLayouts || 
+            ((f_XML == 3 || f_XML == 4) && numHazardsAllPts > 0))
          {
-            /* Generate a new set of time-layouts, for each element, for the 
-             * point. 
-             */
-            for (k = 0; k < XML_MAX; k++)
+            /* Generate a new set of time-layouts for the point. */
+            for (k = 0; k < numElem; k++)
             {
                /* Pass on the RTMA errors. They'll share the time-layouts of 
                 * the corresponding parent element. Also, pass on the 
                 * individual elements of the concatenated RTMA + NDFD elements.
                 */
-               if ((k == RTMA_UTEMP) || (k == RTMA_UTD) || (k == RTMA_UWSPD) || 
-                   (k==RTMA_UWDIR) || (k==NDFD_TEMP && pnt_rtmaNdfdTemp[j]) ||
-                   (k == RTMA_TEMP && pnt_rtmaNdfdTemp[j]) || 
-                   (k == NDFD_TD && pnt_rtmaNdfdTd[j]) || 
-                   (k == RTMA_TD && pnt_rtmaNdfdTd[j]) || 
-                   (k == NDFD_WS && pnt_rtmaNdfdWspd[j]) || 
-                   (k == RTMA_WSPD && pnt_rtmaNdfdWspd[j]) || 
-                   (k == NDFD_WD && pnt_rtmaNdfdWdir[j]) || 
-                   (k == RTMA_WDIR && pnt_rtmaNdfdWdir[j]) || 
-                   (k == NDFD_QPF && pnt_rtmaNdfdPrecipa[j]) || 
-                   (k == RTMA_PRECIPA && pnt_rtmaNdfdPrecipa[j]) || 
-                   (k == NDFD_SKY && pnt_rtmaNdfdSky[j]) || 
-                   (k == RTMA_SKY && pnt_rtmaNdfdSky[j]))
+               if ((elem[k].ndfdEnum == RTMA_UTEMP) || 
+                   (elem[k].ndfdEnum == RTMA_UTD) || 
+                   (elem[k].ndfdEnum == RTMA_UWSPD) || 
+                   (elem[k].ndfdEnum == RTMA_UWDIR) || 
+                   (elem[k].ndfdEnum == NDFD_TEMP && pnt_rtmaNdfdTemp[j]) ||
+                   (elem[k].ndfdEnum == RTMA_TEMP && pnt_rtmaNdfdTemp[j]) || 
+                   (elem[k].ndfdEnum == NDFD_TD && pnt_rtmaNdfdTd[j]) || 
+                   (elem[k].ndfdEnum == RTMA_TD && pnt_rtmaNdfdTd[j]) || 
+                   (elem[k].ndfdEnum == NDFD_WS && pnt_rtmaNdfdWspd[j]) || 
+                   (elem[k].ndfdEnum == RTMA_WSPD && pnt_rtmaNdfdWspd[j]) || 
+                   (elem[k].ndfdEnum == NDFD_WD && pnt_rtmaNdfdWdir[j]) || 
+                   (elem[k].ndfdEnum == RTMA_WDIR && pnt_rtmaNdfdWdir[j]) || 
+                   (elem[k].ndfdEnum == NDFD_QPF && pnt_rtmaNdfdPrecipa[j]) || 
+                   (elem[k].ndfdEnum == RTMA_PRECIPA && pnt_rtmaNdfdPrecipa[j]) || 
+                   (elem[k].ndfdEnum == NDFD_SKY && pnt_rtmaNdfdSky[j]) || 
+                   (elem[k].ndfdEnum == RTMA_SKY && pnt_rtmaNdfdSky[j]))
                {
                   continue;
                }
@@ -874,30 +948,39 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                           && numRowsForPoint[j][k].total != 0)
                      {
                         /* One of the concatenated elements? */
-                        if (k == RTMA_NDFD_TEMP || k == RTMA_NDFD_TD || 
-                            k == RTMA_NDFD_WSPD || k == RTMA_NDFD_WDIR || 
-                            k == RTMA_NDFD_PRECIPA || k == RTMA_NDFD_SKY)
+                        if (elem[k].ndfdEnum == RTMA_NDFD_TEMP || 
+                            elem[k].ndfdEnum == RTMA_NDFD_TD || 
+                            elem[k].ndfdEnum == RTMA_NDFD_WSPD || 
+                            elem[k].ndfdEnum == RTMA_NDFD_WDIR || 
+                            elem[k].ndfdEnum == RTMA_NDFD_PRECIPA || 
+                            elem[k].ndfdEnum == RTMA_NDFD_SKY)
                         {
-                           generateConcatTimeLayout(numRowsForPoint[j], k, layoutKey,
+                           generateConcatTimeLayout(numRowsForPoint[j], k, 
+                                                    elem[k].ndfdEnum, layoutKey,
                                                     whichTimeCoordinate,
-                                                    whatSummarization, match, numMatch,
-                                                    f_formatPeriodName, TZoffset[j],
-                                                    f_observeDST, &numLayoutSoFar,
-                                                    &numCurrentLayout, currentHour[j],
-                                                    currentDay[j], "boggus", data, startTime,
+                                                    whatSummarization, match, 
+                                                    numMatch, f_formatPeriodName, 
+                                                    TZoffset[j], f_observeDST, 
+                                                    &numLayoutSoFar, 
+                                                    &numCurrentLayout, 
+                                                    currentHour[j], currentDay[j], 
+                                                    "boggus", data, startTime,
                                                     currentDoubTime, f_XML, 
-                                                    startNum, endNum);
+                                                    startNum, endNum, numElem, 
+                                                    elem);
                         }
                         else
-                        {
-                           generateTimeLayout(numRowsForPoint[j][k], k, layoutKey,
+                        { 
+                           generateTimeLayout(numRowsForPoint[j][k], 
+                                              elem[k].ndfdEnum, layoutKey,
                                               whichTimeCoordinate,
                                               whatSummarization, match, numMatch,
                                               f_formatPeriodName, TZoffset[j],
                                               f_observeDST, &numLayoutSoFar,
                                               &numCurrentLayout, currentHour[j],
-                                              currentDay[j], "boggus", data, startTime,
-                                              currentDoubTime, &numDays[j], f_XML, 
+                                              currentDay[j], "boggus", data, 
+                                              startTime, currentDoubTime, 
+                                              &numDays[j], f_XML, 
                                               startNum, endNum);
                         }
 
@@ -908,9 +991,11 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                      /* For DWMLgenByDay product w/ format == "12 hourly". */
                      else if (f_XML == 3 && numRowsForPoint[j][k].total != 0)
                      {
-                        if (k == NDFD_MAX || k == NDFD_MIN) /* MaxT and MinT. */
+                        if (elem[k].ndfdEnum == NDFD_MAX || 
+                            elem[k].ndfdEnum == NDFD_MIN)
                         {
-                           generateTimeLayout(numRowsForPoint[j][k], k, layoutKey,
+                           generateTimeLayout(numRowsForPoint[j][k], 
+                                              elem[k].ndfdEnum, layoutKey,
                                               whichTimeCoordinate,
                                               whatSummarization, match,
                                               numMatch, f_formatPeriodName,
@@ -923,15 +1008,19 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                            layoutKeys[j][k] = malloc(strlen(layoutKey) + 1);
                            strcpy(layoutKeys[j][k], layoutKey);
                         }
-                        else /* POP, Wx, Hazards, and Icons. */
+                        else if ((weatherParameters[j][k] == 1 || 
+                                 weatherParameters[j][k] == 3) && 
+                                 (elem[k].ndfdEnum != NDFD_WWA))
+                        /* POP, Wx, and Icons. */
                         {
                            /* The other element's (Wx and Icons) will share 
-		   	    * Pop's layout. Hazards will if there are no active 
-                            * hazards.
+		   	    * Pop's layout.
 			    */
-                           if (numRowsForPoint[j][NDFD_POP].total != 0)
-                           {
-                              generateTimeLayout(numRowsForPoint[j][NDFD_POP],
+                           if (ndfdPopIndex >= 0)
+                           { 
+                              if (numRowsForPoint[j][ndfdPopIndex].total != 0)
+                              {
+                                 generateTimeLayout(numRowsForPoint[j][ndfdPopIndex],
 				                 NDFD_POP, layoutKey,
                                                  whichTimeCoordinate,
                                                  whatSummarization, match,
@@ -943,32 +1032,45 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
 					         &numOutputLines[j], f_XML, startNum,
                                                  endNum);
 
-                              layoutKeys[j][k] = malloc(strlen(layoutKey) + 1);
-                              strcpy(layoutKeys[j][k], layoutKey);
+                                 layoutKeys[j][k] = malloc(strlen(layoutKey) + 1);
+                                 strcpy(layoutKeys[j][k], layoutKey);
+                              }
                            }
                         }
+
                         /* Check to see if this is a case when no active hazards
                          * occurring. Then we need to create a time-layout for
                          * this occurrence. We'll need to use the POP, MAXT, or
                          * MINT time layout.
                          */
-                        if (k == NDFD_WWA && numHazards[j] == 0)
+                        if (elem[k].ndfdEnum == NDFD_WWA && numHazards[j] == 0)
                         {
                            /* First, see if we can use the POP time layout to 
                             * create the new "entire" forecast period duration 
                             * layout. If not, use MAXT or MINT time layout.
                             */
-                           if (numRowsForPoint[j][NDFD_POP].total != 0)
-                              strcpy (tempBuff, layoutKeys[j][NDFD_POP]);  
-                           else if (f_useMinTempTimes[j] && 
-                                    numRowsForPoint[j][NDFD_MIN].total != 0)
-                              strcpy (tempBuff, layoutKeys[j][NDFD_MIN]);  
+                           if (ndfdPopIndex >= 0)
+                           {
+                              if (numRowsForPoint[j][ndfdPopIndex].total != 0)
+                                 strcpy (tempBuff, layoutKeys[j][ndfdPopIndex]);
+                           }
+                           else if (f_useMinTempTimes[j] && ndfdMinIndex > 0)
+                           {
+                              if (numRowsForPoint[j][ndfdMinIndex].total != 0)
+                                 strcpy (tempBuff, layoutKeys[j][ndfdMinIndex]);
+                           }
                            else if (!f_useMinTempTimes[j]) 
                            {
-                              if (numRowsForPoint[j][NDFD_MAX].total != 0)
-                                 strcpy (tempBuff, layoutKeys[j][NDFD_MAX]);
-                              else if (numRowsForPoint[j][NDFD_MIN].total != 0)
-                                 strcpy (tempBuff, layoutKeys[j][NDFD_MIN]);  
+                              if (ndfdMaxIndex >= 0)
+                              {
+                                 if (numRowsForPoint[j][ndfdMaxIndex].total != 0)
+                                    strcpy (tempBuff, layoutKeys[j][ndfdMaxIndex]);
+                              }                     
+                              else if (ndfdMinIndex >= 0)
+                              {
+                                 if (numRowsForPoint[j][ndfdMinIndex].total != 0)
+                                    strcpy (tempBuff, layoutKeys[j][ndfdMinIndex]);
+                              } 
                            }
                            generateNoHazTimeLayout(tempBuff, layoutKey, 
                                                    whichTimeCoordinate, 
@@ -981,7 +1083,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
 
                            layoutKeys[j][k] = malloc(strlen(layoutKey) + 1);
                            strcpy(layoutKeys[j][k], layoutKey);
-                        }   
+                        }
                      }
 
                      /* For DWMLgenByDay product w/ format == "24 hourly".
@@ -991,34 +1093,37 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                       * since their periods are = to 24 hours also (the
                       * exception is Pop, since it still has to use a 12
                       * hourly summariztion). 
-                      */
+		      */
                      else if (f_XML == 4 && numRowsForPoint[j][k].total != 0)
                      {
-                        if (k != NDFD_POP)
+                        if (elem[k].ndfdEnum != NDFD_POP && 
+                            elem[k].ndfdEnum != NDFD_WWA)
                         {
                            /* If the request for MaxT's is late in the day, then
                             * we will format "nil" for first MaxT data value and
                             * simply use the MinT's time layout. Retrieve the
                             * necessary info for this check. 
 		   	    */
-                           monthDayYearTime(match, numMatch, currentLocalTime,
-                                            currentDay[j], f_observeDST,
-                                            &firstMaxTValidTime_doub_adj,
-                                            &currentLocalTime_doub_adj, 
-					    TZoffset[j], startNum, endNum,
-					    numRowsForPoint[j][NDFD_MAX]);
+                            monthDayYearTime(match, numMatch, currentLocalTime,
+                                         currentDay[j], f_observeDST,
+                                         &firstMaxTValidTime_doub_adj,
+                                         &currentLocalTime_doub_adj, 
+					 TZoffset[j], startNum, endNum,
+					 numRowsForPoint[j][ndfdMaxIndex]);
 
                            if ((atoi(currentHour[j]) > 18) && (currentLocalTime_doub_adj
                                + 86400 == firstMaxTValidTime_doub_adj) && 
                                (firstValidTime_maxt[j] <= firstValidTime_pop[j])) 
-                           {
-                              if (numRowsForPoint[j][NDFD_MIN].total != 0)
+                           {  
+                              if (ndfdMinIndex >= 0)
                               {
-                                 f_formatNIL[j] = 1;
-                                 f_useMinTempTimes[j] = 1;
+                                 if (numRowsForPoint[j][ndfdMinIndex].total != 0)
+                                 {
+                                    f_formatNIL[j] = 1;
+                                    f_useMinTempTimes[j] = 1;
 
-                                 generateTimeLayout(numRowsForPoint[j][NDFD_MIN],
-					            NDFD_MIN, layoutKey,
+                                    generateTimeLayout(numRowsForPoint[j][ndfdMinIndex],
+				                    NDFD_MIN, layoutKey,
                                                     whichTimeCoordinate,
                                                     whatSummarization, match,
                                                     numMatch, f_formatPeriodName,
@@ -1029,8 +1134,9 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                                                     currentDoubTime, &numDays[j], f_XML, 
                                                     startNum, endNum);
 
-                                 layoutKeys[j][k] = malloc(strlen(layoutKey) + 1);
-                                 strcpy(layoutKeys[j][k], layoutKey);
+                                    layoutKeys[j][k] = malloc(strlen(layoutKey) + 1);
+                                    strcpy(layoutKeys[j][k], layoutKey);
+                                 }
                               }
                            }
                            else  /* Use MaxT's own time-layout, but check to 
@@ -1038,13 +1144,15 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                                   * not available, then use MinT's time layout.
                                   */
                            {
-                              if (numRowsForPoint[j][NDFD_MAX].total != 0)
+                              if (ndfdMaxIndex >= 0)
                               {
-                                 f_formatNIL[j] = 0;
-                                 f_useMinTempTimes[j] = 0;
+                                 if (numRowsForPoint[j][ndfdMaxIndex].total != 0)
+                                 {
+                                    f_formatNIL[j] = 0;
+                                    f_useMinTempTimes[j] = 0;
 
-                                 generateTimeLayout(numRowsForPoint[j][NDFD_MAX],
-					            NDFD_MAX, layoutKey,
+                                    generateTimeLayout(numRowsForPoint[j][ndfdMaxIndex],
+				   	            NDFD_MAX, layoutKey,
                                                     whichTimeCoordinate,
                                                     whatSummarization, match,
                                                     numMatch, f_formatPeriodName,
@@ -1056,15 +1164,18 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                                                     currentDoubTime, &numDays[j], f_XML, 
                                                     startNum, endNum);
 
-                                 layoutKeys[j][k] = malloc(strlen(layoutKey) + 1);
-                                 strcpy(layoutKeys[j][k], layoutKey);
+                                    layoutKeys[j][k] = malloc(strlen(layoutKey) + 1);
+                                    strcpy(layoutKeys[j][k], layoutKey);
+                                 }
                               }
-                              else if (numRowsForPoint[j][NDFD_MIN].total != 0)
+                              else if (ndfdMinIndex >= 0)
                               {
-                                 f_formatNIL[j] = 1;
-                                 f_useMinTempTimes[j] = 1;
+                                 if (numRowsForPoint[j][ndfdMinIndex].total != 0)
+                                 {
+                                    f_formatNIL[j] = 1;
+                                    f_useMinTempTimes[j] = 1;
 
-                                 generateTimeLayout(numRowsForPoint[j][NDFD_MIN],
+                                    generateTimeLayout(numRowsForPoint[j][ndfdMinIndex],
 					            NDFD_MIN, layoutKey,
                                                     whichTimeCoordinate,
                                                     whatSummarization, match,
@@ -1077,22 +1188,27 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                                                     currentDoubTime, &numDays[j], f_XML, 
                                                     startNum, endNum);
 
-                                 layoutKeys[j][k] = malloc(strlen(layoutKey) + 1);
-                                 strcpy(layoutKeys[j][k], layoutKey);
+                                    layoutKeys[j][k] = malloc(strlen(layoutKey) + 1);
+                                    strcpy(layoutKeys[j][k], layoutKey);
+                                 }
                               }
                            }
                         }
-                        else
+                        else if ((weatherParameters[j][k] == 1 || 
+                                 weatherParameters[j][k] == 3) && 
+                                 (elem[k].ndfdEnum != NDFD_WWA))
                         {
                            /* POP gets its own time-layout, using
                             * 12-hourly summarization and format (force
                             * these), even though f_XML == 4. 
 			    */
-		   	   numPopLines = numDays[j] * 2;
-                           generateTimeLayout(numRowsForPoint[j][k], 
+                           if (ndfdPopIndex >= 0)
+                           {
+		   	      numPopLines = numDays[j] * 2;
+                              generateTimeLayout(numRowsForPoint[j][k], 
 					      NDFD_POP, layoutKey, 
-					      whichTimeCoordinate,
-                                              "12hourly", match, numMatch,
+					      whichTimeCoordinate, "12hourly",
+                                              match, numMatch,
                                               f_formatPeriodName, TZoffset[j],
                                               f_observeDST, &numLayoutSoFar,
                                               &numCurrentLayout, currentHour[j],
@@ -1101,32 +1217,46 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
 					      &numPopLines, f_XML, startNum, 
                                               endNum);
 
-                           layoutKeys[j][k] = malloc(strlen(layoutKey) + 1);
-                           strcpy(layoutKeys[j][k], layoutKey);
+                              layoutKeys[j][k] = malloc(strlen(layoutKey) + 1);
+                              strcpy(layoutKeys[j][k], layoutKey);
+                           }
                         }
+
                         /* Check to see if this is a case when no active hazards
                          * occurring. Then we need to create a time-layout for
                          * this occurrence. We'll need to use the POP, MAXT, or
                          * MINT time layout.
                          */
-                        if (k == NDFD_WWA && numHazards[j] == 0)
+                        if (elem[k].ndfdEnum == NDFD_WWA && numHazards[j] == 0)
                         {
                            /* First, see if we can use the POP time layout to 
                             * create the new "entire" forecast period duration 
                             * layout. If not, use MAXT or MINT time layout.
                             */
-                           if (numRowsForPoint[j][NDFD_POP].total != 0)
-                              strcpy (tempBuff, layoutKeys[j][NDFD_POP]);  
-                           else if (f_useMinTempTimes[j] && 
-                                    numRowsForPoint[j][NDFD_MIN].total != 0)
-                              strcpy (tempBuff, layoutKeys[j][NDFD_MIN]);  
+                           if (ndfdPopIndex >= 0)
+                           {
+                              if (numRowsForPoint[j][ndfdPopIndex].total != 0)
+                                 strcpy (tempBuff, layoutKeys[j][ndfdPopIndex]);
+                           }
+                           else if (f_useMinTempTimes[j] && ndfdMinIndex >= 0)
+                           {
+                              if (numRowsForPoint[j][ndfdMinIndex].total != 0)
+                                 strcpy (tempBuff, layoutKeys[j][ndfdMinIndex]);
+                           }
                            else if (!f_useMinTempTimes[j]) 
                            {
-                              if (numRowsForPoint[j][NDFD_MAX].total != 0)
-                                 strcpy (tempBuff, layoutKeys[j][NDFD_MAX]);
-                              else if (numRowsForPoint[j][NDFD_MIN].total != 0)
-                                 strcpy (tempBuff, layoutKeys[j][NDFD_MIN]);  
+                              if (ndfdMaxIndex >= 0)
+                              {
+                                 if (numRowsForPoint[j][ndfdMaxIndex].total != 0)
+                                    strcpy (tempBuff, layoutKeys[j][ndfdMaxIndex]);
+                              }                     
+                              else if (ndfdMinIndex >= 0)
+                              {
+                                 if (numRowsForPoint[j][ndfdMinIndex].total != 0)
+                                    strcpy (tempBuff, layoutKeys[j][ndfdMinIndex]);
+                              } 
                            }
+
                            generateNoHazTimeLayout(tempBuff, layoutKey, 
                                                    whichTimeCoordinate, 
                                                    whatSummarization, 
@@ -1138,7 +1268,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
 
                            layoutKeys[j][k] = malloc(strlen(layoutKey) + 1);
                            strcpy(layoutKeys[j][k], layoutKey);
-                        }   
+                        }
                      } /* End of "f_XML type" check. */
                   } /* End weatherParameters "if" statement. */
                } /* End passing RTMA errors & individual concatenated elements. */
@@ -1153,21 +1283,21 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
             {
                if (isPntInASector(pnts[i]))
                {
-                  for (k = 0; k < XML_MAX; k++)
+                  for (k = 0; k < numElem; k++)
                   {
-                     if ((k == RTMA_UTEMP) || (k == RTMA_UTD) || (k == RTMA_UWSPD) || 
-                         (k==RTMA_UWDIR) || (k==NDFD_TEMP && pnt_rtmaNdfdTemp[j]) ||
-                         (k == RTMA_TEMP && pnt_rtmaNdfdTemp[j]) || 
-                         (k == NDFD_TD && pnt_rtmaNdfdTd[j]) || 
-                         (k == RTMA_TD && pnt_rtmaNdfdTd[j]) || 
-                         (k == NDFD_WS && pnt_rtmaNdfdWspd[j]) || 
-                         (k == RTMA_WSPD && pnt_rtmaNdfdWspd[j]) || 
-                         (k == NDFD_WD && pnt_rtmaNdfdWdir[j]) || 
-                         (k == RTMA_WDIR && pnt_rtmaNdfdWdir[j]) || 
-                         (k == NDFD_QPF && pnt_rtmaNdfdPrecipa[j]) || 
-                         (k == RTMA_PRECIPA && pnt_rtmaNdfdPrecipa[j]) || 
-                         (k == NDFD_SKY && pnt_rtmaNdfdSky[j]) || 
-                         (k == RTMA_SKY && pnt_rtmaNdfdSky[j]))
+                     if ((elem[k].ndfdEnum == RTMA_UTEMP) || (elem[k].ndfdEnum == RTMA_UTD) || (elem[k].ndfdEnum == RTMA_UWSPD) || 
+                         (elem[k].ndfdEnum ==RTMA_UWDIR) || (elem[k].ndfdEnum ==NDFD_TEMP && pnt_rtmaNdfdTemp[j]) ||
+                         (elem[k].ndfdEnum == RTMA_TEMP && pnt_rtmaNdfdTemp[j]) || 
+                         (elem[k].ndfdEnum == NDFD_TD && pnt_rtmaNdfdTd[j]) || 
+                         (elem[k].ndfdEnum == RTMA_TD && pnt_rtmaNdfdTd[j]) || 
+                         (elem[k].ndfdEnum == NDFD_WS && pnt_rtmaNdfdWspd[j]) || 
+                         (elem[k].ndfdEnum == RTMA_WSPD && pnt_rtmaNdfdWspd[j]) || 
+                         (elem[k].ndfdEnum == NDFD_WD && pnt_rtmaNdfdWdir[j]) || 
+                         (elem[k].ndfdEnum == RTMA_WDIR && pnt_rtmaNdfdWdir[j]) || 
+                         (elem[k].ndfdEnum == NDFD_QPF && pnt_rtmaNdfdPrecipa[j]) || 
+                         (elem[k].ndfdEnum == RTMA_PRECIPA && pnt_rtmaNdfdPrecipa[j]) || 
+                         (elem[k].ndfdEnum == NDFD_SKY && pnt_rtmaNdfdSky[j]) || 
+                         (elem[k].ndfdEnum == RTMA_SKY && pnt_rtmaNdfdSky[j]))
                      {
                         continue;
                      }
@@ -1175,8 +1305,21 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                      {
                         if (weatherParameters[j][k] == 1 || weatherParameters[j][k] == 3)
                         {
-                           layoutKeys[j][k] = malloc(strlen(layoutKeys[i][k]) + 1);
-                           strcpy(layoutKeys[j][k], layoutKeys[i][k]);
+                           if (f_XML == 3 || f_XML == 4)
+                           {
+                              if (elem[k].ndfdEnum == NDFD_WWA && numHazards[i] != 0)
+                                 continue;
+                              else
+                              {
+                                 layoutKeys[j][k] = malloc(strlen(layoutKeys[i][k]) + 1);
+                                 strcpy(layoutKeys[j][k], layoutKeys[i][k]);
+                              }
+                           }
+                           else
+                           {
+                              layoutKeys[j][k] = malloc(strlen(layoutKeys[i][k]) + 1);
+                              strcpy(layoutKeys[j][k], layoutKeys[i][k]);
+                           }
                         }
                      }
                   }
@@ -1194,7 +1337,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
     * times that border each forecast period. Only applicable when there are 
     * active hazards. 
     */
-   if (f_XML == 3 || f_XML == 4)
+   if ((f_XML == 3 || f_XML == 4) && ndfdWwaIndex >= 0)
    {
       periodTimes = (double **)malloc(numPnts * sizeof(double *));
       numPeriodTimes = (int *)malloc(numPnts * sizeof(int));
@@ -1202,7 +1345,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
       {
          if (numHazards[j] != 0) /* Point contains active hazards. */
          {
-            hazTimeInfo(&(numRowsForPoint[j][NDFD_WWA].multiLayouts), 
+            hazTimeInfo(&(numRowsForPoint[j][ndfdWwaIndex].multiLayouts), 
                         whichTimeCoordinate, indivHaz[j], numHazards[j], 
                         whatSummarization, match, numMatch, pntInfo[j].timeZone, 
                         pntInfo[j].f_dayLight, currentHour[j], currentDay[j], 
@@ -1216,6 +1359,22 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
 
    /************** FORMAT PARAMETER <ELEMENT> IN XML/DWML ********************/
    /**************************************************************************/
+   
+   /* Firstly, we need to get a new order of enumerations, strictly for the way
+    * the DWML elements need to be formatted. We'll call these DWML 
+    * enumerations. We need to collect them for the elements queried for. 
+    * Collect this subset from the NDFD2DWML[] array.
+    */
+   Dwml = (dwmlEnum *) malloc(numElem * sizeof(dwmlEnum));
+
+   for (k = 0; k < numElem; k++)
+   {
+      Dwml[k].Ndfd2Dwml = NDFD2DWML[elem[k].ndfdEnum];
+      Dwml[k].origNdfdIndex = k;
+   }
+
+   /* Don't use qsort, use a simple Bubble Sort for the new order. */
+   dwmlEnumSort(numElem, &Dwml);
 
    /* Begin new Point Loop to format the Data/Weather Parameter values. The 
     * order of elements below matches the order in the DWML schema in the way
@@ -1231,799 +1390,1638 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
          xmlNewProp(parameters, BAD_CAST "applicable-location", BAD_CAST
                     pointBuff);
 
-         /* Format Maximum Temperature Values, if applicable. */
-         if (weatherParameters[j][NDFD_MAX] == 1)
-            genMaxTempValues(j, layoutKeys[j][NDFD_MAX], match, parameters,
-                             f_formatNIL[j], f_XML, startTime,
-                             numRowsForPoint[j][NDFD_MAX], numDays[j], 
-                             pntInfo[j].startNum, pntInfo[j].endNum);
-
-         /* Format Minimum Temperature Values, if applicable. */
-         if (weatherParameters[j][NDFD_MIN] == 1)
-            genMinTempValues(j, layoutKeys[j][NDFD_MIN], match, parameters, 
-                             f_XML, startTime, numRowsForPoint[j][NDFD_MIN],
-			     currentDay[j], currentHour[j], TZoffset[j], 
-                             pntInfo[j].f_dayLight, numDays[j], 
-                             pntInfo[j].startNum, pntInfo[j].endNum);
-
-         /************************HOURLY TEMPS*******************************/
-
-         /* Format Hourly RTMA Temperature Values + NDFD Temperature values, if
-          * applicable. Concatenate the two together.
-          */
-         if (weatherParameters[j][RTMA_TEMP] == 1 && 
-             weatherParameters[j][NDFD_TEMP] == 1)
-
-            concatRtmaNdfdValues(j, layoutKeys[j][RTMA_NDFD_TEMP], match, 
-                                 NDFD_TEMP, RTMA_TEMP, "Temperature", 
-                                 "temperature", "hourly", "Fahrenheit", 
-                                 parameters, numRowsForPoint[j][NDFD_TEMP], 
-                                 numRowsForPoint[j][RTMA_TEMP], pntInfo[j].startNum, 
-                                 pntInfo[j].endNum);
-
-         /* Format the Real Time Mesoscale Analyses for Hourly Temperature, if  
-          * applicable. 
-	  */
-         else if (weatherParameters[j][RTMA_TEMP] == 1 && 
-                  weatherParameters[j][NDFD_TEMP] == 0)
-            genRtmaValues(j, layoutKeys[j][RTMA_TEMP], RTMA_TEMP, RTMA_UTEMP, 
-                          match, "RTMA Temperature", "temperature", "rtma-hourly", 
-                          "Fahrenheit", parameters, 
-                          numRowsForPoint[j][RTMA_TEMP], pntInfo[j].startNum,
-                          pntInfo[j].endNum);
-
-         /* Format Hourly NDFD Temperature Values, if applicable. */
-         else if (weatherParameters[j][RTMA_TEMP] == 0 && 
-                  weatherParameters[j][NDFD_TEMP] == 1)
-            genTempValues(j, layoutKeys[j][NDFD_TEMP], match, parameters,
-                          numRowsForPoint[j][NDFD_TEMP], pntInfo[j].startNum, 
-                          pntInfo[j].endNum);
-
-         /************************DEW POINT TEMPS*****************************/
-
-         /* Format Hourly RTMA + NDFD Dew Point Temperature values, if
-          * applicable. Concatenate the two together.
-          */
-         if (weatherParameters[j][RTMA_TD] == 1 && 
-             weatherParameters[j][NDFD_TD] == 1)
-            concatRtmaNdfdValues(j, layoutKeys[j][RTMA_NDFD_TD], match, 
-                                 NDFD_TD, RTMA_TD, "Dew Point Temperature",
-                                 "temperature", "dew point", "Fahrenheit", 
-                                 parameters, numRowsForPoint[j][NDFD_TD],
-                                 numRowsForPoint[j][RTMA_TD], pntInfo[j].startNum, 
-                                 pntInfo[j].endNum);
-
-         /* Format the Real Time Mesoscale Analyses for Dew Point, if  
-          * applicable. 
-	  */
-         else if (weatherParameters[j][RTMA_TD] == 1 && 
-                  weatherParameters[j][NDFD_TD] == 0)
-            genRtmaValues(j, layoutKeys[j][RTMA_TD], RTMA_TD, RTMA_UTD, match, 
-                          "RTMA Dew Point Temperature", "temperature", "rtma-dew point", 
-                          "Fahrenheit", parameters, numRowsForPoint[j][RTMA_TD], 
-                          pntInfo[j].startNum, pntInfo[j].endNum);
-
-         /* Format Dew Point Temperature Values, if applicable. */
-         else if (weatherParameters[j][RTMA_TD] == 0 && 
-                  weatherParameters[j][NDFD_TD] == 1)
-            genDewPointTempValues(j, layoutKeys[j][NDFD_TD], match,
-                                  parameters, numRowsForPoint[j][NDFD_TD], 
-                                  pntInfo[j].startNum, pntInfo[j].endNum);
-
-         /* Format Apparent Temperature Values, if applicable. */
-         if (weatherParameters[j][NDFD_AT] == 1)
-            genAppTempValues(j, layoutKeys[j][NDFD_AT], match, parameters,
-                             numRowsForPoint[j][NDFD_AT], pntInfo[j].startNum, 
-                             pntInfo[j].endNum);
-
-         /******************QPF AND PRECIP AMOUNTS****************************/
-
-         /* Format Hourly RTMA + NDFD Precipitation Amount values, if
-          * applicable. Concatenate the two together.
-          */
-         if (weatherParameters[j][RTMA_PRECIPA] == 1 && 
-             weatherParameters[j][NDFD_QPF] == 1)
-            concatRtmaNdfdValues(j, layoutKeys[j][RTMA_NDFD_PRECIPA], match,
-                                 NDFD_QPF, RTMA_PRECIPA,
-                                 "Liquid Precipitation Amount",
-                                 "precipitation", "liquid", "inches", 
-                                 parameters, numRowsForPoint[j][NDFD_QPF],
-                                 numRowsForPoint[j][RTMA_PRECIPA], 
-                                 pntInfo[j].startNum, pntInfo[j].endNum);
-
-         /* Format the Real Time Mesoscale Analyses for Precipitation Amount, 
-          * if applicable. 
-	  */
-         else if (weatherParameters[j][RTMA_PRECIPA] == 1 && 
-                  weatherParameters[j][NDFD_QPF] == 0)
-            genRtmaValues(j, layoutKeys[j][RTMA_PRECIPA], RTMA_PRECIPA, -1, 
-                          match, "RTMA Liquid Precipitation Amount", "precipitation",
-                          "rtma-liquid", "inches", parameters, 
-                          numRowsForPoint[j][RTMA_PRECIPA], pntInfo[j].startNum, 
-                          pntInfo[j].endNum);
-
-         /* Format NDFD QPF Values, if applicable. */
-         else if (weatherParameters[j][RTMA_PRECIPA] == 0 && 
-                  weatherParameters[j][NDFD_QPF] == 1)
-            genQPFValues(j, layoutKeys[j][NDFD_QPF], match, parameters, 
-                         numRowsForPoint[j][NDFD_QPF], pntInfo[j].startNum, 
-                         pntInfo[j].endNum);
-
-         /* Format Snow Amount Values, if applicable. */
-         if (weatherParameters[j][NDFD_SNOW] == 1)
-            genSnowValues(j, layoutKeys[j][NDFD_SNOW], match, parameters,
-                         numRowsForPoint[j][NDFD_SNOW], pntInfo[j].startNum, 
-                         pntInfo[j].endNum);
-
-         /************************POP12*****************************/
-
-         /* Format PoP12 Values, if applicable. */
-         if (weatherParameters[j][NDFD_POP] == 1)
+         for (k = 0; k < numElem; k++)
          {
-            /* If product is of DWMLgenByDay type, allocate maxDailyPop array
-             * and initialize it. */
-
-            if (f_XML == 3)
+            /************************MAXIMUM TEMPS***************************/
+             /* Format Maximum Temperature Values, if applicable. */
+            if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_MAX] && 
+                weatherParameters[j][Dwml[k].origNdfdIndex] == 1)
             {
-               maxDailyPop = malloc((numDays[j] * 2) * sizeof(int));
-               for (i = 0; i < numDays[j] * 2; i++) 
-                  maxDailyPop[i] = 0;
-	    }
-	    if (f_XML == 4)
+               genMaxTempValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], match, 
+                                parameters, f_formatNIL[j], f_XML, startTime,
+                                numRowsForPoint[j][Dwml[k].origNdfdIndex],      
+                                numDays[j], pntInfo[j].startNum, 
+                                pntInfo[j].endNum);
+               continue;
+            }
+            else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_MAX] && 
+                     weatherParameters[j][Dwml[k].origNdfdIndex] == 0)
+               continue;
+         
+            /************************MINIMUM TEMPS***************************/
+   
+            /* Format Minimum Temperature Values, if applicable. */
+            if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_MIN] && 
+                weatherParameters[j][Dwml[k].origNdfdIndex] == 1)
             {
-               maxDailyPop = malloc((numDays[j]) * sizeof(int));
-               for (i = 0; i < numDays[j]; i++)
-                  maxDailyPop[i] = 0;		  
-	    }
-            genPopValues(j, layoutKeys[j][NDFD_POP], match, parameters, 
-                         numRowsForPoint[j][NDFD_POP], f_XML, startTime,
-                         maxDailyPop, &numDays[j], currentDoubTime, currentHour[j],
-			 pntInfo[j].startNum, pntInfo[j].endNum);
-	 }
-
-         /*****************9 SPC CONVECTIVE HAZARDS ELEMENTS******************/
-         /********************************************************************/
-         /* Format the Categorical Convective Hazard Outlook for DWMLgen 
-          * time-series product, for days 1-3, if applicable. 
-	  */
-         if (weatherParameters[j][NDFD_CONHAZ] == 1)
-            genConvOutlookValues(j, layoutKeys[j][NDFD_CONHAZ], match,
-                                 parameters, numRowsForPoint[j][NDFD_CONHAZ], 
-                                 pntInfo[j].startNum, pntInfo[j].endNum);
-
-         /* Format the Probability of Tornadoes Convective Hazard for DWMLgen 
-          * time-series product, for Day 1, if applicable. 
-	  */
-         if (weatherParameters[j][NDFD_PTORN] == 1)
-            genConvSevereCompValues(j, layoutKeys[j][NDFD_PTORN], NDFD_PTORN, 
-                                    match, "tornadoes", 
-                                    "Probability of Tornadoes", parameters, 
-                                    numRowsForPoint[j][NDFD_PTORN], 
-                                    pntInfo[j].startNum, pntInfo[j].endNum);
-
-         /* Format the Probability of Hail Convective Hazard for DWMLgen 
-          * time-series product, for Day 1, if applicable. 
-	  */
-         if (weatherParameters[j][NDFD_PHAIL] == 1)
-            genConvSevereCompValues(j, layoutKeys[j][NDFD_PHAIL], NDFD_PHAIL, 
-                                    match, "hail", "Probability of Hail", 
-                                    parameters, numRowsForPoint[j][NDFD_PHAIL],
-                                    pntInfo[j].startNum, pntInfo[j].endNum);
-
-         /* Format the Probability of Damaging Thunderstorm Winds Convective 
-          * Hazard for DWMLgen time-series product, for Day 1, if applicable. 
-	  */
-         if (weatherParameters[j][NDFD_PTSTMWIND] == 1)
-            genConvSevereCompValues(j, layoutKeys[j][NDFD_PTSTMWIND], NDFD_PTSTMWIND, 
-                                    match, "damaging thunderstorm winds", 
-                                    "Probability of Damaging Thunderstorm Winds", 
-                                    parameters, numRowsForPoint[j][NDFD_PTSTMWIND],
-                                    pntInfo[j].startNum, pntInfo[j].endNum);
-
-         /* Format the Probability of Extreme Tornadoes Convective Hazard
-          * for DWMLgen time-series product, for Day 1, if applicable. 
-	  */
-         if (weatherParameters[j][NDFD_PXTORN] == 1)
-            genConvSevereCompValues(j, layoutKeys[j][NDFD_PXTORN], NDFD_PXTORN, 
-                                    match, "extreme tornadoes", 
-                                    "Probability of Extreme Tornadoes", 
-                                    parameters, numRowsForPoint[j][NDFD_PXTORN],
-                                    pntInfo[j].startNum, pntInfo[j].endNum);
-
-         /* Format the Probability of Extreme Hail Convective Hazard for
-          * DWMLgen time-series product, for Day 1, if applicable. 
-	  */
-         if (weatherParameters[j][NDFD_PXHAIL] == 1)
-            genConvSevereCompValues(j, layoutKeys[j][NDFD_PXHAIL], NDFD_PXHAIL, 
-                                    match, "extreme hail", 
-                                    "Probability of Extreme Hail", 
-                                    parameters, numRowsForPoint[j][NDFD_PXHAIL],
-                                    pntInfo[j].startNum, pntInfo[j].endNum);
-
-         /* Format the Probability of Extreme Thunderstorm Winds Convective 
-          * Hazard for DWMLgen time-series product, for Day 1, if applicable. 
-	  */
-         if (weatherParameters[j][NDFD_PXTSTMWIND] == 1)
-            genConvSevereCompValues(j, layoutKeys[j][NDFD_PXTSTMWIND], NDFD_PXTSTMWIND, 
-                                    match, "extreme thunderstorm winds", 
-                                    "Probability of Extreme Thunderstorm Winds", 
-                                    parameters, numRowsForPoint[j][NDFD_PXTSTMWIND],
-                                    pntInfo[j].startNum, pntInfo[j].endNum);
-
-         /* Format the Total Probability of Severe Thunderstorms Convective 
-          * Hazard for DWMLgen time-series product, for Days 2-3, if applicable. 
-	  */
-         if (weatherParameters[j][NDFD_PSTORM] == 1)
-            genConvSevereCompValues(j, layoutKeys[j][NDFD_PSTORM], NDFD_PSTORM, 
-                                    match, "severe thunderstorms", 
-                                    "Total Probability of Severe Thunderstorms", 
-                                    parameters, numRowsForPoint[j][NDFD_PSTORM],
-                                    pntInfo[j].startNum, pntInfo[j].endNum);
-
-         /* Format the Total Probability of Extreme Severe Thunderstorms 
-          * Convective Hazard for DWMLgen time-series product, for Days 2-3,
-          * if applicable. 
-	  */
-         if (weatherParameters[j][NDFD_PXSTORM] == 1)
-            genConvSevereCompValues(j, layoutKeys[j][NDFD_PXSTORM], NDFD_PXSTORM, 
-                                    match, "extreme severe thunderstorms", 
-                                    "Total Probability of Extreme Severe Thunderstorms", 
-                                    parameters, numRowsForPoint[j][NDFD_PXSTORM],
-                                    pntInfo[j].startNum, pntInfo[j].endNum);
-
-         /*****************12 CLIMATE ANOMALY PROBABILITIES ******************/
-         /********************************************************************/
-         /* Format 8-14 Average Temperature, Above Normal Values, if 
-          * applicable. 
-          */
-         if (weatherParameters[j][NDFD_TMPABV14D] == 1)
-            genClimateOutlookValues(j, layoutKeys[j][NDFD_TMPABV14D], 
-                         NDFD_TMPABV14D, match, "average temperature above normal",
-                         "Probability of 8-14 Day Average Temperature Above Normal",
-                         parameters, numRowsForPoint[j][NDFD_TMPABV14D], 
-                         pntInfo[j].startNum, pntInfo[j].endNum);
-
-         /* Format 8-14 Average Temperature, Below Normal Values, if 
-          * applicable. 
-          */
-         if (weatherParameters[j][NDFD_TMPBLW14D] == 1)
-            genClimateOutlookValues(j, layoutKeys[j][NDFD_TMPBLW14D], 
-                         NDFD_TMPBLW14D, match, "average temperature below normal", 
-                         "Probability of 8-14 Day Average Temperature Below Normal",
-                         parameters, numRowsForPoint[j][NDFD_TMPBLW14D], 
-                         pntInfo[j].startNum, pntInfo[j].endNum);
-
-         /* Format 8-14 Average Precipitation, Above Normal Values, if 
-          * applicable. 
-          */
-         if (weatherParameters[j][NDFD_PRCPABV14D] == 1)
-            genClimateOutlookValues(j, layoutKeys[j][NDFD_PRCPABV14D], 
-                         NDFD_PRCPABV14D, match, "average precipitation above normal", 
-                         "Probability of 8-14 Day Average Precipitation Above Normal",
-                         parameters, numRowsForPoint[j][NDFD_PRCPABV14D], 
-                         pntInfo[j].startNum, pntInfo[j].endNum);
-
-         /* Format 8-14 Average Precipitation, Below Normal Values, if 
-          * applicable. 
-          */
-         if (weatherParameters[j][NDFD_PRCPBLW14D] == 1)
-            genClimateOutlookValues(j, layoutKeys[j][NDFD_PRCPBLW14D], 
-                         NDFD_PRCPBLW14D, match, "average precipitation below normal", 
-                         "Probability of 8-14 Day Average Precipitation Below Normal",
-                         parameters, numRowsForPoint[j][NDFD_PRCPBLW14D], 
-                         pntInfo[j].startNum, pntInfo[j].endNum);
-
-         /* Format Monthly Average Temperature, Above Normal Values, if 
-          * applicable. 
-          */
-         if (weatherParameters[j][NDFD_TMPABV30D] == 1)
-            genClimateOutlookValues(j, layoutKeys[j][NDFD_TMPABV30D], 
-                         NDFD_TMPABV30D, match, "average temperature above normal", 
-                         "Probability of One-Month Average Temperature Above Normal",
-                         parameters, numRowsForPoint[j][NDFD_TMPABV30D], 
-                         pntInfo[j].startNum, pntInfo[j].endNum);
-
-         /* Format Monthly Average Temperature, Below Normal Values, if 
-          * applicable. 
-          */
-         if (weatherParameters[j][NDFD_TMPBLW30D] == 1)
-            genClimateOutlookValues(j, layoutKeys[j][NDFD_TMPBLW30D],
-                         NDFD_TMPBLW30D, match, "average temperature below normal", 
-                         "Probability of One-Month Average Temperature Below Normal",
-                         parameters, numRowsForPoint[j][NDFD_TMPBLW30D], 
-                         pntInfo[j].startNum, pntInfo[j].endNum);
-
-         /* Format Monthly Average Precipitation, Above Normal Values, if 
-          * applicable. 
-          */
-         if (weatherParameters[j][NDFD_PRCPABV30D] == 1)
-            genClimateOutlookValues(j, layoutKeys[j][NDFD_PRCPABV30D], 
-                         NDFD_PRCPABV30D, match, "average precipitation above normal", 
-                         "Probability of One-Month Average Precipitation Above Normal",
-                         parameters, numRowsForPoint[j][NDFD_PRCPABV30D], 
-                         pntInfo[j].startNum, pntInfo[j].endNum);
-
-         /* Format Monthly Average Precipitation, Below Normal Values, if 
-          * applicable. 
-          */
-         if (weatherParameters[j][NDFD_PRCPBLW30D] == 1)
-            genClimateOutlookValues(j, layoutKeys[j][NDFD_PRCPBLW30D],
-                         NDFD_PRCPBLW30D, match, "average precipitation below normal", 
-                         "Probability of One-Month Average Precipitation Below Normal",
-                         parameters, numRowsForPoint[j][NDFD_PRCPBLW30D], 
-                         pntInfo[j].startNum, pntInfo[j].endNum);
-
-         /* Format 3-Monthly Average Temperature, Above Normal Values, if
-          * applicable. 
-          */
-         if (weatherParameters[j][NDFD_TMPABV90D] == 1)
-            genClimateOutlookValues(j, layoutKeys[j][NDFD_TMPABV90D], 
-                         NDFD_TMPABV90D, match, "average temperature above normal", 
-                         "Probability of Three-Month Average Temperature Above Normal",
-                         parameters, numRowsForPoint[j][NDFD_TMPABV90D], 
-                         pntInfo[j].startNum, pntInfo[j].endNum);
-
-         /* Format 3-Monthly Average Temperature, Below Normal Values, if
-          * applicable. 
-          */
-         if (weatherParameters[j][NDFD_TMPBLW90D] == 1)
-            genClimateOutlookValues(j, layoutKeys[j][NDFD_TMPBLW90D], 
-                         NDFD_TMPBLW90D, match, "average temperature below normal", 
-                         "Probability of Three-Month Average Temperature Below Normal",
-                         parameters, numRowsForPoint[j][NDFD_TMPBLW90D], 
-                         pntInfo[j].startNum, pntInfo[j].endNum);
-
-         /* Format 3-Monthly Average Precipitation, Above Normal Values, if 
-          * applicable. 
-          */
-         if (weatherParameters[j][NDFD_PRCPABV90D] == 1)
-            genClimateOutlookValues(j, layoutKeys[j][NDFD_PRCPABV90D], 
-                         NDFD_PRCPABV90D, match, "average precipitation above normal", 
-                         "Probability of Three-Month Average Precipitation Above Normal",
-                         parameters, numRowsForPoint[j][NDFD_PRCPABV90D], 
-                         pntInfo[j].startNum, pntInfo[j].endNum);
-
-         /* Format 3-Monthly Average Precipitation, Below Normal Values, if 
-          * applicable. 
-          */
-         if (weatherParameters[j][NDFD_PRCPBLW90D] == 1)
-            genClimateOutlookValues(j, layoutKeys[j][NDFD_PRCPBLW90D], 
-                         NDFD_PRCPBLW90D, match, "average precipitation below normal", 
-                         "Probability of Three-Month Average Precipitation Below Normal",
-                         parameters, numRowsForPoint[j][NDFD_PRCPBLW90D], 
-                         pntInfo[j].startNum, pntInfo[j].endNum);
-
-         /*****************6 TROPICAL WIND THRESHOLD PROBABILITIES ***********/
-         /********************************************************************/
-         /* Format Incremental Probability of 34 Knt Wind Values for DWMLgen 
-	  * product, if applicable. 
-	  */
-         if (weatherParameters[j][NDFD_INC34] == 1)
-            genWindIncCumValues(j, layoutKeys[j][NDFD_INC34], NDFD_INC34, 
-	                        match, "incremental34", 
-	 "Probability of a Tropical Cyclone Wind Speed above 34 Knots (Incremental)",
-	                        parameters, numRowsForPoint[j][NDFD_INC34], 
+               genMinTempValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], match, 
+                                parameters, f_XML, startTime, 
+                                numRowsForPoint[j][Dwml[k].origNdfdIndex],
+	   		        currentDay[j], currentHour[j], TZoffset[j], 
+                                pntInfo[j].f_dayLight, numDays[j], 
                                 pntInfo[j].startNum, pntInfo[j].endNum);
+               continue;
+            }
+            else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_MIN] && 
+                     weatherParameters[j][Dwml[k].origNdfdIndex] == 0)
+               continue;
+         
+            /************************HOURLY TEMPS*****************************/
 
-         /* Format Incremental Probability of 50 Knt Wind Values for DWMLgen 
-	  * product, if applicable. 
-	  */
-         if (weatherParameters[j][NDFD_INC50] == 1)
-            genWindIncCumValues(j, layoutKeys[j][NDFD_INC50], NDFD_INC50,
-			        match, "incremental50", 
-	 "Probability of a Tropical Cyclone Wind Speed above 50 Knots (Incremental)",
-	                        parameters, numRowsForPoint[j][NDFD_INC50],
-                                pntInfo[j].startNum, pntInfo[j].endNum);
-
-         /* Format Incremental Probability of 64 Knt Wind Values for DWMLgen 
-	  * product, if applicable. 
-	  */
-         if (weatherParameters[j][NDFD_INC64] == 1)
-            genWindIncCumValues(j, layoutKeys[j][NDFD_INC64], NDFD_INC64,
-			        match, "incremental64", 
-	 "Probability of a Tropical Cyclone Wind Speed above 64 Knots (Incremental)",
-	                        parameters, numRowsForPoint[j][NDFD_INC64],
-                                pntInfo[j].startNum, pntInfo[j].endNum);
-
-         /* Format Cumulative Probability of 34 Knt Wind Values for DWMLgen 
-	  * product, if applicable. 
-	  */
-         if (weatherParameters[j][NDFD_CUM34] == 1)
-            genWindIncCumValues(j, layoutKeys[j][NDFD_CUM34], NDFD_CUM34,
-			        match, "cumulative34", 
-	 "Probability of a Tropical Cyclone Wind Speed above 34 Knots (Cumulative)",
-	                        parameters, numRowsForPoint[j][NDFD_CUM34],
-                                pntInfo[j].startNum, pntInfo[j].endNum);
-
-         /* Format Cumulative Probability of 50 Knt Wind Values for DWMLgen 
-	  * product, if applicable. 
-	  */
-         if (weatherParameters[j][NDFD_CUM50] == 1)
-            genWindIncCumValues(j, layoutKeys[j][NDFD_CUM50], NDFD_CUM50,
-			        match, "cumulative50", 
-	 "Probability of a Tropical Cyclone Wind Speed above 50 Knots (Cumulative)", 
-	                        parameters, numRowsForPoint[j][NDFD_CUM50],
-                                pntInfo[j].startNum, pntInfo[j].endNum);
-
-         /* Format Cumulative Probability of 64 Knt Wind Values for DWMLgen 
-	  * product, if applicable. 
-	  */
-         if (weatherParameters[j][NDFD_CUM64] == 1)
-            genWindIncCumValues(j, layoutKeys[j][NDFD_CUM64], NDFD_CUM64,
-			        match, "cumulative64", 
-	 "Probability of a Tropical Cyclone Wind Speed above 64 Knots (Cumulative)", 
-	                        parameters, numRowsForPoint[j][NDFD_CUM64],
-                                pntInfo[j].startNum, pntInfo[j].endNum);
-
-         /************************WIND SPEEDS********************************/
-
-         /* Format RTMA + NDFD Wind Speed values, if applicable. 
-          * Concatenate the two together.
-          */
-         if (weatherParameters[j][RTMA_WSPD] == 1 && 
-             weatherParameters[j][NDFD_WS] == 1)
-         {
-            concatRtmaNdfdValues(j, layoutKeys[j][RTMA_NDFD_WSPD], match,
-                                 NDFD_WS, RTMA_WSPD, "Wind Speed", 
-                                 "wind-speed", "sustained", "knots", parameters,
-                                 numRowsForPoint[j][NDFD_WS],
-                                 numRowsForPoint[j][RTMA_WSPD], 
-                                 pntInfo[j].startNum, pntInfo[j].endNum);
-         }
-
-         /* Format the Real Time Mesoscale Analyses for Wind Speed, if
-          * applicable. 
-	  */
-         else if (weatherParameters[j][RTMA_WSPD] == 1 && 
-                  weatherParameters[j][NDFD_WS] == 0)
-            genRtmaValues(j, layoutKeys[j][RTMA_WSPD], RTMA_WSPD, RTMA_UWSPD, 
-                          match, "RTMA Wind Speed", "wind-speed", 
-                          "rtma-sustained", "knots", parameters, 
-                          numRowsForPoint[j][RTMA_WSPD], pntInfo[j].startNum, 
-                          pntInfo[j].endNum);
-
-         /* Format NDFD Wind Speed Values for DWMLgen products, if applicable.
-          * Collect Max Wind Speed values if product is of type DWMLgenByDay. 
-          */
-         else if ((weatherParameters[j][NDFD_WS] == 1 
-                   && weatherParameters[j][RTMA_WSPD] == 0)
-                   || weatherParameters[j][NDFD_WS] == 2)
-         {
-            /* If product is of DWMLgenByDay type, allocate maxWindSpeed
-             * array. We need the max wind speed values for each forecast
-             * period to derive the weather and icon elements.  Also,
-             * allocate the array holding the valid times that correspond to
-             * the max wind speeds. These times will be used to collect the
-             * wind directions that correspond to the times when the max
-             * wind speeds occurred. 
-	     */
-            if (f_XML == 3 || f_XML == 4)
+            /* Format Hourly RTMA Temperature Values + NDFD Temperature values,
+             * if applicable. Concatenate the two together.
+             */
+            if ((!f_allTempsFormatted) && (ndfdTempIndex >= 0 || 
+                 rtmaTempIndex >= 0 || rtmaNdfdTempIndex >= 0))
             {
-               maxWindSpeed = malloc((numOutputLines[j]) * sizeof(int));
-               valTimeForWindDirMatch = malloc((numOutputLines[j]) * sizeof(double));
-               for (i = 0; i < (numOutputLines[j]); i++)
+               if (f_XML == 5 || f_XML == 6)
                {
-                  maxWindSpeed[i] = -999;
-                  valTimeForWindDirMatch[i] = -999;
+                  if (pnt_rtmaNdfdTemp[j] && rtmaNdfdTempIndex >= 0 && 
+                      ndfdTempIndex >= 0 && rtmaTempIndex >= 0)
+                  {
+                     if (weatherParameters[j][ndfdTempIndex] == 1 && 
+                         weatherParameters[j][rtmaNdfdTempIndex] == 1 && 
+                         weatherParameters[j][rtmaTempIndex] == 1)
+                     {
+                        concatRtmaNdfdValues(j, layoutKeys[j][rtmaNdfdTempIndex], 
+                                          match, NDFD_TEMP, RTMA_TEMP, 
+                                          "Temperature", "temperature", 
+                                          "hourly", "Fahrenheit", parameters, 
+                                          numRowsForPoint[j][ndfdTempIndex], 
+                                          numRowsForPoint[j][rtmaTempIndex], 
+                                          pntInfo[j].startNum, 
+                                          pntInfo[j].endNum);
+                        f_allTempsFormatted = 1;
+                        continue;
+                     }
+                  }
+
+                  /* Format the Real Time Mesoscale Analyses for Hourly Temperature, if  
+                   * applicable. 
+	           */
+                  else if (!pnt_rtmaNdfdTemp[j] && rtmaTempIndex >= 0 && 
+                           ndfdTempIndex < 0)
+                  {
+                     if (weatherParameters[j][rtmaTempIndex] == 1)
+                     {
+                        genRtmaValues(j, layoutKeys[j][rtmaTempIndex], 
+                                      RTMA_TEMP, RTMA_UTEMP, match, 
+                                      "RTMA Temperature", "temperature", 
+                                      "rtma-hourly", "Fahrenheit", parameters, 
+                                      numRowsForPoint[j][rtmaTempIndex], 
+                                      pntInfo[j].startNum, pntInfo[j].endNum);
+                        f_allTempsFormatted = 1;
+                        continue;
+                     }
+                  }   
+                  else if (!pnt_rtmaNdfdTemp[j] && rtmaNdfdTempIndex >= 0 && 
+                           ndfdTempIndex >= 0 && rtmaTempIndex >= 0)
+                  {
+                     /* This is the specific case where query was for NDFD 
+                      * element and RTMA part of that element, but the RTMA 
+                      * part doesn't exist (occurs in Puerto Rico). 
+                      */
+                     if (weatherParameters[j][ndfdTempIndex] == 1)
+                     {
+                        genTempValues(j, layoutKeys[j][ndfdTempIndex], match, 
+                                   parameters, numRowsForPoint[j][ndfdTempIndex], 
+                                   pntInfo[j].startNum, pntInfo[j].endNum);
+                        f_allTempsFormatted = 1;
+                        continue;
+                     }
+                     else if (weatherParameters[j][ndfdTempIndex] == 0)
+                     {
+                        f_allTempsFormatted = 1;
+                        continue;
+                     }
+                  }
+                  else if (!pnt_rtmaNdfdTemp[j] && rtmaNdfdTempIndex < 0 && 
+                           ndfdTempIndex >= 0 && rtmaTempIndex < 0)
+                  {
+                     if (weatherParameters[j][ndfdTempIndex] == 1)
+                     {
+                        genTempValues(j, layoutKeys[j][ndfdTempIndex], match, 
+                                   parameters, numRowsForPoint[j][ndfdTempIndex], 
+                                   pntInfo[j].startNum, pntInfo[j].endNum);
+                        f_allTempsFormatted = 1;
+                        continue;
+                     }
+                     else if (weatherParameters[j][ndfdTempIndex] == 0)
+                     {
+                        f_allTempsFormatted = 1;
+                        continue;
+                     }
+                  }
+               }
+               else if (f_XML == 1 && ndfdTempIndex >= 0)
+               {
+                  /* Format Hourly NDFD Temperature Values, if applicable. */
+                  if (weatherParameters[j][ndfdTempIndex] == 1)
+                  { 
+                     genTempValues(j, layoutKeys[j][ndfdTempIndex], match, 
+                                   parameters, numRowsForPoint[j][ndfdTempIndex], 
+                                   pntInfo[j].startNum, pntInfo[j].endNum);
+                     f_allTempsFormatted = 1;
+                     continue;
+                  }
+                  else if (weatherParameters[j][ndfdTempIndex] == 0)
+                  {
+                     f_allTempsFormatted = 1;
+                     continue;
+                  }
                }
             }
-            genWindSpeedValues(timeUserStart[j], timeUserEnd[j], j, 
-			       layoutKeys[j][NDFD_WS], match, parameters, 
+
+            /************************DEW POINT TEMPS*****************************/
+
+            /* Format Hourly RTMA + NDFD Dew Point Temperature values, if
+             * applicable. Concatenate the two together.
+             */
+            if ((!f_allTdsFormatted) && (ndfdTdIndex >= 0 || rtmaTdIndex >= 0
+                 || rtmaNdfdTdIndex >= 0))
+            {
+               if (f_XML == 5 || f_XML == 6)
+               {
+                  if (pnt_rtmaNdfdTd[j] && rtmaNdfdTdIndex >= 0 && 
+                      ndfdTdIndex >= 0 && rtmaTdIndex >= 0)
+                  {
+                     if (weatherParameters[j][ndfdTdIndex] == 1 && 
+                         weatherParameters[j][rtmaNdfdTdIndex] == 1 && 
+                         weatherParameters[j][rtmaTdIndex] == 1)
+                     {
+                        concatRtmaNdfdValues(j, layoutKeys[j][rtmaNdfdTdIndex], 
+                                       match, NDFD_TD, RTMA_TD, 
+                                       "Dew Point Temperature", "temperature", 
+                                       "dew point", "Fahrenheit", parameters, 
+                                       numRowsForPoint[j][ndfdTdIndex],
+                                       numRowsForPoint[j][rtmaTdIndex], 
+                                       pntInfo[j].startNum, pntInfo[j].endNum);
+                        f_allTdsFormatted = 1;
+                        continue;
+                     }
+                  }
+
+                  /* Format the Real Time Mesoscale Analyses for Dew Point, if
+                   * applicable. 
+	           */
+                  else if (!pnt_rtmaNdfdTd[j] && rtmaTdIndex >= 0 && 
+                           ndfdTdIndex < 0)
+                  {
+                     if (weatherParameters[j][rtmaTdIndex] == 1)
+                     {
+                        genRtmaValues(j, layoutKeys[j][rtmaTdIndex], RTMA_TD, 
+                              RTMA_UTD, match, "RTMA Dew Point Temperature", 
+                              "temperature", "rtma-dew point", "Fahrenheit", 
+                              parameters, numRowsForPoint[j][rtmaTdIndex], 
+                              pntInfo[j].startNum, pntInfo[j].endNum);
+                        f_allTdsFormatted = 1;
+                        continue;
+                     }
+                  }   
+                  else if (!pnt_rtmaNdfdTd[j] && rtmaNdfdTdIndex >= 0 && 
+                           ndfdTdIndex >= 0 && rtmaTdIndex >= 0)
+                  {
+                     /* This is the specific case where query was for NDFD 
+                      * element and RTMA part of that element, but the RTMA 
+                      * part doesn't exist (occurs in Puerto Rico). 
+                      */
+                     if (weatherParameters[j][ndfdTdIndex] == 1)
+                     {
+                        genDewPointTempValues(j, layoutKeys[j][ndfdTdIndex], 
+                                              match, parameters, 
+                                              numRowsForPoint[j][ndfdTdIndex],
+                                              pntInfo[j].startNum, 
+                                              pntInfo[j].endNum);
+                        f_allTdsFormatted = 1;
+                        continue;
+                     }
+                     else if (weatherParameters[j][ndfdTdIndex] == 0)
+                     {
+                        f_allTdsFormatted = 1;
+                        continue;
+                     }
+                  }
+                  else if (!pnt_rtmaNdfdTd[j] && rtmaNdfdTdIndex < 0 && 
+                           ndfdTdIndex >= 0 && rtmaTdIndex < 0)
+                  {
+                     if (weatherParameters[j][ndfdTdIndex] == 1)
+                     {
+                        genDewPointTempValues(j, layoutKeys[j][ndfdTdIndex], 
+                                              match, parameters, 
+                                              numRowsForPoint[j][ndfdTdIndex],
+                                              pntInfo[j].startNum, 
+                                              pntInfo[j].endNum);
+                        f_allTdsFormatted = 1;
+                        continue;
+                     }
+                     else if (weatherParameters[j][ndfdTdIndex] == 0)
+                     {
+                        f_allTdsFormatted = 1;
+                        continue;
+                     }
+                  }
+               }
+               else if (f_XML == 1 && ndfdTdIndex >= 0)
+               {
+                  /* Format Dew Point Temperature Values, if applicable. */
+                  if (weatherParameters[j][ndfdTdIndex] == 1)
+                  { 
+                     genDewPointTempValues(j, layoutKeys[j][ndfdTdIndex], 
+                                           match, parameters, 
+                                           numRowsForPoint[j][ndfdTdIndex],
+                                           pntInfo[j].startNum, 
+                                           pntInfo[j].endNum);
+                     f_allTdsFormatted = 1;
+                     continue;
+                  }
+                  else if (weatherParameters[j][ndfdTdIndex] == 0)
+                  {
+                     f_allTdsFormatted = 1;
+                     continue;
+                  }
+               }
+            }
+
+            /* Format Apparent Temperature Values, if applicable. */
+            if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_AT] && 
+                weatherParameters[j][Dwml[k].origNdfdIndex] == 1)
+            {
+               genAppTempValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], match, 
+                                parameters, 
+                                numRowsForPoint[j][Dwml[k].origNdfdIndex], 
+                                pntInfo[j].startNum, pntInfo[j].endNum);
+               continue;
+            }
+            else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_AT] && 
+                     weatherParameters[j][Dwml[k].origNdfdIndex] == 0)
+               continue;
+
+            /******************QPF AND PRECIP AMOUNTS*************************/
+
+            /* Format Hourly RTMA + NDFD Precipitation Amount values, if
+             * applicable. Concatenate the two together.
+             */
+            if ((!f_allQpfsFormatted) && (ndfdQpfIndex >= 0 || 
+                 rtmaPrecipaIndex >= 0 || rtmaNdfdPrecipaIndex >= 0))
+            {
+               if (f_XML == 5 || f_XML == 6)
+               {
+                  if (pnt_rtmaNdfdPrecipa[j] && rtmaNdfdPrecipaIndex >= 0 && 
+                      ndfdQpfIndex >= 0 && rtmaPrecipaIndex >= 0)
+                  {
+                     if (weatherParameters[j][ndfdQpfIndex] == 1 && 
+                         weatherParameters[j][rtmaNdfdPrecipaIndex] == 1 && 
+                         weatherParameters[j][rtmaPrecipaIndex] == 1)
+                     {
+                        concatRtmaNdfdValues(j, layoutKeys[j][rtmaNdfdPrecipaIndex], 
+                                             match, NDFD_QPF, RTMA_PRECIPA, 
+                                             "Liquid Precipitation Amount",
+                                             "precipitation", "liquid", "inches", 
+                                             parameters, 
+                                             numRowsForPoint[j][ndfdQpfIndex],
+                                             numRowsForPoint[j][rtmaPrecipaIndex], 
+                                             pntInfo[j].startNum, 
+                                             pntInfo[j].endNum);
+                        f_allQpfsFormatted = 1;
+                        continue;
+                     }
+                  }
+
+                  /* Format the Real Time Mesoscale Analyses for Precipitation 
+                   * Amount, if applicable. 
+	           */
+                  else if (!pnt_rtmaNdfdPrecipa[j] && rtmaPrecipaIndex >= 0 && 
+                           ndfdQpfIndex < 0)
+                  {
+                     if (weatherParameters[j][rtmaPrecipaIndex] == 1)
+                     {
+                        genRtmaValues(j, layoutKeys[j][rtmaPrecipaIndex], 
+                             RTMA_PRECIPA, -1, match, 
+                             "RTMA Liquid Precipitation Amount", 
+                             "precipitation", "rtma-liquid", "inches", 
+                             parameters, numRowsForPoint[j][rtmaPrecipaIndex], 
+                             pntInfo[j].startNum, pntInfo[j].endNum);
+                        f_allQpfsFormatted = 1;
+                        continue;
+                     }
+                  }   
+                  else if (!pnt_rtmaNdfdPrecipa[j] && rtmaNdfdPrecipaIndex >= 0 && 
+                           ndfdQpfIndex >= 0 && rtmaPrecipaIndex >= 0)
+                  {
+                     /* This is the specific case where query was for NDFD 
+                      * element and RTMA part of that element, but the RTMA 
+                      * part doesn't exist (occurs in Puerto Rico). 
+                      */
+                     if (weatherParameters[j][ndfdQpfIndex] == 1)
+                     { 
+                        genQPFValues(j, layoutKeys[j][ndfdQpfIndex], match, 
+                                     parameters, numRowsForPoint[j][ndfdQpfIndex], 
+                                     pntInfo[j].startNum, pntInfo[j].endNum);
+                        f_allQpfsFormatted = 1;
+                        continue;
+                     }
+                     else if (weatherParameters[j][ndfdQpfIndex] == 0)
+                     {
+                        f_allQpfsFormatted = 1;
+                        continue;
+                     }
+                  }
+                  else if (!pnt_rtmaNdfdPrecipa[j] && rtmaNdfdPrecipaIndex < 0 && 
+                           ndfdQpfIndex >= 0 && rtmaPrecipaIndex < 0)
+                  {
+                     if (weatherParameters[j][ndfdQpfIndex] == 1)
+                     { 
+                        genQPFValues(j, layoutKeys[j][ndfdQpfIndex], match, 
+                               parameters, numRowsForPoint[j][ndfdQpfIndex], 
+                               pntInfo[j].startNum, pntInfo[j].endNum);
+                        f_allQpfsFormatted = 1;
+                        continue;
+                     }
+                     else if (weatherParameters[j][ndfdQpfIndex] == 0)
+                     {
+                        f_allQpfsFormatted = 1;
+                        continue;
+                     }
+                  }
+               }
+               else if (f_XML == 1 && ndfdQpfIndex >= 0)
+               {
+                  /* Format NDFD QPF Values, if applicable. */
+                  if (weatherParameters[j][ndfdQpfIndex] == 1)
+                  { 
+                     genQPFValues(j, layoutKeys[j][ndfdQpfIndex], match, 
+                            parameters, numRowsForPoint[j][ndfdQpfIndex], 
+                            pntInfo[j].startNum, pntInfo[j].endNum);
+                     f_allQpfsFormatted = 1;
+                     continue;
+                  }
+                  else if (weatherParameters[j][ndfdQpfIndex] == 0)
+                  {
+                     f_allQpfsFormatted = 1;
+                     continue;
+                  }
+               }
+            }
+
+            /* Format Snow Amount Values, if applicable. */
+            if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_SNOW] && 
+                weatherParameters[j][Dwml[k].origNdfdIndex] == 1)
+            {
+               genSnowValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], match, 
+                             parameters,
+                             numRowsForPoint[j][Dwml[k].origNdfdIndex],
+                             pntInfo[j].startNum, pntInfo[j].endNum);
+               continue;
+            }
+            else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_SNOW] && 
+                     weatherParameters[j][Dwml[k].origNdfdIndex] == 0)
+               continue;
+
+            /************************POP12*****************************/
+            /* Format PoP12 Values, if applicable. */
+            if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_POP] && 
+                weatherParameters[j][Dwml[k].origNdfdIndex] == 1)
+            {
+               /* If product is of DWMLgenByDay type, allocate maxDailyPop
+                * array and initialize it. 
+                */
+               if (f_XML == 3)
+               {
+                  maxDailyPop = malloc((numDays[j] * 2) * sizeof(int));
+                  for (i = 0; i < numDays[j] * 2; i++) 
+                     maxDailyPop[i] = 0;
+	       }
+   	       if (f_XML == 4)
+               {
+                  maxDailyPop = malloc((numDays[j]) * sizeof(int));
+                  for (i = 0; i < numDays[j]; i++)
+                     maxDailyPop[i] = 0;		  
+	       }
+               genPopValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], match, 
+                         parameters, numRowsForPoint[j][Dwml[k].origNdfdIndex], 
+                         f_XML, startTime, maxDailyPop, &numDays[j], 
+                         currentDoubTime, currentHour[j], pntInfo[j].startNum, 
+                         pntInfo[j].endNum);
+               continue;
+	    }
+            else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_POP] && 
+                     weatherParameters[j][Dwml[k].origNdfdIndex] == 0)
+               continue;
+
+            /*****************9 SPC CONVECTIVE HAZARDS ELEMENTS***************/
+            /*****************************************************************/
+            /* Format the Categorical Convective Hazard Outlook for DWMLgen 
+             * time-series product, for days 1-3, if applicable.    	     */
+            if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_CONHAZ] && 
+                weatherParameters[j][Dwml[k].origNdfdIndex] == 1)
+            {
+               genConvOutlookValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], 
+                             match, parameters, 
+                             numRowsForPoint[j][Dwml[k].origNdfdIndex], 
+                             pntInfo[j].startNum, pntInfo[j].endNum);
+               continue;
+            }
+            else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_CONHAZ] && 
+                     weatherParameters[j][Dwml[k].origNdfdIndex] == 0)
+               continue;
+
+            /* Format the Probability of Tornadoes Convective Hazard for DWMLgen 
+             * time-series product, for Day 1, if applicable. 
+	     */
+            if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_PTORN] && 
+                weatherParameters[j][Dwml[k].origNdfdIndex] == 1)
+            {
+                genConvSevereCompValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], 
+                                    NDFD_PTORN, match, "tornadoes",
+                                    "Probability of Tornadoes", parameters, 
+                                    numRowsForPoint[j][Dwml[k].origNdfdIndex], 
+                                    pntInfo[j].startNum, pntInfo[j].endNum);
+               continue;
+            }
+            else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_PTORN] && 
+                     weatherParameters[j][Dwml[k].origNdfdIndex] == 0)
+               continue;
+
+            /* Format the Probability of Hail Convective Hazard for DWMLgen 
+             * time-series product, for Day 1, if applicable. 
+	     */
+            if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_PHAIL] && 
+                weatherParameters[j][Dwml[k].origNdfdIndex] == 1)
+            {
+                genConvSevereCompValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], 
+                                    NDFD_PHAIL, match, "hail", 
+                                    "Probability of Hail", parameters, 
+                                    numRowsForPoint[j][Dwml[k].origNdfdIndex],
+                                    pntInfo[j].startNum, pntInfo[j].endNum);
+               continue;
+            }
+            else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_PHAIL] && 
+                     weatherParameters[j][Dwml[k].origNdfdIndex] == 0)
+               continue;
+
+            /* Format the Probability of Damaging Thunderstorm Winds Convective 
+             * Hazard for DWMLgen time-series product, for Day 1, if applicable. 
+	     */
+            if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_PTSTMWIND] && 
+                weatherParameters[j][Dwml[k].origNdfdIndex] == 1)
+            {
+                genConvSevereCompValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], 
+                                  NDFD_PTSTMWIND,  match, 
+                                  "damaging thunderstorm winds", 
+                                  "Probability of Damaging Thunderstorm Winds", 
+                                  parameters, 
+                                  numRowsForPoint[j][Dwml[k].origNdfdIndex],
+                                  pntInfo[j].startNum, pntInfo[j].endNum);
+               continue;
+            }
+            else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_PTSTMWIND] && 
+                     weatherParameters[j][Dwml[k].origNdfdIndex] == 0)
+               continue;
+
+            /* Format the Probability of Extreme Tornadoes Convective Hazard
+             * for DWMLgen time-series product, for Day 1, if applicable. 
+	     */
+            if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_PXTORN] && 
+                weatherParameters[j][Dwml[k].origNdfdIndex] == 1)
+            {
+                genConvSevereCompValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], 
+                                       NDFD_PXTORN, match, "extreme tornadoes", 
+                                       "Probability of Extreme Tornadoes", 
+                                       parameters, 
+                                       numRowsForPoint[j][Dwml[k].origNdfdIndex],
+                                       pntInfo[j].startNum, pntInfo[j].endNum);
+               continue;
+            }
+            else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_PXTORN] && 
+                     weatherParameters[j][Dwml[k].origNdfdIndex] == 0)
+               continue;
+
+            /* Format the Probability of Extreme Hail Convective Hazard for
+             * DWMLgen time-series product, for Day 1, if applicable. 
+	     */
+            if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_PXHAIL] && 
+                weatherParameters[j][Dwml[k].origNdfdIndex] == 1)
+            {
+                genConvSevereCompValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], 
+                                       NDFD_PXHAIL, match, "extreme hail", 
+                                       "Probability of Extreme Hail",
+                                       parameters, 
+                                       numRowsForPoint[j][Dwml[k].origNdfdIndex],
+                                       pntInfo[j].startNum, pntInfo[j].endNum);
+               continue;
+            }
+            else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_PXHAIL] && 
+                     weatherParameters[j][Dwml[k].origNdfdIndex] == 0)
+               continue;
+
+            /* Format the Probability of Extreme Thunderstorm Winds Convective 
+             * Hazard for DWMLgen time-series product, for Day 1, if applicable. 
+	     */
+            if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_PXTSTMWIND] && 
+                weatherParameters[j][Dwml[k].origNdfdIndex] == 1)
+            {
+                genConvSevereCompValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], 
+                                    NDFD_PXTSTMWIND, match, 
+                                    "extreme thunderstorm winds", 
+                                    "Probability of Extreme Thunderstorm Winds", 
+                                    parameters, 
+                                    numRowsForPoint[j][Dwml[k].origNdfdIndex],
+                                    pntInfo[j].startNum, pntInfo[j].endNum);
+               continue;
+            }
+            else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_PXTSTMWIND] && 
+                     weatherParameters[j][Dwml[k].origNdfdIndex] == 0)
+               continue;
+  
+            /* Format the Total Probability of Severe Thunderstorms Convective 
+             * Hazard for DWMLgen time-series product, for Days 2-3, if 
+             * applicable. 
+	     */
+            if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_PSTORM] && 
+                weatherParameters[j][Dwml[k].origNdfdIndex] == 1)
+            {
+                genConvSevereCompValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], 
+                                   NDFD_PSTORM, match, "severe thunderstorms", 
+                                   "Total Probability of Severe Thunderstorms", 
+                                   parameters, 
+                                   numRowsForPoint[j][Dwml[k].origNdfdIndex],
+                                   pntInfo[j].startNum, pntInfo[j].endNum);
+               continue;
+            }
+            else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_PSTORM] && 
+                     weatherParameters[j][Dwml[k].origNdfdIndex] == 0)
+               continue;
+
+            /* Format the Total Probability of Extreme Severe Thunderstorms 
+             * Convective Hazard for DWMLgen time-series product, for Days 2-3,
+             * if applicable. 
+	     */
+            if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_PXSTORM] && 
+                weatherParameters[j][Dwml[k].origNdfdIndex] == 1)
+            {
+                genConvSevereCompValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], 
+                           NDFD_PXSTORM, match, "extreme severe thunderstorms", 
+                           "Total Probability of Extreme Severe Thunderstorms", 
+                           parameters, numRowsForPoint[j][Dwml[k].origNdfdIndex],
+                           pntInfo[j].startNum, pntInfo[j].endNum);
+               continue;
+            }
+            else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_PXSTORM] && 
+                     weatherParameters[j][Dwml[k].origNdfdIndex] == 0)
+               continue;
+
+            /*****************12 CLIMATE ANOMALY PROBABILITIES ***************/
+            /*****************************************************************/
+            /* Format 8-14 Average Temperature, Above Normal Values, if 
+             * applicable. 
+             */
+            if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_TMPABV14D] && 
+                weatherParameters[j][Dwml[k].origNdfdIndex] == 1)
+            {
+                genClimateOutlookValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], 
+                     NDFD_TMPABV14D, match, "average temperature above normal",
+                     "Probability of 8-14 Day Average Temperature Above Normal",
+                     parameters, numRowsForPoint[j][Dwml[k].origNdfdIndex], 
+                     pntInfo[j].startNum, pntInfo[j].endNum);
+               continue;
+            }
+            else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_TMPABV14D] && 
+                     weatherParameters[j][Dwml[k].origNdfdIndex] == 0)
+               continue;
+
+            /* Format 8-14 Average Temperature, Below Normal Values, if 
+             * applicable. 
+             */
+            if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_TMPBLW14D] && 
+                weatherParameters[j][Dwml[k].origNdfdIndex] == 1)
+            {
+                genClimateOutlookValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], 
+                    NDFD_TMPBLW14D, match, "average temperature below normal", 
+                    "Probability of 8-14 Day Average Temperature Below Normal",
+                    parameters, numRowsForPoint[j][Dwml[k].origNdfdIndex], 
+                    pntInfo[j].startNum, pntInfo[j].endNum);
+               continue;
+            }
+            else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_TMPBLW14D] && 
+                     weatherParameters[j][Dwml[k].origNdfdIndex] == 0)
+               continue;
+
+            /* Format 8-14 Average Precipitation, Above Normal Values, if 
+             * applicable. 
+             */
+            if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_PRCPABV14D] && 
+                weatherParameters[j][Dwml[k].origNdfdIndex] == 1)
+            {
+                genClimateOutlookValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], 
+                  NDFD_PRCPABV14D, match, "average precipitation above normal", 
+                  "Probability of 8-14 Day Average Precipitation Above Normal",
+                  parameters, numRowsForPoint[j][Dwml[k].origNdfdIndex], 
+                  pntInfo[j].startNum, pntInfo[j].endNum);
+               continue;
+            }
+            else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_PRCPABV14D] && 
+                     weatherParameters[j][Dwml[k].origNdfdIndex] == 0)
+               continue;
+
+            /* Format 8-14 Average Precipitation, Below Normal Values, if 
+             * applicable. 
+             */
+            if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_PRCPBLW14D] && 
+                weatherParameters[j][Dwml[k].origNdfdIndex] == 1)
+            {
+                genClimateOutlookValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], 
+                  NDFD_PRCPBLW14D, match, "average precipitation below normal",
+                  "Probability of 8-14 Day Average Precipitation Below Normal",
+                  parameters, numRowsForPoint[j][Dwml[k].origNdfdIndex], 
+                  pntInfo[j].startNum, pntInfo[j].endNum);
+               continue;
+            }
+            else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_PRCPBLW14D] && 
+                     weatherParameters[j][Dwml[k].origNdfdIndex] == 0)
+               continue;
+
+            /* Format Monthly Average Temperature, Above Normal Values, if 
+             * applicable. 
+             */
+            if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_TMPABV30D] && 
+                weatherParameters[j][Dwml[k].origNdfdIndex] == 1)
+            {
+                genClimateOutlookValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], 
+                   NDFD_TMPABV30D, match, "average temperature above normal", 
+                   "Probability of One-Month Average Temperature Above Normal",
+                   parameters, numRowsForPoint[j][Dwml[k].origNdfdIndex], 
+                   pntInfo[j].startNum, pntInfo[j].endNum);
+               continue;
+            }
+            else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_TMPABV30D] && 
+                     weatherParameters[j][Dwml[k].origNdfdIndex] == 0)
+               continue;
+
+            /* Format Monthly Average Temperature, Below Normal Values, if 
+             * applicable. 
+             */
+            if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_TMPBLW30D] && 
+                weatherParameters[j][Dwml[k].origNdfdIndex] == 1)
+            {
+                genClimateOutlookValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], 
+                   NDFD_TMPBLW30D, match, "average temperature below normal", 
+                   "Probability of One-Month Average Temperature Below Normal",
+                   parameters, numRowsForPoint[j][Dwml[k].origNdfdIndex], 
+                   pntInfo[j].startNum, pntInfo[j].endNum);
+               continue;
+            }
+            else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_TMPBLW30D] && 
+                     weatherParameters[j][Dwml[k].origNdfdIndex] == 0)
+               continue;
+
+            /* Format Monthly Average Precipitation, Above Normal Values, if 
+             * applicable. 
+             */
+            if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_PRCPABV30D] && 
+                weatherParameters[j][Dwml[k].origNdfdIndex] == 1)
+            {
+                genClimateOutlookValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], 
+                 NDFD_PRCPABV30D, match, "average precipitation above normal",
+                 "Probability of One-Month Average Precipitation Above Normal",
+                 parameters, numRowsForPoint[j][Dwml[k].origNdfdIndex], 
+                 pntInfo[j].startNum, pntInfo[j].endNum);
+               continue;
+            }
+            else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_PRCPABV30D] && 
+                     weatherParameters[j][Dwml[k].origNdfdIndex] == 0)
+               continue;
+
+            /* Format Monthly Average Precipitation, Below Normal Values, if 
+             * applicable. 
+             */
+            if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_PRCPBLW30D] && 
+                weatherParameters[j][Dwml[k].origNdfdIndex] == 1)
+            {
+                genClimateOutlookValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], 
+                 NDFD_PRCPBLW30D, match, "average precipitation below normal", 
+                 "Probability of One-Month Average Precipitation Below Normal",
+                 parameters, numRowsForPoint[j][Dwml[k].origNdfdIndex], 
+                 pntInfo[j].startNum, pntInfo[j].endNum);
+               continue;
+            }
+            else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_PRCPBLW30D] && 
+                     weatherParameters[j][Dwml[k].origNdfdIndex] == 0)
+               continue;
+
+            /* Format 3-Monthly Average Temperature, Above Normal Values, if
+             * applicable. 
+             */
+            if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_TMPABV90D] && 
+                weatherParameters[j][Dwml[k].origNdfdIndex] == 1)
+            {
+                genClimateOutlookValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], 
+                 NDFD_TMPABV90D, match, "average temperature above normal", 
+                 "Probability of Three-Month Average Temperature Above Normal",
+                 parameters, numRowsForPoint[j][Dwml[k].origNdfdIndex], 
+                 pntInfo[j].startNum, pntInfo[j].endNum);
+               continue;
+            }
+            else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_TMPABV90D] && 
+                     weatherParameters[j][Dwml[k].origNdfdIndex] == 0)
+               continue;
+
+            /* Format 3-Monthly Average Temperature, Below Normal Values, if
+             * applicable. 
+             */
+            if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_TMPBLW90D] && 
+                weatherParameters[j][Dwml[k].origNdfdIndex] == 1)
+            {
+                genClimateOutlookValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], 
+                 NDFD_TMPBLW90D, match, "average temperature below normal", 
+                 "Probability of Three-Month Average Temperature Below Normal",
+                 parameters, numRowsForPoint[j][Dwml[k].origNdfdIndex], 
+                 pntInfo[j].startNum, pntInfo[j].endNum);
+               continue;
+            }
+            else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_TMPBLW90D] && 
+                weatherParameters[j][Dwml[k].origNdfdIndex] == 0)
+               continue;
+
+            /* Format 3-Monthly Average Precipitation, Above Normal Values, if 
+             * applicable. 
+             */
+            if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_PRCPABV90D] && 
+                weatherParameters[j][Dwml[k].origNdfdIndex] == 1)
+            {
+               genClimateOutlookValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], 
+               NDFD_PRCPABV90D, match, "average precipitation above normal", 
+               "Probability of Three-Month Average Precipitation Above Normal",
+               parameters, numRowsForPoint[j][Dwml[k].origNdfdIndex], 
+               pntInfo[j].startNum, pntInfo[j].endNum);
+              continue;
+            }
+            else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_PRCPABV90D] && 
+                     weatherParameters[j][Dwml[k].origNdfdIndex] == 0)
+               continue;
+
+            /* Format 3-Monthly Average Precipitation, Below Normal Values, if 
+             * applicable. 
+             */
+            if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_PRCPBLW90D] && 
+                weatherParameters[j][Dwml[k].origNdfdIndex] == 1)
+            {
+               genClimateOutlookValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], 
+               NDFD_PRCPBLW90D, match, "average precipitation below normal", 
+               "Probability of Three-Month Average Precipitation Below Normal",
+               parameters, numRowsForPoint[j][Dwml[k].origNdfdIndex], 
+               pntInfo[j].startNum, pntInfo[j].endNum);
+              continue;
+            }
+            else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_PRCPBLW90D] && 
+                     weatherParameters[j][Dwml[k].origNdfdIndex] == 0)
+               continue;
+
+            /*****************6 TROPICAL WIND THRESHOLD PROBABILITIES ***********/
+            /********************************************************************/
+            /* Format Incremental Probability of 34 Knt Wind Values for DWMLgen 
+	     * product, if applicable. 
+	     */
+            if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_INC34] && 
+                weatherParameters[j][Dwml[k].origNdfdIndex] == 1)
+            {
+               genWindIncCumValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], 
+                         NDFD_INC34, match, "incremental34", 
+	 "Probability of a Tropical Cyclone Wind Speed above 34 Knots (Incremental)",
+	                 parameters, numRowsForPoint[j][Dwml[k].origNdfdIndex],
+                         pntInfo[j].startNum, pntInfo[j].endNum);
+               continue;
+            }
+            else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_INC34] && 
+                weatherParameters[j][Dwml[k].origNdfdIndex] == 0)
+               continue;
+
+            /* Format Incremental Probability of 50 Knt Wind Values for DWMLgen 
+	     * product, if applicable. 
+	     */
+            if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_INC50] && 
+                weatherParameters[j][Dwml[k].origNdfdIndex] == 1)
+            {
+               genWindIncCumValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], 
+                         NDFD_INC50, match, "incremental50", 
+	 "Probability of a Tropical Cyclone Wind Speed above 50 Knots (Incremental)",
+	                 parameters, numRowsForPoint[j][Dwml[k].origNdfdIndex],
+                         pntInfo[j].startNum, pntInfo[j].endNum);
+               continue;
+            }
+            else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_INC50] && 
+                     weatherParameters[j][Dwml[k].origNdfdIndex] == 0)
+               continue;
+
+            /* Format Incremental Probability of 64 Knt Wind Values for DWMLgen 
+	     * product, if applicable. 
+	     */
+            if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_INC64] && 
+                weatherParameters[j][Dwml[k].origNdfdIndex] == 1)
+            {
+               genWindIncCumValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], 
+                         NDFD_INC64, match, "incremental64", 
+	 "Probability of a Tropical Cyclone Wind Speed above 64 Knots (Incremental)",
+	                 parameters, numRowsForPoint[j][Dwml[k].origNdfdIndex],
+                         pntInfo[j].startNum, pntInfo[j].endNum);
+               continue;
+            }
+            else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_INC64] && 
+                    weatherParameters[j][Dwml[k].origNdfdIndex] == 0)
+               continue;
+
+            /* Format Cumulative Probability of 34 Knt Wind Values for DWMLgen 
+	     * product, if applicable. 
+	     */
+            if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_CUM34] && 
+                weatherParameters[j][Dwml[k].origNdfdIndex] == 1)
+            {
+               genWindIncCumValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], 
+                         NDFD_CUM34, match, "cumulative34", 
+	 "Probability of a Tropical Cyclone Wind Speed above 34 Knots (Cumulative)",
+                         parameters, numRowsForPoint[j][Dwml[k].origNdfdIndex],
+                         pntInfo[j].startNum, pntInfo[j].endNum);
+               continue;
+            }
+            else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_CUM34] && 
+                    weatherParameters[j][Dwml[k].origNdfdIndex] == 0)
+               continue;
+
+            /* Format Cumulative Probability of 50 Knt Wind Values for DWMLgen 
+	     * product, if applicable. 
+	     */
+            if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_CUM50] && 
+                weatherParameters[j][Dwml[k].origNdfdIndex] == 1)
+            {
+               genWindIncCumValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], 
+                         NDFD_CUM50, match, "cumulative50", 
+	 "Probability of a Tropical Cyclone Wind Speed above 50 Knots (Cumulative)", 
+	                 parameters, numRowsForPoint[j][Dwml[k].origNdfdIndex],
+                         pntInfo[j].startNum, pntInfo[j].endNum);
+               continue;
+            }
+            else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_CUM50] && 
+                    weatherParameters[j][Dwml[k].origNdfdIndex] == 0)
+               continue;
+
+            /* Format Cumulative Probability of 64 Knt Wind Values for DWMLgen 
+	     * product, if applicable. 
+	     */
+            if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_CUM64] && 
+                weatherParameters[j][Dwml[k].origNdfdIndex] == 1)
+            {
+                genWindIncCumValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], 
+                         NDFD_CUM64, match, "cumulative64", 
+	 "Probability of a Tropical Cyclone Wind Speed above 64 Knots (Cumulative)", 
+	                 parameters, numRowsForPoint[j][Dwml[k].origNdfdIndex],
+                         pntInfo[j].startNum, pntInfo[j].endNum);
+               continue;
+            }
+            else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_CUM64] && 
+                     weatherParameters[j][Dwml[k].origNdfdIndex] == 0)
+               continue;
+
+            /************************WIND SPEEDS******************************/
+
+            /* Format RTMA + NDFD Wind Speed values, if applicable. 
+             * Concatenate the two together. f_XML = 2 (Glance Produce ) does 
+             * not need to access anything (no formatting or collecting Wspd 
+             * data.
+             */
+            if ((!f_allWspdsFormatted) && (ndfdWspdIndex >= 0 || 
+                 rtmaWspdIndex >= 0 || rtmaNdfdWspdIndex >= 0) && f_XML != 2)
+            {
+                if (f_XML == 5 || f_XML == 6)
+               {
+                  if (pnt_rtmaNdfdWspd[j] && rtmaNdfdWspdIndex >= 0 && 
+                      ndfdWspdIndex >= 0 && rtmaWspdIndex >= 0)
+                  {
+                     if (weatherParameters[j][ndfdWspdIndex] == 1 && 
+                         weatherParameters[j][rtmaNdfdWspdIndex] == 1 && 
+                         weatherParameters[j][rtmaWspdIndex] == 1)
+                     {
+                        concatRtmaNdfdValues(j, layoutKeys[j][rtmaNdfdWspdIndex], 
+                                 match, NDFD_WS, RTMA_WSPD, "Wind Speed", 
+                                 "wind-speed", "sustained", "knots", parameters,
+                                 numRowsForPoint[j][ndfdWspdIndex],
+                                 numRowsForPoint[j][rtmaWspdIndex], 
+                                 pntInfo[j].startNum, pntInfo[j].endNum);
+                        f_allWspdsFormatted = 1;
+                        continue;
+                     }
+                  }
+
+                  /* Format the Real Time Mesoscale Analyses for Wind Speed, if
+                   * applicable. 
+       	           */
+                  else if (!pnt_rtmaNdfdWspd[j] && rtmaWspdIndex >= 0 && 
+                           ndfdWspdIndex < 0)
+                  {
+                     if (weatherParameters[j][rtmaWspdIndex] == 1)
+                     {
+                        genRtmaValues(j, layoutKeys[j][rtmaWspdIndex], 
+                             RTMA_WSPD, RTMA_UWSPD, match, "RTMA Wind Speed", 
+                             "wind-speed", "rtma-sustained", "knots", 
+                             parameters, numRowsForPoint[j][rtmaWspdIndex], 
+                             pntInfo[j].startNum, pntInfo[j].endNum);
+                        f_allWspdsFormatted = 1;
+                        continue;
+                     }
+                  }
+                  else if (!pnt_rtmaNdfdWspd[j] && rtmaNdfdWspdIndex >= 0 && 
+                           ndfdWspdIndex >= 0 && rtmaWspdIndex >= 0)
+                  {
+                     /* This is the specific case where query was for NDFD 
+                      * element and RTMA part of that element, but the RTMA 
+                      * part doesn't exist (occurs in Puerto Rico). 
+                      */
+                     if (weatherParameters[j][ndfdWspdIndex] == 1)
+                     {
+                        genWindSpeedValues(timeUserStart[j], timeUserEnd[j], j,
+	   		       layoutKeys[j][ndfdWspdIndex], match, parameters,
                                startDate[j], maxWindSpeed, &numOutputLines[j],
                                timeInterval, TZoffset[j], pntInfo[j].f_dayLight,
-                               NDFD_WS, numRowsForPoint[j][NDFD_WS], f_XML,
-                               valTimeForWindDirMatch, startTime, 
+                               NDFD_WS, numRowsForPoint[j][ndfdWspdIndex], 
+                               f_XML, valTimeForWindDirMatch, startTime, 
                                pntInfo[j].startNum, pntInfo[j].endNum, 
                                f_shiftData);
-         }
+                        f_allWspdsFormatted = 1;
+                        continue;
+                     }
+                     else if (weatherParameters[j][ndfdWspdIndex] == 0)
+                     {
+                        f_allWspdsFormatted = 1;
+                        continue;
+                     }
+                  }
+                  else if (!pnt_rtmaNdfdWspd[j] && rtmaNdfdWspdIndex < 0 && 
+                           ndfdWspdIndex >= 0 && rtmaWspdIndex < 0)
+                  {
+                     if (weatherParameters[j][ndfdWspdIndex] == 1)
+                     {
+                        genWindSpeedValues(timeUserStart[j], timeUserEnd[j], j,
+	   		       layoutKeys[j][ndfdWspdIndex], match, parameters,
+                               startDate[j], maxWindSpeed, &numOutputLines[j],
+                               timeInterval, TZoffset[j], pntInfo[j].f_dayLight,
+                               NDFD_WS, numRowsForPoint[j][ndfdWspdIndex], 
+                               f_XML, valTimeForWindDirMatch, startTime, 
+                               pntInfo[j].startNum, pntInfo[j].endNum, 
+                               f_shiftData);
+                        f_allWspdsFormatted = 1;
+                        continue;
+                     }
+                     else if (weatherParameters[j][ndfdWspdIndex] == 0)
+                     {
+                        f_allWspdsFormatted = 1;
+                        continue;
+                     }
+                  }
+               }
 
-         /* Format NDFD Wind Speed Gust Values for DWMLgen products, if 
-          * applicable. 
-          */
-         if (weatherParameters[j][NDFD_WG] == 1)
-            genWindSpeedGustValues(j, layoutKeys[j][NDFD_WG], match, 
-                                   parameters, numRowsForPoint[j][NDFD_WG], 
-                                   pntInfo[j].startNum, pntInfo[j].endNum);
-
-         /************************WIND DIRECTIONS*****************************/
-
-         /* Format RTMA + NDFD Wind Direcion values, if applicable. 
-          * Concatenate the two together.
-          */
-         if (weatherParameters[j][RTMA_WDIR] == 1 && 
-             weatherParameters[j][NDFD_WD] == 1)
-            concatRtmaNdfdValues(j, layoutKeys[j][RTMA_NDFD_WDIR], match,
-                                 NDFD_WD, RTMA_WDIR, "Wind Direction", 
-                                 "direction", "wind", "degrees true", parameters,
-                                 numRowsForPoint[j][NDFD_WD],
-                                 numRowsForPoint[j][RTMA_WDIR], 
-                                 pntInfo[j].startNum, pntInfo[j].endNum);
-
-         /* Format the Real Time Mesoscale Analyses for Wind Direction, if
-          * applicable. 
-	  */
-         else if (weatherParameters[j][RTMA_WDIR] == 1 && 
-                  weatherParameters[j][NDFD_WD] == 0)
-            genRtmaValues(j, layoutKeys[j][RTMA_WDIR], RTMA_WDIR, RTMA_UWDIR, 
-                          match, "RTMA Wind Direction", "direction", "rtma-wind", 
-                          "degrees true", parameters, 
-                          numRowsForPoint[j][RTMA_WDIR], pntInfo[j].startNum, 
-                          pntInfo[j].endNum);
-
-         /* Format NDFD Wind Dir values for DWMLgen products, if applicable.
-          * Collect the Wind Dir values that correspond to the times when
-          * the maximum Wind Speeds existed if product is of type
-          * DWMLgenByDay. 
-          */
-         else if ((weatherParameters[j][NDFD_WD] == 1
-                  && weatherParameters[j][RTMA_WDIR] == 0)
-                  || weatherParameters[j][NDFD_WD] == 2)
-         {		 
-            /* If product is of DWMLgenByDay type, allocate maxWindDirection
-             * array and initialize. We need these wind direction values for
-             * each forecast period to derive the weather and icon elements. */
-            if (f_XML == 3 || f_XML == 4)
-            {
-               maxWindDirection = malloc((numOutputLines[j]) * sizeof(int));
-               for (i = 0; i < (numOutputLines[j]); i++)
-                  maxWindDirection[i] = -999;
-            }
-            genWindDirectionValues(j, layoutKeys[j][NDFD_WD], match,
-                                   parameters, maxWindDirection, f_XML, 
-                                   &numOutputLines[j], valTimeForWindDirMatch,
-				   numRowsForPoint[j][NDFD_WD], 
-                                   pntInfo[j].startNum, pntInfo[j].endNum);
-         }
-
-         /****************************SKY COVER*******************************/
-
-         /* Format RTMA + NDFD Sky Cover values, if applicable. Concatenate
-          * the two together.
-          */
-         if (weatherParameters[j][RTMA_SKY] == 1 && 
-             weatherParameters[j][NDFD_SKY] == 1)
-            concatRtmaNdfdValues(j, layoutKeys[j][RTMA_NDFD_SKY], match,
-                                 NDFD_SKY, RTMA_SKY, "Cloud Cover Amount",
-                                 "cloud-amount", "total", "percent", parameters,
-                                 numRowsForPoint[j][NDFD_SKY],
-                                 numRowsForPoint[j][RTMA_SKY], 
-                                 pntInfo[j].startNum, pntInfo[j].endNum);
-
-         /* Format the Real Time Mesoscale Analyses for Sky Cover Amount, 
-          * if applicable. 
-	  */
-         else if (weatherParameters[j][RTMA_SKY] == 1 && 
-                  weatherParameters[j][NDFD_SKY] == 0)
-            genRtmaValues(j, layoutKeys[j][RTMA_SKY], RTMA_SKY, -1, match, 
-                          "RTMA Cloud Cover Amount", "cloud-amount", "rtma-total", 
-                          "percent", parameters, numRowsForPoint[j][RTMA_SKY], 
-                          pntInfo[j].startNum, pntInfo[j].endNum);
-
-         /* Format NDFD Sky Cover Values for DWMLgen products, if applicable.
-          * Collect Max and Min Sky Cover values for icon determination if
-          * product is of type DWMLgenByDay. */
-         else if ((weatherParameters[j][NDFD_SKY] == 1
-              && weatherParameters[j][RTMA_SKY] == 0)
-              || weatherParameters[j][NDFD_SKY] == 2)
-         {
-
-            /* If product is of DWMLgenByDay type, allocate the maxSkyCover,
-             * minSkyCover, minSkyNum, maxSkyNum, startPositions, endPositions,
-	     * and averageSkyCover arrays and initialize them. We need these 
-	     * sky values for each forecast period to derive the weather and 
-	     * icon elements. */
-
-            if (f_XML == 3 || f_XML == 4)
-            {
-	       startPositions = malloc(numOutputLines[j] * sizeof(int));
-	       endPositions = malloc(numOutputLines[j] * sizeof(int));
-               maxSkyCover = malloc(numOutputLines[j] * sizeof(int));
-               minSkyCover = malloc(numOutputLines[j] * sizeof(int));
-	       maxSkyNum = malloc(numOutputLines[j] * sizeof(int));
-               minSkyNum = malloc(numOutputLines[j] * sizeof(int));
-               averageSkyCover = malloc(numOutputLines[j] * sizeof(int));
-               
-               for (i = 0; i < numOutputLines[j]; i++)
+               /* Format NDFD Wind Speed Values for DWMLgen products, if 
+                * applicable. Collect Max Wind Speed values if product is of 
+                * type DWMLgenByDay. 
+                */
+               else /* if f_XML = 1, 3, or 4 */
                {
-		  maxSkyCover[i]    = -999;
-                  startPositions[i] = -999;
-                  endPositions[i]   = -999;
-                  minSkyNum[i]      = -999;
-                  maxSkyNum[i]      = +999;  /* Note (+) initialization. */
-                  minSkyCover[i]    = +999;  /* Note (+) initialization. */
+                  /* If product is of DWMLgenByDay type, allocate maxWindSpeed
+                   * array. We need the max wind speed values for each forecast
+                   * period to derive the weather and icon elements.  Also,
+                   * allocate the array holding the valid times that correspond
+                   * to the max wind speeds. These times will be used to collect
+                   * the wind directions that correspond to the times when the 
+                   * max wind speeds occurred. 
+	           */
+                  if (ndfdWspdIndex >= 0)
+                  {
+                     if ((f_XML == 3 || f_XML == 4) && 
+                          weatherParameters[j][ndfdWspdIndex] == 2)
+                     {
+                        maxWindSpeed = malloc((numOutputLines[j]) 
+                                       * sizeof(int));
+                        valTimeForWindDirMatch = malloc((numOutputLines[j])
+                                                 * sizeof(double));
+                        for (i = 0; i < (numOutputLines[j]); i++)
+                        {
+                           maxWindSpeed[i] = -999;
+                           valTimeForWindDirMatch[i] = -999;
+                        }
+                     }
+                     if (weatherParameters[j][ndfdWspdIndex] == 1 || 
+                         weatherParameters[j][ndfdWspdIndex] == 2)
+                     {
+                        genWindSpeedValues(timeUserStart[j], timeUserEnd[j], j,
+	   		       layoutKeys[j][ndfdWspdIndex], match, parameters,
+                               startDate[j], maxWindSpeed, &numOutputLines[j],
+                               timeInterval, TZoffset[j], pntInfo[j].f_dayLight,
+                               NDFD_WS, numRowsForPoint[j][ndfdWspdIndex], 
+                               f_XML, valTimeForWindDirMatch, startTime, 
+                               pntInfo[j].startNum, pntInfo[j].endNum, 
+                               f_shiftData);
+                        f_allWspdsFormatted = 1;
+                        continue;
+                     }
+                     else if (weatherParameters[j][ndfdWspdIndex] == 0)
+                     {
+                        f_allWspdsFormatted = 1;
+                        continue;
+                     }
+                  }
                }
             }
 
-            genSkyCoverValues(j, layoutKeys[j][NDFD_SKY], match, parameters,
-                              startDate[j], maxSkyCover, minSkyCover, 
-                              averageSkyCover, &numOutputLines[j], timeInterval, 
-                              TZoffset[j], pntInfo[j].f_dayLight, NDFD_SKY,
-                              numRowsForPoint[j][NDFD_SKY], f_XML, maxSkyNum, 
-			      minSkyNum, startPositions, endPositions,
-			      currentHour[j], timeUserStart[j], startTime, 
-                              pntInfo[j].startNum, pntInfo[j].endNum, f_shiftData);
-         }
-
-         /* Format Relative Humidity Values, if applicable. */
-         if (weatherParameters[j][NDFD_RH] == 1)
-            genRelHumidityValues(j, layoutKeys[j][NDFD_RH], match, parameters, 
-                                 numRowsForPoint[j][NDFD_RH], 
-                                 pntInfo[j].startNum, pntInfo[j].endNum);
-
-         /************************WEATHER AND HAZARD GENERATION****************/
-
-         /* Format Hazards and Weather Values (and\or Icons), if applicable. 
-          * We must have at least some rows of weather data to format weather 
-          * and icons. 
-          */
-         if (f_XML == 1 || f_XML == 2 || f_XML == 6)
-         {
-            /**************************** WEATHER ****************************/
-
-            if (weatherParameters[j][NDFD_WX] == 1 ||
-                weatherParameters[j][NDFD_WX] == 3)
-               genWeatherValues(j, layoutKeys[j][NDFD_WX], match,
-                             weatherParameters[j][NDFD_WX],
-                             f_formatIconForPnt[j], 
-                             numRowsForPoint[j][NDFD_WS],
-                             numRowsForPoint[j][NDFD_SKY],
-                             numRowsForPoint[j][NDFD_TEMP],
-                             numRowsForPoint[j][NDFD_WX], 
-	                     numRowsForPoint[j][NDFD_POP], parameters,
-                             pnts[j].Y, pnts[j].X, pntInfo[j].startNum, 
-                             pntInfo[j].endNum, TZoffset[j], 
-                             pntInfo[j].f_dayLight);
-
-            /**************************** HAZARDS *****************************/
-
-            if (weatherParameters[j][NDFD_WWA] == 1)
-               genHazardValues(j, layoutKeys[j][NDFD_WWA], match,
-                               numRowsForPoint[j][NDFD_WWA], parameters,
-                               pntInfo[j].startNum, pntInfo[j].endNum, 
-                               pntInfo[j].cwa);
-         }
-	 else if (f_XML == 3 || f_XML == 4) /* Summarized Products. */
-         { 
-            if (f_formatSummarizations[j])
+            /* Format NDFD Wind Speed Gust Values for DWMLgen products, if 
+             * applicable. 
+             */
+            if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_WG] && 
+                weatherParameters[j][Dwml[k].origNdfdIndex] == 1)
             {
-	    /**************************** WEATHER ****************************/
+               genWindSpeedGustValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], 
+                                      match, parameters, 
+                                      numRowsForPoint[j][Dwml[k].origNdfdIndex], 
+                                      pntInfo[j].startNum, pntInfo[j].endNum);
+               continue;
+            }
+            else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_WG] && 
+                     weatherParameters[j][Dwml[k].origNdfdIndex] == 0)
+               continue;
 
-               genWeatherValuesByDay(j, layoutKeys[j][NDFD_WX], match, numMatch,
-	                             numRowsForPoint[j][NDFD_WG],
-                                     numRowsForPoint[j][NDFD_WS],
-			             numRowsForPoint[j][NDFD_POP],
-			             numRowsForPoint[j][NDFD_MAX],
-			             numRowsForPoint[j][NDFD_MIN],
-                                     numRowsForPoint[j][NDFD_WX], parameters,
-                                     &numDays[j], TZoffset[j], pntInfo[j].f_dayLight,
+            /************************WIND DIRECTIONS**************************/
+
+            /* Format RTMA + NDFD Wind Direcion values, if applicable. 
+             * Concatenate the two together.
+             */
+            if ((!f_allWdirsFormatted) && (ndfdWdirIndex >= 0 || 
+                 rtmaWdirIndex >= 0 || rtmaNdfdWdirIndex >= 0))
+            {
+               if (f_XML == 5 || f_XML == 6)
+               {
+                  if (pnt_rtmaNdfdWdir[j] && rtmaNdfdWdirIndex >= 0 && 
+                      ndfdWdirIndex >= 0 && rtmaWdirIndex >= 0)
+                  {
+                     if (weatherParameters[j][ndfdWdirIndex] == 1 && 
+                         weatherParameters[j][rtmaNdfdWdirIndex] == 1 && 
+                         weatherParameters[j][rtmaWdirIndex] == 1)
+                     {
+                        concatRtmaNdfdValues(j, layoutKeys[j][rtmaNdfdWdirIndex], 
+                                 match, NDFD_WD, RTMA_WDIR, "Wind Direction", 
+                                 "direction", "wind", "degrees true", 
+                                 parameters, numRowsForPoint[j][ndfdWdirIndex],
+                                 numRowsForPoint[j][rtmaWdirIndex], 
+                                 pntInfo[j].startNum, pntInfo[j].endNum);
+                        f_allWdirsFormatted = 1;
+                        continue;
+                     }
+                  }
+
+                  /* Format the Real Time Mesoscale Analyses for Wind Direction,
+                   * if applicable. 
+	           */
+                  else if (!pnt_rtmaNdfdWdir[j] && rtmaWdirIndex >= 0 && 
+                            ndfdWdirIndex < 0)
+                  {
+                     if (weatherParameters[j][rtmaWdirIndex] == 1)
+                     {
+                        genRtmaValues(j, layoutKeys[j][rtmaWdirIndex], 
+                             RTMA_WDIR, RTMA_UWDIR, match, 
+                             "RTMA Wind Direction", "direction", "rtma-wind", 
+                             "degrees true", parameters, 
+                             numRowsForPoint[j][rtmaWdirIndex], 
+                             pntInfo[j].startNum, pntInfo[j].endNum);
+                        f_allWdirsFormatted = 1;
+                        continue;
+                     }
+                  }
+                  else if (!pnt_rtmaNdfdWdir[j] && rtmaNdfdWdirIndex >= 0 && 
+                           ndfdWdirIndex >= 0 && rtmaWdirIndex >= 0)
+                  {
+                     /* This is the specific case where query was for NDFD 
+                      * element and RTMA part of that element, but the RTMA 
+                      * part doesn't exist (occurs in Puerto Rico).
+                      */
+                     if (weatherParameters[j][ndfdWdirIndex] == 1)
+                     {
+                        genWindDirectionValues(j, layoutKeys[j][ndfdWdirIndex], 
+                                   match, parameters, maxWindDirection, f_XML, 
+                                   &numOutputLines[j], valTimeForWindDirMatch,
+				   numRowsForPoint[j][ndfdWdirIndex], 
+                                   pntInfo[j].startNum, pntInfo[j].endNum);
+                        f_allWdirsFormatted = 1;
+                        continue;
+                     }
+                     else if (weatherParameters[j][ndfdWdirIndex] == 0)
+                     {
+                        f_allWdirsFormatted = 1;
+                        continue;
+                     }
+                  }
+                  else if (!pnt_rtmaNdfdWdir[j] && rtmaNdfdWdirIndex < 0 && 
+                           ndfdWdirIndex >= 0 && rtmaWdirIndex < 0)
+                  {
+                     if (weatherParameters[j][ndfdWdirIndex] == 1)
+                     {
+                        genWindDirectionValues(j, layoutKeys[j][ndfdWdirIndex], 
+                                   match, parameters, maxWindDirection, f_XML, 
+                                   &numOutputLines[j], valTimeForWindDirMatch,
+				   numRowsForPoint[j][ndfdWdirIndex], 
+                                   pntInfo[j].startNum, pntInfo[j].endNum);
+                        f_allWdirsFormatted = 1;
+                        continue;
+                     }
+                     else if (weatherParameters[j][ndfdWdirIndex] == 0)
+                     {
+                        f_allWdirsFormatted = 1;
+                        continue;
+                     }
+                  }
+               }
+
+               /* Format NDFD Wind Dir values for DWMLgen products, if 
+                * applicable. Collect the Wind Dir values that correspond to 
+                * the times when the maximum Wind Speeds existed if product is 
+                * of type DWMLgenByDay. 
+                */
+               else /* if f_XML = 1, 3, or 4 */
+               {
+                  /* If product is of DWMLgenByDay type, allocate 
+                   * maxWindDirection array and initialize. We need these 
+                   * wind direction values for each forecast period to derive 
+                   * the weather and icon elements. 
+                   */
+                  if (ndfdWdirIndex >= 0)
+                  {
+                     if (f_XML == 3 || f_XML == 4)
+                     {
+                        maxWindDirection = malloc((numOutputLines[j]) 
+                                                   * sizeof(int));
+                        for (i = 0; i < (numOutputLines[j]); i++)
+                           maxWindDirection[i] = -999;
+                     }
+                     if (weatherParameters[j][ndfdWdirIndex] == 1 || 
+                         weatherParameters[j][ndfdWdirIndex] == 2)
+                     {
+                        genWindDirectionValues(j, layoutKeys[j][ndfdWdirIndex], 
+                                   match, parameters, maxWindDirection, f_XML, 
+                                   &numOutputLines[j], valTimeForWindDirMatch,
+				   numRowsForPoint[j][ndfdWdirIndex],
+                                   pntInfo[j].startNum, pntInfo[j].endNum);
+                        f_allWdirsFormatted = 1;
+                        continue;
+                     }
+                     else if (weatherParameters[j][ndfdWdirIndex] == 0)
+                     {
+                        f_allWdirsFormatted = 1;
+                        continue;
+                     }                  
+                  }
+               }
+            }
+ 
+            /****************************SKY COVER****************************/
+
+            /* Format RTMA + NDFD Sky Cover values, if applicable. Concatenate
+             * the two together.
+             */
+
+            if ((!f_allSkysFormatted) && (ndfdSkyIndex >= 0 || rtmaSkyIndex >= 0 
+                 || rtmaNdfdSkyIndex >= 0))
+            {
+               if (f_XML == 5 || f_XML == 6) 
+               {
+                  if (pnt_rtmaNdfdSky[j] && rtmaNdfdSkyIndex >= 0 && 
+                      ndfdSkyIndex >= 0 && rtmaSkyIndex >= 0)
+                  {
+                     if (weatherParameters[j][ndfdSkyIndex] == 1 && 
+                         weatherParameters[j][rtmaNdfdSkyIndex] == 1 && 
+                         weatherParameters[j][rtmaSkyIndex] == 1)
+                     {
+                        concatRtmaNdfdValues(j, layoutKeys[j][rtmaNdfdSkyIndex], 
+                                 match, NDFD_SKY, RTMA_SKY, 
+                                 "Cloud Cover Amount", "cloud-amount", "total", 
+                                 "percent", parameters,
+                                 numRowsForPoint[j][ndfdSkyIndex],
+                                 numRowsForPoint[j][rtmaSkyIndex], 
+                                 pntInfo[j].startNum, pntInfo[j].endNum);
+                        f_allSkysFormatted = 1;
+                        continue;
+                     }
+                  }
+                  /* Format the Real Time Mesoscale Analyses for Sky Cover Amount, 
+                   * if applicable. 
+	           */
+                  else if (!pnt_rtmaNdfdSky[j] && rtmaSkyIndex >= 0 && 
+                            ndfdSkyIndex < 0)
+                  {
+                     if (weatherParameters[j][rtmaSkyIndex] == 1)
+                     {
+                        genRtmaValues(j, layoutKeys[j][rtmaSkyIndex], RTMA_SKY, 
+                             -1, match, "RTMA Cloud Cover Amount", "cloud-amount", 
+                             "rtma-total", "percent", parameters, 
+                             numRowsForPoint[j][rtmaSkyIndex], 
+                             pntInfo[j].startNum, pntInfo[j].endNum);
+                        f_allSkysFormatted = 1;
+                        continue;
+                     }
+                  }
+                  else if (!pnt_rtmaNdfdSky[j] && rtmaNdfdSkyIndex >= 0 && 
+                           ndfdSkyIndex >= 0 && rtmaSkyIndex >= 0)
+                  {
+                     /* This is the specific case where query was for NDFD 
+                      * element and RTMA part of that element, but the RTMA 
+                      * part doesn't exist (occurs in Puerto Rico. 
+                      */
+                     if (weatherParameters[j][ndfdSkyIndex] == 1)
+                     {
+                        genSkyCoverValues(j, layoutKeys[j][ndfdSkyIndex], match, 
+                              parameters, startDate[j], maxSkyCover, 
+                              minSkyCover, averageSkyCover, &numOutputLines[j], 
+                              timeInterval, TZoffset[j], pntInfo[j].f_dayLight, 
+                              NDFD_SKY, numRowsForPoint[j][ndfdSkyIndex], 
+                              f_XML, maxSkyNum, minSkyNum, startPositions, 
+                              endPositions, currentHour[j], timeUserStart[j], 
+                              startTime, pntInfo[j].startNum, pntInfo[j].endNum, 
+                              f_shiftData);
+                        f_allSkysFormatted = 1;
+                        continue;
+                     }
+                     else if (weatherParameters[j][ndfdSkyIndex] == 0)
+                     {
+                        f_allSkysFormatted = 1;
+                        continue;
+                     }
+                  }
+                  else if (!pnt_rtmaNdfdSky[j] && rtmaNdfdSkyIndex < 0 && 
+                           ndfdSkyIndex >= 0 && rtmaSkyIndex < 0)
+                  {
+                     if (weatherParameters[j][ndfdSkyIndex] == 1)
+                     {
+                        genSkyCoverValues(j, layoutKeys[j][ndfdSkyIndex], match, 
+                              parameters, startDate[j], maxSkyCover, 
+                              minSkyCover, averageSkyCover, &numOutputLines[j], 
+                              timeInterval, TZoffset[j], pntInfo[j].f_dayLight, 
+                              NDFD_SKY, numRowsForPoint[j][ndfdSkyIndex], 
+                              f_XML, maxSkyNum, minSkyNum, startPositions, 
+                              endPositions, currentHour[j], timeUserStart[j], 
+                              startTime, pntInfo[j].startNum, pntInfo[j].endNum, 
+                              f_shiftData);
+                        f_allSkysFormatted = 1;
+                        continue;
+                     }
+                     else if (weatherParameters[j][ndfdSkyIndex] == 0)
+                     {
+                        f_allSkysFormatted = 1;
+                        continue;
+                     }
+                  }
+               }
+
+               /* Format NDFD Sky Cover Values for DWMLgen products, if 
+                * applicable. Collect Max and Min Sky Cover values for icon 
+                * determination if product is of type DWMLgenByDay. 
+                */
+               else /* if f_XML = 1, 2, 3, 4. */
+               {
+                  /* If product is of DWMLgenByDay type, allocate the 
+                   * maxSkyCover, minSkyCover, minSkyNum, maxSkyNum, 
+                   * startPositions, endPositions, and averageSkyCover arrays 
+                   * and initialize them. We need these sky values for each 
+                   * forecast period to derive the weather and icon elements. 
+                   */
+                  if (ndfdSkyIndex >= 0)
+                  {
+                     if (f_XML == 3 || f_XML == 4)
+                     {
+	                startPositions = malloc(numOutputLines[j] * sizeof(int));
+	                endPositions = malloc(numOutputLines[j] * sizeof(int));
+                        maxSkyCover = malloc(numOutputLines[j] * sizeof(int));
+                        minSkyCover = malloc(numOutputLines[j] * sizeof(int));
+	                maxSkyNum = malloc(numOutputLines[j] * sizeof(int));
+                        minSkyNum = malloc(numOutputLines[j] * sizeof(int));
+                        averageSkyCover = malloc(numOutputLines[j] * sizeof(int));
+               
+                        for (i = 0; i < numOutputLines[j]; i++)
+                        {
+		           maxSkyCover[i]    = -999;
+                           startPositions[i] = -999;
+                           endPositions[i]   = -999;
+                           minSkyNum[i]      = -999;
+                           maxSkyNum[i]      = +999;  /* Note (+) initialization. */
+                           minSkyCover[i]    = +999;  /* Note (+) initialization. */
+                        }
+                     }
+                     if (weatherParameters[j][ndfdSkyIndex] == 1 || 
+                         weatherParameters[j][ndfdSkyIndex] == 2)
+                     {
+                        genSkyCoverValues(j, layoutKeys[j][ndfdSkyIndex], match, 
+                              parameters, startDate[j], maxSkyCover, 
+                              minSkyCover, averageSkyCover, &numOutputLines[j], 
+                              timeInterval, TZoffset[j], pntInfo[j].f_dayLight, 
+                              NDFD_SKY, numRowsForPoint[j][ndfdSkyIndex], 
+                              f_XML, maxSkyNum, minSkyNum, startPositions, 
+                              endPositions, currentHour[j], timeUserStart[j], 
+                              startTime, pntInfo[j].startNum, pntInfo[j].endNum, 
+                              f_shiftData);
+                        f_allSkysFormatted = 1;
+                        continue;
+                     }
+                     else if (weatherParameters[j][ndfdSkyIndex] == 0)
+                     {
+                        f_allSkysFormatted = 1;
+                        continue;
+                     }
+                  }
+               }
+            }
+
+            /* Format Relative Humidity Values, if applicable. */
+            if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_RH] && 
+                weatherParameters[j][Dwml[k].origNdfdIndex] == 1)
+            {
+               genRelHumidityValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], 
+                                    match, parameters, 
+                                    numRowsForPoint[j][Dwml[k].origNdfdIndex], 
+                                    pntInfo[j].startNum, pntInfo[j].endNum);
+               continue;
+            }
+            else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_RH] && 
+                     weatherParameters[j][Dwml[k].origNdfdIndex] == 0)
+               continue;
+
+            /************************WEATHER AND HAZARD GENERATION************/
+
+            /* Format Hazards and Weather Values (and\or Icons), if applicable. 
+             * We must have at least some rows of weather data to format weather 
+             * and icons. 
+             */
+            if (f_XML == 1 || f_XML == 2 || f_XML == 6)
+            {
+               /**************************** WEATHER *************************/
+   
+               if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_WX] && 
+                  (weatherParameters[j][Dwml[k].origNdfdIndex] == 1 || 
+                   weatherParameters[j][Dwml[k].origNdfdIndex] == 3))
+               {
+                  if (f_formatIconForPnt[j])
+                  {
+                     genWeatherValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], 
+                                   match,
+                                   weatherParameters[j][Dwml[k].origNdfdIndex],
+                                   f_formatIconForPnt[j], 
+                                   numRowsForPoint[j][ndfdWspdIndex],
+                                   numRowsForPoint[j][ndfdSkyIndex],
+                                   numRowsForPoint[j][ndfdTempIndex],
+                                   numRowsForPoint[j][Dwml[k].origNdfdIndex], 
+	                           numRowsForPoint[j][ndfdPopIndex], parameters,
+                                   pnts[j].Y, pnts[j].X, pntInfo[j].startNum, 
+                                   pntInfo[j].endNum, TZoffset[j], 
+                                   pntInfo[j].f_dayLight);
+                     continue;
+                  }
+                  else /* Dummy up the elements needed for icons, as they're 
+                        * not needed if just weather is formatted. 
+                        */
+                  {
+                     genWeatherValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], 
+                                   match,
+                                   weatherParameters[j][Dwml[k].origNdfdIndex],
+                                   f_formatIconForPnt[j], 
+                                   numRowsForPoint[j][Dwml[k].origNdfdIndex], 
+                                   numRowsForPoint[j][Dwml[k].origNdfdIndex], 
+                                   numRowsForPoint[j][Dwml[k].origNdfdIndex], 
+                                   numRowsForPoint[j][Dwml[k].origNdfdIndex], 
+                                   numRowsForPoint[j][Dwml[k].origNdfdIndex],
+                                   parameters, pnts[j].Y, pnts[j].X, 
+                                   pntInfo[j].startNum, 
+                                   pntInfo[j].endNum, TZoffset[j], 
+                                   pntInfo[j].f_dayLight);
+                     continue;
+                  }
+               }
+               else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_WX] && 
+                        weatherParameters[j][Dwml[k].origNdfdIndex] == 0)
+                  continue;
+
+               /**************************** HAZARDS *************************/
+
+               if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_WWA] && 
+                   weatherParameters[j][Dwml[k].origNdfdIndex] == 1)
+               {
+                  genHazardValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], 
+                               match, numRowsForPoint[j][Dwml[k].origNdfdIndex], 
+                               parameters, pntInfo[j].startNum, 
+                               pntInfo[j].endNum, pntInfo[j].cwa);
+                  continue;
+               }
+            }
+            else if (f_XML == 3 || f_XML == 4)
+            /* Summarized Products. */
+            {
+               if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_WX] && 
+                   f_formatSummarizations[j])
+               {
+	       /**************************** WEATHER **************************/
+                  /* Use gust if availabale. If not, use Wspd in it's place. 
+                   * Don't let the availability of Gust shut off weather phrase
+                   * and icon generation. It only exist 52 hours out and is only
+                   * used in Blizzard determination.
+                   */
+                  if (ndfdWgustIndex < 0)
+                     ndfdWgustOrWspdIndex = ndfdWspdIndex;
+                  else
+                     ndfdWgustOrWspdIndex = ndfdWgustIndex;
+
+	          genWeatherValuesByDay(j, layoutKeys[j][Dwml[k].origNdfdIndex], 
+                                     match, numMatch,
+	                             numRowsForPoint[j][ndfdWgustOrWspdIndex],
+                                     numRowsForPoint[j][ndfdWspdIndex],
+			             numRowsForPoint[j][ndfdPopIndex],
+			             numRowsForPoint[j][ndfdMaxIndex],
+			             numRowsForPoint[j][ndfdMinIndex],
+                                     numRowsForPoint[j][Dwml[k].origNdfdIndex], 
+                                     parameters, &numDays[j], TZoffset[j], 
+                                     pntInfo[j].f_dayLight,
                                      format, f_useMinTempTimes[j], f_XML, 
-                                     &numOutputLines[j], maxDailyPop, averageSkyCover, 
-                                     maxSkyCover, minSkyCover, maxSkyNum, minSkyNum, 
-			             startPositions, endPositions, maxWindSpeed,
+                                     &numOutputLines[j], maxDailyPop, 
+                                     averageSkyCover, maxSkyCover, minSkyCover, 
+                                     maxSkyNum, minSkyNum, startPositions, 
+                                     endPositions, maxWindSpeed,
 			             maxWindDirection, startTime, format_value, 
                                      pntInfo[j].startNum, pntInfo[j].endNum,
                                      f_shiftData, valTimeForWindDirMatch);
+                  continue;
+               }
+               else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_WX] && 
+                        !f_formatSummarizations[j])
+               {
+                  #ifdef PRINT_DIAG
+                  printf ("************************************************\n");
+                  printf ("Can't format weather summaries and icons for point\n");
+                  printf ("#%d as all elements needed to derive these are not\n",(j+1));
+                  printf ("available.\n");
+                  printf ("************************************************\n");
+                  #endif
+               }
+
+               /**************************** HAZARDS *************************/
+
+               if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_WWA] && 
+                   weatherParameters[j][Dwml[k].origNdfdIndex] == 1)
+               {
+                  genHazardSummaryValues(j, 
+                        numRowsForPoint[j][Dwml[k].origNdfdIndex].multiLayouts,
+                        match, numRowsForPoint[j][Dwml[k].origNdfdIndex], 
+                        parameters, pntInfo[j].startNum, pntInfo[j].endNum, 
+                        pntInfo[j].cwa, indivHaz[j], numHazards[j], 
+                        layoutKeys[j][Dwml[k].origNdfdIndex]);
+                  continue;
+               }
+               else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_WWA] && 
+                        weatherParameters[j][Dwml[k].origNdfdIndex] == 0)
+                  continue;
             }
-            else
+
+            /* Format Wave Height Values, if applicable. */
+            if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_WH] &&
+                weatherParameters[j][Dwml[k].origNdfdIndex] == 1)
             {
-               #ifdef PRINT_DIAG
-               printf ("******************************************************\n");
-               printf ("Can't format weather summaries and icons for point\n");
-               printf ("#%d as all elements needed to derive these are not\n",(j+1));
-               printf ("available.\n");
-               printf ("******************************************************\n");
-               #endif
-            }
-
-            /**************************** HAZARDS *****************************/
-
-            if (numRowsForPoint[j][NDFD_WWA].total != 0)
-               genHazardSummaryValues(j, numRowsForPoint[j][NDFD_WWA].multiLayouts,
-                                      match, numRowsForPoint[j][NDFD_WWA], 
-                                      parameters, pntInfo[j].startNum, pntInfo[j].
-                                      endNum, pntInfo[j].cwa, indivHaz[j], 
-                                      numHazards[j], layoutKeys[j][NDFD_WWA]);
-         }
-
-         /* Format Wave Height Values, if applicable. */
-         if (weatherParameters[j][NDFD_WH] == 1)
-            genWaveHeightValues(j, layoutKeys[j][NDFD_WH], match, parameters,
-                                numRowsForPoint[j][NDFD_WH], 
-                                pntInfo[j].startNum, pntInfo[j].endNum);
-
-         /* Format Lamp Thunderstorm Probability Values, if applicable. */
-         if (weatherParameters[j][LAMP_TSTMPRB] == 1)
-            genLampTstmValues(j, layoutKeys[j][LAMP_TSTMPRB], match, parameters,
-                              numRowsForPoint[j][LAMP_TSTMPRB], pntInfo[j].startNum, 
-                              pntInfo[j].endNum);
-
-         /* Free some things before leaving this iteration of the point loop. */
-         if (f_XML == 3 || f_XML == 4)
-         {
-            if (weatherParameters[j][NDFD_POP] == 1)
-               free(maxDailyPop);
-            if (weatherParameters[j][NDFD_SKY] == 1 ||
-                weatherParameters[j][NDFD_SKY] == 2)
-            {
-               free(startPositions);
-               free(endPositions);
-               free(maxSkyNum);
-               free(minSkyNum);     
-               free(maxSkyCover);
-               free(minSkyCover);
-               free(averageSkyCover);
-            }
-	    if (weatherParameters[j][NDFD_WS] == 1 || 
-                weatherParameters[j][NDFD_WS] == 2)
-            {
-               free(valTimeForWindDirMatch);
-	       free(maxWindSpeed);
-            }
-            if (weatherParameters[j][NDFD_WD] == 1 || 
-                weatherParameters[j][NDFD_WD] == 2)
-	       free(maxWindDirection);
-            if (numHazards[j] != 0)
-               free(periodTimes[j]);     
-	 }
-
-         /* Free layoutKeys element array, if allocated. */
-         for (k = 0; k < XML_MAX; k++)
-         {
-            if ((k == RTMA_UTEMP) || (k == RTMA_UTD) || (k == RTMA_UWSPD) || 
-                (k==RTMA_UWDIR) || (k==NDFD_TEMP && pnt_rtmaNdfdTemp[j]) ||
-                (k == RTMA_TEMP && pnt_rtmaNdfdTemp[j]) || 
-                (k == NDFD_TD && pnt_rtmaNdfdTd[j]) || 
-                (k == RTMA_TD && pnt_rtmaNdfdTd[j]) || 
-                (k == NDFD_WS && pnt_rtmaNdfdWspd[j]) || 
-                (k == RTMA_WSPD && pnt_rtmaNdfdWspd[j]) || 
-                (k == NDFD_WD && pnt_rtmaNdfdWdir[j]) || 
-                (k == RTMA_WDIR && pnt_rtmaNdfdWdir[j]) || 
-                (k == NDFD_QPF && pnt_rtmaNdfdPrecipa[j]) || 
-                (k == RTMA_PRECIPA && pnt_rtmaNdfdPrecipa[j]) || 
-                (k == NDFD_SKY && pnt_rtmaNdfdSky[j]) || 
-                (k == RTMA_SKY && pnt_rtmaNdfdSky[j]) || 
-                (k == RTMA_NDFD_TEMP && !pnt_rtmaNdfdTemp[j]) || 
-                (k == RTMA_NDFD_TD && !pnt_rtmaNdfdTd[j]) || 
-                (k == RTMA_NDFD_WSPD && !pnt_rtmaNdfdWspd[j]) || 
-                (k == RTMA_NDFD_WDIR && !pnt_rtmaNdfdWdir[j]) || 
-                (k == RTMA_NDFD_SKY && !pnt_rtmaNdfdSky[j]) || 
-                (k == RTMA_NDFD_PRECIPA && !pnt_rtmaNdfdPrecipa[j]))
-            {
+               genWaveHeightValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], 
+                                   match, parameters,
+                                   numRowsForPoint[j][Dwml[k].origNdfdIndex], 
+                                   pntInfo[j].startNum, pntInfo[j].endNum);
                continue;
             }
+            else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_WH] && 
+                     weatherParameters[j][Dwml[k].origNdfdIndex] == 0)
+               continue;
+   
+            /* Format Lamp Thunderstorm Probability Values, if applicable. */
+            if (Dwml[k].Ndfd2Dwml == NDFD2DWML[LAMP_TSTMPRB] && 
+                weatherParameters[j][Dwml[k].origNdfdIndex] == 1)
+            {
+               genLampTstmValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], 
+                              match, parameters,
+                              numRowsForPoint[j][Dwml[k].origNdfdIndex], 
+                              pntInfo[j].startNum, pntInfo[j].endNum);
+               continue;
+            }
+            else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[LAMP_TSTMPRB] && 
+                     weatherParameters[j][Dwml[k].origNdfdIndex] == 0)
+               continue;
+
+         } /* End of numElem loop. */
+
+         /* Free some things before leaving this iteration of the point loop. */
+         for (k = 0; k < numElem; k++)
+         {
+            if (f_XML == 3 || f_XML == 4)
+            {
+               if (elem[k].ndfdEnum == NDFD_POP && weatherParameters[j][k] == 1)
+               {
+                  free(maxDailyPop);
+                  free (layoutKeys[j][k]);
+                  continue;
+               }
+               if ((elem[k].ndfdEnum == NDFD_WD) && (weatherParameters[j][k] == 1
+                    || weatherParameters[j][k] == 2))
+               {
+	          free(maxWindDirection);
+               }              
+               if ((elem[k].ndfdEnum == NDFD_WS) && (weatherParameters[j][k] == 1
+                    || weatherParameters[j][k] == 2))
+               {
+                  free(valTimeForWindDirMatch);
+	          free(maxWindSpeed);
+               }
+               if ((elem[k].ndfdEnum == NDFD_SKY) && (weatherParameters[j][k] == 1
+                    || weatherParameters[j][k] == 2))
+               {
+                  free(startPositions);
+                  free(endPositions);
+                  free(maxSkyNum);
+                  free(minSkyNum);     
+                  free(maxSkyCover);
+                  free(minSkyCover);
+                  free(averageSkyCover);
+               }
+
+               if (elem[k].ndfdEnum == NDFD_WWA && weatherParameters[j][k] == 1
+                   && numHazards[j] != 0)
+               {
+                  for (i = 0; i < numHazards[j]; i++)
+                  {
+                     if (numRowsForPoint[j][k].multiLayouts[i] != NULL)
+                        free(numRowsForPoint[j][k].multiLayouts[i]);
+                  }
+                  free(numRowsForPoint[j][k].multiLayouts);
+                  continue;
+               }
+            }
+         
+            /* Free layoutKeys element array, if allocated. */
+            if ((elem[k].ndfdEnum == RTMA_UTEMP) || 
+                (elem[k].ndfdEnum == RTMA_UTD) || 
+                (elem[k].ndfdEnum == RTMA_UWSPD) ||
+                (elem[k].ndfdEnum == RTMA_UWDIR) || 
+                (elem[k].ndfdEnum == NDFD_TEMP && pnt_rtmaNdfdTemp[j]) ||
+                (elem[k].ndfdEnum == RTMA_TEMP && pnt_rtmaNdfdTemp[j]) || 
+                (elem[k].ndfdEnum == NDFD_TD && pnt_rtmaNdfdTd[j]) || 
+                (elem[k].ndfdEnum == RTMA_TD && pnt_rtmaNdfdTd[j]) || 
+                (elem[k].ndfdEnum == NDFD_WS && pnt_rtmaNdfdWspd[j]) || 
+                (elem[k].ndfdEnum == RTMA_WSPD && pnt_rtmaNdfdWspd[j]) || 
+                (elem[k].ndfdEnum == NDFD_WD && pnt_rtmaNdfdWdir[j]) || 
+                (elem[k].ndfdEnum == RTMA_WDIR && pnt_rtmaNdfdWdir[j]) || 
+                (elem[k].ndfdEnum == NDFD_QPF && pnt_rtmaNdfdPrecipa[j]) || 
+                (elem[k].ndfdEnum == RTMA_PRECIPA && pnt_rtmaNdfdPrecipa[j]) || 
+                (elem[k].ndfdEnum == NDFD_SKY && pnt_rtmaNdfdSky[j]) || 
+                (elem[k].ndfdEnum == RTMA_SKY && pnt_rtmaNdfdSky[j]) || 
+                (elem[k].ndfdEnum == RTMA_NDFD_TEMP && !pnt_rtmaNdfdTemp[j]) || 
+                (elem[k].ndfdEnum == RTMA_NDFD_TD && !pnt_rtmaNdfdTd[j]) || 
+                (elem[k].ndfdEnum == RTMA_NDFD_WSPD && !pnt_rtmaNdfdWspd[j]) || 
+                (elem[k].ndfdEnum == RTMA_NDFD_WDIR && !pnt_rtmaNdfdWdir[j]) || 
+                (elem[k].ndfdEnum == RTMA_NDFD_SKY && !pnt_rtmaNdfdSky[j]) || 
+                (elem[k].ndfdEnum == RTMA_NDFD_PRECIPA && !pnt_rtmaNdfdPrecipa[j]))
+            {
+               continue;
+            }            
             else if (weatherParameters[j][k] == 1 || 
                      weatherParameters[j][k] == 3)
             {
                free(layoutKeys[j][k]);
+               continue;
             }
          }
-
          if ((f_XML == 3 || f_XML == 4) && (numHazards[j] != 0))
          {
+            free(periodTimes[j]); 
             free(indivHaz[j]);
-            for (i = 0; i < numHazards[j]; i++)
-            {
-               if (numRowsForPoint[j][NDFD_WWA].multiLayouts[i] != NULL)
-                  free(numRowsForPoint[j][NDFD_WWA].multiLayouts[i]);
-            }
-            free(numRowsForPoint[j][NDFD_WWA].multiLayouts);
          }
-        
+
 	 free(numRowsForPoint[j]);
          free(weatherParameters[j]);
          free(startDate[j]);
          free(currentDay[j]);
          free(currentHour[j]);
+  
+         /* Reset the element flags for those elements that could be 
+          * concatenated.
+          */
+         f_allTempsFormatted = 0;
+         f_allTdsFormatted = 0;
+         f_allQpfsFormatted = 0;
+         f_allWspdsFormatted = 0;
+         f_allWdirsFormatted = 0;
+         f_allSkysFormatted = 0;
+ 
+      }  /* End of "is Point in Sectors" check. */
 
-      }                       /* End of "is Point in Sectors" check. */
-
-   }                       /* Close Parameters Point Loop. */
+   }  /* Close Parameters Point Loop. */
 
    /* Free layoutKeys point array. */
    for (j = 0; j < numPnts; j++)
    {
       if (isPntInASector(pnts[j]))
+      {
          free(layoutKeys[j]);
+      }
    }
 
    /* Free the static array "timeLayoutDefinitions" by destroying it. */
@@ -2055,7 +3053,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
       free(numHazards);
       free(periodTimes);
       free(numPeriodTimes);
-   }
+   } 
    free(numRowsForPoint);
    free(weatherParameters);
    free(TZoffset);
@@ -2079,6 +3077,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
    free (pnt_rtmaNdfdWdir); 
    free (pnt_rtmaNdfdSky); 
    free (pnt_rtmaNdfdPrecipa);
+   free(Dwml);
 
    /* Free even some more memory. */
    free(f_pntHasData);

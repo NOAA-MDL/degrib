@@ -210,7 +210,7 @@ void anyRtmaElements(uChar *f_XML, size_t *numInFiles, char ***inFiles,
     * already hold NDFD files if the query contains both RTMA and NDFD
     * elements.)
     */
-   if (*f_XML != 1)
+   if (*f_XML != 1) /* At this point, f_XML originally = 1 is = to 5 or 6. */
    {
 
       /* If rtmaDataDir is not entered as a command line argument (= NULL), but
