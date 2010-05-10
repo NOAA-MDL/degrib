@@ -19,6 +19,14 @@ typedef struct {
    double Y[NDFD_OCONUS_UNDEF]; /* Array of Y grid cell locations for the
                       * points in the sector defined by f_sector[i],
                       * If f_sector[i] is NDFD_OCONUS_UNDEF, then -1. */
+   LatLon pnt1[NDFD_OCONUS_UNDEF]; /* Array of lat/lons for the floor(x,y)
+                      * point in the sector defined by f_sector[i] */
+   LatLon pnt2[NDFD_OCONUS_UNDEF]; /* Array of lat/lons for the floor(x),ceil(y)
+                      * point in the sector defined by f_sector[i] */
+   LatLon pnt3[NDFD_OCONUS_UNDEF]; /* Array of lat/lons for the ceil(x),floor(y)
+                      * point in the sector defined by f_sector[i] */
+   LatLon pnt4[NDFD_OCONUS_UNDEF]; /* Array of lat/lons for the ceil(x,y)
+                      * point in the sector defined by f_sector[i] */
    sChar timeZone;   /* hours to add to local time to get UTC based on
                       * primary sector (aka f_sector[0]) */
    sChar f_dayLight; /* daylight flag (pnt observes daylight savings time)

@@ -504,11 +504,7 @@ static int SectorFillPnt (sChar f_sector, const gdsType *gds, sChar f_first,
    double x, y;         /* The converted X,Y value. */
    sInt4 x1, y1;        /* nearest integer values of X,Y. */
 
-   /* Don't need map set up for f_cells = 1. */
-   if (f_cells != 1) {
-      SetMapParamGDS (&map, gds);
-   }
-
+   SetMapParamGDS (&map, gds);
    for (j = 0; j < numPnts; j++) {
       /* If first sector we've looked at, init f_sector array to UNDEF. */
       if (f_first) {
@@ -536,6 +532,18 @@ static int SectorFillPnt (sChar f_sector, const gdsType *gds, sChar f_first,
          pntInfo[j].X[pntInfo[j].numSector] = x;
          pntInfo[j].Y[pntInfo[j].numSector] = y;
          pntInfo[j].numSector++;
+         myCxy2ll (&map, floor(x), floor(y),
+                   &(pntInfo[j].pnt1[pntInfo[j].numSector].lat),
+                   &(pntInfo[j].pnt1[pntInfo[j].numSector].lon));
+         myCxy2ll (&map, floor(x), ceil(y),
+                   &(pntInfo[j].pnt2[pntInfo[j].numSector].lat),
+                   &(pntInfo[j].pnt2[pntInfo[j].numSector].lon));
+         myCxy2ll (&map, ceil(x), floor(y),
+                   &(pntInfo[j].pnt3[pntInfo[j].numSector].lat),
+                   &(pntInfo[j].pnt3[pntInfo[j].numSector].lon));
+         myCxy2ll (&map, ceil(x), ceil(y),
+                   &(pntInfo[j].pnt4[pntInfo[j].numSector].lat),
+                   &(pntInfo[j].pnt4[pntInfo[j].numSector].lon));
 
          /* We update f_foundOne if this is the first (primary) sector a
           * point was found in.  Example: a point falls in conus/alaska,
