@@ -1588,7 +1588,7 @@ GRIB2LocalTable NCEP_LclTable[] = {
  * uses "Wx" to test if it should be dealing with weather strings.  Since these
  * are the same as the NDFD "Wx" strings, it was simpler to maintain the NDFD
  * convention on abbrevations.  We could use 'Predominant Weather' as the long
- * descriptor, but the NDFD 'Weather String' seems quite reasonable.
+ * descriptor, but the NDFD 'Weather String' seems quite reasonable. */
 /*            {0, 1, 226, "PWTHER", "Predominant Weather", "-", UC_NONE},*/
             {0, 1, 226, "Wx", "Weather String", "-", UC_NONE},
 
