@@ -1097,9 +1097,30 @@ int WriteGrib2Record2 (grib_MetaData *meta, double *Grib_Data,
                              meta->pds2.sect4.Interval[i].incrUnit,
                              meta->pds2.sect4.Interval[i].timeIncr);
       }
-      ans = fillSect4_8 (&en, tmplNum, year, month, day, hour, min, sec,
-                         meta->pds2.sect4.numInterval,
-                         meta->pds2.sect4.numMissing, interval);
+      if (meta->pds2.sect4.numInterval != 0) {
+         ans = fillSect4_8 (&en, tmplNum, year, month, day, hour, min, sec,
+                            meta->pds2.sect4.numInterval,
+                            meta->pds2.sect4.numMissing, interval);
+      } else {
+         /* Creating a special exception for GMOS maxt/mint */
+         if (IsData_MOS (meta->center, meta->subcenter) &&
+             (meta->pds2.prodType == 0) && (meta->pds2.sect4.cat == 0) &&
+             ((meta->pds2.sect4.subcat == 4) || (meta->pds2.sect4.subcat == 5))) {
+            /* maxt or mint respectively */
+            interval = (sect4IntervalType *) malloc (sizeof (sect4IntervalType));
+            if (meta->pds2.sect4.subcat == 4) {
+               /* maxt */
+               fillSect4_Interval (&(interval[0]), 2, 255, 1, 12, 1, 0);
+            } else {
+               /* mint */
+               fillSect4_Interval (&(interval[0]), 3, 255, 1, 12, 1, 0);
+            }
+            ans = fillSect4_8 (&en, tmplNum, year, month, day, hour, min, sec,
+                               1, meta->pds2.sect4.numMissing, interval);
+         } else {
+            ans = -4;
+         }
+      }
       free (interval);
    } else if (tmplNum == 9) {
       Clock_PrintDate (meta->pds2.sect4.validTime, &year, &month, &day, &hour,
