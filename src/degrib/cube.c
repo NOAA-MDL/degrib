@@ -530,6 +530,7 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
    meta->pds2.sect4.bgGenID = 0; /* Background Generating process id */
    meta->pds2.sect4.genID = 0; /* Generating process id */
    meta->pds2.sect4.f_validCutOff = 0; /* Cutoff data missing */
+   meta->pds2.sect4.foreUnit = 1;
    if ((elemNum == PROBWINDSPD34C) || (elemNum == PROBWINDSPD50C) ||
        (elemNum == PROBWINDSPD64C)) {
       meta->pds2.sect4.foreSec = 0;

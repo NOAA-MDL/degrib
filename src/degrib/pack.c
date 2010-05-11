@@ -245,6 +245,46 @@ meta->pds2.sect4.numBands
 */
 
 #ifdef FORTRAN_GRIB2
+
+/*****************************************************************************
+ * getCodedTime() -- Arthur Taylor / MDL
+ *
+ * PURPOSE
+ *    Change from seconds to the time units provided in timeCode.
+ *
+ * ARGUMENTS
+ * timeCode = The time units to convert into (see code table 4.4). (Input)
+ *     time = The time in seconds to convert. (Input)
+ *      ans = The converted answer. (Output)
+ *
+ * RETURNS: int
+ *  0 = OK
+ * -1 = could not determine.
+ *
+ *  4/2006 Arthur Taylor (MDL): Created.
+ *
+ * NOTES
+ *****************************************************************************
+ */
+static int getCodedTime(uChar timeCode, double time, sInt4 *ans)
+{
+   /* Following is a lookup table for unit conversion (see code table 4.4). */
+   static sInt4 unit2sec[] = {
+      60, 3600, 86400L, 0, 0,
+      0, 0, 0, 0, 0,
+      10800, 21600L, 43200L, 1
+   };
+
+   if (timeCode < 14) {
+      if (unit2sec[timeCode] != 0) {
+         *ans = NearestInt(time / unit2sec[timeCode]);
+         return 0;
+      }
+   }
+   *ans = 0;
+   return -1;
+}
+
 int WriteGrib2Record (grib_MetaData *meta, double *Grib_Data,
                       sInt4 grib_DataLen, IS_dataType *is, sChar f_unit,
                       uChar **cPack, sInt4 *c_len, uChar f_stdout)
@@ -459,13 +499,9 @@ int WriteGrib2Record (grib_MetaData *meta, double *Grib_Data,
          is->is[4][15 - 1] = GRIB2MISSING_u2;
          is->is[4][17 - 1] = GRIB2MISSING_u1;
       }
-      if (IsData_NDFD (meta->center, meta->subcenter)) {
-         is->is[4][18 - 1] = 1; /* Hours */
-         is->is[4][19 - 1] = NearestInt (meta->pds2.sect4.foreSec / 3600);
-      } else {
-         is->is[4][18 - 1] = 13; /* Seconds */
-         is->is[4][19 - 1] = NearestInt (meta->pds2.sect4.foreSec);
-      }
+      is->is[4][18 - 1] = meta->pds2.sect4.foreUnit;
+      getCodedTime(meta->pds2.sect4.foreUnit, meta->pds2.sect4.foreSec,
+                   &(is->is[4][19 - 1]));
       is->is[4][23 - 1] = meta->pds2.sect4.fstSurfType;
       if (meta->pds2.sect4.fstSurfScale == GRIB2MISSING_s1) {
          is->is[4][24 - 1] = GRIB2MISSING_s4;
@@ -965,7 +1001,6 @@ int WriteGrib2Record2 (grib_MetaData *meta, double *Grib_Data,
    int ans2;
    uChar *cPack2;
 #endif
-   uChar timeCode;
    sect4IntervalType * interval;
    uShort2 tmplNum;
    int i;
@@ -1037,16 +1072,11 @@ int WriteGrib2Record2 (grib_MetaData *meta, double *Grib_Data,
    if ((tmplNum == 0) || (tmplNum == 1) || (tmplNum == 2) || (tmplNum == 5) ||
        (tmplNum == 8) || (tmplNum == 9) || (tmplNum == 10) ||
        (tmplNum == 12)) {
-      if (IsData_NDFD (meta->center, meta->subcenter)) {
-         timeCode = 1; /* Hours */
-      } else {
-         timeCode = 13; /* Seconds */
-      }
       ans = fillSect4_0 (&en, tmplNum, meta->pds2.sect4.cat,
                          meta->pds2.sect4.subcat, meta->pds2.sect4.genProcess,
                          meta->pds2.sect4.bgGenID, meta->pds2.sect4.genID,
                          meta->pds2.sect4.f_validCutOff,
-                         meta->pds2.sect4.cutOff, timeCode,
+                         meta->pds2.sect4.cutOff, meta->pds2.sect4.foreUnit,
                          meta->pds2.sect4.foreSec, meta->pds2.sect4.fstSurfType,
                          meta->pds2.sect4.fstSurfScale,
                          meta->pds2.sect4.fstSurfValue,

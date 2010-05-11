@@ -1491,11 +1491,13 @@ static int ParseSect4 (sInt4 *is4, sInt4 ns4, grib_MetaData *meta)
       errSprintf ("Missing 'forecast' time?\n");
       return -5;
    }
+   meta->pds2.sect4.foreUnit = is4[17];
    if (ParseSect4Time2sec (meta->pds2.refTime, is4[18], is4[17],
                            &(meta->pds2.sect4.foreSec)) != 0) {
       errSprintf ("Unable to convert this TimeUnit: %ld\n", is4[17]);
       return -5;
    }
+
 
    meta->pds2.sect4.validTime = (time_t) (meta->pds2.refTime +
                                           meta->pds2.sect4.foreSec);

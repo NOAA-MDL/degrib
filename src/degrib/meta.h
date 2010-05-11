@@ -276,6 +276,7 @@ typedef struct {
    sInt4 cutOff;             /* Data Cutoff in seconds after reference time
                                 (see sect 1 for reference time). */
    double foreSec;           /* forecast "projection time" in seconds. */
+   uChar foreUnit;           /* Original unit for foreSec.  See 4.4 */
    uChar fstSurfType;        /* Type of the first fixed surface. */
    double fstSurfValue;      /* Value of first fixed surface. */
    sChar fstSurfScale;       /* Scale factor used when storing value. */
