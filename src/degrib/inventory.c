@@ -839,9 +839,9 @@ int GRIB2Inventory (char *filename, inventoryType **Inv, uInt4 *LenInv,
    char *msg;           /* Used to pop messages off the error Stack. */
    int version;         /* Which version of GRIB is in this message. */
    uChar prodType;      /* Which GRIB2 type of product, 0 is meteo, 1 is
-                         * hydro, 2 is land, 3 is space, 10 is oceanographic. 
+                         * hydro, 2 is land, 3 is space, 10 is oceanographic.
                          */
-   int grib_limit;      /* How many bytes to look for before the first "GRIB" 
+   int grib_limit;      /* How many bytes to look for before the first "GRIB"
                          * in the file.  If not found, is not a GRIB file. */
    int c;               /* Determine if end of the file without fileLen. */
    sInt4 fileLen;       /* Length of the GRIB2 file. */
@@ -881,8 +881,7 @@ int GRIB2Inventory (char *filename, inventoryType **Inv, uInt4 *LenInv,
       }
 #endif
 */
-      /* Make it so the second, third, etc messages have no limit to finding
-       * the "GRIB" keyword. */
+      /* Allow  2nd, 3rd, etc messages to have no limit to finding "GRIB". */
       if (msgNum > 1) {
          grib_limit = -1;
       }
@@ -1082,9 +1081,9 @@ int GRIB2RefTime (char *filename, double *refTime)
    char *msg;           /* Used to pop messages off the error Stack. */
    int version;         /* Which version of GRIB is in this message. */
    uChar prodType;      /* Which GRIB2 type of product, 0 is meteo, 1 is
-                         * hydro, 2 is land, 3 is space, 10 is oceanographic. 
+                         * hydro, 2 is land, 3 is space, 10 is oceanographic.
                          */
-   int grib_limit;      /* How many bytes to look for before the first "GRIB" 
+   int grib_limit;      /* How many bytes to look for before the first "GRIB"
                          * in the file.  If not found, is not a GRIB file. */
    int c;               /* Determine if end of the file without fileLen. */
    sInt4 fileLen;       /* Length of the GRIB2 file. */
