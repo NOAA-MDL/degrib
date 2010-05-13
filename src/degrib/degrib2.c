@@ -1023,11 +1023,14 @@ int ReadGrib2Record (FILE *fp, sChar f_unit, double **Grib_Data,
       }
 #endif
 */
+/*
 #ifdef LITTLE_ENDIAN
-      memswp (IS->ipack, sizeof (sInt4), IS->nd5);
+      memswp (IS->ipack , sizeof (sInt4), IS->nd5);
 #endif
+*/
    } else {
       gribLen = IS->ipack[3];
+      c_ipack = (unsigned char *) IS->ipack;
    }
    free (buff);
 
@@ -1042,6 +1045,15 @@ int ReadGrib2Record (FILE *fp, sChar f_unit, double **Grib_Data,
 
       /* Note we are getting data back either as a float or an int, but not
        * both, so we don't need to allocated room for both. */
+      unpk_g2ncep (&kfildo, (float *) (IS->iain), IS->iain, &(IS->nd2x3),
+                  IS->idat, &(IS->nidat), IS->rdat, &(IS->nrdat), IS->is[0],
+                  &(IS->ns[0]), IS->is[1], &(IS->ns[1]), IS->is[2],
+                  &(IS->ns[2]), IS->is[3], &(IS->ns[3]), IS->is[4],
+                  &(IS->ns[4]), IS->is[5], &(IS->ns[5]), IS->is[6],
+                  &(IS->ns[6]), IS->is[7], &(IS->ns[7]), IS->ib, &ibitmap,
+                  c_ipack, &(IS->nd5), &xmissp, &xmisss, &inew, &iclean,
+                  &l3264b, f_endMsg, jer, &ndjer, &kjer);
+/*
       unpk_grib2 (&kfildo, (float *) (IS->iain), IS->iain, &(IS->nd2x3),
                   IS->idat, &(IS->nidat), IS->rdat, &(IS->nrdat), IS->is[0],
                   &(IS->ns[0]), IS->is[1], &(IS->ns[1]), IS->is[2],
@@ -1050,6 +1062,7 @@ int ReadGrib2Record (FILE *fp, sChar f_unit, double **Grib_Data,
                   &(IS->ns[6]), IS->is[7], &(IS->ns[7]), IS->ib, &ibitmap,
                   IS->ipack, &(IS->nd5), &xmissp, &xmisss, &inew, &iclean,
                   &l3264b, f_endMsg, jer, &ndjer, &kjer);
+*/
       /*
        * Check for error messages...
        *   If we get an error message, print it, and return.
