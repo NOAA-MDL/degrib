@@ -25,6 +25,7 @@
 #include "degrib2.h"
 #include "weather.h"
 #include "inventory.h"
+#include "split.h"
 #include "probe.h"
 #include "interp.h"
 #include "write.h"
@@ -858,6 +859,20 @@ int DegribIt (userType *usr)
 
    /* Create an Inventory of this file. */
    switch (usr->f_Command) {
+      case CMD_SPLIT:
+         msgNum = 0;
+         for (inName = 0; inName < usr->numInNames; inName++) {
+            msgNum = GRIB2Split (usr->inNames[inName], usr->msgNum, msgNum);
+            if (msgNum < 0) {
+               printf ("ERROR: with split\n");
+               msg = errSprintf (NULL);
+               printf ("ERROR: In call to GRIB2Split.\n%s", msg);
+               free (msg);
+               return 1;
+            }
+         }
+         break;
+
       case CMD_INVENTORY:
          Inv = NULL;
          LenInv = 0;

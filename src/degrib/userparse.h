@@ -1,5 +1,5 @@
-#define PROGRAM_VERSION "1.94c"
-#define PROGRAM_DATE "05/05/2010"
+#define PROGRAM_VERSION "1.94d"
+#define PROGRAM_DATE "05/10/2010"
 /*****************************************************************************
  * userparse.h
  *
@@ -28,7 +28,8 @@ enum {
 */
 enum {
    CMD_INVENTORY, CMD_CONVERT, CMD_PROBE, CMD_VERSION, CMD_DATA,
-   CMD_DATAPROBE, CMD_DATACONVERT, CMD_REFTIME, CMD_SECTOR, CMD_NCCONVERT
+   CMD_DATAPROBE, CMD_DATACONVERT, CMD_REFTIME, CMD_SECTOR, CMD_NCCONVERT,
+   CMD_SPLIT
 };
 
 /* A structure containing the user's choices. */

@@ -725,7 +725,8 @@ static char *UsrOpt[] = { "-cfg", "-in", "-I", "-C", "-P", "-V", "-Flt",
    "-XML", "-MOTD", "-Graph", "-startTime", "-endTime", "-startDate",
    "-numDays", "-ndfdVars", "-geoData", "-gribFilter", "-ndfdConven", "-Freq",
    "-Icon", "-curTime", "-rtmaDir", "-avgInterp", "-cwa", "-SimpleWWA",
-   "-TxtParse", "-Kml", "-KmlIni", "-Kmz", "-kmlMerge", "-lampDir", NULL
+   "-TxtParse", "-Kml", "-KmlIni", "-Kmz", "-kmlMerge", "-lampDir", "-Split",
+   NULL
 };
 
 int IsUserOpt (char *str)
@@ -748,7 +749,7 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
       MAPINIFILE, MAPINIOPTIONS, XML, MOTD, GRAPH, STARTTIME, ENDTIME,
       STARTDATE, NUMDAYS, NDFDVARS, GEODATA, GRIBFILTER, NDFDCONVEN,
       FREQUENCY, ICON, CURTIME, RTMADIR, AVGINTERP, CWA, SIMPLEWWA, TXTPARSE,
-      KML, KMLINIFILE, KMZ, KMLMERGE, LAMPDIR
+      KML, KMLINIFILE, KMZ, KMLMERGE, LAMPDIR, SPLIT
    };
    int index;           /* "cur"'s index into Opt, which matches enum val. */
    double lat, lon;     /* Used to check on the -pnt option. */
@@ -768,6 +769,15 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
    }
    /* Handle the 1 argument options first. */
    switch (index) {
+      case SPLIT:
+         if (usr->f_Command == -1) {
+            usr->f_Command = CMD_SPLIT;
+         } else if (usr->f_Command != CMD_SPLIT) {
+            errSprintf ("Can only handle one command option at a time.\n");
+            usr->f_Command = -1;
+            return -1;
+         }
+         return 1;
       case INVENTORY:
          if (usr->f_Command == -1) {
             usr->f_Command = CMD_INVENTORY;
