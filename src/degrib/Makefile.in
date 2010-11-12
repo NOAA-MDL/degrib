@@ -111,6 +111,7 @@ C_OBJECTS = myutil.o \
             grpprobe.o \
             sector.o \
             writekml.o \
+            split.o \
             myzip.o
 
 H_SOURCES = type.h \
@@ -144,6 +145,7 @@ H_SOURCES = type.h \
             solar.h \
             grpprobe.h \
             sector.h \
+            split.h \
             myzip.h  
 
 CLOCK_OBJECTS = myassert.o \
