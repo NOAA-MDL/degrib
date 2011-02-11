@@ -1338,6 +1338,10 @@ proc main {rayName} {
 catch {unset progArray}
 ReadIni progArray
 
+font create default_degrib -family Arial -size 9 -slant roman
+option add *font default_degrib startupFile
+option add *font default_degrib userDefault
+
 ##### Try to load the grib package.  #####
 if {[catch {package require grib2}]} {
   tk_messageBox -message "Fatal Error: Couldn't load the grib2 package."
