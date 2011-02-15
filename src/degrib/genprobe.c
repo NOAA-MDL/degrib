@@ -2276,7 +2276,8 @@ int genProbe (size_t numPnts, Point * pnts, sChar f_pntType,
 #endif
    size_t numOutNames;
    char **outNames;
-   char f_conus;        /* whether conus was seen in sector list. */
+   char f_conus2_5;     /* whether 2.5km res conus was seen in sector list. */
+   char f_conus5;       /* whether 5km res conus was seen in sector list. */
    char f_nhemi;        /* whether nhemi was seen in sector list. */
    char f_pr;           /* whether pr was seen in sector list. */
    char f_npacocn;      /* whether N Pacific was seen in sector list. */
@@ -2315,15 +2316,18 @@ int genProbe (size_t numPnts, Point * pnts, sChar f_pntType,
 
    myAssert (numElem != 0);
 
-   f_conus = 0;
+   f_conus5 = 0;
+   f_conus2_5 = 0;
    f_nhemi = 0;
    f_pr = 0;
    f_npacocn = 0;
    f_hawaii = 0;
    f_guam = 0;
    for (i = 0; i < numSector; i++) {
-      if (strcmp (sector[i], "conus") == 0) {
-         f_conus = 1;
+      if (strcmp (sector[i], "conus5") == 0) {
+         f_conus5 = 1;
+      } else if (strcmp (sector[i], "conus2_5") == 0) {
+         f_conus2_5 = 1;
       } else if (strcmp (sector[i], "nhemi") == 0) {
          f_nhemi = 1;
       } else if (strcmp (sector[i], "puertori") == 0) {
@@ -2336,10 +2340,10 @@ int genProbe (size_t numPnts, Point * pnts, sChar f_pntType,
          f_guam = 1;
       }
    }
-   if ((!f_nhemi && (f_conus || f_pr)) ||
+   if ((!f_nhemi && (f_conus2_5 || f_conus5 || f_pr)) ||
        (!f_npacocn && (f_hawaii || f_guam))) {
       numAddSect = 0;
-      if (!f_nhemi && (f_conus || f_pr)) {
+      if (!f_nhemi && (f_conus2_5 || f_conus5 || f_pr)) {
          numAddSect++;
       }
       if (!f_npacocn && (f_hawaii || f_guam)) {
@@ -2349,7 +2353,7 @@ int genProbe (size_t numPnts, Point * pnts, sChar f_pntType,
       for (i = 0; i < numSector; i++) {
          sect2[i] = sector[i];
       }
-      if (!f_nhemi && (f_conus || f_pr)) {
+      if (!f_nhemi && (f_conus2_5 || f_conus5 || f_pr)) {
          sect2[numSector] = (char *) malloc (6 * sizeof (char *));
          strcpy (sect2[numSector], "nhemi");
       }

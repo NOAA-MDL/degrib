@@ -35,6 +35,14 @@ static const gdsType NdfdDefGds[] = {
     5079.406000, 5079.406000, 25.000000,
     0, 0, 64, 0, 0,
     25.000000, 25.000000, -90, 0, 0, 0, 0, 0, 0},
+/* Finer resolution (2.5km) version of Conus. This is
+ * used for conus RTMA elements only.
+ */
+  {2953665, 30, 1, 6371.2, 6371.2,
+    2145, 1377, 20.191999, 238.445999, 265.000000,
+    2539.703000, 2539.703000, 25.000000,
+    0, 0, 64, 0, 0,
+    25.000000, 25.000000, -90, 0, 0, 0, 0, 0, 0},
 /* Finer resolution version Puertori. */
    {76953, 10, 1, 6371.2, 6371.2,
     339, 227, 16.977485, 291.972167, 0.000000,
@@ -50,9 +58,9 @@ static const gdsType NdfdDefGds[] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0},
 */
    {72225, 10, 1, 6371.2, 6371.2,
-    321, 225, 18.066780, 198.374755, 0.000000,
+    321, 225, 18.072658, 198.475021, 0.000000,
     2500.000000, 2500.000000, 20.000000,
-    0, 0, 64, 23.082000, 206.031000,
+    0, 0, 64, 23.087799, 206.130999,
     0, 0, 0, 0, 0, 0, 0, 0, 0},
    {37249, 10, 1, 6371.2, 6371.2,
     193, 193, 12.349882, 143.686538, 0.000000,
@@ -77,23 +85,24 @@ static const gdsType NdfdDefGds[] = {
 };
 
 /* IF YOU ADD ANY SECTORS, MAKE SURE YOU UPDATE THIS IN META.H */
-/* enum { NDFD_OCONUS_CONUS, NDFD_OCONUS_PR, NDFD_OCONUS_HI, NDFD_OCONUS_GU,
-          NDFD_OCONUS_AK, NDFD_OCONUS_NHEMI, NDFD_OCONUS_NPACIFIC,
-          NDFD_OCONUS_UNDEF } */
+/* enum { NDFD_OCONUS_5CONUS, NDFD_OCONUS_2_5CONUS, NDFD_OCONUS_PR, 
+          NDFD_OCONUS_HI, NDFD_OCONUS_GU, NDFD_OCONUS_AK, NDFD_OCONUS_NHEMI,
+          NDFD_OCONUS_NPACIFIC, NDFD_OCONUS_UNDEF } */
 static const char *NdfdDefSect[] = {
-   "conus", "puertori", "hawaii", "guam", "alaska", "nhemi", "npacocn"
+   "conus5", "conus2_5", "puertori", "hawaii", "guam", "alaska", "nhemi", 
+   "npacocn"
 };
 
 /* 9999 means look in "<sectorName>timezone.flt" file, otherwise value to
  * adjust UTC clock by to get standard time */
 static const int NdfdDefTimeZone[] = {
-   9999, +4, +10, -10, 9999, 9999, 9999
+   9999, 9999, +4, +10, -10, 9999, 9999, 9999
 };
 
 /* 9999 means look in "<sectorName>daylight.flt" file, otherwise true/false
  * does areas observes daylight savings. */
 static const int NdfdDefDayLight[] = {
-   9999, 0, 0, 0, 9999, 9999, 9999
+   9999, 9999, 0, 0, 0, 9999, 9999, 9999
 };
 
 static size_t NumNdfdDefSect = sizeof (NdfdDefGds) / sizeof (NdfdDefGds[0]);
@@ -127,7 +136,7 @@ int SectorFindGDS (gdsType *gds)
          continue;
       if ((lon = gds->lon1) < 0)
          lon += 360;
-      if (fabs (lon - NdfdDefGds[i].lon1) > 0.1)
+      if (fabs (lon - NdfdDefGds[i].lon1) > 0.2)
          continue;
       if ((lon = gds->orientLon) < 0)
          lon += 360;
@@ -728,22 +737,36 @@ static void SectorTimeZones (sChar f_sector, const char *sectName,
       timeZone = 0;
    } else if (f_dayLight == 9999) {
       /* note len ("daylight.flt") = len ("timezone.flt") */
-      fileName = (char *) malloc (strlen (geoDataDir) + 1 + strlen (sectName)
-                                  + strlen ("timezone.flt") + 1);
+      if (strcmp(sectName, "conus5") == 0) {
+         fileName = (char *) malloc (strlen (geoDataDir) + 1 + strlen ("conus")
+                                     + strlen ("timezone.flt") + 1);
+         sprintf (fileName, "%s/%sdaylight.flt", geoDataDir, "conus");
+      } else {
+         fileName = (char *) malloc (strlen (geoDataDir) + 1 + strlen (sectName)
+                                     + strlen ("timezone.flt") + 1);
+         sprintf (fileName, "%s/%sdaylight.flt", geoDataDir, sectName);
+      }   
       /* Try to open dayLight files */
-      sprintf (fileName, "%s/%sdaylight.flt", geoDataDir, sectName);
       if ((DayFlt = fopen (fileName, "rb")) == NULL) {
          f_dayLight = 0;
          timeZone = 0;
          TZFlt = NULL;
       } else {
-         sprintf (fileName, "%s/%stimezone.flt", geoDataDir, sectName);
+         if (strcmp(sectName, "conus5") == 0) {
+            sprintf (fileName, "%s/%stimezone.flt", geoDataDir, "conus");
+         } else {
+            sprintf (fileName, "%s/%stimezone.flt", geoDataDir, sectName);
+         }
          if ((TZFlt = fopen (fileName, "rb")) == NULL) {
             fclose (DayFlt);
             f_dayLight = 0;
             timeZone = 0;
          } else {
-            sprintf (fileName, "%s/%stimezone.ind", geoDataDir, sectName);
+            if (strcmp(sectName, "conus5") == 0) {
+               sprintf (fileName, "%s/%stimezone.ind", geoDataDir, "conus");
+            } else {
+               sprintf (fileName, "%s/%stimezone.ind", geoDataDir, sectName);
+            }
             if (ReadFLX (fileName, &flxArray, &flxArrayLen) != 0) {
                f_dayLight = 0;
                timeZone = 0;
@@ -966,8 +989,13 @@ void expandInName (size_t numInNames, char **inNames, char *f_inTypes,
          f_usedRoot = 0;
          for (j = 0; j < numSect; j++) {
             /* Check if "root/sector is a directory */
-            rootname = (char *) malloc (lenInName + strlen (sect[j]) + 2);
-            sprintf (rootname, "%s/%s", inNames[i], sect[j]);
+            if (strcmp (sect[j], "conus5") == 0) {
+               rootname = (char *) malloc (lenInName + strlen ("conus") + 2);
+               sprintf (rootname, "%s/%s", inNames[i], "conus");
+            } else {
+               rootname = (char *) malloc (lenInName + strlen (sect[j]) + 2);
+               sprintf (rootname, "%s/%s", inNames[i], sect[j]);
+            }
             if (myStat (rootname, &perm, NULL, NULL) == MYSTAT_ISDIR) {
                if ((perm & 4) == 0) {
                   rootname[lenInName] = '\0';

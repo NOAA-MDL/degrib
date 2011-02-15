@@ -789,4 +789,3 @@ int main (int argc, char **argv)
    FreeHazardString (&haz);
 }
 #endif
-
