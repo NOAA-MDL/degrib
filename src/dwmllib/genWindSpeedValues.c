@@ -273,7 +273,7 @@ void genWindSpeedValues(double timeUserStart, double timeUserEnd, size_t pnt,
                   if (roundedWindSpeedData > maxWindSpeed[currentDay])
                   {
                      maxWindSpeed[currentDay] = roundedWindSpeedData;
-                     valTimeForWindDirMatch[currentDay] = match[i].validTime;
+                     valTimeForWindDirMatch[currentDay] = WSintegerTime;
                   }
                }
             }

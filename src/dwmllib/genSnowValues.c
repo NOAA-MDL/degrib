@@ -46,6 +46,8 @@
  *
  * HISTORY
  *   3/2006 Paul Hershberg (MDL): Created
+ *   1/2011 Paul Hershberg (MDL): Changed snow output from rounded to inch to
+ *                                2 significant digits (analgous to QPF).
  *
  * NOTES
  ******************************************************************************
@@ -56,7 +58,7 @@ void genSnowValues(size_t pnt, char *layoutKey, genMatchType *match,
                    int endNum)
 {
    int i;                     /* Counter thru match structure. */
-   int roundedSnowData;       /* Returned rounded data. */
+   float roundedSnowData;     /* Returned rounded snow data to 2 sig digits. */
    xmlNodePtr precipitation = NULL; /* Xml Node Pointer for <precipitation>
                                      * element. */
    xmlNodePtr value = NULL;   /* Xml Node Pointer for <value> element. */
@@ -89,8 +91,8 @@ void genSnowValues(size_t pnt, char *layoutKey, genMatchType *match,
          }
          else if (match[i].value[pnt].valueType == 0) /* Format good data. */
          {
-            roundedSnowData = (int)myRound(match[i].value[pnt].data, 0);
-            sprintf(strBuff, "%d", roundedSnowData);
+            roundedSnowData = (float)myRound(match[i].value[pnt].data, 2);
+            sprintf(strBuff, "%2.2f", roundedSnowData);
             xmlNewChild(precipitation, NULL, BAD_CAST "value", BAD_CAST
                         strBuff);
          }

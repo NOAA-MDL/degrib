@@ -60,7 +60,8 @@
 #include "xmlparse.h"
 void getSectorInfo(PntSectInfo *pntInfo, Point *pnts, size_t numPnts,
                    genMatchType *match, size_t numMatch, 
-                   size_t numSector, char **sector, int f_nhemi, 
+                   size_t numSector, char **sector, int f_conus2_5,
+                   int numConus2_5, int f_conus5, int numConus5, int f_nhemi, 
                    int numNhemi, int f_npacocn, int numNpacocn)
 {
    int priorMatchCount = 0; /* Counter denoting prior matches when tracking how
@@ -69,18 +70,19 @@ void getSectorInfo(PntSectInfo *pntInfo, Point *pnts, size_t numPnts,
    int j; /* Point Loop counter. */
    int k; /* pntInfo.numSector counter. */
    int m; /* Counter thru temporary deltaSect array. */
-   int conus = 0; /* enum number for conus sector. */
-   int puertori = 1; /* enum number for puertori sector. */
-   int nhemi = 5; /* enum number for nhemi sector. */
-   int alaska = 4; /* enum number for alaska sector. */
-   int guam = 3; /* enum number for guam sector. */
-   int hawaii = 2; /* enum number for hawaii sector. */
-   int npacocn = 6; /* enum number for north pacific sector. */
+   int conus2_5 = 1; /* enum number for RTMA conus sector. */
+   int conus5 = 0; /* enum number for conus sector. */
+   int puertori = 2; /* enum number for puertori sector. */
+   int nhemi = 6; /* enum number for nhemi sector. */
+   int alaska = 5; /* enum number for alaska sector. */
+   int guam = 4; /* enum number for guam sector. */
+   int hawaii = 3; /* enum number for hawaii sector. */
+   int npacocn = 7; /* enum number for north pacific sector. */
    int newSect = 0; /* Denotes the number of sectors skipped if the special case
-                     * of there being sector 5 (nhemi) exists. */
+                     * of there being sector 6 (nhemi) exists. */
    int matchStart = 1; /* Fudge the stating index thru the match structure in 
                         * order to skip the two sectors info has already been 
-                        * found for if the special case of there being sector 5 
+                        * found for if the special case of there being sector 6 
                         * (nhemi) exists. */
    typedef struct /* Structure containing the starting index a point can find 
                    * it's matches in the match structure, due to a multiple 
@@ -93,8 +95,8 @@ void getSectorInfo(PntSectInfo *pntInfo, Point *pnts, size_t numPnts,
  
    sectorSplit *deltaSect = NULL; /* Temporary holder of structure described
                                    * above. */
-   sectorSplit conusSect; /* Temporary holder of conus sector information as
-                           * the structure described above. */
+   sectorSplit conusSect; /* Temporary holder of 2_5km and/or 5km res conus sector
+                           * information as the structure described above. */
    sectorSplit puertoriSect; /* Temporary holder of puerto rico sector
                               * information as the structure described above. */
    sectorSplit hawaiiSect; /* Temporary holder of hawaii sector information as
@@ -104,7 +106,9 @@ void getSectorInfo(PntSectInfo *pntInfo, Point *pnts, size_t numPnts,
 /*   sectorSplit alaskaSect; */ /* Temporary holder of alaska sector information as the 
                             * structure described above. */
    int numSectInMatch = 0; /* Total number of sectors for matches returned in
-                            * match structure. */
+                            * match structure. If in both conus2_5 and conus5, count
+                            * as one.
+                            */
    int numSectInPoint = 0; /* Number of sectors the original points queried for
                               fell into. */
    int numSectsInPointNotFoundInMatch = 0; /* Difference between number of
@@ -134,17 +138,16 @@ void getSectorInfo(PntSectInfo *pntInfo, Point *pnts, size_t numPnts,
    int f_pntInHawaii = 0; /* Flag denoting if a point falls in the Hawaii sector. */
    int f_pntInAlaska = 0; /* Flag denoting if a point falls in the Alaska sector. */
    int f_puertori = 0; /* Flag denoting a match was found in the puertori sector
-                        * (sector 1). */ 
-   int f_conus = 0;    /* Denotes a match was found in the conus sector
-                        * (sector 0). */
+                        * (sector 2). */
    int f_hawaii = 0; /* Flag denoting a match was found in the hawaii sector
-                      * (sector 2). */ 
+                      * (sector 3). */ 
    int f_guam = 0;   /* Denotes a match was found in the guam sector 
-                        (sector 3). */
+                        (sector 4). */
    int f_alaska = 0;   /* Denotes a match was found in the alaska sector 
-                          (sector 4). */
+                          (sector 5). */
+   int f_conus = 0; /* If point falls in either conus2_5 or conus5 sector. */
    int f_conusPuertoriCase = 0; /* Denotes special case where query has info in 
-                                 * conus, nhemi, and puertori sectors. */
+                                 * conus(s), nhemi, and puertori sectors. */
    int f_hawaiiGuamCase = 0; /* Denotes special case where query has info in 
                               * hawaii, npacocn, and guam sectors. */
 /*   int f_guamFoundBetweenNpacocnAndAlaska = 0; */
@@ -152,11 +155,21 @@ void getSectorInfo(PntSectInfo *pntInfo, Point *pnts, size_t numPnts,
 
    /* Initialize all points to be able to access entire match structure, as if
     * there were only one point or all points in a multiple call come from one
-    * sector. Also, initialize the conus and puertori SectorSPlit arrays.
+    * sector. Also, initialize the conus(s) and puertori SectorSPlit arrays.
     */
+
+/*
+   conus2.5kmSect.startNum = 0; 
+   conus2.5kmSect.endNum = numMatch;   
+   conus2.5kmSect.enumNum = conus2.5; 
+
+   conus5kmSect.startNum = 0;
+   conus5kmSect.endNum = numMatch;  
+   conus5kmSect.enumNum = conus5;
+*/
    conusSect.startNum = 0;
-   conusSect.endNum = numMatch;  
-   conusSect.enumNum = conus;
+   conusSect.endNum = numMatch;
+   conusSect.enumNum = conus5;
 
    puertoriSect.startNum = 0;
    puertoriSect.endNum = numMatch;  
@@ -181,18 +194,20 @@ void getSectorInfo(PntSectInfo *pntInfo, Point *pnts, size_t numPnts,
     * Else, access routine finding out which matches in the match structure 
     * can be accessed per point. 
     *
-    * Match structure is already sorted in the sector order: conus (0), nhemi (5),
-    * puertori (1), hawaii (2), npacocn (6), guam (3), and alaska (4). It needs to
-    * be sorted in this way.
+    * Match structure is already sorted in the sector order (the number in 
+    * paranthesis is the original eumeration number set in meta.h, note we need
+    * a different order here): conus2_5 (1), conus5 (0), nhemi (6), puertori (2), 
+    * hawaii (3), npacocn (7), guam (4), and alaska (5). It needs to be sorted in 
+    * this way.
     *
-    * The conus (0) and nhemi (5) sectors can be combined as criteria for 
-    * determining where in the match structure a conus point can find matches. 
-    * The nhemi (5) and peurtori (1) sectors can be combined as criteria for 
+    * The 2 conus sectors (0) & (1) and nhemi (6) sectors can be combined as criteria 
+    * for determining where in the match structure a conus point can find matches. 
+    * The nhemi (6) and peurtori (2) sectors can be combined as criteria for 
     * determining where in the match structure a peurtori point can find matches. 
     *
-    * The hawaii (2) and npacocn (6) sectors can be combined as criteria for 
+    * The hawaii (3) and npacocn (7) sectors can be combined as criteria for 
     * determining where in the match structure a hawaii point can find matches. 
-    * The npacocn (6) and guam (3) sectors can be combined as criteria for 
+    * The npacocn (7) and guam (4) sectors can be combined as criteria for 
     * determining where in the match structure a guam point can find matches. 
     */
   
@@ -202,7 +217,7 @@ void getSectorInfo(PntSectInfo *pntInfo, Point *pnts, size_t numPnts,
    numSectInMatch++;
    for (i = 1; i < numMatch; i++)
    {
-      if (match[i-1].f_sector != match[i].f_sector)
+      if (match[i-1].f_sector != match[i].f_sector) 
       {
          matchSectID = realloc(matchSectID, (numSectInMatch+1) * sizeof(int));
          matchSectID[numSectInMatch] = match[i].f_sector;
@@ -210,24 +225,65 @@ void getSectorInfo(PntSectInfo *pntInfo, Point *pnts, size_t numPnts,
       }
    }
 
+   /* Dummy up case of the 2 conus sectors existing only. If this is case, treat
+    * as just one conus sector and leave routine..
+    */
+   if (f_conus2_5 && f_conus5 && numSectInMatch == 2)
+   {
+      if (matchSectID != NULL)
+         free(matchSectID);
+      return;
+   }
+
+   /* If numNhemi or numNpacocn == numMatch, or numSectorsInMatch = zero, or the
+    * only 2 sectors are conus2_5 and conus5 (which we combined and already left 
+    * routine) then we don't go into loop below since all matches are from the same 
+    * sector. No sector combinations at all are needed. So return.
+    */
    if ((numSectInMatch > 1) && (numNhemi != numMatch) && (numNpacocn != numMatch))
    {
-   /* If numNhemi or numNpacocn == numMatch, or numSectorsInMatch = zero, then 
-    * we don't go into this loop since all matches are from the same sector. No
-    * sector adjustments at all are needed.
-    */
+      if (f_conus2_5 || f_conus5)
+         f_conus = 1;
+      if (f_conus2_5 && f_conus5)
+      {
 
-      /* If matches exist in the "nhmei" sector, see if there are "conus" or 
-       * "peurtori" sectors in this call. 
+         /* Get Conus(s) sector info */
+         for (i = 0; i < numMatch; i++)
+         {
+            /* Break between conus2_5 and conus5 is final match where conus
+             * points can contain data in the match structure.
+             */
+            if ((match[i].f_sector == conus2_5 || match[i].f_sector == conus5) && (i != numMatch-1))
+               priorMatchCount++;
+            else if (match[i].f_sector != conus2_5 ||
+                     match[i].f_sector != conus5)
+            {
+               conusSect.startNum = i-priorMatchCount;
+               conusSect.endNum = i-1;  
+               conusSect.enumNum = match[i-1].f_sector;
+               break;
+            }
+            else if (i == numMatch - 1)
+            {
+               conusSect.startNum = i-priorMatchCount;
+               conusSect.endNum = i;
+               conusSect.enumNum = match[i].f_sector;
+               break; 
+            }
+         }
+      }
+
+      /* If matches exist in the "nhemi" see if peurtori" sector is in this call. 
        */
       if (f_nhemi)
       {
          for (i = 0; i < numMatch; i++)
          { 
-            if (match[i].f_sector == conus)
-               f_conus = 1;
             if (match[i].f_sector == puertori)
+            {
                f_puertori = 1;
+               break;
+            }
          }
       }
 
@@ -249,11 +305,11 @@ void getSectorInfo(PntSectInfo *pntInfo, Point *pnts, size_t numPnts,
 
       /* Find how many sectors the original points queried for were found in. */
       for (i = 0; i < numSector; i++)
-      { 
-         if (strcmp(sector[i], "conus") == 0)
+      {
+         if (strcmp(sector[i], "conus5") == 0)
          {
             pointSectID = realloc(pointSectID, (i+1) * sizeof(int));
-            pointSectID[i] = conus;
+            pointSectID[i] = conus5;
             numSectInPoint++;
             continue;
          }
@@ -287,7 +343,7 @@ void getSectorInfo(PntSectInfo *pntInfo, Point *pnts, size_t numPnts,
          }
       }
 
-      /* "nhemi" and "npacocn sectors are not counted in variable numSector. So 
+      /* "nhemi" and "npacocn and conus2_5 sectors are not counted in variable numSector. So 
        * if f_nhemi = 1 or f_npacocn = 1, add them to the total and rename variable. 
        */
       if (f_nhemi)
@@ -301,15 +357,16 @@ void getSectorInfo(PntSectInfo *pntInfo, Point *pnts, size_t numPnts,
          pointSectID = realloc(pointSectID, (i+1) * sizeof(int));
          pointSectID[i] = npacocn;
          numSectInPoint++;
-      } 
-        
-      /* If there are matches in all three sectors (nhemi, conus, puertori), it 
-       * is a special case. We need to run through the match structure firstly 
-       * and get this special case.
+      }
+
+      /* If there are matches in all 3 sectors (nhemi, conus5 or conus2_5,
+       * puertori), it is a special case. We need to run through the match
+       * structure firstly and get this special case.
        */
       if (f_nhemi && f_conus && f_puertori)
       {
-         /* Get Conus sector info, which will include nhmei sector info. */
+         /* Get Conus(s) sector info, which will include nhemi sector info. */
+         priorMatchCount = 0;
          for (i = 1; i < numMatch; i++)
          {
             priorMatchCount++;
@@ -510,7 +567,7 @@ void getSectorInfo(PntSectInfo *pntInfo, Point *pnts, size_t numPnts,
       }
       /* Will replace Conditional statement below. */
       if (((match[i-1].f_sector != match[i].f_sector) &&
-          !(match[i-1].f_sector == conus && match[i].f_sector == nhemi) &&
+          !(match[i-1].f_sector == conus5 && match[i].f_sector == nhemi) &&
           !(match[i-1].f_sector == nhemi && match[i].f_sector == puertori) &&
           !(match[i-1].f_sector == hawaii && match[i].f_sector == npacocn) && 
           !(match[i-1].f_sector == npacocn && match[i].f_sector == guam) &&
@@ -527,14 +584,14 @@ void getSectorInfo(PntSectInfo *pntInfo, Point *pnts, size_t numPnts,
             priorMatchCount++;
             /* Skip over special cases of combined sectors. */
             if (((match[i-1].f_sector != match[i].f_sector) &&
-                !(match[i-1].f_sector == conus && match[i].f_sector == nhemi) &&
+                !(match[i-1].f_sector == conus2_5 && match[i].f_sector == conus5) &&
+                !(match[i-1].f_sector == conus5 && match[i].f_sector == nhemi) &&
                 !(match[i-1].f_sector == nhemi && match[i].f_sector == puertori) &&
                 !(match[i-1].f_sector == hawaii && match[i].f_sector == npacocn) && 
                 !(match[i-1].f_sector == npacocn && match[i].f_sector == guam)) ||
                 (i == numMatch - 1))
             {
                deltaSect = realloc(deltaSect, (newSect+1) * sizeof(sectorSplit));
-/*             printf (" are we here \n"); */
                deltaSect[newSect].startNum = i-priorMatchCount;
                if (i == (numMatch - 1))
                   deltaSect[newSect].endNum = numMatch-1;
@@ -544,6 +601,7 @@ void getSectorInfo(PntSectInfo *pntInfo, Point *pnts, size_t numPnts,
                   deltaSect[newSect].enumNum = match[i-1].f_sector;              
                else
                   deltaSect[newSect].enumNum = match[i-priorMatchCount].f_sector;
+
                newSect++;
                priorMatchCount = 0;
             }
@@ -559,7 +617,6 @@ void getSectorInfo(PntSectInfo *pntInfo, Point *pnts, size_t numPnts,
             /* Update previous deltaSect. */
             deltaSect[newSect-1].endNum = deltaSect[newSect-1].endNum - 1;
             deltaSect[newSect-1].enumNum = match[numMatch-2].f_sector;
-
             newSect++;
          }
 
@@ -609,7 +666,6 @@ void getSectorInfo(PntSectInfo *pntInfo, Point *pnts, size_t numPnts,
 
                   /* Assign the correct enumNum corresponding to sector. */
                   deltaSect[newSect].enumNum = sectsInPointNotFoundInMatch[k];
-
                   newSect++;
                }
             }
@@ -699,7 +755,7 @@ void getSectorInfo(PntSectInfo *pntInfo, Point *pnts, size_t numPnts,
                {
                   for (m = 0; m < newSect; m++)
                   {
-                     if (deltaSect[m].enumNum == conus)
+                     if (deltaSect[m].enumNum == conus5)
                      {
                         pntInfo[j].startNum = deltaSect[m].startNum;
                         pntInfo[j].endNum = deltaSect[m].endNum + 1;

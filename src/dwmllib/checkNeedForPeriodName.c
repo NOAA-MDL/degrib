@@ -14,7 +14,7 @@
  *   numPeriodNames = Number period names for one of the seven issuance times.
  *                    (Input)
  *   timeZoneOffset = Hours to add to local time to get to UTC time. (Input)
- *    parameterEnum = Number denoting the NDFD element currently processed. 
+ *    parameterName = Number denoting the NDFD element currently processed. 
  *                    (Input) 
  *   parsedDataTime = String representation of the data's current startTime 
  *                    being analyzed (ex. 2005-03-30T00:00:00-05:00). (Input)
@@ -49,7 +49,7 @@
  */
 #include "xmlparse.h"
 void checkNeedForPeriodName(int index, uChar * numPeriodNames,
-                            sChar timeZoneOffset, uChar parameterEnum,
+                            sChar timeZoneOffset, uChar parameterName,
                             char *parsedDataTime, uChar * outputPeriodName, 
                             uChar issuanceType, char *periodName, 
                             char *currentHour, char *currentDay, 
@@ -117,7 +117,7 @@ void checkNeedForPeriodName(int index, uChar * numPeriodNames,
 
    /* Calculate how many periods were skipped at beginning. */
    Clock_Scan(&startTime_doub, parsedDataTime, 1);
-   if (parameterEnum == NDFD_POP)
+   if (parameterName == NDFD_POP)
       numHoursClippedBegin = ((startTime_doub + (0.5*12*3600)) - currentDoubTime) / 3600;
    else
       numHoursClippedBegin = (startTime_doub - currentDoubTime) / 3600;
@@ -133,7 +133,7 @@ void checkNeedForPeriodName(int index, uChar * numPeriodNames,
        * periods of 24 hours, but forecast periods of 12 hours for the 12hr
        * summarization product.
        */
-      if (parameterEnum == NDFD_POP)
+      if (parameterName == NDFD_POP)
       {
          if (numHoursClippedBegin >= 12)
             numPeriodsClippedBegin = floor(numHoursClippedBegin / 12.0);
@@ -169,9 +169,9 @@ void checkNeedForPeriodName(int index, uChar * numPeriodNames,
       /* Late in the day, the Max Temp value will be in the tomorrow period
        * so we need to detect that condition and return outputPeriodName =
        * false. */
-      if (parameterEnum == NDFD_MAX)
+      if (parameterName == NDFD_MAX)
       {
-         /* If the max temp day is not the same as the today's day, then we
+         /* If the max temp day is not the same as the today's day, then we  
           * don't need to label it using "today".  This happens in the
           * evening after about 8:00 PM. */
          if (strcmp(currentDay, TDay) != 0 && index + 1 <= *numPeriodNames)
@@ -197,7 +197,7 @@ void checkNeedForPeriodName(int index, uChar * numPeriodNames,
       /* The Min Temp value will be in the tomorrow period so we need to
        * detect that condition and return outputPeriodName = false. 
        */
-      else if (parameterEnum == NDFD_MIN)
+      else if (parameterName == NDFD_MIN)
       {
 
          /* If the min temp day is not the same as today's day, then we don't 
@@ -246,7 +246,7 @@ void checkNeedForPeriodName(int index, uChar * numPeriodNames,
        * applicable for DWMLgenByDay products as the "glance" product of
        * DWMLgen does not output POP. 
        */
-      else if (parameterEnum == NDFD_POP)
+      else if (parameterName == NDFD_POP)
       {
          /* If the POP day is not the same as the today's day, then we don't
           * need to label it using "today".  This happens in the evening
@@ -272,10 +272,16 @@ void checkNeedForPeriodName(int index, uChar * numPeriodNames,
    /* Now that we have issuanceType, and whichPeriodName, retrieve the
     * periodName. 
     */
-   if (*outputPeriodName != 0
-       && periodData[issuanceType][whichPeriodName] != NULL)
+   if (*outputPeriodName != 0)
    {
-      strcpy(periodName, periodData[issuanceType][whichPeriodName]);
+       if (periodData[issuanceType][whichPeriodName] == NULL)
+       {
+          *outputPeriodName = 0;
+          return;
+       }
+       else
+          strcpy(periodName, periodData[issuanceType][whichPeriodName]);
    }
+
    return;
 }

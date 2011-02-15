@@ -231,7 +231,7 @@ void getNumRows(numRowsInfo *numRowsForPoint, double *timeUserStart,
    /* Adjust the number of rows per element and the first validTime and last 
     * validTime we're interested in. 
     */
-   for (k = 0; k <  numElem; k++)
+   for (k = 0; k < numElem; k++)
    {
       if (wxParameters[k] != 0)
       {

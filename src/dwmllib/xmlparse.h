@@ -486,7 +486,8 @@ void getPeriodTimes(double firstPeriodStartTime, double lastPeriodEndTime,
 
 void getSectorInfo(PntSectInfo *pntInfo, Point *pnts, size_t numPnts,
                    genMatchType *match, size_t numMatch, 
-                   size_t numSector, char **sector, int f_nhemi, 
+                   size_t numSector, char **sector, int f_conus2_5, 
+                   int numConus2_5, int f_conus5, int numConus5, int f_nhemi, 
                    int numNhemi, int f_npacocn, int numNpacocn);
 
 void getStartDates(char **startDate, uChar f_XML, double startTime, 

@@ -336,6 +336,12 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
    layouts dummyTimeLayout;   /* Dummy argument for call to isNewLayout() to
                                * free up static array
                                * "timeLayoutDefinitions". */
+   int f_conus2_5 = 0;        /* Denotes a match was found in the 2.5 km res
+                                 conus sector (sector 0). */
+   int numConus2_5 = 0;       /* Number of matches in conus2.5 sector. */
+   int f_conus5 = 0;          /* Denotes a match was found in the 5 km res 
+                                 conus sector (sector 0). */
+   int numConus5 = 0;         /* Number of matches in conus5 sector. */
    int f_npacocn = 0;         /* Denotes a match was found in the npacocn sector
                                * (sector 6). */
    int numNpacocn = 0;        /* Number of matches in npacocn sector. If this 
@@ -350,7 +356,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                                  found in one sector (this can occur if there
                                  is a call for tropical wind thresholds for
                                  a call with puertori and/or conus points. */
-   int f_shiftData = 1; /* Flag used to determine whether we shift data back by
+   int f_shiftData = 0; /* Flag used to determine whether we shift data back by
                            1/2 it's period to denote the duration of time the 
                            data is valid for (Soap Service), or to not shift, 
                            and simply use the data's endTime (validTime) 
@@ -550,6 +556,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
    /*********************** GRAB THE NDFD DATA AND SORT. *********************/
    /**************************************************************************/
    /* f_WxParse = 0, is the flag to return WX as ugly weather codes. */
+
    f_WxParse = 0;
    if (genProbe(numPnts, pnts, f_pntType, *numInFiles, *inFiles, f_fileType,
                 f_interp, f_unit, majEarth, minEarth, f_WxParse,
@@ -602,9 +609,13 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
    curTime = -1;
    for (i = 0; i < numMatch; i++)
    {
-      if (match[i].f_sector == 5) /* Enumerated nhemi sector # equals 5. */
+      if (match[i].f_sector == 0) /* Enumerated conus5 sector # equals 0. */
+         numConus5++;
+      if (match[i].f_sector == 1) /* Enumerated conus2.5 sector # equals 1. */
+         numConus2_5++;
+      if (match[i].f_sector == 6) /* Enumerated nhemi sector # equals 6. */
          numNhemi++;
-      if (match[i].f_sector == 6) /* Enumerated npacocn sector # equals 6. */
+      if (match[i].f_sector == 7) /* Enumerated npacocn sector # equals 7. */
          numNpacocn++;
       if (curTime != match[i].validTime)
       {
@@ -629,7 +640,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
       }
    }
 
-//#ifdef PRINT_DIAG
+#ifdef PRINT_DIAG
    /* Loop by point to check if any data at point at all. */
    for (j = 0; j < numPnts; j++)
    {
@@ -645,7 +656,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
          printf("-----------------\n");
       }
    }
-//#endif
+#endif
 
    /**************** DEAL WITH POINTS IN DIFFERENT SECTORS. ******************/
    /**************************************************************************/
@@ -654,12 +665,17 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
     * points in different sectors. Place this info in the Point's informational
     * structure "pntInfo". 
     */
+   if (numConus2_5 > 0)
+      f_conus2_5 = 1;
+   if (numConus5 > 0)
+      f_conus5 = 1;
    if (numNhemi > 0)
       f_nhemi = 1;
     if (numNpacocn > 0)
       f_npacocn = 1;
    getSectorInfo(pntInfo, pnts, numPnts, match, numMatch, numSector, sector,
-                 f_nhemi, numNhemi, f_npacocn, numNpacocn);
+                 f_conus2_5, numConus2_5, f_conus5, numConus5, f_nhemi, numNhemi, 
+                 f_npacocn, numNpacocn);
 
 #ifdef PRINT_DIAG
    for (i = 0; i < numPnts; i++)
@@ -1393,6 +1409,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
          for (k = 0; k < numElem; k++)
          {
             /************************MAXIMUM TEMPS***************************/
+
              /* Format Maximum Temperature Values, if applicable. */
             if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_MAX] && 
                 weatherParameters[j][Dwml[k].origNdfdIndex] == 1)

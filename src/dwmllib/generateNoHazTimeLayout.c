@@ -95,8 +95,8 @@ void generateNoHazTimeLayout(char *tempBuff, char *layoutKey,
    pstr = strstr(tempBuff2, "n");
    pstr  = strtok(pstr, "-");    
    pstr = pstr+1;
-
    forecastDuration = (hours) * atoi(pstr);
+
    if (forecastDuration >= 24) /* Set  period to days. */
    {
       f_setToDays = 1;
@@ -128,7 +128,7 @@ void generateNoHazTimeLayout(char *tempBuff, char *layoutKey,
                  *numLayoutSoFar);
 
       *numLayoutSoFar += 1;
-      
+
       /* Format the XML time layout in the output string. */
       time_layout = xmlNewChild(data, NULL, BAD_CAST "time-layout", NULL);
       xmlNewProp(time_layout, BAD_CAST "time-coordinate", BAD_CAST
@@ -145,7 +145,6 @@ void generateNoHazTimeLayout(char *tempBuff, char *layoutKey,
                       f_observeDST);
       xmlNewChild(time_layout, NULL, BAD_CAST "start-valid-time", BAD_CAST 
                   tempBuff2);
-    
       lastPeriodEndTime = firstPeriodStartTime + (24 * 3600 * numDays);
 
       formatValidTime(lastPeriodEndTime, tempBuff2, 30, TZoffset,

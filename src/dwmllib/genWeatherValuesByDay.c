@@ -442,7 +442,7 @@ void genWeatherValuesByDay(size_t pnt, char *layoutKey,
       else
          priorElemCount++;
    }
-      
+
    /* Prepare to retrieve the Weather Data times, the forecast period times, 
     * and the max temperatures in each period. 
     */      

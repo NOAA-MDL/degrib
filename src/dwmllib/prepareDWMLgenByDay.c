@@ -116,8 +116,9 @@ void prepareDWMLgenByDay(genMatchType *match, uChar f_XML,
    for (j = 0; j < numPnts; j++)
    {
 
-/*      printf ("pntInfo[%d].startNum = %d\n",j,pntInfo[j].startNum);
-        printf ("pntInfo[%d].endNum = %d\n",j,pntInfo[j].endNum);
+/*
+      printf ("pntInfo[%d].startNum = %d\n",j,pntInfo[j].startNum);
+      printf ("pntInfo[%d].endNum = %d\n",j,pntInfo[j].endNum);
 */
       startNum = pntInfo[j].startNum;
       endNum = pntInfo[j].endNum;
@@ -132,7 +133,7 @@ void prepareDWMLgenByDay(genMatchType *match, uChar f_XML,
             lastValidTimeMatch = match[i].validTime;
       }
 
-      if (*startTime_cml == 0.0 && *endTime_cml == 0.0)	   
+      if (*startTime_cml == 0.0 && *endTime_cml == 0.0)
          numDays[j] = ceil(((lastValidTimeMatch - currDoubTime) / 3600) / 24);
       else if (*startTime_cml == 0.0 && *endTime_cml != 0.0)
       {	   

@@ -231,7 +231,7 @@ void anyRtmaElements(uChar *f_XML, size_t *numInFiles, char ***inFiles,
       /* See which sector(s), the RTMA data was queried for. */
       for (i = 0; i < numSector; i++)
       {
-         if (strcmp(sector[i], "conus") == 0)
+         if ((strcmp(sector[i], "conus2_5") == 0) || (strcmp(sector[i], "conus5") == 0))
          {
             f_rtmaInConus = 1;
             continue;
