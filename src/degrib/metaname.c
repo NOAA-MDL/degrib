@@ -2094,14 +2094,14 @@ static void ElemNameProb (uShort2 center, uShort2 subcenter, int prodType,
             myAssert (probType == 1);
             if (lenTime > 0) {
                if (timeRangeUnit == 3) {
-                  if (upperProb != .254) {
+                  if (upperProb != (double) .254) {
                      mallocSprintf (name, "PoP%02dm-%03d", lenTime, (int) (int) (upperProb / .254 + .5));
                   } else {
                      mallocSprintf (name, "PoP%02dm", lenTime);
                   }
                   mallocSprintf (comment, "%02d mon Prob of Precip > %g In.", lenTime, upperProb / 25.4);
                } else if (timeRangeUnit == 4) {
-                  if (upperProb != .254) {
+                  if (upperProb != (double) .254) {
                      mallocSprintf (name, "PoP%02dy-%03d", lenTime, (int) (upperProb / .254 + .5));
                   } else {
                      mallocSprintf (name, "PoP%02dy", lenTime);
@@ -2112,19 +2112,19 @@ static void ElemNameProb (uShort2 center, uShort2 subcenter, int prodType,
                    * PDS-S4 | Upper limit (scale value, scale factor) | 300 (3, -2)
                    * 25.4 mm = 1 inch.  Rain typically .01 inches = .254 mm
                    */
-                  if ((upperProb != .254) && (upperProb != 300)) {
+                  if ((upperProb != (double) .254) && (upperProb != (double) 300)) {
                      mallocSprintf (name, "PoP%02d-%03d", lenTime, (int) (upperProb / .254 + .5));
                   } else {
                      mallocSprintf (name, "PoP%02d", lenTime);
                   }
-                  if (upperProb != 300) {
+                  if (upperProb != (double) 300) {
                      mallocSprintf (comment, "%02d hr Prob of Precip > %g In.", lenTime, upperProb / 25.4);
                   } else {
                      mallocSprintf (comment, "%02d hr Prob of Precip > 0.01 In.", lenTime);
                   }
                }
             } else {
-               if (upperProb != .254) {
+               if (upperProb != (double) .254) {
                   mallocSprintf (name, "PoP-p%03d", (int) (upperProb / .254 + .5));
                } else {
                   mallocSprintf (name, "PoP");
