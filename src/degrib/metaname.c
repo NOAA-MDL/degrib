@@ -1512,6 +1512,9 @@ GRIB2LocalTable NDFD_LclTable[] = {
 /* Leaving next two lines in for grandfathering sake. 9/19/2007... Probably can remove in future. */
            {0, 19, 203, "TotalSvrProb", "Total Probability of Severe Thunderstorms", "%", UC_NONE},
            {0, 19, 204, "TotalXtrmProb", "Total Probability of Extreme Severe Thunderstorms", "%", UC_NONE},
+           {0, 192, 192, "FireWx", "Critical Fire Weather", "%", UC_NONE},
+           {0, 192, 194, "DryLightning", "Dry Lightning", "%", UC_NONE},
+           
    /* Arthur Added this to both NDFD and NCEP local tables. (5/1/2006) */
            {10, 3, 192, "Surge", "Hurricane Storm Surge", "m", UC_M2Feet},
            {10, 3, 193, "ETSurge", "Extra Tropical Storm Surge", "m", UC_M2Feet}
