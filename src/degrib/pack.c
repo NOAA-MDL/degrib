@@ -38,7 +38,7 @@ static sInt4 NearestInt (double a)
 static void InitEarth (grib_MetaData *meta, IS_dataType *is)
 {
    if (meta->gds.f_sphere) {
-      if (meta->gds.majEarth == 6367.47) {
+      if (meta->gds.majEarth == (double) 6367.47) {
          is->is[3][15 - 1] = 0;
          is->is[3][16 - 1] = 0;
          is->is[3][17 - 1] = 6367470;

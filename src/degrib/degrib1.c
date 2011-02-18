@@ -1786,7 +1786,7 @@ int ReadGrib1Record (FILE *fp, sChar f_unit, double **Grib_Data,
    meta->pds1.gridID = gridID;
    /* Allow data originating from NCEP to be 6371.2 by default. */
    if ((meta->center == NMC)) {
-      if (meta->gds.majEarth == 6367.47) {
+      if (meta->gds.majEarth == (double) 6367.47) {
          meta->gds.f_sphere = 1;
          meta->gds.majEarth = 6371.2;
          meta->gds.minEarth = 6371.2;
