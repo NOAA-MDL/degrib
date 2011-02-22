@@ -449,8 +449,8 @@ AMS:degrib/data/imageGen/shapefile/states_hi.*
 AMS:degrib/data/tiles/*
 AMS:degrib/data/mosaic/readme
 AMS:degrib/output/images/readme.txt
-AMS:degrib/output/web_data/noaalogo2.png
-AMS:degrib/output/web_data/nwslogo.png
+# AMS:degrib/output/web_data/noaalogo2.png
+# AMS:degrib/output/web_data/nwslogo.png
 
 #
 # htmlmaker
