@@ -918,7 +918,7 @@ GRIB2ParmTable MeteoNuclear[] = {
 /* GRIB2 Code table 4.2 : 0.19 */
 /* NCEP capitalized items 11 */
 GRIB2ParmTable MeteoAtmos[] = {
-   /* 0 */ {"VIS", "Visibility", "m", UC_NONE},
+   /* 0 */ {"VIS", "Visibility", "m", UC_M2StatuteMile},
    /* 1 */ {"ALBDO", "Albedo", "%", UC_NONE},
    /* 2 */ {"TSTM", "Thunderstorm probability", "%", UC_NONE},
    /* 3 */ {"MIXHT", "Mixed layer depth", "m", UC_NONE},
@@ -3025,6 +3025,14 @@ int ComputeUnit (int convert, char *origName, sChar f_unit, double *unitM,
          if (f_unit == 1) {
             strcpy (name, "[inch]");
             *unitM = 100. / 2.54; /* inch / m */
+            *unitB = 0;
+            return 0;
+         }
+         break;
+      case UC_M2StatuteMile: /* Convert from meters to statute miles. */
+         if (f_unit == 1) {
+            strcpy (name, "[statute mile]");
+            *unitM = 1. / 1609.344; /* mile / m */
             *unitB = 0;
             return 0;
          }
