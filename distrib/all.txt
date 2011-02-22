@@ -128,7 +128,8 @@ S:degrib/src/zlib/ChangeLog
 S:degrib/src/zlib/FAQ
 S:degrib/src/zlib/INDEX
 S:degrib/src/zlib/README
-S:degrib/src/zlib/zlib.*
+S:degrib/src/zlib/zlib.3
+S:degrib/src/zlib/zlib.html
 S:degrib/src/zlib/configure
 S:degrib/src/zlib/algorithm.txt
 S:degrib/src/zlib/descrip.mms
