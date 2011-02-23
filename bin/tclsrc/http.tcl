@@ -50,7 +50,7 @@ namespace eval http {
     }
     return 0
   }
-  proc append { url file {f_progress 0} {chunk 8192}} {
+  proc myAppend { url file {f_progress 0} {chunk 8192}} {
     set out [open $file a]
     if {$f_progress} {
       # -timeout 16000 -> 64000
@@ -488,7 +488,7 @@ proc HttpTryOne {rayName src0 dst} {
       if {! [IsGRIB2 $rayName $dst -1]} {
         return 1
       } else {
-        if {[http::append [lindex $src0 1] $dst 1 20480] != 0} {
+        if {[http::myAppend [lindex $src0 1] $dst 1 20480] != 0} {
           return 1
         } else {
           if {! [IsGRIB2 $rayName $dst -1]} {
