@@ -66,53 +66,56 @@ static const genElemDescript NdfdElements[] = {
 /* 20 */  {NDFD_CUM50,2, 8,MISSING_2,2,0, 0,9,2,1,0,0, 103,10.0,0.0 ,1,0,0,25722,3},
 /* 21 */  {NDFD_CUM64,2, 8,MISSING_2,2,0, 0,9,2,1,0,0, 103,10.0,0.0 ,1,0,0,32924,3},
 
-/* 22 */  {NDFD_CONHAZ,2, 8,MISSING_2,2,0, 0,8,19,194,-1,24, 1,0.0,0.0 ,0,-1,-1,-1,-1},
-/* 23 */  {NDFD_PTORN,2, 8,MISSING_2,2,0, 0,9,19,197,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
-/* 24 */  {NDFD_PHAIL,2, 8,MISSING_2,2,0, 0,9,19,198,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
-/* 25 */  {NDFD_PTSTMWIND,2, 8,MISSING_2,2,0, 0,9,19,199,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
-/* 26 */  {NDFD_PXTORN,2, 8,MISSING_2,2,0, 0,9,19,200,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
-/* 27 */  {NDFD_PXHAIL,2, 8,MISSING_2,2,0, 0,9,19,201,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
-/* 28 */  {NDFD_PXTSTMWIND,2, 8,MISSING_2,2,0, 0,9,19,202,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+/* 22 */  {NDFD_FWXWINDRH,2, 8,MISSING_2,2,0, 0,9,192,192,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+/* 23 */  {NDFD_FWXTSTORM,2, 8,MISSING_2,2,0, 0,9,192,194,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+
+/* 24 */  {NDFD_CONHAZ,2, 8,MISSING_2,2,0, 0,8,19,194,-1,24, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+/* 25 */  {NDFD_PTORN,2, 8,MISSING_2,2,0, 0,9,19,197,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+/* 26 */  {NDFD_PHAIL,2, 8,MISSING_2,2,0, 0,9,19,198,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+/* 27 */  {NDFD_PTSTMWIND,2, 8,MISSING_2,2,0, 0,9,19,199,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+/* 28 */  {NDFD_PXTORN,2, 8,MISSING_2,2,0, 0,9,19,200,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+/* 29 */  {NDFD_PXHAIL,2, 8,MISSING_2,2,0, 0,9,19,201,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+/* 30 */  {NDFD_PXTSTMWIND,2, 8,MISSING_2,2,0, 0,9,19,202,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
 /* Following two lines changed from 203->215 and 204->216 9/19/2007 */
-/* 29 */  {NDFD_PSTORM,2, 8,MISSING_2,2,0, 0,9,19,215,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
-/* 30 */  {NDFD_PXSTORM,2, 8,MISSING_2,2,0, 0,9,19,216,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+/* 31 */  {NDFD_PSTORM,2, 8,MISSING_2,2,0, 0,9,19,215,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+/* 32 */  {NDFD_PXSTORM,2, 8,MISSING_2,2,0, 0,9,19,216,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
 
 /* If we have to change the 0,0,0,0 for lower/upper Value/Factor, also update
  * cube.c :: line 634, 655 */
    /* the 6 in the length of time column stands for 6 days... */
-/* 31 */   {NDFD_TMPABV14D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,6, 1,0.0,0.0, 3,0,0,0,0},
-/* 32 */   {NDFD_TMPBLW14D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,6, 1,0.0,0.0, 0,0,0,0,0},
-/* 33 */   {NDFD_PRCPABV14D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,6, 1,0.0,0.0, 3,0,0,0,0},
-/* 34 */   {NDFD_PRCPBLW14D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,6, 1,0.0,0.0, 0,0,0,0,0},
+/* 33 */   {NDFD_TMPABV14D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,6, 1,0.0,0.0, 3,0,0,0,0},
+/* 34 */   {NDFD_TMPBLW14D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,6, 1,0.0,0.0, 0,0,0,0,0},
+/* 35 */   {NDFD_PRCPABV14D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,6, 1,0.0,0.0, 3,0,0,0,0},
+/* 36 */   {NDFD_PRCPBLW14D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,6, 1,0.0,0.0, 0,0,0,0,0},
    /* the 1 in the length of time column stands for 1 month... */
-/* 35 */   {NDFD_TMPABV30D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,1, 1,0.0,0.0, 3,0,0,0,0},
-/* 36 */   {NDFD_TMPBLW30D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,1, 1,0.0,0.0, 0,0,0,0,0},
-/* 37 */   {NDFD_PRCPABV30D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,1, 1,0.0,0.0, 3,0,0,0,0},
-/* 38 */   {NDFD_PRCPBLW30D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,1, 1,0.0,0.0, 0,0,0,0,0},
+/* 37 */   {NDFD_TMPABV30D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,1, 1,0.0,0.0, 3,0,0,0,0},
+/* 38 */   {NDFD_TMPBLW30D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,1, 1,0.0,0.0, 0,0,0,0,0},
+/* 39 */   {NDFD_PRCPABV30D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,1, 1,0.0,0.0, 3,0,0,0,0},
+/* 40 */   {NDFD_PRCPBLW30D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,1, 1,0.0,0.0, 0,0,0,0,0},
    /* the 3 in the length of time column stands for 3 months... */
-/* 39 */   {NDFD_TMPABV90D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,3, 1,0.0,0.0, 3,0,0,0,0},
-/* 40 */   {NDFD_TMPBLW90D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,3, 1,0.0,0.0, 0,0,0,0,0},
-/* 41 */   {NDFD_PRCPABV90D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,3, 1,0.0,0.0, 3,0,0,0,0},
-/* 42 */   {NDFD_PRCPBLW90D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,3, 1,0.0,0.0, 0,0,0,0,0},
-/* 43 */   {LAMP_TSTMPRB,2, 7,14,5,108, 0,8,19,2,-1,2, 1,0.0,0.0, 0,-1,-1,-1,-1},
+/* 41 */   {NDFD_TMPABV90D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,3, 1,0.0,0.0, 3,0,0,0,0},
+/* 42 */   {NDFD_TMPBLW90D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,3, 1,0.0,0.0, 0,0,0,0,0},
+/* 43 */   {NDFD_PRCPABV90D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,3, 1,0.0,0.0, 3,0,0,0,0},
+/* 44 */   {NDFD_PRCPBLW90D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,3, 1,0.0,0.0, 0,0,0,0,0},
+/* 45 */   {LAMP_TSTMPRB,2, 7,14,5,108, 0,8,19,2,-1,2, 1,0.0,0.0, 0,-1,-1,-1,-1},
 
-/* 44 */  {RTMA_PRECIPA,2, 7,0,2,109, 0,8,1,8,-1,1, 1,0.0,0.0, 0,-1,-1,-1,-1}, /* genProcess = 2 forecast? */
-/* 45 */  {RTMA_SKY,2, 7,0,8,109, 0,0,6,1,-1,0, 200,0.0,0.0, 0,-1,-1,-1,-1},  /* genProcess = 8 observation */
-/* 46 */  {RTMA_TD,2,  7,4,0,109, 0,0,0,6,-1,0, 103,2.0,0.0, 0,-1,-1,-1,-1},
-/* 47 */  {RTMA_TEMP,2, 7,4,0,109, 0,0,0,0,-1,0, 103,2.0,0.0, 0,-1,-1,-1,-1},
-/* 48 */  {RTMA_UTD,2, 7,4,7,109, 0,0,0,6,-1,0, 103,2.0,0.0, 0,-1,-1,-1,-1},
-/* 49 */  {RTMA_UTEMP,2, 7,4,7,109, 0,0,0,0,-1,0, 103,2.0,0.0, 0,-1,-1,-1,-1},
-/* 50 */  {RTMA_UWDIR,2, 7,4,7,109, 0,0,2,0,-1,0, 103,10.0,0.0, 0,-1,-1,-1,-1},
-/* 51 */  {RTMA_UWSPD,2, 7,4,7,109, 0,0,2,1,-1,0, 103,10.0,0.0, 0,-1,-1,-1,-1},
-/* 52 */  {RTMA_WDIR,2, 7,4,0,109, 0,0,2,0,-1,0, 103,10.0,0.0, 0,-1,-1,-1,-1},
-/* 53 */  {RTMA_WSPD,2, 7,4,0,109, 0,0,2,1,-1,0, 103,10.0,0.0, 0,-1,-1,-1,-1},
+/* 46 */  {RTMA_PRECIPA,2, 7,0,2,109, 0,8,1,8,-1,1, 1,0.0,0.0, 0,-1,-1,-1,-1}, /* genProcess = 2 forecast? */
+/* 47 */  {RTMA_SKY,2, 7,0,8,109, 0,0,6,1,-1,0, 200,0.0,0.0, 0,-1,-1,-1,-1},  /* genProcess = 8 observation */
+/* 48 */  {RTMA_TD,2,  7,4,0,109, 0,0,0,6,-1,0, 103,2.0,0.0, 0,-1,-1,-1,-1},
+/* 49 */  {RTMA_TEMP,2, 7,4,0,109, 0,0,0,0,-1,0, 103,2.0,0.0, 0,-1,-1,-1,-1},
+/* 50 */  {RTMA_UTD,2, 7,4,7,109, 0,0,0,6,-1,0, 103,2.0,0.0, 0,-1,-1,-1,-1},
+/* 51 */  {RTMA_UTEMP,2, 7,4,7,109, 0,0,0,0,-1,0, 103,2.0,0.0, 0,-1,-1,-1,-1},
+/* 52 */  {RTMA_UWDIR,2, 7,4,7,109, 0,0,2,0,-1,0, 103,10.0,0.0, 0,-1,-1,-1,-1},
+/* 53 */  {RTMA_UWSPD,2, 7,4,7,109, 0,0,2,1,-1,0, 103,10.0,0.0, 0,-1,-1,-1,-1},
+/* 54 */  {RTMA_WDIR,2, 7,4,0,109, 0,0,2,0,-1,0, 103,10.0,0.0, 0,-1,-1,-1,-1},
+/* 55 */  {RTMA_WSPD,2, 7,4,0,109, 0,0,2,1,-1,0, 103,10.0,0.0, 0,-1,-1,-1,-1},
 
 #ifdef GFSEKD
-/* 54 */  {GFSEKDMOS_MAXT,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
-/* 55 */  {GFSEKDMOS_MINT,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
-/* 56 */  {GFSEKDMOS_TEMP,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
-/* 57 */  {GFSEKDMOS_TD,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
-/* 58 */  {GFSEKDMOS_QPF,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
+/* 56 */  {GFSEKDMOS_MAXT,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
+/* 57 */  {GFSEKDMOS_MINT,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
+/* 58 */  {GFSEKDMOS_TEMP,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
+/* 59 */  {GFSEKDMOS_TD,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
+/* 60 */  {GFSEKDMOS_QPF,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
 #endif
 
    {NDFD_UNDEF,2, MISSING_2,MISSING_2,MISSING_1,MISSING_1,
@@ -166,35 +169,35 @@ static char *NDFD_Type[] = { "maxt", "mint", "pop12", "t", "winddir",
    "windspd", "td", "sky", "qpf", "snowamt", "wx", "waveheight",
    "apparentt", "rh", "windgust", "wwa", "probwindspd34i", "probwindspd50i",
    "probwindspd64i", "probwindspd34c", "probwindspd50c", "probwindspd64c",
-   "convoutlook", "tornadoprob", "hailprob", "windprob", "xtrmtornprob",
-   "xtrmhailprob", "xtrmwindprob", "totalsvrprob", "totalxtrmprob",
-   "probtmpabv144", "probtmpblw144", "probprcpabv144", "probprcpblw144",
-   "probtmpabv01m", "probtmpblw01m", "probprcpabv01m", "probprcpblw01m",
-   "probtmpabv03m", "probtmpblw03m", "probprcpabv03m", "probprcpblw03m",
-   "tstm02", "apcp01", "tcdc", "dpt", "tmp", "dpterr", "tmperr", "wdirerr",
-   "winderr", "wdir", "wind", NULL
+   "probfirewx24", "probdrylightning24", "convoutlook", "tornadoprob", "hailprob",
+   "windprob", "xtrmtornprob", "xtrmhailprob", "xtrmwindprob", "totalsvrprob",
+   "totalxtrmprob", "probtmpabv144", "probtmpblw144", "probprcpabv144",
+   "probprcpblw144", "probtmpabv01m", "probtmpblw01m", "probprcpabv01m",
+   "probprcpblw01m", "probtmpabv03m", "probtmpblw03m", "probprcpabv03m",
+   "probprcpblw03m", "tstm02", "apcp01", "tcdc", "dpt", "tmp", "dpterr",
+   "tmperr", "wdirerr", "winderr", "wdir", "wind", NULL
 };
 /* These match the convention on official download pages (cube names). */
 static char *NDFD_File[] = { "maxt", "mint", "pop12", "temp", "wdir",
    "wspd", "td", "sky", "qpf", "snow", "wx", "waveh", "apt", "rhm",
    "wgust", "wwa", "tcwspdabv34i", "tcwspdabv50i", "tcwspdabv64i",
-   "tcwspdabv34c", "tcwspdabv50c", "tcwspdabv64c", "conhazo", "ptornado",
-   "phail", "ptstmwinds", "pxtornado", "pxhail", "pxtstmwinds",
-   "ptotsvrtstm", "ptotxsvrtstm", "tmpabv14d", "tmpblw14d", "prcpabv14d",
-   "prcpblw14d", "tmpabv30d", "tmpblw30d", "prcpabv30d", "prcpblw30d",
-   "tmpabv90d", "tmpblw90d", "prcpabv90d", "prcpblw90d", "tstmprb",
-   "precipa_r", "sky_r", "td_r", "temp_r", "utd", "utemp", "uwdir", "uwspd",
-   "wdir_r", "wspd_r", NULL
+   "tcwspdabv34c", "tcwspdabv50c", "tcwspdabv64c", "critriskfirewx",
+   "drylightning", "conhazo", "ptornado", "phail", "ptstmwinds", "pxtornado",
+   "pxhail", "pxtstmwinds", "ptotsvrtstm", "ptotxsvrtstm", "tmpabv14d",
+   "tmpblw14d", "prcpabv14d", "prcpblw14d", "tmpabv30d", "tmpblw30d",
+   "prcpabv30d", "prcpblw30d", "tmpabv90d", "tmpblw90d", "prcpabv90d",
+   "prcpblw90d", "tstmprb", "precipa_r", "sky_r", "td_r", "temp_r", "utd",
+   "utemp", "uwdir", "uwspd", "wdir_r", "wspd_r", NULL
 };
 /* A (mostly) 2 letter abreviation scheme created with/for the verification
    group */
 static char *NDFD_File2[] = { "mx", "mn", "po", "tt", "wd",
    "ws", "dp", "cl", "qp", "sn", "wx", "wh", "at", "rh", "wg", "wwa", "i3",
-   "i5", "i6", "c3", "c5", "c6", "ch", "pt", "ph", "pw", "xt", "xh", "xw",
-   "ps", "xs", "ta6d", "tb6d", "pa6d", "pb6d",
-   "ta1m", "tb1m", "pa1m", "pb1m", "ta3m", "tb3m", "pa3m", "pb3m", "tstmprb",
-   "apcp01", "tcdc", "dpt", "tmp", "dpterr", "tmperr", "wdirerr", "winderr",
-   "wdir", "wind", NULL
+   "i5", "i6", "c3", "c5", "c6", "fwxwdrh", "fwxdry", "ch", "pt", "ph", "pw",
+   "xt", "xh", "xw", "ps", "xs", "ta6d", "tb6d", "pa6d", "pb6d", "ta1m",
+   "tb1m", "pa1m", "pb1m", "ta3m", "tb3m", "pa3m", "pb3m", "tstmprb", "apcp01",
+   "tcdc", "dpt", "tmp", "dpterr", "tmperr", "wdirerr", "winderr", "wdir",
+   "wind", NULL
 };
 
 uChar gen_NDFD_NDGD_Lookup (char *str, char f_toLower, char f_ndfdConven)
@@ -268,10 +271,11 @@ int validMatch(double elemEndTime, double elemRefTime, int elemEnum,
    double elemStartTime = 0.0; /* Element's starting time. Calculated by
                                 * subtracting period from element's end time. */
 
-   /* MAXT, MINT, and the nine SPC convective hazard elements.
-    * 24-hour period.
+   /* MAXT, MINT, the nine SPC convective hazard elements, and the two Fire Wx
+    * elements. All have 24-hour periods.
     */
    if ((elemEnum == NDFD_MAX) || (elemEnum == NDFD_MIN) ||
+       (elemEnum == NDFD_FWXWINDRH) || (elemEnum == NDFD_FWXTSTORM) ||
        (elemEnum == NDFD_CONHAZ) || (elemEnum == NDFD_PTORN) ||
        (elemEnum == NDFD_PHAIL) || (elemEnum == NDFD_PTSTMWIND) ||
        (elemEnum == NDFD_PXTORN) || (elemEnum == NDFD_PXHAIL) ||
