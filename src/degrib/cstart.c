@@ -214,6 +214,8 @@ static void Usage (char *argv0, userType *usr)
          printf ("      probwindspd34c tcwspdabv34c c3 'Probabilistic Tropical Cyclone Surface Wind Speeds > 34Kts (cumulative)'\n");
          printf ("      probwindspd50c tcwspdabv50c c5 'Probabilistic Tropical Cyclone Surface Wind Speeds > 50Kts (cumulative)'\n");
          printf ("      probwindspd64c tcwspdabv64c c6 'Probabilistic Tropical Cyclone Surface Wind Speeds > 64Kts (cumulative)'\n");
+         printf ("      fwxwindrh critriskfirewx fwxwdrh 'Fire Weather Risk from Wind and Relative Humidity'\n");
+         printf ("      fwxdrytstorm drylightning fwxdry 'Fire Weather Risk from Dry Lightning'\n");
          printf ("      convoutlook conhazo ch 'Convective Hazard Outlook'\n");
          printf ("      tornadoprob ptornado pt 'Tornado Probability'\n");
          printf ("      hailprob   phail ph 'Hail Probability'\n");
