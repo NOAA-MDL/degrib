@@ -160,4 +160,3 @@ close $fp
 
 catch {exec /cygdrive/c/nsis/makensis degrib.nsi} ans
 puts $ans
-
