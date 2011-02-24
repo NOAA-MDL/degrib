@@ -1,21 +1,44 @@
 #
-#----- Release: Version 1.96 02/23/2011 -----
+#----- Release: Version 1.96 02/24/2011 -----
 #
-#
-#----- Release: Version 1.95b 02/22/2011 -----
-#
-#
-#----- Release: Version 1.95a 02/22/2011 -----
-#
-#
-#----- Release: Version 1.95 02/14/2011 -----
-#
+ 2/22 AAT Enabling visibility to convert from m to statute miles (r973)
+ 2/18 AAT Handling Crit Fire Wx and Dry Lightning (r971)
+ 2/15 AAT Updating to Paul's lastest code (r967)
+ 2/11/2011 AAT Upgrading to Tcl/Tk 8.5 (r958)
+ 5/13 AAT Adding a -Split option (r956)
+ 5/13 AAT Removing the mem swapping (10% speed improvement) (r953)
+ 5/11 AAT Adding a specital exception for GMOS to support the fact that it
+          doesn't complete section 4.8 for MaxT/MinT (r950)
+ 5/7  AAT Adding elevation probing to the sector code (r941)
+ 5/7  AAT Adding 2.5 km conus and 5 km conus terrain values (r939)
+ 5/4/2010 AAT Modified metaparse.c to not complain about master table
+          version 4,5 (r936)
+12/16 AAT Finishing the release for 1.94a (r934)
 #
 #----- Release: Version 1.94a 12/14/2009 -----
 #
+12/15 AAT Modified degrib1.c to be less finicky about exact byte boundry (r928)
+11/15 AAT Modifying code to handle template 4.7 (r926)
+11/15 AAT Checking in changes needed for Convective hazard outlooks to go
+          operaional on 12/1/2009 (TIN 09-38)
+11/12 AAT Corrected hazard.c to handle more than 5 hazard codes
+          avoiding infinite loop (r920)
 #
 #----- Release: Version 1.94 09/13/2009 -----
 #
+ 9/13 AAT Updating version info to 1.94 (r917)
+ 7/31 AAT TIN 09-XX (sept 15, 2009) Proactively setting wwa grids from expr
+          to opnl. (r883)
+ 7/30 AAT TIN 09-20: Added additional variables to Alaska. (r882)
+ 7/30 AAT TIN-09-14 support (r881)
+ 7/24 AAT Use a new hazard scheme (r879)
+ 5/18 AAT Upgrade to Tcl/Tk version 8.5 (r847)
+ 5/6  AAT More dot levels for drawshp (r832)
+ 4/29 AAT Kml merge option (r831)
+ 3/9  AAT Improved Kml .ini support (r827)
+ 1/31 AAT Continued -Kml development (re chains) (r821)
+ 1/21 AAT added xyz2shp to degrib (r819)
+ 1/15 AAT Started in on -Kml and -KmlIni options (r776)
  9/17 AAT REMOVED experimentation with GFSEKDMOS elements (r767)
  9/17 AAT Updated hazard grid to match Mike's current hazard grids (r766)
  8/25 AAT Added 3 GRIB1 tables for Tim Boyer for 4d aviation grids (r765)
