@@ -1098,6 +1098,7 @@ static void DrawGrid (layerType *layer, maparam *map, gdImagePtr im,
    int fillIndex;
    double value;
    double mesh;
+   double step;
    gdPoint *lattice, *ptr;
    int latIndex;
    sChar *f_valLat, *f_ptr;
@@ -1162,11 +1163,21 @@ static void DrawGrid (layerType *layer, maparam *map, gdImagePtr im,
                continue;
             }
          } else if ((value >= layer->ramp.min) && (value <= layer->ramp.max)) {
-            index = (int) (layer->ramp.numColors * (value - layer->ramp.min) /
-                           (layer->ramp.max - layer->ramp.min));
+            /* step should be max - min / numColors - 1.
+             * Example either A) [-3, -1, 1, 3] or B) [-3, -1, 1) the step is 2
+             * For A) (max - min) / (# value - 1) = 6 / 3 = 2
+             * For B) (max - min) / (# value - 1) = 4 / 2 = 2                                    
+             * Example either A) [-6, -3, 0, 3, 6] or B) [-6, -3, 0, 3) the step is 3
+             * For A) (max - min) / (# value - 1) = 12 / 4 = 3
+             * For B) (max - min) / (# value - 1) = 9 / 3 = 2                                    
+             */          
+            step = (layer->ramp.max - layer->ramp.min) / (layer->ramp.numColors - 1);
+            index = (int) (value - layer->ramp.min) / step;
+/*
             if (index == (int) layer->ramp.numColors) {
                index = layer->ramp.numColors - 1;
             }
+*/
             if (!layer->ramp.colors[index].f_null) {
                fillIndex = layer->ramp.colors[index].gdIndex;
             } else {
