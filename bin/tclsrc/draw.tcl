@@ -33,7 +33,7 @@ proc DrawImages {rayName} {
 #####
 # Figure out which season of colortables to use
 #####
-  set month [format "%.0f" [clock format $ray(now) -format "%m" -gmt true]]
+  set month [format "%.0f" [clock format $ray(now) -format "%m" -gmt true].0]
   if {($month > 5 ) && ($month < 9 )} {
      set season summer
   } elseif {($month > 11 ) && ($month < 3 )} {
@@ -177,7 +177,7 @@ proc DrawImages {rayName} {
     file mkdir $ray(dir,Mosaic)
   } else {
     foreach file [glob -nocomplain [file join $ray(dir,Mosaic) *.*]] {
-      file delete $file
+      catch {file delete $file}
     }
   }
 
