@@ -1487,6 +1487,7 @@ NDFD_AbrevOverideTable NDFD_Overide[] = {
 GRIB2LocalTable NDFD_LclTable[] = {
    /* 0 */ {0, 0, 193, "ApparentT", "Apparent Temperature", "K", UC_K2F},
    /* 1 */ {0, 1, 192, "Wx", "Weather string", "-", UC_NONE},
+           {0, 1, 227, "IceAccum", "Ice Accumulation", "kg/m^2", UC_InchWater}, 
    /* grandfather'ed in a NDFD choice for POP. */
    /* 2 */ {0, 10, 8, "PoP12", "Prob of 0.01 In. of Precip", "%", UC_NONE},
            {0, 13, 194, "smokes", "Surface level smoke from fires",
