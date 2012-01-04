@@ -52,7 +52,8 @@ int determinePeriodLength(double firstValidTime, double secondValidTime,
           ndfdEnum == NDFD_PHAIL || ndfdEnum == NDFD_PTSTMWIND ||
           ndfdEnum == NDFD_PXTORN || ndfdEnum == NDFD_PXHAIL ||
           ndfdEnum == NDFD_PXTSTMWIND || ndfdEnum == NDFD_PSTORM ||
-          ndfdEnum == NDFD_PXSTORM)
+          ndfdEnum == NDFD_PXSTORM || ndfdEnum == NDFD_FWXWINDRH || 
+          ndfdEnum == NDFD_FWXTSTORM)
 
           period = 24;
 
@@ -62,7 +63,8 @@ int determinePeriodLength(double firstValidTime, double secondValidTime,
       else if (ndfdEnum == NDFD_QPF || ndfdEnum == NDFD_SNOW ||
                ndfdEnum == NDFD_INC34 || ndfdEnum == NDFD_INC50 ||
                ndfdEnum == NDFD_INC64 || ndfdEnum == NDFD_CUM34 ||
-               ndfdEnum == NDFD_CUM50 || ndfdEnum == NDFD_CUM64)
+               ndfdEnum == NDFD_CUM50 || ndfdEnum == NDFD_CUM64 ||
+               ndfdEnum == NDFD_ICEACC)
          period = 6;
 
       else if (ndfdEnum == LAMP_TSTMPRB)

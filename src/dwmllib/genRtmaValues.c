@@ -37,6 +37,8 @@
  *               matches can be found. (Input)
  *      endNum = Last index in match structure an individual point's data
  *               matches can be found. (Input)
+ *       units = Holder for metric or U.S. Standard units. (Input)
+ *
  *
  * FILES/DATABASES: None
  *
@@ -53,9 +55,9 @@
 #include "xmlparse.h"
 void genRtmaValues(size_t pnt, char *layoutKey, uChar parameterName,
                    int errorName, genMatchType *match, char *rtmaName, 
-                   char *rtmaElement, char *rtmaType, char *rtmaUnits, 
-                   xmlNodePtr parameters, numRowsInfo numRows, int startNum, 
-                   int endNum)
+                   char *rtmaElement, char *rtmaType, char *units, 
+                   xmlNodePtr parameters, numRowsInfo numRows, 
+                   int startNum, int endNum)
 {
    int i;
    int j;
@@ -78,7 +80,7 @@ void genRtmaValues(size_t pnt, char *layoutKey, uChar parameterName,
    /* Format the rtma element. */
    element = xmlNewChild(parameters, NULL, BAD_CAST rtmaElement, NULL);
    xmlNewProp(element, BAD_CAST "type", BAD_CAST rtmaType);
-   xmlNewProp(element, BAD_CAST "units", BAD_CAST rtmaUnits);
+   xmlNewProp(element, BAD_CAST "units", BAD_CAST units);
    xmlNewProp(element, BAD_CAST "time-layout", BAD_CAST layoutKey);
 
    /* Format the display <name> element. */
@@ -128,10 +130,8 @@ void genRtmaValues(size_t pnt, char *layoutKey, uChar parameterName,
 
                      if (match[j].value[pnt].valueType == 2)
                      {
-                        printf ("are we here 1\n");
                         xmlNewProp(uncertainty, BAD_CAST "type", BAD_CAST
                                    "analysis error");
-                        printf ("are we here 2\n");
                         xmlNewProp(uncertainty, BAD_CAST "xsi:nil", BAD_CAST "true" );
                      }
 

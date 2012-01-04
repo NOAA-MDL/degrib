@@ -33,8 +33,6 @@
  *  metElement = Character string denoting the <(element)> tag. (Input)
  *        type = Character string denoting the type attribute of the <(element)>
  *               tag to be formatted. (Input)
- *       units = Character string denoting the units attribute of the <(element)>
- *               tag to be formatted. (Input)
  *  parameters = An xml Node Pointer denoting the <parameters> node to which 
  *               these values will be attached (child node). (Input/Output)
  * numRowsRTMA = Number of rows data is formatted for in the output XML for 
@@ -47,6 +45,7 @@
  *               matches can be found. (Input)
  *      endNum = Last index in match structure an individual point's data
  *               matches can be found. (Input)
+ *       units = Holder of metric or US standard unit. (Input)
  *
  * FILES/DATABASES: None
  *

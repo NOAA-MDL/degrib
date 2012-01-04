@@ -26,6 +26,8 @@
  *   6/2008 Paul Hershberg (MDL): Created
  *   7/2008 Paul Hershberg (MDL): Accounted for special cases of "Small Craft"
  *                                and "Areal Flood" hazards.
+ *  11/2011 Paul Hershberg (MDL): Added new Marine Statement to = Marine 
+ *                                Weather Statement                                
  *
  * NOTES
  ******************************************************************************
@@ -107,7 +109,7 @@ void  genHazTextURL(char *baseTextURL, char *cwaStr, char *phenomena,
       return;
    }
  
-   /* A special case concerning the three new Marine hazards. The "Marine" part
+   /* A special case concerning the four new Marine hazards. The "Marine" part
     * of the hazard needs to be dropped when making the URL. 
     */
    if ((strstr(phenomena, "Marine Dense Fog") != '\0'))
@@ -150,6 +152,21 @@ void  genHazTextURL(char *baseTextURL, char *cwaStr, char *phenomena,
       /* Append the significance to the hazartTextURL string as long as it is 
        * not "none". 
        */
+      if (strcmp(significance, "none") != 0)
+         strcat (hazardTextURL, significance);
+
+      return;
+   }
+   if ((strstr(phenomena, "Marine") != '\0'))
+   {
+      strcat (hazardTextURL, "Marine");
+      strcat (hazardTextURL, "%20");
+      strcat (hazardTextURL, "Weather");
+      strcat (hazardTextURL, "%20");
+
+      /* Append the significance to the hazartTextURL string as long as it is 
+ *        * not "none". 
+ *               */
       if (strcmp(significance, "none") != 0)
          strcat (hazardTextURL, significance);
 

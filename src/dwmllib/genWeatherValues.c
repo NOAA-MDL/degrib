@@ -35,6 +35,7 @@
  *               matches can be found. (Input)
  *      endNum = Last index in match structure an individual point's data
  *               matches can be found. (Input)
+ *      f_unit = 0 (GRIB unit), 1 (english), 2 (metric) (Input)
  *
  * FILES/DATABASES: None
  *                
@@ -57,7 +58,7 @@ void genWeatherValues(size_t pnt, char *layoutKey, genMatchType *match,
                       numRowsInfo numRowsWX, numRowsInfo numRowsPOP, 
                       xmlNodePtr parameters, double lat, double lon, 
                       int startNum, int endNum, sChar TZoffset, 
-                      sChar f_observeDST)
+                      sChar f_observeDST, sChar f_unit)
 {
    int i;                     /* Counter through match structure. */
    int priorElemCount;        /* Counter used to find elements' location in
@@ -660,7 +661,7 @@ void genWeatherValues(size_t pnt, char *layoutKey, genMatchType *match,
                      getTranslatedType(wxType[groupIndex], transTypeStr);
                      getTranslatedIntensity(wxIntensity[groupIndex],
                                             transIntensityStr);
-                     getTranslatedVisibility(wxVisibility[groupIndex],
+                     getTranslatedVisibility(f_unit, wxVisibility[groupIndex],
                                              transVisibilityStr);
 
                      /* Initialize variables in preparation for translating the 
@@ -744,8 +745,12 @@ void genWeatherValues(size_t pnt, char *layoutKey, genMatchType *match,
                         visibility = xmlNewChild(value, NULL, BAD_CAST
                                                  "visibility",
                                                  BAD_CAST transVisibilityStr);
-                        xmlNewProp(visibility, BAD_CAST "units",
-                                   BAD_CAST "statute miles");
+                        if (f_unit != 2)
+                           xmlNewProp(visibility, BAD_CAST "units",
+                                      BAD_CAST "statute miles");
+                        else
+                           xmlNewProp(visibility, BAD_CAST "units",
+                                      BAD_CAST "meters");
                      }
                   }
                }

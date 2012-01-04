@@ -44,6 +44,7 @@ int checkNeedForEndTime(uChar parameterName, uChar f_XML)
       case NDFD_MIN:
       case NDFD_POP:
       case NDFD_SNOW:
+      case NDFD_ICEACC:
       case NDFD_QPF:
       case NDFD_INC34:
       case NDFD_INC50:
@@ -51,6 +52,8 @@ int checkNeedForEndTime(uChar parameterName, uChar f_XML)
       case NDFD_CUM34:
       case NDFD_CUM50:
       case NDFD_CUM64:
+      case NDFD_FWXWINDRH:
+      case NDFD_FWXTSTORM:
       case NDFD_CONHAZ:
       case NDFD_PTORN:
       case NDFD_PHAIL:

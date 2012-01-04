@@ -391,6 +391,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
    double **periodTimes = NULL; /* The times bordering each forecast period. */
    int *numPeriodTimes = NULL;
    char tempBuff[30]; /* Temp string. */
+   char units[40]; /* Holder for units (metric vs U.S. Standard). */
    int ndfdMaxIndex = -1; /* Index in elem array holding NDFD_MAXT. */
    int ndfdMinIndex = -1; /* Index in elem array holding NDFD_MINT. */ 
    int ndfdPopIndex = -1; /* Index in elem array holding NDFD_POP. */ 
@@ -438,13 +439,13 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                               * products. */
 
    /* Denote the order needed in array NDFD2DWML of the index of the enumeration. 
-    * e.g. NDFD2DWML[NDFD_POP] = NDFD2DWML[2] = 7TH Position needed in 
+    * e.g. NDFD2DWML[NDFD_POP] = NDFD2DWML[2] = 8TH Position needed in 
     * formatting. 
     */
-   static uChar NDFD2DWML[] = { 0, 1, 7, 2, 37, 35, 3, 38, 5, 6, 40, 42, 4, 39, 
-   36, 41, 29, 30, 31, 32, 33, 34, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
-   20, 21, 22, 23, 24, 25, 26, 27, 28, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 
-   53, 54, 55, 56, 57, 58, 59, 60, 61, 62
+   static uChar NDFD2DWML[] = { 0, 1, 8, 2, 40, 38, 3, 41, 5, 6, 7, 45, 4, 42,
+   39, 44, 32, 33, 34, 35, 36, 37, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+   21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 46, 47, 48, 49, 50, 51, 52, 53,
+   54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65
    };
 
 /*   static int DWML2NDFD[] = { 0, 1, 3, 6, 12, 8, 9, 2, 22, 23, 24, 25, 26, 27, 
@@ -556,7 +557,6 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
    /*********************** GRAB THE NDFD DATA AND SORT. *********************/
    /**************************************************************************/
    /* f_WxParse = 0, is the flag to return WX as ugly weather codes. */
-
    f_WxParse = 0;
    if (genProbe(numPnts, pnts, f_pntType, *numInFiles, *inFiles, f_fileType,
                 f_interp, f_unit, majEarth, minEarth, f_WxParse,
@@ -999,7 +999,6 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                                               &numDays[j], f_XML, 
                                               startNum, endNum);
                         }
-
                         layoutKeys[j][k] = malloc(strlen(layoutKey) + 1);
                         strcpy(layoutKeys[j][k], layoutKey);
                      }
@@ -1020,7 +1019,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                                               currentHour[j], currentDay[j], format,
                                               data, startTime, currentDoubTime, 
 					      &numDays[j], f_XML, startNum, endNum);
-			
+
                            layoutKeys[j][k] = malloc(strlen(layoutKey) + 1);
                            strcpy(layoutKeys[j][k], layoutKey);
                         }
@@ -1343,7 +1342,6 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
             }
          }  /* End of "if-else" of "format New Point time layout" check. */
 	 f_firstPointLoopIteration = 0;
-	 
       }  /* End of "is Point in Sector" check. */
    }  /* End "Point Loop" for Time-Layouts. */
 
@@ -1375,7 +1373,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
 
    /************** FORMAT PARAMETER <ELEMENT> IN XML/DWML ********************/
    /**************************************************************************/
-   
+
    /* Firstly, we need to get a new order of enumerations, strictly for the way
     * the DWML elements need to be formatted. We'll call these DWML 
     * enumerations. We need to collect them for the elements queried for. 
@@ -1405,7 +1403,6 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
          sprintf(pointBuff, "point%d", (j + 1));
          xmlNewProp(parameters, BAD_CAST "applicable-location", BAD_CAST
                     pointBuff);
-
          for (k = 0; k < numElem; k++)
          {
             /************************MAXIMUM TEMPS***************************/
@@ -1418,7 +1415,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                                 parameters, f_formatNIL[j], f_XML, startTime,
                                 numRowsForPoint[j][Dwml[k].origNdfdIndex],      
                                 numDays[j], pntInfo[j].startNum, 
-                                pntInfo[j].endNum);
+                                pntInfo[j].endNum, f_unit);
                continue;
             }
             else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_MAX] && 
@@ -1436,7 +1433,8 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                                 numRowsForPoint[j][Dwml[k].origNdfdIndex],
 	   		        currentDay[j], currentHour[j], TZoffset[j], 
                                 pntInfo[j].f_dayLight, numDays[j], 
-                                pntInfo[j].startNum, pntInfo[j].endNum);
+                                pntInfo[j].startNum, pntInfo[j].endNum, 
+                                f_unit);
                continue;
             }
             else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_MIN] && 
@@ -1460,16 +1458,20 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                          weatherParameters[j][rtmaNdfdTempIndex] == 1 && 
                          weatherParameters[j][rtmaTempIndex] == 1)
                      {
+                        if (f_unit != 2)
+                           strcpy (units, "Fahrenheit");
+                        else
+                           strcpy (units, "Celsius");
+
                         concatRtmaNdfdValues(j, layoutKeys[j][rtmaNdfdTempIndex], 
                                           match, NDFD_TEMP, RTMA_TEMP, 
                                           "Temperature", "temperature", 
-                                          "hourly", "Fahrenheit", parameters, 
+                                          "hourly", units, parameters, 
                                           numRowsForPoint[j][ndfdTempIndex], 
                                           numRowsForPoint[j][rtmaTempIndex], 
                                           pntInfo[j].startNum, 
                                           pntInfo[j].endNum);
                         f_allTempsFormatted = 1;
-                        continue;
                      }
                   }
 
@@ -1481,14 +1483,18 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                   {
                      if (weatherParameters[j][rtmaTempIndex] == 1)
                      {
+                        if (f_unit != 2) 
+                           strcpy (units, "Fahrenheit");
+                        else 
+                          strcpy (units, "Celsius");
+
                         genRtmaValues(j, layoutKeys[j][rtmaTempIndex], 
                                       RTMA_TEMP, RTMA_UTEMP, match, 
                                       "RTMA Temperature", "temperature", 
-                                      "rtma-hourly", "Fahrenheit", parameters, 
+                                      "rtma-hourly", units, parameters, 
                                       numRowsForPoint[j][rtmaTempIndex], 
                                       pntInfo[j].startNum, pntInfo[j].endNum);
                         f_allTempsFormatted = 1;
-                        continue;
                      }
                   }   
                   else if (!pnt_rtmaNdfdTemp[j] && rtmaNdfdTempIndex >= 0 && 
@@ -1502,14 +1508,13 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                      {
                         genTempValues(j, layoutKeys[j][ndfdTempIndex], match, 
                                    parameters, numRowsForPoint[j][ndfdTempIndex], 
-                                   pntInfo[j].startNum, pntInfo[j].endNum);
+                                   pntInfo[j].startNum, pntInfo[j].endNum, 
+                                   f_unit);
                         f_allTempsFormatted = 1;
-                        continue;
                      }
                      else if (weatherParameters[j][ndfdTempIndex] == 0)
                      {
                         f_allTempsFormatted = 1;
-                        continue;
                      }
                   }
                   else if (!pnt_rtmaNdfdTemp[j] && rtmaNdfdTempIndex < 0 && 
@@ -1519,14 +1524,13 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                      {
                         genTempValues(j, layoutKeys[j][ndfdTempIndex], match, 
                                    parameters, numRowsForPoint[j][ndfdTempIndex], 
-                                   pntInfo[j].startNum, pntInfo[j].endNum);
+                                   pntInfo[j].startNum, pntInfo[j].endNum, 
+                                   f_unit);
                         f_allTempsFormatted = 1;
-                        continue;
                      }
                      else if (weatherParameters[j][ndfdTempIndex] == 0)
                      {
                         f_allTempsFormatted = 1;
-                        continue;
                      }
                   }
                }
@@ -1536,15 +1540,14 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                   if (weatherParameters[j][ndfdTempIndex] == 1)
                   { 
                      genTempValues(j, layoutKeys[j][ndfdTempIndex], match, 
-                                   parameters, numRowsForPoint[j][ndfdTempIndex], 
-                                   pntInfo[j].startNum, pntInfo[j].endNum);
+                                   parameters, numRowsForPoint[j][ndfdTempIndex],
+                                   pntInfo[j].startNum, pntInfo[j].endNum, 
+                                   f_unit);
                      f_allTempsFormatted = 1;
-                     continue;
                   }
                   else if (weatherParameters[j][ndfdTempIndex] == 0)
                   {
                      f_allTempsFormatted = 1;
-                     continue;
                   }
                }
             }
@@ -1566,15 +1569,19 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                          weatherParameters[j][rtmaNdfdTdIndex] == 1 && 
                          weatherParameters[j][rtmaTdIndex] == 1)
                      {
+                        if (f_unit != 2)
+                           strcpy (units, "Fahrenheit");
+                        else
+                          strcpy (units, "Celsius");
+
                         concatRtmaNdfdValues(j, layoutKeys[j][rtmaNdfdTdIndex], 
                                        match, NDFD_TD, RTMA_TD, 
                                        "Dew Point Temperature", "temperature", 
-                                       "dew point", "Fahrenheit", parameters, 
+                                       "dew point", units, parameters, 
                                        numRowsForPoint[j][ndfdTdIndex],
                                        numRowsForPoint[j][rtmaTdIndex], 
                                        pntInfo[j].startNum, pntInfo[j].endNum);
                         f_allTdsFormatted = 1;
-                        continue;
                      }
                   }
 
@@ -1586,13 +1593,17 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                   {
                      if (weatherParameters[j][rtmaTdIndex] == 1)
                      {
+                        if (f_unit != 2)
+                           strcpy (units, "Fahrenheit");
+                        else
+                          strcpy (units, "Celsius");
+
                         genRtmaValues(j, layoutKeys[j][rtmaTdIndex], RTMA_TD, 
                               RTMA_UTD, match, "RTMA Dew Point Temperature", 
-                              "temperature", "rtma-dew point", "Fahrenheit", 
+                              "temperature", "rtma-dew point", units, 
                               parameters, numRowsForPoint[j][rtmaTdIndex], 
                               pntInfo[j].startNum, pntInfo[j].endNum);
                         f_allTdsFormatted = 1;
-                        continue;
                      }
                   }   
                   else if (!pnt_rtmaNdfdTd[j] && rtmaNdfdTdIndex >= 0 && 
@@ -1608,14 +1619,12 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                                               match, parameters, 
                                               numRowsForPoint[j][ndfdTdIndex],
                                               pntInfo[j].startNum, 
-                                              pntInfo[j].endNum);
+                                              pntInfo[j].endNum, f_unit);
                         f_allTdsFormatted = 1;
-                        continue;
                      }
                      else if (weatherParameters[j][ndfdTdIndex] == 0)
                      {
                         f_allTdsFormatted = 1;
-                        continue;
                      }
                   }
                   else if (!pnt_rtmaNdfdTd[j] && rtmaNdfdTdIndex < 0 && 
@@ -1627,14 +1636,12 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                                               match, parameters, 
                                               numRowsForPoint[j][ndfdTdIndex],
                                               pntInfo[j].startNum, 
-                                              pntInfo[j].endNum);
+                                              pntInfo[j].endNum, f_unit);
                         f_allTdsFormatted = 1;
-                        continue;
                      }
                      else if (weatherParameters[j][ndfdTdIndex] == 0)
                      {
                         f_allTdsFormatted = 1;
-                        continue;
                      }
                   }
                }
@@ -1647,14 +1654,12 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                                            match, parameters, 
                                            numRowsForPoint[j][ndfdTdIndex],
                                            pntInfo[j].startNum, 
-                                           pntInfo[j].endNum);
+                                           pntInfo[j].endNum, f_unit);
                      f_allTdsFormatted = 1;
-                     continue;
                   }
                   else if (weatherParameters[j][ndfdTdIndex] == 0)
                   {
                      f_allTdsFormatted = 1;
-                     continue;
                   }
                }
             }
@@ -1666,7 +1671,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                genAppTempValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], match, 
                                 parameters, 
                                 numRowsForPoint[j][Dwml[k].origNdfdIndex], 
-                                pntInfo[j].startNum, pntInfo[j].endNum);
+                                pntInfo[j].startNum, pntInfo[j].endNum, f_unit);
                continue;
             }
             else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_AT] && 
@@ -1690,17 +1695,21 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                          weatherParameters[j][rtmaNdfdPrecipaIndex] == 1 && 
                          weatherParameters[j][rtmaPrecipaIndex] == 1)
                      {
+                        if (f_unit != 2)
+                           strcpy (units, "inches");
+                        else
+                           strcpy (units, "centimeters");
+
                         concatRtmaNdfdValues(j, layoutKeys[j][rtmaNdfdPrecipaIndex], 
                                              match, NDFD_QPF, RTMA_PRECIPA, 
                                              "Liquid Precipitation Amount",
-                                             "precipitation", "liquid", "inches", 
+                                             "precipitation", "liquid", units,
                                              parameters, 
                                              numRowsForPoint[j][ndfdQpfIndex],
                                              numRowsForPoint[j][rtmaPrecipaIndex], 
                                              pntInfo[j].startNum, 
                                              pntInfo[j].endNum);
                         f_allQpfsFormatted = 1;
-                        continue;
                      }
                   }
 
@@ -1712,14 +1721,18 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                   {
                      if (weatherParameters[j][rtmaPrecipaIndex] == 1)
                      {
+                        if (f_unit != 2)
+                           strcpy (units, "inches");
+                        else
+                          strcpy (units, "centimeters");
+
                         genRtmaValues(j, layoutKeys[j][rtmaPrecipaIndex], 
                              RTMA_PRECIPA, -1, match, 
                              "RTMA Liquid Precipitation Amount", 
-                             "precipitation", "rtma-liquid", "inches", 
+                             "precipitation", "rtma-liquid", units, 
                              parameters, numRowsForPoint[j][rtmaPrecipaIndex], 
                              pntInfo[j].startNum, pntInfo[j].endNum);
                         f_allQpfsFormatted = 1;
-                        continue;
                      }
                   }   
                   else if (!pnt_rtmaNdfdPrecipa[j] && rtmaNdfdPrecipaIndex >= 0 && 
@@ -1733,14 +1746,13 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                      { 
                         genQPFValues(j, layoutKeys[j][ndfdQpfIndex], match, 
                                      parameters, numRowsForPoint[j][ndfdQpfIndex], 
-                                     pntInfo[j].startNum, pntInfo[j].endNum);
+                                     pntInfo[j].startNum, pntInfo[j].endNum, 
+                                     f_unit);
                         f_allQpfsFormatted = 1;
-                        continue;
                      }
                      else if (weatherParameters[j][ndfdQpfIndex] == 0)
                      {
                         f_allQpfsFormatted = 1;
-                        continue;
                      }
                   }
                   else if (!pnt_rtmaNdfdPrecipa[j] && rtmaNdfdPrecipaIndex < 0 && 
@@ -1750,14 +1762,12 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                      { 
                         genQPFValues(j, layoutKeys[j][ndfdQpfIndex], match, 
                                parameters, numRowsForPoint[j][ndfdQpfIndex], 
-                               pntInfo[j].startNum, pntInfo[j].endNum);
+                               pntInfo[j].startNum, pntInfo[j].endNum, f_unit);
                         f_allQpfsFormatted = 1;
-                        continue;
                      }
                      else if (weatherParameters[j][ndfdQpfIndex] == 0)
                      {
                         f_allQpfsFormatted = 1;
-                        continue;
                      }
                   }
                }
@@ -1768,14 +1778,12 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                   { 
                      genQPFValues(j, layoutKeys[j][ndfdQpfIndex], match, 
                             parameters, numRowsForPoint[j][ndfdQpfIndex], 
-                            pntInfo[j].startNum, pntInfo[j].endNum);
+                            pntInfo[j].startNum, pntInfo[j].endNum, f_unit);
                      f_allQpfsFormatted = 1;
-                     continue;
                   }
                   else if (weatherParameters[j][ndfdQpfIndex] == 0)
                   {
                      f_allQpfsFormatted = 1;
-                     continue;
                   }
                }
             }
@@ -1787,10 +1795,24 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                genSnowValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], match, 
                              parameters,
                              numRowsForPoint[j][Dwml[k].origNdfdIndex],
-                             pntInfo[j].startNum, pntInfo[j].endNum);
+                             pntInfo[j].startNum, pntInfo[j].endNum, f_unit);
                continue;
             }
             else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_SNOW] && 
+                     weatherParameters[j][Dwml[k].origNdfdIndex] == 0)
+               continue;
+
+            /* Format Ice Accumulation Amount Values, if applicable. */
+            if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_ICEACC] &&
+                weatherParameters[j][Dwml[k].origNdfdIndex] == 1)
+            {
+               genIceAccValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], match,
+                               parameters,
+                               numRowsForPoint[j][Dwml[k].origNdfdIndex],
+                               pntInfo[j].startNum, pntInfo[j].endNum, f_unit);
+               continue;
+            }
+            else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_ICEACC] &&
                      weatherParameters[j][Dwml[k].origNdfdIndex] == 0)
                continue;
 
@@ -1822,6 +1844,44 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                continue;
 	    }
             else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_POP] && 
+                     weatherParameters[j][Dwml[k].origNdfdIndex] == 0)
+               continue;
+
+            /*******************2 FIRE WEATHER OUTLOOK ELEMENTS***************/
+            /*****************************************************************/
+            /* Format the Fire Wx Outlook due to wind and relative humidity for
+             * DWMLgen time-series product, for days 1-7, if applicable. 
+             */
+            if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_FWXWINDRH] && 
+                weatherParameters[j][Dwml[k].origNdfdIndex] == 1)
+            {
+               genFireWxValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], 
+                         NDFD_FWXWINDRH, match, 
+                         "risk from wind and relative humidity",
+                         "Fire Weather Outlook from Wind and Relative Humidity", 
+                         parameters, numRowsForPoint[j][Dwml[k].origNdfdIndex], 
+                         pntInfo[j].startNum, pntInfo[j].endNum);
+               continue;
+            }
+            else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_FWXWINDRH] && 
+                     weatherParameters[j][Dwml[k].origNdfdIndex] == 0)
+               continue;
+
+            /* Format the Fire Wx Outlook due to dry thunderstorms for
+             * DWMLgen time-series product, for days 1-3, if applicable.
+             */
+            if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_FWXTSTORM] && 
+                weatherParameters[j][Dwml[k].origNdfdIndex] == 1)
+            {
+               genFireWxValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], 
+                         NDFD_FWXTSTORM, match, 
+                         "risk from dry thunderstorms",
+                         "Fire Weather Outlook from Dry Thunderstorms", 
+                         parameters, numRowsForPoint[j][Dwml[k].origNdfdIndex], 
+                         pntInfo[j].startNum, pntInfo[j].endNum);
+               continue;
+            }
+            else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_FWXTSTORM] && 
                      weatherParameters[j][Dwml[k].origNdfdIndex] == 0)
                continue;
 
@@ -2316,14 +2376,18 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                          weatherParameters[j][rtmaNdfdWspdIndex] == 1 && 
                          weatherParameters[j][rtmaWspdIndex] == 1)
                      {
+                        if (f_unit != 2)
+                           strcpy (units, "knots");
+                        else
+                          strcpy (units, "meters/second");
+
                         concatRtmaNdfdValues(j, layoutKeys[j][rtmaNdfdWspdIndex], 
                                  match, NDFD_WS, RTMA_WSPD, "Wind Speed", 
-                                 "wind-speed", "sustained", "knots", parameters,
+                                 "wind-speed", "sustained", units, parameters,
                                  numRowsForPoint[j][ndfdWspdIndex],
                                  numRowsForPoint[j][rtmaWspdIndex], 
                                  pntInfo[j].startNum, pntInfo[j].endNum);
                         f_allWspdsFormatted = 1;
-                        continue;
                      }
                   }
 
@@ -2335,13 +2399,17 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                   {
                      if (weatherParameters[j][rtmaWspdIndex] == 1)
                      {
+                        if (f_unit != 2) 
+                           strcpy (units, "knots"); 
+                        else 
+                          strcpy (units, "meters/second");
+
                         genRtmaValues(j, layoutKeys[j][rtmaWspdIndex], 
                              RTMA_WSPD, RTMA_UWSPD, match, "RTMA Wind Speed", 
-                             "wind-speed", "rtma-sustained", "knots", 
+                             "wind-speed", "rtma-sustained", units, 
                              parameters, numRowsForPoint[j][rtmaWspdIndex], 
                              pntInfo[j].startNum, pntInfo[j].endNum);
                         f_allWspdsFormatted = 1;
-                        continue;
                      }
                   }
                   else if (!pnt_rtmaNdfdWspd[j] && rtmaNdfdWspdIndex >= 0 && 
@@ -2360,14 +2428,12 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                                NDFD_WS, numRowsForPoint[j][ndfdWspdIndex], 
                                f_XML, valTimeForWindDirMatch, startTime, 
                                pntInfo[j].startNum, pntInfo[j].endNum, 
-                               f_shiftData);
+                               f_shiftData, f_unit);
                         f_allWspdsFormatted = 1;
-                        continue;
                      }
                      else if (weatherParameters[j][ndfdWspdIndex] == 0)
                      {
                         f_allWspdsFormatted = 1;
-                        continue;
                      }
                   }
                   else if (!pnt_rtmaNdfdWspd[j] && rtmaNdfdWspdIndex < 0 && 
@@ -2382,14 +2448,12 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                                NDFD_WS, numRowsForPoint[j][ndfdWspdIndex], 
                                f_XML, valTimeForWindDirMatch, startTime, 
                                pntInfo[j].startNum, pntInfo[j].endNum, 
-                               f_shiftData);
+                               f_shiftData, f_unit);
                         f_allWspdsFormatted = 1;
-                        continue;
                      }
                      else if (weatherParameters[j][ndfdWspdIndex] == 0)
                      {
                         f_allWspdsFormatted = 1;
-                        continue;
                      }
                   }
                }
@@ -2433,14 +2497,12 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                                NDFD_WS, numRowsForPoint[j][ndfdWspdIndex], 
                                f_XML, valTimeForWindDirMatch, startTime, 
                                pntInfo[j].startNum, pntInfo[j].endNum, 
-                               f_shiftData);
+                               f_shiftData, f_unit);
                         f_allWspdsFormatted = 1;
-                        continue;
                      }
                      else if (weatherParameters[j][ndfdWspdIndex] == 0)
                      {
                         f_allWspdsFormatted = 1;
-                        continue;
                      }
                   }
                }
@@ -2455,7 +2517,8 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                genWindSpeedGustValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], 
                                       match, parameters, 
                                       numRowsForPoint[j][Dwml[k].origNdfdIndex], 
-                                      pntInfo[j].startNum, pntInfo[j].endNum);
+                                      pntInfo[j].startNum, pntInfo[j].endNum, 
+                                      f_unit);
                continue;
             }
             else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_WG] && 
@@ -2486,7 +2549,6 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                                  numRowsForPoint[j][rtmaWdirIndex], 
                                  pntInfo[j].startNum, pntInfo[j].endNum);
                         f_allWdirsFormatted = 1;
-                        continue;
                      }
                   }
 
@@ -2505,7 +2567,6 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                              numRowsForPoint[j][rtmaWdirIndex], 
                              pntInfo[j].startNum, pntInfo[j].endNum);
                         f_allWdirsFormatted = 1;
-                        continue;
                      }
                   }
                   else if (!pnt_rtmaNdfdWdir[j] && rtmaNdfdWdirIndex >= 0 && 
@@ -2523,12 +2584,10 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
 				   numRowsForPoint[j][ndfdWdirIndex], 
                                    pntInfo[j].startNum, pntInfo[j].endNum);
                         f_allWdirsFormatted = 1;
-                        continue;
                      }
                      else if (weatherParameters[j][ndfdWdirIndex] == 0)
                      {
                         f_allWdirsFormatted = 1;
-                        continue;
                      }
                   }
                   else if (!pnt_rtmaNdfdWdir[j] && rtmaNdfdWdirIndex < 0 && 
@@ -2542,12 +2601,10 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
 				   numRowsForPoint[j][ndfdWdirIndex], 
                                    pntInfo[j].startNum, pntInfo[j].endNum);
                         f_allWdirsFormatted = 1;
-                        continue;
                      }
                      else if (weatherParameters[j][ndfdWdirIndex] == 0)
                      {
                         f_allWdirsFormatted = 1;
-                        continue;
                      }
                   }
                }
@@ -2582,12 +2639,10 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
 				   numRowsForPoint[j][ndfdWdirIndex],
                                    pntInfo[j].startNum, pntInfo[j].endNum);
                         f_allWdirsFormatted = 1;
-                        continue;
                      }
                      else if (weatherParameters[j][ndfdWdirIndex] == 0)
                      {
                         f_allWdirsFormatted = 1;
-                        continue;
                      }                  
                   }
                }
@@ -2619,7 +2674,6 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                                  numRowsForPoint[j][rtmaSkyIndex], 
                                  pntInfo[j].startNum, pntInfo[j].endNum);
                         f_allSkysFormatted = 1;
-                        continue;
                      }
                   }
                   /* Format the Real Time Mesoscale Analyses for Sky Cover Amount, 
@@ -2636,7 +2690,6 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                              numRowsForPoint[j][rtmaSkyIndex], 
                              pntInfo[j].startNum, pntInfo[j].endNum);
                         f_allSkysFormatted = 1;
-                        continue;
                      }
                   }
                   else if (!pnt_rtmaNdfdSky[j] && rtmaNdfdSkyIndex >= 0 && 
@@ -2658,12 +2711,10 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                               startTime, pntInfo[j].startNum, pntInfo[j].endNum, 
                               f_shiftData);
                         f_allSkysFormatted = 1;
-                        continue;
                      }
                      else if (weatherParameters[j][ndfdSkyIndex] == 0)
                      {
                         f_allSkysFormatted = 1;
-                        continue;
                      }
                   }
                   else if (!pnt_rtmaNdfdSky[j] && rtmaNdfdSkyIndex < 0 && 
@@ -2681,12 +2732,10 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                               startTime, pntInfo[j].startNum, pntInfo[j].endNum, 
                               f_shiftData);
                         f_allSkysFormatted = 1;
-                        continue;
                      }
                      else if (weatherParameters[j][ndfdSkyIndex] == 0)
                      {
                         f_allSkysFormatted = 1;
-                        continue;
                      }
                   }
                }
@@ -2738,12 +2787,10 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                               startTime, pntInfo[j].startNum, pntInfo[j].endNum, 
                               f_shiftData);
                         f_allSkysFormatted = 1;
-                        continue;
                      }
                      else if (weatherParameters[j][ndfdSkyIndex] == 0)
                      {
                         f_allSkysFormatted = 1;
-                        continue;
                      }
                   }
                }
@@ -2772,7 +2819,6 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
             if (f_XML == 1 || f_XML == 2 || f_XML == 6)
             {
                /**************************** WEATHER *************************/
-   
                if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_WX] && 
                   (weatherParameters[j][Dwml[k].origNdfdIndex] == 1 || 
                    weatherParameters[j][Dwml[k].origNdfdIndex] == 3))
@@ -2790,7 +2836,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
 	                           numRowsForPoint[j][ndfdPopIndex], parameters,
                                    pnts[j].Y, pnts[j].X, pntInfo[j].startNum, 
                                    pntInfo[j].endNum, TZoffset[j], 
-                                   pntInfo[j].f_dayLight);
+                                   pntInfo[j].f_dayLight, f_unit);
                      continue;
                   }
                   else /* Dummy up the elements needed for icons, as they're 
@@ -2809,7 +2855,7 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                                    parameters, pnts[j].Y, pnts[j].X, 
                                    pntInfo[j].startNum, 
                                    pntInfo[j].endNum, TZoffset[j], 
-                                   pntInfo[j].f_dayLight);
+                                   pntInfo[j].f_dayLight, f_unit);
                      continue;
                   }
                }
@@ -2903,7 +2949,8 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                genWaveHeightValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], 
                                    match, parameters,
                                    numRowsForPoint[j][Dwml[k].origNdfdIndex], 
-                                   pntInfo[j].startNum, pntInfo[j].endNum);
+                                   pntInfo[j].startNum, pntInfo[j].endNum, 
+                                   f_unit);
                continue;
             }
             else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_WH] && 

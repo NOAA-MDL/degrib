@@ -56,6 +56,8 @@
  *                matches can be found. (Input)
  *       endNum = Last index in match structure an individual point's data
  *                matches can be found. (Input)
+ *       f_unit = 0 (GRIB unit), 1 (english), 2 (metric) (Input)
+ *                
  *                
  * FILES/DATABASES: None
  *
@@ -73,7 +75,7 @@ void genMinTempValues(size_t pnt, char *layoutKey, genMatchType *match,
                       xmlNodePtr parameters, uChar f_XML, double startTime_cml,
                       numRowsInfo numRows, char *currentDay, char *currentHour, 
                       sChar TZoffset, sChar f_observeDST, int numFmtdRows, 
-                      int startNum, int endNum)
+                      int startNum, int endNum, sChar f_unit)
 {
    int i;                     /* Element counter thru match structure. */
    int numNils = 0;           /* Denotes diff between number of data rows and 
@@ -100,7 +102,12 @@ void genMinTempValues(size_t pnt, char *layoutKey, genMatchType *match,
    /* Format the <temperature> element. */
    temperature = xmlNewChild(parameters, NULL, BAD_CAST "temperature", NULL);
    xmlNewProp(temperature, BAD_CAST "type", BAD_CAST "minimum");
-   xmlNewProp(temperature, BAD_CAST "units", BAD_CAST "Fahrenheit");
+
+   if (f_unit != 2)
+      xmlNewProp(temperature, BAD_CAST "units", BAD_CAST "Fahrenheit");
+   else
+      xmlNewProp(temperature, BAD_CAST "units", BAD_CAST "Celsius");
+
    xmlNewProp(temperature, BAD_CAST "time-layout", BAD_CAST layoutKey);
 
    /* Format the display <name> element. */

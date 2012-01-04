@@ -40,6 +40,7 @@
  *               matches can be found. (Input)
  *      endNum = Last index in match structure an individual point's data
  *               matches can be found. (Input) 
+ *      f_unit = 0 (GRIB unit), 1 (english), 2 (metric) (Input)
  *
  * FILES/DATABASES: None
  *
@@ -54,7 +55,7 @@
 #include "xmlparse.h"
 void genWindSpeedGustValues(size_t pnt, char *layoutKey,  genMatchType *match, 
                             xmlNodePtr parameters, numRowsInfo numRows, 
-                            int startNum, int endNum)
+                            int startNum, int endNum, sChar f_unit)
 {
    int i;                        /* Index through match structure. */
    int roundedWGData;            /* Returned rounded data. */
@@ -67,7 +68,12 @@ void genWindSpeedGustValues(size_t pnt, char *layoutKey,  genMatchType *match,
    /* Format the <wind_speed> element. */
    wind_speed = xmlNewChild(parameters, NULL, BAD_CAST "wind-speed", NULL);
    xmlNewProp(wind_speed, BAD_CAST "type", BAD_CAST "gust");
-   xmlNewProp(wind_speed, BAD_CAST "units", BAD_CAST "knots");
+
+   if (f_unit != 2)
+      xmlNewProp(wind_speed, BAD_CAST "units", BAD_CAST "knots");
+   else
+      xmlNewProp(wind_speed, BAD_CAST "units", BAD_CAST "meters/second");
+
    xmlNewProp(wind_speed, BAD_CAST "time-layout", BAD_CAST layoutKey);
 
    /* Format the display <name> element. */

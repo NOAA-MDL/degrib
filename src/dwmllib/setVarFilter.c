@@ -43,6 +43,8 @@
  *  6/2008 Paul Hershberg (MDL): Added Hazard Element.
  *  8/2008 Paul Hershberg (MDL): Added Hazard Element for summary products.
  *  8/2009 Paul Hershberg (MDL): Added Lamp Tstm element.
+ *  8/2011 Paul Hershberg (MDL): Added 2 Fire Wx Elements.
+ * 10/2011 Paul Hershberg (MDL): Added Ice Accumulation element. 
  *
  * NOTES:
  *****************************************************************************
@@ -81,9 +83,13 @@ void setVarFilter(sChar f_XML, sChar *f_icon, size_t numNdfdVars,
    varFilter[NDFD_CUM34] = 1;
    varFilter[NDFD_CUM50] = 1;
    varFilter[NDFD_CUM64] = 1;
-   varFilter[NDFD_CONHAZ] = 1;
+
+   /* 2 Fire Wx Elements. */
+   varFilter[NDFD_FWXWINDRH] = 1;
+   varFilter[NDFD_FWXTSTORM] = 1;
 
    /* 9 Surface Prediction Center elements. */
+   varFilter[NDFD_CONHAZ] = 1;
    varFilter[NDFD_PTORN] = 1;
    varFilter[NDFD_PHAIL] = 1;
    varFilter[NDFD_PTSTMWIND] = 1;
@@ -106,6 +112,9 @@ void setVarFilter(sChar f_XML, sChar *f_icon, size_t numNdfdVars,
    varFilter[NDFD_TMPBLW90D] = 1;
    varFilter[NDFD_PRCPABV90D] = 1;
    varFilter[NDFD_PRCPBLW90D] = 1;
+
+   /* 1 Ice Accumulation Element. */
+   varFilter[NDFD_ICEACC] = 1;
 
    /* 1 LAMP Element. */
    varFilter[LAMP_TSTMPRB] = 1;

@@ -163,7 +163,7 @@ void generateTimeLayout(numRowsInfo numRows, uChar parameterEnum,
                                * in determining if a new layout is needed. */
    char periodName[30];       /* Name of special period name (i.e.
                                * "Overnight"). */
-   char periodNameTest[200];
+
    uChar issuanceType = MAX_PERIODS;  /* Max number of issuanceTypes. */
    
    /* Set the number of actual rows. */
@@ -287,7 +287,6 @@ void generateTimeLayout(numRowsInfo numRows, uChar parameterEnum,
       /* Now we get the time values for this parameter and format the valid time
        * tags. 
        */
-         periodNameTest[0] = '\0';
       for (i = 0; i < *numFmtdRows; i++)
       {
          if (i < *numFmtdRows) /* Accounts for DWMLgenByDay. */
@@ -329,8 +328,6 @@ void generateTimeLayout(numRowsInfo numRows, uChar parameterEnum,
                                             periodName, currentHour, 
 					    currentDay, startTime_cml, 
 					    currentDoubTime, firstValidTime);
-                     if (outputPeriodName)
-                        strcat (periodNameTest, periodName);                      
 		  }
 
                   /* Handle each special period name (up to 3 of them). */

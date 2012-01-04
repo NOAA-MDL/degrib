@@ -373,7 +373,11 @@ void getSectorInfo(PntSectInfo *pntInfo, Point *pnts, size_t numPnts,
             /* Break between nhemi and puertori is final match where conus 
              * points can contain data in the match structure. 
              */
+            if (match[i-1].f_sector == conus5 && match[i].f_sector == nhemi)
+            /*  Line above updated Sept 2011, Trop wind Speeds were doubling up when 
+                combining conus5 and nhemi sectors. Old line below.... 
             if (match[i-1].f_sector == nhemi && match[i].f_sector == puertori)
+             */             
             {
                conusSect.startNum = i-priorMatchCount;
                conusSect.endNum = i-1;  
@@ -585,7 +589,10 @@ void getSectorInfo(PntSectInfo *pntInfo, Point *pnts, size_t numPnts,
             /* Skip over special cases of combined sectors. */
             if (((match[i-1].f_sector != match[i].f_sector) &&
                 !(match[i-1].f_sector == conus2_5 && match[i].f_sector == conus5) &&
+/* Commented out this line as nhemi and conus 5, when combined, the Tropical Wind 
+   Speed data was doubling up. Sept 2011. This goes along with commented out line above.
                 !(match[i-1].f_sector == conus5 && match[i].f_sector == nhemi) &&
+*/
                 !(match[i-1].f_sector == nhemi && match[i].f_sector == puertori) &&
                 !(match[i-1].f_sector == hawaii && match[i].f_sector == npacocn) && 
                 !(match[i-1].f_sector == npacocn && match[i].f_sector == guam)) ||
@@ -601,7 +608,6 @@ void getSectorInfo(PntSectInfo *pntInfo, Point *pnts, size_t numPnts,
                   deltaSect[newSect].enumNum = match[i-1].f_sector;              
                else
                   deltaSect[newSect].enumNum = match[i-priorMatchCount].f_sector;
-
                newSect++;
                priorMatchCount = 0;
             }

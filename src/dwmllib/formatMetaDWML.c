@@ -33,6 +33,10 @@
  *                               --Added the srsName attribute to <product> 
  *                                 element.
  * 11/2007 Paul Hershberg (MDL): --Added RTMA info.
+ *  9/2011 Paul Hershberg (MDL): --Updated instances of 
+ *                                 "www.weather.gov/foreasts" to 
+ *                                 "graphical.weather.gov" for move of Web 
+ *                                 Service from gate to NIDS
  *
  * NOTES:
  *****************************************************************************
@@ -77,7 +81,7 @@ void formatMetaDWML(uChar f_XML, xmlDocPtr * doc, xmlNodePtr * data,
          prodOrFormat = "time-series";
          productTitle = "NOAA's National Weather Service Forecast Data";
          operationalMode = "official";
-         moreInfo = "http://www.nws.noaa.gov/forecasts/xml/";
+         moreInfo = "http://graphical.weather.gov/xml/";
          prod_center = "Meteorological Development Laboratory";
          sub_center = "Product Generation Branch";
          category = "forecast";
@@ -87,7 +91,7 @@ void formatMetaDWML(uChar f_XML, xmlDocPtr * doc, xmlNodePtr * data,
          prodOrFormat = "glance";
          productTitle = "NOAA's National Weather Service Forecast at a Glance";
          operationalMode = "official";
-         moreInfo = "http://www.nws.noaa.gov/forecasts/xml/";
+         moreInfo = "http://graphical.weather.gov/xml/";
          prod_center = "Meteorological Development Laboratory";
          sub_center = "Product Generation Branch";
          category = "forecast";
@@ -98,7 +102,7 @@ void formatMetaDWML(uChar f_XML, xmlDocPtr * doc, xmlNodePtr * data,
          productTitle =
                "NOAA's National Weather Service Forecast by 12 Hour Period";
          operationalMode = "official";
-         moreInfo = "http://www.nws.noaa.gov/forecasts/xml/";
+         moreInfo = "http://graphical.weather.gov/xml/";
          prod_center = "Meteorological Development Laboratory";
          sub_center = "Product Generation Branch";
          category = "forecast";
@@ -109,7 +113,7 @@ void formatMetaDWML(uChar f_XML, xmlDocPtr * doc, xmlNodePtr * data,
          productTitle =
                "NOAA's National Weather Service Forecast by 24 Hour Period";
          operationalMode = "official";
-         moreInfo = "http://www.nws.noaa.gov/forecasts/xml/";
+         moreInfo = "http://graphical.weather.gov/xml/";
          prod_center = "Meteorological Development Laboratory";
          sub_center = "Product Generation Branch";
          category = "forecast";
@@ -152,7 +156,7 @@ void formatMetaDWML(uChar f_XML, xmlDocPtr * doc, xmlNodePtr * data,
    xmlNewProp(*dwml, BAD_CAST "xmlns:xsi", BAD_CAST
               "http://www.w3.org/2001/XMLSchema-instance");
    xmlNewProp(*dwml, BAD_CAST "xsi:noNamespaceSchemaLocation", BAD_CAST
-              "http://www.nws.noaa.gov/forecasts/xml/DWMLgen/schema/DWML.xsd");
+              "http://graphical.weather.gov/xml/DWMLgen/schema/DWML.xsd");
 
    /* Set root element <dwml>. */
    xmlDocSetRootElement(*doc, *dwml);

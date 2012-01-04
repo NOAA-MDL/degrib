@@ -39,6 +39,7 @@
  *               matches can be found. (Input)
  *      endNum = Last index in match structure an individual point's data
  *               matches can be found. (Input) 
+ *      f_unit = 0 (GRIB unit), 1 (english), 2 (metric) (Input)
  *
  * FILES/DATABASES: None
  *
@@ -53,7 +54,7 @@
 #include "xmlparse.h"
 void genWaveHeightValues(size_t pnt, char *layoutKey, genMatchType * match, 
                          xmlNodePtr parameters, numRowsInfo numRows, 
-                         int startNum, int endNum)
+                         int startNum, int endNum, sChar f_unit)
 {
    int i;                     /* Element counter thru match structure. */
    int roundedWaveHeightData; /* Returned rounded data. */
@@ -71,7 +72,11 @@ void genWaveHeightValues(size_t pnt, char *layoutKey, genMatchType * match,
    /* Format <waves> element name. */
    waves = xmlNewChild(water_state, NULL, BAD_CAST "waves", NULL);
    xmlNewProp(waves, BAD_CAST "type", BAD_CAST "significant");
-   xmlNewProp(waves, BAD_CAST "units", BAD_CAST "feet");
+
+   if (f_unit != 2)
+      xmlNewProp(waves, BAD_CAST "units", BAD_CAST "feet");
+   else
+      xmlNewProp(waves, BAD_CAST "units", BAD_CAST "meters");
 
    /* Format the display <name> element. */
    xmlNewChild(waves, NULL, BAD_CAST "name", BAD_CAST "Wave Height");

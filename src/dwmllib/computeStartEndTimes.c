@@ -78,7 +78,8 @@
  *                                  concatenated to NDFD_QPF
  *  6/2008 Paul Hershberg (MDL): -- Added Hazard Element 
  *  8/2009 Paul Hershberg (MDL): Added Lamp Tstm element. 
-*                                  
+ *  1/2011 Paul Hershberg (MDL): Added Fire Wx elements. 
+ *                                  
  * NOTES:
  *****************************************************************************
  */
@@ -298,6 +299,7 @@ void computeStartEndTimes(uChar parameterName, int numFmtdRows,
          case NDFD_POP:
          case NDFD_SNOW:
          case NDFD_QPF:
+         case NDFD_ICEACC:
          case NDFD_INC34:
          case NDFD_INC50:
          case NDFD_INC64:
@@ -364,6 +366,8 @@ void computeStartEndTimes(uChar parameterName, int numFmtdRows,
             }
             break;
 
+         case NDFD_FWXWINDRH:
+         case NDFD_FWXTSTORM:
          case NDFD_CONHAZ:
          case NDFD_PTORN:
          case NDFD_PHAIL:
@@ -428,8 +432,8 @@ void computeStartEndTimes(uChar parameterName, int numFmtdRows,
                    * validTime, check to see if the base refTime is later than
                    * the newly created startTime. If so, simply use the refTime
                    * as the startTime (this will occur on day 1 of some of these
-                   * SPC elements). Get the newly created startTime in double 
-                   * form for the comparison.
+                   * SPC elements and Fire Wx elements). Get the newly created 
+                   * startTime in double form for the comparison.
                    */
                   Clock_Scan(&startTime_validTime, str1, 0);
                   if (startTime_validTime < match[i].refTime)

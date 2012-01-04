@@ -295,19 +295,36 @@ void PrintTime(genMatchType * match, size_t pntIndex, int *allElem,
    {
       printf("  :      ");
    }
+   if ((allElem[NDFD_ICEACC] != -1) &&
+       (match[allElem[NDFD_ICEACC]].value[pntIndex].valueType != 2))
+      {
+         printf("icea:%2.3f ", match[allElem[NDFD_ICEACC]].value[pntIndex].data);
+         printf ("match[%d].f_sector = %d\n",allElem[NDFD_ICEACC],match[allElem[NDFD_ICEACC]].f_sector);
+      }
    if ((allElem[NDFD_WG] != -1) &&
        (match[allElem[NDFD_WG]].value[pntIndex].valueType != 2))
       {
          printf("wg:%2.0f ", match[allElem[NDFD_WG]].value[pntIndex].data);
          printf ("match[%d].f_sector = %d\n",allElem[NDFD_WG],match[allElem[NDFD_WG]].f_sector);
       } 
-
    if ((allElem[NDFD_WS] != -1) &&
        (match[allElem[NDFD_WS]].value[pntIndex].valueType != 2))
       {
          printf("ws:%2.0f ", match[allElem[NDFD_WS]].value[pntIndex].data);
          printf ("match[%d].f_sector = %d\n",allElem[NDFD_WS],match[allElem[NDFD_WS]].f_sector);
       } 
+   if ((allElem[NDFD_FWXWINDRH] != -1) &&
+       (match[allElem[NDFD_FWXWINDRH]].value[pntIndex].valueType != 2))
+   {
+      printf("critfireo:%.0f ", match[allElem[NDFD_FWXWINDRH]].value[pntIndex].data);
+      printf ("match[%d].f_sector = %d\n",allElem[NDFD_FWXWINDRH],match[allElem[NDFD_FWXWINDRH]].f_sector);
+   } 
+   if ((allElem[NDFD_FWXTSTORM] != -1) &&
+       (match[allElem[NDFD_FWXTSTORM]].value[pntIndex].valueType != 2))
+   {
+      printf("dryfireo:%.0f ", match[allElem[NDFD_FWXTSTORM]].value[pntIndex].data);
+      printf ("match[%d].f_sector = %d\n",allElem[NDFD_FWXTSTORM],match[allElem[NDFD_FWXTSTORM]].f_sector);
+   } 
    if ((allElem[NDFD_CONHAZ] != -1) &&
        (match[allElem[NDFD_CONHAZ]].value[pntIndex].valueType != 2))
    {

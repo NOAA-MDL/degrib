@@ -39,6 +39,7 @@
  *               matches can be found. (Input)
  *      endNum = Last index in match structure an individual point's data
  *               matches can be found. (Input) 
+ *      f_unit = 0 (GRIB unit), 1 (english), 2 (metric) (Input)
  *
  * FILES/DATABASES: None
  *
@@ -54,7 +55,7 @@
 #include "xmlparse.h"
 void genAppTempValues(size_t pnt, char *layoutKey, genMatchType *match,
                       xmlNodePtr parameters, numRowsInfo numRows, int startNum,
-		      int endNum)
+		      int endNum, sChar f_unit)
 {
    int i;
    int roundedAtData;         /* Returned rounded data. */
@@ -67,7 +68,12 @@ void genAppTempValues(size_t pnt, char *layoutKey, genMatchType *match,
    /* Format the <temperature> element. */
    temperature = xmlNewChild(parameters, NULL, BAD_CAST "temperature", NULL);
    xmlNewProp(temperature, BAD_CAST "type", BAD_CAST "apparent");
-   xmlNewProp(temperature, BAD_CAST "units", BAD_CAST "Fahrenheit");
+
+   if (f_unit != 2)
+      xmlNewProp(temperature, BAD_CAST "units", BAD_CAST "Fahrenheit");
+   else
+      xmlNewProp(temperature, BAD_CAST "units", BAD_CAST "Celsius");
+
    xmlNewProp(temperature, BAD_CAST "time-layout", BAD_CAST layoutKey);
 
    /* Format the display <name> element. */

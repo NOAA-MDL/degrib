@@ -309,7 +309,7 @@ void getNumRows(numRowsInfo *numRowsForPoint, double *timeUserStart,
 	    {
 	       timeDataEnd = match[i].validTime;
                timeDataStart = match[i].validTime - (3600 * period);
-      
+
                /* Filter out RTMA elements with validTimes starting before 24 
                 * hrs previous. 
                 */

@@ -79,6 +79,7 @@
  *                  valid for (Soap Service), or to not shift, and simply use
  *                  the data's endTime (validTime) (JimC's TPEX, FOX, products
  *                  etc) (Input)
+ *         f_unit = 0 (GRIB unit), 1 (english), 2 (metric) (Input)
  *
  * FILES/DATABASES: None
  *
@@ -108,7 +109,7 @@ void genWindSpeedValues(double timeUserStart, double timeUserEnd, size_t pnt,
                         sChar TZoffset, sChar f_observeDST, uChar parameterName,
                         numRowsInfo numRows, uChar f_XML,
                         double *valTimeForWindDirMatch, double startTime, 
-                        int startNum, int endNum, int f_shiftData)
+                        int startNum, int endNum, int f_shiftData, sChar f_unit)
 {
    int i; /* Counter thru match structure. */
    int period = 3; /* Length between an elements successive validTimes. */
@@ -149,7 +150,12 @@ void genWindSpeedValues(double timeUserStart, double timeUserEnd, size_t pnt,
    {
       wind_speed = xmlNewChild(parameters, NULL, BAD_CAST "wind-speed", NULL);
       xmlNewProp(wind_speed, BAD_CAST "type", BAD_CAST "sustained");
-      xmlNewProp(wind_speed, BAD_CAST "units", BAD_CAST "knots");
+
+      if (f_unit != 2)
+         xmlNewProp(wind_speed, BAD_CAST "units", BAD_CAST "knots");
+      else
+         xmlNewProp(wind_speed, BAD_CAST "units", BAD_CAST "meters/second");
+
       xmlNewProp(wind_speed, BAD_CAST "time-layout", BAD_CAST layoutKey);
 
       /* Format the display <name> element. */

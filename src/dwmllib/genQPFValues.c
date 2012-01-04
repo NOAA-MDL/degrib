@@ -38,6 +38,7 @@
  *               matches can be found. (Input)
  *      endNum = Last index in match structure an individual point's data
  *               matches can be found. (Input) 
+ *      f_unit = 0 (GRIB unit), 1 (english), 2 (metric) (Input)
  *
  * FILES/DATABASES: None
  *
@@ -52,7 +53,7 @@
 #include "xmlparse.h"
 void genQPFValues(size_t pnt, char *layoutKey, genMatchType *match,
                   xmlNodePtr parameters, numRowsInfo numRows, int startNum, 
-                  int endNum)
+                  int endNum, sChar f_unit)
 {
    int i;                     /* Counter thru match structure. */
    float roundedQPFData;      /* Returned rounded data. QPF data rounds to 2
@@ -67,7 +68,12 @@ void genQPFValues(size_t pnt, char *layoutKey, genMatchType *match,
    precipitation = xmlNewChild(parameters, NULL, BAD_CAST "precipitation",
                                NULL);
    xmlNewProp(precipitation, BAD_CAST "type", BAD_CAST "liquid");
-   xmlNewProp(precipitation, BAD_CAST "units", BAD_CAST "inches");
+
+   if (f_unit != 2)
+      xmlNewProp(precipitation, BAD_CAST "units", BAD_CAST "inches");
+   else
+      xmlNewProp(precipitation, BAD_CAST "units", BAD_CAST "centimeters");
+
    xmlNewProp(precipitation, BAD_CAST "time-layout", BAD_CAST layoutKey);
 
    /* Format the display <name> element. */

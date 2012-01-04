@@ -181,8 +181,8 @@ void computeStartEndTimes(uChar parameterName, int numFmtdRows,
 
 void concatRtmaNdfdValues(size_t pnt, char *layoutKey, genMatchType *match, 
                           uChar NDFDname, uChar RTMAname, char *name, 
-                          char *metElement, char *type, char *units, 
-                          xmlNodePtr parameters, numRowsInfo numRowsNDFD, 
+                          char *metElement, char *type, char *units,
+                          xmlNodePtr parameters,  numRowsInfo numRowsNDFD, 
                           numRowsInfo numRowsRTMA, int startNum, int endNum);
 
 void determineIconUsingPop(char *iconString, char *wxStrSection, 
@@ -227,7 +227,7 @@ int formatValidTime(double validTime, char *timeBuff, int size_timeBuff,
 
 void genAppTempValues(size_t pnt, char *layoutKey, genMatchType *match,
                       xmlNodePtr parameters, numRowsInfo numRows, int startNum,
-		      int endNum);
+		      int endNum, sChar f_unit);
 
 void genClimateOutlookValues(size_t pnt, char *layoutKey, uChar parameterName, 
                              genMatchType *match, char *climateOutlookType, 
@@ -245,7 +245,12 @@ void genConvSevereCompValues(size_t pnt, char *layoutKey, uChar parameterName,
 
 void genDewPointTempValues(size_t pnt, char *layoutKey, genMatchType *match, 
                            xmlNodePtr parameters, numRowsInfo numRows, 
-                           int startNum, int endNum);
+                           int startNum, int endNum, sChar f_unit);
+
+void genFireWxValues(size_t pnt, char *layoutKey, uChar parameterName, 
+                     genMatchType *match, char *fireWxType, char *fireWxName, 
+                     xmlNodePtr parameters, numRowsInfo numRows, int startNum, 
+                     int endNum);
 
 void genHazardSummaryValues(size_t pnt, char **multiLayouts, genMatchType *match,
                             numRowsInfo numRowsHZ, xmlNodePtr parameters,
@@ -261,6 +266,10 @@ void genHazTextURL(char *baseTextURL, char *cwaStr, char *phenomena,
                    char *significance, char *code, char *hazardTextURL,
                    int *f_formatHazTextURL);
 
+void genIceAccValues(size_t pnt, char *layoutKey, genMatchType *match,
+                     xmlNodePtr parameters, numRowsInfo numRows, int startNum,
+                     int endNum, sChar f_unit);
+
 void genIconLinks(icon_def *iconInfo, uChar numRows, char *layoutKey, 
                   xmlNodePtr parameters);
 
@@ -271,13 +280,13 @@ void genLampTstmValues(size_t pnt, char *layoutKey, genMatchType *match,
 void genMaxTempValues(size_t pnt, char *layoutKey, genMatchType * match,
                       xmlNodePtr parameters, int f_formatNIL, uChar f_XML, 
                       double startTime_cml, numRowsInfo numRows, 
-                      int numFmtdRows, int startNum, int endNum);
+                      int numFmtdRows, int startNum, int endNum, sChar f_unit);
 
 void genMinTempValues(size_t pnt, char *layoutKey, genMatchType *match,
                       xmlNodePtr parameters, uChar f_XML, double startTime_cml,
                       numRowsInfo numRows, char *currentDay, char *currentHour, 
                       sChar TZoffset, sChar f_observeDST, int numFmtdRows, 
-                      int startNum, int endNum);
+                      int startNum, int endNum, sChar f_unit);
 
 void genPopValues(size_t pnt, char *layoutKey, genMatchType *match,
                   xmlNodePtr parameters, numRowsInfo numRows, uChar f_XML,
@@ -287,7 +296,7 @@ void genPopValues(size_t pnt, char *layoutKey, genMatchType *match,
 
 void genQPFValues(size_t pnt, char *layoutKey, genMatchType *match,
                   xmlNodePtr parameters, numRowsInfo numRows, int startNum, 
-                  int endNum);
+                  int endNum, sChar f_unit);
 
 void genRelHumidityValues(size_t pnt, char *layoutKey, genMatchType * match, 
                            xmlNodePtr parameters, numRowsInfo numRows, 
@@ -295,9 +304,9 @@ void genRelHumidityValues(size_t pnt, char *layoutKey, genMatchType * match,
 
 void genRtmaValues(size_t pnt, char *layoutKey, uChar parameterName,
                    int errorName, genMatchType *match, char *rtmaName, 
-                   char *rtmaElement, char *rtmaType, char *rtmaUnits, 
-                   xmlNodePtr parameters, numRowsInfo numRows, int startNum, 
-                   int endNum);
+                   char *rtmaElement, char *rtmaType, char *units,
+                   xmlNodePtr parameters, numRowsInfo numRows, 
+                   int startNum, int endNum);
 
 void genSkyCoverValues(size_t pnt, char *layoutKey, genMatchType * match,
                        xmlNodePtr parameters, char *startDate, int *maxSkyCover,
@@ -312,15 +321,15 @@ void genSkyCoverValues(size_t pnt, char *layoutKey, genMatchType * match,
 
 void genSnowValues(size_t pnt, char *layoutKey, genMatchType *match,
                    xmlNodePtr parameters, numRowsInfo numRows, int startNum, 
-                   int endNum);
+                   int endNum, sChar f_unit);
 
 void genTempValues(size_t pnt, char *layoutKey, genMatchType * match,
                    xmlNodePtr parameters, numRowsInfo numRows, int startNum, 
-                   int endNum);
+                   int endNum, sChar f_unit);
 
 void genWaveHeightValues(size_t pnt, char *layoutKey, genMatchType * match, 
                          xmlNodePtr parameters, numRowsInfo numRows, 
-                         int startNum, int endNum);
+                         int startNum, int endNum, sChar f_unit);
 
 void genWeatherValues(size_t pnt, char *layoutKey, genMatchType *match,
                       uChar f_wx, int f_icon, numRowsInfo numRowsWS, 
@@ -328,7 +337,7 @@ void genWeatherValues(size_t pnt, char *layoutKey, genMatchType *match,
                       numRowsInfo numRowsWX, numRowsInfo numRowsPOP, 
                       xmlNodePtr parameters, double lat, double lon, 
                       int startNum, int endNum, sChar TZoffset, 
-                      sChar f_observeDST);
+                      sChar f_observeDST, sChar f_unit);
 
 void genWeatherValuesByDay(size_t pnt, char *layoutKey, 
 		           genMatchType *match, size_t numMatch,
@@ -361,7 +370,7 @@ void genWindIncCumValues(size_t pnt, char *layoutKey, uChar parameterName,
 
 void genWindSpeedGustValues(size_t pnt, char *layoutKey,  genMatchType *match, 
                             xmlNodePtr parameters, numRowsInfo numRows, 
-                            int startNum, int endNum);
+                            int startNum, int endNum, sChar f_unit);
 
 void genWindSpeedValues(double timeUserStart, double timeUserEnd, size_t pnt, 
                         char *layoutKey, genMatchType * match,
@@ -370,7 +379,8 @@ void genWindSpeedValues(double timeUserStart, double timeUserEnd, size_t pnt,
                         sChar TZoffset, sChar f_observeDST, uChar parameterName,
                         numRowsInfo numRows, uChar f_XML,
                         double *valTimeForWindDirMatch, double startTime, 
-                        int startNum, int endNum, int f_shiftData);
+                        int startNum, int endNum, int f_shiftData, 
+                        sChar f_unit);
 
 void generateConcatTimeLayout(numRowsInfo *numRows, int elemIndex,
                               uChar concatNdfdEnum, char *layoutKey, 
@@ -496,6 +506,8 @@ void getStartDates(char **startDate, uChar f_XML, double startTime,
 
 void getTranslatedCoverage(char *uglyStr, char *transStr);
 
+void getTranslatedFireWx(int fireWxCat, char *transStr);
+
 void getTranslatedHzSig(char *uglyStr, char *transStr);
 
 void getTranslatedIntensity(char *uglyStr, char *transStr);
@@ -506,7 +518,7 @@ void getTranslatedRisk(int convHazCat, char *transStr);
 
 void getTranslatedType(char *uglyStr, char *transStr);
 
-void getTranslatedVisibility(char *uglyStr, char *transStr);
+void getTranslatedVisibility(sChar f_unit, char *uglyStr, char *transStr);
 
 void getUserTimes(double **timeUserStart, double **timeUserEnd, 
                   int *f_POPUserStart, char *startDate, sChar TZ, 
