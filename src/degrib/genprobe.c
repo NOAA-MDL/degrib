@@ -1433,6 +1433,20 @@ static void genFillValue (sInt4 gribDataLen, const double *gribData,
       missing = grdAtt->missPri;
    }
 
+   /* Need an adjustment for QPF (and RTMA_PRECIP) and IceAccum in the 
+    * case of f_unit = 2.  The reason is that Paul defined metric to be 
+    * cm instead of kg/m^2.  The code by default should have converted
+    * from GRIB units to kg/m^2 (ie did nothing in this case).  To convert
+    * kg/m^2 to cm, we multipy with a MQ = 1/10. */            
+    
+   /* Need an adjustment for SNOW in the case of f_unit = 2.  The reason is 
+    * that Paul defined metric to be cm instead of m.  The code by default 
+    * should have converted from GRIB units to m (ie did nothing in this case).
+    * To convert m to cm, we multipy with a MS = 100. */ 
+    
+   /* Note the difference between MQ and MS is a factor of 1000 which is the
+    * density of water (1000 kg/m^3). */                    
+
    /* Loop over the points. */
    for (i = 0; i < numPnts; i++) {
       getValAtPnt (gribDataLen, gribData, map, f_pntType, pnts[i].X,
@@ -1705,15 +1719,27 @@ static void genCubeFillValue (FILE *data, sInt4 dataOffset, uChar scan,
                              &unitB, *convertedUnit);
       } else if ((elemEnum == NDFD_QPF) || (elemEnum == RTMA_PRECIPA) || 
                  (elemEnum == NDFD_ICEACC)) {
-         /* Reverse kg/m^2 to inches... */ 
-         InverseComputeUnit (UC_InchWater, unitReadFromBufr, f_unit, &unitM, 
-                             &unitB, *convertedUnit);
-         /* Want these in cm instead of kg/m^2 */                    
+         if (f_unit == 0) {
+            /* Reverse kg/m^2 to inches... */ 
+            InverseComputeUnit (UC_InchWater, unitReadFromBufr, f_unit, &unitM, 
+                                &unitB, *convertedUnit);
+         } else {
+            /* Have them in inches, want them in cm */
+            strcpy (*convertedUnit, "[cm]");
+            unitM = 2.54;
+            unitB = 0;
+         } 
       } else if (elemEnum == NDFD_SNOW) {
-         /* Reverse m to inch... */ 
-         InverseComputeUnit (UC_M2Inch, unitReadFromBufr, f_unit, &unitM, 
-                             &unitB, *convertedUnit);
-         /* Want these in cm instead of m */                    
+         if (f_unit == 0) {
+            /* Reverse m to inch... */ 
+            InverseComputeUnit (UC_M2Inch, unitReadFromBufr, f_unit, &unitM, 
+                                &unitB, *convertedUnit);
+         } else {
+            /* Have them in inches, want them in cm */
+            strcpy (*convertedUnit, "[cm]");
+            unitM = 2.54;
+            unitB = 0;
+         }                             
       } else if ((elemEnum == NDFD_WH)) {
          /* Reverse m to feet... */ 
          InverseComputeUnit (UC_M2Feet, unitReadFromBufr, f_unit, &unitM, 
