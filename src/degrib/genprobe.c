@@ -52,70 +52,71 @@ static const genElemDescript NdfdElements[] = {
 /* 7 */   {NDFD_SKY,2, 8,MISSING_2,2,0, 0,0,6,1,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
 /* 8 */   {NDFD_QPF,2, 8,MISSING_2,2,0, 0,8,1,8,-1,6, 1,0.0,0.0 ,0,-1,-1,-1,-1},
 /* 9 */   {NDFD_SNOW,2, 8,MISSING_2,2,0, 0,8,1,29,-1,6, 1,0.0,0.0 ,0,-1,-1,-1,-1},
-/* 10 */  {NDFD_WX,2, 8,MISSING_2,2,0, 0,0,1,192,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
-/* 11 */  {NDFD_WH,2, 8,MISSING_2,2,0, 10,0,0,5,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
-/* 12 */  {NDFD_AT,2, 8,MISSING_2,2,0, 0,0,0,193,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
-/* 13 */  {NDFD_RH,2, 8,MISSING_2,2,0, 0,0,1,1,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
-/* 14 */  {NDFD_WG,2, 8,MISSING_2,2,0, 0,0,2,22,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
-/* 15 */  {NDFD_WWA,2, 8,MISSING_2,2,0, 0,0,19,217,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+/* 10 */  {NDFD_ICEACC,2, 8,MISSING_2,2,0, 0,8,1,227,-1,6, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+/* 11 */  {NDFD_WX,2, 8,MISSING_2,2,0, 0,0,1,192,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+/* 12 */  {NDFD_WH,2, 8,MISSING_2,2,0, 10,0,0,5,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+/* 13 */  {NDFD_AT,2, 8,MISSING_2,2,0, 0,0,0,193,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+/* 14 */  {NDFD_RH,2, 8,MISSING_2,2,0, 0,0,1,1,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+/* 15 */  {NDFD_WG,2, 8,MISSING_2,2,0, 0,0,2,22,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+/* 16 */  {NDFD_WWA,2, 8,MISSING_2,2,0, 0,0,19,217,-1,0, 1,0.0,0.0 ,0,-1,-1,-1,-1},
 
-/* 16 */  {NDFD_INC34,2, 8,MISSING_2,2,0, 0,9,2,1,-1,6, 103,10.0,0.0 ,1,0,0,17491,3},
-/* 17 */  {NDFD_INC50,2, 8,MISSING_2,2,0, 0,9,2,1,-1,6, 103,10.0,0.0 ,1,0,0,25722,3},
-/* 18 */  {NDFD_INC64,2, 8,MISSING_2,2,0, 0,9,2,1,-1,6, 103,10.0,0.0 ,1,0,0,32924,3},
-/* 19 */  {NDFD_CUM34,2, 8,MISSING_2,2,0, 0,9,2,1,0,0, 103,10.0,0.0 ,1,0,0,17491,3},
-/* 20 */  {NDFD_CUM50,2, 8,MISSING_2,2,0, 0,9,2,1,0,0, 103,10.0,0.0 ,1,0,0,25722,3},
-/* 21 */  {NDFD_CUM64,2, 8,MISSING_2,2,0, 0,9,2,1,0,0, 103,10.0,0.0 ,1,0,0,32924,3},
+/* 17 */  {NDFD_INC34,2, 8,MISSING_2,2,0, 0,9,2,1,-1,6, 103,10.0,0.0 ,1,0,0,17491,3},
+/* 18 */  {NDFD_INC50,2, 8,MISSING_2,2,0, 0,9,2,1,-1,6, 103,10.0,0.0 ,1,0,0,25722,3},
+/* 19 */  {NDFD_INC64,2, 8,MISSING_2,2,0, 0,9,2,1,-1,6, 103,10.0,0.0 ,1,0,0,32924,3},
+/* 20 */  {NDFD_CUM34,2, 8,MISSING_2,2,0, 0,9,2,1,0,0, 103,10.0,0.0 ,1,0,0,17491,3},
+/* 21 */  {NDFD_CUM50,2, 8,MISSING_2,2,0, 0,9,2,1,0,0, 103,10.0,0.0 ,1,0,0,25722,3},
+/* 22 */  {NDFD_CUM64,2, 8,MISSING_2,2,0, 0,9,2,1,0,0, 103,10.0,0.0 ,1,0,0,32924,3},
 
-/* 22 */  {NDFD_FWXWINDRH,2, 8,MISSING_2,2,0, 0,9,192,192,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
-/* 23 */  {NDFD_FWXTSTORM,2, 8,MISSING_2,2,0, 0,9,192,194,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+/* 23 */  {NDFD_FWXWINDRH,2, 8,MISSING_2,2,0, 0,9,192,192,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+/* 24 */  {NDFD_FWXTSTORM,2, 8,MISSING_2,2,0, 0,9,192,194,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
 
-/* 24 */  {NDFD_CONHAZ,2, 8,MISSING_2,2,0, 0,8,19,194,-1,24, 1,0.0,0.0 ,0,-1,-1,-1,-1},
-/* 25 */  {NDFD_PTORN,2, 8,MISSING_2,2,0, 0,9,19,197,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
-/* 26 */  {NDFD_PHAIL,2, 8,MISSING_2,2,0, 0,9,19,198,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
-/* 27 */  {NDFD_PTSTMWIND,2, 8,MISSING_2,2,0, 0,9,19,199,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
-/* 28 */  {NDFD_PXTORN,2, 8,MISSING_2,2,0, 0,9,19,200,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
-/* 29 */  {NDFD_PXHAIL,2, 8,MISSING_2,2,0, 0,9,19,201,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
-/* 30 */  {NDFD_PXTSTMWIND,2, 8,MISSING_2,2,0, 0,9,19,202,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+/* 25 */  {NDFD_CONHAZ,2, 8,MISSING_2,2,0, 0,8,19,194,-1,24, 1,0.0,0.0 ,0,-1,-1,-1,-1},
+/* 26 */  {NDFD_PTORN,2, 8,MISSING_2,2,0, 0,9,19,197,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+/* 27 */  {NDFD_PHAIL,2, 8,MISSING_2,2,0, 0,9,19,198,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+/* 28 */  {NDFD_PTSTMWIND,2, 8,MISSING_2,2,0, 0,9,19,199,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+/* 29 */  {NDFD_PXTORN,2, 8,MISSING_2,2,0, 0,9,19,200,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+/* 30 */  {NDFD_PXHAIL,2, 8,MISSING_2,2,0, 0,9,19,201,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+/* 31 */  {NDFD_PXTSTMWIND,2, 8,MISSING_2,2,0, 0,9,19,202,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
 /* Following two lines changed from 203->215 and 204->216 9/19/2007 */
-/* 31 */  {NDFD_PSTORM,2, 8,MISSING_2,2,0, 0,9,19,215,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
-/* 32 */  {NDFD_PXSTORM,2, 8,MISSING_2,2,0, 0,9,19,216,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+/* 32 */  {NDFD_PSTORM,2, 8,MISSING_2,2,0, 0,9,19,215,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
+/* 33 */  {NDFD_PXSTORM,2, 8,MISSING_2,2,0, 0,9,19,216,-1,24, 1,0.0,0.0 ,1,GRIB2MISSING_s4,-1,0,0},
 
 /* If we have to change the 0,0,0,0 for lower/upper Value/Factor, also update
  * cube.c :: line 634, 655 */
    /* the 6 in the length of time column stands for 6 days... */
-/* 33 */   {NDFD_TMPABV14D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,6, 1,0.0,0.0, 3,0,0,0,0},
-/* 34 */   {NDFD_TMPBLW14D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,6, 1,0.0,0.0, 0,0,0,0,0},
-/* 35 */   {NDFD_PRCPABV14D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,6, 1,0.0,0.0, 3,0,0,0,0},
-/* 36 */   {NDFD_PRCPBLW14D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,6, 1,0.0,0.0, 0,0,0,0,0},
+/* 34 */   {NDFD_TMPABV14D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,6, 1,0.0,0.0, 3,0,0,0,0},
+/* 35 */   {NDFD_TMPBLW14D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,6, 1,0.0,0.0, 0,0,0,0,0},
+/* 36 */   {NDFD_PRCPABV14D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,6, 1,0.0,0.0, 3,0,0,0,0},
+/* 37 */   {NDFD_PRCPBLW14D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,6, 1,0.0,0.0, 0,0,0,0,0},
    /* the 1 in the length of time column stands for 1 month... */
-/* 37 */   {NDFD_TMPABV30D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,1, 1,0.0,0.0, 3,0,0,0,0},
-/* 38 */   {NDFD_TMPBLW30D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,1, 1,0.0,0.0, 0,0,0,0,0},
-/* 39 */   {NDFD_PRCPABV30D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,1, 1,0.0,0.0, 3,0,0,0,0},
-/* 40 */   {NDFD_PRCPBLW30D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,1, 1,0.0,0.0, 0,0,0,0,0},
+/* 38 */   {NDFD_TMPABV30D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,1, 1,0.0,0.0, 3,0,0,0,0},
+/* 39 */   {NDFD_TMPBLW30D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,1, 1,0.0,0.0, 0,0,0,0,0},
+/* 40 */   {NDFD_PRCPABV30D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,1, 1,0.0,0.0, 3,0,0,0,0},
+/* 41 */   {NDFD_PRCPBLW30D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,1, 1,0.0,0.0, 0,0,0,0,0},
    /* the 3 in the length of time column stands for 3 months... */
-/* 41 */   {NDFD_TMPABV90D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,3, 1,0.0,0.0, 3,0,0,0,0},
-/* 42 */   {NDFD_TMPBLW90D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,3, 1,0.0,0.0, 0,0,0,0,0},
-/* 43 */   {NDFD_PRCPABV90D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,3, 1,0.0,0.0, 3,0,0,0,0},
-/* 44 */   {NDFD_PRCPBLW90D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,3, 1,0.0,0.0, 0,0,0,0,0},
-/* 45 */   {LAMP_TSTMPRB,2, 7,14,5,108, 0,8,19,2,-1,2, 1,0.0,0.0, 0,-1,-1,-1,-1},
+/* 42 */   {NDFD_TMPABV90D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,3, 1,0.0,0.0, 3,0,0,0,0},
+/* 43 */   {NDFD_TMPBLW90D,2, 8,MISSING_2,2,0, 0,9,0,0,-1,3, 1,0.0,0.0, 0,0,0,0,0},
+/* 44 */   {NDFD_PRCPABV90D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,3, 1,0.0,0.0, 3,0,0,0,0},
+/* 45 */   {NDFD_PRCPBLW90D,2, 8,MISSING_2,2,0, 0,9,1,8,-1,3, 1,0.0,0.0, 0,0,0,0,0},
+/* 46 */   {LAMP_TSTMPRB,2, 7,14,5,108, 0,8,19,2,-1,2, 1,0.0,0.0, 0,-1,-1,-1,-1},
 
-/* 46 */  {RTMA_PRECIPA,2, 7,0,2,109, 0,8,1,8,-1,1, 1,0.0,0.0, 0,-1,-1,-1,-1}, /* genProcess = 2 forecast? */
-/* 47 */  {RTMA_SKY,2, 7,0,8,109, 0,0,6,1,-1,0, 200,0.0,0.0, 0,-1,-1,-1,-1},  /* genProcess = 8 observation */
-/* 48 */  {RTMA_TD,2,  7,4,0,109, 0,0,0,6,-1,0, 103,2.0,0.0, 0,-1,-1,-1,-1},
-/* 49 */  {RTMA_TEMP,2, 7,4,0,109, 0,0,0,0,-1,0, 103,2.0,0.0, 0,-1,-1,-1,-1},
-/* 50 */  {RTMA_UTD,2, 7,4,7,109, 0,0,0,6,-1,0, 103,2.0,0.0, 0,-1,-1,-1,-1},
-/* 51 */  {RTMA_UTEMP,2, 7,4,7,109, 0,0,0,0,-1,0, 103,2.0,0.0, 0,-1,-1,-1,-1},
-/* 52 */  {RTMA_UWDIR,2, 7,4,7,109, 0,0,2,0,-1,0, 103,10.0,0.0, 0,-1,-1,-1,-1},
-/* 53 */  {RTMA_UWSPD,2, 7,4,7,109, 0,0,2,1,-1,0, 103,10.0,0.0, 0,-1,-1,-1,-1},
-/* 54 */  {RTMA_WDIR,2, 7,4,0,109, 0,0,2,0,-1,0, 103,10.0,0.0, 0,-1,-1,-1,-1},
-/* 55 */  {RTMA_WSPD,2, 7,4,0,109, 0,0,2,1,-1,0, 103,10.0,0.0, 0,-1,-1,-1,-1},
+/* 47 */  {RTMA_PRECIPA,2, 7,0,2,109, 0,8,1,8,-1,1, 1,0.0,0.0, 0,-1,-1,-1,-1}, /* genProcess = 2 forecast? */
+/* 48 */  {RTMA_SKY,2, 7,0,8,109, 0,0,6,1,-1,0, 200,0.0,0.0, 0,-1,-1,-1,-1},  /* genProcess = 8 observation */
+/* 49 */  {RTMA_TD,2,  7,4,0,109, 0,0,0,6,-1,0, 103,2.0,0.0, 0,-1,-1,-1,-1},
+/* 50 */  {RTMA_TEMP,2, 7,4,0,109, 0,0,0,0,-1,0, 103,2.0,0.0, 0,-1,-1,-1,-1},
+/* 51 */  {RTMA_UTD,2, 7,4,7,109, 0,0,0,6,-1,0, 103,2.0,0.0, 0,-1,-1,-1,-1},
+/* 52 */  {RTMA_UTEMP,2, 7,4,7,109, 0,0,0,0,-1,0, 103,2.0,0.0, 0,-1,-1,-1,-1},
+/* 53 */  {RTMA_UWDIR,2, 7,4,7,109, 0,0,2,0,-1,0, 103,10.0,0.0, 0,-1,-1,-1,-1},
+/* 54 */  {RTMA_UWSPD,2, 7,4,7,109, 0,0,2,1,-1,0, 103,10.0,0.0, 0,-1,-1,-1,-1},
+/* 55 */  {RTMA_WDIR,2, 7,4,0,109, 0,0,2,0,-1,0, 103,10.0,0.0, 0,-1,-1,-1,-1},
+/* 56 */  {RTMA_WSPD,2, 7,4,0,109, 0,0,2,1,-1,0, 103,10.0,0.0, 0,-1,-1,-1,-1},
 
 #ifdef GFSEKD
-/* 56 */  {GFSEKDMOS_MAXT,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
-/* 57 */  {GFSEKDMOS_MINT,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
-/* 58 */  {GFSEKDMOS_TEMP,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
-/* 59 */  {GFSEKDMOS_TD,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
-/* 60 */  {GFSEKDMOS_QPF,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
+/* 57 */  {GFSEKDMOS_MAXT,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
+/* 58 */  {GFSEKDMOS_MINT,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
+/* 59 */  {GFSEKDMOS_TEMP,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
+/* 60 */  {GFSEKDMOS_TD,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
+/* 61 */  {GFSEKDMOS_QPF,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
 #endif
 
    {NDFD_UNDEF,2, MISSING_2,MISSING_2,MISSING_1,MISSING_1,
@@ -166,7 +167,7 @@ static const uChar NdfdElementsLen = (sizeof (NdfdElements) /
  */
 /* these are a string tolower on the short name of each NDFD element */
 static char *NDFD_Type[] = { "maxt", "mint", "pop12", "t", "winddir",
-   "windspd", "td", "sky", "qpf", "snowamt", "wx", "waveheight",
+   "windspd", "td", "sky", "qpf", "snowamt", "iceaccum", "wx", "waveheight",
    "apparentt", "rh", "windgust", "wwa", "probwindspd34i", "probwindspd50i",
    "probwindspd64i", "probwindspd34c", "probwindspd50c", "probwindspd64c",
    "probfirewx24", "probdrylightning24", "convoutlook", "tornadoprob", "hailprob",
@@ -179,7 +180,7 @@ static char *NDFD_Type[] = { "maxt", "mint", "pop12", "t", "winddir",
 };
 /* These match the convention on official download pages (cube names). */
 static char *NDFD_File[] = { "maxt", "mint", "pop12", "temp", "wdir",
-   "wspd", "td", "sky", "qpf", "snow", "wx", "waveh", "apt", "rhm",
+   "wspd", "td", "sky", "qpf", "snow", "iceaccum", "wx", "waveh", "apt", "rhm",
    "wgust", "wwa", "tcwspdabv34i", "tcwspdabv50i", "tcwspdabv64i",
    "tcwspdabv34c", "tcwspdabv50c", "tcwspdabv64c", "critfireo",
    "dryfireo", "conhazo", "ptornado", "phail", "ptstmwinds", "pxtornado",
@@ -192,9 +193,9 @@ static char *NDFD_File[] = { "maxt", "mint", "pop12", "temp", "wdir",
 /* A (mostly) 2 letter abreviation scheme created with/for the verification
    group */
 static char *NDFD_File2[] = { "mx", "mn", "po", "tt", "wd",
-   "ws", "dp", "cl", "qp", "sn", "wx", "wh", "at", "rh", "wg", "wwa", "i3",
-   "i5", "i6", "c3", "c5", "c6", "fwxwdrh", "fwxdry", "ch", "pt", "ph", "pw",
-   "xt", "xh", "xw", "ps", "xs", "ta6d", "tb6d", "pa6d", "pb6d", "ta1m",
+   "ws", "dp", "cl", "qp", "sn", "icea", "wx", "wh", "at", "rh", "wg", "wwa",
+   "i3", "i5", "i6", "c3", "c5", "c6", "fwxwdrh", "fwxdry", "ch", "pt", "ph",
+   "pw", "xt", "xh", "xw", "ps", "xs", "ta6d", "tb6d", "pa6d", "pb6d", "ta1m",
    "tb1m", "pa1m", "pb1m", "ta3m", "tb3m", "pa3m", "pb3m", "tstmprb", "apcp01",
    "tcdc", "dpt", "tmp", "dpterr", "tmperr", "wdirerr", "winderr", "wdir",
    "wind", NULL
@@ -314,13 +315,14 @@ int validMatch(double elemEndTime, double elemRefTime, int elemEnum,
       }
    }
 
-   /* QPF, SNOW, and the six Tropical Wind Thresholds. 6-hour
+   /* QPF, SNOW, Ice Accumulation, and the six Tropical Wind Thresholds. 6-hour
     * period.
     */
    if ((elemEnum == NDFD_QPF) || (elemEnum == NDFD_SNOW) ||
        (elemEnum == NDFD_INC34) || (elemEnum == NDFD_INC50) ||
        (elemEnum == NDFD_INC64) || (elemEnum == NDFD_CUM34) ||
-       (elemEnum == NDFD_CUM50) || (elemEnum == NDFD_CUM64)) {
+       (elemEnum == NDFD_CUM50) || (elemEnum == NDFD_CUM64) ||
+       (elemEnum == NDFD_ICEACC)) {
       elemStartTime = elemEndTime - (6*3600);
       if (((f_valTime & 1) && (elemEndTime <= startTime)) ||
           ((f_valTime & 2) && (elemStartTime >= endTime))) {
@@ -1464,6 +1466,155 @@ static void genFillValue (sInt4 gribDataLen, const double *gribData,
 #endif
 
 /*****************************************************************************
+ * InverseComputUnit() -- (See metaname.c::ComputeUnit()
+ *
+ * Arthur Taylor / MDL
+ *
+ * PURPOSE
+ *   NDFD typically stores the units in the cube using f_unit 1.  However 
+ * for DWML, there was a desire to be able to change the unit based on the
+ * f_unit.  So we needed a "InverseComputeUnit" method to potentially go
+ * from f_unit = 1 to f_unit = 0 or f_unit = 2.             
+ *            
+ *   This code assumes that the data is in f_unit 1, and reverses it.       
+ *    
+ *   This code sets m, and b for equation y = mx + b, where x is in the unit
+ * of f_unit 1 (english), and y is the one specified by f_unit.  The default
+ * is m = 1, b = 0.
+ *    
+ * Currently:
+ *   For f_unit = 1 (english) we return Fahrenheit, knots, and inches for
+ * temperature, wind speed, and amount of snow or rain.  The original units
+ * are Kelvin, m/s, kg/m**2.
+ *   For f_unit = 2 (metric) we return Celsius instead of Kelvin.
+ *   For f_unit = 0 (SI) we return Kelvin instead of  
+ *
+ * ARGUMENTS
+ *  convert = The enumerated type describing the type of conversion. (Input)
+ * origName = Original unit name (needed for log10 option) (Input)
+ *   f_unit = What type of unit to return (see above) (Input).
+ *    unitM = M in equation y = m x + b (Output)
+ *    unitB = B in equation y = m x + b (Output)
+ *     name = Where to store the result (assumed already allocated to at
+ *           least 15 bytes) (Output)
+ *
+ * FILES/DATABASES: None
+ *
+ * RETURNS: int
+ *   0 if we set M and B, 1 if we used defaults.
+ *
+ * HISTORY
+ *   10/2011 Arthur Taylor (MDL/RSIS): Re-Created.
+ *
+ * NOTES
+ *****************************************************************************
+ */
+static int InverseComputeUnit (int convert, const char *origName, sChar f_unit, 
+                               double *unitM, double *unitB, char *name)
+{
+   switch (convert) {
+      case UC_NONE:
+         break;
+      case UC_K2F:
+         if (f_unit == 2) {
+            /* F to C here. */
+            strcpy (name, "[C]");         
+            *unitM = 5. / 9.;
+            *unitB = - 160 / 9.;
+            return 0;
+         } else if (f_unit == 0) {
+            /* F to K here. */
+            strcpy (name, "[K]");         
+            *unitM = 5. / 9.;
+            *unitB = 273.15 - (160 / 9.);
+            return 0;
+         }
+         break;
+      case UC_InchWater: /* Convert from kg/(m^2) to inches water. */
+         if (f_unit != 1) {
+            strcpy (name, "[kg/m^2]");
+            /* 
+             * kg/m**2 / density of water (1000 kg/m**3)
+             * 1/1000 m * 1/2.54 in/cm * 100 cm/m = 1/25.4 inches
+             * Reversing we multiply by 25.4 to get kg/m^2             
+             */
+            *unitM = 25.4;
+            *unitB = 0;
+            return 0;
+         }
+         break;
+      case UC_M2Feet:  /* Convert from meters to feet. */
+         if (f_unit != 1) {
+            /* 1 (m) * (100cm/m) * (inch/2.54cm) * (ft/12inch) = X (ft) */
+            /* ft to m here. */
+            strcpy (name, "[m]");
+            *unitM = .3048;
+            *unitB = 0;
+            return 0;
+         }
+         break;
+      case UC_M2Inch:  /* Convert from meters to inches. */
+         if (f_unit != 1) {
+            /* inch to m here. */
+            strcpy (name, "[m]");
+            *unitM = .0254; /* inch / m */
+            *unitB = 0;
+            return 0;
+         }
+         break;
+      case UC_M2StatuteMile: /* Convert from meters to statute miles. */
+         if (f_unit != 1) {
+            /* mile to m here. */
+            strcpy (name, "[m]");
+            *unitM = 1609.344; /* mile / m */
+            *unitB = 0;
+            return 0;
+         }
+         break;
+         /* NCEP goes with a convention of 1 nm = 1853.248 m.
+          * http://www.sizes.com/units/mile_USnautical.htm Shows that on
+          * 7/1/1954 US Department of Commerce switched to 1 nm = 1852 m
+          * (International standard.) */
+      case UC_MS2Knots: /* Convert from m/s to knots. */
+         if (f_unit != 1) {
+            /* knots to m/s */
+            strcpy (name, "[m/s]");
+            *unitM = 1852. / 3600.; /* knot / m s**-1 */
+            *unitB = 0;
+            return 0;
+         }
+         break;
+      case UC_UVIndex: /* multiply by Watts/ m**2 by 40 for the UV index. */
+         if (f_unit != 1) {
+            strcpy (name, "[Watts/m^2]");
+            *unitM = 1/40.;
+            *unitB = 0;
+            return 0;
+         }
+         break;
+/*
+      case UC_LOG10:   * convert from log10 (x) to x *
+         if ((f_unit == 1) || (f_unit == 2)) {
+            origName[strlen (origName) - 2] = '\0';
+            if (strlen (origName) > 21)
+               origName[21] = '\0';
+            sprintf (name, "[%s]", origName + 7);
+            *unitM = -10; 
+                       * M = -10 => take 10^(x) *
+            *unitB = 0;
+            return 0;
+         }
+         break;
+*/
+   }
+   strncpy (name, origName, 14);
+   name[14] = '\0';
+   *unitM = 1;
+   *unitB = 0;
+   return 1;
+}
+
+/*****************************************************************************
  * genCubeFillValue() -- Arthur Taylor / MDL
  *
  * PURPOSE
@@ -1501,8 +1652,10 @@ static void genCubeFillValue (FILE *data, sInt4 dataOffset, uChar scan,
                               size_t numPnts, const Point * pnts, sInt4 Nx,
                               sInt4 Ny, uChar f_interp, uChar elemEnum,
                               uShort2 numTable, char **table,
-                              sChar f_WxParse, sChar f_SimpleVer, sChar f_SimpleWWA,
-                              genValueType * value)
+                              sChar f_WxParse, sChar f_SimpleVer, 
+                              sChar f_SimpleWWA, char *unitReadFromBufr, 
+                              sChar f_unit, char **convertedUnit,
+                              genValueType *value)
 {
    size_t i;            /* loop counter over number of points. */
    float ans;           /* The current cell value. */
@@ -1510,6 +1663,7 @@ static void genCubeFillValue (FILE *data, sInt4 dataOffset, uChar scan,
    size_t j;            /* Counter used to print "english" weather. */
    UglyStringType ugly; /* Used to 'translate' the weather keys. */
    HazardStringType haz; /* Used to 'translate' the hazard keys. */
+   double unitM, unitB;
 
    myAssert ((scan == 0) || (scan == 64));
    myAssert (sizeof (float) == 4);
@@ -1522,6 +1676,54 @@ static void genCubeFillValue (FILE *data, sInt4 dataOffset, uChar scan,
    if ((elemEnum == NDFD_WX) || (elemEnum == NDFD_WWA)) {
       f_interp = 0;
    }
+
+   /* Determine the units.  Call metaname.c :: InverseCompute() */
+   if (f_unit == 1) {
+      *convertedUnit = (char *) malloc (strlen (unitReadFromBufr) + 1);
+      unitM = 1;
+      unitB = 0;
+      strcpy (*convertedUnit, unitReadFromBufr);
+   }  else {
+      *convertedUnit = (char *) malloc (15 + 1);
+      /* Would prefer something better than a big if/else statement here. */      
+      if ((elemEnum == NDFD_MAX) || (elemEnum == NDFD_MIN) || 
+          (elemEnum == NDFD_TEMP) || (elemEnum == NDFD_TD) || 
+          (elemEnum == NDFD_AT) || (elemEnum == RTMA_TD) || 
+          (elemEnum == RTMA_TEMP)) {
+         /* Reverse the K to F conversion... */ 
+         InverseComputeUnit (UC_K2F, unitReadFromBufr, f_unit, &unitM, &unitB,
+                             *convertedUnit);
+      } else if ((elemEnum == RTMA_UTD || elemEnum == RTMA_UTEMP) ||
+                 (elemEnum == RTMA_UWSPD)) {
+         /* No conversion took place. */
+         InverseComputeUnit (UC_NONE, unitReadFromBufr, f_unit, &unitM, &unitB,
+                             *convertedUnit);
+      } else if ((elemEnum == NDFD_WS) || (elemEnum == NDFD_WG) || 
+                 (elemEnum == RTMA_WSPD)) {
+         /* Reverse m/s to knots... */ 
+         InverseComputeUnit (UC_MS2Knots, unitReadFromBufr, f_unit, &unitM, 
+                             &unitB, *convertedUnit);
+      } else if ((elemEnum == NDFD_QPF) || (elemEnum == RTMA_PRECIPA) || 
+                 (elemEnum == NDFD_ICEACC)) {
+         /* Reverse kg/m^2 to inches... */ 
+         InverseComputeUnit (UC_InchWater, unitReadFromBufr, f_unit, &unitM, 
+                             &unitB, *convertedUnit);
+         /* Want these in cm instead of kg/m^2 */                    
+      } else if (elemEnum == NDFD_SNOW) {
+         /* Reverse m to inch... */ 
+         InverseComputeUnit (UC_M2Inch, unitReadFromBufr, f_unit, &unitM, 
+                             &unitB, *convertedUnit);
+         /* Want these in cm instead of m */                    
+      } else if ((elemEnum == NDFD_WH)) {
+         /* Reverse m to feet... */ 
+         InverseComputeUnit (UC_M2Feet, unitReadFromBufr, f_unit, &unitM, 
+                             &unitB, *convertedUnit);
+      } else {
+         /* Unrecoginzed... Assume no conversion took place. */
+         InverseComputeUnit (UC_NONE, unitReadFromBufr, f_unit, &unitM, &unitB,
+                             *convertedUnit);
+      }
+   } 
 
    for (i = 0; i < numPnts; i++) {
       getCubeValAtPnt (data, dataOffset, scan, f_bigEndian, map, pnts[i].X,
@@ -1540,7 +1742,7 @@ static void genCubeFillValue (FILE *data, sInt4 dataOffset, uChar scan,
       } else {
          if ((elemEnum != NDFD_WX) && (elemEnum != NDFD_WWA)) {
             value[i].valueType = 0;
-            value[i].data = ans;
+            value[i].data = unitM * ans + unitB;
             value[i].str = NULL;
          } else {
             wxIndex = (uShort2) ans;
@@ -1612,6 +1814,7 @@ static void genCubeFillValue (FILE *data, sInt4 dataOffset, uChar scan,
                         mallocSprintf (&(value[i].str), "%d", haz.SimpleCode);
                         FreeHazardString (&haz);
                      }
+                     break;
                }
             }
          }
@@ -2135,9 +2338,11 @@ printf ("element is %d\n", elemEnum);
             curMatch->refTime = refTime;
             curMatch->validTime = validTime;
             curMatch->f_sector = f_sector;
+            /*  Moving the following into genCubeFillValue()
             curMatch->unit = (char *) malloc (strlen (unit) + 1);
             strcpy (curMatch->unit, unit);
-
+            */
+            
             /* Fill the value structure. */
             curMatch->numValue = numPnts;
             curMatch->value = (genValueType *) malloc (numPnts *
@@ -2147,12 +2352,14 @@ printf ("element is %d\n", elemEnum);
                genCubeFillValue (data, dataOffset, scan, f_bigEndian, &map,
                                  numPnts, gridPnts, gds.Nx, gds.Ny, f_interp,
                                  elemEnum, numTable, table, f_WxParse,
-                                 f_SimpleVer, f_SimpleWWA, curMatch->value);
+                                 f_SimpleVer, f_SimpleWWA, unit, f_unit, 
+                                 &curMatch->unit, curMatch->value);
             } else {
                genCubeFillValue (data, dataOffset, scan, f_bigEndian, &map,
                                  numPnts, pnts, gds.Nx, gds.Ny, f_interp,
                                  elemEnum, numTable, table, f_WxParse,
-                                 f_SimpleVer, f_SimpleWWA, curMatch->value);
+                                 f_SimpleVer, f_SimpleWWA, unit, f_unit, 
+                                 &curMatch->unit, curMatch->value);
             }
 
             if (numTable != 0) {
@@ -2386,14 +2593,13 @@ int genProbe (size_t numPnts, Point * pnts, sChar f_pntType,
                     sector, f_ndfdConven, numElem, elem, &numOutNames,
                     &outNames);
    }
-#ifdef DEBUG
 /*
+#ifdef DEBUG
    for (i = 0; i < numOutNames; i++) {
       printf ("outnames[%d] = %s\n", i, outNames[i]);
    }
-*/
 #endif
-
+*/
    for (i = 0; i < numOutNames; i++) {
 #ifndef DP_ONLY
       if (f_fileType == 0) {
