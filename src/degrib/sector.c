@@ -44,11 +44,18 @@ static const gdsType NdfdDefGds[] = {
     0, 0, 64, 0, 0,
     25.000000, 25.000000, -90, 0, 0, 0, 0, 0, 0},
 /* Finer resolution version Puertori. */
+   {75936, 10, 1, 6371.2, 6371.2,
+    339, 224, 16.977485, 291.972167, 0.000000,
+    1250.000000, 1250.000000, 20.000000,
+    0, 0, 64, 19.544499, 296.0156,
+    0, 0, 0, 0, 0, 0, 0, 0, 0},
+/*
    {76953, 10, 1, 6371.2, 6371.2,
     339, 227, 16.977485, 291.972167, 0.000000,
     1250.000000, 1250.000000, 20.000000,
     0, 0, 64, 19.544499, 296.0156,
     0, 0, 0, 0, 0, 0, 0, 0, 0},
+*/
 /* Coarser resolution version of Puertori. */
 /*
    {22833, 10, 1, 6371.2, 6371.2,
@@ -738,12 +745,16 @@ static void SectorTimeZones (sChar f_sector, const char *sectName,
    } else if (f_dayLight == 9999) {
       /* note len ("daylight.flt") = len ("timezone.flt") */
       if (strcmp(sectName, "conus5") == 0) {
+         /* The +50 is to get some extra memory for safety.  The following
+            sprintfs to deal with conus5 has been hacked from time to time. */
          fileName = (char *) malloc (strlen (geoDataDir) + 1 + strlen ("conus")
-                                     + strlen ("timezone.flt") + 1);
+                                     + strlen ("timezone.flt") + 1 + 50);
          sprintf (fileName, "%s/%sdaylight.flt", geoDataDir, "conus");
       } else {
+         /* The +50 is to get some extra memory for safety.  The following
+            sprintfs to deal with conus5 has been hacked from time to time. */
          fileName = (char *) malloc (strlen (geoDataDir) + 1 + strlen (sectName)
-                                     + strlen ("timezone.flt") + 1);
+                                     + strlen ("timezone.flt") + 1 + 50);
          sprintf (fileName, "%s/%sdaylight.flt", geoDataDir, sectName);
       }   
       /* Try to open dayLight files */
