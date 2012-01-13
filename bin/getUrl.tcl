@@ -39,7 +39,7 @@ namespace eval http {
     if {$f_progress} {
        puts -nonewline stderr "$file: "
        if {[catch {geturl $url -channel $out -progress ::http::Progress \
-                  -blocksize $chunk} token]} {
+                  -blocksize $chunk -protocol 1.0} token]} {
         puts "Error Geturl $file : Message $token"
         close $out ; return 1
       }
@@ -47,7 +47,7 @@ namespace eval http {
       puts stderr ""
     } else {
       if {[catch {geturl $url -channel $out \
-                 -blocksize $chunk} token]} {
+                 -blocksize $chunk -protocol 1.0} token]} {
         puts "Error Geturl $file : Message $token"
         close $out ; return 1
       }
