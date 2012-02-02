@@ -6,6 +6,10 @@ cd distrib
 cp degrib-install.exe ./webDir/download
 ./transfer.sh
 
+On SLOSH... 
+cd /www/html/degrib2/download
+cp degrib-install.exe ./archive/degrib-install-197a.exe
+
 The ./distrib.tcl guidance at the end is:
 Recommend in degrib/src:
    A) svn update
