@@ -29,7 +29,7 @@ namespace eval http {
     if {$f_progress} {
       # -timeout 16000 -> 64000
       if {[catch {geturl $url -channel $out -progress ::http::Progress \
-                 -blocksize $chunk} token]} {
+                 -blocksize $chunk -protocol 1.0} token ]} {
         ns_Print::puts "Error Geturl $file : Message $token"
         close $out ; return 1
       }
@@ -38,7 +38,7 @@ namespace eval http {
     } else {
       # -timeout 16000 -> 64000
       if {[catch {geturl $url -channel $out \
-                 -blocksize $chunk} token]} {
+                 -blocksize $chunk -protocol 1.0} token]} {
         ns_Print::puts "Error Geturl $file : Message $token"
         close $out ; return 1
       }
@@ -55,7 +55,7 @@ namespace eval http {
     if {$f_progress} {
       # -timeout 16000 -> 64000
       if {[catch {geturl $url -channel $out -progress ::http::Progress \
-                 -blocksize $chunk} token]} {
+                 -blocksize $chunk -protocol 1.0} token]} {
         ns_Print::puts "Error Geturl $file : Message $token"
         close $out ; return 1
       }
@@ -64,7 +64,7 @@ namespace eval http {
     } else {
       # -timeout 16000 -> 64000
       if {[catch {geturl $url -channel $out \
-                 -blocksize $chunk} token]} {
+                 -blocksize $chunk -protocol 1.0} token]} {
         ns_Print::puts "Error Geturl $file : Message $token"
         close $out ; return 1
       }
