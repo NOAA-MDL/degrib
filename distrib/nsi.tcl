@@ -158,5 +158,5 @@ while {[gets $fp line] >= 0} {
 close $op
 close $fp
 
-catch {exec /cygdrive/c/nsis/makensis degrib.nsi} ans
+catch {exec /cygdrive/k/nsis/makensis degrib.nsi} ans
 puts $ans
