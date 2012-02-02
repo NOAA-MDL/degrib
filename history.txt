@@ -9,12 +9,12 @@
 #----- Release: Version 1.97 01/05/2012 -----
 #
  1/5  AAT Made some corrections to how Snow, QPF, and IceAccum are trested by
-          DWML when f_unit is 0 and noted and issue when DWML is created 
+          DWML when f_unit is 0 and noted and issue when DWML is created
           off of GRIB data (instead of cube data)
- 1/5  AAT Checking in addition of iceaccum and adding a procedure to 
-          genprobe.c::InverseComputeUnit() to inver the unit conversion 
-          done when storing the data in cubes. 
- 1/5  AAT Updating a version with fine resolution PR grids (339x224) 
+ 1/5  AAT Checking in addition of iceaccum and adding a procedure to
+          genprobe.c::InverseComputeUnit() to inver the unit conversion
+          done when storing the data in cubes.
+ 1/5  AAT Updating a version with fine resolution PR grids (339x224)
  1/4  AAT Synchronizing with Paul's latest modifications to dwmllib
 10/18 AAT Adding an IceAccum grid.
  9/13 AAT Updating draw.tcl to deal with octal month of 09 (september)
