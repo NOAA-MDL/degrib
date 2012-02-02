@@ -1,9 +1,25 @@
 #
 #----- Release: Version 1.97a 02/01/2012 -----
 #
+ 2/1  AAT modified code to compile against Tcl 8.5.3 which is in the code base.
+          Had assumed 8.5.9 was installed on the system.  Plan to use 8.5.11.
+ 2/1  AAT Missed a file when modifying geturl calls to use 1.0.
+ 1/13 AAT Modifing geturl calls to explicitly use protocol 1.0 instead of 1.1
 #
 #----- Release: Version 1.97 01/05/2012 -----
 #
+ 1/5  AAT Made some corrections to how Snow, QPF, and IceAccum are trested by
+          DWML when f_unit is 0 and noted and issue when DWML is created 
+          off of GRIB data (instead of cube data)
+ 1/5  AAT Checking in addition of iceaccum and adding a procedure to 
+          genprobe.c::InverseComputeUnit() to inver the unit conversion 
+          done when storing the data in cubes. 
+ 1/5  AAT Updating a version with fine resolution PR grids (339x224) 
+ 1/4  AAT Synchronizing with Paul's latest modifications to dwmllib
+10/18 AAT Adding an IceAccum grid.
+ 9/13 AAT Updating draw.tcl to deal with octal month of 09 (september)
+ 8/1  AAT Checking in a correction to the way the colors are scaled.  Should
+          have been using numColor -1 instead of numColor in calc the steps.
 #
 #----- Release: Version 1.96 02/24/2011 -----
 #
