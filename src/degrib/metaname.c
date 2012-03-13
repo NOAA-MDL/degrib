@@ -1482,6 +1482,7 @@ NDFD_AbrevOverideTable NDFD_Overide[] = {
    /*  9 */ {"WVHGT", "WaveHeight"},
    /* 10 */ {"ASNOW", "SnowAmt"},
    /* 11 */ {"GUST", "WindGust"},
+   /* 12 */ {"MAXRH", "MaxRH"},                /* Mike added 201202 */
 };
 
 GRIB2LocalTable NDFD_LclTable[] = {
@@ -1518,7 +1519,9 @@ GRIB2LocalTable NDFD_LclTable[] = {
            
    /* Arthur Added this to both NDFD and NCEP local tables. (5/1/2006) */
            {10, 3, 192, "Surge", "Hurricane Storm Surge", "m", UC_M2Feet},
-           {10, 3, 193, "ETSurge", "Extra Tropical Storm Surge", "m", UC_M2Feet}
+           {10, 3, 193, "ETSurge", "Extra Tropical Storm Surge", "m", UC_M2Feet},
+   /* Mike added 2/2012 */
+           {0, 1, 198, "MinRH", "Minimum Relative Humidity", "%", UC_NONE}
 };
 
 GRIB2LocalTable HPC_LclTable[] = {
