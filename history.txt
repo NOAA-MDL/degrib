@@ -1,4 +1,9 @@
 #
+#----- Release: Version 1.97b 03/13/2012 -----
+#
+ 3/13 AAT Accepted Mike Allard modification to get MinRH and MaxRH to work.
+ 3/13 AAT modified the URL for gribcut to accomodate NIDS
+#
 #----- Release: Version 1.97a 02/01/2012 -----
 #
  2/1  AAT modified code to compile against Tcl 8.5.3 which is in the code base.
@@ -651,7 +656,7 @@
           files or valid arguments.
  1/26 AAT Finished -NDFDvars option.
  1/25 AAT Introduced -NDFDvars option (primarily for XML parse)
- 1/25 AAT Worked on adding ability to convert log10(µg/m^3) to µg/m^3
+ 1/25 AAT Worked on adding ability to convert log10(Âµg/m^3) to Âµg/m^3
  1/25 AAT Introduced multiple point option. (-pnt x1,y1 -pnt x2,y2 ...)
  1/25 AAT Introduced -startTime and -endTime options.
  1/25 AAT Did a little work on "MOTD" option.
