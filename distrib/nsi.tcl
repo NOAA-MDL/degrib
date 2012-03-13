@@ -13,17 +13,20 @@ set curOutPath "degrib"
 set fileList ""
 set dirList ""
 
+proc dosName {name} {
+  return [join [file split $name] "\\"]
+}
+
 proc addFile {op path tail} {
   global curOutPath
   global fileList
 
-#  puts $op "File \"..\\[file nativename $path]\\\" $tail"
   if {$path != ""} {
-    puts $op "File \"..\\[file nativename $path/$tail]\""
+    puts $op "File \"..\\[dosName $path/$tail]\""
   } else {
     puts $op "File \"..\\$tail\""
   }
-  lappend fileList "\$INSTDIR\\[file nativename $curOutPath]\\$tail"
+  lappend fileList "\$INSTDIR\\[dosName $curOutPath/$tail]"
 }
 
 proc putUninstFiles {op} {
@@ -39,7 +42,7 @@ proc cdOutPath {op outPath} {
 
   if {$outPath != $curOutPath} {
     set curOutPath $outPath
-    puts $op "SetOutPath \$INSTDIR\\[file nativename $curOutPath]"
+    puts $op "SetOutPath \$INSTDIR\\[dosName $curOutPath]"
     if {[lsearch $dirList $curOutPath] == -1} {
       lappend dirList $curOutPath
     }
@@ -67,7 +70,7 @@ proc putUninstDir {op} {
   }
   for {set i $maxI} {$i >= 1} {incr i -1} {
     foreach lst [lsort $ray($i)] {
-      puts $op "\${LogIt} RMDir \"\$INSTDIR\\[file nativename $lst]\""
+      puts $op "\${LogIt} RMDir \"\$INSTDIR\\[dosName $lst]\""
     }
   }
 }
