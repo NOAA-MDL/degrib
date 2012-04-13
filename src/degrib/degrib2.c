@@ -1029,8 +1029,13 @@ int ReadGrib2Record (FILE *fp, sChar f_unit, double **Grib_Data,
 #endif
 */
    } else {
-      gribLen = IS->ipack[3];
       c_ipack = (unsigned char *) IS->ipack;
+      /* GRIB2 files are in big endian so c_ipack is as well. */
+#ifdef LITTLE_ENDIAN
+      revmemcpy (&gribLen, &(c_ipack[12]), sizeof (sInt4));
+#else
+      memcpy (&gribLen, &(c_ipack[12]), sizeof (sInt4));
+#endif
    }
    free (buff);
 
@@ -1415,7 +1420,13 @@ int ReadGrib2RecordFast (FILE *fp, sChar f_unit, double **Grib_Data,
 #endif
 */
    } else {
-      gribLen = IS->ipack[3];
+      c_ipack = (unsigned char *) IS->ipack;
+      /* GRIB2 files are in big endian so c_ipack is as well. */
+#ifdef LITTLE_ENDIAN
+      revmemcpy (&gribLen, &(c_ipack[12]), sizeof (sInt4));
+#else
+      memcpy (&gribLen, &(c_ipack[12]), sizeof (sInt4));
+#endif
    }
    free (buff);
 
