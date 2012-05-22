@@ -1,4 +1,10 @@
 #
+#----- Release: Version 1.97c 05/22/2012 -----
+#
+ 4/13 AAT Found a bug with gribLen calculations when dealing with subgrid
+          messages.  Bug was caused by an oversight in the 5/2010 removal
+          of memswapping.  Impacted versions 1.96, 1.97, 1.97a, 1.97b
+#
 #----- Release: Version 1.97b 03/13/2012 -----
 #
  3/13 AAT Accepted Mike Allard modification to get MinRH and MaxRH to work.
