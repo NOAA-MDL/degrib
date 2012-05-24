@@ -948,6 +948,15 @@ GRIB2ParmTable MeteoAtmos[] = {
             {"CTP", "In-Cloud Turbulence", "%", UC_NONE},
             {"CAT", "Clear Air Turbulence", "%", UC_NONE},
             {"SLDP", "Supercooled Large Droplet Probability", "%", UC_NONE},
+/*Mike added 3/2012   
+/* 24 */    {"CONTKE", "Convective Turbulent Kinetic Energy", "J/kg", UC_NONE},
+/* 25 */    {"WIWW", "Weather Interpretation ww (WMO)", " ", UC_NONE},          	
+/* 26 */    {"CONVO", "Convective Outlook",  "0=No Risk Area; 1=Reserved; "
+             "2=General Thunderstorm Risk Area; 3=Reserved; 4=Slight Risk Area; "
+             "5=Reserved; 6=Moderate Risk Area;  7=Reserved; 8=High Risk Area; "
+             "9-10=Reserved; 11=Dry Thunderstorm (Dry Lightning) Risk Area; "
+             "12-13=Reserved; 14=Critical Risk Area; 15-17=Reserved" 
+             "18=Extremely Critical Risk Area; 255=missing", UC_NONE},
 };
 
 /* GRIB2 Code table 4.2 : 0.20 */
@@ -1750,9 +1759,13 @@ GRIB2LocalTable NCEP_LclTable[] = {
                          "0=None; 1=Light; 2=Moderate; 3=Severe; 4=Trace; 5=Heavy; 255=missing", UC_NONE},
             {0, 19, 218, "EPSR", "Radiative emissivity", "", UC_NONE},
             {0, 19, 219, "TPFI", "Turbulence potential forecast index", "-", UC_NONE},
-            {0, 19, 220, "", "Reserved", "-", UC_NONE},
-            {0, 19, 221, "", "Reserved", "-", UC_NONE},
-            {0, 19, 222, "", "Reserved", "-", UC_NONE},
+            {0, 19, 220, "SVRTS", "Categorical Severe Thunderstorm", "0=No; 1=Yes; "
+             "2-3=Reserved; 4=Low; 5=Reserved; 6=Medium; 7=Reserved; 8=High; "
+             "255=missing", UC_NONE},
+            {0, 19, 221, "PROCON", "Probability of Convection", "%", UC_NONE},
+            {0, 19, 222, "CONVP", "Convection Potential",  "0=No; 1=Yes; "
+             "2-3=Reserved; 4=Low; 5=Reserved; 6=Medium; 7=Reserved; 8=High; "
+             "255=missing", UC_NONE},
             {0, 19, 223, "", "Reserved", "-", UC_NONE},
             {0, 19, 224, "", "Reserved", "-", UC_NONE},
             {0, 19, 225, "", "Reserved", "-", UC_NONE},
@@ -1781,6 +1794,8 @@ GRIB2LocalTable NCEP_LclTable[] = {
             {0, 19, 231, "HECBT", "ICAO Height at Embedded Cumulonimbus Top", "m", UC_NONE},
 */
             {0, 19, 232, "VAFTD", "Volcanic Ash Forecast Transport and Dispersion", "log10(kg/m^3)", UC_NONE},
+            {0, 19, 233, "ICPRB", "Icing probability", "-", UC_NONE},
+            {0, 19, 234, "ICSEV", "Icing severity", "-", UC_NONE}, 
 
    /* 47 */ {0, 191, 192, "NLAT", "Latitude (-90 to 90)", "deg", UC_NONE},
    /* 48 */ {0, 191, 193, "ELON", "East Longitude (0 to 360)", "deg", UC_NONE},
