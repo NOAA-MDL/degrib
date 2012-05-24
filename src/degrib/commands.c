@@ -664,6 +664,218 @@ int MainConvert (userType *usr, IS_dataType *is, grib_MetaData *meta,
    return 0;
 }
 
+/******************************************************************************
+ *StormTotal() --
+ *
+ * Arthur Taylor / MDL
+ *
+ * PURPOSE
+ *   
+ * 
+ *
+ * ARGUMENTS
+ *     usr = The user option structure to use while Degrib'ing. (Input)
+ * grib_fp = The opened GRIB2 file to read from (Input)
+ *      is = memory for the Un-parsed meta data for this GRIB2 message.
+ *           As well as some memory used by the unpacker. (Output)
+ *    meta = memory for the meta data from last GRIB2 message read. (Output)
+ *
+ * FILES/DATABASES: None
+ *
+ * RETURNS: int (could use errSprintf())
+ *  0 = OK
+ *  1 = Invalid usage.
+ *
+ * HISTORY
+ *   8/2003 Arthur Taylor (MDL/RSIS): Created.
+ *
+ * NOTES
+ *
+ *
+*******************************************************************************
+*/
+static int StormTotal (userType *usr, FILE *grib_fp, IS_dataType *is, grib_MetaData *meta) 
+{
+   sInt4 f_endMsg = 1;  /* 1 if we read the last grid in a GRIB message, or
+                         * we haven't read any messages. */
+   int subgNum;         /* The subgrid that we are looking for */
+   int i=0;
+   int f_first = 1;     /* A hack to make the MainConvert work. */
+   uInt4 grib_DataLen = 0;  /* Size of Grib_Data. */
+   double *grib_Data = NULL;   /* The read in GRIB2 grid. */
+   double *grib_total = NULL; 
+   char *prev_element = NULL; /* The element string from the previous msg. Used for comparsion. */
+   char * prev_unitName = NULL;  /* The unitName string from the previous msg. Used for comparsion. */
+   int prev_mapProj=0;  /* The mapProj from the previous msg. Used for comparsion. */
+   int error=0;
+   int c;               /* Determine if end of the file without fileLen. */
+   double msgEnd = 0;   /* End of time for current message.  Initialized to 1/1/1970. */
+   double msgStart = 0; /* Start of time for current message.  Initialized to 1/1/1970. */
+   int f_haveMsg = 0;   /* True if we have a message in the valid time range. */
+   int f_haveMsgBeforeEnd = 0; /* True if we have a message before the end time. */
+   int msgLen;
+   int firstTime = 0; /* The first time of the data being used in totaling of the data */
+   int timeRange = 0; /* The time range of the data being totalled */
+   char *buffer;
+    
+   /* Set up inital state of data for unpacker. */
+   if (usr->msgNum == 0) {
+      subgNum = 0;
+   } else {
+      subgNum = usr->subgNum;
+   }
+
+/* Start loop for all messages. */
+   while (((c = fgetc (grib_fp)) != EOF) || (f_endMsg != 1)) {
+      if (c != EOF) {
+         ungetc (c, grib_fp);
+      }
+
+      /* Read the GRIB message. */
+      if (ReadGrib2Record (grib_fp, usr->f_unit, &grib_Data, &grib_DataLen,
+                           meta, is, subgNum, usr->majEarth, usr->minEarth,
+                           usr->f_SimpleVer, usr->f_SimpleWWA, &f_endMsg, &(usr->lwlf),
+                           &(usr->uprt)) != 0) {
+         preErrSprintf ("ERROR: In call to ReadGrib2Record.\n");
+         error=1;
+         break;
+      }
+      /* Test that the version of the message is valid. */
+      if (meta->GribVersion != 2) {
+         preErrSprintf ("ERROR: Can only handle GRIB2 messages.\n");
+         error=1;
+         break;
+      }
+
+      /* We've tested for the assumption that the type of message is GRIB2 (as opposed to GRIB1 or TDLP) */
+      msgEnd = meta->pds2.sect4.validTime;
+
+      if (meta->pds2.sect4.numInterval != 1) {
+         preErrSprintf ("ERROR: Expecting messages to contain a single time range rather than be instantaneous.\n");
+         error=3;
+         break;
+      }
+      msgLen = meta->pds2.sect4.Interval[0].lenTime;
+      msgStart = msgEnd - msgLen * 3600;
+
+      /* Test if the current time from the file is greater than the user's endTime. */
+
+/* Uncomment the following if we want inclusive EndTime. */
+/*      if (msgStart > usr->endTime) { */
+/* Uncomment the following if we want to exclude EndTime. */
+       if (msgEnd > usr->endTime) {  
+
+         break;
+         /* Assumes that the file is sequential in validTimes so we can break the loop.  */
+      }
+      f_haveMsgBeforeEnd = 1;
+
+      /* Handle adding multiple messages together. */
+
+/* Uncomment the following if we want inclusive StartTime. */
+/*      if (msgEnd < usr->startTime) { */
+/* Uncomment the following if we want to exclude StartTime. */
+      if (msgStart < usr->startTime) { 
+
+         continue;
+         /* We need to see if the next message is >= startTime, so we can't break the loop yet. */
+      }
+      f_haveMsg = 1;
+
+
+      /* Make sure we have memory and that it is initialized. */
+      if (grib_total == NULL) {
+         prev_element = malloc ((strlen (meta->element) + 1) * sizeof (char));
+         strcpy (prev_element,meta->element);
+         prev_unitName = malloc ((strlen (meta->unitName) + 1) * sizeof (char)); 
+         strcpy (prev_unitName,meta->unitName);
+         prev_mapProj = meta->gds.projType; 
+         /* Assumes that grib_DataLen doesn't change between grib messages. */
+         grib_total = malloc (grib_DataLen * sizeof (double));
+         for (i = 0; i < grib_DataLen; i++) {
+            grib_total[i] = 0; 
+              /* Assumes 9999 is missing.  'meta' structure should be used instead
+             * to determine the misssing value. */
+         }
+         firstTime = msgStart; 
+      /*  Checking to see if the previous msg and this msg's elements are the same. If not we cannot do a stormTotal */
+      } else if (strcmp (prev_element, meta->element) != 0) {
+         preErrSprintf ("Msgs have different element types.  A stormTotal cannot be performed.\n"); 
+         error=1;
+         break;
+      } else if (strcmp (prev_unitName, meta->unitName) != 0) {
+         preErrSprintf ("Msgs have different unitName types.  A stormTotal cannot be performed.\n");
+         error=1;
+         break;
+      }  else if (prev_mapProj != meta->gds.projType) { 
+         preErrSprintf ("Msgs have different map projections.  A stormTotal cannot be performed.\n");
+         error=1;
+         break;
+      }  
+
+      /* Diagnostic to indicate which messages were included... */
+      printf ("Including message with valid Time %s\n", meta->validTime);
+
+      for (i = 0; i < grib_DataLen; i++) {
+         if (grib_Data[i] == meta->gridAttrib.missPri){
+            grib_total[i] = meta->gridAttrib.missPri;
+         } 
+         else if (grib_Data[i] != meta->gridAttrib.missPri) {
+            grib_total[i] = grib_total[i] + grib_Data[i];
+         } 
+      } 
+
+      timeRange = (double)msgEnd - firstTime;
+
+   }
+
+   /* Test the msgEnd to see if we have an error. */
+   if (msgEnd == 0) {
+      preErrSprintf ("ERROR: We didn't have any messages.\n");
+      error = 2;
+
+   } else if (msgEnd < usr->startTime) {
+      preErrSprintf ("ERROR: All messages in the file were before the StartTime.\n");
+      error = 2;
+
+   } else if (msgEnd > usr->endTime) {
+      if (! f_haveMsg) {
+         if (f_haveMsgBeforeEnd) {
+            preErrSprintf ("ERROR: Couldn't find message in range of StartTime to EndTime.\n");
+         } else {
+            preErrSprintf ("ERROR: All messages in the file were after the EndTime.\n");
+         }
+         error = 2;
+      }
+   }  
+
+   if (error==0) {
+      /* set the validTime and lenTime for the outgoing message. */
+      /* firstTime is set with the first message kept. */
+      /* timeRange is updated each time we keep a message. */
+      meta->pds2.sect4.validTime = firstTime + timeRange;
+      Clock_Print (meta->validTime, 20, meta->pds2.sect4.validTime, "%Y%m%d%H%M", 0);
+      meta->pds2.sect4.Interval[0].lenTime = timeRange/3600;
+
+      buffer = malloc ((5 + strlen (meta->element) + 1) * sizeof (char));
+      sprintf (buffer, "Total%s", meta->element);
+      free (meta->element);
+      meta->element = buffer;
+
+      if (MainConvert (usr, is, meta, grib_total, grib_DataLen,
+                       usr->f_unit, f_first) != 0) {
+         preErrSprintf ("ERROR: In call to MainConvert.\n");
+         error=1;
+      }
+   }
+
+   free (grib_Data);
+   free (grib_total);
+   free (prev_element);
+   free (prev_unitName);
+   return error;
+}
+
 /*****************************************************************************
  * Grib2Convert() --
  *
@@ -984,6 +1196,41 @@ int DegribIt (userType *usr)
             IS_Free (&is);
          }
          break;
+
+         /* Perform the StormTotal algorithm. */
+      case CMD_TOTAL:
+         if ( (usr->startTime == 0) || (usr->endTime == 0) || (usr->endTime < usr->startTime) ){
+            printf("'-stormTotal' (stormTotal) option requires a valid '-startTime' and '-endTime' option. endTime must be greater than startTime\n");
+            return -1;
+         }
+
+         IS_Init (&is);
+         MetaInit (&meta);
+         for (inName = 0; inName < usr->numInNames; inName++) {
+            if (usr->inNames[inName] != NULL) {
+               if ((grib_fp = fopen (usr->inNames[inName], "rb")) == NULL) {
+                  printf ("Problems opening %s for read\n",
+                          usr->inNames[inName]);
+                  return 1;
+               }
+            } else {
+               grib_fp = stdin;
+            }
+                
+            if (StormTotal (usr, grib_fp, &is, &meta) != 0) {
+               msg = errSprintf (NULL);
+               printf ("ERROR: In call to StormTotal.\n%s\n", msg);
+               free (msg);
+               MetaFree (&meta);
+               IS_Free (&is);
+               fclose (grib_fp);
+               return 1;
+            }
+            fclose (grib_fp);
+         }
+         MetaFree (&meta);
+         IS_Free (&is);
+	 break;
          /* Probe GRIB2 file for a given lat/lon (or lat/lon set). */
 
       case CMD_PROBE:

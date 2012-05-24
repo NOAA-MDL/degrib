@@ -150,6 +150,7 @@ void UserInit (userType *usr)
    usr->startTime = 0;
    usr->endTime = 0;
    usr->f_timeFlavor = -1;
+   usr->f_stormTotal = -1;
 }
 
 /*****************************************************************************
@@ -726,7 +727,7 @@ static char *UsrOpt[] = { "-cfg", "-in", "-I", "-C", "-P", "-V", "-Flt",
    "-numDays", "-ndfdVars", "-geoData", "-gribFilter", "-ndfdConven", "-Freq",
    "-Icon", "-curTime", "-rtmaDir", "-avgInterp", "-cwa", "-SimpleWWA",
    "-TxtParse", "-Kml", "-KmlIni", "-Kmz", "-kmlMerge", "-lampDir", "-Split",
-   NULL
+   "-StormTotal", NULL
 };
 
 int IsUserOpt (char *str)
@@ -749,7 +750,7 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
       MAPINIFILE, MAPINIOPTIONS, XML, MOTD, GRAPH, STARTTIME, ENDTIME,
       STARTDATE, NUMDAYS, NDFDVARS, GEODATA, GRIBFILTER, NDFDCONVEN,
       FREQUENCY, ICON, CURTIME, RTMADIR, AVGINTERP, CWA, SIMPLEWWA, TXTPARSE,
-      KML, KMLINIFILE, KMZ, KMLMERGE, LAMPDIR, SPLIT
+      KML, KMLINIFILE, KMZ, KMLMERGE, LAMPDIR, SPLIT, TOTAL
    };
    int index;           /* "cur"'s index into Opt, which matches enum val. */
    double lat, lon;     /* Used to check on the -pnt option. */
@@ -868,7 +869,15 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
             return -1;
          }
          return 1;
-
+      case TOTAL:
+         if (usr->f_Command == -1) {
+            usr->f_Command = CMD_TOTAL;
+         } else if (usr->f_Command != CMD_TOTAL) {
+            errSprintf ("Can only handle one command option at a time.\n");
+            usr->f_Command = -1;
+            return -1;
+         }
+         return 1;
       case FLT:
          if (usr->f_Flt == -1)
             usr->f_Flt = 1;

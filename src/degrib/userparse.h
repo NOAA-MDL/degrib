@@ -1,5 +1,5 @@
-#define PROGRAM_VERSION "1.97c"
-#define PROGRAM_DATE "05/22/2012"
+#define PROGRAM_VERSION "1.97a"
+#define PROGRAM_DATE "02/01/2012"
 /*****************************************************************************
  * userparse.h
  *
@@ -23,13 +23,13 @@
 enum {
    CMD_INVENTORY, CMD_CONVERT, CMD_PROBE, CMD_VERSION, CMD_DATA,
    CMD_DATAPROBE, CMD_DATACONVERT, CMD_CALC, CMD_REFTIME, CMD_SECTOR,
-   CMD_NCCONVERT
+   CMD_NCCONVERT, CMD_TOTAL
 };
 */
 enum {
    CMD_INVENTORY, CMD_CONVERT, CMD_PROBE, CMD_VERSION, CMD_DATA,
    CMD_DATAPROBE, CMD_DATACONVERT, CMD_REFTIME, CMD_SECTOR, CMD_NCCONVERT,
-   CMD_SPLIT
+   CMD_SPLIT, CMD_TOTAL /*Mike*/
 };
 
 /* A structure containing the user's choices. */
@@ -73,6 +73,7 @@ typedef struct {
    char *outName;       /* outName = -out or NULL (has 3 letter extension.) */
    sChar f_stdout;      /* true if outName is "stdout" */
    char *logName;       /* logName = -log or NULL (for error messages.) */
+   sChar f_stormTotal;  /* f_stormTotal= -stormTotal Mike */
    sChar f_interp;      /* true = bilinear, false = Nearest Neighbor */
    sChar f_avgInterp;   /* true = if bilinear has missings, dist weight
                          *        average them, false (default) */
@@ -164,6 +165,7 @@ typedef struct {
    char *lampDataDir;   /* Directory to look in for LAMP data. */
    char *rtmaDataDir;   /* Directory to look in for RTMA data. */
    char **cwaBuff;       /* Array holding 3 letter CWA's each point fall in. */
+   
 /* filter... for *.bin or *.ind or .. */
 /*   sChar f_NDFDDir; */    /* If "input file" is a directory, then this describes
                          * the convention to use.

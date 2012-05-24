@@ -480,6 +480,8 @@ static void Usage (char *argv0, userType *usr)
          printf ("  -tmFormat <format> = Return reftime using this time"
                  " format\n");
          break;
+      case CMD_TOTAL:
+         break;
       case CMD_SECTOR:
          printf ("\nSECTOR OPTIONS (-Sector)\n");
          printf ("  -sectFile [filename] = Contains the sectors.\n");
@@ -488,6 +490,7 @@ static void Usage (char *argv0, userType *usr)
                  "each sector.\n");
          printf ("  -cells true  = same as -cells all, except lat,lon are "
                  "now Y,X\n");
+         break;
       case -1:
 /*      case CMD_CALC:*/
       case CMD_NCCONVERT:
@@ -545,7 +548,8 @@ static void Usage (char *argv0, userType *usr)
                  "(similar to -P)\n");
          printf ("  -refTime     = Return the oldest reference time in the"
                  " file.\n");
-         printf ("  -Sector      = Return the sector a point is in.");
+         printf ("  -Sector      = Return the sector a point is in.\n");
+         printf ("  -StormTotal  = Return a storm total between a selected startTime and endTime\n");
    }
 }
 
