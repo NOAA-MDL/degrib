@@ -32,7 +32,10 @@ TK_INC = -I$(TK_PREFIX)/include
 GUI_INC = $(TCL_INC) $(TK_INC) $(STD_INC)
 
 CLOCK_LIB = @MEM_STDLIB@ -L/usr/lib -lm
-DP_LIB = @MEM_STDLIB@ -L../emapf-c/ -lemapf $(XML_LIB) -L../zlib/contrib/minizip -lminizip -L../zlib -lz -L/usr/lib -lm
+
+# The libaat dependence is just if we have debug on.
+DP_LIB = -L../libaat -laat @MEM_STDLIB@ -L../emapf-c/ -lemapf $(XML_LIB) -L../zlib/contrib/minizip -lminizip -L../zlib -lz -L/usr/lib -lm
+
 DRAWSHP_LIB = @MEM_STDLIB@ -L../gd/ -lgd -L../libpng -lpng -L../zlib -lz \
           -L../emapf-c/ -lemapf -L/usr/lib -lm
 # XML_LIB has to come before zlib.

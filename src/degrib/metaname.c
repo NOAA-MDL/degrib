@@ -948,7 +948,7 @@ GRIB2ParmTable MeteoAtmos[] = {
             {"CTP", "In-Cloud Turbulence", "%", UC_NONE},
             {"CAT", "Clear Air Turbulence", "%", UC_NONE},
             {"SLDP", "Supercooled Large Droplet Probability", "%", UC_NONE},
-/*Mike added 3/2012   
+/* Mike added 3/2012 */
 /* 24 */    {"CONTKE", "Convective Turbulent Kinetic Energy", "J/kg", UC_NONE},
 /* 25 */    {"WIWW", "Weather Interpretation ww (WMO)", " ", UC_NONE},          	
 /* 26 */    {"CONVO", "Convective Outlook",  "0=No Risk Area; 1=Reserved; "
