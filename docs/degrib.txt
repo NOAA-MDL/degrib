@@ -69,6 +69,16 @@ COMMAND OPTIONS   (Default: -V)
    -Sector   Given a file of sectors, and a lat/lon, prints the sector(s)
         that point is in.
    (**** See below for SECTOR OPTIONS. ****)
+   
+   -StormTotal  
+      Add values from several different msgs into a total at each point. 
+      Must include a startTime and endTime and an optional CONVERT
+      OPTION.  Currently available for only QPF, SnowAmt, and IceAccum grids.
+      Times are exlusive.  For example, -startTime '2012-05-25T01:00:00' will
+      not include the 6-hour window data that ends at 2012-05-25T06:00:00,
+      whereas '2012-05-25T00:00:00' will.
+
+      Example: -StormTotal -startTime '2012-05-29T00:00:00' -endTime '2012-05-30T06:00:00' -Grib2
 
 OUTPUT FILE OPTIONS   (Default: -nameStyle 2)
    These options specify what the name of output files should be.
