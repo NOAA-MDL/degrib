@@ -667,12 +667,16 @@ int MainConvert (userType *usr, IS_dataType *is, grib_MetaData *meta,
 /******************************************************************************
  *StormTotal() --
  *
- * Arthur Taylor / MDL
+ * Michael Allard / MDL
  *
  * PURPOSE
- *   
+ *    Add values from several different msgs into a total at each point.
+ *    Must include a startTime and endTime and an optional CONVERT
+ *    OPTION.  Currently available for only QPF, SnowAmt, and IceAccum grids.
+ *    Times are exlusive.  For example, -startTime '2012-05-25T01:00:00' will
+ *    not include the 6-hour window data that ends at 2012-05-25T06:00:00,
+ *    whereas '2012-05-25T00:00:00' will.
  * 
- *
  * ARGUMENTS
  *     usr = The user option structure to use while Degrib'ing. (Input)
  * grib_fp = The opened GRIB2 file to read from (Input)
@@ -687,14 +691,14 @@ int MainConvert (userType *usr, IS_dataType *is, grib_MetaData *meta,
  *  1 = Invalid usage.
  *
  * HISTORY
- *   8/2003 Arthur Taylor (MDL/RSIS): Created.
+ *   5/2012 Michael Allard (MDL): Created.
  *
  * NOTES
  *
- *
-*******************************************************************************
-*/
-static int StormTotal (userType *usr, FILE *grib_fp, IS_dataType *is, grib_MetaData *meta) 
+ ******************************************************************************
+ */
+static int StormTotal (userType *usr, FILE *grib_fp, IS_dataType *is, 
+                       grib_MetaData *meta) 
 {
    sInt4 f_endMsg = 1;  /* 1 if we read the last grid in a GRIB message, or
                          * we haven't read any messages. */
