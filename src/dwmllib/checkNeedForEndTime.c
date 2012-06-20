@@ -26,6 +26,8 @@
  *
  *  2/2006 Paul Hershberg (MDL): Created.
  *  2/2008 Paul Hershberg (MDL): Added f_XML argument.
+ * 10/2011 Paul Hershberg (MDL): Added Ice Accumulation element.
+ *  3/2012 Paul Hershberg (MDL): Added MaxRH and MinRH elements.
  *
  * NOTES:
  *****************************************************************************
@@ -76,6 +78,8 @@ int checkNeedForEndTime(uChar parameterName, uChar f_XML)
       case NDFD_PRCPABV90D:
       case NDFD_PRCPBLW90D:
       case LAMP_TSTMPRB:
+      case NDFD_MAXRH:
+      case NDFD_MINRH:
 
          return 1;
          break;

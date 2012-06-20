@@ -78,7 +78,8 @@
  *                                  concatenated to NDFD_QPF
  *  6/2008 Paul Hershberg (MDL): -- Added Hazard Element 
  *  8/2009 Paul Hershberg (MDL): Added Lamp Tstm element. 
- *  1/2011 Paul Hershberg (MDL): Added Fire Wx elements. 
+ *  1/2011 Paul Hershberg (MDL): Added Fire Wx elements.
+ *  3/2012 Paul Hershberg (MdL): Added MaxRH/MinRH elements.
  *                                  
  * NOTES:
  *****************************************************************************
@@ -129,6 +130,7 @@ void computeStartEndTimes(uChar parameterName, int numFmtdRows,
           * standard time period. 
 	  */
          case NDFD_MAX:
+         case NDFD_MAXRH:
 
             /* Loop over matches of the data. */
             priorElemCount = startNum;
@@ -204,6 +206,7 @@ void computeStartEndTimes(uChar parameterName, int numFmtdRows,
             break;
 
          case NDFD_MIN:
+         case NDFD_MINRH:
 
             /* Loop over matches of the data. */
             priorElemCount = startNum;

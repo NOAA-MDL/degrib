@@ -277,10 +277,18 @@ void genLampTstmValues(size_t pnt, char *layoutKey, genMatchType *match,
                        xmlNodePtr parameters, numRowsInfo numRows, 
                        int startNum, int endNum);
 
+void genMaxRHValues(size_t pnt, char *layoutKey, genMatchType * match,
+                    xmlNodePtr parameters, numRowsInfo numRows,
+                    int startNum, int endNum);
+
 void genMaxTempValues(size_t pnt, char *layoutKey, genMatchType * match,
                       xmlNodePtr parameters, int f_formatNIL, uChar f_XML, 
                       double startTime_cml, numRowsInfo numRows, 
                       int numFmtdRows, int startNum, int endNum, sChar f_unit);
+
+void genMinRHValues(size_t pnt, char *layoutKey, genMatchType * match,
+                    xmlNodePtr parameters, numRowsInfo numRows,
+                    int startNum, int endNum);
 
 void genMinTempValues(size_t pnt, char *layoutKey, genMatchType *match,
                       xmlNodePtr parameters, uChar f_XML, double startTime_cml,

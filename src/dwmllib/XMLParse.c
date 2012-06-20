@@ -442,10 +442,10 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
     * e.g. NDFD2DWML[NDFD_POP] = NDFD2DWML[2] = 8TH Position needed in 
     * formatting. 
     */
-   static uChar NDFD2DWML[] = { 0, 1, 8, 2, 40, 38, 3, 41, 5, 6, 7, 45, 4, 42,
-   39, 44, 32, 33, 34, 35, 36, 37, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-   21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 46, 47, 48, 49, 50, 51, 52, 53,
-   54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65
+   static uChar NDFD2DWML[] = { 0, 1, 8, 2, 44, 40, 3, 45, 5, 6, 7, 49, 4, 46,
+   41, 48, 33, 34, 35, 36, 37, 38, 39, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+   21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 42, 43, 51, 52, 53, 54, 55, 56, 57,
+   58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69
    };
 
 /*   static int DWML2NDFD[] = { 0, 1, 3, 6, 12, 8, 9, 2, 22, 23, 24, 25, 26, 27, 
@@ -2810,6 +2810,34 @@ int XMLParse(uChar f_XML, size_t numPnts, Point * pnts,
                      weatherParameters[j][Dwml[k].origNdfdIndex] == 0)
                continue;
 
+            /* Format Maximum Relative Humidity Values, if applicable. */
+            if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_MAXRH] &&
+                weatherParameters[j][Dwml[k].origNdfdIndex] == 1)
+            {
+               genMaxRHValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], match,
+                              parameters, 
+                              numRowsForPoint[j][Dwml[k].origNdfdIndex],
+                              pntInfo[j].startNum, pntInfo[j].endNum);
+               continue;
+            }
+            else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_MAXRH] &&
+                     weatherParameters[j][Dwml[k].origNdfdIndex] == 0)
+               continue;
+
+            /* Format Minimum Relative Humidity Values, if applicable. */
+            if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_MINRH] &&
+                weatherParameters[j][Dwml[k].origNdfdIndex] == 1)
+            {
+               genMinRHValues(j, layoutKeys[j][Dwml[k].origNdfdIndex], match,
+                              parameters,
+                              numRowsForPoint[j][Dwml[k].origNdfdIndex],
+                              pntInfo[j].startNum, pntInfo[j].endNum);
+               continue;
+            }
+            else if (Dwml[k].Ndfd2Dwml == NDFD2DWML[NDFD_MINRH] &&
+                     weatherParameters[j][Dwml[k].origNdfdIndex] == 0)
+               continue; 
+ 
             /************************WEATHER AND HAZARD GENERATION************/
 
             /* Format Hazards and Weather Values (and\or Icons), if applicable. 

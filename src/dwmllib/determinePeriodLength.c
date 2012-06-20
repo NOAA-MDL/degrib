@@ -53,7 +53,8 @@ int determinePeriodLength(double firstValidTime, double secondValidTime,
           ndfdEnum == NDFD_PXTORN || ndfdEnum == NDFD_PXHAIL ||
           ndfdEnum == NDFD_PXTSTMWIND || ndfdEnum == NDFD_PSTORM ||
           ndfdEnum == NDFD_PXSTORM || ndfdEnum == NDFD_FWXWINDRH || 
-          ndfdEnum == NDFD_FWXTSTORM)
+          ndfdEnum == NDFD_FWXTSTORM || ndfdEnum == NDFD_MAXRH ||
+          ndfdEnum == NDFD_MINRH)
 
           period = 24;
 

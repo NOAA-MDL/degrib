@@ -411,6 +411,18 @@ void PrintTime(genMatchType * match, size_t pntIndex, int *allElem,
        printf("LAMP Tstrm Prb:%.0f ", match[allElem[LAMP_TSTMPRB]].value[pntIndex].data);
        printf ("match[%d].f_sector = %d\n",allElem[LAMP_TSTMPRB],match[allElem[LAMP_TSTMPRB]].f_sector);
    }
+   if ((allElem[NDFD_MAXRH] != -1) &&
+       (match[allElem[NDFD_MAXRH]].value[pntIndex].valueType != 2))
+   {
+       printf("MAX RH:%.0f ", match[allElem[NDFD_MAXRH]].value[pntIndex].data);
+       printf ("match[%d].f_sector = %d\n",allElem[NDFD_MAXRH],match[allElem[NDFD_MAXRH]].f_sector);
+   }
+   if ((allElem[NDFD_MINRH] != -1) &&
+       (match[allElem[NDFD_MINRH]].value[pntIndex].valueType != 2))
+   {
+       printf("MIN RH:%.0f ", match[allElem[NDFD_MINRH]].value[pntIndex].data);
+       printf ("match[%d].f_sector = %d\n",allElem[NDFD_MINRH],match[allElem[NDFD_MINRH]].f_sector);
+   }
 
    printf("\n");
 }

@@ -45,6 +45,7 @@
  *  8/2009 Paul Hershberg (MDL): Added Lamp Tstm element.
  *  8/2011 Paul Hershberg (MDL): Added 2 Fire Wx Elements.
  * 10/2011 Paul Hershberg (MDL): Added Ice Accumulation element. 
+ *  3/2012 Paul Hershberg (MDL): Added MAXRH and MINRH elements.
  *
  * NOTES:
  *****************************************************************************
@@ -75,6 +76,8 @@ void setVarFilter(sChar f_XML, sChar *f_icon, size_t numNdfdVars,
    varFilter[NDFD_RH] = 1;
    varFilter[NDFD_WG] = 1;
    varFilter[NDFD_WWA] = 1;
+   varFilter[NDFD_MAXRH] = 1;
+   varFilter[NDFD_MINRH] = 1;
 
    /* 6 Tropical Wind Threshold elements. */
    varFilter[NDFD_INC34] = 1;
