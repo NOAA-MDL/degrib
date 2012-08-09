@@ -1530,6 +1530,11 @@ static int DrawGradPointShpFile (char *filename, maparam *map,
                   t2 = (grad->symbol[i].f_mark - 2) / 2;
                   gdImageFilledRectangle (im, x - t1, y - t1, x + t2, y + t2,
                                           grad->symbol[i].fg.gdIndex);
+                  /* Draw the border (if the symbol is not -1,-1,-1) */
+                  if (! grad->symbol[i].out.f_null) {
+                     gdImageRectangle (im, x - t1, y - t1, x + t2, y + t2,
+                                       grad->symbol[i].out.gdIndex);
+                  }
                } else {
                   gdImageString (im, gdFontMediumBold, x - 3, y - 6,
                                  (unsigned char *) (grad->symbol[i].mark),
