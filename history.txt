@@ -1,4 +1,16 @@
 #
+#----- Release: Version 1.99a 10/09/2012 -----
+# 
+ 10/9 AAT Updated web.tcl to match the work done on ndfd.tcl and ndfd.ini
+ 10/1 to 10/4  AAT updated ndfd.tcl logic for NDFD_EXPR
+#
+#----- Release: Version 1.98 06/04/2012 -----
+#
+ 5/24 MPA Introduced a -StormTotal command to degrib.  It adds multiple GRIB2
+          messages together and stores it as a single GRIB2 Message.
+ 5/24 MPA Added entries to table 4.2.0-19 (CONTKE,WIWW,CONVO,
+          SVRTS,PROCON,CONVP, ICPRB, ICSEV)
+#
 #----- Release: Version 1.97c 05/22/2012 -----
 #
  4/13 AAT Found a bug with gribLen calculations when dealing with subgrid

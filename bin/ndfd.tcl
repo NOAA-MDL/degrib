@@ -51,8 +51,11 @@ if {[catch {package require mkWidgets}]} {
 #      (http,) = "HTTPSite" section
 #       (opt,) = "Options" section
 # (subSector,) = "CONUS_SubSectors" section
+# (subExprSector,) = "CONUS_Expr_SubSectors" section
 #   (foreVar,) = "NDFD_Variables" section
+#   (foreExprVar,) = "NDFD_EXPR_Variables" section
 #   (guidVar,) = "NDGD_Variables" section
+#   (guidExprVar,) = "NDGD_EXPR_Variables" section
 #
 # RETURNS void
 #
@@ -89,7 +92,7 @@ proc ReadIni {rayName} {
     }
   }
   # Check to make sure essential directories are set.
-  set critList [list Bin Mosaic GIS_IN Web_Data NDGD_Data NDFD_Data GIS_OUT]
+  set critList [list Bin Mosaic GIS_IN Web_Data NDGD_OpnlData NDFD_OpnlData NDGD_ExprData NDFD_ExprData GIS_OUT]
   foreach var $critList {
     if {! [info exists ray(dir,$var)]} {
       tk_messageBox -message "One of the critical 'NDFD_Directories'\
@@ -203,6 +206,25 @@ proc ReadIni {rayName} {
     lappend ray(subSectorList) $var
   }
 
+##### Load the "ExprSubSectors" section (subExprSector,) #####
+  set ans [ns_Util::ReadIni $filename CONUS_ExprSubSectors *]
+  set ray(subExprSectorList) ""
+  foreach pair $ans {
+    set var [lindex $pair 0]
+    if {[string index $var 0] == "#"} {
+      set ray(subExprSector,$var) [lindex $pair 1]
+    } else {
+      set val [split [lindex $pair 1] ,]
+      if {[llength $val] != 16} {
+        set var "#$var"
+        set ray(subExprSector,$var) [lindex $pair 1]
+      } else {
+        set ray(subExprSector,$var) $val
+      }
+    }
+    lappend ray(subExprSectorList) $var
+  }
+
 ##### Load the "NDFD_Variables" section (foreVar,) #####
   set ans [ns_Util::ReadIni $filename NDFD_Variables *]
   set ray(foreVarList) ""
@@ -220,6 +242,25 @@ proc ReadIni {rayName} {
       }
     }
     lappend ray(foreVarList) $var
+  }
+
+##### Load the "NDFD_EXPR_Variables" section (foreExprVar,) #####
+  set ans [ns_Util::ReadIni $filename NDFD_EXPR_Variables *]
+  set ray(foreExprVarList) ""
+  foreach pair $ans {
+    set var [lindex $pair 0]
+    if {[string index $var 0] == "#"} {
+      set ray(foreExprVar,$var) [lindex $pair 1]
+    } else {
+      set val [split [lindex $pair 1] ,]
+      if {[llength $val] != 6} {
+        set var "#$var"
+        set ray(foreExprVar,$var) [lindex $pair 1]
+      } else {
+        set ray(foreExprVar,$var) $val
+      }
+    }
+    lappend ray(foreExprVarList) $var
   }
 
 ##### Load the "NDGD_Variables" section (guidVar,) #####
@@ -240,6 +281,26 @@ proc ReadIni {rayName} {
     }
     lappend ray(guidVarList) $var
   }
+
+##### Load the "NDGD_EXPR_Variables" section (guidExprVar,) #####
+  set ans [ns_Util::ReadIni $filename NDGD_EXPR_Variables *]
+  set ray(guidExprVarList) ""
+  foreach pair $ans {
+    set var [lindex $pair 0]
+    if {[string index $var 0] == "#"} {
+      set ray(guidExprVar,$var) [lindex $pair 1]
+    } else {
+      set val [split [lindex $pair 1] ,]
+      if {[llength $val] != 6} {
+        set var "#$var"
+        set ray(guidExprVar,$var) [lindex $pair 1]
+      } else {
+        set ray(guidExprVar,$var) $val
+      }
+    }
+    lappend ray(guidExprVarList) $var
+  }
+
 }
 
 #*****************************************************************************
@@ -258,8 +319,11 @@ proc ReadIni {rayName} {
 #      (http,) = "HTTPSite" section
 #       (opt,) = "Options" section
 # (subSector,) = "CONUS_SubSectors" section
+# (subExprSector,) = "CONUS_ExprSubSectors" section
 #   (foreVar,) = "NDFD_Variables" section
+#   (foreExprVar,) = "NDFD_EXPR_Variables" section
 #   (guidVar,) = "NDGD_Variables" section
+#   (guidExprVar,) = "NDGD_EXPR_Variables" section
 #
 # RETURNS void
 #
@@ -366,6 +430,18 @@ proc SaveIni {rayName} {
 #  ns_Util::WriteIni $filename NDFD_Options $lst
   lappend ansList ""
 
+##### Save the "ExprSubSectors" section (subExprSector,) #####
+  lappend ansList "\[CONUS_ExprSubSectors\]"
+  foreach var $ray(subExprSectorList) {
+    if {[string index $var 0] == "#"} {
+      lappend ansList "$var=$ray(subExprSector,$var)"
+    } else {
+      lappend ansList "$var=[join $ray(subExprSector,$var) ,]"
+    }
+  }
+#  ns_Util::WriteIni $filename NDFD_Options $lst
+  lappend ansList ""
+
 ##### Save the "NDFD_Variables" section (foreVar,) #####
   lappend ansList "\[NDFD_Variables\]"
   foreach var $ray(foreVarList) {
@@ -378,6 +454,18 @@ proc SaveIni {rayName} {
 #  ns_Util::WriteIni $filename NDFD_Variables $lst
   lappend ansList ""
 
+##### Save the "NDFD_EXPR_Variables" section (foreExprVar,) #####
+  lappend ansList "\[NDFD_EXPR_Variables\]"
+  foreach var $ray(foreExprVarList) {
+    if {[string index $var 0] == "#"} {
+      lappend ansList "$var=$ray(foreExprVar,$var)"
+    } else {
+      lappend ansList "$var=[join $ray(foreExprVar,$var) ,]"
+    }
+  }
+#  ns_Util::WriteIni $filename NDFD_Variables $lst
+  lappend ansList ""
+
 ##### Save the "NDGD_Variables" section (guidVar,) #####
   lappend ansList "\[NDGD_Variables\]"
   foreach var $ray(guidVarList) {
@@ -385,6 +473,18 @@ proc SaveIni {rayName} {
       lappend ansList "$var=$ray(guidVar,$var)"
     } else {
       lappend ansList "$var=[join $ray(guidVar,$var) ,]"
+    }
+  }
+#  ns_Util::WriteIni $filename NDGD_Variables $lst
+  lappend ansList ""
+
+##### Save the "NDGD_Variables" section (guidExprVar,) #####
+  lappend ansList "\[NDGD_EXPR_Variables\]"
+  foreach var $ray(guidExprVarList) {
+    if {[string index $var 0] == "#"} {
+      lappend ansList "$var=$ray(guidExprVar,$var)"
+    } else {
+      lappend ansList "$var=[join $ray(guidExprVar,$var) ,]"
     }
   }
 #  ns_Util::WriteIni $filename NDGD_Variables $lst
@@ -647,11 +747,12 @@ proc RefreshTimes {rayName} {
   set f_update 0
 
 ##### Update the refrence times on the NDFD files. #####
+#tk_messageBox -message "Update reference times on the NDFD files."
   foreach var $ray(foreVarList) {
     if {[string index $var 0] == "#"} {
       continue
     }
-    set file [file join $ray(dir,NDFD_Data) [lindex $ray(foreVar,$var) 2]]
+    set file [file join $ray(dir,NDFD_OpnlData) [lindex $ray(foreVar,$var) 2]]
     set times [split [lindex $ray(foreVar,$var) 5] :]
     set mtime [lindex $times 0]
     set rtime [lindex $times 1]
@@ -675,9 +776,40 @@ proc RefreshTimes {rayName} {
     }
   }
 
+##### Update the refrence times on the NDFD Expr files. #####
+#tk_messageBox -message "Update reference times on the NDFD Expr files."
+  foreach var $ray(foreExprVarList) {
+    if {[string index $var 0] == "#"} {
+      continue
+    }
+    set file [file join $ray(dir,NDFD_ExprData) [lindex $ray(foreExprVar,$var) 2]]
+    set times [split [lindex $ray(foreExprVar,$var) 5] :]
+    set mtime [lindex $times 0]
+    set rtime [lindex $times 1]
+    if {[file exists $file]} {
+      set fileMtime [file mtime $file]
+      if {$mtime != $fileMtime} {
+        set f_update 1
+        set mtime $fileMtime
+        if {[catch {$ray(GRIB2Cmd) -refTime -in $file} rtime]} {
+          file delete -force $file
+#          puts $file
+          set ray(foreExprVar,$var) [lreplace $ray(foreExprVar,$var) 5 5 "0:0"]
+        } else {
+          set rtime [format "%.0f" $rtime]
+          set ray(foreExprVar,$var) [lreplace $ray(foreExprVar,$var) 5 5 "$mtime:$rtime"]
+        }
+      }
+    } elseif {$mtime != 0} {
+      set ray(foreExprVar,$var) [lreplace $ray(foreExprVar,$var) 5 5 "0:0"]
+      set f_update 1
+    }
+  }
+
 ##### Update the refrence times on the Custom files. #####
+#tk_messageBox -message "Update reference times on the Custom files."
   foreach var $ray(customVarList) {
-    set file [file join $ray(dir,NDFD_Data) [lindex $ray(custom,$var) 2]]
+    set file [file join $ray(dir,NDFD_OpnlData) [lindex $ray(custom,$var) 2]]
     set times [split [lindex $ray(custom,$var) 5] :]
     set mtime [lindex $times 0]
     set rtime [lindex $times 1]
@@ -702,11 +834,12 @@ proc RefreshTimes {rayName} {
   }
 
 ##### Update the refrence times on the NDGD files. #####
+#tk_messageBox -message "Update reference times on the Guidance files"
   foreach var $ray(guidVarList) {
     if {[string index $var 0] == "#"} {
       continue
     }
-    set file [file join $ray(dir,NDGD_Data) [lindex $ray(guidVar,$var) 2]]
+    set file [file join $ray(dir,NDGD_OpnlData) [lindex $ray(guidVar,$var) 2]]
     set times [split [lindex $ray(guidVar,$var) 5] :]
     set mtime [lindex $times 0]
     set rtime [lindex $times 1]
@@ -730,8 +863,42 @@ proc RefreshTimes {rayName} {
     }
   }
 
+##### Update the refrence times on the NDGD files. #####
+#tk_messageBox -message "Update reference times on the Expr Guidance files"
+  foreach var $ray(guidExprVarList) {
+    if {[string index $var 0] == "#"} {
+      continue
+    }
+    set file [file join $ray(dir,NDGD_ExprData) [lindex $ray(guidExprVar,$var) 2]]
+    set times [split [lindex $ray(guidExprVar,$var) 5] :]
+    set mtime [lindex $times 0]
+    set rtime [lindex $times 1]
+    if {[file exists $file]} {
+      set fileMtime [file mtime $file]
+      if {$mtime != $fileMtime} {
+        set f_update 1
+        set mtime $fileMtime
+        if {[catch {$ray(GRIB2Cmd) -refTime -in $file} rtime]} {
+          file delete -force $file
+#          puts $file
+          set ray(guidExprVar,$var) [lreplace $ray(guidExprVar,$var) 5 5 "0:0"]
+        } else {
+          set rtime [format "%.0f" $rtime]
+          set ray(guidExprVar,$var) [lreplace $ray(guidExprVar,$var) 5 5 "$mtime:$rtime"]
+        }
+      }
+    } elseif {$mtime != 0} {
+      set ray(guidExprVar,$var) [lreplace $ray(guidExprVar,$var) 5 5 "0:0"]
+      set f_update 1
+    }
+  }
+
 ##### Update the refrence times on the CONUS SubSectors files. #####
+#tk_messageBox -message "Update reference times on the sub Sector files"
   foreach var $ray(subSectorList) {
+    if {! [info exists ray(foreVar,$var)]} {
+      continue
+    }
     if {[string range $var 0 4] != "conus"} {
       continue
     }
@@ -739,7 +906,7 @@ proc RefreshTimes {rayName} {
       set sector [lindex $ray(subSector,LocalName) $i]
       set path [lindex $ray(foreVar,$var) 2]
       set path [string replace $path 0 4 $sector]
-      set file [file join $ray(dir,NDFD_Data) $path]
+      set file [file join $ray(dir,NDFD_OpnlData) $path]
       set times [split [lindex $ray(subSector,$var) $i] :]
       set mtime [lindex $times 0]
       set rtime [lindex $times 1]
@@ -759,6 +926,44 @@ proc RefreshTimes {rayName} {
         }
       } elseif {$mtime != 0} {
         set ray(subSector,$var) [lreplace $ray(subSector,$var) $i $i "0:0"]
+        set f_update 1
+      }
+    }
+  }
+
+##### Update the refrence times on the CONUS SubExprSectors files. #####
+#tk_messageBox -message "Update reference times on the sub Expr Sector files"
+  foreach var $ray(subExprSectorList) {
+    if {! [info exists ray(foreExprVar,$var)]} {
+      continue
+    }
+    if {[string range $var 0 4] != "conus"} {
+      continue
+    }
+    for {set i 0} {$i < [llength $ray(subExprSector,LocalName)]} {incr i} {
+      set sector [lindex $ray(subExprSector,LocalName) $i]
+      set path [lindex $ray(foreExprVar,$var) 2]
+      set path [string replace $path 0 4 $sector]
+      set file [file join $ray(dir,NDFD_ExprData) $path]
+      set times [split [lindex $ray(subExprSector,$var) $i] :]
+      set mtime [lindex $times 0]
+      set rtime [lindex $times 1]
+      if {[file exists $file]} {
+        set fileMtime [file mtime $file]
+        if {$mtime != $fileMtime} {
+          set f_update 1
+          set mtime $fileMtime
+          if {[catch {$ray(GRIB2Cmd) -refTime -in $file} rtime]} {
+            file delete -force $file
+#            puts $file
+            set ray(subExprSector,$var) [lreplace $ray(subExprSector,$var) $i $i "0:0"]
+          } else {
+            set rtime [format "%.0f" $rtime]
+            set ray(subExprSector,$var) [lreplace $ray(subExprSector,$var) $i $i "$mtime:$rtime"]
+          }
+        }
+      } elseif {$mtime != 0} {
+        set ray(subExprSector,$var) [lreplace $ray(subExprSector,$var) $i $i "0:0"]
         set f_update 1
       }
     }
@@ -789,7 +994,7 @@ proc RefreshTimes {rayName} {
 #   may need another tree type? Tcl 8.4?
 #   Could probably clean this up as it has a lot of repetitive tasks.
 #*****************************************************************************
-proc RefreshFolderList {rayName} {
+proc RefreshFolderList {rayName {f_msg 0}} {
   global tcl_platform
   upvar #0 $rayName ray
 
@@ -801,6 +1006,9 @@ proc RefreshFolderList {rayName} {
   }
 
 ##### Update the NDFD folders. #####
+  if {$f_msg} {
+    ns_Print::puts "Updating the NDFD folders"
+  }
   set ray(foreFolder,dirs) ""
   foreach var $ray(foreVarList) {
     if {[string index $var 0] == "#"} {
@@ -888,7 +1096,101 @@ proc RefreshFolderList {rayName} {
     }
   }
 
+##### Update the NDFD Expr folders. #####
+  if {$f_msg} {
+    ns_Print::puts "Updating the NDFD Experimental folders"
+  }
+  set ray(foreExprFolder,dirs) ""
+  foreach var $ray(foreExprVarList) {
+    if {[string index $var 0] == "#"} {
+      continue
+    }
+    if {[lindex $ray(foreExprVar,$var) 0] == "NA"} {
+      continue
+    }
+    set prgPath [split [lindex $ray(foreExprVar,$var) 1] /]
+    set time [lindex $ray(foreExprVar,$var) 5]
+    set level ndfdExpr
+    set cnt 1
+    set len [llength $prgPath]
+    foreach dir $prgPath {
+      set path [join $dir -]
+      ##### Check if we have to add a folder #####
+      if {$cnt != $len} {
+        set level2 [join [list $level $path] _]
+        if {[lsearch $ray(foreExprFolder,dirs) $level2] == -1} {
+          lappend ray(foreExprFolder,dirs) $level2
+          set ray(foreExprFolder,fileContent,$level2) ""
+          set ray(foreExprFolder,time,$level2) $time
+          if {$time == "0:0"} {
+            if {[catch {$ray(lb,tree) insert $level2 -text "$dir :: Need to Download" -image pFo -parent $level}]} {
+              $ray(lb,tree) nodeconfigure $level2 -text "$dir :: Need to Download"
+            }
+          } else {
+            set rtime [lindex [split $time :] 1]
+            set deltaSec [expr ($ray(now) - $rtime)]
+            if {$deltaSec >= 0} {
+              set deltaDay [expr $deltaSec / (3600*24)]
+              set deltaHr [expr ($deltaSec - 3600*24*$deltaDay) / 3600]
+            } else {
+              set deltaDay 0
+              set deltaHr 0
+            }
+            if {[catch {$ray(lb,tree) insert $level2 -text "$dir :: $deltaDay days $deltaHr hrs old" -image pFo -parent $level}]} {
+              $ray(lb,tree) nodeconfigure $level2 -text "$dir :: $deltaDay days $deltaHr hrs old"
+            }
+          }
+        } else {
+          set rtime [lindex [split $time :] 1]
+          set dirRtime [lindex [split $ray(foreExprFolder,time,$level2) :] 1]
+          if {$rtime != 0} {
+            if {($dirRtime == 0) || ($rtime < $dirRtime)} {
+              set ray(foreExprFolder,time,$level2) $time
+              set deltaSec [expr ($ray(now) - $rtime)]
+              if {$deltaSec >= 0} {
+                set deltaDay [expr $deltaSec / (3600*24)]
+                set deltaHr [expr ($deltaSec - 3600*24*$deltaDay) / 3600]
+              } else {
+                set deltaDay 0
+                set deltaHr 0
+              }
+              $ray(lb,tree) nodeconfigure $level2 -text "$dir :: $deltaDay days $deltaHr hrs old"
+            }
+          }
+        }
+
+      ##### Dealing with a file #####
+      } else {
+        set level2 [join [list $level $path $var] _]
+        lappend ray(foreExprFolder,fileContent,$level) $level2
+        if {$time == "0:0"} {
+          if {[catch {$ray(lb,tree) insert $level2 -text "$dir :: Need to Download" -image pGrib2 -parent $level}]} {
+            $ray(lb,tree) nodeconfigure $level2 -text "$dir :: Need to Download"
+          }
+        } else {
+          set rtime [lindex [split $time :] 1]
+          set deltaSec [expr ($ray(now) - $rtime)]
+          if {$deltaSec >= 0} {
+            set deltaDay [expr $deltaSec / (3600*24)]
+            set deltaHr [expr ($deltaSec - 3600*24*$deltaDay) / 3600]
+          } else {
+            set deltaDay 0
+            set deltaHr 0
+          }
+          if {[catch {$ray(lb,tree) insert $level2 -text "$dir :: $deltaDay days $deltaHr hrs old" -image pGrib2 -parent $level}]} {
+            $ray(lb,tree) nodeconfigure $level2 -text "$dir :: $deltaDay days $deltaHr hrs old"
+          }
+        }
+      }
+      set level $level2
+      incr cnt
+    }
+  }
+
 ##### Update the NDGD folders. #####
+  if {$f_msg} {
+    ns_Print::puts "Updating the NDGD folders"
+  }
   set ray(guidFolder,dirs) ""
   foreach var $ray(guidVarList) {
     if {[string index $var 0] == "#"} {
@@ -973,9 +1275,104 @@ proc RefreshFolderList {rayName} {
     }
   }
 
+##### Update the NDGD folders. #####
+  if {$f_msg} {
+    ns_Print::puts "Updating the NDGD Experimental folders"
+  }
+  set ray(guidExprFolder,dirs) ""
+  foreach var $ray(guidExprVarList) {
+    if {[string index $var 0] == "#"} {
+      continue
+    }
+    set prgPath [split [lindex $ray(guidExprVar,$var) 1] /]
+    set time [lindex $ray(guidExprVar,$var) 5]
+    set level ndgdExpr
+    set cnt 1
+    set len [llength $prgPath]
+    foreach dir $prgPath {
+      set path [join $dir -]
+      ##### Check if we have to add a folder #####
+      if {$cnt != $len} {
+        set level2 [join [list $level $path] _]
+        if {[lsearch $ray(guidExprFolder,dirs) $level2] == -1} {
+          lappend ray(guidExprFolder,dirs) $level2
+          set ray(guidExprFolder,fileContent,$level2) ""
+          set ray(guidExprFolder,time,$level2) $time
+          if {$time == "0:0"} {
+            if {[catch {$ray(lb,tree) insert $level2 -text "$dir :: Need to Download" -image pFo -parent $level}]} {
+              $ray(lb,tree) nodeconfigure $level2 -text "$dir :: Need to Download"
+            }
+          } else {
+            set rtime [lindex [split $time :] 1]
+            set deltaSec [expr ($ray(now) - $rtime)]
+            if {$deltaSec >= 0} {
+              set deltaDay [expr $deltaSec / (3600*24)]
+              set deltaHr [expr ($deltaSec - 3600*24*$deltaDay) / 3600]
+            } else {
+              set deltaDay 0
+              set deltaHr 0
+            }
+            if {[catch {$ray(lb,tree) insert $level2 -text "$dir :: $deltaDay days $deltaHr hrs old" -image pFo -parent $level}]} {
+              $ray(lb,tree) nodeconfigure $level2 -text "$dir :: $deltaDay days $deltaHr hrs old"
+            }
+          }
+        } else {
+          set rtime [lindex [split $time :] 1]
+          set dirRtime [lindex [split $ray(guidExprFolder,time,$level2) :] 1]
+          if {$rtime != 0} {
+            if {($dirRtime == 0) || ($rtime < $dirRtime)} {
+              set ray(guidExprFolder,time,$level2) $time
+              set deltaSec [expr ($ray(now) - $rtime)]
+              if {$deltaSec >= 0} {
+                set deltaDay [expr $deltaSec / (3600*24)]
+                set deltaHr [expr ($deltaSec - 3600*24*$deltaDay) / 3600]
+              } else {
+                set deltaDay 0
+                set deltaHr 0
+              }
+              $ray(lb,tree) nodeconfigure $level2 -text "$dir :: $deltaDay days $deltaHr hrs old"
+            }
+          }
+        }
+
+      ##### Dealing with a file #####
+      } else {
+        set level2 [join [list $level $path $var] _]
+        lappend ray(guidExprFolder,fileContent,$level) $level2
+        if {$time == "0:0"} {
+          if {[catch {$ray(lb,tree) insert $level2 -text "$dir :: Need to Download" -image pGrib2 -parent $level}]} {
+            $ray(lb,tree) nodeconfigure $level2 -text "$dir :: Need to Download"
+          }
+        } else {
+          set rtime [lindex [split $time :] 1]
+          set deltaSec [expr ($ray(now) - $rtime)]
+          if {$deltaSec >= 0} {
+            set deltaDay [expr $deltaSec / (3600*24)]
+            set deltaHr [expr ($deltaSec - 3600*24*$deltaDay) / 3600]
+          } else {
+            set deltaDay 0
+            set deltaHr 0
+          }
+          if {[catch {$ray(lb,tree) insert $level2 -text "$dir :: $deltaDay days $deltaHr hrs old" -image pGrib2 -parent $level}]} {
+            $ray(lb,tree) nodeconfigure $level2 -text "$dir :: $deltaDay days $deltaHr hrs old"
+          }
+        }
+      }
+      set level $level2
+      incr cnt
+    }
+  }
+
 ##### Update the CONUS SubSectors folders. #####
+  if {$f_msg} {
+    ns_Print::puts "Updating the CONUS subSector folders"
+  }
   set ray(subFolder,dirs) ""
   foreach var $ray(subSectorList) {
+    if {! [info exists ray(foreVar,$var)]} {
+#       tk_messageBox -message "No $var in conus expr"
+      continue
+    }
     if {[string range $var 0 4] != "conus"} {
       continue
     }
@@ -1065,7 +1462,109 @@ proc RefreshFolderList {rayName} {
     }
   }
 
+##### Update the CONUS SubExprSectors folders. #####
+  if {$f_msg} {
+    ns_Print::puts "Updating the CONUS Experimental subSector folders"
+  }
+  set ray(subExprFolder,dirs) ""
+  foreach var $ray(subExprSectorList) {
+    if {! [info exists ray(foreExprVar,$var)]} {
+#       tk_messageBox -message "No $var in conus expr"
+      continue
+    }
+    if {[string range $var 0 4] != "conus"} {
+      continue
+    }
+    for {set i 0} {$i < [llength $ray(subExprSector,LabelName)]} {incr i} {
+      set name [lindex $ray(subExprSector,LabelName) $i]
+      set localName [lindex $ray(subExprSector,LocalName) $i]
+      set prgPath [split [lindex $ray(foreExprVar,$var) 1] /]
+      set time [lindex $ray(subExprSector,$var) $i]
+      set prgPath [lreplace $prgPath 0 0 $name]
+#      set prgPath [linsert $prgPath 1 $name]
+      set level ndfdExpr
+      set cnt 1
+      set len [llength $prgPath]
+      foreach dir $prgPath {
+        set path [join $dir -]
+        ##### Check if we have to add a folder #####
+        if {$cnt != $len} {
+          set level2 [join [list $level $path] _]
+          if {[lsearch $ray(subExprFolder,dirs) $level2] == -1} {
+            lappend ray(subExprFolder,dirs) $level2
+            set ray(subExprFolder,fileContent,$level2) ""
+            set ray(subExprFolder,time,$level2) $time
+            if {$time == "0:0"} {
+              if {[catch {$ray(lb,tree) insert $level2 -text "$dir :: Need to Download" -image pFo -parent $level}]} {
+                $ray(lb,tree) nodeconfigure $level2 -text "$dir :: Need to Download"
+              }
+            } else {
+              set rtime [lindex [split $time :] 1]
+              set deltaSec [expr ($ray(now) - $rtime)]
+              if {$deltaSec >= 0} {
+                set deltaDay [expr $deltaSec / (3600*24)]
+                set deltaHr [expr ($deltaSec - 3600*24*$deltaDay) / 3600]
+              } else {
+                set deltaDay 0
+                set deltaHr 0
+              }
+              if {[catch {$ray(lb,tree) insert $level2 -text "$dir :: $deltaDay days $deltaHr hrs old" -image pFo -parent $level}]} {
+                $ray(lb,tree) nodeconfigure $level2 -text "$dir :: $deltaDay days $deltaHr hrs old"
+              }
+            }
+          } else {
+            set rtime [lindex [split $time :] 1]
+            set dirRtime [lindex [split $ray(subExprFolder,time,$level2) :] 1]
+            if {$rtime != 0} {
+              if {($dirRtime == 0) || ($rtime < $dirRtime)} {
+                set ray(subExprFolder,time,$level2) $time
+                set deltaSec [expr ($ray(now) - $rtime)]
+                if {$deltaSec >= 0} {
+                  set deltaDay [expr $deltaSec / (3600*24)]
+                  set deltaHr [expr ($deltaSec - 3600*24*$deltaDay) / 3600]
+                } else {
+                  set deltaDay 0
+                  set deltaHr 0
+                }
+                $ray(lb,tree) nodeconfigure $level2 -text "$dir :: $deltaDay days $deltaHr hrs old"
+              }
+            }
+          }
+
+        ##### Dealing with a file #####
+        } else {
+          set var2 [join [linsert [split $var -] 1 $localName] -]
+          set level2 [join [list $level $path $var2] _]
+          lappend ray(subExprFolder,fileContent,$level) $level2
+          if {$time == "0:0"} {
+            if {[catch {$ray(lb,tree) insert $level2 -text "$dir :: Need to Download" -image pGrib2 -parent $level}]} {
+              $ray(lb,tree) nodeconfigure $level2 -text "$dir :: Need to Download"
+            }
+          } else {
+            set rtime [lindex [split $time :] 1]
+            set deltaSec [expr ($ray(now) - $rtime)]
+            if {$deltaSec >= 0} {
+              set deltaDay [expr $deltaSec / (3600*24)]
+              set deltaHr [expr ($deltaSec - 3600*24*$deltaDay) / 3600]
+            } else {
+              set deltaDay 0
+              set deltaHr 0
+            }
+            if {[catch {$ray(lb,tree) insert $level2 -text "$dir :: $deltaDay days $deltaHr hrs old" -image pGrib2 -parent $level}]} {
+              $ray(lb,tree) nodeconfigure $level2 -text "$dir :: $deltaDay days $deltaHr hrs old"
+            }
+          }
+        }
+        set level $level2
+        incr cnt
+      }
+    }
+  }
+
 ##### Update the CONUS Custom folder. #####
+  if {$f_msg} {
+    ns_Print::puts "Updating the Custom folders"
+  }
   set ray(customFolder,dirs) ""
   foreach var $ray(customVarList) {
     if {[lindex $ray(custom,$var) 0] == "NA"} {
@@ -1150,6 +1649,10 @@ proc RefreshFolderList {rayName} {
       incr cnt
     }
   }
+
+  if {$f_msg} {
+    ns_Print::puts "Done with Refresh folderList"
+  }
 }
 
 #*****************************************************************************
@@ -1180,8 +1683,12 @@ proc DownloadTab {frame rayName} {
       pack $tmp -fill both -expand 1
       $cur.tree insert ndfd -image pFo \
             -text "NDFD (National Digital Forecast Database)"
+      $cur.tree insert ndfdExpr -image pFo \
+            -text "Experimental NDFD"
       $cur.tree insert ndgd -image pFo \
             -text "NDGD (National Digital Guidance Database)"
+      $cur.tree insert ndgdExpr -image pFo \
+            -text "Experimental NDGD"
       set ray(lb,tree) $cur.tree
 
 ##### Build the text message window. #####
@@ -1315,7 +1822,7 @@ proc main {rayName} {
     ns_Print::puts "-----"
   }
   RefreshTimes $rayName
-  RefreshFolderList $rayName
+  RefreshFolderList $rayName 1
 #  MainTimer $rayName
   $ray(lb,tree) expand ndfd
   set ray(Cancel) 0

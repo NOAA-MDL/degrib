@@ -114,8 +114,8 @@ proc PaneValid {w} {
       lappend ray(SectorList) $var
     }
     if {[lindex $value 1] == "*"} {
-      if {! [file exists [file join $ray(dir,NDFD_Data) $var]]} {
-        file mkdir [file join $ray(dir,NDFD_Data) $var]
+      if {! [file exists [file join $ray(dir,NDFD_OpnlData) $var]]} {
+        file mkdir [file join $ray(dir,NDFD_OpnlData) $var]
       }
     }
     set ray(custom,URL) http://ndfd.weather.gov/cgi-bin/ndfd/gribcut

@@ -112,7 +112,7 @@ proc DrawImages {rayName} {
       continue
     }
     if {[lsearch $capableList $type] != -1} {
-      set localName [file join $ray(dir,NDFD_Data) [lindex $ray(foreVar,$var) 2]]
+      set localName [file join $ray(dir,NDFD_OpnlData) [lindex $ray(foreVar,$var) 2]]
       if {[file exists $localName]} {
         lappend foreList2 $var
         # Find refTime of var
@@ -141,7 +141,7 @@ proc DrawImages {rayName} {
       set var [join [lreplace $tempList 1 1] -]
       set sector [lindex $tempList 1]
       set local [string replace [lindex $ray(foreVar,$var) 2] 0 4 $sector]
-      set localName [file join $ray(dir,NDFD_Data) $local]
+      set localName [file join $ray(dir,NDFD_OpnlData) $local]
       if {[file exists $localName]} {
         lappend subList2 $sub
         # Find refTime of subsector
@@ -256,7 +256,7 @@ proc DrawImages {rayName} {
   foreach var $foreList2 {
     set tempList [split $var -]
     set sector [lindex $tempList 0]
-    set localName [file join $ray(dir,NDFD_Data) [lindex $ray(foreVar,$var) 2]]
+    set localName [file join $ray(dir,NDFD_OpnlData) [lindex $ray(foreVar,$var) 2]]
     ns_Print::puts "extracting from $localName"
     if {[catch {$ray(GRIB2Cmd) -C -in $localName -msg 0 -nameStyle 3 \
                 -SimpleWx true -namePath $ray(dir,Mosaic) -nMSB -Flt -revFlt -Unit e \
@@ -274,7 +274,7 @@ proc DrawImages {rayName} {
     set var [join [lreplace $tempList 1 1] -]
     set sector [lindex $tempList 1]
     set local [string replace [lindex $ray(foreVar,$var) 2] 0 4 $sector]
-    set localName [file join $ray(dir,NDFD_Data) $local]
+    set localName [file join $ray(dir,NDFD_OpnlData) $local]
     ns_Print::puts "extracting from $localName"
     if {[catch {$ray(GRIB2Cmd) -C -in $localName -msg 0 -nameStyle 3 \
                 -SimpleWx true -namePath $ray(dir,Mosaic) -nMSB -Flt -revFlt -Unit e \

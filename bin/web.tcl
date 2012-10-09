@@ -175,8 +175,11 @@ proc GroupConv {sector f_renameConv} {
 #      (http,) = "HTTPSite" section
 #       (opt,) = "Options" section
 # (subSector,) = "CONUS_SubSectors" section
+# (subExprSector,) = "CONUS_Expr_SubSectors" section
 #   (foreVar,) = "NDFD_Variables" section
+#   (foreExprVar,) = "NDFD_EXPR_Variables" section
 #   (guidVar,) = "NDGD_Variables" section
+#   (guidExprVar,) = "NDGD_EXPR_Variables" section
 #
 # RETURNS void
 #
@@ -201,30 +204,24 @@ proc ReadIni {rayName} {
     if {[llength $val] == 1} {
       set ray(dir,$var) $val
     } elseif {[llength $val] > 2} {
-      puts "Didn't understand $pair, skipping"
+      tk_messageBox -message "Didn't understand $pair, skipping"
     } elseif {[lindex $val 0] == "Parent"} {
       set ray(dir,$var) [file join $Parent [lindex $val 1]]
     } else {
-      puts "Didn't understand $pair, skipping"
+      tk_messageBox -message "Didn't understand $pair, skipping"
     }
     # Make sure the directories exist.
 #    if {! [file exists $ray(dir,$var)]} {
 #      file mkdir $ray(dir,$var)
 #    }
   }
-
-# For web.tcl, only NDFD_Data and NDGD_Data are critical, and they are only
-# critical as default values of -renameRoot.  Their existance will be checked
-# only if they are needed (because -renameRoot was not provided).
-#
   # Check to make sure essential directories are set.
-#  set critList [list Bin Mosaic GIS_IN Web_Data NDGD_Data NDFD_Data GIS_OUT]
-  set critList [list NDGD_Data NDFD_Data]
+  set critList [list Bin Mosaic GIS_IN Web_Data NDGD_OpnlData NDFD_OpnlData NDGD_ExprData NDFD_ExprData GIS_OUT]
   foreach var $critList {
     if {! [info exists ray(dir,$var)]} {
-      puts "One of the critical 'NDFD_Directories'\
+      tk_messageBox -message "One of the critical 'NDFD_Directories'\
                               variables in $filename was not set"
-      puts "NDFD_Directories should consist of $critList"
+      tk_messageBox -message "NDFD_Directories should consist of $critList"
       exit
     }
   }
@@ -241,11 +238,11 @@ proc ReadIni {rayName} {
     if {[llength $val] == 1} {
       set ray(imgGen,$var) $val
     } elseif {[llength $val] > 2} {
-      puts "Didn't understand $pair, skipping"
+      tk_messageBox -message "Didn't understand $pair, skipping"
     } elseif {[lindex $val 0] == "Parent"} {
       set ray(imgGen,$var) [file join $Parent [lindex $val 1]]
     } else {
-      puts "Didn't understand $pair, skipping"
+      tk_messageBox -message "Didn't understand $pair, skipping"
     }
     # Make sure the directories exist.
     if {$var != "LOG_PREF"} {
@@ -256,17 +253,17 @@ proc ReadIni {rayName} {
     set env($var) $ray(imgGen,$var)
   }
   # Check to make sure essential directories are set.
-#  set critList [list LOG_PREF LOG_DIR DATABASE NDFD_DATA NDFD_CITIES \
-#                NDFD_COLOR NDFD_CONFIG NDFD_SHAPE WEB_IMAGE_PATH \
-#                NDFD_WEBDATA HTML_DIR]
-#  foreach var $critList {
-#    if {! [info exists ray(imgGen,$var)]} {
-#      puts "One of the critical 'NDFD_ImageGen' variables\
-#                              in $filename was not set"
-#      puts "NDFD_ImageGen should consist of $critList"
-#      exit
-#    }
-#  }
+  set critList [list LOG_PREF LOG_DIR DATABASE NDFD_DATA NDFD_CITIES \
+                NDFD_COLOR NDFD_CONFIG NDFD_SHAPE WEB_IMAGE_PATH \
+                NDFD_WEBDATA HTML_DIR]
+  foreach var $critList {
+    if {! [info exists ray(imgGen,$var)]} {
+      tk_messageBox -message "One of the critical 'NDFD_ImageGen' variables\
+                              in $filename was not set"
+      tk_messageBox -message "NDFD_ImageGen should consist of $critList"
+      exit
+    }
+  }
 
 ##### Load the "Custom" section (custom,) #####
   set ans [ns_Util::ReadIni $filename Custom_Sector *]
@@ -333,6 +330,25 @@ proc ReadIni {rayName} {
     lappend ray(subSectorList) $var
   }
 
+##### Load the "ExprSubSectors" section (subExprSector,) #####
+  set ans [ns_Util::ReadIni $filename CONUS_ExprSubSectors *]
+  set ray(subExprSectorList) ""
+  foreach pair $ans {
+    set var [lindex $pair 0]
+    if {[string index $var 0] == "#"} {
+      set ray(subExprSector,$var) [lindex $pair 1]
+    } else {
+      set val [split [lindex $pair 1] ,]
+      if {[llength $val] != 16} {
+        set var "#$var"
+        set ray(subExprSector,$var) [lindex $pair 1]
+      } else {
+        set ray(subExprSector,$var) $val
+      }
+    }
+    lappend ray(subExprSectorList) $var
+  }
+
 ##### Load the "NDFD_Variables" section (foreVar,) #####
   set ans [ns_Util::ReadIni $filename NDFD_Variables *]
   set ray(foreVarList) ""
@@ -350,6 +366,25 @@ proc ReadIni {rayName} {
       }
     }
     lappend ray(foreVarList) $var
+  }
+
+##### Load the "NDFD_EXPR_Variables" section (foreExprVar,) #####
+  set ans [ns_Util::ReadIni $filename NDFD_EXPR_Variables *]
+  set ray(foreExprVarList) ""
+  foreach pair $ans {
+    set var [lindex $pair 0]
+    if {[string index $var 0] == "#"} {
+      set ray(foreExprVar,$var) [lindex $pair 1]
+    } else {
+      set val [split [lindex $pair 1] ,]
+      if {[llength $val] != 6} {
+        set var "#$var"
+        set ray(foreExprVar,$var) [lindex $pair 1]
+      } else {
+        set ray(foreExprVar,$var) $val
+      }
+    }
+    lappend ray(foreExprVarList) $var
   }
 
 ##### Load the "NDGD_Variables" section (guidVar,) #####
@@ -370,6 +405,26 @@ proc ReadIni {rayName} {
     }
     lappend ray(guidVarList) $var
   }
+
+##### Load the "NDGD_EXPR_Variables" section (guidExprVar,) #####
+  set ans [ns_Util::ReadIni $filename NDGD_EXPR_Variables *]
+  set ray(guidExprVarList) ""
+  foreach pair $ans {
+    set var [lindex $pair 0]
+    if {[string index $var 0] == "#"} {
+      set ray(guidExprVar,$var) [lindex $pair 1]
+    } else {
+      set val [split [lindex $pair 1] ,]
+      if {[llength $val] != 6} {
+        set var "#$var"
+        set ray(guidExprVar,$var) [lindex $pair 1]
+      } else {
+        set ray(guidExprVar,$var) $val
+      }
+    }
+    lappend ray(guidExprVarList) $var
+  }
+
 }
 
 #####
@@ -425,31 +480,29 @@ proc HttpTryOne {rayName usrName src0 dst} {
   if {[llength $src0] == 1} {
     if {[http::copy $src0 $dst $progress 20480] != 0} {
       return 1
-    } else {
-      ##### Check if it is a GRIB file, #####
-      if {! [IsGRIB2 $rayName $dst -1]} {
-        return 1
-      }
     }
-  } elseif {[llength $src0] == 2} {
-    if {[http::copy [lindex $src0 0] $dst $progress 20480] != 0} {
+    ##### Check if it is a GRIB file, #####
+    if {! [IsGRIB2 $rayName $dst -1]} {
       return 1
-    } else {
-      ##### Check if it is a GRIB file, #####
-      if {! [IsGRIB2 $rayName $dst -1]} {
-        return 1
-      } else {
-        if {[http::myAppend [lindex $src0 1] $dst 1 20480] != 0} {
+    }
+  } else {
+    set f_first 1
+    foreach elem $src0 {
+      if {$f_first} {
+        if {[http::copy $elem $dst $progress 20480] != 0} {
           return 1
-        } else {
-          if {! [IsGRIB2 $rayName $dst -1]} {
-            return 1
-          }
+        }
+        set f_first 0
+      } else {
+        if {[http::myAppend $elem $dst $progress 20480] != 0} {
+          return 1
         }
       }
     }
-  } else {
-    return 1
+    ##### Check if it is a GRIB file, #####
+    if {! [IsGRIB2 $rayName $dst -1]} {
+      return 1
+    }
   }
   return 0
 }
@@ -491,9 +544,10 @@ proc WebHandleTryList {rayName usrName tryList attempt f_first} {
       set dst [lindex $elem 1]
       set src [lindex $elem 0]
       set src0 [lindex $src 0]
-      set shrtName [file split $src0]
-      set shrtName [join [lrange $shrtName [expr [llength $shrtName] -5] end] /]
-#      puts "Attempting to get $shrtName"
+
+#      if {! [file exists [file dirname $dst]]} {
+#        file mkdir [file dirname $dst]
+#      }
       set f_fail [HttpTryOne $rayName $usrName $src0 $dst]
       if {! $f_fail} {
         if {[catch {$ray(GRIB2Cmd) -I -in $dst} ans]} {
@@ -509,11 +563,11 @@ proc WebHandleTryList {rayName usrName tryList attempt f_first} {
         puts ""
       }
       if {$f_fail} {
-        puts "  Couldn't 'get' $shrtName... Will ReTry later.\n"
+        ns_Print::puts "  Couldn't 'get' $dst... Will ReTry later."
         file delete -force $dst
         lappend tryList2 [list $src $dst]
       } else {
-#       puts "Got $shrtName\n"
+        puts "Got $dst\n"
         set name [file tail $dst]
         set nameList [split $name .]
         set index [lsearch $nameList TIME]
@@ -538,9 +592,7 @@ proc WebHandleTryList {rayName usrName tryList attempt f_first} {
     set dst [lindex $elem 1]
     set src [lindex $elem 0]
     set src0 [lindex $src 0]
-    set shrtName [file split $src0]
-    set shrtName [join [lrange $shrtName [expr [llength $shrtName] -5] end] /]
-#    puts "Attempting to get $shrtName"
+
     set f_fail [HttpTryOne $rayName $usrName $src0 $dst]
     if {! $f_fail} {
       if {[catch {$ray(GRIB2Cmd) -I -in $dst} ans]} {
@@ -555,13 +607,13 @@ proc WebHandleTryList {rayName usrName tryList attempt f_first} {
     puts ""
     if {$f_fail} {
       if {[llength $src] > 1} {
-        puts "  Couldn't 'get' $shrtName... Try alternate URL."
+        puts "  Couldn't 'get' $dst... Try alternate URL."
         lappend tryList2 [list [lrange $src 1 end] $dst]
       } else {
         puts "  Failed to 'get' $shrtName."
       }
     } else {
-#      puts "Got $shrtName"
+      puts "Got $dst"
       set name [file tail $dst]
       set nameList [split $name .]
       set index [lsearch $nameList TIME]
@@ -665,40 +717,45 @@ proc Download_Select {rayName usrName} {
         } elseif {$usr(-renameConv) == 5} {
           set localName [file join $usr(-renameRoot) [lindex [split [file rootname $local] _] 0] TIME.[file tail $local]] 
         }
-        set exprName "$Server1$foreExprDir[lindex $ray(foreVar,$var) 3]"
-        set opnlName "$Server1$foreOpnlDir[lindex $ray(foreVar,$var) 3]"
-        if {$status == "expr"} {
-          set tempList [split $exprName /]
-          set exprSplitName1 [join [linsert $tempList [expr [llength $tempList] -1] VP.001-003] /]
-          set exprSplitName2 [join [linsert $tempList [expr [llength $tempList] -1] VP.004-007] /]
-          set tempList [split $opnlName /]
-          set opnlSplitName1 [join [linsert $tempList [expr [llength $tempList] -1] VP.001-003] /]
-          set opnlSplitName2 [join [linsert $tempList [expr [llength $tempList] -1] VP.004-007] /]
-#          lappend tryList [list [list $exprName $opnlName [list $exprSplitName1 $exprSplitName2] [list $opnlSplitName1 $opnlSplitName2]] $localName]
-          lappend tryList [list [list [list $exprSplitName1 $exprSplitName2] [list $opnlSplitName1 $opnlSplitName2]] $localName]
-        } elseif {$status == "expr-split"} {
-          lappend tryList [list [list $exprName $opnlName] $localName]
-        } elseif {$status == "expr-pure"} {
-          lappend tryList [list [list $exprName] $localName]
-        } elseif {$status == "opnl"} {
-          set tempList [split $exprName /]
-          set exprSplitName1 [join [linsert $tempList [expr [llength $tempList] -1] VP.001-003] /]
-          set exprSplitName2 [join [linsert $tempList [expr [llength $tempList] -1] VP.004-007] /]
-          set tempList [split $opnlName /]
-          set opnlSplitName1 [join [linsert $tempList [expr [llength $tempList] -1] VP.001-003] /]
-          set opnlSplitName2 [join [linsert $tempList [expr [llength $tempList] -1] VP.004-007] /]
-#          lappend tryList [list [list $opnlName $exprName [list $opnlSplitName1 $opnlSplitName2] [list $exprSplitName1 $exprSplitName2]] $localName]
-          lappend tryList [list [list [list $opnlSplitName1 $opnlSplitName2] [list $exprSplitName1 $exprSplitName2]] $localName]
-        } elseif {$status == "opnl-split"} {
-          lappend tryList [list [list $opnlName $exprName] $localName]
-        } elseif {$status == "opnl-pure"} {
-          lappend tryList [list [list $opnlName] $localName]
+
+        set srvName "$Server1$foreOpnlDir[lindex $ray(foreVar,$var) 3]"
+        if {$status == "join4"} {
+          set tempList [split $srvName /]
+          set srvSplitName1 [join [linsert $tempList [expr [llength $tempList] -1] VP.001] /]
+          set srvSplitName2 [join [linsert $tempList [expr [llength $tempList] -1] VP.002] /]
+          set srvSplitName3 [join [linsert $tempList [expr [llength $tempList] -1] VP.003] /]
+          set srvSplitName4 [join [linsert $tempList [expr [llength $tempList] -1] VP.004-007] /]
+          lappend tryList [list [list [list $srvSplitName1 $srvSplitName2 $srvSplitName3 $srvSplitName4]] $localName]
+        } elseif {$status == "join3"} {
+          set tempList [split $srvName /]
+          set srvSplitName1 [join [linsert $tempList [expr [llength $tempList] -1] VP.001] /]
+          set srvSplitName2 [join [linsert $tempList [expr [llength $tempList] -1] VP.002] /]
+          set srvSplitName3 [join [linsert $tempList [expr [llength $tempList] -1] VP.003] /]
+          lappend tryList [list [list [list $srvSplitName1 $srvSplitName2 $srvSplitName3]] $localName]
+        } elseif {$status == "join_d12"} {
+          set tempList [split $srvName /]
+          set srvSplitName1 [join [linsert $tempList [expr [llength $tempList] -1] VP.001] /]
+          set srvSplitName2 [join [linsert $tempList [expr [llength $tempList] -1] VP.002] /]
+          lappend tryList [list [list [list $srvSplitName1 $srvSplitName2]] $localName]
+        } elseif {$status == "join_d23"} {
+          set tempList [split $srvName /]
+          set srvSplitName2 [join [linsert $tempList [expr [llength $tempList] -1] VP.002] /]
+          set srvSplitName3 [join [linsert $tempList [expr [llength $tempList] -1] VP.003] /]
+          lappend tryList [list [list [list $srvSplitName2 $srvSplitName3]] $localName]
+        } elseif {$status == "join"} {
+          set tempList [split $srvName /]
+          set srvSplitName1 [join [linsert $tempList [expr [llength $tempList] -1] VP.001-003] /]
+          set srvSplitName2 [join [linsert $tempList [expr [llength $tempList] -1] VP.004-007] /]
+          lappend tryList [list [list [list $srvSplitName1 $srvSplitName2]] $localName]
+        } elseif {$status == "pure"} {
+          lappend tryList [list $srvName $localName]
         } elseif {$status == "NA"} {
           continue
         } else {
           puts "Don't understand status of [lindex $ray(foreVar,$var) 0]"
           continue
         }
+
         if {! [file exists [file dirname $localName]]} {
           file mkdir [file dirname $localName]
         }
@@ -772,40 +829,45 @@ proc Download_Select {rayName usrName} {
           set localName [file join $usr(-renameRoot) [lindex [split [file rootname $local] _] 0] TIME.[file tail $local]]
         }
         set remotePath [string replace [lindex $ray(foreVar,$var) 3] 3 7 $remote]
-        set exprName "$Server1$foreExprDir$remotePath"
-        set opnlName "$Server1$foreOpnlDir$remotePath"
-        if {$status == "expr"} {
-          set tempList [split $exprName /]
-          set exprSplitName1 [join [linsert $tempList [expr [llength $tempList] -1] VP.001-003] /]
-          set exprSplitName2 [join [linsert $tempList [expr [llength $tempList] -1] VP.004-007] /]
-          set tempList [split $opnlName /]
-          set opnlSplitName1 [join [linsert $tempList [expr [llength $tempList] -1] VP.001-003] /]
-          set opnlSplitName2 [join [linsert $tempList [expr [llength $tempList] -1] VP.004-007] /]
-#          lappend tryList [list [list $exprName $opnlName [list $exprSplitName1 $exprSplitName2] [list $opnlSplitName1 $opnlSplitName2]] $localName]
-          lappend tryList [list [list [list $exprSplitName1 $exprSplitName2] [list $opnlSplitName1 $opnlSplitName2]] $localName]
-        } elseif {$status == "expr-split"} {
-          lappend tryList [list [list $exprName $opnlName] $localName]
-        } elseif {$status == "expr-pure"} {
-          lappend tryList [list [list $exprName] $localName]
-        } elseif {$status == "opnl"} {
-          set tempList [split $exprName /]
-          set exprSplitName1 [join [linsert $tempList [expr [llength $tempList] -1] VP.001-003] /]
-          set exprSplitName2 [join [linsert $tempList [expr [llength $tempList] -1] VP.004-007] /]
-          set tempList [split $opnlName /]
-          set opnlSplitName1 [join [linsert $tempList [expr [llength $tempList] -1] VP.001-003] /]
-          set opnlSplitName2 [join [linsert $tempList [expr [llength $tempList] -1] VP.004-007] /]
-#          lappend tryList [list [list $opnlName $exprName [list $opnlSplitName1 $opnlSplitName2] [list $exprSplitName1 $exprSplitName2]] $localName]
-          lappend tryList [list [list [list $opnlSplitName1 $opnlSplitName2] [list $exprSplitName1 $exprSplitName2]] $localName]
-        } elseif {$status == "opnl-split"} {
-          lappend tryList [list [list $opnlName $exprName] $localName]
-        } elseif {$status == "opnl-pure"} {
-          lappend tryList [list [list $opnlName] $localName]
+
+        set srvName "$Server1$foreOpnlDir[lindex $ray(foreVar,$var) 3]"
+        if {$status == "join4"} {
+          set tempList [split $srvName /]
+          set srvSplitName1 [join [linsert $tempList [expr [llength $tempList] -1] VP.001] /]
+          set srvSplitName2 [join [linsert $tempList [expr [llength $tempList] -1] VP.002] /]
+          set srvSplitName3 [join [linsert $tempList [expr [llength $tempList] -1] VP.003] /]
+          set srvSplitName4 [join [linsert $tempList [expr [llength $tempList] -1] VP.004-007] /]
+          lappend tryList [list [list [list $srvSplitName1 $srvSplitName2 $srvSplitName3 $srvSplitName4]] $localName]
+        } elseif {$status == "join3"} {
+          set tempList [split $srvName /]
+          set srvSplitName1 [join [linsert $tempList [expr [llength $tempList] -1] VP.001] /]
+          set srvSplitName2 [join [linsert $tempList [expr [llength $tempList] -1] VP.002] /]
+          set srvSplitName3 [join [linsert $tempList [expr [llength $tempList] -1] VP.003] /]
+          lappend tryList [list [list [list $srvSplitName1 $srvSplitName2 $srvSplitName3]] $localName]
+        } elseif {$status == "join_d12"} {
+          set tempList [split $srvName /]
+          set srvSplitName1 [join [linsert $tempList [expr [llength $tempList] -1] VP.001] /]
+          set srvSplitName2 [join [linsert $tempList [expr [llength $tempList] -1] VP.002] /]
+          lappend tryList [list [list [list $srvSplitName1 $srvSplitName2]] $localName]
+        } elseif {$status == "join_d23"} {
+          set tempList [split $srvName /]
+          set srvSplitName2 [join [linsert $tempList [expr [llength $tempList] -1] VP.002] /]
+          set srvSplitName3 [join [linsert $tempList [expr [llength $tempList] -1] VP.003] /]
+          lappend tryList [list [list [list $srvSplitName2 $srvSplitName3]] $localName]
+        } elseif {$status == "join"} {
+          set tempList [split $srvName /]
+          set srvSplitName1 [join [linsert $tempList [expr [llength $tempList] -1] VP.001-003] /]
+          set srvSplitName2 [join [linsert $tempList [expr [llength $tempList] -1] VP.004-007] /]
+          lappend tryList [list [list [list $srvSplitName1 $srvSplitName2]] $localName]
+        } elseif {$status == "pure"} {
+          lappend tryList [list $srvName $localName]
         } elseif {$status == "NA"} {
           continue
         } else {
           puts "Don't understand status of [lindex $ray(foreVar,$var) 0]"
           continue
         }
+
         if {! [file exists [file dirname $localName]]} {
           file mkdir [file dirname $localName]
         }
@@ -879,7 +941,238 @@ proc Download_Select {rayName usrName} {
       }
     }
 
-  } else {
+  } elseif {$usr(-dataSet) == "ndfdExpr"} {
+    if {(! $usr(subSector)) && (! $usr(custom))} {
+      set varList ""
+      ##### Set up valid variable List for this sector. #####
+      foreach var $ray(foreExprVarList) {
+        if {[string index $var 0] == "#"} {
+          continue
+        }
+        set tmpList [split $var -]
+        set sector [lindex $tmpList 0]
+        set day [lindex $tmpList 2]
+        if {$usr(shortSector) == $sector} {
+          if {($usr(-day) == "all") || \
+              (($usr(-day) == "d17") && ($day == "")) || \
+              ($usr(-day) == $day)} {
+            lappend varList [join [lrange $tmpList 1 end] -]
+          }
+        }
+      }
+      if {$usr(-variable) == "all"} {
+        set varList2 ""
+        foreach var $varList {
+          lappend varList2 "$usr(shortSector)-$var"
+        }
+      } else {
+        set varList2 ""
+        foreach var $usr(-variable) {
+          if {[lsearch $varList $var] == -1} {
+            puts "Don't recognize variable '$var' in sector '$usr(-sector)', day '$usr(-day)'"
+            puts "Valid variables for this sector '$usr(-sector)' are: 'all' and"
+            puts "$varList\n"
+            exit
+          }
+          lappend varList2 "$usr(shortSector)-$var"
+        }
+      }
+      foreach var $varList2 {
+        set status [lindex $ray(foreExprVar,$var) 0]
+        set sec0 $usr(shortSector)
+        if {$sec0 == "conus"} {
+          set sec0 "co"
+        }
+        set var0 [lindex [split $var -] 1]
+        if {[info exists ray(renameVar,$var0)]} {
+          set var0 $ray(renameVar,$var0)
+        }
+        set local [lindex $ray(foreExprVar,$var) 2]
+        set extra [split [file rootname [file tail $local]] _]
+        if {[llength $extra] > 1} {
+          set var1 "$var0\_[join [lrange $extra 1 end] _]"
+          set var2 [join [lrange $extra 1 end] _]
+        } else {
+          set var1 $var0
+          set var2 ""
+        }
+        if {$usr(-renameConv) == 0} {
+          set localName [file join $usr(-renameRoot) $local]
+        } elseif {$usr(-renameConv) == 1} {
+          set localName [file join $usr(-renameRoot) $sec0 TIME.$var1.$sec0]
+        } elseif {$usr(-renameConv) == 2} {
+          set localName [file join $usr(-renameRoot) $sec0 $var0 TIME.$var1.$sec0]
+        } elseif {$usr(-renameConv) == 3} {
+          if {$var2 == ""} {
+             set localName [file join $usr(-renameRoot) $sec0 $var0 TIME.bin]
+          } else {
+             set localName [file join $usr(-renameRoot) $sec0 $var0 TIME.$var2.bin]
+          }
+        } elseif {$usr(-renameConv) == 4} {
+          set localName [file join $usr(-renameRoot) $var1.$sec0]
+        } elseif {$usr(-renameConv) == 5} {
+          set localName [file join $usr(-renameRoot) [lindex [split [file rootname $local] _] 0] TIME.[file tail $local]]
+        }
+
+        set srvName "$Server1$foreExprDir[lindex $ray(foreExprVar,$var) 3]"
+        if {$status == "join4"} {
+          set tempList [split $srvName /]
+          set srvSplitName1 [join [linsert $tempList [expr [llength $tempList] -1] VP.001] /]
+          set srvSplitName2 [join [linsert $tempList [expr [llength $tempList] -1] VP.002] /]
+          set srvSplitName3 [join [linsert $tempList [expr [llength $tempList] -1] VP.003] /]
+          set srvSplitName4 [join [linsert $tempList [expr [llength $tempList] -1] VP.004-007] /]
+          lappend tryList [list [list [list $srvSplitName1 $srvSplitName2 $srvSplitName3 $srvSplitName4]] $localName]
+        } elseif {$status == "join3"} {
+          set tempList [split $srvName /]
+          set srvSplitName1 [join [linsert $tempList [expr [llength $tempList] -1] VP.001] /]
+          set srvSplitName2 [join [linsert $tempList [expr [llength $tempList] -1] VP.002] /]
+          set srvSplitName3 [join [linsert $tempList [expr [llength $tempList] -1] VP.003] /]
+          lappend tryList [list [list [list $srvSplitName1 $srvSplitName2 $srvSplitName3]] $localName]
+        } elseif {$status == "join_d12"} {
+          set tempList [split $srvName /]
+          set srvSplitName1 [join [linsert $tempList [expr [llength $tempList] -1] VP.001] /]
+          set srvSplitName2 [join [linsert $tempList [expr [llength $tempList] -1] VP.002] /]
+          lappend tryList [list [list [list $srvSplitName1 $srvSplitName2]] $localName]
+        } elseif {$status == "join_d23"} {
+          set tempList [split $srvName /]
+          set srvSplitName2 [join [linsert $tempList [expr [llength $tempList] -1] VP.002] /]
+          set srvSplitName3 [join [linsert $tempList [expr [llength $tempList] -1] VP.003] /]
+          lappend tryList [list [list [list $srvSplitName2 $srvSplitName3]] $localName]
+        } elseif {$status == "join"} {
+          set tempList [split $srvName /]
+          set srvSplitName1 [join [linsert $tempList [expr [llength $tempList] -1] VP.001-003] /]
+          set srvSplitName2 [join [linsert $tempList [expr [llength $tempList] -1] VP.004-007] /]
+          lappend tryList [list [list [list $srvSplitName1 $srvSplitName2]] $localName]
+        } elseif {$status == "pure"} {
+          lappend tryList [list $srvName $localName]
+        } elseif {$status == "NA"} {
+          continue
+        } else {
+          puts "Don't understand status of [lindex $ray(foreExprVar,$var) 0]"
+          continue
+        }
+
+        if {! [file exists [file dirname $localName]]} {
+          file mkdir [file dirname $localName]
+        }
+      }
+    } elseif {! $usr(custom)} {
+      set varList ""
+      ##### Set up valid variable List for this subsector. #####
+      foreach var $ray(subExprSectorList) {
+        if {[string range $var 0 4] != "conus"} {
+          continue
+        }
+        set tmpList [split $var -]
+        set day [lindex $tmpList 2]
+        if {($usr(-day) == "all") || \
+            (($usr(-day) == "d17") && ($day == "")) || \
+            ($usr(-day) == $day)} {
+          lappend varList [join [lrange $tmpList 1 end] -]
+        }
+      }
+      if {$usr(-variable) == "all"} {
+        set varList2 ""
+        foreach var $varList {
+          lappend varList2 "conus-$var"
+        }
+      } else {
+        set varList2 ""
+        foreach var $usr(-variable) {
+          if {[lsearch $varList $var] == -1} {
+            puts "Don't recognize variable '$var' in sector '$usr(-sector)', day '$usr(-day)'"
+            puts "Valid variables for this sector '$usr(-sector)' are: 'all' and"
+            puts "$varList\n"
+            exit
+          }
+          lappend varList2 "conus-$var"
+        }
+      }
+      foreach var $varList2 {
+        set sector $usr(-sector)
+        set index [lsearch $ray(subExprSector,LocalName) $sector]
+        set remote [lindex $ray(subExprSector,RemoteName) $index]
+        set status [lindex $ray(foreExprVar,$var) 0]
+        set local [string replace [lindex $ray(foreExprVar,$var) 2] 0 4 $sector]
+        set sec0 $sector
+        set var0 [lindex [split $var -] 1]
+        if {[info exists ray(renameVar,$var0)]} {
+          set var0 $ray(renameVar,$var0)
+        }
+        set extra [split [file rootname [file tail $local]] _]
+        if {[llength $extra] > 1} {
+          set var1 "$var0\_[join [lrange $extra 1 end] _]"
+          set var2 [join [lrange $extra 1 end] _]
+        } else {
+          set var1 $var0
+          set var2 ""
+        }
+        if {$usr(-renameConv) == 0} {
+          set localName [file join $usr(-renameRoot) $local]
+        } elseif {$usr(-renameConv) == 1} {
+          set localName [file join $usr(-renameRoot) $sec0 TIME.$var1.$sec0]
+        } elseif {$usr(-renameConv) == 2} {
+          set localName [file join $usr(-renameRoot) $sec0 $var0 TIME.$var1.$sec0]
+        } elseif {$usr(-renameConv) == 3} {
+          if {$var2 == ""} {
+             set localName [file join $usr(-renameRoot) $sec0 $var0 TIME.bin]
+          } else {
+             set localName [file join $usr(-renameRoot) $sec0 $var0 TIME.$var2.bin]
+          }
+        } elseif {$usr(-renameConv) == 4} {
+          set localName [file join $usr(-renameRoot) $var1.$sec0]
+        } elseif {$usr(-renameConv) == 5} {
+          set localName [file join $usr(-renameRoot) [lindex [split [file rootname $local] _] 0] TIME.[file tail $local]]
+        }
+        set remotePath [string replace [lindex $ray(foreExprVar,$var) 3] 3 7 $remote]
+
+        set srvName "$Server1$foreExprDir[lindex $ray(foreExprVar,$var) 3]"
+        if {$status == "join4"} {
+          set tempList [split $srvName /]
+          set srvSplitName1 [join [linsert $tempList [expr [llength $tempList] -1] VP.001] /]
+          set srvSplitName2 [join [linsert $tempList [expr [llength $tempList] -1] VP.002] /]
+          set srvSplitName3 [join [linsert $tempList [expr [llength $tempList] -1] VP.003] /]
+          set srvSplitName4 [join [linsert $tempList [expr [llength $tempList] -1] VP.004-007] /]
+          lappend tryList [list [list [list $srvSplitName1 $srvSplitName2 $srvSplitName3 $srvSplitName4]] $localName]
+        } elseif {$status == "join3"} {
+          set tempList [split $srvName /]
+          set srvSplitName1 [join [linsert $tempList [expr [llength $tempList] -1] VP.001] /]
+          set srvSplitName2 [join [linsert $tempList [expr [llength $tempList] -1] VP.002] /]
+          set srvSplitName3 [join [linsert $tempList [expr [llength $tempList] -1] VP.003] /]
+          lappend tryList [list [list [list $srvSplitName1 $srvSplitName2 $srvSplitName3]] $localName]
+        } elseif {$status == "join_d12"} {
+          set tempList [split $srvName /]
+          set srvSplitName1 [join [linsert $tempList [expr [llength $tempList] -1] VP.001] /]
+          set srvSplitName2 [join [linsert $tempList [expr [llength $tempList] -1] VP.002] /]
+          lappend tryList [list [list [list $srvSplitName1 $srvSplitName2]] $localName]
+        } elseif {$status == "join_d23"} {
+          set tempList [split $srvName /]
+          set srvSplitName2 [join [linsert $tempList [expr [llength $tempList] -1] VP.002] /]
+          set srvSplitName3 [join [linsert $tempList [expr [llength $tempList] -1] VP.003] /]
+          lappend tryList [list [list [list $srvSplitName2 $srvSplitName3]] $localName]
+        } elseif {$status == "join"} {
+          set tempList [split $srvName /]
+          set srvSplitName1 [join [linsert $tempList [expr [llength $tempList] -1] VP.001-003] /]
+          set srvSplitName2 [join [linsert $tempList [expr [llength $tempList] -1] VP.004-007] /]
+          lappend tryList [list [list [list $srvSplitName1 $srvSplitName2]] $localName]
+        } elseif {$status == "pure"} {
+          lappend tryList [list $srvName $localName]
+        } elseif {$status == "NA"} {
+          continue
+        } else {
+          puts "Don't understand status of [lindex $ray(foreExprVar,$var) 0]"
+          continue
+        }
+
+        if {! [file exists [file dirname $localName]]} {
+          file mkdir [file dirname $localName]
+        }
+      }
+    } else {
+      # No expr NDFD custom.
+    }
+
+  } elseif {$usr(-dataSet) == "ndgd"} {
     set varList ""
     ##### Set up valid variable List for this group. #####
     foreach var $ray(guidVarList) {
@@ -887,7 +1180,7 @@ proc Download_Select {rayName usrName} {
         continue
       }
       set tmpList [split $var -]
-      set day [lindex $tmpList 2]
+      set day [lindex $tmpList 3]
       set group [lindex $tmpList 0]
       if {$usr(-group) == $group} {
         if {($usr(-day) == "all") || \
@@ -948,44 +1241,163 @@ proc Download_Select {rayName usrName} {
         set localName [file join $usr(-renameRoot) [file tail [file dirname $local]] [string toupper [file dirname [file dirname $local]]] [lindex [split [file rootname [file tail $local]] _] 0] TIME.[file tail $local]] 
       }
 
-      set exprName "$Server1$guidExprDir[lindex $ray(guidVar,$var) 3]"
-      set opnlName "$Server1$guidOpnlDir[lindex $ray(guidVar,$var) 3]"
-      if {$status == "expr"} {
-        set tempList [split $exprName /]
-        set exprSplitName1 [join [linsert $tempList [expr [llength $tempList] -1] VP.001-003] /]
-        set exprSplitName2 [join [linsert $tempList [expr [llength $tempList] -1] VP.004-007] /]
-        set tempList [split $opnlName /]
-        set opnlSplitName1 [join [linsert $tempList [expr [llength $tempList] -1] VP.001-003] /]
-        set opnlSplitName2 [join [linsert $tempList [expr [llength $tempList] -1] VP.004-007] /]
-#        lappend tryList [list [list $exprName $opnlName [list $exprSplitName1 $exprSplitName2] [list $opnlSplitName1 $opnlSplitName2]] $localName]
-        lappend tryList [list [list [list $exprSplitName1 $exprSplitName2] [list $opnlSplitName1 $opnlSplitName2]] $localName]
-      } elseif {$status == "expr-split"} {
-        lappend tryList [list [list $exprName $opnlName] $localName]
-      } elseif {$status == "expr-pure"} {
-        lappend tryList [list [list $exprName] $localName]
-      } elseif {$status == "opnl"} {
-        set tempList [split $exprName /]
-        set exprSplitName1 [join [linsert $tempList [expr [llength $tempList] -1] VP.001-003] /]
-        set exprSplitName2 [join [linsert $tempList [expr [llength $tempList] -1] VP.004-007] /]
-        set tempList [split $opnlName /]
-        set opnlSplitName1 [join [linsert $tempList [expr [llength $tempList] -1] VP.001-003] /]
-        set opnlSplitName2 [join [linsert $tempList [expr [llength $tempList] -1] VP.004-007] /]
-#        lappend tryList [list [list $opnlName $exprName [list $opnlSplitName1 $opnlSplitName2] [list $exprSplitName1 $exprSplitName2]] $localName]
-        lappend tryList [list [list [list $opnlSplitName1 $opnlSplitName2] [list $exprSplitName1 $exprSplitName2]] $localName]
-      } elseif {$status == "opnl-split"} {
-        lappend tryList [list [list $opnlName $exprName] $localName]
-      } elseif {$status == "opnl-pure"} {
-        lappend tryList [list [list $opnlName] $localName]
+      set srvName "$Server1$guidOpnlDir[lindex $ray(guidVar,$var) 3]"
+      if {$status == "join4"} {
+        set tempList [split $srvName /]
+        set srvSplitName1 [join [linsert $tempList [expr [llength $tempList] -1] VP.001] /]
+        set srvSplitName2 [join [linsert $tempList [expr [llength $tempList] -1] VP.002] /]
+        set srvSplitName3 [join [linsert $tempList [expr [llength $tempList] -1] VP.003] /]
+        set srvSplitName4 [join [linsert $tempList [expr [llength $tempList] -1] VP.004-007] /]
+        lappend tryList [list [list [list $srvSplitName1 $srvSplitName2 $srvSplitName3 $srvSplitName4]] $localName]
+      } elseif {$status == "join3"} {
+        set tempList [split $srvName /]
+        set srvSplitName1 [join [linsert $tempList [expr [llength $tempList] -1] VP.001] /]
+        set srvSplitName2 [join [linsert $tempList [expr [llength $tempList] -1] VP.002] /]
+        set srvSplitName3 [join [linsert $tempList [expr [llength $tempList] -1] VP.003] /]
+        lappend tryList [list [list [list $srvSplitName1 $srvSplitName2 $srvSplitName3]] $localName]
+      } elseif {$status == "join_d12"} {
+        set tempList [split $srvName /]
+        set srvSplitName1 [join [linsert $tempList [expr [llength $tempList] -1] VP.001] /]
+        set srvSplitName2 [join [linsert $tempList [expr [llength $tempList] -1] VP.002] /]
+        lappend tryList [list [list [list $srvSplitName1 $srvSplitName2]] $localName]
+      } elseif {$status == "join_d23"} {
+        set tempList [split $srvName /]
+        set srvSplitName2 [join [linsert $tempList [expr [llength $tempList] -1] VP.002] /]
+        set srvSplitName3 [join [linsert $tempList [expr [llength $tempList] -1] VP.003] /]
+        lappend tryList [list [list [list $srvSplitName2 $srvSplitName3]] $localName]
+      } elseif {$status == "join"} {
+        set tempList [split $srvName /]
+        set srvSplitName1 [join [linsert $tempList [expr [llength $tempList] -1] VP.001-003] /]
+        set srvSplitName2 [join [linsert $tempList [expr [llength $tempList] -1] VP.004-007] /]
+        lappend tryList [list [list [list $srvSplitName1 $srvSplitName2]] $localName]
+      } elseif {$status == "pure"} {
+        lappend tryList [list $srvName $localName]
       } elseif {$status == "NA"} {
         continue
       } else {
-        puts "Don't understand status of [lindex $ray(guidVar,$var) 0]"
+        puts "Don't understand status of [lindex $ray(foreVar,$var) 0]"
         continue
       }
+
       if {! [file exists [file dirname $localName]]} {
         file mkdir [file dirname $localName]
       }
     }
+
+  } elseif {$usr(-dataSet) == "ndgdExpr"} {
+    set varList ""
+    ##### Set up valid variable List for this group. #####
+    foreach var $ray(guidExprVarList) {
+      if {[string index $var 0] == "#"} {
+        continue
+      }
+      set tmpList [split $var -]
+      set day [lindex $tmpList 3]
+      set group [lindex $tmpList 0]
+      if {$usr(-group) == $group} {
+        if {($usr(-day) == "all") || \
+            (($usr(-day) == "d17") && ($day == "")) || \
+            ($usr(-day) == $day)} {
+          lappend varList [join [lrange $tmpList 1 end] -]
+        }
+      }
+    }
+    if {$usr(-variable) == "all"} {
+      set varList2 ""
+      foreach var $varList {
+        lappend varList2 "$usr(-group)-$var"
+      }
+    } else {
+      set varList2 ""
+      foreach var $usr(-variable) {
+        if {[lsearch $varList $var] == -1} {
+          puts "Don't recognize variable '$var' in group '$usr(-group)', day '$usr(-day)'"
+          puts "Valid variables for this group '$usr(-group)' are: 'all' and"
+          puts "$varList\n"
+          exit
+        }
+        lappend varList2 "$usr(-group)-$var"
+      }
+    }
+    foreach var $varList2 {
+      set status [lindex $ray(guidExprVar,$var) 0]
+      set sec0 $usr(-group)
+      set var0 [lindex [split $var -] 1]
+      if {[info exists ray(renameVar,$var0)]} {
+        set var0 $ray(renameVar,$var0)
+      }
+      set local [lindex $ray(guidExprVar,$var) 2]
+      set extra [split [file rootname [file tail $local]] _]
+      if {[llength $extra] > 1} {
+        set var1 "$var0\_[join [lrange $extra 1 end] _]"
+        set var2 [join [lrange $extra 1 end] _]
+      } else {
+        set var1 $var0
+        set var2 ""
+      }
+      if {$usr(-renameConv) == 0} {
+        set localName [file join $usr(-renameRoot) $local]
+      } elseif {$usr(-renameConv) == 1} {
+        set localName [file join $usr(-renameRoot) $sec0 TIME.$var1.$sec0]
+      } elseif {$usr(-renameConv) == 2} {
+        set localName [file join $usr(-renameRoot) $sec0 $var0 TIME.$var1.$sec0]
+      } elseif {$usr(-renameConv) == 3} {
+        if {$var2 == ""} {
+           set localName [file join $usr(-renameRoot) $sec0 $var0 TIME.bin]
+        } else {
+           set localName [file join $usr(-renameRoot) $sec0 $var0 TIME.$var2.bin]
+        }
+      } elseif {$usr(-renameConv) == 4} {
+        set localName [file join $usr(-renameRoot) $var1.$sec0]
+      } elseif {$usr(-renameConv) == 5} {
+        set localName [file join $usr(-renameRoot) [file tail [file dirname $local]] [string toupper [file dirname [file dirname $local]]] [lindex [split [file rootname [file tail $local]] _] 0] TIME.[file tail $local]]
+      }
+
+      set srvName "$Server1$guidExprDir[lindex $ray(guidExprVar,$var) 3]"
+      if {$status == "join4"} {
+        set tempList [split $srvName /]
+        set srvSplitName1 [join [linsert $tempList [expr [llength $tempList] -1] VP.001] /]
+        set srvSplitName2 [join [linsert $tempList [expr [llength $tempList] -1] VP.002] /]
+        set srvSplitName3 [join [linsert $tempList [expr [llength $tempList] -1] VP.003] /]
+        set srvSplitName4 [join [linsert $tempList [expr [llength $tempList] -1] VP.004-007] /]
+        lappend tryList [list [list [list $srvSplitName1 $srvSplitName2 $srvSplitName3 $srvSplitName4]] $localName]
+      } elseif {$status == "join3"} {
+        set tempList [split $srvName /]
+        set srvSplitName1 [join [linsert $tempList [expr [llength $tempList] -1] VP.001] /]
+        set srvSplitName2 [join [linsert $tempList [expr [llength $tempList] -1] VP.002] /]
+        set srvSplitName3 [join [linsert $tempList [expr [llength $tempList] -1] VP.003] /]
+        lappend tryList [list [list [list $srvSplitName1 $srvSplitName2 $srvSplitName3]] $localName]
+      } elseif {$status == "join_d12"} {
+        set tempList [split $srvName /]
+        set srvSplitName1 [join [linsert $tempList [expr [llength $tempList] -1] VP.001] /]
+        set srvSplitName2 [join [linsert $tempList [expr [llength $tempList] -1] VP.002] /]
+        lappend tryList [list [list [list $srvSplitName1 $srvSplitName2]] $localName]
+      } elseif {$status == "join_d23"} {
+        set tempList [split $srvName /]
+        set srvSplitName2 [join [linsert $tempList [expr [llength $tempList] -1] VP.002] /]
+        set srvSplitName3 [join [linsert $tempList [expr [llength $tempList] -1] VP.003] /]
+        lappend tryList [list [list [list $srvSplitName2 $srvSplitName3]] $localName]
+      } elseif {$status == "join"} {
+        set tempList [split $srvName /]
+        set srvSplitName1 [join [linsert $tempList [expr [llength $tempList] -1] VP.001-003] /]
+        set srvSplitName2 [join [linsert $tempList [expr [llength $tempList] -1] VP.004-007] /]
+        lappend tryList [list [list [list $srvSplitName1 $srvSplitName2]] $localName]
+      } elseif {$status == "pure"} {
+        lappend tryList [list $srvName $localName]
+      } elseif {$status == "NA"} {
+        continue
+      } else {
+        puts "Don't understand status of [lindex $ray(foreVar,$var) 0]"
+        continue
+      }
+
+      if {! [file exists [file dirname $localName]]} {
+        file mkdir [file dirname $localName]
+      }
+    }
+
+  } else {
+    puts "Don't recognize dataSet $usr(-dataSet)"
   }
 
   WebHandleTryList $rayName $usrName $tryList 3 1
@@ -995,7 +1407,7 @@ proc Usage {argv0} {
   set optList [list -dataSet -sector -group -variable -day -renameConv -renameRoot -quiet]
   set date [clock format [clock seconds] -format "%Y%m%d"]
   set optDes [list \
-     "Data set to use (ndfd or ndgd)" \
+     "Data set to use (ndfd, ndfdExpr, ndgd or ndgdExpr)" \
      "sector to use (-dataSet ndfd):\n\
       \t\tconus, hawaii, puertori, guam, alaska, nhemi, npacocn, custom,\n\
       \t\tpacnwest, pacswest, nrockies, crrocks, srockies, nplains,\n\
@@ -1072,11 +1484,11 @@ foreach {opt val} $argv {
   }
   set usr($opt) $val
 }
-set valDataSet [list "ndfd" "ndgd"]
+set valDataSet [list "ndfd" "ndgd" "ndfdExpr" "ndgdExpr"]
 if {(! [info exists usr(-dataSet)]) ||
     ([lsearch $valDataSet $usr(-dataSet)] == -1)} {
   Usage $argv0
-  puts "Please specify -dataSet with either ndfd or ndgd\n"
+  puts "Please specify -dataSet with either ndfd, ndfdExpr, ndgd or ndgdExpr\n"
   exit
 }
 if {![info exists usr(-variable)]} {
@@ -1086,7 +1498,7 @@ if {![info exists usr(-variable)]} {
 } elseif {$usr(-variable) != "all"} {
   set usr(-variable) [split $usr(-variable) ,]
 }
-if {$usr(-dataSet) == "ndfd"} {
+if {($usr(-dataSet) == "ndfd") || ($usr(-dataSet) == "ndfdExpr")} {
   set valSector [list "conus" "hawaii" "puertori" "guam" "alaska" "nhemi" "npacocn"]
   set shortSector [list conus hi pr gu ak nhemi npacocn]
   set valSubSector [list "pacnwest" "pacswest" "nrockies" "crrocks" "srockies" "nplains" \
@@ -1125,9 +1537,15 @@ ReadIni ray
 
 if {$usr(-renameRoot) == -1} {
   if {$usr(-dataSet) == "ndfd"} {
-    set usr(-renameRoot) $ray(dir,NDFD_Data)
+    set usr(-renameRoot) $ray(dir,NDFD_OpnlData)
+  } elseif {$usr(-dataSet) == "ndfdExpr"} {
+    set usr(-renameRoot) $ray(dir,NDFD_ExprData)
+  } elseif {$usr(-dataSet) == "ndgd"} {
+    set usr(-renameRoot) $ray(dir,NDGD_OpnlData)
+  } elseif {$usr(-dataSet) == "ndgdExpr"} {
+    set usr(-renameRoot) $ray(dir,NDGD_ExprData)
   } else {
-    set usr(-renameRoot) $ray(dir,NDGD_Data)
+    puts "Don't recognise the -dataSet $usr(-dataSet)"
   }
 }
 if {! [file exists $usr(-renameRoot)]} {
