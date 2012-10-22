@@ -184,6 +184,7 @@ void getNumRows(numRowsInfo *numRowsForPoint, double *timeUserStart,
          }
       }
    }
+for (i=0;i<numElem;i++)
 
    /* Retrieve the first validTime and last validTime per element amongst all
     * matches for the point.
