@@ -563,7 +563,7 @@ proc WebHandleTryList {rayName usrName tryList attempt f_first} {
         puts ""
       }
       if {$f_fail} {
-        ns_Print::puts "  Couldn't 'get' $dst... Will ReTry later."
+        puts "  Couldn't 'get' $dst... Will ReTry later."
         file delete -force $dst
         lappend tryList2 [list $src $dst]
       } else {
