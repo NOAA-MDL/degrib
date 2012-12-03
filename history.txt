@@ -1,6 +1,6 @@
 #
-#----- Release: Version 1.99a 10/09/2012 -----
-# 
+#----- Release: Version 1.99 10/23/2012 -----
+#
  10/9 AAT Updated web.tcl to match the work done on ndfd.tcl and ndfd.ini
  10/1 to 10/4  AAT updated ndfd.tcl logic for NDFD_EXPR
 #
