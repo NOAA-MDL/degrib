@@ -610,7 +610,7 @@ proc WebHandleTryList {rayName usrName tryList attempt f_first} {
         puts "  Couldn't 'get' $dst... Try alternate URL."
         lappend tryList2 [list [lrange $src 1 end] $dst]
       } else {
-        puts "  Failed to 'get' $shrtName."
+        puts "  Failed to 'get' $dst."
       }
     } else {
       puts "Got $dst"
