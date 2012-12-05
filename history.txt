@@ -1,4 +1,9 @@
 #
+#----- Release: Version 2.00 12/05/2012 -----
+#
+ 12/5 AAT cross-checked and corrected the ndfd.ini file.
+ 12/3 MPA updated the ndfd.ini to reflect the iceAccum and Max/Min RH locations
+#
 #----- Release: Version 1.99 10/23/2012 -----
 #
  10/9 AAT Updated web.tcl to match the work done on ndfd.tcl and ndfd.ini
