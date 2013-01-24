@@ -1525,13 +1525,14 @@ GRIB2LocalTable NDFD_LclTable[] = {
            {0, 19, 204, "TotalXtrmProb", "Total Probability of Extreme Severe Thunderstorms", "%", UC_NONE},
            {0, 192, 192, "FireWx", "Critical Fire Weather", "%", UC_NONE},
            {0, 192, 194, "DryLightning", "Dry Lightning", "%", UC_NONE},
-           
+   /* Mike added 1/13 */
+           {2, 1, 192, "CANL", "Cold Advisory for Newborn Livestock", "0=none; 2=slight; 4=mild; 6=moderate; 8=severe; 10=extreme", UC_NONE},
    /* Arthur Added this to both NDFD and NCEP local tables. (5/1/2006) */
            {10, 3, 192, "Surge", "Hurricane Storm Surge", "m", UC_M2Feet},
            {10, 3, 193, "ETSurge", "Extra Tropical Storm Surge", "m", UC_M2Feet},
    /* Mike added 2/2012 */
            {0, 1, 198, "MinRH", "Minimum Relative Humidity", "%", UC_NONE}
-};
+}; 
 
 GRIB2LocalTable HPC_LclTable[] = {
    /* 0 */ {0, 1, 192, "HPC-Wx", "HPC Code", "-", UC_NONE},
@@ -1867,7 +1868,8 @@ GRIB2LocalTable NCEP_LclTable[] = {
             {2, 0, 228, "ACOND", "Aerodynamic conductance", "m/s", UC_NONE},
             {2, 0, 229, "EVCW", "Canopy water evaporation", "W/(m^2)", UC_NONE},
             {2, 0, 230, "TRANS", "Transpiration", "W/(m^2)", UC_NONE},
-
+           /* Mike added 1/13 */
+           {2, 1, 192, "CANL", "Cold Advisory for Newborn Livestock", "0=none; 2=slight; 4=mild; 6=moderate; 8=severe; 10=extreme", UC_NONE},
    /* 66 */ {2, 3, 192, "SOILL", "Liquid Volumetric Soil Moisture (non Frozen)", "Proportion", UC_NONE},
    /* 67 */ {2, 3, 193, "RLYRS", "Number of Soil Layers in Root Zone", "-", UC_NONE},
    /* 68 */ {2, 3, 194, "SLTYP", "Surface Slope Type", "Index", UC_NONE},

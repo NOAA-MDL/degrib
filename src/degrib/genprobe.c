@@ -112,13 +112,14 @@ static const genElemDescript NdfdElements[] = {
 /* 56 */  {RTMA_UWSPD,2, 7,4,7,109, 0,0,2,1,-1,0, 103,10.0,0.0, 0,-1,-1,-1,-1},
 /* 57 */  {RTMA_WDIR,2, 7,4,0,109, 0,0,2,0,-1,0, 103,10.0,0.0, 0,-1,-1,-1,-1},
 /* 58 */  {RTMA_WSPD,2, 7,4,0,109, 0,0,2,1,-1,0, 103,10.0,0.0, 0,-1,-1,-1,-1},
+/* 59 */  {NDFD_CANL,2, 8,MISSING_2,2,0, 2,8,1,192,-1,6, 1,0.0,0.0 ,0,-1,-1,-1,-1},
 
 #ifdef GFSEKD
-/* 59 */  {GFSEKDMOS_MAXT,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
-/* 60 */  {GFSEKDMOS_MINT,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
-/* 61 */  {GFSEKDMOS_TEMP,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
-/* 62 */  {GFSEKDMOS_TD,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
-/* 63 */  {GFSEKDMOS_QPF,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
+/* 60 */  {GFSEKDMOS_MAXT,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
+/* 61 */  {GFSEKDMOS_MINT,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
+/* 62 */  {GFSEKDMOS_TEMP,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
+/* 63 */  {GFSEKDMOS_TD,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
+/* 64 */  {GFSEKDMOS_QPF,2, 7,14,2,96,   0,10,0,4,-1,-1, 103,2,0,  0,-1,-1,-1,-1},
 #endif
 
    {NDFD_UNDEF,2, MISSING_2,MISSING_2,MISSING_1,MISSING_1,
@@ -178,7 +179,7 @@ static char *NDFD_Type[] = { "maxt", "mint", "pop12", "t", "winddir",
    "probprcpblw144", "probtmpabv01m", "probtmpblw01m", "probprcpabv01m",
    "probprcpblw01m", "probtmpabv03m", "probtmpblw03m", "probprcpabv03m",
    "probprcpblw03m", "maxrh", "minrh", "tstm02", "apcp01", "tcdc", "dpt",
-   "tmp", "dpterr", "tmperr", "wdirerr", "winderr", "wdir", "wind", NULL
+   "tmp", "dpterr", "tmperr", "wdirerr", "winderr", "wdir", "wind", "canl", NULL
 };
 /* These match the convention on official download pages (cube names). */
 static char *NDFD_File[] = { "maxt", "mint", "pop12", "temp", "wdir",
@@ -190,7 +191,7 @@ static char *NDFD_File[] = { "maxt", "mint", "pop12", "temp", "wdir",
    "tmpblw14d", "prcpabv14d", "prcpblw14d", "tmpabv30d", "tmpblw30d",
    "prcpabv30d", "prcpblw30d", "tmpabv90d", "tmpblw90d", "prcpabv90d",
    "prcpblw90d", "maxrh", "minrh", "tstmprb", "precipa_r", "sky_r", "td_r",
-   "temp_r", "utd", "utemp", "uwdir", "uwspd", "wdir_r", "wspd_r", NULL
+   "temp_r", "utd", "utemp", "uwdir", "uwspd", "wdir_r", "wspd_r", "canl", NULL
 };
 /* A (mostly) 2 letter abreviation scheme created with/for the verification
    group */
@@ -200,7 +201,7 @@ static char *NDFD_File2[] = { "mx", "mn", "po", "tt", "wd",
    "pw", "xt", "xh", "xw", "ps", "xs", "ta6d", "tb6d", "pa6d", "pb6d", "ta1m",
    "tb1m", "pa1m", "pb1m", "ta3m", "tb3m", "pa3m", "pb3m", "mxrh", "mnrh",
    "tstmprb", "apcp01", "tcdc", "dpt", "tmp", "dpterr", "tmperr", "wdirerr",
-   "winderr", "wdir", "wind", NULL
+   "winderr", "wdir", "wind","canl", NULL
 };
 
 uChar gen_NDFD_NDGD_Lookup (char *str, char f_toLower, char f_ndfdConven)
@@ -307,8 +308,8 @@ int validMatch(double elemEndTime, double elemRefTime, int elemEnum,
     */
    if ((elemEnum == NDFD_TEMP) || (elemEnum == NDFD_WD) || (elemEnum == NDFD_WS) ||
        (elemEnum == NDFD_TD) || (elemEnum == NDFD_SKY) || (elemEnum == NDFD_WX) ||
-       (elemEnum == NDFD_AT) || (elemEnum == NDFD_RH) || (elemEnum == NDFD_WWA)) {
-      if (elemEndTime - elemRefTime > (72*3600)) {
+       (elemEnum == NDFD_AT) || (elemEnum == NDFD_RH) || (elemEnum == NDFD_WG)) {
+      if ((elemEndTime - elemRefTime > (72*3600)) && (elemEnum != NDFD_WG)) {
          elemStartTime = elemEndTime - (6*3600);
       } else {
          elemStartTime = elemEndTime - (3*3600);
@@ -326,7 +327,7 @@ int validMatch(double elemEndTime, double elemRefTime, int elemEnum,
        (elemEnum == NDFD_INC34) || (elemEnum == NDFD_INC50) ||
        (elemEnum == NDFD_INC64) || (elemEnum == NDFD_CUM34) ||
        (elemEnum == NDFD_CUM50) || (elemEnum == NDFD_CUM64) ||
-       (elemEnum == NDFD_ICEACC)) {
+       (elemEnum == NDFD_ICEACC) || (elemEnum == NDFD_CANL)) {
       elemStartTime = elemEndTime - (6*3600);
       if (((f_valTime & 1) && (elemEndTime <= startTime)) ||
           ((f_valTime & 2) && (elemStartTime >= endTime))) {
@@ -3497,6 +3498,18 @@ int ProbeCmd (sChar f_Command, userType *usr)
                          usr->gribFilter, numSector, sector,
                          usr->f_ndfdConven, usr->rtmaDataDir, usr->f_avgInterp,
                          usr->lampDataDir);
+/*
+         ans = XMLParse (usr->f_XMLDocType, usr->f_XML, numPnts, pnts, pntInfo,
+                         usr->f_pntType, labels, &(usr->numInNames), 
+                         &(usr->inNames), f_fileType, usr->f_interp, 
+                         usr->f_unit, usr->majEarth, usr->minEarth, 
+                         usr->f_icon, usr->f_SimpleVer, usr->f_SimpleWWA,
+                         usr->f_valTime, usr->startTime, usr->endTime,
+                         usr->numNdfdVars, usr->ndfdVars, usr->f_inTypes,
+                         usr->gribFilter, numSector, sector,
+                         usr->f_ndfdConven, usr->rtmaDataDir, usr->f_avgInterp,
+                         usr->lampDataDir);
+*/
 #endif
       }
       if (usr->f_Graph != 0) {
