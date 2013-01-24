@@ -371,7 +371,7 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
       "ProbTMPAbv144", "ProbTMPBlw144", "ProbPrcpAbv144", "ProbPrcpBlw144",
       "ProbTMPAbv01m", "ProbTMPBlw01m", "ProbPrcpAbv01m", "ProbPrcpBlw01m",
       "ProbTMPAbv03m", "ProbTMPBlw03m", "ProbPrcpAbv03m", "ProbPrcpBlw03m",
-      NULL
+      "CANL", NULL
    };
    enum { TEMP, MAXT, MINT, TD, QPF, SNOW, WINDDIR, WINDSPD, SKY,
       WAVEHEIGHT, WX, POP12, APPARENTT, RH, WINDGUST, CONVOUTLOOK, PTORN,
@@ -380,7 +380,7 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
       PROBWINDSPD64C, PROBWINDSPD64I, PROBTMPABV144, PROBTMPBLW144,
       PROBPRCPABV144, PROBPRCPBLW144, PROBTMPABV01M, PROBTMPBLW01M,
       PROBPRCPABV01M, PROBPRCPBLW01M, PROBTMPABV03M, PROBTMPBLW03M,
-      PROBPRCPABV03M, PROBPRCPBLW03M, DEFAULT_NUM
+      PROBPRCPABV03M, PROBPRCPBLW03M, CANL, DEFAULT_NUM
    };
 /* *INDENT-OFF* */
    static NDFD_ValuesTable NDFD_Values[] = {
@@ -428,6 +428,7 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
    /* PTmpBlw03m */ { 0, 0,   0, 9, 0, 0, 3},
    /* PPrcpAbv03m */{ 0, 1,   8, 9, 0, 0, 3},
    /* PPrcpAbv03m */{ 0, 1,   8, 9, 0, 0, 3},
+   /* CANL */       { 2, 1,   192, 8, 1, 0, 2},
 
       /* Default */ { 0, 0,   0, 0, 0, 0, 3},
    };
@@ -506,7 +507,8 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
        (elemNum == PROBTMPABV01M) || (elemNum == PROBTMPBLW01M) ||
        (elemNum == PROBPRCPABV01M) || (elemNum == PROBPRCPBLW01M) ||
        (elemNum == PROBTMPABV03M) || (elemNum == PROBTMPBLW03M) ||
-       (elemNum == PROBPRCPABV03M) || (elemNum == PROBPRCPBLW03M)) {
+       (elemNum == PROBPRCPABV03M) || (elemNum == PROBPRCPBLW03M) ||
+       (elemNum == CANL)) {
       meta->pds2.operStatus = 1;
    } else {
       meta->pds2.operStatus = 0; /* Pretend NDFD is operational. */
@@ -595,7 +597,7 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
       } else if ((elemNum == QPF) || (elemNum == SNOW)) {
          /* Statistical process = Accumulation */
          meta->pds2.sect4.Interval[0].processID = 1;
-      } else if (elemNum == CONVOUTLOOK) {
+      } else if ((elemNum == CONVOUTLOOK) || (elemNum == CANL)) {
          /* Statistical process = Average */
          meta->pds2.sect4.Interval[0].processID = 0;
       }
@@ -603,7 +605,7 @@ int NDFD_Cube2Meta (grib_MetaData *meta, char *elem, char *unit,
       meta->pds2.sect4.Interval[0].timeRangeUnit = 1;
       if ((elemNum == MAXT) || (elemNum == MINT)) {
          meta->pds2.sect4.Interval[0].lenTime = 12;
-      } else if ((elemNum == QPF) || (elemNum == SNOW)) {
+      } else if ((elemNum == QPF) || (elemNum == SNOW) || (elemNum == CANL)) {
          meta->pds2.sect4.Interval[0].lenTime = 6;
       } else if (elemNum == CONVOUTLOOK) {
          meta->pds2.sect4.Interval[0].lenTime = 24;
