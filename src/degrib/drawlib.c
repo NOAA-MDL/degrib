@@ -328,8 +328,8 @@ static int ReadDbfFieldNumMatch (char *filename, char *field,
 {
    FILE *fp;
    sInt4 Offset, Offset1;
-   short int sizeHead;
-   short int lenRec;
+   unsigned short int sizeHead;
+   unsigned short int lenRec;
    char name[12];
    unsigned char f_found;
    int leftSide;
@@ -432,8 +432,8 @@ static int ReadDbfFieldMatchRec (char *filename, char *matchField,
 {
    FILE *fp;
    sInt4 Offset, Offset1;
-   short int sizeHead;
-   short int lenRec;
+   unsigned short int sizeHead;
+   unsigned short int lenRec;
    char name[12];
    unsigned char f_found;
    int leftSide;
@@ -516,8 +516,8 @@ static int ReadDbfFieldNum (char *filename, char *field, double **Data,
 {
    FILE *fp;
    sInt4 Offset;
-   short int sizeHead;
-   short int lenRec;
+   unsigned short int sizeHead;
+   unsigned short int lenRec;
    char name[12];
    unsigned char f_found;
    int leftSide;
