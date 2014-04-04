@@ -305,7 +305,6 @@ int Grib2Database (userType *usr, IS_dataType *is, grib_MetaData *meta)
    WriteFLX (usr->indexFile, flxArray, flxArrayLen);
    free (flxArray);
 
-   free (flxArray);
    free (grib_Data);
    free (outName);
    return 3;
