@@ -152,11 +152,17 @@ proc DoIt {filename} {
 #  set DestDir $StartDir/degrib/distrib/webdir/download
   set DestDir $src_dir/webdir/download
   set UpdatePages ""         ;# intended to be a list.
-  set Version [FindVersion $StartDir/degrib]
+  set Version [FindVersion [file dirname $src_dir]]
   set DoGeneric true
   set DoExe true
   set DoSrc true
-
+  
+  if {[file tail [file dirname $src_dir]] != "degrib"} {
+     puts "Expecting parent directory of $src_dir to be degrib"
+     puts "This is because the packaging .txt files have that assumption."
+     exit
+  }
+  
   set fp [open $filename r]
   puts $filename
   set FilterList ""
