@@ -149,7 +149,8 @@ proc DoIt {filename} {
   set Zip_Also false
 
   set StartDir [file dirname [file dirname $src_dir]]
-  set DestDir $StartDir/degrib/distrib/webdir/download
+#  set DestDir $StartDir/degrib/distrib/webdir/download
+  set DestDir $src_dir/webdir/download
   set UpdatePages ""         ;# intended to be a list.
   set Version [FindVersion $StartDir/degrib]
   set DoGeneric true
@@ -222,6 +223,7 @@ proc DoIt {filename} {
   }
   close $fp
   catch {file delete -force $ansFile.tar.gz}
+  puts "[pwd] ... Creating $ansFile.tar"
   eval {exec tar -Scf} $ansFile.tar -T$ansFile.txt
 #  if {$ansFile == "degrib-src"} {
 #     file copy -force degrib-src.tar degrib-temp.tar
@@ -240,6 +242,7 @@ proc DoIt {filename} {
   }
   file delete -force $ansFile.txt
   if {$StartDir != $DestDir} {
+    puts "... Copying to $DestDir"
     file copy -force $ansFile.tar.gz $DestDir
     file delete -force $ansFile.tar.gz
     if {$ansFile == "degrib-src"} {
@@ -256,6 +259,7 @@ proc DoIt {filename} {
     puts "Creating $ansFile.exe"
     if {! [file isfile "k:/Programs/WinZip Self-Extractor/wzipse32.exe"]} {
        puts "Couldn't find wzipse32.exe... no self extracting zip created"
+       puts "Please make sure your k: drive exists."
     } else {
        exec "k:/Programs/WinZip Self-Extractor/wzipse32.exe" $ansFile.zip \
              -y -d c:\\ -le -overwrite
