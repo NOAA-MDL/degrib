@@ -2,6 +2,14 @@
 #----- Release: Version 2.03 08/19/2014 -----
 #
 #
+#----- Release: Version 2.02 04/05/2013 -----
+#
+#
+#----- Release: Version 2.01 01/29/2013 -----
+#
+ 1/25 MPA+AAT Updated code to understand the CANL variable (Cold advisory
+         for new born livestock)
+#
 #----- Release: Version 2.00 12/05/2012 -----
 #
  12/5 AAT cross-checked and corrected the ndfd.ini file.
