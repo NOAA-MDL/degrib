@@ -7,8 +7,8 @@
 #   +1 is for a large set of new features
 
 [degrib]
-Version=2.00
-Date=12/05/2012
+Version=2.03
+Date=08/19/2014
 Web=http://www.nws.noaa.gov/NDFD_GRIB2Decoder/index.htm
 
 [emapf]
