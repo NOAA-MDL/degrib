@@ -1,5 +1,5 @@
-#define PROGRAM_VERSION "1.11"
-#define PROGRAM_DATE "03/7/2007"
+#define PROGRAM_VERSION "1.12"
+#define PROGRAM_DATE "2014-08-19"
 
 #include <stdio.h>
 #include <string.h>
@@ -18,7 +18,7 @@ enum { CMD_HELP, CMD_VERSION, CMD_FORMAT, CMD_SCAN, CMD_CLICKS, CMD_SECONDS,
 static char *UsrOpt[] = {
    "-help", "-V", "format", "scan", "clicks", "seconds", "IsDaylightSaving",
    "IsLeap", "add",
-   "-format", "-gmt", "-local", "-zone", "-inputIsYear", NULL
+   "-format", "-gmt", "-local", "-zone", "-inputIsYear", "-Newline", NULL
 };
 
 typedef struct {
@@ -33,6 +33,7 @@ typedef struct {
    char f_dayLight; /* Also used to help with the -zone option */
    double amnt;     /* Amount to add */
    char amntUnit;   /* 0 = seconds, 1 = month, 2 = year */
+   char f_Newline;  /* 1 print newline, 0 don't */
 } userType;
 
 void Usage (char *argv0, userType *usr)
@@ -57,6 +58,7 @@ void Usage (char *argv0, userType *usr)
             "\t\t0=Use mixed standard/daylight time",
       "(2 arg) TimeZone to use",
       "(1 arg) IsLeap input is a year rather than secs since 1/1/1970\n",
+      "(2 arg) 1=print newLine, 0=don't print newLine",
       NULL
    };
    int i, j;
@@ -94,6 +96,7 @@ static void UserInit (userType *usr)
    usr->f_dayLight = 0;
    usr->amnt = 0;
    usr->amntUnit = 0;
+   usr->f_Newline = 1;
 }
 
 static void UserFree (userType *usr)
@@ -107,7 +110,7 @@ static int ParseUserChoice (userType *usr, char *cur, char *n1, char *n2,
                             char *n3)
 {
    enum { HELP, VERSION, FORMAT, SCAN, CLICKS, SECONDS, ISDAYLIGHT, ISLEAP,
-      ADD, FORMAT_OPTION, GMT, LOCAL, ZONE, INPUTISYEAR
+      ADD, FORMAT_OPTION, GMT, LOCAL, ZONE, INPUTISYEAR, NEWLINE
    };
    int index;           /* "cur"'s index into Opt, which matches enum val. */
    long int li_temp;
@@ -208,6 +211,13 @@ static int ParseUserChoice (userType *usr, char *cur, char *n1, char *n2,
             usr->f_timeAdj = 1;
          }
          return 2;
+      case NEWLINE:
+         if (myAtoI (n1, &(li_temp)) != 1) {
+            printf ("Bad value to '%s' of '%s'\n", cur, n1);
+            return -1;
+         }
+         usr->f_Newline = li_temp;
+         return 2; 
       case LOCAL:
          if (myAtoI (n1, &(li_temp)) != 1) {
             printf ("Bad value to '%s' of '%s'\n", cur, n1);
@@ -364,7 +374,11 @@ int main (int argc, char **argv)
          }
          buffer[0] = '\0';
          Clock_Print (buffer, 1000, usr.d_clock, usr.fmtArgv, usr.f_timeAdj);
-         printf ("%s\n", buffer);
+         if (usr.f_Newline) { 
+            printf ("%s\n", buffer);
+         } else {
+            printf ("%s", buffer);
+         }
          UserFree (&usr);
          return 0;
       case CMD_ISDAYLIGHT:

@@ -3,8 +3,8 @@
 # DEGRIB configure.ac : version 20070705
 
 AC_PREREQ(2.59)
-AC_INIT([degrib],[2.00],[arthur.taylor@noaa.gov])
-AC_SUBST(PACKAGE_DATE,'20121205')
+AC_INIT([degrib],[2.03],[arthur.taylor@noaa.gov])
+AC_SUBST(PACKAGE_DATE,'20140819')
 AC_CONFIG_SRCDIR([Makefile.in])
 AC_CONFIG_HEADERS([gd/config.h:gd/scripts/config.hin])
 AC_CANONICAL_HOST()
