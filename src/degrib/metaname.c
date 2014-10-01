@@ -1520,6 +1520,10 @@ GRIB2LocalTable NDFD_LclTable[] = {
            {0, 19, 215, "TotalSvrProb", "Total Probability of Severe Thunderstorms", "%", UC_NONE},
            {0, 19, 216, "TotalXtrmProb", "Total Probability of Extreme Severe Thunderstorms", "%", UC_NONE},
            {0, 19, 217, "WWA", "Watch Warning Advisory", "-", UC_NONE},
+           {0, 19, 235, "TCWind", "Tropical Cyclone Wind Threat", "0=none; 4=low; 6=moderate; 8=high; 10=extreme", UC_NONE},
+           {0, 19, 236, "TCSurge", "Tropical Cyclone Storm Surge Threat", "0=none; 4=low; 6=moderate; 8=high; 10=extreme", UC_NONE},          
+           {0, 19, 238, "TCRain", "Tropical Cyclone Flooding Rain Threat", "0=none; 4=low; 6=moderate; 8=high; 10=extreme", UC_NONE},
+           {0, 19, 239, "TCTornado", "Tropical Cyclone Tornado Threat", "0=none; 4=low; 6=moderate; 8=high; 10=extreme", UC_NONE},
 /* Leaving next two lines in for grandfathering sake. 9/19/2007... Probably can remove in future. */
            {0, 19, 203, "TotalSvrProb", "Total Probability of Severe Thunderstorms", "%", UC_NONE},
            {0, 19, 204, "TotalXtrmProb", "Total Probability of Extreme Severe Thunderstorms", "%", UC_NONE},
