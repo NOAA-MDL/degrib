@@ -563,7 +563,9 @@ static int PrintSect4 (grib_MetaData *meta, sChar f_unit)
       "Difference (Value at end of time minus beginning)",
       "Root mean square", "Standard deviation",
       "Covariance (Temporal variance)",
-      "Difference (Value at beginning of time minus end)", "Ratio"
+      "Difference (Value at beginning of time minus end)", "Ratio",
+      "Standardized Anomaly", "Summation", "Confidence Index",
+      "Quality Indicator"
    };
 
    /* Based on Grib2 Code Table 4.11 */

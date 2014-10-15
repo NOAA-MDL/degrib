@@ -423,6 +423,7 @@ static int GRIB2Inventory2to7 (sChar sectNum, FILE *fp, sInt4 gribLen,
    sChar f_sndValue;    /* flag if SndValue is valid. */
    sChar f_fstValue;    /* flag if FstValue is valid. */
    uChar timeRangeUnit;
+   uChar statProcessID = 255;
    sInt4 lenTime;       /* Used by parseTime to tell difference betweeen 8hr
                          * average and 1hr average ozone. */
    uChar genID;         /* The Generating process ID (used for GFS MOS) */
@@ -565,6 +566,7 @@ enum { GS4_ANALYSIS, GS4_ENSEMBLE, GS4_DERIVED, GS4_PROBABIL_PNT = 5,
                printf ("Warning: Investigate Template 4.8 bytes 35-41\n");
                inv->validTime = inv->refTime + inv->foreSec;
             }
+            statProcessID = (*buffer)[47 -5];
             timeIncrType = (*buffer)[48 - 5];
             timeRangeUnit = (*buffer)[49 - 5];
             MEMCPY_BIG (&lenTime, *buffer + 50 - 5, sizeof (sInt4));
@@ -722,7 +724,7 @@ enum { GS4_ANALYSIS, GS4_ENSEMBLE, GS4_DERIVED, GS4_PROBABIL_PNT = 5,
 
    /* Find out what the name of this variable is. */
    ParseElemName (center, subcenter, prodType, templat, cat, subcat,
-                  lenTime, timeRangeUnit, timeIncrType, genID, probType, lowerProb,
+                  lenTime, timeRangeUnit, statProcessID, timeIncrType, genID, probType, lowerProb,
                   upperProb, &(inv->element), &(inv->comment),
                   &(inv->unitName), &convert, percentile, genProcess,
                   f_fstValue, fstSurfValue, f_sndValue, sndSurfValue);

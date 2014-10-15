@@ -1991,6 +1991,7 @@ int MetaParse (grib_MetaData *meta, sInt4 *is0, sInt4 ns0,
    sInt4 lenTime;       /* Length of time for element (see 4.8 and 4.9) */
    uChar timeRangeUnit;
    uChar incrType;
+   uChar statProcessID; /* Statistical process id or 255 for missing */
    uChar fstSurfType;   /* Type of the first fixed surface. */
    sInt4 value;         /* The scaled value from GRIB2 file. */
    sChar scale;         /* Surface scale as opposed to probility factor. */
@@ -2116,10 +2117,12 @@ int MetaParse (grib_MetaData *meta, sInt4 *is0, sInt4 ns0,
          lenTime = 0;
       }
       incrType = meta->pds2.sect4.Interval[0].incrType;
+      statProcessID = meta->pds2.sect4.Interval[0].processID;
    } else {
       lenTime = 0;
       timeRangeUnit = 1;
       incrType = 255;
+      statProcessID = 255;
    }
 
    if ((meta->pds2.sect4.templat == GS4_RADAR) || (meta->pds2.sect4.templat == GS4_SATELLITE)
@@ -2157,8 +2160,8 @@ int MetaParse (grib_MetaData *meta, sInt4 *is0, sInt4 ns0,
 
    ParseElemName (meta->center, meta->subcenter, meta->pds2.prodType,
                   meta->pds2.sect4.templat, meta->pds2.sect4.cat,
-                  meta->pds2.sect4.subcat, lenTime, timeRangeUnit, incrType,
-                  meta->pds2.sect4.genID, probType, lowerProb, upperProb,
+                  meta->pds2.sect4.subcat, lenTime, timeRangeUnit, statProcessID,
+                  incrType, meta->pds2.sect4.genID, probType, lowerProb, upperProb,
                   &(meta->element), &(meta->comment), &(meta->unitName),
                   &(meta->convert), meta->pds2.sect4.percentile,
                   meta->pds2.sect4.genProcess,

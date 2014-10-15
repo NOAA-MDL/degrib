@@ -595,7 +595,7 @@ GRIB2ParmTable MeteoMoist[] = {
    /* 3 */ {"PWAT", "Precipitable water", "kg/(m^2)", UC_NONE},
    /* 4 */ {"VAPP", "Vapor pressure", "Pa", UC_NONE},
    /* 5 */ {"SATD", "Saturation deficit", "Pa", UC_NONE},
-   /* 6 */ {"EVP", "Evaporation", "kg/(m^2)", UC_NONE},
+   /* 6 */ {"EVP", "Evaporation", "kg/(m^2)", UC_InchWater},
    /* 7 */ {"PRATE", "Precipitation rate", "kg/(m^2 s)", UC_NONE},
    /* 8 */ {"APCP", "Total precipitation", "kg/(m^2)", UC_InchWater}, /* Need NDFD override QPF */
    /* 9 */ {"NCPCP", "Large scale precipitation", "kg/(m^2)", UC_NONE},
@@ -1497,7 +1497,7 @@ NDFD_AbrevOverideTable NDFD_Overide[] = {
 GRIB2LocalTable NDFD_LclTable[] = {
    /* 0 */ {0, 0, 193, "ApparentT", "Apparent Temperature", "K", UC_K2F},
    /* 1 */ {0, 1, 192, "Wx", "Weather string", "-", UC_NONE},
-           {0, 1, 227, "IceAccum", "Ice Accumulation", "kg/m^2", UC_InchWater}, 
+           {0, 1, 227, "IceAccum", "Ice Accumulation", "kg/m^2", UC_InchWater},
    /* grandfather'ed in a NDFD choice for POP. */
    /* 2 */ {0, 10, 8, "PoP12", "Prob of 0.01 In. of Precip", "%", UC_NONE},
            {0, 13, 194, "smokes", "Surface level smoke from fires",
@@ -2528,7 +2528,7 @@ static void ElemNamePerc (uShort2 center, uShort2 subcenter, int prodType,
 /* Deal with non-prob templates 2/16/2006 */
 static void ElemNameNorm (uShort2 center, uShort2 subcenter, int prodType,
                           int templat, uChar cat, uChar subcat, sInt4 lenTime,
-                          uChar timeRangeUnit,
+                          uChar timeRangeUnit, uChar statProcessID, 
                           uChar timeIncrType, uChar genID, uChar probType,
                           double lowerProb, double upperProb, char **name,
                           char **comment, char **unit, int *convert,
@@ -2666,6 +2666,20 @@ static void ElemNameNorm (uShort2 center, uShort2 subcenter, int prodType,
             }
          }
          if (IsData_NDFD (center, subcenter) || IsData_MOS (center, subcenter)) {
+            if (strcmp (table[subcat].name, "EVP") == 0) {
+               if (statProcessID == 10) {
+                  mallocSprintf (name, "%s%02d", "EvpDep", lenTime);
+                  mallocSprintf (comment, "%02d hr Evaporation departure from normal", 
+                                 lenTime);
+               } else {
+                  mallocSprintf (name, "%s%02d", "Evp", lenTime);              
+                  mallocSprintf (comment, "%02d hr %s", lenTime,
+                                 table[subcat].comment);
+               }
+               mallocSprintf (unit, "[%s]", table[subcat].unit);
+               *convert = table[subcat].convert;
+               return;
+            }   
             for (i = 0; i < (sizeof (NDFD_Overide) /
                              sizeof (NDFD_AbrevOverideTable)); i++) {
                if (strcmp (NDFD_Overide[i].GRIB2name, table[subcat].name) ==
@@ -2760,7 +2774,7 @@ static void ElemNameNorm (uShort2 center, uShort2 subcenter, int prodType,
 
 void ParseElemName (uShort2 center, uShort2 subcenter, int prodType,
                     int templat, int cat, int subcat, sInt4 lenTime,
-                    uChar timeRangeUnit,
+                    uChar timeRangeUnit, uChar statProcessID,
                     uChar timeIncrType, uChar genID, uChar probType,
                     double lowerProb, double upperProb, char **name,
                     char **comment, char **unit, int *convert,
@@ -2778,9 +2792,9 @@ void ParseElemName (uShort2 center, uShort2 subcenter, int prodType,
       if (f_isNdfd && (prodType == 0) && (cat == 19)) {
          /* don't use ElemNameProb. */
          ElemNameNorm (center, subcenter, prodType, templat, cat, subcat,
-                       lenTime, timeRangeUnit, timeIncrType, genID, probType, lowerProb,
+                       lenTime, timeRangeUnit, statProcessID, timeIncrType, genID, probType, lowerProb,
                        upperProb, name, comment, unit, convert, f_fstValue, fstSurfValue,
-                       f_sndValue, sndSurfValue);
+                       f_sndValue, sndSurfValue);       
 
       } else {
          ElemNameProb (center, subcenter, prodType, templat, cat, subcat,
@@ -2792,7 +2806,7 @@ void ParseElemName (uShort2 center, uShort2 subcenter, int prodType,
                     lenTime, timeRangeUnit, percentile, name, comment, unit, convert);
    } else {
       ElemNameNorm (center, subcenter, prodType, templat, cat, subcat,
-                    lenTime, timeRangeUnit, timeIncrType, genID, probType, lowerProb,
+                    lenTime, timeRangeUnit, statProcessID, timeIncrType, genID, probType, lowerProb,
                     upperProb, name, comment, unit, convert, f_fstValue, fstSurfValue,
                        f_sndValue, sndSurfValue);
    }
