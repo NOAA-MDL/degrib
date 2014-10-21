@@ -398,7 +398,8 @@ static int GRIB2Inventory2to7 (sChar sectNum, FILE *fp, sInt4 gribLen,
                                uInt4 *buffLen, char **buffer,
                                inventoryType *inv, uChar prodType,
                                unsigned short int center,
-                               unsigned short int subcenter)
+                               unsigned short int subcenter,
+                               uChar mstrVersion)
 {
    uInt4 secLen;        /* The length of the current section. */
    sInt4 foreTime;      /* forecast time (NDFD treats as "projection") */
@@ -723,7 +724,7 @@ enum { GS4_ANALYSIS, GS4_ENSEMBLE, GS4_DERIVED, GS4_PROBABIL_PNT = 5,
    }
 
    /* Find out what the name of this variable is. */
-   ParseElemName (center, subcenter, prodType, templat, cat, subcat,
+   ParseElemName (mstrVersion, center, subcenter, prodType, templat, cat, subcat,
                   lenTime, timeRangeUnit, statProcessID, timeIncrType, genID, probType, lowerProb,
                   upperProb, &(inv->element), &(inv->comment),
                   &(inv->unitName), &convert, percentile, genProcess,
@@ -848,6 +849,7 @@ int GRIB2Inventory (char *filename, inventoryType **Inv, uInt4 *LenInv,
    int c;               /* Determine if end of the file without fileLen. */
    sInt4 fileLen;       /* Length of the GRIB2 file. */
    unsigned short int center, subcenter; /* Who produced it. */
+   uChar mstrVersion;   /* The master table version (is it 255?) */
    char *ptr;           /* used to find the file extension. */
 
    grib_limit = GRIB_LIMIT;
@@ -970,13 +972,14 @@ int GRIB2Inventory (char *filename, inventoryType **Inv, uInt4 *LenInv,
          InventoryParseTime (buffer + 13 - 5, &(inv->refTime));
          MEMCPY_BIG (&center, buffer + 6 - 5, sizeof (short int));
          MEMCPY_BIG (&subcenter, buffer + 8 - 5, sizeof (short int));
-
+         MEMCPY_BIG (&mstrVersion, buffer + 10 - 5, sizeof (uChar));
+         
          sectNum = 2;
          do {
             /* Look at sections 2 to 7 */
             if ((ans = GRIB2Inventory2to7 (sectNum, fp, gribLen, &bufferLen,
                                            &buffer, inv, prodType, center,
-                                           subcenter)) != 0) {
+                                           subcenter, mstrVersion)) != 0) {
                fclose (fp);
                free (buffer);
                free (buff);

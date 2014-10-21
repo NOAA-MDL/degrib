@@ -11,7 +11,7 @@ char * subCenterLookup (unsigned short int center,
 
 char * processLookup (unsigned short int center, unsigned char process);
 
-void ParseElemName (uShort2 center, uShort2 subcenter, int prodType,
+void ParseElemName (uChar mstrVersion, uShort2 center, uShort2 subcenter, int prodType,
                     int templat, int cat, int subcat, sInt4 lenTime,
                     uChar timeRangeUnit, uChar statProcessID,
                     uChar timeIncrType, uChar genID, uChar probType,

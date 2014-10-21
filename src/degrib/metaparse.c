@@ -352,11 +352,12 @@ static int ParseSect1 (sInt4 *is1, sInt4 ns1, grib_MetaData *meta)
          printf ("Warning: Master table version == 0, was experimental\n"
                  "I don't have a copy, and don't know where to get one\n"
                  "Use meta data at your own risk.\n");
-      } else {
-         errSprintf ("Master table version supported (1,2,3,4,5) yours is %d... "
-                     "Local table version supported (0,1) yours is %d...\n",
-                     meta->pds2.mstrVersion, meta->pds2.lclVersion);
-         return -2;
+      } else if (meta->pds2.mstrVersion != 255) {
+         printf ("Warning: use meta data at your own risk.\n");
+         printf ("Supported master table versions: (1,2,3,4,5) yours is %d... ", 
+                 meta->pds2.mstrVersion);
+         printf ("Supported local table version supported (0,1) yours is %d...\n", 
+                 meta->pds2.lclVersion);
       }
    }
    meta->pds2.sigTime = (uChar) is1[11];
@@ -2158,7 +2159,7 @@ int MetaParse (grib_MetaData *meta, sInt4 *is0, sInt4 ns0,
       }
    }
 
-   ParseElemName (meta->center, meta->subcenter, meta->pds2.prodType,
+   ParseElemName (meta->pds2.mstrVersion, meta->center, meta->subcenter, meta->pds2.prodType,
                   meta->pds2.sect4.templat, meta->pds2.sect4.cat,
                   meta->pds2.sect4.subcat, lenTime, timeRangeUnit, statProcessID,
                   incrType, meta->pds2.sect4.genID, probType, lowerProb, upperProb,
