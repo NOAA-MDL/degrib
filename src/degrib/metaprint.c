@@ -360,6 +360,32 @@ static void PrintSect2 (sect2_type * sect2)
  * NOTES
  *****************************************************************************
  */
+static void PrintSect4_Category_OAR (uChar cat) {
+   if (cat == 2) {
+      Print ("PDS-S4", "Category Description", Prt_DS, cat, "Lightning Products");
+   } else if (cat == 3) {
+      Print ("PDS-S4", "Category Description", Prt_DS, cat, "Severe Weather Products");
+   } else if (cat == 4) {
+      Print ("PDS-S4", "Category Description", Prt_DS, cat, "Satellite Products");
+   } else if (cat == 5) {
+      Print ("PDS-S4", "Category Description", Prt_DS, cat, "Forecast Products");
+   } else if (cat == 6) {
+      Print ("PDS-S4", "Category Description", Prt_DS, cat, "Precipitation Products");
+   } else if (cat == 7) {
+      Print ("PDS-S4", "Category Description", Prt_DS, cat, "Model-based Products");
+   } else if (cat == 8) {
+      Print ("PDS-S4", "Category Description", Prt_DS, cat, "Intermediate Products");
+   } else if (cat == 9) {
+      Print ("PDS-S4", "Category Description", Prt_DS, cat, "3D Reflectivity Mosaics");
+   } else if (cat == 10) {
+      Print ("PDS-S4", "Category Description", Prt_DS, cat, "Composite Reflectivity Mosaics");
+   } else if (cat == 11) {
+      Print ("PDS-S4", "Category Description", Prt_DS, cat, "Other Reflectivity Mosaics");
+   } else  {
+      Print ("PDS-S4", "Category Description", Prt_DS, cat, "unknown");
+   }
+}
+
 static void PrintSect4_Category (grib_MetaData *meta)
 {
    sect4_type *sect4 = &(meta->pds2.sect4);
@@ -393,7 +419,15 @@ static void PrintSect4_Category (grib_MetaData *meta)
       "Waves", "Currents", "Ice", "Surface Properties",
       "Sub-surface Properties"
    };
-
+   
+   if (meta->pds2.mstrVersion == 255) {
+      if (meta->center == 161) {
+         PrintSect4_Category_OAR(sect4->cat);
+      } else {
+         Print ("PDS-S4", "Category Description", Prt_DS, sect4->cat, "unknown");
+      }
+      return;  
+   }
    switch (meta->pds2.prodType) {
       case 0:          /* Meteo category. */
          switch (sect4->cat) {
