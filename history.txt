@@ -1,6 +1,17 @@
 #
+#----- Release: Version 2.04 10/21/2014 -----
+#
+ 10/21 AAT Added support for MRMS
+ 10/15 AAT Added support for fret, fretDep, totFret
+ 10/1  AAT Added support for tropical cyclone threat grids
+#
 #----- Release: Version 2.03 08/19/2014 -----
 #
+ 4/4/2014  AAT Checking in a version of cube.c that doesn't double free the
+         flxArray causing segfault in linux
+ 7/18  AAT Updating to use unsigned short int for the dbf reads.
+         AIX must have defaulted to unsigned, but linux is signed and that
+         is a problem
 #
 #----- Release: Version 2.02 04/05/2013 -----
 #
