@@ -1,0 +1,91 @@
+SHELL = @SHELL@
+
+CC=@CC@
+STD_FLAGS=@CFLAGS@
+STD_DEF=-DUSE_JPEG2000 -DUSE_PNG @DSIZEOF_LONG_INT@ @DWORDS_BIGENDIAN@
+STD_INC=-I./g2clib-1.0.5 -I@JPEG2000_PATH@ -I@LIBPNG_PATH@ -I@ZLIB_PATH@ -I@LIBAAT_PATH@
+CFLAGS=$(STD_FLAGS) $(STD_DEF) $(STD_INC)
+
+VPATH = ./g2clib-1.0.5
+AR=ar
+RANLIB=ranlib
+ARFLAGS=-r @ARFLAGS@
+LIBNAME=mdl_g2c
+LIBA=lib$(LIBNAME).a
+
+G2C_OBJS = $(LIBA)(gridtemplates.o) \
+   $(LIBA)(drstemplates.o) \
+   $(LIBA)(pdstemplates.o) \
+   $(LIBA)(gbits.o) \
+   $(LIBA)(g2_unpack1.o) \
+   $(LIBA)(g2_unpack2.o) \
+   $(LIBA)(g2_unpack3.o) \
+   $(LIBA)(g2_unpack4.o) \
+   $(LIBA)(g2_unpack5.o) \
+   $(LIBA)(g2_unpack6.o) \
+   $(LIBA)(g2_unpack7.o) \
+   $(LIBA)(g2_free.o) \
+   $(LIBA)(g2_info.o) \
+   $(LIBA)(g2_getfld.o) \
+   $(LIBA)(simunpack.o) \
+   $(LIBA)(comunpack.o) \
+   $(LIBA)(specpack.o) \
+   $(LIBA)(specunpack.o) \
+   $(LIBA)(rdieee.o) \
+   $(LIBA)(mkieee.o) \
+   $(LIBA)(int_power.o) \
+   $(LIBA)(simpack.o) \
+   $(LIBA)(compack.o) \
+   $(LIBA)(jpcpack.o) \
+   $(LIBA)(jpcunpack.o) \
+   $(LIBA)(pngpack.o) \
+   $(LIBA)(pngunpack.o) \
+   $(LIBA)(dec_jpeg2000.o) \
+   $(LIBA)(enc_jpeg2000.o) \
+   $(LIBA)(dec_png.o) \
+   $(LIBA)(enc_png.o) \
+   $(LIBA)(g2_create.o) \
+   $(LIBA)(g2_addlocal.o) \
+   $(LIBA)(g2_addgrid.o) \
+   $(LIBA)(g2_addfield.o) \
+   $(LIBA)(g2_gribend.o) \
+   $(LIBA)(getdim.o) \
+   $(LIBA)(getpoly.o) \
+   $(LIBA)(seekgb.o) \
+   $(LIBA)(cmplxpack.o) \
+   $(LIBA)(g2_miss.o) \
+   $(LIBA)(misspack.o) \
+   $(LIBA)(pack_gp.o) \
+   $(LIBA)(reduce.o)
+
+EXTRA_OBJS = $(LIBA)(scan.o) \
+   $(LIBA)(engribapi.o) \
+   $(LIBA)(grib2api.o)
+
+H_SOURCES = mdl_g2c.h
+
+all: $(LIBA)
+
+$(LIBA): $(G2C_OBJS) $(EXTRA_OBJS)
+	$(RANLIB) $(LIBA)
+
+install:
+
+.c.o: $(H_SOURCES)
+	$(CC) -c $(CFLAGS) $< -o $@
+
+.o.a:
+	$(AR) $(ARFLAGS) $@ $<
+	rm -f $<
+
+.c.a:
+	$(CC) $(CFLAGS) -c $<
+	$(AR) $(ARFLAGS) $@ $*.o
+	rm -f $*.o
+
+clean:
+	rm -f *.o *.a *.bak
+
+distclean: clean
+	rm -r -f config.status config.log Makefile autom4te.cache
+
