@@ -1,0 +1,33 @@
+Geoid wgs84.  Reference latitudes  40.0000 and  60.0000.
+Tangent Latitude =  50.3601.
+At  40.0000, gridsize =  8775.1372, while at  60.0000, gridsize =  8775.1372.
+Difference < 1.0e-5? .. yes.
+At  50.3601, gridsize =  8910.8057 
+--------
+Tangent Latitude =  50.0000.
+At  40.0000, gridsize =  8748.3855, while at  60.0000, gridsize =  8728.9515.
+Difference = 19.43397
+At  50.3601, gridsize =  8874.4656 
+--------
+Geoid Clarke1866.  Reference latitudes  40.0000 and  60.0000.
+Tangent Latitude =  50.3602.
+At  40.0000, gridsize =  8775.0476, while at  60.0000, gridsize =  8775.0476.
+Difference < 1.0e-5? .. yes.
+At  50.3602, gridsize =  8910.7104 
+--------
+Tangent Latitude =  50.0000.
+At  40.0000, gridsize =  8748.2947, while at  60.0000, gridsize =  8728.8593.
+Difference = 19.43545
+At  50.3602, gridsize =  8874.3685 
+--------
+Geoid sphereGrib2.  Reference latitudes  40.0000 and  60.0000.
+Tangent Latitude =  50.3563.
+At  40.0000, gridsize =  8782.3962, while at  60.0000, gridsize =  8782.3962.
+Difference < 1.0e-5? .. yes.
+At  50.3563, gridsize =  8918.5649 
+--------
+Tangent Latitude =  50.0000.
+At  40.0000, gridsize =  8755.7531, while at  60.0000, gridsize =  8736.4547.
+Difference = 19.29836
+At  50.3563, gridsize =  8882.3957 
+--------

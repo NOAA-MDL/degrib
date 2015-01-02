@@ -1,0 +1,75 @@
+SHELL = @SHELL@
+
+#  Package and Version info:
+#      @PACKAGE_STRING@
+#  Report bugs to @PACKAGE_BUGREPORT@
+
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+bindir = @bindir@
+srcdir = @srcdir@
+libdir = @libdir@
+top_srcdir = @top_srcdir@
+
+CC = @CC@
+CFLAGS = -O @CFLAGS@ 
+LDFLAGS = @LDFLAGS@
+AR = @AR@
+ARFLAGS = @ARFLAGS@
+RANLIB = @RANLIB@
+EXEEXT = @EXEEXT@
+
+INSTALL = @INSTALL@
+
+
+LIBNAME = emapf
+LIBA = lib$(LIBNAME).a
+
+SOURCE = cc2gll.c cc2gxy.c ccurv.c cg2cll.c cgszll.c cgszxy.c cpolll.c \
+ cpolxy.c eqvlat.c logabova.c mkgeoid.c stcm1p.c stcm2p.c stlmbr.c ymercfns.c\
+ @FWRAPNAME@
+
+TESTPROGS = testemapf tseqlat geoidtst tsgridft
+
+all: library
+
+mkgeoid.o : mkgeoid.c geoids.h
+
+library : $(LIBA)
+$(LIBA) : $(SOURCE:.c=.o)
+	$(AR) $(ARFLAGS) r $(LIBA) $?
+	- $(RANLIB) $(LIBA)
+
+
+tsgridft: tsgridft.c $(LIBA)
+	$(CC) $(CFLAGS) -o $@ $@.c -L./ -lemapf -lm
+
+tseqlat: tseqlat.c $(LIBA)
+	$(CC) $(CFLAGS) -o $@ $@.c -L./ -lemapf -lm
+
+testemapf: testemapf.c $(LIBA)
+	$(CC) $(CFLAGS) -o $@ $@.c -L./ -lemapf -lm
+
+geoidtst: geoidtst.c $(LIBA)
+	$(CC) $(CFLAGS) -o $@ $@.c -L./ -lemapf -lm
+
+
+
+install: library
+	$(INSTALL) -d $(libdir)
+	$(INSTALL) -m 644 $(LIBA) $(libdir)
+# for use with install-sh, perms 644 must be separated from -m
+
+clean:
+	rm -f *.o *.a;for file in $(TESTPROGS);\
+ do rm -f $$file$(EXEEXT) $$file.tmp;done
+
+distclean: clean
+	rm -r -f config.* Makefile cmapf.h autom4te.cache
+
+test: $(LIBA)  $(TESTPROGS)
+	@for file in $(TESTPROGS);do ./$$file > $$file.tmp;\
+printf "Testing $$file... ";\
+if diff $$file.tmp $$file.txt;then printf "ok.\n";else printf "failed.\n";fi;\
+done
+
