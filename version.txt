@@ -53,8 +53,7 @@ web=http://www.unidata.ucar.edu/packages/netcdf/
 #Date=2/16/2006
 Version=2.9.1
 Date=4/19/2013
-web=ftp://xmlsoft.org/
-web=ftp://smlsoft.org/libxml2/
+web=ftp://xmlsoft.org/libxml2/
 
 [gd]
 Version=2.0.33
