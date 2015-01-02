@@ -1,0 +1,32 @@
+CC=@CC@
+CFLAGS=-O -I../.. @DWINDOWS@
+
+UNZ_OBJS = miniunz.o unzip.o ioapi.o @MINIZIP32@ ../../libz.a
+ZIP_OBJS = minizip.o zip.o   ioapi.o @MINIZIP32@ ../../libz.a
+LIB_OBJS = libminizip.a(unzip.o zip.o ioapi.o @MINIZIP32@)
+
+.c.o:
+	$(CC) -c $(CFLAGS) $*.c
+
+.o.a:
+	ar ruv $@ $<
+
+all: miniunz minizip libminizip.a
+
+miniunz:  $(UNZ_OBJS)
+	$(CC) $(CFLAGS) -o $@ $(UNZ_OBJS)
+
+minizip:  $(ZIP_OBJS)
+	$(CC) $(CFLAGS) -o $@ $(ZIP_OBJS)
+
+libminizip.a:  $(LIB_OBJS)
+	ranlib libminizip.a
+
+test:	miniunz minizip
+	./minizip test readme.txt
+	./miniunz -l test.zip
+	mv readme.txt readme.old
+	./miniunz test.zip
+
+clean:
+	/bin/rm -f *.a *.o *~ minizip@EXEEXT@ miniunz@EXEEXT@
