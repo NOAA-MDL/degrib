@@ -162,15 +162,15 @@ int gribWriteEsriHdr (FILE *fp, gdsType *gds, gridAttribType *attrib,
        */
       if (gds->projType == GS3_POLAR) {
          stlmbr (&stcprm, gds->scaleLat1, orient);
-         meshLat = gds->scaleLat1;
+         meshLat = gds->meshLat;
       } else {
 #ifdef USE_DMAPF
          stlmbr (&stcprm, eqvlat (gds->scaleLat1, gds->scaleLat2), orient);
-         meshLat = eqvlat (gds->scaleLat1, gds->scaleLat2);
+         meshLat = gds->meshLat;
 #else
          stlmbr (&stcprm, eqvlat (&stcprm, gds->scaleLat1, gds->scaleLat2),
                  orient);
-         meshLat = eqvlat (&stcprm, gds->scaleLat1, gds->scaleLat2);
+         meshLat = gds->meshLat;
 #endif
       }
 #ifdef USE_DMAPF
