@@ -25,10 +25,8 @@ Var UninstLog_FP
 
 !include "MUI2.nsh"
 
-!define MUI_ICON d:/Users/Arthur.Taylor/Desktop/Arthur/svn/degrib/bin/ndfd.ico
-; !define MUI_UNICON j:/svn/degrib/bin/ndfd.ico
-!define MUI_UNICON d:/Users/Arthur.Taylor/Desktop/Arthur/svn/degrib/distrib/uninst.ico
-; !define MUI_HEADERIMAGE_UNBITMAP j:/svn/degrib/bin/ndfd.ico
+!define MUI_ICON c:/Arthur/svn/degrib/bin/ndfd.ico
+!define MUI_UNICON c:/Arthur/svn/degrib/distrib/uninst.ico
 
 ;-----------------------------------------------------------------------------
 Function .onInit

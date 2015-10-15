@@ -78,15 +78,15 @@ S:degrib/src/libaat/readme.txt
 S:degrib/src/libaat/scripts/makefile*
 
 # pnglib source
-S:degrib/src/libpng/contrib/gregbook/LICENSE
-S:degrib/src/libpng/contrib/gregbook/README
-S:degrib/src/libpng/contrib/gregbook/*.*
-S:degrib/src/libpng/contrib/msvctest/*.*
-S:degrib/src/libpng/contrib/pngminus/README
-S:degrib/src/libpng/contrib/pngminus/*.*
-S:degrib/src/libpng/contrib/pngsuite/README
-S:degrib/src/libpng/contrib/pngsuite/*.*
-S:degrib/src/libpng/contrib/visupng/*.*
+#S:degrib/src/libpng/contrib/gregbook/LICENSE
+#S:degrib/src/libpng/contrib/gregbook/README
+#S:degrib/src/libpng/contrib/gregbook/*.*
+#S:degrib/src/libpng/contrib/msvctest/*.*
+#S:degrib/src/libpng/contrib/pngminus/README
+#S:degrib/src/libpng/contrib/pngminus/*.*
+#S:degrib/src/libpng/contrib/pngsuite/README
+#S:degrib/src/libpng/contrib/pngsuite/*.*
+#S:degrib/src/libpng/contrib/visupng/*.*
 S:degrib/src/libpng/scripts/*.*
 S:degrib/src/libpng/*.c
 S:degrib/src/libpng/*.h
@@ -117,8 +117,8 @@ S:degrib/src/zlib/contrib/minizip/*.c
 S:degrib/src/zlib/contrib/minizip/*.h
 S:degrib/src/zlib/contrib/minizip/Makefile.in
 S:degrib/src/zlib/contrib/minizip/ChangeLogUnzip
-S:degrib/src/zlib/contrib/untgz/Makefile
-S:degrib/src/zlib/contrib/untgz/*.*
+#S:degrib/src/zlib/contrib/untgz/Makefile
+#S:degrib/src/zlib/contrib/untgz/*.*
 S:degrib/src/zlib/msdos/*.*
 S:degrib/src/zlib/nt/*.*
 S:degrib/src/zlib/os2/*.*
