@@ -1,5 +1,5 @@
 #define PROGRAM_VERSION "2.05"
-#define PROGRAM_DATE "10/15/2015"
+#define PROGRAM_DATE "11/17/2015"
 /*****************************************************************************
  * userparse.h
  *

@@ -1,5 +1,5 @@
 #
-#----- Release: Version 2.05 10/15/2015 -----
+#----- Release: Version 2.05 11/17/2015 -----
 #
 11/16 AAT + MPA Added support for fret, fretdep, and frettot to the ndfd.ini file.
 10/05 AAT + MPA Added support for PPI
