@@ -1,19 +1,20 @@
 #
 #----- Release: Version 2.05 10/15/2015 -----
 #
+11/16 AAT + MPA Added support for fret, fretdep, and frettot to the ndfd.ini file.
 10/05 AAT + MPA Added support for PPI
  3/17/2015 Tim K When writing hdr file use gds->meshLat vs equiv tangent
           lat to calculate lower left corner point.
 #
 #----- Release: Version 2.04 10/21/2014 -----
 #
- 10/21 AAT Added support for MRMS
- 10/15 AAT Added support for fret, fretDep, totFret
- 10/1  AAT Added support for tropical cyclone threat grids
+10/21 AAT Added support for NOAA's Office of Atmos Research's (Multi-Radar-Multi-Sensor) data
+10/15 AAT Added support for fret, fretDep, totFret
+10/1  AAT Added support for tropical cyclone threat grids
 #
 #----- Release: Version 2.03 08/19/2014 -----
 #
- 4/4/2014  AAT Checking in a version of cube.c that doesn't double free the
+ 4/04/2014  AAT Checking in a version of cube.c that doesn't double free the
          flxArray causing segfault in linux
  7/18  AAT Updating to use unsigned short int for the dbf reads.
          AIX must have defaulted to unsigned, but linux is signed and that
@@ -29,13 +30,13 @@
 #
 #----- Release: Version 2.00 12/05/2012 -----
 #
- 12/5 AAT cross-checked and corrected the ndfd.ini file.
- 12/3 MPA updated the ndfd.ini to reflect the iceAccum and Max/Min RH locations
+12/5 AAT cross-checked and corrected the ndfd.ini file.
+12/3 MPA updated the ndfd.ini to reflect the iceAccum and Max/Min RH locations
 #
 #----- Release: Version 1.99 10/23/2012 -----
 #
- 10/9 AAT Updated web.tcl to match the work done on ndfd.tcl and ndfd.ini
- 10/1 to 10/4  AAT updated ndfd.tcl logic for NDFD_EXPR
+10/9 AAT Updated web.tcl to match the work done on ndfd.tcl and ndfd.ini
+10/1 to 10/4  AAT updated ndfd.tcl logic for NDFD_EXPR
 #
 #----- Release: Version 1.98 06/04/2012 -----
 #
