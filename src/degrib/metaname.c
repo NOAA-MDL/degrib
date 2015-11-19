@@ -2805,12 +2805,11 @@ static void ElemNameNorm (uChar mstrVersion, uShort2 center, uShort2 subcenter, 
             if (strcmp (table[subcat].name, "EVP") == 0) {
                if (statProcessID == 10) {
                   mallocSprintf (name, "%s%02d", "EvpDep", lenTime);
-                  mallocSprintf (comment, "%02d hr Evaporation departure from normal", 
+                  mallocSprintf (comment, "%02d hr Evapo-Transpiration departure from normal", 
                                  lenTime);
                } else {
                   mallocSprintf (name, "%s%02d", "Evp", lenTime);              
-                  mallocSprintf (comment, "%02d hr %s", lenTime,
-                                 table[subcat].comment);
+                  mallocSprintf (comment, "%02d hr Evapo-Transpiration", lenTime);
                }
                mallocSprintf (unit, "[%s]", table[subcat].unit);
                *convert = table[subcat].convert;
