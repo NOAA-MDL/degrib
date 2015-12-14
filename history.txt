@@ -1,5 +1,5 @@
 #
-#----- Release: Version 2.05 11/19/2015 -----
+#----- Release: Version 2.05 12/14/2015 -----
 #
 11/19 AAT + MPA Updated the labeling of Evaporation vs Evapo-Transpiration
 11/16 AAT + MPA Added support for fret, fretdep, and frettot to the ndfd.ini file
@@ -9,7 +9,7 @@
 #
 #----- Release: Version 2.04 10/21/2014 -----
 #
-10/21 AAT Added support for NOAA's Office of Atmos Research's 
+10/21 AAT Added support for NOAA's Office of Atmos Research's
          Multi-Radar-Multi-Sensor (MRMS) data
 10/15 AAT Added support for fret, fretdep, frettot
 10/1  AAT Added support for tropical cyclone threat grids
