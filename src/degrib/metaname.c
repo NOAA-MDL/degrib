@@ -1535,6 +1535,8 @@ GRIB2LocalTable NDFD_LclTable[] = {
    /* Arthur Added this to both NDFD and NCEP local tables. (5/1/2006) */
            {10, 3, 192, "Surge", "Hurricane Storm Surge", "m", UC_M2Feet},
            {10, 3, 193, "ETSurge", "Extra Tropical Storm Surge", "m", UC_M2Feet},
+           {10, 3, 250, "StormTide", "Storm Surge and Tide", "m", UC_M2Feet},
+           {10, 3, 251, "Tide", "Tide", "m", UC_M2Feet},
    /* Mike added 2/2012 */
            {0, 1, 198, "MinRH", "Minimum Relative Humidity", "%", UC_NONE}
 }; 
