@@ -1,3 +1,7 @@
+To make a distribution as of 6/20/2016:
+
+See "DEGRIB Developer Handbook" on Google Docs
+
 To make a distribution as of 9/12/2009:
 
 cd distrib

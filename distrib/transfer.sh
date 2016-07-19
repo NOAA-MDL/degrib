@@ -1,7 +1,8 @@
 #!/bin/sh
 
-sftp tayloraa@slosh.nws.noaa.gov <<EOF
-cd /var/www/html/pub/degrib2
+#sftp tayloraa@slosh.nws.noaa.gov <<EOF
+sftp allardm@140.90.90.29 <<EOF
+cd /usr/project/www/users/degrib/download_test
 lcd webDir
 put degrib.txt
 put history.txt

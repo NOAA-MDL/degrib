@@ -161,6 +161,7 @@ while {[gets $fp line] >= 0} {
 close $op
 close $fp
 
-catch {exec /arthur/myPrograms/nsis/makensis degrib.nsi} ans
+#Mike catch {exec /arthur/myPrograms/nsis/makensis degrib.nsi} ans
+catch {exec /cygdrive/c/NSIS/makensis degrib.nsi} ans
 # catch {exec /cygdrive/c/arthur/myPrograms/nsis/makensis degrib.nsi} ans
 puts $ans
