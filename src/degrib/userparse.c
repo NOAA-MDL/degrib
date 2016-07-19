@@ -656,11 +656,24 @@ int UserValidate (userType *usr)
  */
 char *Grib2About (const char *name)
 {
-   char *buffer;
+/*   char *buffer;
 
    mallocSprintf (&buffer, "%s\nVersion: %s\nDate: %s\nAuthor: Arthur "
                   "Taylor\n", name, PROGRAM_VERSION, PROGRAM_DATE);
+   return buffer; */
+
+   char *buffer;
+
+   char compile_date[12];
+   time_t now = time(NULL);
+   strftime(compile_date, 12, "%m/%d/%Y", localtime(&now));
+
+   mallocSprintf (&buffer, "%s\nVersion: %s\nDate: %s\nCompile Date: %s\nAuthor: Arthur "
+                  "Taylor and Michael Allard\n", name, PROGRAM_VERSION, PROGRAM_DATE, compile_date);
    return buffer;
+
+
+
 }
 
 int myCommaDoubleList2 (char *name, double *x, double *y)
