@@ -158,7 +158,7 @@ AC_DEFUN([OPT_CYGWIN],
     [case "$build" in
        *-*-cygwin*)
          AS_IF([test "$ac_cv_c_compiler_gnu" = yes],
-               [CFLAGS="${CFLAGS} -mno-cygwin"]);;
+               [CFLAGS="${CFLAGS}"]);;
        esac
     ])
 ])
