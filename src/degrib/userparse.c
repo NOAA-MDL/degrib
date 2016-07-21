@@ -656,11 +656,12 @@ int UserValidate (userType *usr)
  */
 char *Grib2About (const char *name)
 {
-/*   char *buffer;
 
-   mallocSprintf (&buffer, "%s\nVersion: %s\nDate: %s\nAuthor: Arthur "
-                  "Taylor\n", name, PROGRAM_VERSION, PROGRAM_DATE);
-   return buffer; */
+/*   char *buffer;
+ *
+ *      mallocSprintf (&buffer, "%s\nVersion: %s\nDate: %s\nAuthor: Arthur "
+ *                        "Taylor\n", name, PROGRAM_VERSION, PROGRAM_DATE);
+ *                           return buffer; */
 
    char *buffer;
 
@@ -671,8 +672,6 @@ char *Grib2About (const char *name)
    mallocSprintf (&buffer, "%s\nVersion: %s\nDate: %s\nCompile Date: %s\nAuthor: Arthur "
                   "Taylor and Michael Allard\n", name, PROGRAM_VERSION, PROGRAM_DATE, compile_date);
    return buffer;
-
-
 
 }
 
