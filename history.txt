@@ -1,5 +1,5 @@
 #
-#----- Release: Version 2.06 07/19/2016 -----
+#----- Release: Version 2.06 07/21/2016 -----
 #
  6/20 MPA Updated bin/ndfd.ini file by moving fret from the NDFD Expr
         area to the Oper NDFD area
