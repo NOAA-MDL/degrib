@@ -3,8 +3,6 @@
 #
  6/20 MPA Updated bin/ndfd.ini file by moving fret from the NDFD Expr
         area to the Oper NDFD area
- 7/7  MPA Updated ndfd.ini to include an Oper Alaska Area for
-        Days 1-3, 1-7, 4-7 for 6km grids. Expr area now Alaska 3km grids
  6/20 MPA + AAT Updated userparse.c to display a compile date when running
         degrib with a -V option
  6/20 MPA Updated path for distrib/degrib.tpl and distrib/nsi.tcl for MPA's
