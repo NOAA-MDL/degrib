@@ -4,7 +4,7 @@
  8/24 MPA Updated bin/ndfd.ini file by moving Fret from the NDFD Expr
         area to the NDFD Oper area
  8/24 MPA Updated bin/ndfd.ini file by moving Alaska 1-7 day 6km grids from
-        the NDFD Expr to the NDFD Oper area. The Alaska 1-7 day 3km grids can 
+        the NDFD Expr to the NDFD Oper area. The Alaska 1-7 day 3km grids can
         now be found in the NDFD Expr area.
  8/24 MPA + AAT Updated userparse.c to display a compile date when running
         degrib with a -V option
