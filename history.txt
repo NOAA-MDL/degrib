@@ -1,9 +1,9 @@
 #
-#----- Release: Version 2.06 08/24/2016 -----
+#----- Release: Version 2.06 08/16/2016 -----
 #
- 8/16 MPA Updated bin/ndfd.ini file by moving Fret from the NDFD Expr
-        area to the NDFD Oper area.
- 8/16 MPA Updated bin/ndfd.ini file to point to new http://tgftp.nws.noaa.gov.
+ 8/16 MPA Added support for the now operational fret, fretdep, frettot. 
+        Removed support for experimental fret.  
+ 8/16 MPA Updated degrib to point to new http://tgftp.nws.noaa.gov.
  8/16 MPA + AAT Updated userparse.c to display a compile date when running
         degrib with a -V option.
  6/20 MPA Updated path for distrib/degrib.tpl and distrib/nsi.tcl for MPA's
