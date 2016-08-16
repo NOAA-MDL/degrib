@@ -1,8 +1,8 @@
 #
 #----- Release: Version 2.06 08/16/2016 -----
 #
- 8/16 MPA Added support for the now operational fret, fretdep, frettot. 
-        Removed support for experimental fret.  
+ 8/16 MPA Added support for the now operational fret, fretdep, frettot.
+        Removed support for experimental fret.
  8/16 MPA Updated degrib to point to new http://tgftp.nws.noaa.gov.
  8/16 MPA + AAT Updated userparse.c to display a compile date when running
         degrib with a -V option.
