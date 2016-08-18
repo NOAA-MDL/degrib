@@ -1,4 +1,8 @@
 #
+#----- Release: Version 2.07 08/24/2016 -----
+#
+ 8/16 MPA Added support for Alaska's opnl 6km grids and Alaska's expr 3km grids. 
+#
 #----- Release: Version 2.06 08/16/2016 -----
 #
  8/16 MPA Added support for the now operational fret, fretdep, frettot.
