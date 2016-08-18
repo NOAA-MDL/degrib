@@ -104,24 +104,24 @@ S:degrib/src/libpng/TODO
 S:degrib/src/libpng/Y2KINFO
 
 # zlib source
-S:degrib/src/zlib/amiga/*.*
+#S:degrib/src/zlib/amiga/*.*
 S:degrib/src/zlib/contrib/*.*
-S:degrib/src/zlib/contrib/asm386/*.*
-S:degrib/src/zlib/contrib/asm586/*.*
-S:degrib/src/zlib/contrib/asm686/*.*
-S:degrib/src/zlib/contrib/delphi/*.*
-S:degrib/src/zlib/contrib/delphi2/*.*
-S:degrib/src/zlib/contrib/iostream/*.*
-S:degrib/src/zlib/contrib/iostream2/*.*
+#S:degrib/src/zlib/contrib/asm386/*.*
+#S:degrib/src/zlib/contrib/asm586/*.*
+#S:degrib/src/zlib/contrib/asm686/*.*
+#S:degrib/src/zlib/contrib/delphi/*.*
+#S:degrib/src/zlib/contrib/delphi2/*.*
+#S:degrib/src/zlib/contrib/iostream/*.*
+#S:degrib/src/zlib/contrib/iostream2/*.*
 S:degrib/src/zlib/contrib/minizip/*.c
 S:degrib/src/zlib/contrib/minizip/*.h
 S:degrib/src/zlib/contrib/minizip/Makefile.in
 S:degrib/src/zlib/contrib/minizip/ChangeLogUnzip
 #S:degrib/src/zlib/contrib/untgz/Makefile
 #S:degrib/src/zlib/contrib/untgz/*.*
-S:degrib/src/zlib/msdos/*.*
-S:degrib/src/zlib/nt/*.*
-S:degrib/src/zlib/os2/*.*
+#S:degrib/src/zlib/msdos/*.*
+#S:degrib/src/zlib/nt/*.*
+#S:degrib/src/zlib/os2/*.*
 S:degrib/src/zlib/*.c
 S:degrib/src/zlib/*.h
 S:degrib/src/zlib/ChangeLog
@@ -433,6 +433,11 @@ A:degrib/output/readme.txt
 
 AMS:degrib/data/ndfd/readme.txt
 AMS:degrib/bin/ndfd.ico
+#MPA added 8/18/16
+AMS:degrib/data/ndgd/readme.txt
+AMS:degrib/data/ndfd_expr/readme.txt
+AMS:degrib/data/ndgd_expr/readme.txt
+
 
 #
 # imgGen
@@ -486,6 +491,18 @@ A:degrib/geodata/npacocntimezone.ind
 A:degrib/geodata/npacocntimezone.flt
 A:degrib/geodata/npacocndaylight.ind
 A:degrib/geodata/npacocndaylight.flt
+A:degrib/geodata/guamtimezone.ind
+A:degrib/geodata/guamtimezone.flt
+A:degrib/geodata/guamdaylight.ind
+A:degrib/geodata/guamdaylight.flt
+A:degrib/geodata/puertoritimezone.ind
+A:degrib/geodata/puertoritimezone.flt
+A:degrib/geodata/puertoridaylight.ind
+A:degrib/geodata/puertoridaylight.flt
+A:degrib/geodata/hawaiitimezone.ind
+A:degrib/geodata/hawaiitimezone.flt
+A:degrib/geodata/hawaiidaylight.ind
+A:degrib/geodata/hawaiidaylight.flt
 
 # Draw Shp Control files.
 A:degrib/MapIni/*.ini
