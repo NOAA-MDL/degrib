@@ -665,12 +665,12 @@ char *Grib2About (const char *name)
 
    char *buffer;
 
-   char compile_date[12];
+   /* char compile_date[12];
    time_t now = time(NULL);
-   strftime(compile_date, 12, "%m/%d/%Y", localtime(&now));
+   strftime(compile_date, 12, "%m/%d/%Y", localtime(&now)); */
 
    mallocSprintf (&buffer, "%s\nVersion: %s\nDate: %s\nCompile Date: %s\nAuthor: Arthur "
-                  "Taylor and Michael Allard\n", name, PROGRAM_VERSION, PROGRAM_DATE, compile_date);
+                  "Taylor and Michael Allard\n", name, PROGRAM_VERSION, PROGRAM_DATE, __DATE__);
    return buffer;
 
 }
