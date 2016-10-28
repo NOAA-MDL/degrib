@@ -3,7 +3,7 @@
 #
  10/31 MPA Updated code to understand the ProbTSRWE24 variable(Probability
 of winter precipitation (snow/sleet) exceeding 0.25 inches (~6
-mm) water equivalent over a 24-hour period (Valid Time 12z-12z)for Days 4-7 
+mm) water equivalent over a 24-hour period (Valid Time 12z-12z)for Days 4-7
 over CONUS)
  10/31 MPA removed the "download by ftp" button
 #
