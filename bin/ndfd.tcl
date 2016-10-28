@@ -1712,11 +1712,12 @@ proc DownloadTab {frame rayName} {
 ##### Build the buttons. #####
   set cur [frame $frame.bot -relief ridge -bd 5]
     set cur1 [frame $cur.fr]
-      button $cur1.download0 -text "Download by ftp" -command "HttpDownload_Select $rayName 0"
+#      button $cur1.download0 -text "Download by ftp" -command "HttpDownload_Select $rayName 0"
       button $cur1.download1 -text "Download by http (faster?)" -command "HttpDownload_Select $rayName 1"
       button $cur1.drawImg -text "Draw Images" -command "DrawImages $rayName"
       button $cur1.cancel -text "Cancel Action" -command "CancelAction $rayName 1"
-      pack $cur1.download0 $cur1.download1 $cur1.drawImg $cur1.cancel -side left -padx 20
+#      pack $cur1.download0 $cur1.download1 $cur1.drawImg $cur1.cancel -side left -padx 20
+      pack $cur1.download1 $cur1.drawImg $cur1.cancel -side left -padx 20
     pack $cur1 -side top -expand no -anchor c
   pack $frame.bot -side bottom -expand no -fill x
   pack $frame.status -side bottom -expand no -fill x
