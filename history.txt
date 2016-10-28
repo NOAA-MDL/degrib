@@ -1,5 +1,5 @@
 #
-#----- Release: Version 2.08 11/01/2015 -----
+#----- Release: Version 2.08 11/01/2016 -----
 #
  11/01 MPA Updated code to understand the ProbTSRWE24 variable(Probability
 of winter precipitation (snow/sleet) exceeding 0.25 inches(~6
