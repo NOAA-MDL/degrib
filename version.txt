@@ -7,16 +7,8 @@
 #   +1 is for a large set of new features
 
 [degrib]
-<<<<<<< .mine
 Version=2.08
 Date=11/01/2016
-||||||| .r1148
-Version=2.07
-Date=08/24/2016
-=======
-Version=2.08
-Date=10/31/2016
->>>>>>> .r1162
 Web=http://www.nws.noaa.gov/NDFD_GRIB2Decoder/index.htm
 
 [emapf]
