@@ -9,7 +9,7 @@ TK_PREFIX = $(TCL_PREFIX)
 TCL_VERSION = 85
 
 CC = gcc
-STRIP = /cygdrive/c/mingw/bin/strip
+STRIP = /cygdrive/c/MinGW/bin/strip
 STRIP_FLAGS = -s
 STD_FLAGS = -O3 -Wall -fsigned-char -mno-cygwin -ansi -pedantic
 EXEEXT = .exe
