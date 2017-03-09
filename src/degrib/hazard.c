@@ -23,11 +23,12 @@ enum {
    HAZ_IP, HAZ_AS, HAZ_AF, HAZ_MH, HAZ_DU, HAZ_BS, HAZ_BW, HAZ_FG,
    HAZ_MF, HAZ_SM, HAZ_MS, HAZ_ZF, HAZ_ZR, HAZ_ZY, HAZ_FR, HAZ_HT,
    HAZ_LB, HAZ_LW, HAZ_LO, HAZ_SC, HAZ_SW, HAZ_RB, HAZ_SI, HAZ_SN,
-   HAZ_SB, HAZ_WI, HAZ_WW, HAZ_MA, HAZ_NONE,
+   HAZ_SB, HAZ_WI, HAZ_WW, HAZ_MA, HAZ_EW, HAZ_SS, HAZ_FL, HAZ_BH,
+   HAZ_RP, HAZ_NONE, /* MPA 1/2017 Added:  HAZ_EW, HAZ_SS, HAZ_FL MPA 3/2017 Added: HAZ_BH, HAZ_RP*/
    HAZ_UNKNOWN
 };
 
-/* HAZ_EW, HAZ_FL */
+/* HAZ_EW, HAZ_SS, HAZ_FL */
 
 /* See: http://products.weather.gov/PDD/HazardGrid0608.pdf */
 HazTable HazCode[] = {
@@ -105,9 +106,13 @@ HazTable HazCode[] = {
    /* 58 */ {"WW", "Winter Weather", HAZ_WW},
 /* Extra Based on GFE documentation */
    /* 59 */ {"MA", "Special Marine", HAZ_MA},
-   /* 60 */ /* {"EW", "Excessive Wind", HAZ_EW}, */
-   /* 61 */ /* {"FL", "Flood", HAZ_FL}, */
-   /* 62 */ {"None", "None", HAZ_NONE},
+   /* 60 */ {"EW", "Excessive Wind", HAZ_EW}, /* MPA 1/2017 comment{"EW", "Excessive Wind", HAZ_EW},comment */
+   /* 61 */ {"FL", "Flood", HAZ_FL}, /* MPA 1/2017 comment{"FL", "Excessive Wind", HAZ_FL},comment */ 
+   /* 62 */ {"SS", "Storm Surge", HAZ_SS},  /* MPA 1/2017 */ 
+   /* 59 */ {"BH", "Beach Hazard", HAZ_BH},
+   /* 60 */ {"RP", "Rip Current", HAZ_RP},   
+   /* 63 */ {"None", "None", HAZ_NONE},
+   
 };
 
 enum {
@@ -117,6 +122,9 @@ enum {
 /* Based on the method used in "matchHazImageCodes()" */
 static int HazardRank1 (uChar haz, uChar sig)
 {
+
+   /*printf ("HazardRank1\n");*/   
+
    if ((haz == HAZ_HF) && (sig == SIG_W))
       return 15;
    if ((haz == HAZ_HI) && (sig == SIG_W))
@@ -306,6 +314,9 @@ static int HazTable1 (HazardStringType * haz)
 /* Based on Michael Allard email: 9/12/2008 */
 static int HazardRank2 (uChar haz, uChar sig)
 {
+
+   /*printf ("HazardRank2\n");*/ 
+
    if ((haz == HAZ_TS) && (sig == SIG_W)) return 1;
 
    if ((haz == HAZ_HF) && (sig == SIG_W)) return 15;
@@ -440,6 +451,9 @@ static int HazTable2 (HazardStringType * haz)
 /* Based on Michael Allard email: 7/13/2009 */
 static int HazardRank3 (uChar haz, uChar sig)
 {
+
+   /*printf ("HazardRank3\n");*/
+
    if ((haz == HAZ_TS) && (sig == SIG_W)) return 1;
 
    if ((haz == HAZ_HF) && (sig == SIG_W)) return 15;
@@ -571,6 +585,173 @@ static int HazTable3 (HazardStringType * haz)
    return minVal;
 }
 
+/* MPA 1/2017 */
+/* Based on the method used in "makeHazImageCodes.C" */
+/* Based on Timothy Boyer email: 1/2017 */
+static int HazardRank4 (uChar haz, uChar sig)
+{
+
+   /*printf ("HazardRank4\n");*/
+
+   if ((haz == HAZ_TS) && (sig == SIG_W)) return 1;
+   if ((haz == HAZ_TO) && (sig == SIG_W)) return 2;
+   if ((haz == HAZ_EW) && (sig == SIG_W)) return 3;
+   if ((haz == HAZ_SV) && (sig == SIG_W)) return 4;
+   if ((haz == HAZ_FF) && (sig == SIG_W)) return 5;
+
+   if ((haz == HAZ_HF) && (sig == SIG_W)) return 15;
+   if ((haz == HAZ_HI) && (sig == SIG_W)) return 16;
+   if ((haz == HAZ_SS) && (sig == SIG_W)) return 17; /* Added MPA 1/2017 */
+   if ((haz == HAZ_HU) && (sig == SIG_W)) return 18;
+   if ((haz == HAZ_HU) && (sig == SIG_W)) return 19;
+   if ((haz == HAZ_TY) && (sig == SIG_W)) return 20; /* Added MPA 3/2017 */
+   if ((haz == HAZ_TY) && (sig == SIG_W)) return 21;
+   if ((haz == HAZ_MA) && (sig == SIG_W)) return 22;
+   if ((haz == HAZ_MA) && (sig == SIG_W)) return 23;
+   if ((haz == HAZ_BZ) && (sig == SIG_W)) return 24;
+   if ((haz == HAZ_IS) && (sig == SIG_W)) return 25;
+   if ((haz == HAZ_TI) && (sig == SIG_W)) return 26;
+   if ((haz == HAZ_HS) && (sig == SIG_W)) return 27;
+   if ((haz == HAZ_WS) && (sig == SIG_W)) return 28;
+   if ((haz == HAZ_HW) && (sig == SIG_W)) return 29;
+   if ((haz == HAZ_TR) && (sig == SIG_W)) return 30;
+   if ((haz == HAZ_TR) && (sig == SIG_W)) return 31;
+   if ((haz == HAZ_SR) && (sig == SIG_W)) return 32;
+   if ((haz == HAZ_TS) && (sig == SIG_A)) return 33;
+
+   if ((haz == HAZ_AF) && (sig == SIG_W)) return 36; /* Added MPA 3/2017 */ 
+   if ((haz == HAZ_CF) && (sig == SIG_W)) return 37;
+   if ((haz == HAZ_LS) && (sig == SIG_W)) return 38;
+   if ((haz == HAZ_FA) && (sig == SIG_W)) return 39;
+   if ((haz == HAZ_FL) && (sig == SIG_W)) return 40;   
+   if ((haz == HAZ_SU) && (sig == SIG_W)) return 41;
+   if ((haz == HAZ_IP) && (sig == SIG_W)) return 42;
+   if ((haz == HAZ_LE) && (sig == SIG_W)) return 43;
+   if ((haz == HAZ_EH) && (sig == SIG_W)) return 44;
+   if ((haz == HAZ_DS) && (sig == SIG_W)) return 45;
+   if ((haz == HAZ_TO) && (sig == SIG_A)) return 46;
+   if ((haz == HAZ_TO) && (sig == SIG_A)) return 47;
+   if ((haz == HAZ_SV) && (sig == SIG_A)) return 48;
+   if ((haz == HAZ_SV) && (sig == SIG_A)) return 49;
+   if ((haz == HAZ_FF) && (sig == SIG_A)) return 50;
+   if ((haz == HAZ_TO) && (sig == SIG_W)) return 51;
+   if ((haz == HAZ_SV) && (sig == SIG_W)) return 52;
+   if ((haz == HAZ_FF) && (sig == SIG_W)) return 53;
+   if ((haz == HAZ_GL) && (sig == SIG_W)) return 54;
+   if ((haz == HAZ_FA) && (sig == SIG_W)) return 55;
+   if ((haz == HAZ_FL) && (sig == SIG_W)) return 56;
+   if ((haz == HAZ_TS) && (sig == SIG_Y)) return 57; /* Added MPA 3/2017 */
+   if ((haz == HAZ_WC) && (sig == SIG_W)) return 58;
+   if ((haz == HAZ_EC) && (sig == SIG_W)) return 59;
+   if ((haz == HAZ_HZ) && (sig == SIG_W)) return 60;
+   if ((haz == HAZ_FZ) && (sig == SIG_W)) return 61;
+   if ((haz == HAZ_FW) && (sig == SIG_W)) return 62;
+   if ((haz == HAZ_SS) && (sig == SIG_A)) return 63; /* Added MPA 1/2017 */
+   if ((haz == HAZ_HU) && (sig == SIG_A)) return 64;
+   if ((haz == HAZ_HU) && (sig == SIG_A)) return 65;
+   if ((haz == HAZ_TY) && (sig == SIG_A)) return 66;
+   if ((haz == HAZ_TY) && (sig == SIG_A)) return 67; /* Added MPA 3/2017 */
+   if ((haz == HAZ_HU) && (sig == SIG_S)) return 68;
+/* Added MPA 3/2017 */
+   if ((haz == HAZ_TY) && (sig == SIG_S)) return 69;
+/* Added MPA 3/2017 */
+   if ((haz == HAZ_SB) && (sig == SIG_Y)) return 70;
+   if ((haz == HAZ_ZR) && (sig == SIG_Y)) return 71;
+
+   if ((haz == HAZ_IP) && (sig == SIG_Y)) return 73;
+   if ((haz == HAZ_WW) && (sig == SIG_Y)) return 74;
+   if ((haz == HAZ_LB) && (sig == SIG_Y)) return 75;
+   if ((haz == HAZ_LE) && (sig == SIG_Y)) return 76;
+   if ((haz == HAZ_WC) && (sig == SIG_Y)) return 77;
+   if ((haz == HAZ_HT) && (sig == SIG_Y)) return 78;
+   if ((haz == HAZ_FA) && (sig == SIG_Y)) return 79;
+   if ((haz == HAZ_FA) && (sig == SIG_Y)) return 80;
+   if ((haz == HAZ_FA) && (sig == SIG_Y)) return 81;
+   if ((haz == HAZ_FA) && (sig == SIG_Y)) return 82; 
+   if ((haz == HAZ_FL) && (sig == SIG_Y)) return 83; /* Added MPA 3/2017 */
+   if ((haz == HAZ_FA) && (sig == SIG_Y)) return 84;
+   if ((haz == HAZ_LS) && (sig == SIG_Y)) return 85;
+   if ((haz == HAZ_CF) && (sig == SIG_Y)) return 86;
+   if ((haz == HAZ_SU) && (sig == SIG_Y)) return 87;
+   if ((haz == HAZ_BS) && (sig == SIG_Y)) return 88;
+   if ((haz == HAZ_SN) && (sig == SIG_Y)) return 89;
+   if ((haz == HAZ_UP) && (sig == SIG_W)) return 90;
+   if ((haz == HAZ_SM) && (sig == SIG_Y)) return 91;
+   if ((haz == HAZ_MS) && (sig == SIG_Y)) return 92;
+   if ((haz == HAZ_SW) && (sig == SIG_Y)) return 93;
+   if ((haz == HAZ_RB) && (sig == SIG_Y)) return 94;
+   if ((haz == HAZ_SI) && (sig == SIG_Y)) return 95;
+   if ((haz == HAZ_SC) && (sig == SIG_Y)) return 96;
+   if ((haz == HAZ_BW) && (sig == SIG_Y)) return 97;
+   if ((haz == HAZ_SE) && (sig == SIG_W)) return 98;
+   if ((haz == HAZ_FG) && (sig == SIG_Y)) return 99;
+   if ((haz == HAZ_MF) && (sig == SIG_Y)) return 100;
+   if ((haz == HAZ_LW) && (sig == SIG_Y)) return 101;
+   if ((haz == HAZ_WI) && (sig == SIG_Y)) return 102;
+   if ((haz == HAZ_DU) && (sig == SIG_Y)) return 103;
+   if ((haz == HAZ_FR) && (sig == SIG_Y)) return 104;
+   if ((haz == HAZ_AF) && (sig == SIG_Y)) return 105;
+   if ((haz == HAZ_MH) && (sig == SIG_Y)) return 106;
+   if ((haz == HAZ_ZF) && (sig == SIG_Y)) return 107;
+   if ((haz == HAZ_UP) && (sig == SIG_Y)) return 108;
+   if ((haz == HAZ_AS) && (sig == SIG_Y)) return 109;
+   if ((haz == HAZ_LO) && (sig == SIG_Y)) return 110;
+
+   if ((haz == HAZ_BZ) && (sig == SIG_A)) return 113;
+   if ((haz == HAZ_RP) && (sig == SIG_S)) return 114; /* Added MPA 3/2017 */
+   if ((haz == HAZ_BH) && (sig == SIG_S)) return 115; /* Added MPA 3/2017 */
+   if ((haz == HAZ_TI) && (sig == SIG_A)) return 116;
+   if ((haz == HAZ_HF) && (sig == SIG_A)) return 117;
+   if ((haz == HAZ_HI) && (sig == SIG_A)) return 118;
+   if ((haz == HAZ_TR) && (sig == SIG_A)) return 119;
+   if ((haz == HAZ_TR) && (sig == SIG_A)) return 120;
+   if ((haz == HAZ_SR) && (sig == SIG_A)) return 121;
+   if ((haz == HAZ_GL) && (sig == SIG_A)) return 122;
+   if ((haz == HAZ_WS) && (sig == SIG_A)) return 123;
+   if ((haz == HAZ_SE) && (sig == SIG_A)) return 124;
+   if ((haz == HAZ_UP) && (sig == SIG_A)) return 125;
+   if ((haz == HAZ_CF) && (sig == SIG_A)) return 126;
+   if ((haz == HAZ_LS) && (sig == SIG_A)) return 127;
+   if ((haz == HAZ_FA) && (sig == SIG_A)) return 128;
+   if ((haz == HAZ_HW) && (sig == SIG_A)) return 129;
+   if ((haz == HAZ_EH) && (sig == SIG_A)) return 130;
+   if ((haz == HAZ_EC) && (sig == SIG_A)) return 131;
+   if ((haz == HAZ_WC) && (sig == SIG_A)) return 132;
+   if ((haz == HAZ_LE) && (sig == SIG_A)) return 133;
+   if ((haz == HAZ_HZ) && (sig == SIG_A)) return 134;
+   if ((haz == HAZ_FZ) && (sig == SIG_A)) return 135;
+   if ((haz == HAZ_FW) && (sig == SIG_A)) return 136;
+
+   if ((haz == HAZ_CF) && (sig == SIG_S)) return 140;
+   if ((haz == HAZ_LS) && (sig == SIG_S)) return 141;
+   if ((haz == HAZ_MA) && (sig == SIG_S)) return 142;
+
+   if ((haz == HAZ_TR) && (sig == SIG_S)) return 147;
+
+   return 9999;
+}
+
+/* MPA 1/2017 */
+static int HazTable4 (HazardStringType * haz)
+{
+   int minVal;
+   int i;
+   int ans;
+
+   minVal = 9999;
+   for (i = 0; i < haz->numValid; i++) {
+      ans = HazardRank4 (haz->haz[i], haz->sig[i]); /* MPA 1/2017 */
+      if (minVal > ans) {
+         minVal = ans;
+      }
+   }
+   if (minVal > 155)
+      minVal = 0;
+   return minVal;
+}
+
+
+
 static void InitHazardString (HazardStringType * haz)
 {
    int i;               /* Used to traverse all the words. */
@@ -649,7 +830,9 @@ void ParseHazardString (HazardStringType * haz, char *data, int simpleVer)
          haz->SimpleCode = HazTable2 (haz);
       } else if (simpleVer == 3) {
          haz->SimpleCode = HazTable3 (haz);
-      }
+      } else if (simpleVer == 4) {    /* MPA 1/2017 */
+         haz->SimpleCode = HazTable4 (haz);   /* MPA 1/2017 */
+      } /* MPA 1/2017 */
       return;
    }
    start = data;
@@ -739,7 +922,9 @@ void ParseHazardString (HazardStringType * haz, char *data, int simpleVer)
          haz->SimpleCode = HazTable2 (haz);
       } else if (simpleVer == 3) {
          haz->SimpleCode = HazTable3 (haz);
-      }
+      }  else if (simpleVer == 4) { /* MPA 1/2017 */
+         haz->SimpleCode = HazTable4 (haz); /* MPA 1/2017 */
+      } /* MPA 1/2017 */
       return;
    }
 
@@ -751,7 +936,9 @@ void ParseHazardString (HazardStringType * haz, char *data, int simpleVer)
       haz->SimpleCode = HazTable2 (haz);
    } else if (simpleVer == 3) {
       haz->SimpleCode = HazTable3 (haz);
-   }
+   } else if (simpleVer == 4) {   /* MPA 1/2017 */
+      haz->SimpleCode = HazTable4 (haz);   /* MPA 1/2017 */
+   }   /* MPA 1/2017 */
 /*
    printf ("%s\n", data);
    PrintHazardString (haz);
@@ -778,13 +965,12 @@ int main (int argc, char **argv)
 {
    HazardStringType haz;
    char buffer[100];
-
-   ParseHazardString (&haz, "<None>", 1);
+   ParseHazardString (&haz, "<None>", 1); 
    PrintHazardString (&haz);
    FreeHazardString (&haz);
    printf ("----\n");
    strcpy (buffer, "FW.W:2^RecHiPos");
-   ParseHazardString (&haz, buffer, 1);
+   ParseHazardString (&haz, buffer, 1); 
    PrintHazardString (&haz);
    FreeHazardString (&haz);
 }

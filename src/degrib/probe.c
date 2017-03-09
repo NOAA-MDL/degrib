@@ -1059,7 +1059,8 @@ int GenericProbe (char *filename, int numPnts, double *lat, double *lon,
    double minEarth = 0; /* If > 6000 use this to over-ride the radEarth. */
    int f_SimpleVer = 4; /* We don't use Weather, but if we did use most
                          * recent version of the weather tables. */
-   int f_SimpleWWA = 1; /* We don't use WWA, but if we did use most
+   /*MPA 20170302: 1->4 below*/ 
+   int f_SimpleWWA = 4; /* We don't use WWA, but if we did use most
                          * recent version of the weather tables. */
    sInt4 f_endMsg = 1;  /* 1 if we read the last grid in a GRIB message */
    LatLon lwlf;         /* ReadGrib2Record allows subgrids.  We want entire

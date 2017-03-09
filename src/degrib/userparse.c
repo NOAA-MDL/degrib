@@ -481,7 +481,7 @@ int UserValidate (userType *usr)
    if (usr->f_SimpleWx == -1)
       usr->f_SimpleWx = 0;
    if (usr->f_SimpleWWA == -1)
-      usr->f_SimpleWWA = 3;
+      usr->f_SimpleWWA = 4; /*MPA 20170302: 3->4*/
    if (usr->f_SimpleVer == -1)
       usr->f_SimpleVer = 4;
    if (usr->f_pntStyle == -1)
@@ -1289,7 +1289,7 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
                errSprintf ("Bad value to '%s' of '%s'\n", cur, next);
                return -1;
             }
-            if ((li_temp != 1) && (li_temp != 2) && (li_temp != 3)) {
+            if ((li_temp != 1) && (li_temp != 2) && (li_temp != 3) && (li_temp != 4)) { /*AAT and MPA added another & for SimpleWWA 4*/
                errSprintf ("Bad value to '%s' of '%s'\n", cur, next);
                return -1;
             }
