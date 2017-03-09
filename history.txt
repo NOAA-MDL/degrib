@@ -1,9 +1,9 @@
 #
-#----- Release: Version 2.09 3/9/2017 -----
+#----- Release: Version 2.09 03/09/2017 -----
 #
- 3/9 MPA Updated Hazards list to version 4(see HazardRank4 in hazard.c: SS.W 
+ 3/9 MPA Updated Hazards list to version 4(see HazardRank4 in hazard.c: SS.W
 and SS.A, RP.S, BH.S added)
- 3/9 MPA Added an option -SimpleWWA #, so that the user may select which Hazards 
+ 3/9 MPA Added an option -SimpleWWA #, so that the user may select which Hazards
 list to degrib
 #
 #----- Release: Version 2.08 11/10/2016 -----
