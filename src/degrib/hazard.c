@@ -857,6 +857,7 @@ void ParseHazardString (HazardStringType * haz, char *data, int simpleVer)
 #endif
          if (f_continue) {
             *end = '^';
+            start = end + 1;
          }
          continue;
       }
@@ -876,6 +877,7 @@ void ParseHazardString (HazardStringType * haz, char *data, int simpleVer)
 #endif
          if (f_continue) {
             *end = '^';
+            start = end + 1;
          }
          continue;
       }
@@ -898,6 +900,7 @@ void ParseHazardString (HazardStringType * haz, char *data, int simpleVer)
 #endif
             if (f_continue) {
                *end = '^';
+               start = end + 1;
             }
             continue;
       }
