@@ -1,4 +1,9 @@
 #
+#----- Release: Version 2.10 03/22/2017 -----
+#
+ 3/22 MPA + AAT Updated hazards.c bug. Code now accounts for Hazards not found
+in the known hazrds list without degrib hanging
+#
 #----- Release: Version 2.09 03/09/2017 -----
 #
  3/9 MPA Updated Hazards list to version 4(see HazardRank4 in hazard.c: SS.W
