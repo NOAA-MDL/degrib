@@ -227,7 +227,8 @@ int ParseTime (double *AnsTime, int year, uChar mon, uChar day, uChar hour,
 
    if ((year < 1900) || (year > 2100)) {
       errSprintf ("ParseTime:: year %d is invalid\n", year);
-      return -1;
+/*      return -1; */
+      year += 2000;
    }
    /* sec is allowed to be 61 for leap seconds. */
    if ((mon > 12) || (day == 0) || (day > 31) || (hour > 24) || (min > 60) ||
