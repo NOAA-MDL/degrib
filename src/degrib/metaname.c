@@ -1841,8 +1841,8 @@ GRIB2LocalTable NCEP_LclTable[] = {
             {0, 14, 199, "POZO", "Ozone Production from Column Ozone Term", "kg/kg/s", UC_NONE},
             {0, 14, 200, "OZMAX1", "Ozone Daily Max from 1-hour Average", "ppbV", UC_NONE},
             {0, 14, 201, "OZMAX8", "Ozone Daily Max from 8-hour Average", "ppbV", UC_NONE},
-            {0, 14, 202, "PDMAX1", "PM 2.5 Daily Max from 1-hour Average", "ug/(m^3)", UC_NONE},
-            {0, 14, 203, "PDMAX24", "PM 2.5 Daily Max from 24-hour Average", "ug/(m^3)", UC_NONE},
+            {0, 14, 202, "PDMAX1", "PM 2.5 Daily Max from 1-hour Average", "(10^-6g/(m^3)", UC_NONE},
+            {0, 14, 203, "PDMAX24", "PM 2.5 Daily Max from 24-hour Average", "(10^-6g/(m^3)", UC_NONE},
 
             {0, 16, 192, "REFZR", "Derived radar reflectivity backscatter from rain", "mm^6/m^3", UC_NONE},
             {0, 16, 193, "REFZI", "Derived radar reflectivity backscatter from ice", "mm^6/m^3", UC_NONE},
