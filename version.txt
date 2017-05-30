@@ -7,9 +7,9 @@
 #   +1 is for a large set of new features
 
 [degrib]
-Version=2.10
-Date=03/22/2017
-Web=http://www.nws.noaa.gov/NDFD_GRIB2Decoder/index.htm
+Version=2.11
+Date=05/30/2017
+Web=http://www.weather.gov/mdl/degrib_download
 
 [emapf]
 # Note: cmapf doesn't use Version in the conventional sense...
