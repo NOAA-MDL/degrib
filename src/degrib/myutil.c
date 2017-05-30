@@ -321,11 +321,11 @@ int myIsReal_old (const char *ptr, double *value)
  */
 int myStat (char *filename, char *perm, sInt4 *size, double *mtime)
 {
-#if (__MINGW32__ && (__MINGW32_MINOR_VERSION >= 21)) 
+/*#if (__MINGW32__ && (__MINGW32_MINOR_VERSION >= 21)) */
    struct __stat64 stbuf; 
-#else
+/*#else
    struct stat stbuf; 
-#endif
+#endif*/
    char f_cnt;
    char *ptr;
    int ans;
