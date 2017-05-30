@@ -1502,9 +1502,9 @@ GRIB2LocalTable NDFD_LclTable[] = {
    /* grandfather'ed in a NDFD choice for POP. */
    /* 2 */ {0, 10, 8, "PoP12", "Prob of 0.01 In. of Precip", "%", UC_NONE},
            {0, 13, 194, "smokes", "Surface level smoke from fires",
-            "log10(µg/m^3)", UC_LOG10},
+            "log10(10^-6g/m^3)", UC_LOG10},
            {0, 13, 195, "smokec", "Average vertical column smoke from fires",
-            "log10(µg/m^3)", UC_LOG10},
+            "log10(10^-6g/m^3)", UC_LOG10},
    /* 3 */ {0, 14, 192, "O3MR", "Ozone Mixing Ratio", "kg/kg", UC_NONE},
    /* 4 */ {0, 14, 193, "OZCON", "Ozone Concentration", "PPB", UC_NONE},
    /* Arthur adopted NCEP ozone values from NCEP local table to NDFD local tables. (11/14/2009) */
@@ -1824,12 +1824,12 @@ GRIB2LocalTable NCEP_LclTable[] = {
             {0, 7, 197, "UPHL", "Updraft Helicity", "m^2/s^2", UC_NONE},
             {0, 7, 198, "LAI", "Leaf area index", "-", UC_NONE},
 
-            {0, 13, 192, "PMTC", "Particulate matter (coarse)", "µg/m^3", UC_NONE},
-            {0, 13, 193, "PMTF", "Particulate matter (fine)", "µg/m^3", UC_NONE},
+            {0, 13, 192, "PMTC", "Particulate matter (coarse)", "10^-6g/m^3", UC_NONE},
+            {0, 13, 193, "PMTF", "Particulate matter (fine)", "10^-6g/m^3", UC_NONE},
             {0, 13, 194, "LPMTF", "Particulate matter (fine)",
-             "log10(µg/m^3)", UC_LOG10},
+             "log10(10^-6g/m^3)", UC_LOG10},
             {0, 13, 195, "LIPMF", "Integrated column particulate matter " /* over-ride in the code based on surface */
-             "(fine)", "log10(µg/m^3)", UC_LOG10},
+             "(fine)", "log10(10^-6g/m^3)", UC_LOG10},
 
    /* 42 */ {0, 14, 192, "O3MR", "Ozone Mixing Ratio", "kg/kg", UC_NONE},
    /* 43 */ {0, 14, 193, "OZCON", "Ozone Concentration", "PPB", UC_NONE},
@@ -2713,8 +2713,8 @@ static void ElemNameNorm (uChar mstrVersion, uShort2 center, uShort2 subcenter, 
                   strcpy (*name, "dusts");
                   *comment = (char *) malloc (strlen ("Surface level dust") + 1);
                   strcpy (*comment, "Surface level dust");
-                  *unit = (char *) malloc (strlen ("[log10(µg/m^3)]") + 1);
-                  strcpy (*unit, "[log10(µg/m^3)]");
+                  *unit = (char *) malloc (strlen ("[log10(10^-6g/m^3)]") + 1);
+                  strcpy (*unit, "[log10(10^-6g/m^3)]");
                   *convert = UC_LOG10;
                   return;
                } else if ((delt <= 5000) && (delt >= -5000)) {
@@ -2722,8 +2722,8 @@ static void ElemNameNorm (uChar mstrVersion, uShort2 center, uShort2 subcenter, 
                   strcpy (*name, "dustc");
                   *comment = (char *) malloc (strlen ("Average vertical column dust") + 1);
                   strcpy (*comment, "Average vertical column dust");
-                  *unit = (char *) malloc (strlen ("[log10(µg/m^3)]") + 1);
-                  strcpy (*unit, "[log10(µg/m^3)]");
+                  *unit = (char *) malloc (strlen ("[log10(10^-6g/m^3)]") + 1);
+                  strcpy (*unit, "[log10(10^-6g/m^3)]");
                   *convert = UC_LOG10;
                   return;
                }
@@ -2736,8 +2736,8 @@ static void ElemNameNorm (uChar mstrVersion, uShort2 center, uShort2 subcenter, 
                   strcpy (*name, "smokes");
                   *comment = (char *) malloc (strlen ("Surface level smoke from fires") + 1);
                   strcpy (*comment, "Surface level smoke from fires");
-                  *unit = (char *) malloc (strlen ("[log10(µg/m^3)]") + 1);
-                  strcpy (*unit, "[log10(µg/m^3)]");
+                  *unit = (char *) malloc (strlen ("[log10(10^-6g/m^3)]") + 1);
+                  strcpy (*unit, "[log10(10^-6g/m^3)]");
                   *convert = UC_LOG10;
                   return;
                } else if ((delt <= 5000) && (delt >= -5000)) {
@@ -2745,8 +2745,8 @@ static void ElemNameNorm (uChar mstrVersion, uShort2 center, uShort2 subcenter, 
                   strcpy (*name, "smokec");
                   *comment = (char *) malloc (strlen ("Average vertical column smoke from fires") + 1);
                   strcpy (*comment, "Average vertical column smoke from fires");
-                  *unit = (char *) malloc (strlen ("[log10(µg/m^3)]") + 1);
-                  strcpy (*unit, "[log10(µg/m^3)]");
+                  *unit = (char *) malloc (strlen ("[log10(10^-6g/m^3)]") + 1);
+                  strcpy (*unit, "[log10(10^-6g/m^3)]");
                   *convert = UC_LOG10;
                   return;
                }
