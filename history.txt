@@ -2,8 +2,8 @@
 #----- Release: Version 2.11 05/30/2017 -----
 #
  5/30 MPA Updated NDFD Trop. Cyclone Threat grids. Moved CONUS/PR Threat grids
-(Trop. CycloneWind Threat, Trop. Cyclone Storm Surge Threat, Trop. Cyclone
-Flooding RainThreat, and Trop. Cyclone Tornado Threat) from Experimental to
+(Trop. Cyclone Wind Threat, Trop. Cyclone Storm Surge Threat, Trop. Cyclone 
+Flooding Rain Threat, and Trop. Cyclone Tornado Threat) from Experimental to
 Operational, andadded HI Operational Threat grids in the ndfd.ini file.
  5/30 Updated code to account for new Operational ozone grib files.
 #
