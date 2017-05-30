@@ -5,7 +5,6 @@
 (Trop. Cyclone Wind Threat, Trop. Cyclone Storm Surge Threat, Trop. Cyclone 
 Flooding Rain Threat, and Trop. Cyclone Tornado Threat) from Experimental to
 Operational, and added HI Operational Threat grids in the ndfd.ini file.
- 5/30 Updated code to account for new Operational ozone grib files.
 #
 #----- Release: Version 2.10 03/22/2017 -----
 #
