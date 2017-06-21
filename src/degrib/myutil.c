@@ -321,11 +321,7 @@ int myIsReal_old (const char *ptr, double *value)
  */
 int myStat (char *filename, char *perm, sInt4 *size, double *mtime)
 {
-/*#if (__MINGW32__ && (__MINGW32_MINOR_VERSION >= 21)) */
-   struct __stat64 stbuf; 
-/*#else
    struct stat stbuf; 
-#endif*/
    char f_cnt;
    char *ptr;
    int ans;
@@ -351,19 +347,11 @@ int myStat (char *filename, char *perm, sInt4 *size, double *mtime)
    }
 
    /* Try to stat file. */
-#if (__MINGW32__ && (__MINGW32_MINOR_VERSION >= 21)) 
-   if ((ans = __stat64 (filename, &stbuf)) == -1) {
-#else
    if ((ans = stat (filename, &stbuf)) == -1) {
-#endif
       if ((filename[strlen (filename) - 1] == '/') ||
           (filename[strlen (filename) - 1] == '\\')) {
          filename[strlen (filename) - 1] = '\0';
-#if (__MINGW32__ && (__MINGW32_MINOR_VERSION >= 21)) 
-         ans = __stat64 (filename, &stbuf);
-#else
          ans = stat (filename, &stbuf);
-#endif
       }
    }
    /* Can't stat */
