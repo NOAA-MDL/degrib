@@ -1,8 +1,13 @@
 #
+#----- Release: Version 2.12 07/06/2017 -----
+#
+ 7/6 MPA Added new Ozone and PM files to tkdegrib.
+ 7/6 MPA Fixed a bug in src/degrib/myutil.c.
+#
 #----- Release: Version 2.11 05/30/2017 -----
 #
  5/30 MPA Updated NDFD Trop. Cyclone Threat grids. Moved CONUS/PR Threat grids
-(Trop. Cyclone Wind Threat, Trop. Cyclone Storm Surge Threat, Trop. Cyclone 
+(Trop. Cyclone Wind Threat, Trop. Cyclone Storm Surge Threat, Trop. Cyclone
 Flooding Rain Threat, and Trop. Cyclone Tornado Threat) from Experimental to
 Operational, and added HI Operational Threat grids in the ndfd.ini file.
 #
