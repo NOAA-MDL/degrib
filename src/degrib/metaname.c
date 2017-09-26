@@ -1241,7 +1241,7 @@ GRIB2ParmTable OceanWaves[] = {
    /* 0 */ {"WVSP1", "Wave spectra (1)", "-", UC_NONE},
    /* 1 */ {"WVSP2", "Wave spectra (2)", "-", UC_NONE},
    /* 2 */ {"WVSP3", "Wave spectra (3)", "-", UC_NONE},
-   /* 3 */ {"HTSGW", "Significant height of combined wind waves and swell", "m", UC_NONE},
+   /* 3 */ {"HTSGW", "Significant height of combined wind waves and swell", "m", UC_NONE}, /* NDFD override needed WaveHeight */
    /* 4 */ {"WVDIR", "Direction of wind waves", "Degree true", UC_NONE},
    /* 5 */ {"WVHGT", "Significant height of wind waves", "m", UC_M2Feet}, /* NDFD override needed WaveHeight */
    /* 6 */ {"WVPER", "Mean period of wind waves", "s", UC_NONE},
@@ -1491,7 +1491,8 @@ NDFD_AbrevOverideTable NDFD_Overide[] = {
    /*  9 */ {"WVHGT", "WaveHeight"},
    /* 10 */ {"ASNOW", "SnowAmt"},
    /* 11 */ {"GUST", "WindGust"},
-   /* 12 */ {"MAXRH", "MaxRH"},                /* Mike added 201202 */
+   /* 12 */ {"MAXRH", "MaxRH"},                /* MPA added 201202 */
+   /* 13 */ {"HTSGW", "WaveHeight"},           /* MPA added 201709 */      
 };
 
 GRIB2LocalTable NDFD_LclTable[] = {
