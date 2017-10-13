@@ -828,9 +828,10 @@ proc Download_Select {rayName usrName} {
         } elseif {$usr(-renameConv) == 5} {
           set localName [file join $usr(-renameRoot) [lindex [split [file rootname $local] _] 0] TIME.[file tail $local]]
         }
-        set remotePath [string replace [lindex $ray(foreVar,$var) 3] 3 7 $remote]
 
-        set srvName "$Server1$foreOpnlDir[lindex $ray(foreVar,$var) 3]"
+        set remotePath [string replace [lindex $ray(foreVar,$var) 3] 3 7 $remote]
+#        set srvName "$Server1$foreOpnlDir[lindex $ray(foreVar,$var) 3]"
+        set srvName "$Server1$foreOpnlDir$remotePath"
         if {$status == "join4"} {
           set tempList [split $srvName /]
           set srvSplitName1 [join [linsert $tempList [expr [llength $tempList] -1] VP.001] /]
@@ -1124,9 +1125,10 @@ proc Download_Select {rayName usrName} {
         } elseif {$usr(-renameConv) == 5} {
           set localName [file join $usr(-renameRoot) [lindex [split [file rootname $local] _] 0] TIME.[file tail $local]]
         }
-        set remotePath [string replace [lindex $ray(foreExprVar,$var) 3] 3 7 $remote]
 
-        set srvName "$Server1$foreExprDir[lindex $ray(foreExprVar,$var) 3]"
+        set remotePath [string replace [lindex $ray(foreExprVar,$var) 3] 3 7 $remote]
+#        set srvName "$Server1$foreExprDir[lindex $ray(foreExprVar,$var) 3]"
+        set srvName "$Server1$foreExprDir$remotePath"
         if {$status == "join4"} {
           set tempList [split $srvName /]
           set srvSplitName1 [join [linsert $tempList [expr [llength $tempList] -1] VP.001] /]
@@ -1395,11 +1397,9 @@ proc Download_Select {rayName usrName} {
         file mkdir [file dirname $localName]
       }
     }
-
   } else {
     puts "Don't recognize dataSet $usr(-dataSet)"
   }
-
   WebHandleTryList $rayName $usrName $tryList 3 1
 }
 
