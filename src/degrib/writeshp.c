@@ -129,7 +129,6 @@ static int CreatePrj (char *filename, gdsType *gds)
    }
    if (gds->f_sphere) {
       if( (gds->majEarth > 6370.0) && (gds->majEarth < 6380.0) ){
-/*      if (gds->majEarth == 6371.2) { */
          fprintf (fp, "GEOGCS[\"NCEP_SPHERE\",DATUM[\"NCEP_SPHERE\",SPHEROID"
                   "[\"NCEP_SPHERE\",6371200.0,0.0]],PRIMEM[\"Greenwich\",0.0]"
                   ",UNIT[\"Degree\",0.0174532925199432955]]\n");
