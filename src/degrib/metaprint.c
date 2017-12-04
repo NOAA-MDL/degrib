@@ -849,14 +849,24 @@ static int PrintSect4 (grib_MetaData *meta, sChar f_unit)
                 Lookup (tbl49, sizeof (tbl49), sect4->probType));
          sprintf (buffer, "%ld, %d", sect4->lowerLimit.value,
                   sect4->lowerLimit.factor);
+         sprintf (buffer, "%.0f, %d", (double) sect4->lowerLimit.value,
+                  sect4->lowerLimit.factor);
          Print ("PDS-S4", "Lower limit (scale value, scale factor)", Prt_GS,
+                sect4->lowerLimit.value *
+                pow (10, -1 * sect4->lowerLimit.factor), buffer);
+         sprintf (buffer, "%.0f, %d", (double) sect4->upperLimit.value,
+                  sect4->upperLimit.factor);
+         Print ("PDS-S4", "Upper limit (scale value, scale factor)", Prt_GS,
+                sect4->upperLimit.value *
+                pow (10, -1 * sect4->upperLimit.factor), buffer);
+/*         Print ("PDS-S4", "Lower limit (scale value, scale factor)", Prt_GS,
                 sect4->lowerLimit.value *
                 pow (10, -1 * sect4->lowerLimit.factor), buffer);
          sprintf (buffer, "%ld, %d", sect4->upperLimit.value,
                   sect4->upperLimit.factor);
          Print ("PDS-S4", "Upper limit (scale value, scale factor)", Prt_GS,
                 sect4->upperLimit.value *
-                pow (10, -1 * sect4->upperLimit.factor), buffer);
+                pow (10, -1 * sect4->upperLimit.factor), buffer); */
 /*         printf ("Hello world 1\n");*/
          break;
       case GS4_PERCENT_PNT:
@@ -903,12 +913,12 @@ static int PrintSect4 (grib_MetaData *meta, sChar f_unit)
                 sect4->numForeProbs);
          Print ("PDS-S4", "Probability type", Prt_DS, sect4->probType,
                 Lookup (tbl49, sizeof (tbl49), sect4->probType));
-         sprintf (buffer, "%ld, %d", sect4->lowerLimit.value,
+         sprintf (buffer, "%.0f, %d", (double) sect4->lowerLimit.value,
                   sect4->lowerLimit.factor);
          Print ("PDS-S4", "Lower limit (scale value, scale factor)", Prt_GS,
                 sect4->lowerLimit.value *
                 pow (10, -1 * sect4->lowerLimit.factor), buffer);
-         sprintf (buffer, "%ld, %d", sect4->upperLimit.value,
+         sprintf (buffer, "%.0f, %d", (double) sect4->upperLimit.value,
                   sect4->upperLimit.factor);
          Print ("PDS-S4", "Upper limit (scale value, scale factor)", Prt_GS,
                 sect4->upperLimit.value *
