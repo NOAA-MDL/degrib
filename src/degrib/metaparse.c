@@ -818,6 +818,7 @@ static int ParseSect3 (sInt4 *is3, sInt4 ns3, grib_MetaData *meta)
    sInt4 angle;         /* For Lat/Lon, 92.1.6 may not hold, in which case,
                          * angle != 0, and unit = angle/subdivision. */
    sInt4 subdivision;   /* see angle explaination. */
+   uInt4 ui_temp;
 
    if (ns3 < 14) {
       return -1;
@@ -1004,10 +1005,12 @@ static int ParseSect3 (sInt4 *is3, sInt4 ns3, grib_MetaData *meta)
             return -2;
          }
          meta->gds.lat1 = is3[46] * unit;
-         meta->gds.lon1 = is3[50] * unit;
+         ui_temp = (uInt4) is3[50];   /* This cast is needed to resolve negative lon */
+         meta->gds.lon1 = ui_temp * unit;
          meta->gds.resFlag = (uChar) is3[54];
          meta->gds.lat2 = is3[55] * unit;
-         meta->gds.lon2 = is3[59] * unit;
+         ui_temp = (uInt4) is3[59];   /* This cast is needed to resolve negative lon */
+         meta->gds.lon2 = ui_temp * unit;
          meta->gds.Dx = is3[63] * unit; /* degrees. */
          meta->gds.Dy = is3[67] * unit; /* degrees. */
          meta->gds.scan = (uChar) is3[71];
