@@ -709,7 +709,17 @@ int MOTDProbe (uChar f_MOTD, size_t numPnts, Point * pnts,
       return -1;
    }
    if (numMatch == 0) {
-      goto done;
+      free (f_pntHasData);
+      free (collate);
+      for (i = 0; i < numElem; i++) {
+         genElemFree (elem + i);
+      }
+      free (elem);
+      for (i = 0; i < numMatch; i++) {
+         genMatchFree (match + i);
+      }
+      free (match);
+      return 0;
    }
 
    /* Sort by valid time. */
@@ -773,7 +783,6 @@ int MOTDProbe (uChar f_MOTD, size_t numPnts, Point * pnts,
       printf ("-----------------\n");
    }
 
- done:
    free (f_pntHasData);
    free (collate);
    for (i = 0; i < numElem; i++) {

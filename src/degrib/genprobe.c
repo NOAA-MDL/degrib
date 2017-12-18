@@ -2289,7 +2289,19 @@ printf ("element is %d\n", elemEnum);
                /* Check that gds is valid before setting up map projection. */
                if (GDSValid (&gds) != 0) {
                   errSprintf ("ERROR: Sect3 was not Valid.\n");
-                  goto error;
+                  if (numTable != 0) {
+                     for (k = 0; k < numTable; k++) {
+                        free (table[k]);
+                     }
+                     free (table);
+                     numTable = 0;
+                     table = NULL;
+                  }
+                  if (data != NULL) fclose (data);
+                  if (dataName != NULL) free (dataName);
+                  if (gridPnts != NULL) free (gridPnts);
+                  free (flxArray);
+                  return -2;
                }
                SetMapParamGDS (&map, &gds);
                f_sector = SectorFindGDS (&gds);
@@ -2351,7 +2363,19 @@ printf ("element is %d\n", elemEnum);
                }
                if ((data = fopen (dataName, "rb")) == NULL) {
                   errSprintf ("Problems opening %s\n", dataName);
-                  goto error;
+                  if (numTable != 0) {
+                     for (k = 0; k < numTable; k++) {
+                        free (table[k]);
+                     }
+                     free (table);
+                     numTable = 0;
+                     table = NULL;
+                  }
+                  if (data != NULL) fclose (data);
+                  if (dataName != NULL) free (dataName);
+                  if (gridPnts != NULL) free (gridPnts);
+                  free (flxArray);
+                  return -2;
                }
             }
 
@@ -2417,27 +2441,6 @@ printf ("element is %d\n", elemEnum);
    }
    free (flxArray);
    return 0;
- error:
-   if (numTable != 0) {
-      for (k = 0; k < numTable; k++) {
-         free (table[k]);
-      }
-      free (table);
-      numTable = 0;
-      table = NULL;
-   }
-
-   if (data != NULL) {
-      fclose (data);
-   }
-   if (dataName != NULL) {
-      free (dataName);
-   }
-   if (gridPnts != NULL) {
-      free (gridPnts);
-   }
-   free (flxArray);
-   return -2;
 }
 
 /*****************************************************************************
@@ -2917,11 +2920,37 @@ int Grib2DataProbe (userType *usr, int numPnts, Point * pnts, char **labels,
    }
    if (ReadFLX (usr->inNames[0], &flxArray, &flxArrayLen) != 0) {
       errSprintf ("Problems Reading %s\n", usr->inNames[0]);
-      goto error;
+      if (numTable != 0) {
+         for (i = 0; i < numTable; i++) {
+            free (table[i]);
+         }
+         free (table);
+      }
+      free (flxArray);
+      free (grid_X);
+      free (grid_Y);
+      if (curDataName != NULL) {
+         fclose (data);
+         free (curDataName);
+      }
+      return 1;
    }
    if (usr->f_Print) {
       PrintFLXBuffer (flxArray, flxArrayLen);
-      goto done;
+      if (numTable != 0) {
+         for (i = 0; i < numTable; i++) {
+            free (table[i]);
+         }
+         free (table);
+      }
+      free (flxArray);
+      free (grid_X);
+      free (grid_Y);
+      if (curDataName != NULL) {
+         fclose (data);
+         free (curDataName);
+      }
+      return 0;
    }
 
    /* Allocate space for grid pnts */
@@ -3052,7 +3081,20 @@ int Grib2DataProbe (userType *usr, int numPnts, Point * pnts, char **labels,
             /* Check that gds is valid before setting up map projection. */
             if (GDSValid (&gds) != 0) {
                preErrSprintf ("ERROR: Sect3 was not Valid.\n");
-               goto error;
+               if (numTable != 0) {
+                  for (i = 0; i < numTable; i++) {
+                     free (table[i]);
+                  }
+                  free (table);
+               }
+               free (flxArray);
+               free (grid_X);
+               free (grid_Y);
+               if (curDataName != NULL) {
+                  fclose (data);
+                  free (curDataName);
+               }
+               return 1;
             }
             /* Set up the map projection. */
             SetMapParamGDS (&map, &gds);
@@ -3119,7 +3161,20 @@ int Grib2DataProbe (userType *usr, int numPnts, Point * pnts, char **labels,
                errSprintf ("Problems opening %s\n", curDataName);
                free (curDataName);
                curDataName = NULL;
-               goto error;
+               if (numTable != 0) {
+                  for (i = 0; i < numTable; i++) {
+                     free (table[i]);
+                  }
+                  free (table);
+               }
+               free (flxArray);
+               free (grid_X);
+               free (grid_Y);
+               if (curDataName != NULL) {
+                  fclose (data);
+                  free (curDataName);
+               }
+               return 1;
             }
          }
          if (usr->f_pntStyle == 0) {
@@ -3324,8 +3379,7 @@ int Grib2DataProbe (userType *usr, int numPnts, Point * pnts, char **labels,
       }
       sPtr += lenTotPDS;
    }
-
- done:
+   
    if (numTable != 0) {
       for (i = 0; i < numTable; i++) {
          free (table[i]);
@@ -3340,22 +3394,6 @@ int Grib2DataProbe (userType *usr, int numPnts, Point * pnts, char **labels,
       free (curDataName);
    }
    return 0;
-
- error:
-   if (numTable != 0) {
-      for (i = 0; i < numTable; i++) {
-         free (table[i]);
-      }
-      free (table);
-   }
-   free (flxArray);
-   free (grid_X);
-   free (grid_Y);
-   if (curDataName != NULL) {
-      fclose (data);
-      free (curDataName);
-   }
-   return 1;
 }
 
 int ProbeCmd (sChar f_Command, userType *usr)
@@ -3397,8 +3435,14 @@ int ProbeCmd (sChar f_Command, userType *usr)
       if (ReadPntFile (usr->pntFile, &pnts, &numPnts, &labels, &pntFiles)
           != 0) {
          preErrSprintf ("ERROR: In call to ReadPntFile.\n");
-         ans = -2;
-         goto done;
+         for (i = 0; i < numPnts; i++) {
+            free (labels[i]);
+            free (pntFiles[i]);
+         }
+         free (pnts);
+         free (labels);
+         free (pntFiles);
+         return -2;
       }
    } else if (usr->numPnt == 0) {
       if (usr->f_pntType != 2) {
@@ -3465,7 +3509,14 @@ int ProbeCmd (sChar f_Command, userType *usr)
             free (sector[i]);
          }
          free (sector);
-         goto done;
+         for (i = 0; i < numPnts; i++) {
+            free (labels[i]);
+            free (pntFiles[i]);
+         }
+         free (pnts);
+         free (labels);
+         free (pntFiles);
+         return ans;
       }
 #endif
       /* Fill the PntSectInfo member "cwa" of pntInfo. */
@@ -3570,7 +3621,6 @@ int ProbeCmd (sChar f_Command, userType *usr)
 #endif
    }
 
- done:
    for (i = 0; i < numPnts; i++) {
       free (labels[i]);
       free (pntFiles[i]);

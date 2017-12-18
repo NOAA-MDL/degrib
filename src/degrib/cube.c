@@ -115,7 +115,14 @@ int Grib2Database (userType *usr, IS_dataType *is, grib_MetaData *meta)
                               usr->f_SimpleVer, usr->f_SimpleWWA, &f_endMsg, &(usr->lwlf),
                               &(usr->uprt)) != 0) {
             preErrSprintf ("ERROR: In call to ReadGrib2Record.\n");
-            goto error;
+            /* Update fileLen and write the index file out. */
+            flxLen = flxArrayLen;
+            MEMCPY_LIT (flxArray + 3, &flxLen, sizeof (sInt4));
+            WriteFLX (usr->indexFile, flxArray, flxArrayLen);
+            free (flxArray);
+            free (grib_Data);
+            free (outName);
+            return 3;
          }
          if (usr->f_validRange > 0) {
             /* valid max. */
@@ -123,7 +130,14 @@ int Grib2Database (userType *usr, IS_dataType *is, grib_MetaData *meta)
                if (meta->gridAttrib.max > usr->validMax) {
                   errSprintf ("ERROR: %f > valid Max of %f\n",
                               meta->gridAttrib.max, usr->validMax);
-                  goto error;
+                  /* Update fileLen and write the index file out. */
+                  flxLen = flxArrayLen;
+                  MEMCPY_LIT (flxArray + 3, &flxLen, sizeof (sInt4));
+                  WriteFLX (usr->indexFile, flxArray, flxArrayLen);
+                  free (flxArray);
+                  free (grib_Data);
+                  free (outName);
+                  return 3;
                }
             }
             /* valid min. */
@@ -131,7 +145,14 @@ int Grib2Database (userType *usr, IS_dataType *is, grib_MetaData *meta)
                if (meta->gridAttrib.min < usr->validMin) {
                   errSprintf ("ERROR: %f < valid Min of %f\n",
                               meta->gridAttrib.min, usr->validMin);
-                  goto error;
+                  /* Update fileLen and write the index file out. */
+                  flxLen = flxArrayLen;
+                  MEMCPY_LIT (flxArray + 3, &flxLen, sizeof (sInt4));
+                  WriteFLX (usr->indexFile, flxArray, flxArrayLen);
+                  free (flxArray);
+                  free (grib_Data);
+                  free (outName);
+                  return 3;
                }
             }
          }
@@ -143,7 +164,14 @@ int Grib2Database (userType *usr, IS_dataType *is, grib_MetaData *meta)
 
          /* Figure out the output filename. */
          if (GetOutputName (usr, meta, &outName, &outLen) != 0) {
-            goto error;
+            /* Update fileLen and write the index file out. */
+            flxLen = flxArrayLen;
+            MEMCPY_LIT (flxArray + 3, &flxLen, sizeof (sInt4));
+            WriteFLX (usr->indexFile, flxArray, flxArrayLen);
+            free (flxArray);
+            free (grib_Data);
+            free (outName);
+            return 3;
          }
 
          /* Determine if the lower left or upper left is the 0,0 value. */
@@ -162,15 +190,15 @@ int Grib2Database (userType *usr, IS_dataType *is, grib_MetaData *meta)
             if (WriteGradsCube (outName, grib_Data, meta, &(meta->gridAttrib),
                                 scan, usr->f_MSB, 7, &fltOffset, f_delete)
                 != 0) {
-               goto error;
+               /* Update fileLen and write the index file out. */
+               flxLen = flxArrayLen;
+               MEMCPY_LIT (flxArray + 3, &flxLen, sizeof (sInt4));
+               WriteFLX (usr->indexFile, flxArray, flxArrayLen);
+               free (flxArray);
+               free (grib_Data);
+               free (outName);
+               return 3;
             }
-/*
-            if (WriteGradsCube (outName, grib_Data, meta, &(meta->gridAttrib),
-                                scan, usr->f_MSB, usr->decimal, usr->f_GrADS,
-                                &fltOffset, f_delete) != 0) {
-               goto error;
-            }
-*/
             f_delete = 0;
             myAssert (fltOffset >= 0);
          } else {
@@ -181,17 +209,17 @@ int Grib2Database (userType *usr, IS_dataType *is, grib_MetaData *meta)
             }
             /* Can't use f_interp unless we update the GDS accordingly. */
             /* Can't use f_SimpleWx unless we update the PDS. */
-/*
-            if (gribWriteFloat (outName, grib_Data, meta, &(meta->gridAttrib),
-                                scan, usr->f_MSB, usr->decimal, usr->f_GrADS,
-                                0) != 0) {
-               goto error;
-            }
-*/
             if (gribWriteFloat (outName, grib_Data, meta, &(meta->gridAttrib),
                                 scan, usr->f_MSB, 7, usr->f_GrADS, 0,
                                 0) != 0) {
-               goto error;
+               /* Update fileLen and write the index file out. */
+               flxLen = flxArrayLen;
+               MEMCPY_LIT (flxArray + 3, &flxLen, sizeof (sInt4));
+               WriteFLX (usr->indexFile, flxArray, flxArrayLen);
+               free (flxArray);
+               free (grib_Data);
+               free (outName);
+               return 3;
             }
             fltOffset = 0;
          }
@@ -219,7 +247,14 @@ int Grib2Database (userType *usr, IS_dataType *is, grib_MetaData *meta)
                                      meta->pdsTdlp.project), outPtr,
                            fltOffset, usr->f_MSB, scan, NULL, 0) != 0) {
                errSprintf ("ERROR: strlen (%s) > 254\n", outPtr);
-               goto error;
+               /* Update fileLen and write the index file out. */
+               flxLen = flxArrayLen;
+               MEMCPY_LIT (flxArray + 3, &flxLen, sizeof (sInt4));
+               WriteFLX (usr->indexFile, flxArray, flxArrayLen);
+               free (flxArray);
+               free (grib_Data);
+               free (outName);
+               return 3;
             }
          } else if (meta->GribVersion == 1) {
             if (InsertPDS (&flxArray, &flxArrayLen, meta->element,
@@ -228,7 +263,14 @@ int Grib2Database (userType *usr, IS_dataType *is, grib_MetaData *meta)
                            meta->subcenter, (time_t) meta->pds1.P1, outPtr,
                            fltOffset, usr->f_MSB, scan, NULL, 0) != 0) {
                errSprintf ("ERROR: strlen (%s) > 254\n", outPtr);
-               goto error;
+               /* Update fileLen and write the index file out. */
+               flxLen = flxArrayLen;
+               MEMCPY_LIT (flxArray + 3, &flxLen, sizeof (sInt4));
+               WriteFLX (usr->indexFile, flxArray, flxArrayLen);
+               free (flxArray);
+               free (grib_Data);
+               free (outName);
+               return 3;
             }
          } else {
             if (meta->pds2.f_sect2) {
@@ -243,7 +285,14 @@ int Grib2Database (userType *usr, IS_dataType *is, grib_MetaData *meta)
                                  meta->pds2.sect2.wx.data,
                                  meta->pds2.sect2.wx.dataLen) != 0) {
                      errSprintf ("ERROR: strlen (%s) > 254\n", outPtr);
-                     goto error;
+                     /* Update fileLen and write the index file out. */
+                     flxLen = flxArrayLen;
+                     MEMCPY_LIT (flxArray + 3, &flxLen, sizeof (sInt4));
+                     WriteFLX (usr->indexFile, flxArray, flxArrayLen);
+                     free (flxArray);
+                     free (grib_Data);
+                     free (outName);
+                     return 3;
                   }
                } else if (meta->pds2.sect2.ptrType == GS2_HAZARD) {
                   if (InsertPDS (&flxArray, &flxArrayLen, meta->element,
@@ -255,7 +304,14 @@ int Grib2Database (userType *usr, IS_dataType *is, grib_MetaData *meta)
                                  meta->pds2.sect2.hazard.data,
                                  meta->pds2.sect2.hazard.dataLen) != 0) {
                      errSprintf ("ERROR: strlen (%s) > 254\n", outPtr);
-                     goto error;
+                     /* Update fileLen and write the index file out. */
+                     flxLen = flxArrayLen;
+                     MEMCPY_LIT (flxArray + 3, &flxLen, sizeof (sInt4));
+                     WriteFLX (usr->indexFile, flxArray, flxArrayLen);
+                     free (flxArray);
+                     free (grib_Data);
+                     free (outName);
+                     return 3;
                   }
                } else {
                   errSprintf ("ERROR: working with element: %s\n",
@@ -265,7 +321,14 @@ int Grib2Database (userType *usr, IS_dataType *is, grib_MetaData *meta)
                   errSprintf ("Possible answer 1: tack it on to PDS Array\n");
                   errSprintf ("Possible answer 2: use table entry with "
                               "sizeof information\n");
-                  goto error;
+                  /* Update fileLen and write the index file out. */
+                  flxLen = flxArrayLen;
+                  MEMCPY_LIT (flxArray + 3, &flxLen, sizeof (sInt4));
+                  WriteFLX (usr->indexFile, flxArray, flxArrayLen);
+                  free (flxArray);
+                  free (grib_Data);
+                  free (outName);
+                  return 3;
                }
             } else {
                if (InsertPDS (&flxArray, &flxArrayLen, meta->element,
@@ -275,7 +338,14 @@ int Grib2Database (userType *usr, IS_dataType *is, grib_MetaData *meta)
                               (time_t) meta->pds2.sect4.validTime, outPtr,
                               fltOffset, usr->f_MSB, scan, NULL, 0) != 0) {
                   errSprintf ("ERROR: strlen (%s) > 254\n", outPtr);
-                  goto error;
+                  /* Update fileLen and write the index file out. */
+                  flxLen = flxArrayLen;
+                  MEMCPY_LIT (flxArray + 3, &flxLen, sizeof (sInt4));
+                  WriteFLX (usr->indexFile, flxArray, flxArrayLen);
+                  free (flxArray);
+                  free (grib_Data);
+                  free (outName);
+                  return 3;
                }
             }
          }
@@ -297,17 +367,6 @@ int Grib2Database (userType *usr, IS_dataType *is, grib_MetaData *meta)
    free (grib_Data);
    free (outName);
    return 0;
-
- error:
-   /* Update fileLen and write the index file out. */
-   flxLen = flxArrayLen;
-   MEMCPY_LIT (flxArray + 3, &flxLen, sizeof (sInt4));
-   WriteFLX (usr->indexFile, flxArray, flxArrayLen);
-   free (flxArray);
-
-   free (grib_Data);
-   free (outName);
-   return 3;
 }
 
 void NDFD_Cube2MetaWx (sect2_WxType *Wx, char **keys, int numKeys,

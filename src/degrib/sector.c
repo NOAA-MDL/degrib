@@ -428,15 +428,25 @@ int WhichSector (char *sectFile, Point pnt, sChar f_cells)
                      "Dx: Dy: MeshLat: Scan: Lat2: Lon2: ScaleLat1:\n"
                      "ScaleLat2: RadiusMax: RadiusMin: path\n",
                      line, numList);
-         err = -2;
-         goto error;
+         for (i = 0; i < numList; i++) {
+            free (list[i]);
+         }
+         free (list);
+         free (line);
+         fclose (fp);
+         return -2;
       }
       FillGDSBuffer (&gds, list, numList);
       if (GDSValid (&gds) != 0) {
          preErrSprintf ("'%s' is an invalid Grid Definition "
                         "Section\n", line);
-         err = -3;
-         goto error;
+         for (i = 0; i < numList; i++) {
+            free (list[i]);
+         }
+         free (list);
+         free (line);
+         fclose (fp);
+         return -3;
       }
 
       SetMapParamGDS (&map, &gds);
@@ -474,14 +484,6 @@ int WhichSector (char *sectFile, Point pnt, sChar f_cells)
    free (line);
    fclose (fp);
    return 0;
- error:
-   for (i = 0; i < numList; i++) {
-      free (list[i]);
-   }
-   free (list);
-   free (line);
-   fclose (fp);
-   return err;
 }
 
 /*****************************************************************************
@@ -911,15 +913,25 @@ int GetSectorList (char *sectFile, size_t numPnts, Point * pnts,
                      "Dx: Dy: MeshLat: Scan: Lat2: Lon2: ScaleLat1:\n"
                      "ScaleLat2: RadiusMax: RadiusMin: path\n",
                      line, numList);
-         err = -2;
-         goto error;
+         for (i = 0; i < numList; i++) {
+            free (list[i]);
+         }
+         free (list);
+         free (line);
+         fclose (fp);
+         return -2;
       }
       FillGDSBuffer (&gds, list, numList);
       if (GDSValid (&gds) != 0) {
          preErrSprintf ("'%s' is an invalid Grid Definition "
                         "Section\n", line);
-         err = -3;
-         goto error;
+         for (i = 0; i < numList; i++) {
+            free (list[i]);
+         }
+         free (list);
+         free (line);
+         fclose (fp);
+         return -3;
       }
 
       f_sector = SectorFindGDS (&gds);
@@ -951,14 +963,6 @@ int GetSectorList (char *sectFile, size_t numPnts, Point * pnts,
    free (line);
    fclose (fp);
    return 0;
- error:
-   for (i = 0; i < numList; i++) {
-      free (list[i]);
-   }
-   free (list);
-   free (line);
-   fclose (fp);
-   return err;
 }
 
 /*

@@ -591,8 +591,10 @@ int TDLP_RefTime (FILE *fp, sInt4 tdlpLen, double *refTime)
    uChar min;           /* The reference minute */
    sInt4 li_temp;       /* Temporary variable. */
 
-   if ((sectLen = fgetc (fp)) == EOF)
-      goto error;
+   if ((sectLen = fgetc (fp)) == EOF) {
+      errSprintf ("Ran out of file in PDS (TDLP_RefTime).\n");
+      return -1;
+   }
    curLoc = 8 + sectLen;
    if (curLoc > tdlpLen) {
       errSprintf ("Ran out of data in PDS (TDLP_RefTime)\n");
@@ -604,26 +606,40 @@ int TDLP_RefTime (FILE *fp, sInt4 tdlpLen, double *refTime)
       return -1;
    }
 
-   if ((c_temp = fgetc (fp)) == EOF)
-      goto error;
-   if (FREAD_BIG (&si_temp, sizeof (short int), 1, fp) != 1)
-      goto error;
+   if ((c_temp = fgetc (fp)) == EOF) {
+      errSprintf ("Ran out of file in PDS (TDLP_RefTime).\n");
+      return -1;
+   }
+   if (FREAD_BIG (&si_temp, sizeof (short int), 1, fp) != 1) {
+      errSprintf ("Ran out of file in PDS (TDLP_RefTime).\n");
+      return -1;
+   }
    year = si_temp;
-   if ((c_temp = fgetc (fp)) == EOF)
-      goto error;
+   if ((c_temp = fgetc (fp)) == EOF) {
+      errSprintf ("Ran out of file in PDS (TDLP_RefTime).\n");
+      return -1;
+   }
    month = c_temp;
-   if ((c_temp = fgetc (fp)) == EOF)
-      goto error;
+   if ((c_temp = fgetc (fp)) == EOF) {
+      errSprintf ("Ran out of file in PDS (TDLP_RefTime).\n");
+      return -1;
+   }
    day = c_temp;
-   if ((c_temp = fgetc (fp)) == EOF)
-      goto error;
+   if ((c_temp = fgetc (fp)) == EOF) {
+      errSprintf ("Ran out of file in PDS (TDLP_RefTime).\n");
+      return -1;
+   }
    hour = c_temp;
-   if ((c_temp = fgetc (fp)) == EOF)
-      goto error;
+   if ((c_temp = fgetc (fp)) == EOF) {
+      errSprintf ("Ran out of file in PDS (TDLP_RefTime).\n");
+      return -1;
+   }
    min = c_temp;
 
-   if (FREAD_BIG (&li_temp, sizeof (sInt4), 1, fp) != 1)
-      goto error;
+   if (FREAD_BIG (&li_temp, sizeof (sInt4), 1, fp) != 1) {
+      errSprintf ("Ran out of file in PDS (TDLP_RefTime).\n");
+      return -1;
+   }
    t_year = li_temp / 1000000L;
    li_temp -= t_year * 1000000L;
    t_month = li_temp / 10000L;
@@ -645,9 +661,6 @@ int TDLP_RefTime (FILE *fp, sInt4 tdlpLen, double *refTime)
    /* (inventory.c : GRIB2Inventory), is responsible for this. */
    /* fseek (fp, gribLen - sectLen, SEEK_CUR); */
    return 0;
- error:
-   errSprintf ("Ran out of file in PDS (TDLP_RefTime).\n");
-   return -1;
 }
 
 /*****************************************************************************

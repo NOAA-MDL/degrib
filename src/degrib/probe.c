@@ -1109,33 +1109,14 @@ int GenericProbe (char *filename, int numPnts, double *lat, double *lon,
          msg = errSprintf (NULL);
          fprintf (stderr, "ERROR: In call to GenericProbe().\n%s", msg);
          free (msg);
-         retVal = -3;
-         goto error;
+         free (grib_Data);
+         fclose (grib_fp);
+         MetaFree (&meta);
+         IS_Free (&is);
+         return -3;
       }
       /* Up to caller to validate the range of the data.  Could do it here if 
        * the caller provided f_validRand and validMax, validMin. */
-/*
-      if (f_validRange > 0) {
-         * valid max. *
-         if (f_validRange > 1) {
-            if (meta->gridAttrib.max > validMax) {
-               fprintf (stderr, "ERROR: %f > valid Max of %f\n",
-                        meta->gridAttrib.max, validMax);
-               retVal = -3;
-               goto error;
-            }
-         }
-         * valid min. *
-         if (f_validRange % 2) {
-            if (meta->gridAttrib.min < validMin) {
-               fprintf (stderr, "ERROR: %f < valid Min of %f\n",
-                        meta->gridAttrib.min, validMin);
-               retVal = -3;
-               goto error;
-            }
-         }
-      }
-*/
       if (f_endMsg != 1) {
          subgNum++;
       } else {
@@ -1145,8 +1126,11 @@ int GenericProbe (char *filename, int numPnts, double *lat, double *lon,
       /* Check that gds is valid before setting up map projection. */
       if (GDSValid (&(meta.gds)) != 0) {
          fprintf (stderr, "ERROR: Sect3 was not Valid.\n");
-         retVal = -4;
-         goto error;
+         free (grib_Data);
+         fclose (grib_fp);
+         MetaFree (&meta);
+         IS_Free (&is);
+         return -4;
       }
       /* Set up the map projection. */
       SetMapParamGDS (&map, &(meta.gds));
@@ -1222,8 +1206,11 @@ int GenericProbe (char *filename, int numPnts, double *lat, double *lon,
             /* Handle the weather case. */
             fprintf (stderr, "ERROR: Currently doesn't handle weather "
                      "strings.\n");
-            retVal = -1;
-            goto error;
+            free (grib_Data);
+            fclose (grib_fp);
+            MetaFree (&meta);
+            IS_Free (&is);
+            return -1;
          }
       }
 /*
@@ -1238,12 +1225,6 @@ int GenericProbe (char *filename, int numPnts, double *lat, double *lon,
    MetaFree (&meta);
    IS_Free (&is);
    return 0;
- error:
-   free (grib_Data);
-   fclose (grib_fp);
-   MetaFree (&meta);
-   IS_Free (&is);
-   return retVal;
 }
 
 #ifdef PROBE_DEBUG
