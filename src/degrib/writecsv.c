@@ -84,7 +84,7 @@ int gribWriteCsv (FILE *out_fp, double *grib_Data, grib_MetaData *meta,
          if (f_IsMissing && f_NoMissing) {
          } else {
             /* Print the first part of the line. */
-            fprintf (out_fp, "%4ld%s%4ld%s%11.6f%s%11.6f%s", i, separator, j,
+            fprintf (out_fp, "%4ld%s%4ld%s%11.6f%s%11.6f%s", (long int) i, separator, (long int) j,
                      separator, lat, separator, lon, separator);
 
             if (strcmp (meta->element, "Wx") != 0) {
@@ -98,7 +98,7 @@ int gribWriteCsv (FILE *out_fp, double *grib_Data, grib_MetaData *meta,
                   if ((meta->pds2.sect2.wx.ugly[row].errors != NULL) &&
                       (logName != NULL)) {
                      if ((logFp = fopen (logName, "at")) != NULL) {
-                        fprintf (logFp, "%ld%s%ld%s%f%s%f%s", i, separator, j,
+                        fprintf (logFp, "%ld%s%ld%s%f%s%f%s", (long int) i, separator, (long int) j,
                                  separator, lat, separator, lon, separator);
                         fprintf (logFp, "%s\n",
                                  meta->pds2.sect2.wx.ugly[row].errors);
@@ -127,7 +127,7 @@ int gribWriteCsv (FILE *out_fp, double *grib_Data, grib_MetaData *meta,
                               meta->pds2.sect2.wx.ugly[row].SimpleCode);
                   }
                } else {
-                  fprintf (out_fp, "%ld", row);
+                  fprintf (out_fp, "%ld", (long int) row);
                }
             }
             fprintf (out_fp, "\n");

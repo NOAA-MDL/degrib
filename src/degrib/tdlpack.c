@@ -232,7 +232,7 @@ static int ReadTDLPSect1 (uChar *pds, sInt4 tdlpLen, sInt4 *curLoc,
    tau = pdsMeta->ID3 - ((pdsMeta->ID3 / 1000) * 1000);
    if (tau != project_hr) {
       printf ("Warning: Inconsistant Projections in hours in "
-              "ReadTDLPSect1 (%ld vs %d)\n", tau, project_hr);
+              "ReadTDLPSect1 (%ld vs %d)\n", (long int) tau, project_hr);
 /*
       errSprintf ("Warning: Inconsistant Projections in hours in "
                   "ReadTDLPSect1 (%ld vs %d)\n", tau, project_hr);
@@ -335,11 +335,11 @@ void PrintPDS_TDLP (pdsTDLPType * pds)
 
    Print ("PDS-TDLP", "Reference Time", Prt_S, buffer);
    Print ("PDS-TDLP", "Plain Language", Prt_S, pds->Descriptor);
-   sprintf (buffer, "%09ld", pds->ID1);
+   sprintf (buffer, "%09ld", (long int) pds->ID1);
    Print ("PDS-TDLP", "ID 1", Prt_S, buffer);
-   sprintf (buffer, "%09ld", pds->ID2);
+   sprintf (buffer, "%09ld", (long int) pds->ID2);
    Print ("PDS-TDLP", "ID 2", Prt_S, buffer);
-   sprintf (buffer, "%09ld", pds->ID3);
+   sprintf (buffer, "%09ld", (long int) pds->ID3);
    Print ("PDS-TDLP", "ID 3", Prt_S, buffer);
    Print ("PDS-TDLP", "ID 4", Prt_D, pds->ID4);
    Print ("PDS-TDLP", "Model or Process Number", Prt_D, pds->procNum);

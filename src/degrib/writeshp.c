@@ -1325,7 +1325,7 @@ static int CreateWxDbf (char *filename, sInt4 Nx, sInt4 Ny,
                   fprintf (fp, formBuf[4], "Unkown", 0, 0, 0);
                }
             } else {
-               sprintf (buffer, "%ld", index);
+               sprintf (buffer, "%ld", (long int) index);
 /*               fprintf (fp, formBuf1, id, buffer, index, vis, index); */
                if (f_verbose) {
                   myCxy2ll (map, x + 1, y + 1, &lat, &lon);
@@ -1630,7 +1630,7 @@ static int CreateWWADbf (char *filename, sInt4 Nx, sInt4 Ny,
                   fprintf (fp, formBuf[4], "Unkown");
                }
             } else {
-               sprintf (buffer, "%ld", index);
+               sprintf (buffer, "%ld", (long int) index);
 /*               fprintf (fp, formBuf1, id, buffer, index, vis, index); */
                if (f_verbose) {
                   myCxy2ll (map, x + 1, y + 1, &lat, &lon);

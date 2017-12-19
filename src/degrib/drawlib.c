@@ -1457,7 +1457,7 @@ static int DrawGradPointShpFile (char *filename, maparam *map,
       return -1;
    }
    if (Head2[1] != 1) {
-      printf ("Expecting to draw points (type 1) yours is %ld\n", Head2[1]);
+      printf ("Expecting to draw points (type 1) yours is %ld\n", (long int) Head2[1]);
       fclose (sfp);
       return -1;
    }
@@ -1471,8 +1471,8 @@ static int DrawGradPointShpFile (char *filename, maparam *map,
       FREAD_LIT (&type, sizeof (sInt4), 1, sfp);
       if (type != 1) {
          printf ("Corrupt .shp file: point file with non-point shapes\n");
-         printf ("Record: %ld Type = %ld \n", curRec[0], type);
-         printf ("Offset = %ld, FileLen = %ld\n", Offset, Head1[6]);
+         printf ("Record: %ld Type = %ld \n", (long int) curRec[0], (long int) type);
+         printf ("Offset = %ld, FileLen = %ld\n", (long int) Offset, (long int) Head1[6]);
          fclose (sfp);
          return -1;
       }
@@ -1494,9 +1494,9 @@ static int DrawGradPointShpFile (char *filename, maparam *map,
          y = (sInt4) (mapIni->out.Y_Size - (By + (Y - projY1) / A));
          if (recNum > dataLen) {
             printf ("%d %ld [%ld] [%ld == %ld] [%ld == 28] "
-                    "[offset Should be %ld\n", recNum, dataLen, curRec[0],
-                    Offset, Head1[6] * 2, curRec[1] * 2,
-                    100 + 28 * curRec[0]);
+                    "[offset Should be %ld\n", recNum, (long int) dataLen, (long int) curRec[0],
+                    (long int) Offset, (long int) (Head1[6] * 2), (long int) (curRec[1] * 2),
+                    (long int) (100 + 28 * curRec[0]));
             break;
          }
 
@@ -1593,7 +1593,7 @@ static int DrawPointShpFile (char *filename, maparam *map, gdImagePtr im,
       return -1;
    }
    if (Head2[1] != 1) {
-      printf ("Expecting to draw points (type 1) yours is %ld\n", Head2[1]);
+      printf ("Expecting to draw points (type 1) yours is %ld\n", (long int) Head2[1]);
       fclose (sfp);
       return -1;
    }
@@ -1607,8 +1607,8 @@ static int DrawPointShpFile (char *filename, maparam *map, gdImagePtr im,
       FREAD_LIT (&type, sizeof (sInt4), 1, sfp);
       if (type != 1) {
          printf ("Corrupt .shp file: point file with non-point shapes\n");
-         printf ("Record: %ld Type = %ld \n", curRec[0], type);
-         printf ("Offset = %ld, FileLen = %ld\n", Offset, Head1[6]);
+         printf ("Record: %ld Type = %ld \n", (long int) curRec[0], (long int) type);
+         printf ("Offset = %ld, FileLen = %ld\n", (long int) Offset, (long int) Head1[6]);
          fclose (sfp);
          return -1;
       }
@@ -2184,7 +2184,7 @@ static int DrawGradPolyShpFile (char *filename, maparam *map, gdImagePtr im,
       return -1;
    }
    if (Head2[1] != 5) {
-      printf ("Can only draw polygons (type 5) yours is %ld\n", Head2[1]);
+      printf ("Can only draw polygons (type 5) yours is %ld\n", (long int) Head2[1]);
       fclose (sfp);
       return -1;
    }
@@ -2210,8 +2210,8 @@ static int DrawGradPolyShpFile (char *filename, maparam *map, gdImagePtr im,
       FREAD_LIT (&type, sizeof (sInt4), 1, sfp);
       if (type != 5) {
          printf ("Corrupt .shp file: poly file with non-poly shapes\n");
-         printf ("Record: %ld Type = %ld \n", curRec[0], type);
-         printf ("Offset = %ld, FileLen = %ld\n", Offset, Head1[6]);
+         printf ("Record: %ld Type = %ld \n", (long int) curRec[0], (long int) type);
+         printf ("Offset = %ld, FileLen = %ld\n", (long int) Offset, (long int) Head1[6]);
          free (parts);
          free (points);
          free (gdPnts);
@@ -2605,7 +2605,7 @@ static int DrawPolyShpFile (char *filename, maparam *map, gdImagePtr im,
       return -1;
    }
    if (Head2[1] != 5) {
-      printf ("Can only draw polygons (type 5) yours is %ld\n", Head2[1]);
+      printf ("Can only draw polygons (type 5) yours is %ld\n", (long int) Head2[1]);
       fclose (sfp);
       return -1;
    }
@@ -2631,8 +2631,8 @@ static int DrawPolyShpFile (char *filename, maparam *map, gdImagePtr im,
       FREAD_LIT (&type, sizeof (sInt4), 1, sfp);
       if (type != 5) {
          printf ("Corrupt .shp file: poly file with non-poly shapes\n");
-         printf ("Record: %ld Type = %ld \n", curRec[0], type);
-         printf ("Offset = %ld, FileLen = %ld\n", Offset, Head1[6]);
+         printf ("Record: %ld Type = %ld \n", (long int) curRec[0], (long int) type);
+         printf ("Offset = %ld, FileLen = %ld\n", (long int) Offset, (long int) Head1[6]);
          free (parts);
          free (points);
          free (gdPnts);
@@ -2995,7 +2995,7 @@ static int DrawLayer (layerType *layer, maparam *map, gdImagePtr im,
             x = (sInt4) (Bx + (X - projX1) / A);
             y = (sInt4) (mapIni->out.Y_Size - (By + (Y - projY1) / A));
             printf ("Info: %f %f => %ld %ld\n", layer->pnt[i].lat,
-                    layer->pnt[i].lon, x, y);
+                    layer->pnt[i].lon, (long int) x, (long int) y);
          }
          break;
       case LATTICE:

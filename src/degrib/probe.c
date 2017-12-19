@@ -124,7 +124,7 @@ static void PrintProbeWx (FILE *out_fp, double ans, sect2_WxType *wx,
             break;
       }
    } else {
-      fprintf (out_fp, "%ld", wxIndex);
+      fprintf (out_fp, "%ld", (long int) wxIndex);
    }
 }
 
@@ -169,7 +169,7 @@ static void PrintProbeHazard (FILE *out_fp, double ans, sect2_HazardType *hazard
             break;
       }
    } else {
-      fprintf (out_fp, "%ld", hazIndex);
+      fprintf (out_fp, "%ld", (long int) hazIndex);
    }
 }
 

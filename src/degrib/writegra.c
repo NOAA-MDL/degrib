@@ -145,7 +145,7 @@ void gribWriteGradsCTL (char *CLTFile, char *DataFile, grib_MetaData *meta,
       fprintf (op, "* MAJEARTH %f (GrADS used 6371.2) \n", gds->majEarth);
       fprintf (op, "* MINEARTH %f (GrADS used 6371.2) \n", gds->minEarth);
       fprintf (op, "pdef %ld %ld lcc %f %f 1 1 %f %f %f %f %f\n",
-               gds->Nx, gds->Ny, gds->lat1, gds->lon1,
+               (long int) gds->Nx, (long int) gds->Ny, gds->lat1, gds->lon1,
                gds->scaleLat1, gds->scaleLat2, orient, gds->Dx, gds->Dy);
    } else if (gds->projType == GS3_POLAR) {
       /* Set up a map projection so I can compute the poleI, poleJ. */
@@ -160,8 +160,8 @@ void gribWriteGradsCTL (char *CLTFile, char *DataFile, grib_MetaData *meta,
       fprintf (op, "* MAJEARTH %f (GrADS used 6371.2)\n", gds->majEarth);
       fprintf (op, "* MINEARTH %f (GrADS used 6371.2)\n", gds->minEarth);
       /* Grid increment is in km instead of m. */
-      fprintf (op, "pdef %ld %ld nps %.0f %.0f %f %f\n", gds->Nx,
-               gds->Ny, poleI, poleJ, orient, gds->Dx / 1000.);
+      fprintf (op, "pdef %ld %ld nps %.0f %.0f %f %f\n", (long int) gds->Nx,
+               (long int) gds->Ny, poleI, poleJ, orient, gds->Dx / 1000.);
    }
 
    if (f_MSB) {
@@ -187,8 +187,8 @@ void gribWriteGradsCTL (char *CLTFile, char *DataFile, grib_MetaData *meta,
       fprintf (op, "UNDEF %f\n", unDef);
    }
    fprintf (op, "TITLE GrADS control file based on GRIB2 file.\n");
-   fprintf (op, "XDEF %ld LINEAR %f %f\n", gds->Nx, gds->lon1, gds->Dx);
-   fprintf (op, "YDEF %ld LINEAR %f %f\n", gds->Ny, gds->lat1, gds->Dy);
+   fprintf (op, "XDEF %ld LINEAR %f %f\n", (long int) gds->Nx, gds->lon1, gds->Dx);
+   fprintf (op, "YDEF %ld LINEAR %f %f\n", (long int) gds->Ny, gds->lat1, gds->Dy);
    fprintf (op, "ZDEF 1 LINEAR 0 1\n");
    if (f_GrADS == 1) {
       if (meta->GribVersion == 1) {

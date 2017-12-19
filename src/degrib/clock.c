@@ -517,7 +517,7 @@ static void Clock_FormatParse (char buffer[100], sInt4 sec, float floatSec,
          sprintf (buffer, "%2d", month);
          return;
       case 'Y':
-         sprintf (buffer, "%04ld", year);
+         sprintf (buffer, "%04ld", (long int) year);
          return;
       case 'H':
          sprintf (buffer, "%02d", (int) ((sec % 86400L) / 3600));
@@ -1865,7 +1865,7 @@ void Clock_PrintDateNumber (double clock, char buffer[15])
 
    Clock_PrintDate (clock, &year, &month, &day, &hour, &min, &d_sec);
    sec = (int) d_sec;
-   sprintf (buffer, "%04ld%02d%02d%02d%02d%02d", year, month, day, hour, min,
+   sprintf (buffer, "%04ld%02d%02d%02d%02d%02d", (long int) year, month, day, hour, min,
             sec);
 }
 

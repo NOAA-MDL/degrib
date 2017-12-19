@@ -289,7 +289,7 @@ int MainConvert (userType *usr, IS_dataType *is, grib_MetaData *meta,
    uChar FltScan;       /* Scan mode to use for the .flt/.tlf file. */
    uChar *cPack;        /* Used to store packed message during test. */
    sInt4 c_len;         /* length of cPack */
-   size_t i;            /* loop counter. */
+   size_t i;               /* loop counter. */
    int j;               /* Loop counter used to save to .is0 file. */
    int f_continue;      /* Flag to continue the Meta Print Command. */
 
@@ -365,9 +365,9 @@ int MainConvert (userType *usr, IS_dataType *is, grib_MetaData *meta,
       }
       if (f_continue) {
          for (i = 0; i < 8; i++) {
-            fprintf (fp, "---Section %d---\n", i);
+            fprintf (fp, "---Section %ld---\n", (long int) i);
             for (j = 1; j <= is->ns[i]; j++) {
-               fprintf (fp, "IS%d Item %d = %ld\n", i, j, is->is[i][j - 1]);
+               fprintf (fp, "IS%ld Item %d = %ld\n", (long int) i, j, (long int) is->is[i][j - 1]);
             }
          }
          if (!usr->f_stdout) {

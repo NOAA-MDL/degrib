@@ -618,7 +618,7 @@ static int ReadGrib1Sect1 (uChar *pds, uInt4 gribLen, uInt4 *curLoc,
          /* 87 ... 100 was reserved, but may not be encoded */
          if ((sectLen < 100) && (sectLen != 86)) {
             printf ("Warning! Problems with Ensemble Clustering section\n");
-            printf ("Section length == %ld\n", sectLen);
+            printf ("Section length == %ld\n", (long int) sectLen);
             return 0;
          }
          if (pdsMeta->f_hasProb == 0) {
@@ -656,12 +656,12 @@ static int ReadGrib1Sect1 (uChar *pds, uInt4 gribLen, uInt4 *curLoc,
       pds += 12;
       i_temp = GRIB_SIGN_INT2 (pds[3], pds[4]);
       printf ("ID %d Class %d Type %d Stream %ld", pds[0], pds[1], pds[2],
-              i_temp);
+              (long int) i_temp);
       pds += 5;
       printf (" Ver %c%c%c%c, ", pds[0], pds[1], pds[2], pds[3]);
       pds += 4;
       printf ("Octet-50 %d, Octet-51 %d SectLen %ld\n", pds[0], pds[1],
-              sectLen);
+              (long int) sectLen);
    } else {
       printf ("Un-handled possible ensemble section center %d "
               "subcenter %d\n", *center, *subcenter);
@@ -1497,8 +1497,8 @@ static int ReadGrib1Sect4 (uChar *bds, uInt4 gribLen, uInt4 *curLoc,
        (sectLen - 11) * 8) {
       printf ("numPts * (numBits in a Group) + # of unused bits %ld != "
               "# of available bits %ld\n",
-              (sInt4) (meta->gds.numPts * numBits + numUnusedBit),
-              (sInt4) ((sectLen - 11) * 8));
+              (long int) (meta->gds.numPts * numBits + numUnusedBit),
+              (long int) ((sectLen - 11) * 8));
 /*
       errSprintf ("numPts * (numBits in a Group) + # of unused bits %ld != "
                   "# of available bits %ld\n",

@@ -952,9 +952,9 @@ static void PrintGDS (gdsType *gds)
    myAssert (gds != NULL);
 
    printf ("NumPts %ld, projType %d, sphere? %d, EarthMaj %f, EarthMin %f\n",
-           gds->numPts, gds->projType, gds->f_sphere, gds->majEarth,
+           (long int) gds->numPts, gds->projType, gds->f_sphere, gds->majEarth,
            gds->minEarth);
-   printf ("Nx %ld, Ny %ld, lat1 %f, lon1 %f\n", gds->Nx, gds->Ny, gds->lat1,
+   printf ("Nx %ld, Ny %ld, lat1 %f, lon1 %f\n", (long int) gds->Nx, (long int) gds->Ny, gds->lat1,
            gds->lon1);
    printf ("ResFlag %d, OrientLon %f, Dx %f, Dy %f, meshLat %f\n",
            gds->resFlag, gds->orientLon, gds->Dx, gds->Dy, gds->meshLat);
@@ -1010,7 +1010,7 @@ static void PrintSupPDS (char *buffer, sInt4 buffLen)
    ptr = buffer;
    MEMCPY_LIT (&li_temp, ptr, sizeof (sInt4));
    ptr += 4;
-   printf ("Total size of SuperHead + PDS Array: %ld\n", li_temp);
+   printf ("Total size of SuperHead + PDS Array: %ld\n", (long int) li_temp);
    MEMCPY_LIT (&si_temp, ptr, sizeof (uShort2));
    ptr += 2;
    printf ("Size of SuperHead: %d\n", si_temp);
@@ -1063,7 +1063,7 @@ static void PrintSupPDS (char *buffer, sInt4 buffLen)
       printf ("filename: %s\n", elem);
       MEMCPY_LIT (&li_temp, ptr, sizeof (sInt4));
       ptr += 4;
-      printf ("File Offset: %ld\n", li_temp);
+      printf ("File Offset: %ld\n", (long int) li_temp);
       uc_temp = *ptr;
       ptr++;
       printf ("endian: %d\n", uc_temp);
@@ -1359,7 +1359,7 @@ int PrintFLXBuffer (char *flxArray, int flxArrayLen)
    }
    ptr += 3;
    MEMCPY_LIT (&fileLen, ptr, sizeof (sInt4));
-   printf ("FileLen = %ld\n", fileLen);
+   printf ("FileLen = %ld\n", (long int) fileLen);
    ptr = flxArray + HEADLEN;
    MEMCPY_LIT (&numGDS, ptr, sizeof (uShort2));
    ptr += 2;
@@ -1638,8 +1638,8 @@ int Asc2Flx (char *inFile, char *outFile)
       gds.f_sphere = 1;
    }
    if (gds.Nx * gds.Ny != gds.numPts) {
-      printf ("Wrong number of points %ld * %ld != %ld\n", gds.Nx, gds.Ny,
-              gds.numPts);
+      printf ("Wrong number of points %ld * %ld != %ld\n", (long int) gds.Nx, (long int) gds.Ny,
+              (long int) gds.numPts);
       free (flxArray);
       fclose (fp);
       free (buffer);

@@ -100,8 +100,8 @@ int gribWriteEsriHdr (FILE *fp, gdsType *gds, gridAttribType *attrib,
              (gds->projType == GS3_MERCATOR) ||
              (gds->projType == GS3_POLAR) || (gds->projType == GS3_LAMBERT));
 
-   fprintf (fp, "ncols %ld\n", gds->Nx);
-   fprintf (fp, "nrows %ld\n", gds->Ny);
+   fprintf (fp, "ncols %ld\n", (long int) gds->Nx);
+   fprintf (fp, "nrows %ld\n", (long int) gds->Ny);
 
    if (gds->projType != GS3_LATLON) {
       /* Set up the map projection. */

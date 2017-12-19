@@ -120,13 +120,13 @@ void GRIB2InventoryPrint (inventoryType *Inv, uInt4 LenInv)
       delta = myRound (delta, 2);
       if (Inv[i].comment == NULL) {
          printf ("%d.%d, %ld, %d, %s, %s, %s, %s, %.2f\n",
-                 Inv[i].msgNum, Inv[i].subgNum, Inv[i].start,
+                 Inv[i].msgNum, Inv[i].subgNum, (long int) Inv[i].start,
                  Inv[i].GribVersion, Inv[i].element, Inv[i].shortFstLevel,
                  refTime, validTime, delta);
          fflush (stdout);
       } else {
          printf ("%d.%d, %ld, %d, %s=\"%s\", %s, %s, %s, %.2f\n",
-                 Inv[i].msgNum, Inv[i].subgNum, Inv[i].start,
+                 Inv[i].msgNum, Inv[i].subgNum, (long int) Inv[i].start,
                  Inv[i].GribVersion, Inv[i].element, Inv[i].comment,
                  Inv[i].shortFstLevel, refTime, validTime, delta);
          fflush (stdout);
@@ -903,7 +903,7 @@ int GRIB2Inventory (char *filename, inventoryType **Inv, uInt4 *LenInv,
             /* Handle case where there are trailing bytes. */
             msg = errSprintf (NULL);
             printf ("Warning: Inside GRIB2Inventory, Message # %ld\n",
-                    msgNum);
+                    (long int) msgNum);
             printf ("%s", msg);
             free (msg);
             /* find out how big the file is. */
@@ -911,7 +911,7 @@ int GRIB2Inventory (char *filename, inventoryType **Inv, uInt4 *LenInv,
             fileLen = ftell (fp);
             /* fseek (fp, 0L, SEEK_SET); */
             printf ("There were %ld trailing bytes in the file.\n",
-                    fileLen - offset);
+                    (long int) (fileLen - offset));
             free (buffer);
             free (buff);
             fclose (fp);
@@ -1137,7 +1137,7 @@ int GRIB2RefTime (char *filename, double *refTime)
          } else {
             /* Handle case where there are trailing bytes. */
             msg = errSprintf (NULL);
-            printf ("Warning: Inside GRIB2RefTime, Message # %ld\n", msgNum);
+            printf ("Warning: Inside GRIB2RefTime, Message # %ld\n", (long int) msgNum);
             printf ("%s", msg);
             free (msg);
             /* find out how big the file is. */
@@ -1145,7 +1145,7 @@ int GRIB2RefTime (char *filename, double *refTime)
             fileLen = ftell (fp);
             /* fseek (fp, 0L, SEEK_SET); */
             printf ("There were %ld trailing bytes in the file.\n",
-                    fileLen - offset);
+                    (long int) (fileLen - offset));
             free (buffer);
             free (buff);
             fclose (fp);

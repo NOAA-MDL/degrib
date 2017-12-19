@@ -118,7 +118,7 @@ int GRIB2Split (char *filename, int msgNum, int curMsg)
             fileLen = ftell (fp);
             /* fseek (fp, 0L, SEEK_SET); */
             printf ("There were %ld trailing bytes in the file.\n",
-                    fileLen - offset);
+                    (long int) (fileLen - offset));
             curMsg --;
 
             free (buff);
