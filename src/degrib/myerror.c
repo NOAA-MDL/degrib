@@ -267,6 +267,8 @@ static void AllocSprintf (char **Ptr, size_t *LenBuff, const char *fmt,
       }
       p = p1 + 1;
    }
+   *Ptr = buffer;
+   *LenBuff = lenBuff;
 }
 
 /*****************************************************************************
