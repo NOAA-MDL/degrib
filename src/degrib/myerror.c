@@ -233,7 +233,8 @@ static void AllocSprintf (char **Ptr, size_t *LenBuff, const char *fmt,
                   slen = strlen (sval);
                   lenBuff += slen;
                   buffer = (char *) realloc ((void *) buffer, lenBuff);
-                  strncpy (buffer + ipos, sval, slen);
+                  strncpy (buffer + ipos, sval, slen + 1); /*  +1 to make room for a fucking NULL.
+		                                            *  This problem is probably everywhere */
                   ipos = lenBuff - 1;
                   break;
                }
