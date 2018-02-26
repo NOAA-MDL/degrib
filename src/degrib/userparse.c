@@ -726,7 +726,7 @@ int myCommaDoubleList2 (char *name, double *x, double *y)
  */
 static char *UsrOpt[] = { "-cfg", "-in", "-I", "-C", "-P", "-V", "-Flt",
    "-nFlt", "-Shp", "-Shp2", "-nShp", "-Met", "-nMet", "-msg", "-nameStyle",
-   "-out", "-Interp", "-revFlt", "-nRevFlt", "-MSB", "-nMSB", "-Unit",
+   "-out", "-Interp", "-revFlt", "-nRevFlt", "-MSB", "-nMSB", "-little_endian", "-Unit",
    "-namePath", "-pnt", "-pntFile", "-poly", "-nMissing", "-Decimal", "-IS0",
    "-GrADS", "-SimpleWx", "-radEarth", "-Separator", "-WxParse", "-pntStyle",
    "-Data", "-Index", "-Cube", "-nCube", "-DP", "-Print", "-Append",
@@ -752,7 +752,7 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
 {
    enum { CFG, IN, INVENTORY, CONVERT, PROBE, VERSION, FLT, NO_FLT, SHP,
       SHP2, NO_SHP, META, NO_META, MSG_NUM, NAME_STYLE, OUT, INTERPOLATE,
-      REVFLT, NO_REVFLT, MSB, NO_MSB, UNIT, NAMEPATH, PNT, PNTFILE, POLYSHP,
+      REVFLT, NO_REVFLT, MSB, NO_MSB, LITTLE_ENDIAN, UNIT, NAMEPATH, PNT, PNTFILE, POLYSHP,
       NOMISS_SHP, DECIMAL, IS0, GRADS, SIMPLEWX, RADEARTH, SEPARATOR,
       WXPARSE, PNTSTYLE, DATABASE, INDEXFILE, CUBE, NO_CUBE, DATAPROBE,
       PRINT, APPEND, CELLS, LOG, SIMPLEWX_VER, CSV, NO_CSV, GRIB2, NO_GRIB2,
@@ -1001,6 +1001,10 @@ static int ParseUserChoice (userType *usr, char *cur, char *next)
             usr->f_MSB = 1;
          return 1;
       case NO_MSB:
+         if (usr->f_MSB == -1)
+            usr->f_MSB = 0;
+         return 1;
+      case LITTLE_ENDIAN:
          if (usr->f_MSB == -1)
             usr->f_MSB = 0;
          return 1;

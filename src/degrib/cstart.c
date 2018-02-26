@@ -74,8 +74,8 @@ static void Usage (char *argv0, userType *usr)
                  "for\n");
          printf ("                    multiple grids in the same message."
                  "\n");
-         printf ("  -MSB or -nMSB = Generate binary files M.S.B. if "
-                 "possible.\n");
+         printf ("  -MSB or -nMSB(-little_endian) = Generate binary files "
+                 "M.S.B. if possible.\n");
          printf ("  -Flt or -nFlt = Create (or don't) Spatial Analyst .flt "
                  "file set.\n");
          printf ("  -Shp or -nShp = Create (or don't) ArcView .shp file set."
@@ -329,8 +329,8 @@ static void Usage (char *argv0, userType *usr)
          printf ("               'm' 'metric' (use C, kg/m**2 or m, m/s)\n");
          printf ("  -Decimal [amount] = How many decimals to round to "
                  "[0..18]\n");
-         printf ("  -MSB or -nMSB = Generate binary files M.S.B. if "
-                 "possible.\n");
+         printf ("  -MSB or -nMSB(-little_endian) = Generate binary files "
+                 "M.S.B. if possible.\n");
          printf ("  -revFlt or -nRevFlt = Create (or don't) .tlf file\n");
          printf ("                (start in lower left not upper left)\n");
          break;

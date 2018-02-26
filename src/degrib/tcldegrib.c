@@ -184,14 +184,14 @@ static int Grib2ParseObj (Grib2Type * grib, Tcl_Interp * interp, int objc,
 /* Following is const char in 8.5 but plain char in 8.3 */
    const char *Opt[] = {
       "-in", "-Flt", "-Shp", "-Met", "-msg", "-nameStyle", "-out", "-Interp",
-      "-revFlt", "-MSB", "-Unit", "-namePath", "-nMSB", "-nFlt", "-nShp",
+      "-revFlt", "-MSB", "-Unit", "-namePath", "-nMSB", "-little_endian", "-nFlt", "-nShp",
       "-nMet", "-reset", "-poly", "-nMissing", "-Decimal", "-IS0", "-GrADS",
       "-SimpleWx", "-radEarth", "-Csv", "-nCsv", "-majEarth", "-minEarth",
       "-NetCDF", "-verboseShp", "-AscGrid", "-SimpleVer", NULL
    };
    enum {
       INFILE, FLT, SHP, META, MSG_NUM, NAME_STYLE, OUTFILE, INTERPOLATE,
-      REVFLT, MSB, UNIT, NAMEPATH, NO_MSB, NO_FLT, NO_SHP, NO_META, RESET,
+      REVFLT, MSB, UNIT, NAMEPATH, NO_MSB, LITTLE_ENDIAN, NO_FLT, NO_SHP, NO_META, RESET,
       POLY, NOMISS_SHP, DECIMAL, IS0, GRADS, SIMPLEWX, RADEARTH, CSV, NO_CSV,
       MAJEARTH, MINEARTH, NETCDF, VERBOSESHP, ASCGRID, SIMPLEVER
    };
@@ -673,6 +673,17 @@ static int Grib2ParseObj (Grib2Type * grib, Tcl_Interp * interp, int objc,
             }
             break;
          case NO_MSB:
+            if ((objc == 1) ||
+                (Tcl_GetBooleanFromObj (interp, objPtr[1], &i_temp) !=
+                 TCL_OK)) {
+               usr->f_MSB = (sChar) 0;
+               useArgs = 1;
+            } else {
+               usr->f_MSB = (sChar) i_temp;
+               useArgs = 2;
+            }
+            break;
+         case LITTLE_ENDIAN:
             if ((objc == 1) ||
                 (Tcl_GetBooleanFromObj (interp, objPtr[1], &i_temp) !=
                  TCL_OK)) {
