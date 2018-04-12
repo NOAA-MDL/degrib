@@ -167,12 +167,12 @@ AS_IF([test "x$with_extradebug" != xno],
 
 
 # Handle JPEG2000 Libtool fix
-JPEG2000_LIBTOOL_FIX=""
-case $host in
-  *-*-cygwin*|*-*-mingw*)
-    JPEG2000_LIBTOOL_FIX="cp ./jpeg2000/libtool.mingw ./jpeg2000/libtool";;
-  esac
-AC_SUBST([JPEG2000_LIBTOOL_FIX])
+#JPEG2000_LIBTOOL_FIX=""
+#case $host in
+#  *-*-cygwin*|*-*-mingw*)
+#    JPEG2000_LIBTOOL_FIX="cp ./jpeg2000/libtool.mingw ./jpeg2000/libtool";;
+#  esac
+#AC_SUBST([JPEG2000_LIBTOOL_FIX])
 
 # (For AIX only) Set the max dynamic memory data size to 0x50000000
 case $host in

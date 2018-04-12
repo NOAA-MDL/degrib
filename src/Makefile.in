@@ -185,7 +185,7 @@ ${top_srcdir}/@MEM_NAME@/Makefile: ${top_srcdir}/@MEM_NAME@/configure
 	@echo "-----------------------------"
 	@echo "Attempting to configure jpeg2000..."
 	(cd ./jpeg2000 && export CC="$(CC)" && export CFLAGS="$(CFLAGS)" && ./configure)
-	@JPEG2000_LIBTOOL_FIX@
+#	@JPEG2000_LIBTOOL_FIX@
 	@echo "Finished with jpeg2000..."
 	@echo "-----------------------------"
 	@echo ""
