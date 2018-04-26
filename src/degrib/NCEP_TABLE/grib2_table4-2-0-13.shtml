@@ -8,39 +8,26 @@
  alink="#ff0000" link="#0000ff" vlink="#551a8b">
 <br>
 <center>
-<big><big><big><b>GRIB2 - TABLE 4.2-0-13</b></big></big></big><br>
-<span style="font-weight: bold;"><br>
-</span><b>&nbsp;<big><big> PARAMETERS FOR DISCIPLINE 0<br>
-CATEGORY 13<br>
-<small style="color: rgb(51, 51, 255);">(Meteorological products,
-Aerosols category)</small><br>
-</big></big></b><big><big><br>
-</big></big><big><big><big><small>Section 0 , Octet 7 = 0</small></big></big></big><b><big><big><big><small><br>
-</small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 13<br>
-</big></big></center>
-<br>
-<br>
-<center><b>Revised 06/30/2008</b><br>
-<span style="color: red; font-size: 10pt;"><b>Red text depicts changes
-made since 01/26/2006</b></span>
-<br>
-<b><br>
-</b></center>
+<h3>GRIB2 - TABLE 4.2-0-13</h3>
+<h4>PARAMETERS FOR DISCIPLINE 0<br>CATEGORY 13</h4>
+<h4><span style="color: blue;">(Meteorological products,
+Aerosols category)</span></h4>
+<h4>In Section 0, Octet 7 = 0<br>
+In Section 4, Octet 10 = 13</h4>
+</center>
+<center><b><span style="font-size: 9pt;">Revised 02/13/2012<br>
+<span style="color: red;">Red text depicts changes made since 01/26/2006</span></b><br>
+</center>
 <br>
 <br>
 <center>
 <table style="width: 90%;" border="1" cellpadding="5" cellspacing="0">
   <tbody>
     <tr>
-      <th>Number<br>
-(Section 4, octet 11)<br>
-      </th>
-      <th>Parameter</th>
-      <td
- style="text-align: center; vertical-align: middle; font-weight: bold;">Units<br>
-      </td>
-      <td
- style="vertical-align: middle; font-weight: bold; text-align: center;">Abbrev</td>
+      <th style="text-align: center; background-color: lightgrey;">Number<br>(In Section 4, octet 11)<br></th>
+      <th style="text-align: center; background-color: lightgrey;">Parameter</th>
+      <td style="text-align: center; vertical-align: middle; background-color: lightgrey; font-weight: bold;">Units<br></td>
+      <td style="vertical-align: middle; font-weight: bold;  background-color: lightgrey; text-align: center;">Abbrev</td>
     </tr>
     <tr>
       <td style="text-align: center;">0<br></td>
@@ -50,7 +37,7 @@ made since 01/26/2006</b></span>
       <td style="vertical-align: top;">AEROT<br></td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center;">1-191<br>
+      <td style="vertical-align: top; text-align: center;"><span style="color:red;">1</span>-191<br>
       </td>
       <td style="vertical-align: top;">Reserved</td>
       <td style="vertical-align: top;"><br>
@@ -75,39 +62,39 @@ for Local Use<br>
     </tr>
     <tr>
       <td
- style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">192<br>
+ style="vertical-align: top; text-align: center; ">192<br>
       </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Particulate
+      <td style="vertical-align: top; ">Particulate
 matter (coarse)</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">&micro;g/m<sup>3</sup></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">PMTC</td>
+      <td style="vertical-align: top; ">&micro;g m<sup>-3</sup></td>
+      <td style="vertical-align: top; ">PMTC</td>
     </tr>
     <tr>
       <td
- style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">193<br>
+ style="vertical-align: top; text-align: center; ">193<br>
       </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Particulate
+      <td style="vertical-align: top; ">Particulate
 matter (fine)</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">&micro;g/m<sup>3</sup></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">PMTF</td>
+      <td style="vertical-align: top; ">&micro;g m<sup>-3</sup></td>
+      <td style="vertical-align: top; ">PMTF</td>
     </tr>
     <tr>
       <td
- style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">194<br>
+ style="vertical-align: top; text-align: center; ">194<br>
       </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Particulate
+      <td style="vertical-align: top; ">Particulate
 matter (fine)</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">log10(&micro;g/m<sup>3</sup>)</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">LPMTF</td>
+      <td style="vertical-align: top; ">log10 (&micro;g m<sup>-3</sup>)</td>
+      <td style="vertical-align: top; ">LPMTF</td>
     </tr>
     <tr>
       <td
- style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">195<br>
+ style="vertical-align: top; text-align: center; ">195<br>
       </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Integrated
+      <td style="vertical-align: top; ">Integrated
 column particulate matter (fine)</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">log10(&micro;g/m<sup>3</sup>)</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">LIPMF</td>
+      <td style="vertical-align: top; ">log10 (&micro;g m<sup>-3</sup>)</td>
+      <td style="vertical-align: top; ">LIPMF</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">255<br>

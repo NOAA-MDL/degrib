@@ -4,40 +4,30 @@
   <meta name="Keywords" content="GRIB">
   <title>GRIBv2 - Table 4.2-10-2 Oceanographic - Ice</title>
 </head>
-<body style="color: rgb(0, 0, 0); background-color: white;"
+<body style="color: black; background-color: white;"
  alink="#ff0000" link="#0000ff" vlink="#551a8b">
 <br>
 <center>
-<big><big><big><b>GRIB2 - TABLE 4.2-10-2</b></big></big></big><br>
-<span style="font-weight: bold;"><br>
-</span><b>&nbsp;<big><big> PARAMETERS FOR DISCIPLINE 10<br>
-CATEGORY 2<br>
-<small style="color: rgb(51, 51, 255);">(Oceanographic products, Ice
-category)</small><br>
-</big></big></b><big><big><br>
-</big></big><big><big><big><small>Section 0 , Octet 7 = 10</small></big></big></big><b><big><big><big><small><br>
-</small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 2<br>
-</big></big></center>
-<br>
-<center><b>Revised 06/27/2008</b><br>
-<span style="color: red; font-size: 10pt;"><b>Red text depicts changes
-made since</b></span><b><span style="color: rgb(255, 0, 0);">11/05/2007</span><br>
-</b></center>
+<h3>GRIB2 - TABLE 4.2-10-2</h3>
+<h4>PARAMETERS FOR DISCIPLINE 10<br>CATEGORY 2</h4>
+<h4><span style="color: blue;">(Oceanographic products,
+Ice category)</span></h4>
+<h4>In Section 0, Octet 7 = 10<br>
+In Section 4, Octet 10 = 2</h4>
+</center>
+<center><b><span style="font-size: 9pt;">Revised 04/02/2015<br>
+<span style="color: red;">Red text depicts changes made since 07/02/2014</span></b><br>
+</center>
 <br>
 <br>
 <center>
 <table style="width: 90%;" border="1" cellpadding="5" cellspacing="0">
   <tbody>
     <tr>
-      <th>Number<br>
-(Section 4, octet 11)<br>
-      </th>
-      <th>Parameter</th>
-      <td
- style="text-align: center; vertical-align: middle; font-weight: bold;">Units<br>
-      </td>
-      <td
- style="vertical-align: middle; font-weight: bold; text-align: center;">Abbrev</td>
+      <th style="text-align: center; background-color: lightgrey;">Number<br>(In Section 4, octet 11)<br></th>
+      <th style="text-align: center; background-color: lightgrey;">Parameter</th>
+      <td style="text-align: center; vertical-align: middle; background-color: lightgrey; font-weight: bold;">Units<br></td>
+      <td style="vertical-align: middle; font-weight: bold;  background-color: lightgrey; text-align: center;">Abbrev</td>
     </tr>
     <tr>
       <td style="text-align: center;">0<br>
@@ -46,7 +36,7 @@ made since</b></span><b><span style="color: rgb(255, 0, 0);">11/05/2007</span><b
       </td>
       <td style="vertical-align: top;">Proportion<br>
       </td>
-      <td style="vertical-align: top;">ICE C<br>
+      <td style="vertical-align: top;">ICEC<br>
       </td>
     </tr>
     <tr>
@@ -64,7 +54,7 @@ made since</b></span><b><span style="color: rgb(255, 0, 0);">11/05/2007</span><b
       </td>
       <td style="vertical-align: top;">Direction of Ice Drift<br>
       </td>
-      <td style="vertical-align: top;">Degree True<br>
+      <td style="vertical-align: top;">degree True<br>
       </td>
       <td style="vertical-align: top;">DICED<br>
       </td>
@@ -85,7 +75,7 @@ made since</b></span><b><span style="color: rgb(255, 0, 0);">11/05/2007</span><b
       <td style="vertical-align: top;">U-Component of Ice Drift<br>
       </td>
       <td style="vertical-align: top;">m s<sup>-1</sup></td>
-      <td style="vertical-align: top;">U ICE<br>
+      <td style="vertical-align: top;">UICE<br>
       </td>
     </tr>
     <tr>
@@ -93,7 +83,7 @@ made since</b></span><b><span style="color: rgb(255, 0, 0);">11/05/2007</span><b
       </td>
       <td style="vertical-align: top;">V-Component of Ice Drift</td>
       <td style="vertical-align: top;">m s<sup>-1</sup></td>
-      <td style="vertical-align: top;">V ICE<br>
+      <td style="vertical-align: top;">VICE<br>
       </td>
     </tr>
     <tr>
@@ -102,7 +92,7 @@ made since</b></span><b><span style="color: rgb(255, 0, 0);">11/05/2007</span><b
       <td style="vertical-align: top;">Ice Growth Rate<br>
       </td>
       <td style="vertical-align: top;">m s<sup>-1</sup></td>
-      <td style="vertical-align: top;">ICE G<br>
+      <td style="vertical-align: top;">ICEG<br>
       </td>
     </tr>
     <tr>
@@ -111,17 +101,43 @@ made since</b></span><b><span style="color: rgb(255, 0, 0);">11/05/2007</span><b
       <td style="vertical-align: top;">Ice Divergence<br>
       </td>
       <td style="vertical-align: top;">s<sup>-1</sup></td>
-      <td style="vertical-align: top;">ICE D<br>
+      <td style="vertical-align: top;">ICED<br>
       </td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">8<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Ice Temperature<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">K<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">ICE T<br></td>
+      <td style="vertical-align: top; text-align: center; ">8<br></td>
+      <td style="vertical-align: top; ">Ice Temperature<br></td>
+      <td style="vertical-align: top; ">K<br></td>
+      <td style="vertical-align: top; ">ICETMP<br></td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center;">9-191<br>
+      <td style="vertical-align: top; text-align: center; ">9</td>
+      <td style="vertical-align: top; ">Module of Ice Internal Pressure</td>
+      <td style="vertical-align: top; ">Pa m</td>
+      <td style="vertical-align: top; ">ICEPRS</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">10</td>
+      <td style="vertical-align: top; color: red;">Zonal Vector Component of Vertically Integrated
+       Ice Internal Pressure</td>
+      <td style="vertical-align: top; color: red;">Pa m</td>
+      <td style="vertical-align: top; color: red;">ZVCICEP</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">11</td>
+      <td style="vertical-align: top; color: red;">Meridional Vector Component of Vertically Integrated
+       Ice Internal Pressure</td>
+      <td style="vertical-align: top; color: red;">Pa m</td>
+      <td style="vertical-align: top; color: red;">MVCICEP</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: red;text-align: center; ">12</td>
+      <td style="vertical-align: top; color: red; ">Compressive Ice Strength</td>
+      <td style="vertical-align: top; color: red;">N m<sup>-1</sup></td>
+      <td style="vertical-align: top; color: red;">CICES</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;"><span style="color:red;">13</span>-191<br>
       </td>
       <td style="vertical-align: top;">Reserved</td>
       <td style="vertical-align: top;"><br>
@@ -131,17 +147,17 @@ made since</b></span><b><span style="color: rgb(255, 0, 0);">11/05/2007</span><b
     </tr>
     <tr>
       <td
- style="vertical-align: top; text-align: center; background-color: rgb(204, 204, 204);">192-254<br>
+ style="vertical-align: top; text-align: center; background-color: lightgrey;">192-254<br>
       </td>
       <td
- style="vertical-align: top; background-color: rgb(204, 204, 204);">Reserved
+ style="vertical-align: top; background-color: lightgrey;">Reserved
 for Local Use<br>
       </td>
       <td
- style="vertical-align: top; background-color: rgb(204, 204, 204);"><br>
+ style="vertical-align: top; background-color: lightgrey;"><br>
       </td>
       <td
- style="vertical-align: top; background-color: rgb(204, 204, 204);"><br>
+ style="vertical-align: top; background-color: lightgrey;"><br>
       </td>
     </tr>
     <tr>
@@ -158,6 +174,22 @@ for Local Use<br>
 </table>
 </center>
 <br>
+<br>
+<br>
+<table align="center" width="80%">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;"><b>Notes:</b><br>
+<p>
+<b> * </b> Ice internal pressure or stress (Pa m) is the integrated pressure across the vertical thickness of a
+layer of ice.  It is produced when concentrated ice reacts to external forces such as wind and ocen currents.
+<br>
+</P>
+</tr>
+<br>
+  </tbody>
+</table>
+</center>
 <br>
 <center><a href="/pmb/docs/grib2/grib2_doc.shtml">Back</a></center>
 <br>

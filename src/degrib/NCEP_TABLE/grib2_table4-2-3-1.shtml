@@ -4,41 +4,30 @@
   <meta name="Keywords" content="GRIB">
   <title>GRIBv2 - Table 4.2-3-1 Space - Quantitative</title>
 </head>
-<body style="color: rgb(0, 0, 0); background-color: white;"
+<body style="color: black; background-color: white;"
  alink="#ff0000" link="#0000ff" vlink="#551a8b">
 <br>
 <center>
-<big><big><big><b>GRIB2 - TABLE 4.2-3-1</b></big></big></big><br>
-<span style="font-weight: bold;"><br>
-</span><b>&nbsp;<big><big> PARAMETERS FOR DISCIPLINE 3<br>
-CATEGORY 1<br>
-<small style="color: rgb(51, 51, 255);">(Space products, Quantitative
-category)</small><br>
-</big></big></b><big><big><br>
-</big></big><big><big><big><small>Section 0 , Octet 7 = 3</small></big></big></big><b><big><big><big><small><br>
-</small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 1<br>
-</big></big></center>
-<br>
-<center><b>Revised 06/27/2008</b><br>
-<span style="color: red; font-size: 10pt;"><b>Red text depicts changes
-made since 11/01/2007</b></span></center>
-<br>
-</b></center>
+<h3>GRIB2 - TABLE 4.2-3-1</h3>
+<h4>PARAMETERS FOR DISCIPLINE 3<br>CATEGORY 1</h4>
+<h4><span style="color: blue;">(Space products,
+Quantitative category)</span></h4>
+<h4>In Section 0, Octet 7 = 3<br>
+In Section 4, Octet 10 = 1</h4>
+</center>
+<center><b><span style="font-size: 9pt;">Revised 07/25/2016<br>
+<span style="color: red;">Red text depicts changes made since 07/23/2013</span></b><br>
+</center>
 <br>
 <br>
 <center>
 <table style="width: 90%;" border="1" cellpadding="5" cellspacing="0">
   <tbody>
     <tr>
-      <th>Number<br>
-(Section 4, octet 11)<br>
-      </th>
-      <th>Parameter</th>
-      <td
- style="text-align: center; vertical-align: middle; font-weight: bold;">Units<br>
-      </td>
-      <td
- style="vertical-align: middle; font-weight: bold; text-align: center;">Abbrev</td>
+      <th style="text-align: center; background-color: lightgrey;">Number<br>(In Section 4, octet 11)<br></th>
+      <th style="text-align: center; background-color: lightgrey;">Parameter</th>
+      <td style="text-align: center; vertical-align: middle; background-color: lightgrey; font-weight: bold;">Units<br></td>
+      <td style="vertical-align: middle; font-weight: bold;  background-color: lightgrey; text-align: center;">Abbrev</td>
     </tr>
     <tr>
       <td style="text-align: center;">0<br>
@@ -55,7 +44,7 @@ made since 11/01/2007</b></span></center>
       </td>
       <td>Instantaneous Rain Rate<br>
       </td>
-      <td style="vertical-align: top;">kg m<sup>-2</sup>s<sup>-1</sup><br>
+      <td style="vertical-align: top;">kg m<sup>-2</sup> s<sup>-1</sup><br>
       </td>
       <td style="vertical-align: top;">IRRATE<br>
       </td>
@@ -75,9 +64,7 @@ made since 11/01/2007</b></span></center>
       </td>
       <td>Cloud Top Height Quality Indicator<br>
       </td>
-      <td style="vertical-align: top;"><a href="grib2_table4-219.shtml">Code
-table 4.219</a><br>
-      </td>
+      <td style="vertical-align: top;"><a href="grib2_table4-219.shtml">Code table 4.219</a></td>
       <td style="vertical-align: top;">CTOPHQI<br>
       </td>
     </tr>
@@ -86,7 +73,7 @@ table 4.219</a><br>
       </td>
       <td>Estimated u-Component of Wind<br>
       </td>
-      <td style="vertical-align: top;">m<sup>-1</sup><br>
+      <td style="vertical-align: top;">m s<sup>-1</sup><br>
       </td>
       <td style="vertical-align: top;">ESTUGRD<br>
       </td>
@@ -96,80 +83,161 @@ table 4.219</a><br>
       </td>
       <td>Estimated v-Component of Wind<br>
       </td>
-      <td style="vertical-align: top;">m<sup>-1</sup><br>
+      <td style="vertical-align: top;">m s<sup>-1</sup><br>
       </td>
       <td style="vertical-align: top;">ESTVGRD<br>
       </td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">6<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Number Of Pixels Used</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Numeric</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">NPIXU<br></td>
+      <td style="vertical-align: top; text-align: center; color: blck;">6<br></td>
+      <td style="vertical-align: top; color: blck;">Number Of Pixels Used</td>
+      <td style="vertical-align: top; color: blck;">Numeric</td>
+      <td style="vertical-align: top; color: blck;">NPIXU<br></td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">7<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Solar Zenith Angle</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Degree</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">SOLZA<br></td>
+      <td style="vertical-align: top; text-align: center; color: blck;">7<br></td>
+      <td style="vertical-align: top; color: blck;">Solar Zenith Angle</td>
+      <td style="vertical-align: top; color: blck;">&#176;</td>
+      <td style="vertical-align: top; color: blck;">SOLZA<br></td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">8<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Relative Azimuth Angle</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Degree</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">RAZA<br></td>
+      <td style="vertical-align: top; text-align: center; color: blck;">8<br></td>
+      <td style="vertical-align: top; color: blck;">Relative Azimuth Angle</td>
+      <td style="vertical-align: top; color: blck;">&#176;</td>
+      <td style="vertical-align: top; color: blck;">RAZA<br></td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">9<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Reflectance in 0.6 Micron Channel</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">%</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">RFL06<br></td>
+      <td style="vertical-align: top; text-align: center; color: blck;">9<br></td>
+      <td style="vertical-align: top; color: blck;">Reflectance in 0.6 Micron Channel</td>
+      <td style="vertical-align: top; color: blck;">%</td>
+      <td style="vertical-align: top; color: blck;">RFL06<br></td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">10<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Reflectance in 0.8 Micron Channel</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">%</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">RFL08<br></td>
+      <td style="vertical-align: top; text-align: center; color:blck;">10<br></td>
+      <td style="vertical-align: top; color: blck;">Reflectance in 0.8 Micron Channel</td>
+      <td style="vertical-align: top; color: blck;">%</td>
+      <td style="vertical-align: top; color: blck;">RFL08<br></td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">11<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Reflectance in 1.6 Micron Channel</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">%</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">RFL16<br></td>
+      <td style="vertical-align: top; text-align: center; color: blck;">11<br></td>
+      <td style="vertical-align: top; color: blck;">Reflectance in 1.6 Micron Channel</td>
+      <td style="vertical-align: top; color: blck;">%</td>
+      <td style="vertical-align: top; color: blck;">RFL16<br></td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">12<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Reflectance in 3.9 Micron Channel</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">%</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">RFL39<br></td>
+      <td style="vertical-align: top; text-align: center; color: blck;">12<br></td>
+      <td style="vertical-align: top; color: blck;">Reflectance in 3.9 Micron Channel</td>
+      <td style="vertical-align: top; color: blck;">%</td>
+      <td style="vertical-align: top; color: blck;">RFL39<br></td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">13<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Atmospheric Divergence</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">s<sup>-1</sup></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">ATMDIV<br></td>
+      <td style="vertical-align: top; text-align: center; color: blck;">13<br></td>
+      <td style="vertical-align: top; color: blck;">Atmospheric Divergence</td>
+      <td style="vertical-align: top; color: blck;">s<sup>-1</sup></td>
+      <td style="vertical-align: top; color: blck;">ATMDIV<br></td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center;">14-191<br>
-      </td>
+      <td style="vertical-align: top; text-align: center; color: blck;">14<br></td>
+      <td style="vertical-align: top; color: blck;">Cloudy Brightness Temperature</td>
+      <td style="vertical-align: top; color: blck;">K</td>
+      <td style="vertical-align: top; color: blck;">CBTMP<br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: blck;">15<br></td>
+      <td style="vertical-align: top; color: blck;">Clear Sky Brightness Temperature</td>
+      <td style="vertical-align: top; color: blck;">K</td>
+      <td style="vertical-align: top; color: blck;">CSBTMP<br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: blck;">16<br></td>
+      <td style="vertical-align: top; color: blck;">Cloudy Radiance (with respect to wave number)</td>
+      <td style="vertical-align: top; color: blck;">W m<sup>-1</sup> sr<sup>-1</sup</td>
+      <td style="vertical-align: top; color: blck;">CLDRAD<br></td>
+    </tr> 
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: blck;">17<br></td>
+      <td style="vertical-align: top; color: blck;">Clear Sky Radiance (with respect to wave number)</td>
+      <td style="vertical-align: top; color: blck;">W m<sup>-1</sup> sr<sup>-1</sup</td>
+      <td style="vertical-align: top; color: blck;">CSKYRAD<br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">18</td>
       <td style="vertical-align: top;">Reserved</td>
-      <td style="vertical-align: top;"><br>
-      </td>
-      <td style="vertical-align: top;"><br>
-      </td>
+      <td style="vertical-align: top;"><br></td>
+      <td style="vertical-align: top;"><br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: blck;">19<br></td>
+      <td style="vertical-align: top; color: blck;">Wind Speed</td>
+      <td style="vertical-align: top; color: blck;">m s<sup>-1</sup></td>
+      <td style="vertical-align: top; color: blck;">WINDS<br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: blck;">20<br></td>
+      <td style="vertical-align: top; color: blck;">Aerosol Optical Thickness at 0.635  &#181m</td>
+      <td style="vertical-align: top; color: blck;"><br></td>
+      <td style="vertical-align: top; color: blck;">AOT06<br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: blck;">21<br></td>
+      <td style="vertical-align: top; color: blck;">Aerosol Optical Thickness at 0.810  &#181m</td>
+      <td style="vertical-align: top; color: blck;"><br></td>
+      <td style="vertical-align: top; color: blck;">AOT08<br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: blck;">22<br></td>
+      <td style="vertical-align: top; color: blck;">Aerosol Optical Thickness at 1.640 &#181m</td>
+      <td style="vertical-align: top; color: blck;"><br></td>
+      <td style="vertical-align: top; color: blck;">AOT16<br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: blck;">23<br></td>
+      <td style="vertical-align: top; color: blck;">Angstrom Coefficient</td>
+      <td style="vertical-align: top; color: blck;"><br></td>
+      <td style="vertical-align: top; color: blck;">ANGCOE<br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;"><span style="color:red;">24</span>-26</td>
+      <td style="vertical-align: top;">Reserved</td>
+      <td style="vertical-align: top;"><br></td>
+      <td style="vertical-align: top;"><br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">27</td>
+      <td style="vertical-align: top; color: red;">Bidirectional Reflecance Factor (See Note 1)</td>
+      <td style="vertical-align: top; color: red;">Numeric</td>
+      <td style="vertical-align: top; color: red;">BRFLF</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">28</td>
+      <td style="vertical-align: top; color: red;">Brightness Temperture</td>
+      <td style="vertical-align: top; color: red;">K</td>
+      <td style="vertical-align: top; color: red;">SPBRT</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">29</td>
+      <td style="vertical-align: top; color: red;">Scaled Radiance (See Note 2)</td>
+      <td style="vertical-align: top; color: red;">Numeric</td>
+      <td style="vertical-align: top; color: red;">SRAD</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;"><span style="color:red;">30</span>-191</td>
+      <td style="vertical-align: top;">Reserved</td>
+      <td style="vertical-align: top;"><br></td>
+      <td style="vertical-align: top;"><br></td>
     </tr>
     <tr>
       <td
- style="vertical-align: top; text-align: center; background-color: rgb(192, 192, 192);">192-254
+ style="vertical-align: top; text-align: center; background-color: lightgrey;">192-254
       </td>
       <td
- style="vertical-align: top; background-color: rgb(192, 192, 192);">Reserved
+ style="vertical-align: top; background-color: lightgrey;">Reserved
 for Local Use</td>
       <td
- style="vertical-align: top; background-color: rgb(192, 192, 192);"><br>
+ style="vertical-align: top; background-color: lightgrey;"><br>
       </td>
       <td
- style="vertical-align: top; background-color: rgb(192, 192, 192);"><br>
+ style="vertical-align: top; background-color: lightgrey;"><br>
       </td>
     </tr>
     <tr>
@@ -184,14 +252,18 @@ Component<br>
       </td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center;">193<br>
-      </td>
-      <td style="vertical-align: top;">Scatterometer Estimated V Wind
-Component</td>
+      <td style="vertical-align: top; text-align: center;">193</td>
+      <td style="vertical-align: top;">Scatterometer Estimated V Wind Component</td>
       <td style="vertical-align: top;">m s<sup>-1</sup></td>
-      <td style="vertical-align: top;">VSCT<br>
-      </td>
+      <td style="vertical-align: top;">VSCT</td>
     </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color:red;">194</td>
+      <td style="vertical-align: top; color:red;">Scatterometer Wind Quality</td>
+      <td style="vertical-align: top;color:red;"><br></td>
+      <td style="vertical-align: top; color:red;">SWQI</td>
+    </tr>
+
     <tr>
       <td style="vertical-align: top; text-align: center;">255<br>
       </td>
@@ -206,6 +278,26 @@ Component</td>
 </table>
 </center>
 <br>
+<table align="center" width="80%">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;"><b>Notes:</b><br>
+      <br>
+(1) The ratio of the radiant flux reflected by a surface to that
+reflected into the same reflected-beam geometry and wavelength range 
+by an ideal (lossless) and diffuse (Lambertian) standard surface, irradiated
+under the same conditions.
+      <br>
+      <br>
+(2) Top of atmostphere radiance observed by a sensor, multiplied by pi divided 
+by the in-band solar irradiance.
+      <br>
+      <br>
+</td>
+    </tr>
+  </tbody>
+</table>
+</center>
 <br>
 <center><a href="/pmb/docs/grib2/grib2_doc.shtml">Back</a></center>
 <br>

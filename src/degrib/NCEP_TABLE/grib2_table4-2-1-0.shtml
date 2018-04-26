@@ -2,42 +2,32 @@
 <html>
 <head>
   <meta name="Keywords" content="GRIB">
-  <title>GRIBv2 - Table 4.2-1-0 Hydrological - Basic Hydrology</title>
+  <title>GRIBv2 - Table 4.2-1-0 Hydrological - Hydrology Basic</title>
 </head>
-<body style="color: rgb(0, 0, 0); background-color: white;"
+<body style="color: black; background-color: white;"
  alink="#ff0000" link="#0000ff" vlink="#551a8b">
 <br>
 <center>
-<big><big><big><b>GRIB2 - TABLE 4.2-1-0</b></big></big></big><br>
-<span style="font-weight: bold;"><br>
-</span><b>&nbsp;<big><big> PARAMETERS FOR DISCIPLINE 1<br>
-CATEGORY 0<br>
-<small style="color: rgb(51, 51, 255);">(Hydrological products, Basic
-Hydrology category)</small><br>
-</big></big></b><big><big><br>
-</big></big><big><big><big><small>Section 0 , Octet 7 = 1</small></big></big></big><b><big><big><big><small><br>
-</small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 0<br>
-</big></big></center>
-<br>
-<center><b>Revised 06/27/2008</b><br>
-<span style="color: red; font-size: 10pt;"><b>Red text depicts changes
-made since 04/09/2007</b></span><b><br>
-</b></center>
+<h3>GRIB2 - TABLE 4.2-1-0</h3>
+<h4>PARAMETERS FOR DISCIPLINE 1<br>CATEGORY 0</h4>
+<h4><span style="color: blue;">(Hydrological products,
+Hydrology Basic category)</span></h4>
+<h4>In Section 0, Octet 7 = 1<br>
+In Section 4, Octet 10 = 0</h4>
+</center>
+<center><b><span style="font-size: 9pt;">Revised 07/25/2016<br>
+<span style="color: red;">Red text depicts changes made since 01/16/2015</span></b><br>
+</center>
 <br>
 <br>
 <center>
 <table style="width: 90%;" border="1" cellpadding="5" cellspacing="0">
   <tbody>
     <tr>
-      <th>Number<br>
-(Section 4, octet 11)<br>
-      </th>
-      <th>Parameter</th>
-      <td
- style="text-align: center; vertical-align: middle; font-weight: bold;">Units<br>
-      </td>
-      <td
- style="vertical-align: middle; font-weight: bold; text-align: center;">Abbrev</td>
+      <th style="text-align: center; background-color: lightgrey;">Number<br>(In Section 4, octet 11)<br></th>
+      <th style="text-align: center; background-color: lightgrey;">Parameter</th>
+      <td style="text-align: center; vertical-align: middle; background-color: lightgrey; font-weight: bold;">Units<br></td>
+      <td style="vertical-align: middle; font-weight: bold;  background-color: lightgrey; text-align: center;">Abbrev</td>
     </tr>
     <tr>
       <td style="text-align: center;">0<br>
@@ -103,16 +93,73 @@ Normal<br>
       </td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center;">6<br>
-      </td>
+      <td style="vertical-align: top; text-align: center;">6</td>
       <td style="vertical-align: top;">Storm Surface Runoff</td>
       <td style="vertical-align: top;">kg m<sup>-2</sup></td>
-      <td style="vertical-align: top;">SSRUN<br>
-      </td>
+      <td style="vertical-align: top;">SSRUN</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center;">7-191<br>
-      </td>
+      <td style="vertical-align: top; text-align: center; color:blck;">7</td>
+      <td style="vertical-align: top; color:blck;">Discharge from Rivers or Streams</td>
+      <td style="vertical-align: top; color:blck;">m<sup>3</sup> s<sup>-1</sup></td>
+      <td style="vertical-align: top; color:blck;">DISRS</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color:red;">8</td>
+      <td style="vertical-align: top; color:red;">Group Water Upper Storage</td>
+      <td style="vertical-align: top; color:red;">kg m<sup>-2</sup></td>
+      <td style="vertical-align: top; color:red;">GWUPS</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color:red;">9</td>
+      <td style="vertical-align: top; color:red;">Group Water Lower Storage</td>
+      <td style="vertical-align: top; color:red;">kg m<sup>-2</sup></td>
+      <td style="vertical-align: top; color:red;">GWLOWS</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color:red;">10</td>
+      <td style="vertical-align: top; color:red;">Side Flow into River Channel</td>
+      <td style="vertical-align: top; color:red;">m<sup>3</sup> s<sup>-1</sup> m<sup>-1</sup></td>
+      <td style="vertical-align: top; color:red;">SFLORC</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color:red;">11</td>
+      <td style="vertical-align: top; color:red;">River Storage of Water</td>
+      <td style="vertical-align: top; color:red;">m<sup>3</sup></td>
+      <td style="vertical-align: top; color:red;">RVERSW</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color:red;">12</td>
+      <td style="vertical-align: top; color:red;">Flood Plain Storage of Water</td>
+      <td style="vertical-align: top; color:red;">m<sup>3</sup></td>
+      <td style="vertical-align: top; color:red;">FLDPSW</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color:red;">13</td>
+      <td style="vertical-align: top; color:red;">Depth of Water on Soil Surface</td>
+      <td style="vertical-align: top; color:red;">kg m<sup>-2</sup></td>
+      <td style="vertical-align: top; color:red;">DEPWSS</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color:red;">14</td>
+      <td style="vertical-align: top; color:red;">Upstream Accumulated Precipitation</td>
+      <td style="vertical-align: top; color:red;">kg m<sup>-2</sup></td>
+      <td style="vertical-align: top; color:red;">UPAPCP</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color:red;">15</td>
+      <td style="vertical-align: top; color:red;">Upstream Accumulated Snow Melt</td>
+      <td style="vertical-align: top; color:red;">kg m<sup>-2</sup></td>
+      <td style="vertical-align: top; color:red;">UPASM</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color:red;">16</td>
+      <td style="vertical-align: top; color:red;">Percolation Rate</td>
+      <td style="vertical-align: top; color:red;">kg m<sup>-2</sup> s<sup>-1</sup></td>
+      <td style="vertical-align: top; color:red;">PERRATE</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; "><span style="color: red;">17</span>-191<br>
       <td style="vertical-align: top;">Reserved</td>
       <td style="vertical-align: top;"><br>
       </td>
@@ -121,17 +168,17 @@ Normal<br>
     </tr>
     <tr>
       <td
- style="vertical-align: top; text-align: center; background-color: rgb(204, 204, 204);">192-254<br>
+ style="vertical-align: top; text-align: center; background-color: lightgrey;">192-254<br>
       </td>
       <td
- style="vertical-align: top; background-color: rgb(204, 204, 204);">Reserved
+ style="vertical-align: top; background-color: lightgrey;">Reserved
 for Local Use<br>
       </td>
       <td
- style="vertical-align: top; background-color: rgb(204, 204, 204);"><br>
+ style="vertical-align: top; background-color: lightgrey;"><br>
       </td>
       <td
- style="vertical-align: top; background-color: rgb(204, 204, 204);"><br>
+ style="vertical-align: top; background-color: lightgrey;"><br>
       </td>
     </tr>
     <tr>

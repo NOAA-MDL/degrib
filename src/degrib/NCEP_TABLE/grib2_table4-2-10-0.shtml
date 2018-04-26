@@ -4,46 +4,37 @@
   <meta name="Keywords" content="GRIB">
   <title>GRIBv2 - Table 4.2-10-0 Oceanographic - Waves</title>
 </head>
-<body style="color: rgb(0, 0, 0); background-color: white;"
+<body style="color: black; background-color: white;"
  alink="#ff0000" link="#0000ff" vlink="#551a8b">
 <br>
 <center>
-<big><big><big><b>GRIB2 - TABLE 4.2-10-0</b></big></big></big><br>
-<span style="font-weight: bold;"><br>
-</span><b>&nbsp;<big><big> PARAMETERS FOR DISCIPLINE 10<br>
-CATEGORY 0<br>
-<small style="color: rgb(51, 51, 255);">(Oceanographic products, Waves
-category)</small><br>
-</big></big></b><big><big><br>
-</big></big><big><big><big><small>Section 0 , Octet 7 = 10</small></big></big></big><b><big><big><big><small><br>
-</small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 0<br>
-</big></big></center>
-<br>
-<center><b>Revised 06/05/2007<br>
-<span style="color: red; font-size: 10pt;"><b>Red text depicts changes
-made since 04/09/2007</b></span><b></b></center>
+<h3>GRIB2 - TABLE 4.2-10-0</h3>
+<h4>PARAMETERS FOR DISCIPLINE 10<br>CATEGORY 0</h4>
+<h4><span style="color: blue;">(Oceanographic products,
+Waves category)</span></h4>
+<h4>In Section 0, Octet 7 = 10<br>
+In Section 4, Octet 10 = 0</h4>
+</center>
+<center><b><span style="font-size: 9pt;">Revised 09/23/2014<br>
+<span style="color: red;">Red text depicts changes made since 04/08/2013</span></b><br>
+</center>
 <br>
 <br>
 <center>
 <table style="width: 90%;" border="1" cellpadding="5" cellspacing="0">
   <tbody>
     <tr>
-      <th>Number<br>
-(Section 4, octet 11)<br>
-      </th>
-      <th>Parameter</th>
-      <td
- style="text-align: center; vertical-align: middle; font-weight: bold;">Units<br>
-      </td>
-      <td
- style="vertical-align: middle; font-weight: bold; text-align: center;">Abbrev</td>
+      <th style="text-align: center; background-color: lightgrey;">Number<br>(In Section 4, octet 11)<br></th>
+      <th style="text-align: center; background-color: lightgrey;">Parameter</th>
+      <td style="text-align: center; vertical-align: middle; background-color: lightgrey; font-weight: bold;">Units<br></td>
+      <td style="vertical-align: middle; font-weight: bold;  background-color: lightgrey; text-align: center;">Abbrev</td>
     </tr>
     <tr>
       <td style="text-align: center;">0<br>
       </td>
       <td>Wave Spectra (1)<br>
       </td>
-      <td style="vertical-align: top;">non-dim<br>
+      <td style="vertical-align: top;">-<br>
       </td>
       <td style="vertical-align: top;">WVSP1<br>
       </td>
@@ -52,7 +43,7 @@ made since 04/09/2007</b></span><b></b></center>
       <td style="vertical-align: top; text-align: center;">1<br>
       </td>
       <td style="vertical-align: top;">Wave Spectra (2)</td>
-      <td style="vertical-align: top;">non-dim</td>
+      <td style="vertical-align: top;">-</td>
       <td style="vertical-align: top;">WVSP2<br>
       </td>
     </tr>
@@ -60,7 +51,7 @@ made since 04/09/2007</b></span><b></b></center>
       <td style="vertical-align: top; text-align: center;">2<br>
       </td>
       <td style="vertical-align: top;">Wave Spectra (3)</td>
-      <td style="vertical-align: top;">non-dim</td>
+      <td style="vertical-align: top;">-</td>
       <td style="vertical-align: top;">WVSP3<br>
       </td>
     </tr>
@@ -80,7 +71,7 @@ Wind Waves and Swell<br>
       </td>
       <td style="vertical-align: top;">Direction of Wind Waves<br>
       </td>
-      <td style="vertical-align: top;">Degree True<br>
+      <td style="vertical-align: top;">degree true<br>
       </td>
       <td style="vertical-align: top;">WVDIR<br>
       </td>
@@ -107,7 +98,7 @@ Wind Waves and Swell<br>
       <td style="vertical-align: top; text-align: center;">7<br>
       </td>
       <td style="vertical-align: top;">Direction of Swell Waves</td>
-      <td style="vertical-align: top;">Degree True</td>
+      <td style="vertical-align: top;">degree true<br>
       <td style="vertical-align: top;">SWDIR<br>
       </td>
     </tr>
@@ -117,7 +108,7 @@ Wind Waves and Swell<br>
       <td style="vertical-align: top;">Significant Height of Swell Waves</td>
       <td style="vertical-align: top;">m<br>
       </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">SWELL<br>
+      <td style="vertical-align: top; ">SWELL<br>
       </td>
     </tr>
     <tr>
@@ -134,7 +125,7 @@ Wind Waves and Swell<br>
       </td>
       <td style="vertical-align: top;">Primary Wave Direction<br>
       </td>
-      <td style="vertical-align: top;">Degree True</td>
+      <td style="vertical-align: top;">degree true</td>
       <td style="vertical-align: top;">DIRPW<br>
       </td>
     </tr>
@@ -149,13 +140,10 @@ Wind Waves and Swell<br>
       </td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center;">12<br>
-      </td>
-      <td style="vertical-align: top;">Secondary Wave Direction<br>
-      </td>
-      <td style="vertical-align: top;">Degree True</td>
-      <td style="vertical-align: top;">DIRSW<br>
-      </td>
+      <td style="vertical-align: top; text-align: center;">12</td>
+      <td style="vertical-align: top;">Secondary Wave Direction</td>
+      <td style="vertical-align: top;">degree true</td>
+      <td style="vertical-align: top;">DIRSW</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">13<br>
@@ -167,37 +155,230 @@ Wind Waves and Swell<br>
       </td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center;">14-191<br>
-      </td>
+      <td style="vertical-align: top; text-align: center;">14<br></td>
+      <td style="vertical-align: top;">Direction of Combined Wind Waves and Swell</td>
+      <td style="vertical-align: top;">degree true</td>
+      <td style="vertical-align: top;">WWSDIR</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">15<br></td>
+      <td style="vertical-align: top;">Mean Period of Combined Wind Waves and Swell</td>
+      <td style="vertical-align: top;">s<br></td>
+      <td style="vertical-align: top;">MWSPER</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;color:red; text-align: center;">16</td>
+      <td style="vertical-align: top;color:red;">Coefficient of Drag With Waves</td> 
+      <td style="vertical-align: top;color:red;">-</td>
+      <td style="vertical-align: top;color:red;">CDWW</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;color:red; text-align: center;">17</td>
+      <td style="vertical-align: top;color:red;">Friction Velocity</td>
+      <td style="vertical-align: top;color:red;">m s<sup>-1</sup></td>
+      <td style="vertical-align: top;color:red;">FRICV</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;color:red; text-align: center;">18</td>
+      <td style="vertical-align: top;color:red;">Wave Stress</td>
+      <td style="vertical-align: top;color:red;">N m<sup>-2</sup></td>
+      <td style="vertical-align: top;color:red;">WSTR</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;color:red; text-align: center;">19</td>
+      <td style="vertical-align: top;color:red;">Normalised Waves Stress</td>
+      <td style="vertical-align: top;color:red;">-</td>
+      <td style="vertical-align: top;color:red;">NWSTR</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;color:red; text-align: center;">20</td>
+      <td style="vertical-align: top;color:red;">Mean Square Slope of Waves</td>
+      <td style="vertical-align: top;color:red;">-</td>
+      <td style="vertical-align: top;color:red;">MSSW</td>
+    </tr> 
+    <tr>
+      <td style="vertical-align: top;color:red; text-align: center;">21</td>
+      <td style="vertical-align: top;color:red;">U-component Surface Stokes Drift</td>
+      <td style="vertical-align: top;color:red;">m s<sup>-1</sup></td>
+      <td style="vertical-align: top;color:red;">USSD</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;color:red; text-align: center;">22</td>
+      <td style="vertical-align: top;color:red;">V-component Surface Stokes Drift</td>
+      <td style="vertical-align: top;color:red;">m s<sup>-1</sup></td>
+      <td style="vertical-align: top;color:red;">VSSD</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;color:red; text-align: center;">23</td>
+      <td style="vertical-align: top;color:red;">Period of Maximum Individual Wave Height</td>
+      <td style="vertical-align: top;color:red;">s</td>
+      <td style="vertical-align: top;color:red;">PMAXWH</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;color:red; text-align: center;">24</td>
+      <td style="vertical-align: top;color:red;">Maximum Individual Wave Height</td>
+      <td style="vertical-align: top;color:red;">m</td>
+      <td style="vertical-align: top;color:red;">MAXWH</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;color:red; text-align: center;">25</td>
+      <td style="vertical-align: top;color:red;">Inverse Mean Wave Frequency</td>
+      <td style="vertical-align: top;color:red;">s</td>
+      <td style="vertical-align: top;color:red;">IMWF</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;color:red; text-align: center;">26</td>
+      <td style="vertical-align: top;color:red;">Inverse Mean Frequency of The Wind Waves</td>
+      <td style="vertical-align: top;color:red;">s</td>
+      <td style="vertical-align: top;color:red;">IMFWW</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;color:red; text-align: center;">27</td>
+      <td style="vertical-align: top;color:red;">Inverse Mean Frequency of The Total Swell</td>
+      <td style="vertical-align: top;color:red;">s</td>
+      <td style="vertical-align: top;color:red;">IMFTSW</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;color:red; text-align: center;">28</td>
+      <td style="vertical-align: top;color:red;">Mean Zero-Crossing Wave Period</td>
+      <td style="vertical-align: top;color:red;">s</td>
+      <td style="vertical-align: top;color:red;">MZWPER</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color:red;text-align: center;">29</td>
+      <td style="vertical-align: top;color:red;">Mean Zero-Crossing Period of The Wind Waves</td>
+      <td style="vertical-align: top;color:red;">s</td>
+      <td style="vertical-align: top;color:red;">MZPWW</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;color:red; text-align: center;">30</td>
+      <td style="vertical-align: top;color:red;">Mean Zero-Crossing Period of The Total Swell</td>
+      <td style="vertical-align: top;color:red;">s</td>
+      <td style="vertical-align: top;color:red;">MZPTSW</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;color:red; text-align: center;">31</td>
+      <td style="vertical-align: top;color:red;">Wave Directional Width</td>
+      <td style="vertical-align:color:red; top;">-</td>
+      <td style="vertical-align:top;color:red; ">WDIRW</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;color:red; text-align: center;">32</td>
+      <td style="vertical-align: top;color:red;">Directional Width of The Wind Waves</td>
+      <td style="vertical-align: top;color:red;">-</td>
+      <td style="vertical-align: top;color:red;">DIRWWW</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;color:red; text-align: center;">33</td>
+      <td style="vertical-align: top;color:red;">Directional Width of The Total Swell</td>
+      <td style="vertical-align: top;color:red;">-</td>
+      <td style="vertical-align: top;color:red;">DIRWTS</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;color:red; text-align: center;">34</td>
+      <td style="vertical-align: top;color:red;">Peak Wave Period</td>
+      <td style="vertical-align: top;color:red;">s</td>
+      <td style="vertical-align: top;color:red;">PWPER</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;color:red; text-align: center;">35</td>
+      <td style="vertical-align: top;color:red;">Peak Period of The Wind Waves</td>
+      <td style="vertical-align: top;color:red;">s</td>
+      <td style="vertical-align: top;color:red;">PPERWW</td>
+    </tr> 
+    <tr>
+      <td style="vertical-align: top;color:red; text-align: center;">36</td>
+      <td style="vertical-align: top;color:red;">Peak Period of The Total Swell</td>
+      <td style="vertical-align: top;color:red;">s</td>
+      <td style="vertical-align: top;color:red;">PPERTS</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;color:red; text-align: center;">37</td>
+      <td style="vertical-align: top;color:red;">Altimeter Wave Height</td>
+      <td style="vertical-align: top;color:red;">m</td>
+      <td style="vertical-align: top;color:red;">ALTWH</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;color:red; text-align: center;">38</td>
+      <td style="vertical-align: top;color:red;">Altimeter Corrected Wave Height</td>
+      <td style="vertical-align: top;color:red;">m</td>
+      <td style="vertical-align: top;color:red;">ALCWH</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;color:red; text-align: center;">39</td>
+      <td style="vertical-align: top;color:red;">Altimeter Range Relative Correction</td>
+      <td style="vertical-align: top;color:red;">-</td>
+      <td style="vertical-align: top;color:red;">ALRRC</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;color:red; text-align: center;">40</td>
+      <td style="vertical-align: top;color:red;">10 Metre Neutral Wind Speed Over Waves</td>
+      <td style="vertical-align: top;color:red;">m s<sup>-1</sup></td>
+      <td style="vertical-align: top;color:red;">MNWSOW</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;color:red; text-align: center;">41</td>
+      <td style="vertical-align: top;color:red;">10 Metre Wind Direction Over Waves</td>
+      <td style="vertical-align: top;color:red;">degree true</td>
+      <td style="vertical-align: top;color:red;">MWDIRW</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;color:red; text-align: center;">42</td>
+      <td style="vertical-align: top;color:red;">Wave Engery Spectrum</td>
+      <td style="vertical-align: top;color:red;">m<sup>-2</sup> s rad<sup>-1</sup></td>
+      <td style="vertical-align: top;color:red;">WESP</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;color:red; text-align: center;">43</td>
+      <td style="vertical-align: top;color:red;">Kurtosis of The Sea Surface Elevation Due to Waves</td>
+      <td style="vertical-align: top;color:red;"> - </td>
+      <td style="vertical-align: top;color:red;">KSSEW</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;color:red; text-align: center;">44</td>
+      <td style="vertical-align: top;color:red;">Benjamin-Feir Index</td>
+      <td style="vertical-align: top;color:red;"> - </td>
+      <td style="vertical-align: top;color:red;">BENINX</td>
+    </tr>
+
+    <tr>
+      <td style="vertical-align: top;color:red; text-align: center;">45</td>
+      <td style="vertical-align: top;color:red;">Spectral Peakedness Factor</td>
+      <td style="vertical-align: top;color:red;">s<sup>-1</sup></td>
+      <td style="vertical-align: top;color:red;">SPFTR</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;"><span style="color:red;">46</span>-191</td>
       <td style="vertical-align: top;">Reserved</td>
-      <td style="vertical-align: top;"><br>
-      </td>
-      <td style="vertical-align: top;"><br>
-      </td>
+      <td style="vertical-align: top;"><br></td>
+      <td style="vertical-align: top;"><br></td>
     </tr>
     <tr>
       <td
- style="vertical-align: top; text-align: center; background-color: rgb(204, 204, 204);">192-254<br>
+ style="vertical-align: top; text-align: center; background-color: lightgrey;">192-254<br>
       </td>
       <td
- style="vertical-align: top; background-color: rgb(204, 204, 204);">Reserved
+ style="vertical-align: top; background-color: lightgrey;">Reserved
 for Local Use<br>
       </td>
       <td
- style="vertical-align: top; background-color: rgb(204, 204, 204);"><br>
+ style="vertical-align: top; background-color: lightgrey;"><br>
       </td>
       <td
- style="vertical-align: top; background-color: rgb(204, 204, 204);"><br>
+ style="vertical-align: top; background-color: lightgrey;"><br>
       </td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: red;">192<br>
-      </td>
-      <td style="vertical-align: top; color: red;">Wave Steepness</td>
-      <td style="vertical-align: top; color: red;"><br>
-      </td>
-      <td style="vertical-align: top; color: red;">WSTP<br>
-      </td>
+      <td style="vertical-align: top; text-align: center; ">192</td>
+      <td style="vertical-align: top; ">Wave Steepness</td>
+      <td style="vertical-align: top; ">proportion</td>
+      <td style="vertical-align: top; ">WSTP</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">193</td>
+      <td style="vertical-align: top; color: red;">Wave Length</td>
+      <td style="vertical-align: top; color: red;"><br></td>
+      <td style="vertical-align: top; color: red;">WLENG</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">255<br>
@@ -214,8 +395,21 @@ for Local Use<br>
 </center>
 <br>
 <br>
+<table
+ style="margin-left: auto; margin-right: auto; width: 80%; text-align: left;"
+ border="0" cellpadding="2" cellspacing="2">
+  <tbody>
+  <tr>
+  <td style="vertical-align: top;"><b>Notes:</b><br><br>
+     &nbsp; <b> * </b> Further information concerning the wave parameters can be found in WMO Publication
+     No 702, "Guide to Wave Analysis and Forecasting". </td>
+  </tr>
+  </tbody>
+</table>
+<br>
+<br>
 <center><a href="/pmb/docs/grib2/grib2_doc.shtml">Back</a></center>
 <br>
 <br>
 </body>
-</html>
+</html>`

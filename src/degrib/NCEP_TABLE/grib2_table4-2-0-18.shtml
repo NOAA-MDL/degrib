@@ -8,41 +8,31 @@
  link="#0000ff" vlink="#551a8b" alink="#ff0000">
 <br>
 <center>
-<big><big><big><b>GRIB2 - TABLE 4.2-0-18</b></big></big></big><br>
-<span style="font-weight: bold;"><br>
-</span><b>&nbsp;<big><big> PARAMETERS FOR DISCIPLINE 0<br>
-CATEGORY 18<br>
-<small style="color: rgb(51, 51, 255);">(Meteorological products,
-Nuclear/Radiology
-category)</small><br>
-</big></big></b><big><big><br>
-</big></big><big><big><big><small>Section 0 , Octet 7 = 0</small></big></big></big><b><big><big><big><small><br>
-</small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 18<br>
-</big></big></center>
+<h3>GRIB2 - TABLE 4.2-0-18</h3>
+<h4>PARAMETERS FOR DISCIPLINE 0<br>CATEGORY 18</h4>
+<h4><span style="color: blue;">(Meteorological products,
+Nuclear/Radiology Imagery category)</span></h4>
+<h4>In Section 0, Octet 7 = 0<br>
+In Section 4, Octet 10 = 18</h4>
+</center>
+<center><b><span style="font-size: 9pt;">Revised 07/12/2017<br>
+<span style="color: red;">Red text depicts changes made since 07/25/2016</span></b><br>
+</center>
 <br>
-<center><b>Revised 06/30/2008</b><br>
-<span style="color: red; font-size: 10pt;"><b>Red text depicts changes
-made since 01/26/2006</b></span>
 <br>
-<b><br>
-</b></center>
-<table border="1" cellspacing="0" cellpadding="5" style="width: 90%;">
+<center>
+<table style="width: 90%;" border="1" cellpadding="5" cellspacing="0">
   <tbody>
     <tr>
-      <th>Number<br>
-(Section 4, octet 11)<br>
-      </th>
-      <th>Parameter</th>
-      <td
- style="text-align: center; vertical-align: middle; font-weight: bold;">Units<br>
-      </td>
-      <td
- style="vertical-align: middle; font-weight: bold; text-align: center;">Abbrev</td>
+      <th style="text-align: center; background-color: lightgrey;">Number<br>(In Section 4, octet 11)<br></th>
+      <th style="text-align: center; background-color: lightgrey;">Parameter</th>
+      <td style="text-align: center; vertical-align: middle; background-color: lightgrey; font-weight: bold;">Units<br></td>
+      <td style="vertical-align: middle; font-weight: bold;  background-color: lightgrey; text-align: center;">Abbrev</td>
     </tr>
     <tr>
       <td style="text-align: center;">0<br>
       </td>
-      <td>Air Concentration of Cesium 137<br>
+      <td>Air Concentration of Caesium 137<br>
       </td>
       <td style="vertical-align: top;">Bq m<sup>-3</sup><br>
       </td>
@@ -69,7 +59,7 @@ Pollutant<br>
     <tr>
       <td style="vertical-align: top; text-align: center;">3<br>
       </td>
-      <td style="vertical-align: top;">Ground Deposition of Cesium 137</td>
+      <td style="vertical-align: top;">Ground Deposition of Caesium 137</td>
       <td style="vertical-align: top;">Bq m<sup>-2</sup></td>
       <td style="vertical-align: top;">GDCES</td>
     </tr>
@@ -92,49 +82,106 @@ Pollutant </td>
       <td style="vertical-align: top; text-align: center;">6<br>
       </td>
       <td style="vertical-align: top;">Time Integrated Air
-Concentration of Cesium Pollutant<br>
+Concentration of Cesium Pollutant <span style="color: blck;"> (See Note 1)</span><br>
       </td>
-      <td style="vertical-align: top;">Bq m<sup>-3</sup></td>
+      <td style="vertical-align: top;">Bq s m<sup>-3</sup></td>
       <td style="vertical-align: top;">TIACCP</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">7<br>
       </td>
       <td style="vertical-align: top;">Time Integrated Air
-Concentration of Iodine Pollutant<br>
+Concentration of Iodine Pollutant <span style="color: blck;"> (See Note 1)</span><br>
       </td>
-      <td style="vertical-align: top;">Bq m<sup>-3</sup> </td>
+      <td style="vertical-align: top;">Bq s m<sup>-3</sup> </td>
       <td style="vertical-align: top;">TIACIP</tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">8<br>
       </td>
       <td style="vertical-align: top;">Time Integrated Air
-Concentration of Radioactive Pollutant</td>
-      <td style="vertical-align: top;">Bq m<sup>-3</sup> </td>
+Concentration of Radioactive Pollutant <span style="color: blck;"> (See Note 1)</span></td>
+      <td style="vertical-align: top;">Bq s m<sup>-3</sup></td>
       <td style="vertical-align: top;">TIACRP</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center;">9-191<br>
-      </td>
+      <td style="vertical-align: top; text-align: center;">9<br></td>
       <td style="vertical-align: top;">Reserved</td>
-      <td style="vertical-align: top;"><br>
-      </td>
-      <td style="vertical-align: top;"><br>
-      </td>
+      <td style="vertical-align: top;"><br></td>
+      <td style="vertical-align: top;"><br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: blck; text-align: center;">10<br></td>
+      <td style="vertical-align: top; color: blck;">Air Concentration (See Note 3)</td>
+      <td style="vertical-align: top; color: blck;">Bq m<sup>-3</sup></td>
+      <td style="vertical-align: top; color: blck;">AIRCON</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: blck; text-align: center;">11<br></td>
+      <td style="vertical-align: top; color: blck;">Wet Deposition</td>
+      <td style="vertical-align: top; color: blck;">Bq m<sup>-2</sup></td>
+      <td style="vertical-align: top; color: blck;">WETDEP</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: blck; text-align: center;">12<br></td>
+      <td style="vertical-align: top; color: blck;">Dry Deposition</td>
+      <td style="vertical-align: top; color: blck;">Bq m<sup>-2</sup></td>
+      <td style="vertical-align: top; color: blck;">DRYDEP</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: blck; text-align: center;">13<br></td>
+      <td style="vertical-align: top; color: blck;">Total Deposition (Wet + Dry)</td>
+      <td style="vertical-align: top; color: blck;">Bq m<sup>-2</sup></td>
+      <td style="vertical-align: top; color: blck;">TOTLWD</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: black; text-align: center;">14<br></td>
+      <td style="vertical-align: top; color: black;">Specific Activity Concentration (See Note 3)</td>
+      <td style="vertical-align: top; color: black;">Bq kg<sup>-1</sup></td>
+      <td style="vertical-align: top; color: black;">SACON</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: black; text-align: center;">15<br></td>
+      <td style="vertical-align: top; color: black;">Maximum of Air Concentration in Layer</td>
+      <td style="vertical-align: top; color: black;">Bq m<sup>-3</sup></td>
+      <td style="vertical-align: top; color: black;">MAXACON</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: black; text-align: center;">16<br></td>
+      <td style="vertical-align: top; color: black;">Height of Maximum of Air Concentration</td>
+      <td style="vertical-align: top; color: black;">m</td>
+      <td style="vertical-align: top; color: black;">HMXACON</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: red; text-align: center;">17</td>
+      <td style="vertical-align: top; color: red;">Column-Integrated Air Concentration</td>
+      <td style="vertical-align: top; color: red;">Bq m<sup>-2</sup></td>
+      <td style="vertical-align: top; color: red;">CIAIRC</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: red; text-align: center;">18</td>
+      <td style="vertical-align: top; color: red;">Column-Averaged Air Concentration in Layer</td>
+      <td style="vertical-align: top; color: red;">Bq m<sup>-3</sup></td>
+      <td style="vertical-align: top; color: red;">CAACL</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; "><span style="color: red;">19</span>-191<br>
+      <td style="vertical-align: top;">Reserved</td>
+      <td style="vertical-align: top;"><br></td>
+      <td style="vertical-align: top;"><br></td>
     </tr>
     <tr>
       <td
- style="vertical-align: top; text-align: center; background-color: rgb(204, 204, 204);">192-254<br>
+ style="vertical-align: top; text-align: center; background-color: lightgrey;">192-254<br>
       </td>
       <td
- style="vertical-align: top; background-color: rgb(204, 204, 204);">Reserved
+ style="vertical-align: top; background-color: lightgrey;">Reserved
 for Local Use<br>
       </td>
       <td
- style="vertical-align: top; background-color: rgb(204, 204, 204);"><br>
+ style="vertical-align: top; background-color: lightgrey;"><br>
       </td>
       <td
- style="vertical-align: top; background-color: rgb(204, 204, 204);"><br>
+ style="vertical-align: top; background-color: lightgrey;"><br>
       </td>
     </tr>
     <tr>
@@ -150,6 +197,25 @@ for Local Use<br>
   </tbody>
 </table>
 </center>
+<br>
+<br>
+<table align="center" width="80%">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;"><b>Notes:</b>
+<P>
+(1) Statistical process 1 (Accumulation) does not change units. It
+is recommended to use another parameter without the word "time-integrated" in its name and
+accumulation in PDT.<br><br>
+(2) Conversion factor between "Specific Activity Concentration" (14) and "Air Concentration" (10) is
+"Mass Density" [kg m<sup>-3</sup>].<br><br>
+(3) Parameters from 10 onward may be used in combination with Product Definition Templates
+4.40 - 4.43 and Common Code Table C-14 (Code table 4.230) to represent anty type of radioistope.<br>
+<br>
+</p>
+    </tr>
+  </tbody>
+</table>
 <br>
 <br>
 <center><a href="/pmb/docs/grib2/grib2_doc.shtml">Back</a></center>

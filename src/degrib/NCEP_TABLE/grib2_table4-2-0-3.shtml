@@ -8,35 +8,27 @@
  alink="#ff0000" link="#0000ff" vlink="#551a8b">
 <br>
 <center>
-<big><big><big><b>GRIB2 - TABLE 4.2-0-3</b></big></big></big><br>
-<span style="font-weight: bold;"><br>
-</span><b>&nbsp;<big><big> PARAMETERS FOR DISCIPLINE 0<br>
-CATEGORY 3<br>
-<small style="color: rgb(51, 51, 255);">(Meteorological products, mass
-category)</small><br>
-</big></big></b><big><big><br>
-</big></big><big><big><big><small>Section 0 , Octet 7 = 0</small></big></big></big><b><big><big><big><small><br>
-</small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 3<br>
-</big></big></center>
-<br>
-<center><b>Revised 07/16/2008</b><br>
-<span style="color: red; font-size: 10pt;"><b>Red text depicts changes
-made since 06/30/2008</b></span><b></b></center>
+<h3>GRIB2 - TABLE 4.2-0-3</h3>
+<h4>PARAMETERS FOR DISCIPLINE 0<br>CATEGORY 3</h4>
+<h4><span style="color: blue;">(Meteorological products,
+Mass category)</span></h4>
+<h4>In Section 0, Octet 7 = 0<br>
+In Section 4, Octet 10 = 3</h4>
+</center>
+<center><b><span style="font-size: 9pt;">Revised 02/06/2018<br>
+<span style="color: red;">Red text depicts changes made since 07/07/2017</span></b><br>
+</center>
 <br>
 <br>
 <center>
 <table style="width: 90%;" border="1" cellpadding="5" cellspacing="0">
   <tbody>
     <tr>
-      <th>Number<br>
-(Section 4, octet 11)<br>
-      </th>
-      <th>Parameter</th>
-      <td
- style="text-align: center; vertical-align: middle; font-weight: bold;">Units<br>
-      </td>
-      <td
- style="vertical-align: middle; font-weight: bold; text-align: center;">Abbrev</td>
+      <th style="text-align: center; background-color: lightgrey;">Number<br>(In Section 4, octet 11)<br></th>
+      <th style="text-align: center; background-color: lightgrey;">Parameter</th>
+      <td style="text-align: center; vertical-align: middle; background-color: lightgrey; font-weight: bold;">Units<br></td>
+      <td style="vertical-align: middle; font-weight: bold;  background-color: lightgrey; text-align: center;">Abbrev</td>
+    </tr>
     </tr>
     <tr>
       <td style="text-align: center;">0<br>
@@ -127,15 +119,14 @@ Reference Height<br>
       </td>
       <td style="vertical-align: top;">gpm<br>
       </td>
-      <td style="vertical-align: top;">GP A </td>
+      <td style="vertical-align: top;">GPA</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">10<br>
       </td>
       <td style="vertical-align: top;">Density<br>
       </td>
-      <td style="vertical-align: top;">kg m<sup>-3</sup><br>
-      </td>
+      <td style="vertical-align: top;">kg m<sup>-3</sup><br></td>
       <td style="vertical-align: top;">DEN </td>
     </tr>
     <tr>
@@ -215,37 +206,79 @@ Anomaly</td>
       <td style="vertical-align: top;">5WAVA </td>
     </tr>
     <tr>
-      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">20<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Standard Deviation Of Sub-Grid Scale Orography</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">m<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">SDSGSO</td>
+      <td style="vertical-align: top; text-align: center;">20<br></td>
+      <td style="vertical-align: top; ">Standard Deviation of Sub-Grid Scale Orography</td>
+      <td style="vertical-align: top; ">m<br></td>
+      <td style="vertical-align: top; ">SDSGSO</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">21<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Angle Of Sub-Grid Scale Orography</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Rad<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">AOSGSO</td>
+      <td style="vertical-align: top; text-align: center;">21<br></td>
+      <td style="vertical-align: top; ">Angle of Sub-Grid Scale Orography</td>
+      <td style="vertical-align: top; ">rad<br></td>
+      <td style="vertical-align: top; ">AOSGSO</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">22<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Slope Of Sub-Grid Scale Orography</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Numeric<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">SSGSO</td>
+      <td style="vertical-align: top; text-align: center;">22<br></td>
+      <td style="vertical-align: top; ">Slope of Sub-Grid Scale Orography</td>
+      <td style="vertical-align: top; ">Numeric<br></td>
+      <td style="vertical-align: top; ">SSGSO</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">23<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Gravity Of Sub-Grid Scale Orography</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">W m<sup>-2</sup></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">GSGSO</td>
+      <td style="vertical-align: top; text-align: center;">23<br></td>
+      <td style="vertical-align: top; ">Gravity Wave Dissipation</td>
+      <td style="vertical-align: top; ">W m<sup>-2</sup></td>
+      <td style="vertical-align: top; ">GWD</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">24<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Anisotropy Of Sub-Grid Scale Orography</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Numeric<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">ASGSO</td>
+      <td style="vertical-align: top; text-align: center;">24<br></td>
+      <td style="vertical-align: top; ">Anisotropy of Sub-Grid Scale Orography</td>
+      <td style="vertical-align: top; ">Numeric<br></td>
+      <td style="vertical-align: top; ">ASGSO</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center;">25-191<br>
+      <td style="vertical-align: top; text-align: center;">25<br></td>
+      <td style="vertical-align: top; ">Natural Logarithm of Pressure in Pa</td>
+      <td style="vertical-align: top; ">Numeric<br></td>
+      <td style="vertical-align: top; ">NLPRES</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: black; text-align: center;">26</td>
+      <td style="vertical-align: top; color: black;">Exner Pressure</td>
+      <td style="vertical-align: top; color: black;">Numeric<br></td>
+      <td style="vertical-align: top; color: black;">EXPRES</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: black; text-align: center;">27</td>
+      <td style="vertical-align: top; color: black;">Updraught Mass Flux</td>
+      <td style="vertical-align: top; color: black;">kg m<sup>-2</sup> s<sup>-1</sup></td>
+      <td style="vertical-align: top; color: black;">UMFLX</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: black; text-align: center;">28</td>
+      <td style="vertical-align: top; color: black;">Downdraught Mass Flux</td>
+      <td style="vertical-align: top; color: black;">kg m<sup>-2</sup> s<sup>-1</sup></td>
+      <td style="vertical-align: top; color: black;">DMFLX</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: black; text-align: center;">29</td>
+      <td style="vertical-align: top; color: black;">Updraught Detrainment Rate</td>
+      <td style="vertical-align: top; color: black;">kg m<sup>-3</sup> s<sup>-1</sup></td>
+      <td style="vertical-align: top; color: black;">UDRATE</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: black; text-align: center;">30</td>
+      <td style="vertical-align: top; color: black;">Downdraught Detrainment Rate</td>
+      <td style="vertical-align: top; color: black;">kg m<sup>-3</sup> s<sup>-1</sup></td>
+      <td style="vertical-align: top; color: black;">DDRATE</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: red; text-align: center;">31</td>
+      <td style="vertical-align: top; color: red;">Unbalanced Component of Logarithm of Surface Pressure</td>
+      <td style="vertical-align: top; color: red;"></td>
+      <td style="vertical-align: top; color: red;">UCLSPRS</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;"><span style="color: red;">32</span>-191<br>
       </td>
       <td style="vertical-align: top;">Reserved</td>
       <td style="vertical-align: top;"><br>
@@ -314,7 +347,7 @@ Stress</td>
 Anomaly</td>
       <td style="vertical-align: top;">gpm<br>
       </td>
-      <td style="vertical-align: top;">5WAVA </td>
+      <td style="vertical-align: top;">5WAVA</td>
     </tr>
     <tr>
       <td
@@ -324,7 +357,7 @@ Anomaly</td>
 (MAPS System Reduction)</td>
       <td style="vertical-align: top; ">Pa<br>
       </td>
-      <td style="vertical-align: top; ">MSLMA </td>
+      <td style="vertical-align: top; ">MSLMA</td>
     </tr>
     <tr>
       <td
@@ -348,91 +381,145 @@ parcel was lifted</td>
       </td>
     </tr>
     <tr>
-      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">201<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">X-gradient of Log Pressure</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">1/m<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">LPS X<br></td>
+      <td style="vertical-align: top; color: black; text-align: center;">201<br></td>
+      <td style="vertical-align: top; color: black;">X-gradient of Log Pressure</td>
+      <td style="vertical-align: top; color: black;">m<sup>-1</sup><br></td>
+      <td style="vertical-align: top; color: black;">LPSX<br></td>
     </tr>
     <tr>
       <td
- style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">202<br>
+ style="vertical-align: top; color: black; text-align: center;">202<br>
       </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Y-gradient of Log
+      <td style="vertical-align: top; color: black;">Y-gradient of Log
           Pressure</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">1/m<br>
+      <td style="vertical-align: top; color: black;">m<sup>-1</sup><br></td>
       </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">LPS Y<br>
-      </td>
-    </tr>
-    <tr>
-      <td
- style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">203<br>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">X-gradient of Height</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">1/m<br>
-      </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">HGT X<br>
+      <td style="vertical-align: top; color: black;">LPSY<br>
       </td>
     </tr>
     <tr>
       <td
- style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">204<br>
+ style="vertical-align: top; color: black; text-align: center;">203<br>
       </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Y-gradient of Height</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">1/m<br>
+      <td style="vertical-align: top; color: black;">X-gradient of Height</td>
+      <td style="vertical-align: top; color: black;">m<sup>-1</sup><br></td>
       </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">HGT Y<br>
-      </td>
-    </tr>
-    <tr>
-      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">205<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Layer Thickness</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">m<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">LAYTH<br>
+      <td style="vertical-align: top; color: black;">HGTX<br>
       </td>
     </tr>
     <tr>
-      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">206<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Natural Log of Surface Pressure</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">ln(kPa)<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">NLGSP<br> </td>
+      <td
+ style="vertical-align: top; color: black; text-align: center;">204<br>
+      </td>
+      <td style="vertical-align: top; color: black;">Y-gradient of Height</td>
+      <td style="vertical-align: top; color: black;">m<sup>-1</sup><br></td>
+      </td>
+      <td style="vertical-align: top; color: black;">HGTY<br>
+      </td>
     </tr>
     <tr>
-      <td style="text-align: center; color: red;">207<br> </td>
-      <td style="vertical-align: top; color: red;">Convective updraft mass flux<br> </td>
-      <td style="vertical-align: top; color: red;">kg/m<sup>2</sup>/s<br> </td>
-      <td style="vertical-align: top; color: red;">CNVUMF<br> </td>
+      <td style="vertical-align: top; color: black; text-align: center;">205<br></td>
+      <td style="vertical-align: top; color: black;">Layer Thickness</td>
+      <td style="vertical-align: top; color: black;">m<br></td>
+      <td style="vertical-align: top; color: black;">LAYTH<br>
+      </td>
     </tr>
     <tr>
-      <td style="text-align: center; color: red;">208<br> </td>
-      <td style="vertical-align: top; color: red;">Convective downdraft mass flux<br> </td>
-      <td style="vertical-align: top; color: red;">kg/m<sup>2</sup>/s<br> </td>
-      <td style="vertical-align: top; color: red;">CNVDMF<br> </td>
+      <td style="vertical-align: top; color: black; text-align: center;">206<br></td>
+      <td style="vertical-align: top; color: black;">Natural Log of Surface Pressure</td>
+      <td style="vertical-align: top; color: black;">ln (kPa)<br></td>
+      <td style="vertical-align: top; color: black;">NLGSP<br> </td>
     </tr>
     <tr>
-      <td style="text-align: center; color: red;">209<br> </td>
-      <td style="vertical-align: top; color: red;">Convective detrainment mass flux</td>
-      <td style="vertical-align: top; color: red;">kg/m<sup>2</sup>/s<br> </td>
-      <td style="vertical-align: top; color: red;">CNVDEMF<br> </td>
+      <td style="text-align: center; color: black;">207<br> </td>
+      <td style="vertical-align: top; color: black;">Convective updraft mass flux<br> </td>
+      <td style="vertical-align: top; color: black;">kg m<sup>-2</sup> s<sup>-1</sup><br></td>
+      <td style="vertical-align: top; color: black;">CNVUMF<br> </td>
     </tr>
     <tr>
-      <td style="text-align: center; color: red;">210<br> </td>
-      <td style="vertical-align: top; color: red;">Mass Point Model Surface</td>
-      <td style="vertical-align: top; color: red;"><br></td>
-      <td style="vertical-align: top; color: red;">LMH</td>
+      <td style="text-align: center; color: black;">208<br> </td>
+      <td style="vertical-align: top; color: black;">Convective downdraft mass flux<br> </td>
+      <td style="vertical-align: top; color: black;">kg m<sup>-2</sup> s<sup>-1</sup><br></td>
+      <td style="vertical-align: top; color: black;">CNVDMF<br> </td>
     </tr>
     <tr>
-      <td style="text-align: center; color: red;">211<br> </td>
-      <td style="vertical-align: top; color: red;">Geopotential Height (nearest grid point)</td>
-      <td style="vertical-align: top; color: red;">gpm</td>
-      <td style="vertical-align: top; color: red;">HGTN</td>
+      <td style="text-align: center; color: black;">209<br> </td>
+      <td style="vertical-align: top; color: black;">Convective detrainment mass flux</td>
+      <td style="vertical-align: top; color: black;">kg m<sup>-2</sup> s<sup>-1</sup><br></td>
+      <td style="vertical-align: top; color: black;">CNVDEMF<br> </td>
     </tr>
     <tr>
-      <td style="text-align: center; color: red;">212<br> </td>
-      <td style="vertical-align: top; color: red;">Pressure (nearest grid point)</td>
-      <td style="vertical-align: top; color: red;">Pa</td>
-      <td style="vertical-align: top; color: red;">PRESN</td>
+      <td style="text-align: center; color: black;">210<br> </td>
+      <td style="vertical-align: top; color: black;">Mass Point Model Surface</td>
+      <td style="vertical-align: top; color: black;"><br></td>
+      <td style="vertical-align: top; color: black;">LMH</td>
     </tr>
+    <tr>
+      <td style="text-align: center; color: black;">211<br> </td>
+      <td style="vertical-align: top; color: black;">Geopotential Height (nearest grid point)</td>
+      <td style="vertical-align: top; color: black;">gpm</td>
+      <td style="vertical-align: top; color: black;">HGTN</td>
+    </tr>
+    <tr>
+      <td style="text-align: center; color: black;">212<br> </td>
+      <td style="vertical-align: top; color: black;">Pressure (nearest grid point)</td>
+      <td style="vertical-align: top; color: black;">Pa</td>
+      <td style="vertical-align: top; color: black;">PRESN</td>
+    </tr>
+    <tr>
+      <td style="text-align: center; color: black;">213</td>
+      <td style="vertical-align: top; color: black;">Orographic Convexity</td>
+      <td style="vertical-align: top; color: black;"><br></td>
+      <td style="vertical-align: top; color: black;">ORCONV</td>
+    </tr>
+    <tr>
+      <td style="text-align: center; color: black;">214</td>
+      <td style="vertical-align: top; color: black;">Orographic Asymmetry, W Component</td>
+      <td style="vertical-align: top; color: black;"><br></td>
+      <td style="vertical-align: top; color: black;">ORASW</td>
+    </tr>
+    <tr>
+      <td style="text-align: center; color: black;">215</td>
+      <td style="vertical-align: top; color: black;">Orographic Asymmetry, S Component</td>
+      <td style="vertical-align: top; color: black;"><br></td>
+      <td style="vertical-align: top; color: black;">ORASS</td>
+    </tr>
+    <tr>
+      <td style="text-align: center; color: black;">216</td>
+      <td style="vertical-align: top; color: black;">Orographic Asymmetry, SW Component</td>
+      <td style="vertical-align: top; color: black;"><br></td>
+      <td style="vertical-align: top; color: black;">ORASSW</td>
+    </tr>
+    <tr>
+      <td style="text-align: center; color: black;">217</td>
+      <td style="vertical-align: top; color: black;">Orographic Asymmetry, NW Component</td>
+      <td style="vertical-align: top; color: black;"><br></td>
+      <td style="vertical-align: top; color: black;">ORASNW</td>
+    </tr>
+    <tr>
+      <td style="text-align: center; color: black;">218</td>
+      <td style="vertical-align: top; color: black;">Orographic Length Scale, W Component</td>
+      <td style="vertical-align: top; color: black;"><br></td>
+      <td style="vertical-align: top; color: black;">ORLSW</td>
+    </tr>
+    <tr>
+      <td style="text-align: center; color: black;">219</td>
+      <td style="vertical-align: top; color: black;">Orographic Length Scale, S Component</td>
+      <td style="vertical-align: top; color: black;"><br></td>
+      <td style="vertical-align: top; color: black;">ORLSS</td>
+    </tr>
+    <tr>
+      <td style="text-align: center; color: black;">220</td>
+      <td style="vertical-align: top; color: black;">Orographic Length Scale, SW Component</td>
+      <td style="vertical-align: top; color: black;"><br></td>
+      <td style="vertical-align: top; color: black;">ORLSSW</td>
+    </tr>
+    <tr>
+      <td style="text-align: center; color: black;">221</td>
+      <td style="vertical-align: top; color: black;">Orographic Length Scale, NW Component</td>
+      <td style="vertical-align: top; color: black;"><br></td>
+      <td style="vertical-align: top; color: black;">ORLSNW</td>
+    </tr> 
     <tr>
       <td style="vertical-align: top; text-align: center;">255<br></td>
       <td style="vertical-align: top;">Missing<br></td>

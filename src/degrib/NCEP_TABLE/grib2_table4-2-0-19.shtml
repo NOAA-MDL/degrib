@@ -4,40 +4,30 @@
   <meta name="Keywords" content="GRIB">
   <title>GRIBv2 - Table 4.2-0-19 Meteorological - Physical Atmospheric</title>
 </head>
-<body style="color: rgb(0, 0, 0); background-color: white;"
+<body style="color: black; background-color: white;"
  alink="#ff0000" link="#0000ff" vlink="#551a8b">
 <br>
 <center>
-<big><big><big><b>GRIB2 - TABLE 4.2-0-19</b></big></big></big><br>
-<span style="font-weight: bold;"><br>
-</span><b>&nbsp;<big><big> PARAMETERS FOR DISCIPLINE 0<br>
-CATEGORY 19<br>
-<small style="color: rgb(51, 51, 255);">(Meteorological products,
-Physical Atmospheric category)</small><br>
-</big></big></b><big><big><br>
-</big></big><big><big><big><small>Section 0 , Octet 7 = 0</small></big></big></big><b><big><big><big><small><br>
-</small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 19<br>
-</big></big></center>
-<br>
-<center><b>Revised 09/14/2009</b><br>
-<span style="color: red; font-size: 10pt;"><b>Red text depicts changes
-made since 04/21/2009</b></span><span style="font-weight: bold;"><br>
+<h3>GRIB2 - TABLE 4.2-0-19</h3>
+<h4>PARAMETERS FOR DISCIPLINE 0<br>CATEGORY 19</h4>
+<h4><span style="color: blue;">(Meteorological products,
+Physical Atmospheric category)</span></h4>
+<h4>In Section 0, Octet 7 = 0<br>
+In Section 4, Octet 10 = 19</h4>
+</center>
+<center><b><span style="font-size: 9pt;">Revised 02/08/2018<br>
+<span style="color: red;">Red text depicts changes made since 11/09/2017</span></b><br>
+</center>
 <br>
 <br>
-</span></center>
 <center>
 <table style="width: 90%;" border="1" cellpadding="5" cellspacing="0">
   <tbody>
     <tr>
-      <th>Number<br>
-(Section 4, octet 11)<br>
-      </th>
-      <th>Parameter</th>
-      <td
- style="text-align: center; vertical-align: middle; font-weight: bold;">Units<br>
-      </td>
-      <td
- style="vertical-align: middle; font-weight: bold; text-align: center;">Abbrev</td>
+      <th style="text-align: center; background-color: lightgrey;">Number<br>(In Section 4, octet 11)<br></th>
+      <th style="text-align: center; background-color: lightgrey;">Parameter</th>
+      <td style="text-align: center; vertical-align: middle; background-color: lightgrey; font-weight: bold;">Units<br></td>
+      <td style="vertical-align: middle; font-weight: bold;  background-color: lightgrey; text-align: center;">Abbrev</td>
     </tr>
     <tr>
       <td style="text-align: center;">0<br>
@@ -161,7 +151,7 @@ made since 04/21/2009</b></span><span style="font-weight: bold;"><br>
       </td>
       <td style="vertical-align: top;">See <a
  href="grib2_table4-209.shtml">Table 4.209</a></td>
-      <td style="vertical-align: top; color: red;">PBLREG<br>
+      <td style="vertical-align: top; ">PBLREG<br>
       </td>
     </tr>
     <tr>
@@ -175,14 +165,10 @@ made since 04/21/2009</b></span><span style="font-weight: bold;"><br>
       </td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center;">14<br>
-      </td>
-      <td style="vertical-align: top;">Contrail Engine Type<br>
-      </td>
-      <td style="vertical-align: top;">See <a
- href="grib2_table4-211.shtml">Table 4.211</a></td>
-      <td style="vertical-align: top;">CONTET<br>
-      </td>
+      <td style="vertical-align: top; text-align: center;">14<br></td>
+      <td style="vertical-align: top;">Contrail Engine Type<br></td>
+      <td style="vertical-align: top;">See <a href="grib2_table4-211.shtml">Table 4.211</a></td>
+      <td style="vertical-align: top;">CONTET<br></td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">15<br>
@@ -206,73 +192,144 @@ made since 04/21/2009</b></span><span style="font-weight: bold;"><br>
     </tr>
     <tr>
       <td
- style="vertical-align: top; text-align: center; color: rgb(0, 0, 0);">17<br>
+ style="vertical-align: top; text-align: center; color: black;">17<br>
       </td>
-      <td style="vertical-align: top; color: rgb(0, 0, 0);">Maximum Snow Albedo<sup>*</sup></td>
-      <td style="vertical-align: top; color: rgb(0, 0, 0);">%</td>
-      <td style="vertical-align: top; color: rgb(0, 0, 0);">MXSALB </td>
+      <td style="vertical-align: top; color: black;">Maximum Snow Albedo<sup>see Note 1</sup></td>
+      <td style="vertical-align: top; color: black;">%</td>
+      <td style="vertical-align: top; color: black;">MXSALB </td>
     </tr>
     <tr>
-      <td
- style="vertical-align: top; text-align: center; color: rgb(0, 0, 0);">18<br>
+      <td style="vertical-align: top; text-align: center; color: black;">18<br>
       </td>
-      <td style="vertical-align: top; color: rgb(0, 0, 0);">Snow-Free Albedo</td>
-      <td style="vertical-align: top; color: rgb(0, 0, 0);">%</td>
-      <td style="vertical-align: top; color: rgb(0, 0, 0);">SNFALB </td>
+      <td style="vertical-align: top; color: black;">Snow-Free Albedo</td>
+      <td style="vertical-align: top; color: black;">%</td>
+      <td style="vertical-align: top; color: black;">SNFALB </td>
     </tr>
     <tr>
-      <td style="text-align: center; color: rgb(255, 0, 0);">19</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Snow Albedo<br></td>
+      <td style="text-align: center; ">19</td>
+      <td style="vertical-align: top; ">Snow Albedo<br></td>
       <td style="vertical-align: top;">%</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">SALBD</td>
+      <td style="vertical-align: top; ">SALBD</td>
     </tr>
     <tr>
-      <td style="text-align: center; vertical-align: top; color: rgb(255, 0, 0);">20</td>
-      <td style="vertical-align: top;"><span style="color: rgb(255, 0, 0);">Icing</span><br></td>
-      <td style="vertical-align: top;">%<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">ICIP<br></td>
+      <td style="text-align: center; vertical-align: top; ">20</td>
+      <td style="vertical-align: top;">Icing</td>
+      <td style="vertical-align: top;">%</td>
+      <td style="vertical-align: top; ">ICIP<br></td>
     </tr>
     <tr>
-      <td style="text-align: center; vertical-align: top; color: rgb(255, 0, 0);">21</td>
-      <td style="vertical-align: top;"><span style="color: rgb(255, 0, 0);">In-Cloud Turbulence</span><br></td>
-      <td style="vertical-align: top;">%<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">CTP<br></td>
+      <td style="text-align: center; vertical-align: top;">21</td>
+      <td style="vertical-align: top;">In-Cloud Turbulence</td>
+      <td style="vertical-align: top;">%</td>
+      <td style="vertical-align: top; ">CTP</td>
     </tr>
     <tr>
-      <td style="text-align: center; vertical-align: top; color: rgb(255, 0, 0);">22</td>
-      <td style="vertical-align: top;"><span style="color: rgb(255, 0, 0);">Clear Air Turbulence (CAT)</span><br></td>
-      <td style="vertical-align: top;">%<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">CAT<br></td>
+      <td style="text-align: center; vertical-align: top; ">22</td>
+      <td style="vertical-align: top;">Clear Air Turbulence (CAT)</td>
+      <td style="vertical-align: top;">%</td>
+      <td style="vertical-align: top; ">CAT</td>
     </tr>
     <tr>
-      <td style="text-align: center; vertical-align: top; color: rgb(255, 0, 0);">23</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Supercooled Large Droplet (SLD) 
-      Probability<sup>see note 1 </sup></td>
-      <td style="vertical-align: top;">%<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">SLDP<br></td>
+      <td style="text-align: center; vertical-align: top; ">23</td>
+      <td style="vertical-align: top; ">Supercooled Large Droplet
+      Probability<sup>see Note 2 </sup></td>
+      <td style="vertical-align: top;">%</td>
+      <td style="vertical-align: top; ">SLDP</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: rgb(0, 0, 0);">24-191<br>
+      <td style="vertical-align: top; text-align: center; color: black;">24<br></td>
+      <td style="vertical-align: top; color: black;">Convective Turbulent Kinetic Energy</td>
+      <td style="vertical-align: top; color: black;">J kg<sup>-1</sup></td>
+      <td style="vertical-align: top; color: black;">CONTKE</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color:black;">25<br></td>
+      <td style="vertical-align: top; color:black;">Weather</td>
+      <td style="vertical-align: top; color: black;">See <a href="grib2_table4-225.shtml">Table 4.225</a></td>
+      <td style="vertical-align: top; color:black;">WIWW</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; ">26<br></td>
+      <td style="vertical-align: top; ">Convective Outlook<br></td>
+      <td style="vertical-align: top; ">See <a href="grib2_table4-224.shtml">Table 4.224</a></td>
+      <td style="vertical-align: top; ">CONVO</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color:black;">27<br></td>
+      <td style="vertical-align: top; color:black;">Icing Scenario</td>
+      <td style="vertical-align: top; color: black;">See <a href="grib2_table4-227.shtml">Table 4.227</a></td>
+      <td style="vertical-align: top; color:black;">ICESC</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color:blck;">28<br></td>
+      <td style="vertical-align: top; color:blck;">Mountain Wave Turbulence (Eddy Dissipation Rate)</td>
+      <td style="vertical-align: top; color:blck;">m<sup>2/3</sup> s<sup>-1</sup></td>
+      <td style="vertical-align: top; color:blck;">MWTURB</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color:black;">29<br></td>
+      <td style="vertical-align: top; color:black;">Clear Air Turbulence (CAT) (Eddy Dissipation Rate)</td>
+      <td style="vertical-align: top; color: black;">m<sup>2/3</sup> s<sup>-1</sup></td>
+      <td style="vertical-align: top; color:black;">CATEDR</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color:black;">30<br></td>
+      <td style="vertical-align: top; color:black;">Eddy Dissipation Parameter (See Note 3)</td>
+      <td style="vertical-align: top; color: black;">m<sup>2/3</sup> s<sup>-1</sup></td>
+      <td style="vertical-align: top; color:black;">EDPARM</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color:black;">31<br></td>
+      <td style="vertical-align: top; color:black;">Maximum of Eddy Dissipation Parameter in Layer</td>
+      <td style="vertical-align: top; color: black;">m<sup>2/3</sup> s<sup>-1</sup></td>
+      <td style="vertical-align: top; color:black;">MXEDPRM</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color:red;">32</td>
+      <td style="vertical-align: top; color:red;">Highest Freezing Level</td>
+      <td style="vertical-align: top; color: red;">m</td>
+      <td style="vertical-align: top; color:red;">HIFREL</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color:red;">33</td>
+      <td style="vertical-align: top; color:red;">Visibility Through Liquid Fog</td>
+      <td style="vertical-align: top; color: red;">m</td>
+      <td style="vertical-align: top; color:red;">VISLFOG</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color:red;">34</td>
+      <td style="vertical-align: top; color:red;">Visibility Through Ice Fog</td>
+      <td style="vertical-align: top; color: red;">m</td>
+      <td style="vertical-align: top; color:red;">VISIFOG</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color:red;">35</td>
+      <td style="vertical-align: top; color:red;">Visibility Through Blowing Snow</td>
+      <td style="vertical-align: top; color: red;">m</td>
+      <td style="vertical-align: top; color:red;">VISBSN</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; "><span style="color: red;">36</span>-191<br>
       </td>
-      <td style="vertical-align: top; color: rgb(0, 0, 0);">Reserved</td>
-      <td style="vertical-align: top; color: rgb(0, 0, 0);"><br>
+      <td style="vertical-align: top; ">Reserved</td>
+      <td style="vertical-align: top; "><br>
       </td>
       <td style="vertical-align: top;"><br>
       </td>
     </tr>
     <tr>
       <td
- style="vertical-align: top; text-align: center; background-color: rgb(204, 204, 204);">192-254<br>
+ style="vertical-align: top; text-align: center; background-color: lightgrey;">192-254<br>
       </td>
       <td
- style="vertical-align: top; background-color: rgb(204, 204, 204);">Reserved
+ style="vertical-align: top; background-color: lightgrey;">Reserved
 for Local Use<br>
       </td>
       <td
- style="vertical-align: top; background-color: rgb(204, 204, 204);"><br>
+ style="vertical-align: top; background-color: lightgrey;"><br>
       </td>
       <td
- style="vertical-align: top; background-color: rgb(204, 204, 204);"><br>
+ style="vertical-align: top; background-color: lightgrey;"><br>
       </td>
     </tr>
     <tr>
@@ -293,49 +350,31 @@ for Local Use<br>
     <tr>
       <td style="vertical-align: top; text-align: center;">194<br>
       </td>
-      <td style="vertical-align: top;"><font
- face="Times New Roman, Times, serif">Slight risk convective outlook </font><br>
-      </td>
-      <td style="vertical-align: top;"><font
- face="Times New Roman, Times, serif">c</font><font
- face="Times New Roman, Times, serif">ategorical</font></td>
+      <td style="vertical-align: top;">Slight risk convective outlook </td>
+      <td style="vertical-align: top;">categorical</td>
       <td style="vertical-align: top;">SRCONO<br>
       </td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">195<br>
       </td>
-      <td style="vertical-align: top;"><font
- face="Times New Roman, Times, serif">Moderate </font><font
- face="Times New Roman, Times, serif">risk convective </font><font
- face="Times New Roman, Times, serif">outlook </font><br>
-      </td>
-      <td style="vertical-align: top;"><font
- face="Times New Roman, Times, serif">c</font><font
- face="Times New Roman, Times, serif">ategorical</font></td>
+      <td style="vertical-align: top;">Moderate risk convective outlook </td>
+      <td style="vertical-align: top;">categorical</td>
       <td style="vertical-align: top;">MRCONO<br>
       </td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">196<br>
       </td>
-      <td style="vertical-align: top;"><font
- face="Times New Roman, Times, serif">High </font><font
- face="Times New Roman, Times, serif">risk convective</font><font
- face="Times New Roman, Times, serif"> outlook </font><br>
-      </td>
-      <td style="vertical-align: top;"><font
- face="Times New Roman, Times, serif">c</font><font
- face="Times New Roman, Times, serif">ategorical</font></td>
+      <td style="vertical-align: top;">High risk convective outlook</td>
+      <td style="vertical-align: top;">categorical</td>
       <td style="vertical-align: top;">HRCONO<br>
       </td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">197<br>
       </td>
-      <td style="vertical-align: top;"><font
- face="Times New Roman, Times, serif">Tornado probability<br>
-      </font></td>
+      <td style="vertical-align: top;">Tornado probability</td>
       <td style="vertical-align: top;">%<br>
       </td>
       <td style="vertical-align: top;">TORPROB<br>
@@ -344,8 +383,7 @@ for Local Use<br>
     <tr>
       <td style="vertical-align: top; text-align: center;">198<br>
       </td>
-      <td style="vertical-align: top;"><font
- face="Times New Roman, Times, serif">Hail probability</font></td>
+      <td style="vertical-align: top;">Hail probability</td>
       <td style="vertical-align: top;">%<br>
       </td>
       <td style="vertical-align: top;">HAILPROB<br>
@@ -354,8 +392,7 @@ for Local Use<br>
     <tr>
       <td style="vertical-align: top; text-align: center;">199<br>
       </td>
-      <td style="vertical-align: top;"><font
- face="Times New Roman, Times, serif">Wind probability</font></td>
+      <td style="vertical-align: top;">Wind probability</td>
       <td style="vertical-align: top;">%<br>
       </td>
       <td style="vertical-align: top;">WINDPROB<br>
@@ -364,9 +401,7 @@ for Local Use<br>
     <tr>
       <td style="vertical-align: top; text-align: center;">200<br>
       </td>
-      <td style="vertical-align: top;"><font
- face="Times New Roman, Times, serif">Significant Tornado
-probability</font></td>
+      <td style="vertical-align: top;">Significant Tornado probability</td>
       <td style="vertical-align: top;">%<br>
       </td>
       <td style="vertical-align: top;">STORPROB<br>
@@ -375,208 +410,243 @@ probability</font></td>
     <tr>
       <td style="vertical-align: top; text-align: center;">201<br>
       </td>
-      <td style="vertical-align: top;"><font
- face="Times New Roman, Times, serif">Significant Hail
-probability</font></td>
+      <td style="vertical-align: top;">Significant Hail probability</td>
       <td style="vertical-align: top;">%<br>
       </td>
       <td style="vertical-align: top;">SHAILPRO<br>
       </td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center;">202<br>
-      </td>
-      <td style="vertical-align: top;"><font
- face="Times New Roman, Times, serif">Significant Wind
-probability</font></td>
-      <td style="vertical-align: top;">%<br>
-      </td>
-      <td style="vertical-align: top;">SWINDPRO<br>
+      <td style="vertical-align: top; text-align: center;">202</td>
+      <td style="vertical-align: top;">Significant Wind probability</td>
+      <td style="vertical-align: top;">%</td>
+      <td style="vertical-align: top;">SWINDPRO</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: black;">203<br></td>
+      <td style="vertical-align: top; color: black;">Categorical Thunderstorm<br></td>
+      <td style="vertical-align: top;"><a href="grib2_table4-222.shtml">Code table 4.222</a></td>
+      <td style="vertical-align: top; color: black;">TSTMC<br>
       </td>
     </tr>
     <tr>
       <td
- style="vertical-align: top; text-align: center; color: rgb(0, 0, 0);">203<br>
+ style="vertical-align: top; color: black; text-align: center;">204<br>
       </td>
-      <td style="vertical-align: top; color: rgb(0, 0, 0);">Categorical
-Thunderstorm (1-yes, 0-no)<br>
-      </td>
-      <td style="vertical-align: top; color: rgb(0, 0, 0);"><font
- face="Times New Roman, Times, serif">c</font><font
- face="Times New Roman, Times, serif">ategorical</font></td>
-      <td style="vertical-align: top; color: rgb(0, 0, 0);">TSTMC<br>
-      </td>
-    </tr>
-    <tr>
-      <td
- style="vertical-align: top; color: rgb(0, 0, 0); text-align: center;">204<br>
-      </td>
-      <td style="vertical-align: top; color: rgb(0, 0, 0);">Number of
+      <td style="vertical-align: top; color: black;">Number of
 mixed layers next to surface</td>
-      <td style="vertical-align: top; color: rgb(0, 0, 0);">integer</td>
-      <td style="vertical-align: top; color: rgb(0, 0, 0);">MIXLY</td>
+      <td style="vertical-align: top; color: black;">integer</td>
+      <td style="vertical-align: top; color: black;">MIXLY</td>
     </tr>
     <tr>
-      <td style="text-align: center; vertical-align: top; color: rgb(255, 0, 0);">205</td>
-      <td style="vertical-align: top;"><span style="color: rgb(255, 0, 0);">Flight Category</span><br></td>
+      <td style="text-align: center; vertical-align: top; color: black;">205</td>
+      <td style="vertical-align: top;"><span style="color: black;">Flight Category</span><br></td>
       <td style="vertical-align: top;"><br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">FLGHT<br></td>
+      <td style="vertical-align: top; color: black;">FLGHT<br></td>
     </tr>
     <tr>
       <td
- style="text-align: center; vertical-align: top; color: rgb(255, 0, 0);">206</td>
+ style="text-align: center; vertical-align: top; color: black;">206</td>
       <td style="vertical-align: top;"><span
- style="color: rgb(255, 0, 0);">Confidence - Ceiling</span><br>
+ style="color: black;">Confidence - Ceiling</span><br>
       </td>
       <td style="vertical-align: top;"><br>
       </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">CICEL<br>
+      <td style="vertical-align: top; color: black;">CICEL<br>
       </td>
     </tr>
     <tr>
       <td
- style="text-align: center; vertical-align: top; color: rgb(255, 0, 0);">207</td>
+ style="text-align: center; vertical-align: top; color: black;">207</td>
       <td style="vertical-align: top;"><span
- style="color: rgb(255, 0, 0);">Confidence - Visibility</span><br>
+ style="color: black;">Confidence - Visibility</span><br>
       </td>
       <td style="vertical-align: top;"><br>
       </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">CIVIS<br>
+      <td style="vertical-align: top; color: black;">CIVIS<br>
       </td>
     </tr>
     <tr>
       <td
- style="text-align: center; vertical-align: top; color: rgb(255, 0, 0);">208</td>
+ style="text-align: center; vertical-align: top; color: black;">208</td>
       <td style="vertical-align: top;"><span
- style="color: rgb(255, 0, 0);">Confidence - Flight Category</span><br>
+ style="color: black;">Confidence - Flight Category</span><br>
       </td>
       <td style="vertical-align: top;"><br>
       </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">CIFLT<br>
+      <td style="vertical-align: top; color: black;">CIFLT<br>
       </td>
     </tr>
     <tr>
       <td
- style="text-align: center; vertical-align: top; color: rgb(255, 0, 0);">209</td>
+ style="text-align: center; vertical-align: top; color: black;">209</td>
       <td style="vertical-align: top;"><span
- style="color: rgb(255, 0, 0);">Low-Level aviation interest</span><br>
+ style="color: black;">Low-Level aviation interest</span><br>
       </td>
       <td style="vertical-align: top;"><br>
       </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">LAVNI<br>
+      <td style="vertical-align: top; color: black;">LAVNI<br>
       </td>
     </tr>
     <tr>
       <td
- style="text-align: center; vertical-align: top; color: rgb(255, 0, 0);">210</td>
+ style="text-align: center; vertical-align: top; color: black;">210</td>
       <td style="vertical-align: top;"><span
- style="color: rgb(255, 0, 0);">High-Level aviation interest</span><br>
+ style="color: black;">High-Level aviation interest</span><br>
       </td>
       <td style="vertical-align: top;"><br>
       </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">HAVNI<br>
+      <td style="vertical-align: top; color: black;">HAVNI<br>
       </td>
     </tr>
     <tr>
       <td
- style="text-align: center; vertical-align: top; color: rgb(255, 0, 0);">211</td>
+ style="text-align: center; vertical-align: top; color: black;">211</td>
       <td style="vertical-align: top;"><span
- style="color: rgb(255, 0, 0);">Visible, Black Sky Albedo</span><br>
+ style="color: black;">Visible, Black Sky Albedo</span><br>
       </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">%<br>
+      <td style="vertical-align: top; color: black;">%<br>
       </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">SBSALB<br>
+      <td style="vertical-align: top; color: black;">SBSALB<br>
       </td>
     </tr>
     <tr>
       <td
- style="text-align: center; vertical-align: top; color: rgb(255, 0, 0);">212</td>
+ style="text-align: center; vertical-align: top; color: black;">212</td>
       <td style="vertical-align: top;"><span
- style="color: rgb(255, 0, 0);">Visible, White Sky Albedo</span><br>
+ style="color: black;">Visible, White Sky Albedo</span><br>
       </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">%<br>
+      <td style="vertical-align: top; color: black;">%<br>
       </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">SWSALB<br>
+      <td style="vertical-align: top; color: black;">SWSALB<br>
       </td>
     </tr>
     <tr>
       <td
- style="text-align: center; vertical-align: top; color: rgb(255, 0, 0);">213</td>
+ style="text-align: center; vertical-align: top; color: black;">213</td>
       <td style="vertical-align: top;"><span
- style="color: rgb(255, 0, 0);">Near IR, Black Sky Albedo</span><br>
+ style="color: black;">Near IR, Black Sky Albedo</span><br>
       </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">%<br>
+      <td style="vertical-align: top; color: black;">%<br>
       </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">NBSALB<br>
+      <td style="vertical-align: top; color: black;">NBSALB<br>
       </td>
     </tr>
     <tr>
       <td
- style="text-align: center; vertical-align: top; color: rgb(255, 0, 0);">214</td>
+ style="text-align: center; vertical-align: top; color: black;">214</td>
       <td style="vertical-align: top;"><span
- style="color: rgb(255, 0, 0);">Near IR, White Sky Albedo</span><br>
+ style="color: black;">Near IR, White Sky Albedo</span><br>
       </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">%<br>
+      <td style="vertical-align: top; color: black;">%<br>
       </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">NWSALB<br>
+      <td style="vertical-align: top; color: black;">NWSALB<br>
       </td>
     </tr>
     <tr>
       <td
- style="text-align: center; vertical-align: top; color: rgb(255, 0, 0);">215</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Total
+ style="text-align: center; vertical-align: top; color: black;">215</td>
+      <td style="vertical-align: top; color: black;">Total
 Probability of Severe Thunderstorms (Days 2,3)<br>
       </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">%<br>
+      <td style="vertical-align: top; color: black;">%<br>
       </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">PRSVR<br>
+      <td style="vertical-align: top; color: black;">PRSVR<br>
       </td>
     </tr>
     <tr>
       <td
- style="text-align: center; vertical-align: top; color: rgb(255, 0, 0);">216</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Total
+ style="text-align: center; vertical-align: top; color: black;">216</td>
+      <td style="vertical-align: top; color: black;">Total
 Probability of Extreme Severe Thunderstorms (Days 2,3)</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">%<br>
+      <td style="vertical-align: top; color: black;">%<br>
       </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">PRSIGSVR<br>
+      <td style="vertical-align: top; color: black;">PRSIGSVR<br>
       </td>
     </tr>
     <tr>
-      <td style="text-align: center; vertical-align: top; color: rgb(255, 0, 0);">217</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Supercooled Large Droplet (SLD) Icing</td>
-      <td style="vertical-align: top;">See <a href="grib2_table4-207.shtml">Table 4.207</a><br>See Note (1)</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">SIPD</td>
+      <td style="text-align: center; vertical-align: top; color: black;">217</td>
+      <td style="vertical-align: top; color: black;">Supercooled Large Droplet (SLD) Icing<sup>see Note 2 </sup></td>
+      <td style="vertical-align: top;">See <a href="grib2_table4-207.shtml">Table 4.207</a><br></td>
+      <td style="vertical-align: top; color: black;">SIPD</td>
     </tr>
     <tr>
-      <td style="text-align: center; color: red;">218<br> </td>
-      <td style="vertical-align: top; color: red;">Radiative emissivity<br> </td>
-      <td style="vertical-align: top; color: red;"><br> </td>
-      <td style="vertical-align: top; color: red;">EPSR<br> </td>
+      <td style="text-align: center; color: black;">218<br> </td>
+      <td style="vertical-align: top; color: black;">Radiative emissivity<br> </td>
+      <td style="vertical-align: top; color: black;"><br> </td>
+      <td style="vertical-align: top; color: black;">EPSR<br> </td>
     </tr>
     <tr>
-      <td style="text-align: center; color: red;">219<br> </td>
-      <td style="vertical-align: top; color: red;">Turbulence Potential Forecast Index<br> </td>
-      <td style="vertical-align: top; color: red;"><br></td>
-      <td style="vertical-align: top; color: red;">TPFI</td>
+      <td style="text-align: center; color: black;">219<br> </td>
+      <td style="vertical-align: top; color: black;">Turbulence Potential Forecast Index </td>
+      <td style="vertical-align: top; color: black;"><br> </td>
+      <td style="vertical-align: top; color: black;">TPFI</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: rgb(0, 0, 0);">220-231<br></td>
-      <td style="vertical-align: top; color: rgb(0, 0, 0);">Reserved</td>
-      <td style="vertical-align: top; color: rgb(0, 0, 0);"><br></td>
+      <td style="vertical-align: top; text-align: center; color: black;">220<br></td>
+      <td style="vertical-align: top; color: black;">Categorical Severe Thunderstorm<br></td>
+      <td style="vertical-align: top;"><a href="grib2_table4-222.shtml">Code table 4.222</a></td>
+      <td style="vertical-align: top; color: black;">SVRTS<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: black;">221<br></td>
+      <td style="vertical-align: top; color: black;">Probability of Convection<br></td>
+      <td style="vertical-align: top; color: black;">%<br></td>
+      <td style="vertical-align: top; color: black;">PROCON<br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: black;">222<br></td>
+      <td style="vertical-align: top; color: black;">Convection Potential<br></td>
+      <td style="vertical-align: top;"><a href="grib2_table4-222.shtml">Code table 4.222</a></td>
+      <td style="vertical-align: top; color: black;">CONVP<br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: black;">223-231<br></td>
+      <td style="vertical-align: top; color: black;">Reserved</td>
+      <td style="vertical-align: top; color: black;"><br></td>
       <td style="vertical-align: top;"><br>
       </td>
     </tr>
     <tr>
-      <td
- style="text-align: center; vertical-align: top; color: rgb(255, 0, 0);">232</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Volcanic
+      <td style="text-align: center; vertical-align: top; color: black;">232</td>
+      <td style="vertical-align: top; color: black;">Volcanic
 Ash Forecast Transport and Dispersion<br>
       </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">log10(kg/m<sup>3</sup>)<br>
+      <td style="vertical-align: top; color: black;">log10 (kg m<sup>-3</sup>)<br>
       </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">VAFTD<br>
+      <td style="vertical-align: top; color: black;">VAFTD<br>
       </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: black;">233<br></td>
+      <td style="vertical-align: top; color: black;">Icing probability</td>
+      <td style="vertical-align: top; color: black;">non-dim</td>
+      <td style="vertical-align: top; color: black;">ICPRB</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: black;">234<br></td>
+      <td style="vertical-align: top; color: black;">Icing severity </td>
+      <td style="vertical-align: top; color: black;">non-dim</td>
+      <td style="vertical-align: top; color: black;">ICSEV</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">235</td>
+      <td style="vertical-align: top; color: red;">Joint Fire Weather Probability</td>
+      <td style="vertical-align: top; color: red;">%</td>
+      <td style="vertical-align: top; color: red;">JFWPRB</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">236</td>
+      <td style="vertical-align: top; color: red;">Snow Level</td>
+      <td style="vertical-align: top; color: red;">m</td>
+      <td style="vertical-align: top; color: red;">SNOWLVL</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">237</td>
+      <td style="vertical-align: top; color: red;">Dry Thunderstorm Probability</td>
+      <td style="vertical-align: top; color: red;">%</td>
+      <td style="vertical-align: top; color: red;">DRYTPROB</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">255<br>
@@ -595,10 +665,12 @@ Ash Forecast Transport and Dispersion<br>
 border="0" cellpadding="2" cellspacing="2">
 <tbody>
 <tr>
-<td style="vertical-align: top;"><b>Notes:</b><br>
-<b>*</b>  Parameter deprecated - See Regulation 92.6.2 and use another parameter instead.<br>
-(1) Supercooled large droplets (SLD) are defined as those with a diameter greater than 50 microns.<br>
-<br>
+<td style="vertical-align: top;"><b>Notes:</b>
+<P>
+(1) Parameter deprecated - See Regulation 92.6.2 and use another parameter instead.<br><br>
+(2) Supercooled large droplets (SLD) are defined as those with a diameter greater than 50 microns.<br><br>
+(3) Eddy Dissipation parameter is third root of eddy dissipation rate [m<sup>2</sup> s<sup>-3</sup>]<br>
+<br></P>
 </tr>
 </table>
 <center><a href="/pmb/docs/grib2/grib2_doc.shtml">Back</a></center>

@@ -8,34 +8,26 @@
  link="#0000ff" vlink="#551a8b" alink="#ff0000">
 <br>
 <center>
-<big><big><big><b>GRIB2 - TABLE 4.2-0-190</b></big></big></big><br>
-<span style="font-weight: bold;"><br>
-</span><b>&nbsp;<big><big> PARAMETERS FOR DISCIPLINE 0<br>
-CATEGORY 190<br>
-<small style="color: rgb(51, 51, 255);">(Meteorological products, ASCII
-category)</small><br>
-</big></big></b><big><big><br>
-</big></big><big><big><big><small>Section 0 , Octet 7 = 0</small></big></big></big><b><big><big><big><small><br>
-</small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 190<br>
-</big></big></center>
-<br>
-<center><b>Created 05/20/05<br>
-</b></center>
+<h3>GRIB2 - TABLE 4.2-0-190</h3>
+<h4>PARAMETERS FOR DISCIPLINE 0<br>CATEGORY 190</h4>
+<h4><span style="color: blue;">(Meteorological products,
+ASCII IA5 String category)</span></h4>
+<h4>In Section 0, Octet 7 = 0<br>
+In Section 4, Octet 10 = 190</h4>
+</center>
+<center><b><span style="font-size: 9pt;">Revised 12/14/2011<br>
+<span style="color: red;">Red text depicts changes made since 05/20/2005</span></b><br>
+</center>
 <br>
 <br>
 <center>
 <table border="1" cellspacing="0" cellpadding="5" style="width: 90%;">
   <tbody>
     <tr>
-      <th>Number<br>
-(Section 4, octet 11)<br>
-      </th>
-      <th>Parameter</th>
-      <td
- style="text-align: center; vertical-align: middle; font-weight: bold;">Units<br>
-      </td>
-      <td
- style="vertical-align: middle; font-weight: bold; text-align: center;">Abbrev</td>
+      <th style="text-align: center; background-color: lightgrey;">Number<br>(In Section 4, octet 11)<br></th>
+      <th style="text-align: center; background-color: lightgrey;">Parameter</th>
+      <td style="text-align: center; vertical-align: middle; background-color: lightgrey; font-weight: bold;">Units<br></td>
+      <td style="vertical-align: middle; font-weight: bold;  background-color: lightgrey; text-align: center;">Abbrev</td>
     </tr>
     <tr>
       <td style="text-align: center;">0<br>
@@ -44,12 +36,11 @@ category)</small><br>
       </td>
       <td style="vertical-align: top;">CCITTIA5 <br>
       </td>
-      <td style="vertical-align: top;"><br>
+      <td style="vertical-align: top;">ATEXT<br>
       </td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center;">1-191<br>
-      </td>
+      <td style="vertical-align: top; text-align: center;"><span style="color:red;">1</span>-191</td>
       <td style="vertical-align: top;">Reserved</td>
       <td style="vertical-align: top;"><br>
       </td>

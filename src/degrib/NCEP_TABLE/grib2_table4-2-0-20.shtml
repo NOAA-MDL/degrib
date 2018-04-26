@@ -4,22 +4,20 @@
   <meta name="Keywords" content="GRIB">
   <title>GRIBv2 - Table 4.2-0-20 Meteorological - Atmospheric chemical constituents</title>
 </head>
-<body style="color: rgb(0, 0, 0); background-color: white;"
+<body style="color: black; background-color: white;"
  alink="#ff0000" link="#0000ff" vlink="#551a8b">
 <br>
 <center>
-<big><big><big><b>GRIB2 - TABLE 4.2-0-20</b></big></big></big><br>
-<span style="font-weight: bold;"><br>
-</span><b>&nbsp;<big><big> PARAMETERS FOR DISCIPLINE 0<br>
-CATEGORY 20<br>
-<small style="color: rgb(51, 51, 255);">(Meteorological products,
-Atmospheric chemical constituents)</small><br>
-</big></big></b><big><big><br>
-</big></big><big><big><big><small>Section 0 , Octet 7 = 0</small></big></big></big><b><big><big><big><small><br>
-</small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 20<br>
-</big></big></center>
-<br>
-<center><b>Created 05/27/2009</b><br>
+<h3>GRIB2 - TABLE 4.2-0-20</h3>
+<h4>PARAMETERS FOR DISCIPLINE 0<br>CATEGORY 20</h4>
+<h4><span style="color: blue;">(Meteorological products,
+Atmospheric Chemical Constituents category)</span></h4>
+<h4>In Section 0, Octet 7 = 0<br>
+In Section 4, Octet 10 = 20</h4>
+</center>
+<center><b><span style="font-size: 9pt;">Revised 07/07/2017<br>
+<span style="color: red;">Red text depicts changes made since 07/25/2016</span></b><br>
+</center>
 <br>
 <br>
 </span></center>
@@ -27,184 +25,287 @@ Atmospheric chemical constituents)</small><br>
 <table style="width: 90%;" border="1" cellpadding="5" cellspacing="0">
   <tbody>
     <tr>
-      <th>Number<br> (Section 4, octet 11)<br></th>
-      <th>Parameter</th>
-      <td style="text-align: center; vertical-align: middle; font-weight: bold;">Units<br></td>
-      <td style="vertical-align: middle; font-weight: bold; text-align: center;">Abbrev</td>
+      <th style="text-align: center; background-color: lightgrey;">Number<br>(In Section 4, octet 11)<br></th>
+      <th style="text-align: center; background-color: lightgrey;">Parameter</th>
+      <td style="text-align: center; vertical-align: middle; background-color: lightgrey; font-weight: bold;">Units<br></td>
+      <td style="vertical-align: middle; font-weight: bold;  background-color: lightgrey; text-align: center;">Abbrev</td>
     </tr>
     <tr>
-      <td style="text-align: center; vertical-align: top; color: red;">0</td>
-      <td style="vertical-align: top;"><span style="color: red;">Mass Density (Concentration)</span><br></td>
-      <td style="vertical-align: top; color: red;">kg m<sup>-3</sup></td>
-      <td style="vertical-align: top; color: red;">MASSDEN<br></td>
+      <td style="text-align: center; vertical-align: top;">0</td>
+      <td style="vertical-align: top;">Mass Density (Concentration)</td>
+      <td style="vertical-align: top;">kg m<sup>-3</sup></td>
+      <td style="vertical-align: top;">MASSDEN<br></td>
     </tr>
     <tr>
-      <td style="text-align: center; vertical-align: top; color: red;">1</td>
-      <td style="vertical-align: top;"><span style="color: red;">Column-Integrated Mass Density (See Note 1)</span><br></td>
-      <td style="vertical-align: top; color: red;">kg m<sup>-2</sup></td>
-      <td style="vertical-align: top; color: red;">COLMD<br></td>
+      <td style="text-align: center; vertical-align: top;">1</td>
+      <td style="vertical-align: top;">Column-Integrated Mass Density (See Note 1)</td>
+      <td style="vertical-align: top;">kg m<sup>-2</sup></td>
+      <td style="vertical-align: top;">COLMD</td>
     </tr>
     <tr>
-      <td style="text-align: center; vertical-align: top; color: red;">2</td>
-      <td style="vertical-align: top;"><span style="color: red;">Mass Mixing Ratio (Mass Fraction in Air)</span><br></td>
-      <td style="vertical-align: top; color: red;">kg kg<sup>-1</sup></td>
-      <td style="vertical-align: top; color: red;">MASSMR<br></td>
+      <td style="text-align: center; vertical-align: top;">2</td>
+      <td style="vertical-align: top;">Mass Mixing Ratio (Mass Fraction in Air)</td>
+      <td style="vertical-align: top; ">kg kg<sup>-1</sup></td>
+      <td style="vertical-align: top; ">MASSMR</td>
     </tr>
     <tr>
-      <td style="text-align: center; vertical-align: top; color: red;">3</td>
-      <td style="vertical-align: top;"><span style="color: red;">Atmosphere Emission Mass Flux</span><br></td>
-      <td style="vertical-align: top; color: red;">kg m<sup>-2</sup>s<sup>-1</sup></td>
-      <td style="vertical-align: top; color: red;">AEMFLX<br></td>
+      <td style="text-align: center; vertical-align: top; ">3</td>
+      <td style="vertical-align: top;">Atmosphere Emission Mass Flux</td>
+      <td style="vertical-align: top; ">kg m<sup>-2</sup>s<sup>-1</sup></td>
+      <td style="vertical-align: top; ">AEMFLX<br></td>
     </tr> 
     <tr>
-      <td style="text-align: center; vertical-align: top; color: red;">4</td>
-      <td style="vertical-align: top;"><span style="color: red;">Atmosphere Net Production Mass Flux</span><br></td>
-      <td style="vertical-align: top; color: red;">kg m<sup>-2</sup>s<sup>-1</sup></td>
-      <td style="vertical-align: top; color: red;">ANPMFLX<br></td>
+      <td style="text-align: center; vertical-align: ">4</td>
+      <td style="vertical-align: top;">Atmosphere Net Production Mass Flux</td>
+      <td style="vertical-align: top; ">kg m<sup>-2</sup>s<sup>-1</sup></td>
+      <td style="vertical-align: top; ">ANPMFLX<br></td>
     </tr>
     <tr>
-      <td style="text-align: center; vertical-align: top; color: red;">5</td>
-      <td style="vertical-align: top;"><span style="color: red;">Atmosphere Net Production And Emision Mass Flux</span><br></td>
-      <td style="vertical-align: top; color: red;">kg m<sup>-2</sup>s<sup>-1</sup></td>
-      <td style="vertical-align: top; color: red;">ANPEMFLX<br></td>
+      <td style="text-align: center; vertical-align: top; ">5</td>
+      <td style="vertical-align: top;">Atmosphere Net Production And Emision Mass Flux</span><br></td>
+      <td style="vertical-align: top; ">kg m<sup>-2</sup>s<sup>-1</sup></td>
+      <td style="vertical-align: top; ">ANPEMFLX</td>
     </tr> 
     <tr>
-      <td style="text-align: center; vertical-align: top; color: red;">6</td>
-      <td style="vertical-align: top;"><span style="color: red;">Surface Dry Deposition Mass Flux</span><br></td>
-      <td style="vertical-align: top; color: red;">kg m<sup>-2</sup>s<sup>-1</sup></td>
-      <td style="vertical-align: top; color: red;">SDDMFLX<br></td>
+      <td style="text-align: center; vertical-align: top; ">6</td>
+      <td style="vertical-align: top;">Surface Dry Deposition Mass Flux</td>
+      <td style="vertical-align: top; ">kg m<sup>-2</sup>s<sup>-1</sup></td>
+      <td style="vertical-align: top; ">SDDMFLX</td>
     </tr>
     <tr>
-      <td style="text-align: center; vertical-align: top; color: red;">7</td>
-      <td style="vertical-align: top;"><span style="color: red;">Surface Wet Deposition Mass Flux</span><br></td>
-      <td style="vertical-align: top; color: red;">kg m<sup>-2</sup>s<sup>-1</sup></td>
-      <td style="vertical-align: top; color: red;">SWDMFLX<br></td>
+      <td style="text-align: center; vertical-align: top; ">7</td>
+      <td style="vertical-align: top;">Surface Wet Deposition Mass Flux</td>
+      <td style="vertical-align: top; ">kg m<sup>-2</sup>s<sup>-1</sup></td>
+      <td style="vertical-align: top; ">SWDMFLX<br></td>
     </tr>
     <tr>
-      <td style="text-align: center; vertical-align: top; color: red;">8</td>
-      <td style="vertical-align: top;"><span style="color: red;">Atmosphere Re-Emission Mass Flux</span><br></td>
-      <td style="vertical-align: top; color: red;">kg m<sup>-2</sup>s<sup>-1</sup></td>
-      <td style="vertical-align: top; color: red;">AREMFLX<br></td>
+      <td style="text-align: center; vertical-align: top; ">8</td>
+      <td style="vertical-align: top;">Atmosphere Re-Emission Mass Flux</td>
+      <td style="vertical-align: top; ">kg m<sup>-2</sup>s<sup>-1</sup></td>
+      <td style="vertical-align: top; ">AREMFLX<br></td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: rgb(0, 0, 0);">9-49<br></td>
-      <td style="vertical-align: top; color: rgb(0, 0, 0);">Reserved</td>
-      <td style="vertical-align: top; color: rgb(0, 0, 0);"><br></td>
+      <td style="text-align: center; vertical-align: top; ">9</td>
+      <td style="vertical-align: top;">Wet Deposition by Large-Scale Precipitation Mass Flux</span></td>
+      <td style="vertical-align: top; ">kg m<sup>-2</sup>s<sup>-1</sup></td>
+      <td style="vertical-align: top; ">WLSMFLX<br></td>
+    </tr>
+    <tr>
+      <td style="text-align: center; vertical-align: top; ">10</td>
+      <td style="vertical-align: top;">Wet Deposition by Convective Precipitation Mass Flux</td>
+      <td style="vertical-align: top; ">kg m<sup>-2</sup>s<sup>-1</sup></td>
+      <td style="vertical-align: top; ">WDCPMFLX<br></td>
+    </tr>
+    <tr>
+      <td style="text-align: center; vertical-align: top; ">11</td>
+      <td style="vertical-align: top;">Sedimentation Mass Flux</td>
+      <td style="vertical-align: top; ">kg m<sup>-2</sup>s<sup>-1</sup></td>
+      <td style="vertical-align: top; ">SEDMFLX</td>
+    </tr>
+    <tr>
+      <td style="text-align: center; vertical-align: top; ">12</td>
+      <td style="vertical-align: top;">Dry Deposition Mass Flux</td>
+      <td style="vertical-align: top; ">kg m<sup>-2</sup>s<sup>-1</sup></td>
+      <td style="vertical-align: top; ">DDMFLX</td>
+    </tr> 
+    <tr>
+      <td style="text-align: center; vertical-align: top; ">13</td>
+      <td style="vertical-align: top;">Transfer From Hydrophobic to Hydrophilic<br></td>
+      <td style="vertical-align: top; ">kg kg<sup>-1</sup>s<sup>-1</sup></td>
+      <td style="vertical-align: top; ">TRANHH<br></td>
+    </tr> 
+    <tr>
+      <td style="text-align: center; vertical-align: top; ">14</td>
+      <td style="vertical-align: top;">Transfer From SO<sub>2</sub> (Sulphur Dioxide) to SO<sub>4</sub> (Sulphate)</td>
+      <td style="vertical-align: top; ">kg kg<sup>-1</sup>s<sup>-1</sup></td>
+      <td style="vertical-align: top; ">TRSDS<br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; "><span style="color: red;">15</span>-49<br>
+      <td style="vertical-align: top; color: black;">Reserved</td>
+      <td style="vertical-align: top; color: black;"><br></td>
       <td style="vertical-align: top;"><br></td>
     </tr>
     <tr>
-      <td style="text-align: center; vertical-align: top; color: red;">50</td>
-      <td style="vertical-align: top;"><span style="color: red;">Amount in Atmosphere</span><br></td>
-      <td style="vertical-align: top; color: red;">mol</td>
-      <td style="vertical-align: top; color: red;">AIA<br></td>
+      <td style="text-align: center; vertical-align: top; ">50</td>
+      <td style="vertical-align: top;">Amount in Atmosphere</td>
+      <td style="vertical-align: top; ">mol</td>
+      <td style="vertical-align: top; ">AIA<br></td>
     </tr>
     <tr>
-      <td style="text-align: center; vertical-align: top; color: red;">51</td>
-      <td style="vertical-align: top;"><span style="color: red;">Concentration In Air</span><br></td>
-      <td style="vertical-align: top; color: red;">mol m<sup>-3</sup></td>
-      <td style="vertical-align: top; color: red;">CONAIR<br></td>
+      <td style="text-align: center; vertical-align: top; ">51</td>
+      <td style="vertical-align: top;">Concentration In Air</td>
+      <td style="vertical-align: top; ">mol m<sup>-3</sup></td>
+      <td style="vertical-align: top; ">CONAIR<br></td>
     </tr>
     <tr>
-      <td style="text-align: center; vertical-align: top; color: red;">52</td>
-      <td style="vertical-align: top;"><span style="color: red;">Volume Mixing Ratio (Fraction in Air)</span><br></td>
-      <td style="vertical-align: top; color: red;">mol mol<sup>-1</sup></td>
-      <td style="vertical-align: top; color: red;">VMXR<br></td>
+      <td style="text-align: center; vertical-align: top; ">52</td>
+      <td style="vertical-align: top;">Volume Mixing Ratio (Fraction in Air)</td>
+      <td style="vertical-align: top; ">mol mol<sup>-1</sup></td>
+      <td style="vertical-align: top; ">VMXR<br></td>
     </tr>
     <tr>
-      <td style="text-align: center; vertical-align: top; color: red;">53</td>
-      <td style="vertical-align: top;"><span style="color: red;">Chemical Gross Production Rate of Concentration</span><br></td>
-      <td style="vertical-align: top; color: red;">mol m<sup>-3</sup>s<sup>-1</sup></td>
-      <td style="vertical-align: top; color: red;">CGPRC<br></td>
+      <td style="text-align: center; vertical-align: top; ">53</td>
+      <td style="vertical-align: top;">Chemical Gross Production Rate of Concentration</td>
+      <td style="vertical-align: top; ">mol m<sup>-3</sup>s<sup>-1</sup></td>
+      <td style="vertical-align: top; ">CGPRC<br></td>
     </tr>
     <tr>
-      <td style="text-align: center; vertical-align: top; color: red;">54</td>
-      <td style="vertical-align: top;"><span style="color: red;">Chemical Gross Destruction Rate of Concentration</span><br></td>
-      <td style="vertical-align: top; color: red;">mol m<sup>-3</sup>s<sup>-1</sup></td>
-      <td style="vertical-align: top; color: red;">CGDRC<br></td>
+      <td style="text-align: center; vertical-align: top; ">54</td>
+      <td style="vertical-align: top;">Chemical Gross Destruction Rate of Concentration</td>
+      <td style="vertical-align: top; ">mol m<sup>-3</sup>s<sup>-1</sup></td>
+      <td style="vertical-align: top; ">CGDRC<br></td>
     </tr>
     <tr>
-      <td style="text-align: center; vertical-align: top; color: red;">55</td>
-      <td style="vertical-align: top;"><span style="color: red;">Surface Flux</span><br></td>
-      <td style="vertical-align: top; color: red;">mol m<sup>-2</sup>s<sup>-1</sup></td>
-      <td style="vertical-align: top; color: red;">SFLUX<br></td>
+      <td style="text-align: center; vertical-align: top; ">55</td>
+      <td style="vertical-align: top;">Surface Flux</td>
+      <td style="vertical-align: top; ">mol m<sup>-2</sup>s<sup>-1</sup></td>
+      <td style="vertical-align: top; ">SFLUX<br></td>
     </tr>
     <tr>
-      <td style="text-align: center; vertical-align: top; color: red;">56</td>
-      <td style="vertical-align: top;"><span style="color: red;">Changes Of Amount in Atmosphere (See Note 1)</span><br></td>
-      <td style="vertical-align: top; color: red;">mol s<sup>-1</sup></td>
-      <td style="vertical-align: top; color: red;">COAIA<br></td>
+      <td style="text-align: center; vertical-align: top; ">56</td>
+      <td style="vertical-align: top;">Changes Of Amount in Atmosphere (See Note 1)</td>
+      <td style="vertical-align: top; ">mol s<sup>-1</sup></td>
+      <td style="vertical-align: top; ">COAIA<br></td>
     </tr>
     <tr>
-      <td style="text-align: center; vertical-align: top; color: red;">57</td>
-      <td style="vertical-align: top;"><span style="color: red;">Total Yearly Average Burden of The Atmosphere</span><br></td>
-      <td style="vertical-align: top; color: red;">mol </td>
-      <td style="vertical-align: top; color: red;">TYABA<br></td>
+      <td style="text-align: center; vertical-align: top; ">57</td>
+      <td style="vertical-align: top;">Total Yearly Average Burden of The Atmosphere></td>
+      <td style="vertical-align: top; ">mol </td>
+      <td style="vertical-align: top; ">TYABA<br></td>
     </tr>
     <tr>
-      <td style="text-align: center; vertical-align: top; color: red;">58</td>
-      <td style="vertical-align: top;"><span style="color: red;">Total Yearly Average Atmospheric Loss (See Note 1)</span><br></td>
-      <td style="vertical-align: top; color: red;">mol s<sup>-1</sup></td>
-      <td style="vertical-align: top; color: red;">TYAAL<br></td>
+      <td style="text-align: center; vertical-align: top; ">58</td>
+      <td style="vertical-align: top;">Total Yearly Average Atmospheric Loss (See Note 1)</td>
+      <td style="vertical-align: top; ">mol s<sup>-1</sup></td>
+      <td style="vertical-align: top; ">TYAAL<br></td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: rgb(0, 0, 0);">59 - 99<br></td>
-      <td style="vertical-align: top; color: rgb(0, 0, 0);">Reserved</td>
-      <td style="vertical-align: top; color: rgb(0, 0, 0);"><br></td>
+      <td style="text-align: center; vertical-align: top; ">59</td>
+      <td style="vertical-align: top;">Aerosol Number Concentration (See Note 2)</td>
+      <td style="vertical-align: top; ">m<sup>-3</sup></td>
+      <td style="vertical-align: top; ">ANCON<br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color:black;">60<br></td>
+      <td style="vertical-align: top; color:black;">Aerosol Specific Number Concentration (See Note 2)</td>
+      <td style="vertical-align: top; ">kg<sup>-1</sup></td>
+      <td style="vertical-align: top; color:black;">ASNCON</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color:black;">61</td>
+      <td style="vertical-align: top; color:black;">Maximum of Mass Density (See Note 1)</td>
+      <td style="vertical-align: top; ">kg m<sup>-3</sup></td>
+      <td style="vertical-align: top; color:black;">MXMASSD</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color:black;">62</td>
+      <td style="vertical-align: top; color:black;">Height of Mass Density</td>
+      <td style="vertical-align: top; ">m</td>
+      <td style="vertical-align: top; color:black;">HGTMD</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color:red;">63</td>
+      <td style="vertical-align: top; color:red;">Column-Averaged Mass Density in Layer</td>
+      <td style="vertical-align: top; color:red;">kg m<sup>-3</sup></td>
+      <td style="vertical-align: top; color:red;">CAVEMDL</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; "><span style="color: red;">64</span>-99<br>
+      <td style="vertical-align: top; color: black;">Reserved</td>
+      <td style="vertical-align: top; color: black;"><br></td>
       <td style="vertical-align: top;"><br></td>
     </tr>
     <tr>
-      <td style="text-align: center; vertical-align: top; color: red;">100</td>
-      <td style="vertical-align: top;"><span style="color: red;">Surface Area Density (Aerosol)</span><br></td>
-      <td style="vertical-align: top; color: red;">m<sup>-1</sup></td>
-      <td style="vertical-align: top; color: red;">SADEN<br></td>
+      <td style="text-align: center; vertical-align: top; ">100</td>
+      <td style="vertical-align: top;">Surface Area Density (Aerosol)</td>
+      <td style="vertical-align: top; ">m<sup>-1</sup></td>
+      <td style="vertical-align: top; ">SADEN<br></td>
     </tr>
     <tr>
-      <td style="text-align: center; vertical-align: top; color: red;">101</td>
-      <td style="vertical-align: top;"><span style="color: red;">Atmosphere Optical Thickness</span><br></td>
-      <td style="vertical-align: top; color: red;">m</td>
-      <td style="vertical-align: top; color: red;">AOTK<br></td>
+      <td style="text-align: center; vertical-align: top; color: black;">101</td>
+      <td style="vertical-align: top; color: black;">Vertical Visual Range</td>
+      <td style="vertical-align: top; color: black;">m</td>
+      <td style="vertical-align: top; color: black;">ATMTK<br></td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: rgb(0, 0, 0);">102 - 130<br></td>
-      <td style="vertical-align: top; color: rgb(0, 0, 0);">Reserved</td>
-      <td style="vertical-align: top; color: rgb(0, 0, 0);"><br></td>
+      <td style="text-align: center; vertical-align: top; ">102</td>
+      <td style="vertical-align: top;">Aerosol Optical Thickness</td>
+      <td style="vertical-align: top; ">Numeric</td>
+      <td style="vertical-align: top; ">AOTK<br></td>
+    </tr>
+    <tr>
+      <td style="text-align: center; vertical-align: top; ">103</td>
+      <td style="vertical-align: top;">Single Scattering Albedo</td>
+      <td style="vertical-align: top; ">Numeric</td>
+      <td style="vertical-align: top; ">SSALBK<br></td>
+    </tr>
+    <tr>
+      <td style="text-align: center; vertical-align: top; ">104</td>
+      <td style="vertical-align: top;">Asymmetry Factor<br></td>
+      <td style="vertical-align: top; ">Numeric</td>
+      <td style="vertical-align: top; ">ASYSFK<br></td>
+    </tr>
+    <tr>
+      <td style="text-align: center; vertical-align: top; ">105</td>
+      <td style="vertical-align: top;">Aerosol Extinction Coefficient<br></td>
+      <td style="vertical-align: top; ">m<sup>-1</sup></td>
+      <td style="vertical-align: top; ">AECOEF<br></td>
+    </tr>
+    <tr>
+      <td style="text-align: center; vertical-align: top; ">106</td>
+      <td style="vertical-align: top;">Aerosol Absorption Coefficient</span><br></td>
+      <td style="vertical-align: top; ">m<sup>-1</sup></td>
+      <td style="vertical-align: top; ">AACOEF<br></td>
+    </tr>
+    <tr>
+      <td style="text-align: center; vertical-align: top; ">107</td>
+      <td style="vertical-align: top;">Aerosol Lidar Backscatter from Satellite<br></td>
+      <td style="vertical-align: top; ">m<sup>-1</sup>sr<sup>-1</sup></td>
+      <td style="vertical-align: top; ">ALBSAT<br></td>
+    </tr>
+    <tr>
+      <td style="text-align: center; vertical-align: top; ">108</td>
+      <td style="vertical-align: top;">Aerosol Lidar Backscatter from the Ground</td>
+      <td style="vertical-align: top; ">m<sup>-1</sup>sr<sup>-1</sup></td>
+      <td style="vertical-align: top; ">ALBGRD<br></td>
+    </tr>
+    <tr>
+      <td style="text-align: center; vertical-align: top; ">109</td>
+      <td style="vertical-align: top;">Aerosol Lidar Extinction from Satellite</td>
+      <td style="vertical-align: top; ">m<sup>-1</sup></td>
+      <td style="vertical-align: top; ">ALESAT<br></td>
+    </tr>
+    <tr>
+      <td style="text-align: center; vertical-align: top; ">110</td>
+      <td style="vertical-align: top;">Aerosol Lidar Extinction from the Ground</span><br></td>
+      <td style="vertical-align: top; ">m<sup>-1</sup></td>
+      <td style="vertical-align: top; ">ALEGRD<br></td>
+    </tr>
+    <tr>
+      <td style="text-align: center; vertical-align: top; ">111</td>
+      <td style="vertical-align: top;">Angstrom Exponent</td>
+      <td style="vertical-align: top; ">Numeric</td>
+      <td style="vertical-align: top; ">ANGSTEXP</td>
+    </tr>
+    <tr>
+      <td style="text-align: center; vertical-align: top; ">112</td>
+      <td style="vertical-align: top;">Scattering Aerosol Optical Thickness</td>
+      <td style="vertical-align: top; ">Numeric</td>
+      <td style="vertical-align: top; ">SCTAOTK</td>
+    </tr>
+
+    <tr>
+      <td style="vertical-align: top; text-align: center; "><span style="color: red;">113</span>-191<br>
+      <td style="vertical-align: top; color: black;">Reserved</td>
+      <td style="vertical-align: top; color: black;"><br></td>
       <td style="vertical-align: top;"><br></td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: red;">131<br></td>
-      <td style="vertical-align: top; color: red ;">Nitrogen Dioxide (NO2) Tropospheric Column</td>
-      <td style="vertical-align: top; color: red ;">mol cm<sup>-2</sup></td>
-      <td style="vertical-align: top; color: red ;">NO2TROP</td>
-    </tr>
-    <tr>
-      <td style="vertical-align: top; text-align: center; color: red;">132<br></td>
-      <td style="vertical-align: top; color: red;">Nitrogen Dioxide (NO2) Vertical Column Density</td>
-      <td style="vertical-align: top; color: red;">mol cm<sup>-2</sup></td>
-      <td style="vertical-align: top; color: red;">NO2VCD</td>
-    </tr>
-    <tr>
-      <td style="vertical-align: top; text-align: center; color: red;">133<br></td>
-      <td style="vertical-align: top; color: red;">Bromine Monoxide (BrO) Vertical Column Density</td>
-      <td style="vertical-align: top; color: red;">mol cm<sup>-2</sup></td>
-      <td style="vertical-align: top; color: red;">BROVCD</td>
-    </tr>
-    <tr>
-      <td style="vertical-align: top; text-align: center; color: red;">134<br></td>
-      <td style="vertical-align: top; color: red;">Formaldehyde (HCHO) Vertical Column Density</td>
-      <td style="vertical-align: top; color: red;">mol cm<sup>-2</sup></td>
-      <td style="vertical-align: top; color: red;">HCHOVCD</td>
-    </tr>
-    <tr>
-      <td style="vertical-align: top; text-align: center; color: rgb(0, 0, 0);">135 - 191<br></td>
-      <td style="vertical-align: top; color: rgb(0, 0, 0);">Reserved</td>
-      <td style="vertical-align: top; color: rgb(0, 0, 0);"><br></td>
-      <td style="vertical-align: top;"><br></td>
-    </tr>
-    <tr>
-      <td style="vertical-align: top; text-align: center; background-color: rgb(204, 204, 204);">192-254<br></td>
-      <td style="vertical-align: top; background-color: rgb(204, 204, 204);">Reserved for Local Use<br></td>
-      <td style="vertical-align: top; background-color: rgb(204, 204, 204);"><br></td>
-      <td style="vertical-align: top; background-color: rgb(204, 204, 204);"><br></td>
+      <td style="vertical-align: top; text-align: center; background-color: lightgrey;">192-254<br></td>
+      <td style="vertical-align: top; background-color: lightgrey;">Reserved for Local Use<br></td>
+      <td style="vertical-align: top; background-color: lightgrey;"><br></td>
+      <td style="vertical-align: top; background-color: lightgrey;"><br></td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">255<br></td>
@@ -219,13 +320,17 @@ Atmospheric chemical constituents)</small><br>
 border="0" cellpadding="2" cellspacing="2">
 <tbody>
 <tr>
-<td style="vertical-align: top;"><b>Notes:</b><br>
-(1) First fixed surface and Second fixed surface of Code Table 4.5 (Fixed surface types and units) <br>
- to define the vertical extent, i.e. First Fixed Surface can be set to 1 (Ground or Water surface) <br>
- and second Fixed Surface set to 7 (Tropapause) for a restriction to the troposphere. <br>
-<br>
+<td style="vertical-align: top;"><b>Notes:</b><P>
+(1) First fixed surface and Second fixed surface of Code Table 4.5 (Fixed surface types and units)
+ to define the vertical extent, i.e. First Fixed Surface can be set to 1 (Ground or Water surface)
+ and second Fixed Surface set to 7 (Tropopause) for a restriction to the troposphere. <br>
+(2) The term "Number Density" is used as well for "Number Concentration" (code Number 59); Conversion 
+ factor between "Number Density" (59) and "Specific Number Concentration" (60) is "Mass Density" [kg m<sup>-3</sup>]<br>
+</p>
 </tr>
 </table>
+<br>
+<br>
 <center><a href="/pmb/docs/grib2/grib2_doc.shtml">Back</a></center>
 <br>
 <br>

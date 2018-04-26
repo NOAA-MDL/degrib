@@ -8,76 +8,65 @@
  alink="#ff0000" link="#0000ff" vlink="#551a8b">
 <br>
 <center>
-<big><big><big><b>GRIB2 - TABLE 4.2-0-16</b></big></big></big><br>
-<span style="font-weight: bold;"><br>
-</span><b>&nbsp;<big><big> PARAMETERS FOR DISCIPLINE 0<br>
-CATEGORY 16<br>
-<small style="color: rgb(51, 51, 255);">(Meteorological products,
-Forecast Radar
-Imagery category)</small><br>
-</big></big></b><big><big><br>
-</big></big><big><big><big><small>Section 0 , Octet 7 = 0</small></big></big></big><b><big><big><big><small><br>
-</small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 16<br>
-</big></big></center>
-<br>
-<center><b>Revised 01/22/2010</b><br>
-<span style="color: red; font-size: 10pt;"><b>Red text depicts changes
-made since 05/13/2009</b></span></center>
-</b></center>
+<h3>GRIB2 - TABLE 4.2-0-16</h3>
+<h4>PARAMETERS FOR DISCIPLINE 0<br>CATEGORY 16</h4>
+<h4><span style="color: blue;">(Meteorological products,
+Forecast Radar Imagery category)</span></h4>
+<h4>In Section 0, Octet 7 = 0<br>
+In Section 4, Octet 10 = 16</h4>
+</center>
+<center><b><span style="font-size: 9pt;">Revised 12/06/2011<br>
+<span style="color: red;">Red text depicts changes made since 01/22/2010</span></b><br>
+</center>
 <br>
 <br>
 <center>
 <table style="width: 90%;" border="1" cellpadding="5" cellspacing="0">
   <tbody>
     <tr>
-      <th>Number<br>
-(Section 4, octet 11)<br>
-      </th>
-      <th>Parameter</th>
-      <td
- style="text-align: center; vertical-align: middle; font-weight: bold;">Units<br>
-      </td>
-      <td
- style="vertical-align: middle; font-weight: bold; text-align: center;">Abbrev</td>
+      <th style="text-align: center; background-color: lightgrey;">Number<br>(In Section 4, octet 11)<br></th>
+      <th style="text-align: center; background-color: lightgrey;">Parameter</th>
+      <td style="text-align: center; vertical-align: middle; background-color: lightgrey; font-weight: bold;">Units<br></td>
+      <td style="vertical-align: middle; font-weight: bold;  background-color: lightgrey; text-align: center;">Abbrev</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: red;">0<br></td>
-      <td style="vertical-align: top; color: red;">Equivalent radar reflectivity factor for rain</td>
-      <td style="vertical-align: top; color: red;">mm<sup>6</sup>m<sup>-3</sup><br></td>
-      <td style="vertical-align: top; color: red;">REFZR<br></td>
+      <td style="vertical-align: top; text-align: center; color: black;">0<br></td>
+      <td style="vertical-align: top; color: black;">Equivalent radar reflectivity factor for rain</td>
+      <td style="vertical-align: top; color: black;">m m<sup>6</sup> m<sup>-3</sup><br></td>
+      <td style="vertical-align: top; color: black;">REFZR<br></td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: red;">1<br></td>
-      <td style="vertical-align: top; color: red;">Equivalent radar reflectivity factor for snow</td>
-      <td style="vertical-align: top; color: red;">mm<sup>6</sup>m<sup>-3</sup><br></td>
-      <td style="vertical-align: top; color: red;">REFZI<br></td>
+      <td style="vertical-align: top; text-align: center; color: black;">1<br></td>
+      <td style="vertical-align: top; color: black;">Equivalent radar reflectivity factor for snow</td>
+      <td style="vertical-align: top; color: black;">m m<sup>6</sup> m<sup>-3</sup><br></td>
+      <td style="vertical-align: top; color: black;">REFZI<br></td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: red;">2<br></td>
-      <td style="vertical-align: top; color: red;">Equivalent radar reflectivity factor for parameterized convection</td>
-      <td style="vertical-align: top; color: red;">mm<sup>6</sup>m<sup>-3</sup><br></td>
-      <td style="vertical-align: top; color: red;">REFZC<br></td>
+      <td style="vertical-align: top; text-align: center; color: black;">2<br></td>
+      <td style="vertical-align: top; color: black;">Equivalent radar reflectivity factor for parameterized convection</td>
+      <td style="vertical-align: top; color: black;">m m<sup>6</sup> m<sup>-3</sup><br></td>
+      <td style="vertical-align: top; color: black;">REFZC<br></td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: red;">3<br></td>
-      <td style="vertical-align: top; color: red;">Echo Top    (See Note 1)</td>
-      <td style="vertical-align: top; color: red;">m<br></td>
-      <td style="vertical-align: top; color: red;">RETOP<br></td>
+      <td style="vertical-align: top; text-align: center; color: black;">3<br></td>
+      <td style="vertical-align: top; color: black;">Echo Top    (See Note 1)</td>
+      <td style="vertical-align: top; color: black;">m<br></td>
+      <td style="vertical-align: top; color: black;">RETOP<br></td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: red;">4<br></td>
-      <td style="vertical-align: top; color: red;">Reflectivity</td>
-      <td style="vertical-align: top; color: red;">dB<br></td>
-      <td style="vertical-align: top; color: red;">REFD<br></td>
+      <td style="vertical-align: top; text-align: center; color: black;">4<br></td>
+      <td style="vertical-align: top; color: black;">Reflectivity</td>
+      <td style="vertical-align: top; color: black;">dB<br></td>
+      <td style="vertical-align: top; color: black;">REFD<br></td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: red;">5<br></td>
-      <td style="vertical-align: top; color: red;">Composite reflectivity</td>
-      <td style="vertical-align: top; color: red;">dB<br></td>
-      <td style="vertical-align: top; color: red;">REFC<br></td>
+      <td style="vertical-align: top; text-align: center; color: black;">5<br></td>
+      <td style="vertical-align: top; color: black;">Composite reflectivity</td>
+      <td style="vertical-align: top; color: black;">dB<br></td>
+      <td style="vertical-align: top; color: black;">REFC<br></td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center;">6-191<br>
+      <td style="vertical-align: top; text-align: center;"><span style="color:red;">6</span>-191<br>
       </td>
       <td style="vertical-align: top;">Reserved</td>
       <td style="vertical-align: top;"><br>
@@ -87,38 +76,38 @@ made since 05/13/2009</b></span></center>
     </tr>
     <tr>
       <td
- style="vertical-align: top; text-align: center; background-color: rgb(204, 204, 204);">192-254<br>
+ style="vertical-align: top; text-align: center; background-color: lightgrey;">192-254<br>
       </td>
       <td
- style="vertical-align: top; background-color: rgb(204, 204, 204);">Reserved
+ style="vertical-align: top; background-color: lightgrey;">Reserved
 for Local Use<br>
       </td>
       <td
- style="vertical-align: top; background-color: rgb(204, 204, 204);"><br>
+ style="vertical-align: top; background-color: lightgrey;"><br>
       </td>
       <td
- style="vertical-align: top; background-color: rgb(204, 204, 204);"><br>
+ style="vertical-align: top; background-color: lightgrey;"><br>
       </td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">192<br>
       </td>
       <td style="vertical-align: top;">Equivalent radar reflectivity factor for rain</td>
-      <td style="vertical-align: top;">mm<sup>6</sup>/m<sup>3</sup></td>
+      <td style="vertical-align: top; ">m m<sup>6</sup> m<sup>-3</sup><br></td>
       <td style="vertical-align: top;">REFZR</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">193<br>
       </td>
       <td style="vertical-align: top;">Equivalent radar reflectivity factor for snow</td>
-      <td style="vertical-align: top;">mm<sup>6</sup>/m<sup>3</sup></td>
+      <td style="vertical-align: top; ">m m<sup>6</sup> m<sup>-3</sup><br></td>
       <td style="vertical-align: top;">REFZI</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">194<br>
       </td>
       <td style="vertical-align: top;">Equivalent radar reflectivity factor for parameterized convection</td>
-      <td style="vertical-align: top;">mm<sup>6</sup>/m<sup>3</sup></td>
+      <td style="vertical-align: top; ">m m<sup>6</sup> m<sup>-3</sup><br></td>
       <td style="vertical-align: top;">REFZC</td>
     </tr>
     <tr>
@@ -136,10 +125,16 @@ for Local Use<br>
       <td style="vertical-align: top;">REFC</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: red;">197<br></td>
-      <td style="vertical-align: top; color: red;">Echo Top    (See Note 1)</td>
-      <td style="vertical-align: top; color: red;">m<br></td>
-      <td style="vertical-align: top; color: red;">RETOP<br></td>
+      <td style="vertical-align: top; text-align: center; color: black;">197<br></td>
+      <td style="vertical-align: top; color: black;">Echo Top    (See Note 1)</td>
+      <td style="vertical-align: top; color: black;">m<br></td>
+      <td style="vertical-align: top; color: black;">RETOP<br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: black;">198<br></td>
+      <td style="vertical-align: top; color: black;">Hourly Maximum of Simulated Reflectivity at 1 km AGL</td>
+      <td style="vertical-align: top; color: black;">dB</td>
+      <td style="vertical-align: top; color: black;">MAXREF<br></td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">255<br>
@@ -164,7 +159,11 @@ for Local Use<br>
       <td style="vertical-align: top;"><b>Notes:</b><br>
       <br><p>
       (1) For Echo Top product, Use octet number 38 to store threshold value (for example, 18.3 dB)
-       in Product Definition Template 4.20. See <a href="grib2_temp4-20.shtml">Template 4.20</a>.
+       in Product Definition Template 4.20. See <a href="grib2_temp4-20.shtml">Template 4.20</a>.<br><br>
+      (2) Decibel (dB) is a logarithmic measure of the relative power, or of the relative values of
+          two flux densities, especially of sound intensities and radio and radar power densities.
+          In radar meteorology, the logarithmic scale (dBZ) is used for measuring radar reflectivity
+          factor (obtained from the American Meteorological Society Glossary of Meteorology).
       </P><br>
     </tr>
   </tbody>

@@ -8,40 +8,31 @@
  alink="#ff0000" link="#0000ff" vlink="#551a8b">
 <br>
 <center>
-<big><big><big><b>GRIB2 - TABLE 4.2-0-4</b></big></big></big><br>
-<span style="font-weight: bold;"><br>
-</span><b>&nbsp;<big><big> PARAMETERS FOR DISCIPLINE 0<br>
-CATEGORY 4<br>
-<small style="color: rgb(51, 51, 255);">(Meteorological products,
-short-wave radiation category)</small><br>
-</big></big></b><big><big><br>
-</big></big><big><big><big><small>Section 0 , Octet 7 = 0</small></big></big></big><b><big><big><big><small><br>
-</small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 4<br>
-</big></big></center>
-<br>
-<center><b>Revised 06/20/2008</b><br>
-<span style="color: red; font-size: 10pt;"><b>Red text depicts changes
-made since 10/30/2007</b></span></center>
+<h3>GRIB2 - TABLE 4.2-0-4</h3>
+<h4>PARAMETERS FOR DISCIPLINE 0<br>CATEGORY 4</h4>
+<h4><span style="color: blue;">(Meteorological products,
+Short-wave radiation category)</span></h4>
+<h4>In Section 0, Octet 7 = 0<br>
+In Section 4, Octet 10 = 4</h4>
+</center>
+<center><b><span style="font-size: 9pt;">Revised 07/13/2016<br>
+<span style="color: red;">Red text depicts changes made since 02/09/2012</span></b><br>
+</center>
 <br>
 <br>
 <center>
 <table style="width: 90%;" border="1" cellpadding="5" cellspacing="0">
   <tbody>
     <tr>
-      <th>Number<br>
-(Section 4, octet 11)<br>
-      </th>
-      <th>Parameter</th>
-      <td
- style="text-align: center; vertical-align: middle; font-weight: bold;">Units<br>
-      </td>
-      <td
- style="vertical-align: middle; font-weight: bold; text-align: center;">Abbrev</td>
+      <th style="text-align: center; background-color: lightgrey;">Number<br>(In Section 4, octet 11)<br></th>
+      <th style="text-align: center; background-color: lightgrey;">Parameter</th>
+      <td style="text-align: center; vertical-align: middle; background-color: lightgrey; font-weight: bold;">Units<br></td>
+      <td style="vertical-align: middle; font-weight: bold;  background-color: lightgrey; text-align: center;">Abbrev</td>
     </tr>
     <tr>
       <td style="text-align: center;">0<br>
       </td>
-      <td>Net Short-Wave Radiation Flux (Surface)<br>
+      <td>Net Short-Wave Radiation Flux (Surface)<sup><b>*</b></sup><br>
       </td>
       <td style="vertical-align: top;">W m<sup>-2</sup><br>
       </td>
@@ -51,14 +42,14 @@ made since 10/30/2007</b></span></center>
       <td style="vertical-align: top; text-align: center;">1<br>
       </td>
       <td style="vertical-align: top;">Net Short-Wave Radiation Flux
-(Top of Atmosphere)</td>
+(Top of Atmosphere)<sup><b>*</b></sup></td>
       <td style="vertical-align: top;">W m<sup>-2</sup></td>
       <td style="vertical-align: top;">NSWRT </td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">2<br>
       </td>
-      <td style="vertical-align: top;">Short-Wave Radiation Flux</td>
+      <td style="vertical-align: top;">Short-Wave Radiation Flux<sup><b>*</b></sup></td>
       <td style="vertical-align: top;">W m<sup>-2</sup></td>
       <td style="vertical-align: top;">SWAVR </td>
     </tr>
@@ -67,7 +58,7 @@ made since 10/30/2007</b></span></center>
       </td>
       <td style="vertical-align: top;">Global Radiation Flux</td>
       <td style="vertical-align: top;">W m<sup>-2</sup></td>
-      <td style="vertical-align: top;">G RAD </td>
+      <td style="vertical-align: top;">GRAD </td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">4<br>
@@ -100,163 +91,187 @@ wavelength)<br>
     <tr>
       <td style="vertical-align: top; text-align: center;">7<br>
       </td>
-      <td style="vertical-align: top;">Downward Short-Wave Rad. Flux</td>
+      <td style="vertical-align: top;">Downward Short-Wave Radiation Flux</td>
       <td style="vertical-align: top;">W m<sup>-2</sup></td>
       <td style="vertical-align: top;">DSWRF</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">8<br>
       </td>
-      <td style="vertical-align: top;">Upward Short-Wave Rad. Flux</td>
+      <td style="vertical-align: top;">Upward Short-Wave Radiation Flux</td>
       <td style="vertical-align: top;">W m<sup>-2</sup></td>
       <td style="vertical-align: top;">USWRF</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">9<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Net Short Wave Radiation Flux</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">W m<sup>-2</sup></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">NSWRF</td>
+      <td style="vertical-align: top; color: black; text-align: center;">9<br></td>
+      <td style="vertical-align: top; color: black;">Net Short Wave Radiation Flux</td>
+      <td style="vertical-align: top; color: black;">W m<sup>-2</sup></td>
+      <td style="vertical-align: top; color: black;">NSWRF</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">10<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Photosynthetically Active Radiation</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">W m<sup>-2</sup></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">PHOTAR</td>
+      <td style="vertical-align: top; color: black; text-align: center;">10<br></td>
+      <td style="vertical-align: top; color: black;">Photosynthetically Active Radiation</td>
+      <td style="vertical-align: top; color: black;">W m<sup>-2</sup></td>
+      <td style="vertical-align: top; color: black;">PHOTAR</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">11<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Net Short-Wave Radiation Flux, Clear Sky</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">W m<sup>-2</sup></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">NSWRFCS<br></td>
+      <td style="vertical-align: top; color: black; text-align: center;">11<br></td>
+      <td style="vertical-align: top; color: black;">Net Short-Wave Radiation Flux, Clear Sky</td>
+      <td style="vertical-align: top; color: black;">W m<sup>-2</sup></td>
+      <td style="vertical-align: top; color: black;">NSWRFCS<br></td>
     </tr>
     <tr>
-      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">12<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Downward UV Radiation</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">W m<sup>-2</sup></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">DWUVR</td>
+      <td style="vertical-align: top; color: black; text-align: center;">12<br></td>
+      <td style="vertical-align: top; color: black;">Downward UV Radiation</td>
+      <td style="vertical-align: top; color: black;">W m<sup>-2</sup></td>
+      <td style="vertical-align: top; color: black;">DWUVR</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center;">13-49<br></td>
+      <td style="vertical-align: top; color: black; text-align: center;">13<br></td>
+      <td style="vertical-align: top; color: black;">Direct Short Wave Radiation Flux</td>
+      <td style="vertical-align: top; color: black;">W m<sup>-2</sup></td>
+      <td style="vertical-align: top; color: black;">DSWRFLX</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: black; text-align: center;">14<br></td>
+      <td style="vertical-align: top; color: black;">Diffuse Short Wave Radiation Flux</td>
+      <td style="vertical-align: top; color: black;">W m<sup>-2</sup></td>
+      <td style="vertical-align: top; color: black;">DIFSWRF</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">15-49<br></td>
       <td style="vertical-align: top;">Reserved</td>
       <td style="vertical-align: top;"><br></td>
       <td style="vertical-align: top;"><br></td>
     </tr>
     <tr>
-      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">50<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">UV Index (Under Clear Sky)</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Numeric</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">UVIUCS<br></td>
+      <td style="vertical-align: top; color: black; text-align: center;">50<br></td>
+      <td style="vertical-align: top; color: black;">UV Index (Under Clear Sky)<sup><b>**</b></sup></td>
+      <td style="vertical-align: top; color: black;">Numeric</td>
+      <td style="vertical-align: top; color: black;">UVIUCS<br></td>
     </tr>
     <tr>
-      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">51<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">UV Index</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">W m<sup>-2</sup></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">UVI</td>
+      <td style="vertical-align: top; color: black; text-align: center;">51<br></td>
+      <td style="vertical-align: top; color: black;">UV Index<sup><b>**</b></sup></td>
+      <td style="vertical-align: top; color: black;">W m<sup>-2</sup></td>
+      <td style="vertical-align: top; color: black;">UVI</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center;">52-191<br></td>
+      <td style="vertical-align: top; color: red; text-align: center;">52<br></td>
+      <td style="vertical-align: top; color: red;">Downward Short-Wave Radiation Flux, Clear Sky</td>
+      <td style="vertical-align: top; color: red;">W m<sup>-2</sup></td>
+      <td style="vertical-align: top; color: red;">DSWRFCS</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color: red; text-align: center;">53<br></td>
+      <td style="vertical-align: top; color: red;">Upward Short-Wave Radiation Flux, Clear Sky</td>
+      <td style="vertical-align: top; color: red;">W m<sup>-2</sup></td>
+      <td style="vertical-align: top; color: red;">USWRFCS</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;"><span style="color:red;">54</span>-191<br></td>
       <td style="vertical-align: top;">Reserved</td>
       <td style="vertical-align: top;"><br></td>
       <td style="vertical-align: top;"><br></td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; background-color: rgb(204, 204, 204);">192-254<br>
+      <td style="vertical-align: top; text-align: center; background-color: lightgrey;">192-254<br>
       </td>
-      <td style="vertical-align: top; background-color: rgb(204, 204, 204);">Reserved for Local Use<br>
+      <td style="vertical-align: top; background-color: lightgrey;">Reserved for Local Use<br>
       </td>
-      <td style="vertical-align: top; background-color: rgb(204, 204, 204);"><br>
+      <td style="vertical-align: top; background-color: lightgrey;"><br>
       </td>
-      <td style="vertical-align: top; background-color: rgb(204, 204, 204);"><br>
+      <td style="vertical-align: top; background-color: lightgrey;"><br>
       </td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">192<br>
       </td>
-      <td style="vertical-align: top;">Downward Short-Wave Rad. Flux</td>
+      <td style="vertical-align: top;">Downward Short-Wave Radiation Flux</td>
       <td style="vertical-align: top;">W m<sup>-2</sup></td>
       <td style="vertical-align: top;">DSWRF </td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">193<br>
       </td>
-      <td style="vertical-align: top;">Upward Short-Wave Rad. Flux</td>
+      <td style="vertical-align: top;">Upward Short-Wave Radiation Flux</td>
       <td style="vertical-align: top;">W m<sup>-2</sup></td>
       <td style="vertical-align: top;">USWRF</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">194<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">UV-B downward solar flux</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">W m<sup>-2</sup></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">DUVB</td>
+      <td style="vertical-align: top; color: black; text-align: center;">194<br></td>
+      <td style="vertical-align: top; color: black;">UV-B Downward Solar Flux</td>
+      <td style="vertical-align: top; color: black;">W m<sup>-2</sup></td>
+      <td style="vertical-align: top; color: black;">DUVB</td>
     </tr>
     <tr>
       <td
- style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">195<br>
+ style="vertical-align: top; color: black; text-align: center;">195<br>
       </td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Clear sky
-UV-B downward solar flux</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">W m<sup>-2</sup></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">CDUVB</td>
+      <td style="vertical-align: top; color: black;">Clear sky
+UV-B Downward Solar Flux</td>
+      <td style="vertical-align: top; color: black;">W m<sup>-2</sup></td>
+      <td style="vertical-align: top; color: black;">CDUVB</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">196<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Clear Sky Downward Solar Flux</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">W m<sup>-2</sup></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">CSDSF</td>
+      <td style="vertical-align: top; text-align: center; color: black;">196<br></td>
+      <td style="vertical-align: top; color: black;">Clear Sky Downward Solar Flux</td>
+      <td style="vertical-align: top; color: black;">W m<sup>-2</sup></td>
+      <td style="vertical-align: top; color: black;">CSDSF</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">197<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Solar Radiative Heating Rate</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">K s<sup>-1</sup></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">SWHR</td>
+      <td style="vertical-align: top; text-align: center; color: black;">197<br></td>
+      <td style="vertical-align: top; color: black;">Solar Radiative Heating Rate</td>
+      <td style="vertical-align: top; color: black;">K s<sup>-1</sup></td>
+      <td style="vertical-align: top; color: black;">SWHR</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">198<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Clear Sky Upward Solar Flux</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">W m<sup>-2</sup></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">CSUSF</td>
+      <td style="vertical-align: top; text-align: center; color: black;">198<br></td>
+      <td style="vertical-align: top; color: black;">Clear Sky Upward Solar Flux</td>
+      <td style="vertical-align: top; color: black;">W m<sup>-2</sup></td>
+      <td style="vertical-align: top; color: black;">CSUSF</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">199<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Cloud Forcing Net Solar Flux</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">W m<sup>-2</sup></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">CFNSF</td>
+      <td style="vertical-align: top; text-align: center; color: black;">199<br></td>
+      <td style="vertical-align: top; color: black;">Cloud Forcing Net Solar Flux</td>
+      <td style="vertical-align: top; color: black;">W m<sup>-2</sup></td>
+      <td style="vertical-align: top; color: black;">CFNSF</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">200<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Visible Beam Downward Solar Flux</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">W m<sup>-2</sup></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">VBDSF</td>
+      <td style="vertical-align: top; text-align: center; color: black;">200<br></td>
+      <td style="vertical-align: top; color: black;">Visible Beam Downward Solar Flux</td>
+      <td style="vertical-align: top; color: black;">W m<sup>-2</sup></td>
+      <td style="vertical-align: top; color: black;">VBDSF</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">201<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Visible Diffuse Downward Solar Flux</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">W m<sup>-2</sup></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">VDDSF</td>
+      <td style="vertical-align: top; text-align: center; color: black;">201<br></td>
+      <td style="vertical-align: top; color: black;">Visible Diffuse Downward Solar Flux</td>
+      <td style="vertical-align: top; color: black;">W m<sup>-2</sup></td>
+      <td style="vertical-align: top; color: black;">VDDSF</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">202<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Near IR Beam Downward Solar Flux</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">W m<sup>-2</sup></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">NBDSF</td>
+      <td style="vertical-align: top; text-align: center; color: black;">202<br></td>
+      <td style="vertical-align: top; color: black;">Near IR Beam Downward Solar Flux</td>
+      <td style="vertical-align: top; color: black;">W m<sup>-2</sup></td>
+      <td style="vertical-align: top; color: black;">NBDSF</td>
     </tr> 
     <tr>
-      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">203<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Near IR Diffuse Downward Solar Flux</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">W m<sup>-2</sup></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">NDDSF</td>
+      <td style="vertical-align: top; text-align: center; color: black;">203<br></td>
+      <td style="vertical-align: top; color: black;">Near IR Diffuse Downward Solar Flux</td>
+      <td style="vertical-align: top; color: black;">W m<sup>-2</sup></td>
+      <td style="vertical-align: top; color: black;">NDDSF</td>
     </tr> 
     <tr>
-      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">204<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Downward Total radiation Flux</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">W m<sup>-2</sup></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">DTRF</td>
+      <td style="vertical-align: top; text-align: center; color: black;">204<br></td>
+      <td style="vertical-align: top; color: black;">Downward Total Radiation Flux</td>
+      <td style="vertical-align: top; color: black;">W m<sup>-2</sup></td>
+      <td style="vertical-align: top; color: black;">DTRF</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">205<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Upward Total radiation Flux</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">W m<sup>-2</sup></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">UTRF</td>
+      <td style="vertical-align: top; text-align: center; color: black;">205<br></td>
+      <td style="vertical-align: top; color: black;">Upward Total Radiation Flux</td>
+      <td style="vertical-align: top; color: black;">W m<sup>-2</sup></td>
+      <td style="vertical-align: top; color: black;">UTRF</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">255<br>
@@ -271,6 +286,20 @@ UV-B downward solar flux</td>
   </tbody>
 </table>
 </center>
+<br>
+<br>
+<table align="center" width="80%">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;"><b>Notes:</b><br>
+      <br>
+<b>*</b>  Parameter deprecated - See Regulation 92.6.2 and use another parameter instead.<br>
+<b>**</b> The Global Solar UVI is formulated using the International Commission on Illumination (CIE) <br> 
+reference action spectrum for UV-induced erythema on the human skin (ISO 17166:1999/CIE S 007/E-1998).<br>
+It is a measure of the UV radiation that is relevant to and defined for a horizontal surface.<br>
+The UVI is a unitless quantity defined by the formula:<br>
+  </tbody>
+</table>
 <br>
 <br>
 <center><a href="/pmb/docs/grib2/grib2_doc.shtml">Back</a></center>

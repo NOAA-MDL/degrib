@@ -8,42 +8,33 @@
  alink="#ff0000" link="#0000ff" vlink="#551a8b">
 <br>
 <center>
-<big><big><big><b>GRIB2 - TABLE 4.2-0-14</b></big></big></big><br>
-<span style="font-weight: bold;"><br>
-</span><b>&nbsp;<big><big> PARAMETERS FOR DISCIPLINE 0<br>
-CATEGORY 14<br>
-<small style="color: rgb(51, 51, 255);">(Meteorological products, Trace
-Gases category)</small><br>
-</big></big></b><big><big><br>
-</big></big><big><big><big><small>Section 0 , Octet 7 = 0</small></big></big></big><b><big><big><big><small><br>
-</small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 14<br>
-</big></big></center>
-<br>
-<center><b>Revised 05/27/2009</b><br>
-<span style="color: red; font-size: 10pt;"><b>Red text depicts changes
-made since 04/22/2009</b></span></center>
+<h3>GRIB2 - TABLE 4.2-0-14</h3>
+<h4>PARAMETERS FOR DISCIPLINE 0<br>CATEGORY 14</h4>
+<h4><span style="color: blue;">(Meteorological products,
+Trace Gases category)</span></h4>
+<h4>In Section 0, Octet 7 = 0<br>
+In Section 4, Octet 10 = 14</h4>
+</center>
+<center><b><span style="font-size: 9pt;">Revised 02/13/2012<br>
+<span style="color: red;">Red text depicts changes made since 04/21/2009</span></b><br>
+</center>
 <br>
 <br>
 <center>
 <table style="width: 90%;" border="1" cellpadding="5" cellspacing="0">
   <tbody>
     <tr>
-      <th>Number<br>
-(Section 4, octet 11)<br>
-      </th>
-      <th>Parameter</th>
-      <td
- style="text-align: center; vertical-align: middle; font-weight: bold;">Units<br>
-      </td>
-      <td
- style="vertical-align: middle; font-weight: bold; text-align: center;">Abbrev</td>
+      <th style="text-align: center; background-color: lightgrey;">Number<br>(In Section 4, octet 11)<br></th>
+      <th style="text-align: center; background-color: lightgrey;">Parameter</th>
+      <td style="text-align: center; vertical-align: middle; background-color: lightgrey; font-weight: bold;">Units<br></td>
+      <td style="vertical-align: middle; font-weight: bold;  background-color: lightgrey; text-align: center;">Abbrev</td>
     </tr>
     <tr>
       <td style="text-align: center;">0<br>
       </td>
       <td>Total Ozone<br>
       </td>
-      <td style="vertical-align: top;">Dobson <br>
+      <td style="vertical-align: top;">DU<br>
       </td>
       <td style="vertical-align: top;">TOZNE </td>
     </tr>
@@ -56,13 +47,13 @@ made since 04/22/2009</b></span></center>
       <td style="vertical-align: top;">O3MR </td>
     </tr>
     <tr>
-      <td style="vertical-align: top; color: rgb(255, 0, 0); text-align: center;">2<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Total Column Integrated Ozone</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Dobson<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">TCIOZ</td>
+      <td style="vertical-align: top; color: black; text-align: center;">2<br></td>
+      <td style="vertical-align: top; color: black;">Total Column Integrated Ozone</td>
+      <td style="vertical-align: top; color: black;">DU<br></td>
+      <td style="vertical-align: top; color: black;">TCIOZ</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center;">3-191<br>
+      <td style="vertical-align: top; text-align: center;"><span style="color:red;">3</span>-191<br>
       </td>
       <td style="vertical-align: top;">Reserved</td>
       <td style="vertical-align: top;"><br>
@@ -72,17 +63,17 @@ made since 04/22/2009</b></span></center>
     </tr>
     <tr>
       <td
- style="vertical-align: top; text-align: center; background-color: rgb(204, 204, 204);">192-254<br>
+ style="vertical-align: top; text-align: center; background-color: lightgrey;">192-254<br>
       </td>
       <td
- style="vertical-align: top; background-color: rgb(204, 204, 204);">Reserved
+ style="vertical-align: top; background-color: lightgrey;">Reserved
 for Local Use<br>
       </td>
       <td
- style="vertical-align: top; background-color: rgb(204, 204, 204);"><br>
+ style="vertical-align: top; background-color: lightgrey;"><br>
       </td>
       <td
- style="vertical-align: top; background-color: rgb(204, 204, 204);"><br>
+ style="vertical-align: top; background-color: lightgrey;"><br>
       </td>
     </tr>
     <tr>
@@ -96,8 +87,8 @@ for Local Use<br>
     <tr>
       <td style="vertical-align: top; text-align: center;">193<br>
       </td>
-      <td style="vertical-align: top;">Ozone Concentration (PPB)</td>
-      <td style="vertical-align: top;">PPB<br>
+      <td style="vertical-align: top;">Ozone Concentration</td>
+      <td style="vertical-align: top;">ppb<br>
       </td>
       <td style="vertical-align: top;">OZCON </td>
     </tr>
@@ -110,62 +101,62 @@ for Local Use<br>
       <td style="vertical-align: top;">OZCAT </td>
     </tr>
     <tr>
-      <td style="text-align: center; color: red;">195<br>
+      <td style="text-align: center; color: black;">195<br>
       </td>
-      <td style="vertical-align: top; color: red;">Ozone Vertical Diffusion<br>
+      <td style="vertical-align: top; color: black;">Ozone Vertical Diffusion<br>
       </td>
-      <td style="vertical-align: top; color: red;">kg/kg/s<br>
+      <td style="vertical-align: top; color: black;">kg kg<sup>-1</sup> s<sup>-1</sup><br>
       </td>
-      <td style="vertical-align: top; color: red;">VDFOZ<br>
+      <td style="vertical-align: top; color: black;">VDFOZ<br>
       </td>
     </tr>
     <tr>
-      <td style="text-align: center; color: red;">196<br></td>
-      <td style="vertical-align: top; color: red;">Ozone Production<br></td>
-      <td style="vertical-align: top; color: red;">kg/kg/s<br></td>
-      <td style="vertical-align: top; color: red;">POZ<br></td>
+      <td style="text-align: center; color: black;">196<br></td>
+      <td style="vertical-align: top; color: black;">Ozone Production<br></td>
+      <td style="vertical-align: top; color: black;">kg kg<sup>-1</sup> s<sup>-1</sup><br>
+      <td style="vertical-align: top; color: black;">POZ<br></td>
     </tr>
     <tr>
-      <td style="text-align: center; color: red;">197<br></td>
-      <td style="vertical-align: top; color: red;">Ozone Tendency<br></td>
-      <td style="vertical-align: top; color: red;">kg/kg/s<br></td>
-      <td style="vertical-align: top; color: red;">TOZ<br></td>
+      <td style="text-align: center; color: black;">197<br></td>
+      <td style="vertical-align: top; color: black;">Ozone Tendency<br></td>
+      <td style="vertical-align: top; color: black;">kg kg<sup>-1</sup> s<sup>-1</sup><br>
+      <td style="vertical-align: top; color: black;">TOZ<br></td>
     </tr>
     <tr>
-      <td style="text-align: center; color: red;">198<br></td>
-      <td style="vertical-align: top; color: red;">Ozone Production from Temperature Term</td>
-      <td style="vertical-align: top; color: red;">kg/kg/s<br></td>
-      <td style="vertical-align: top; color: red;">POZT<br></td>
+      <td style="text-align: center; color: black;">198<br></td>
+      <td style="vertical-align: top; color: black;">Ozone Production from Temperature Term</td>
+      <td style="vertical-align: top; color: black;">kg kg<sup>-1</sup> s<sup>-1</sup><br>
+      <td style="vertical-align: top; color: black;">POZT<br></td>
     </tr>
     <tr>
-      <td style="text-align: center; color: red;">199<br></td>
-      <td style="vertical-align: top; color: red;">Ozone Production from Column Ozone Term</td>
-      <td style="vertical-align: top; color: red;">kg/kg/s<br></td>
-      <td style="vertical-align: top; color: red;">POZO<br></td>
+      <td style="text-align: center; color: black;">199<br></td>
+      <td style="vertical-align: top; color: black;">Ozone Production from Column Ozone Term</td>
+      <td style="vertical-align: top; color: black;">kg kg<sup>-1</sup> s<sup>-1</sup></td>
+      <td style="vertical-align: top; color: black;">POZO<br></td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">200<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Ozone Daily Max from 1-hour Average</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">ppbV<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">OZMAX1</td>
+      <td style="vertical-align: top; text-align: center; color: black;">200<br></td>
+      <td style="vertical-align: top; color: black;">Ozone Daily Max from 1-hour Average</td>
+      <td style="vertical-align: top; color: black;">ppbV<br></td>
+      <td style="vertical-align: top; color: black;">OZMAX1</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">201<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Ozone Daily Max from 8-hour Average</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">ppbV<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">OZMAX8</td>
+      <td style="vertical-align: top; text-align: center; color: black;">201<br></td>
+      <td style="vertical-align: top; color: black;">Ozone Daily Max from 8-hour Average</td>
+      <td style="vertical-align: top; color: black;">ppbV<br></td>
+      <td style="vertical-align: top; color: black;">OZMAX8</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">202<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">PM 2.5 Daily Max from 1-hour Average</td>
-      <td style="vertical-align: top; color: red;">&#956g/m<sup>3</sup></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">PDMAX1</td>
+      <td style="vertical-align: top; text-align: center; color: black;">202<br></td>
+      <td style="vertical-align: top; color: black;">PM 2.5 Daily Max from 1-hour Average</td>
+      <td style="vertical-align: top; color: black;">&#956g m<sup>-3</sup></td>
+      <td style="vertical-align: top; color: black;">PDMAX1</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">203<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">PM 2.5 Daily Max from 24-hour Average</td>
-      <td style="vertical-align: top; color: red;">&#956g/m<sup>3</sup></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">PDMAX24</td>
+      <td style="vertical-align: top; text-align: center; color: black;">203<br></td>
+      <td style="vertical-align: top; color: black;">PM 2.5 Daily Max from 24-hour Average</td>
+      <td style="vertical-align: top; color: black;">&#956g m<sup>-3</sup></td>
+      <td style="vertical-align: top; color: black;">PDMAX24</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">255<br></td>

@@ -8,60 +8,38 @@
  alink="#ff0000" link="#0000ff" vlink="#551a8b">
 <br>
 <center>
-<big><big><big><b>GRIB2 - TABLE 4.2-0-2</b></big></big></big><br>
-<span style="font-weight: bold;"><br>
-</span><b>&nbsp;<big><big> PARAMETERS FOR DISCIPLINE 0<br>
-CATEGORY 2<br>
-<small style="color: rgb(51, 51, 255);">(Meteorological products,
-momentum category)</small><br>
-</big></big></b><big><big><br>
-</big></big><big><big><big><small>Section 0 , Octet 7 = 0</small></big></big></big><b><big><big><big><small><br>
-</small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 2<br>
-</big></big></center>
-<br>
-<center>
-<center>
-<center><b>Revised 10/09/2008</b><br>
-<span style="color: red; font-size: 10pt;"><b>Red text depicts changes
-made since 03/12/2008</b></span><b><br>
-</b></center>
+<h3>GRIB2 - TABLE 4.2-0-2</h3>
+<h4>PARAMETERS FOR DISCIPLINE 0<br>CATEGORY 2</h4>
+<h4><span style="color: blue;">(Meteorological products,
+Momentum category)</span></h4>
+<h4>In Section 0, Octet 7 = 0<br>
+In Section 4, Octet 10 = 2</h4>
 </center>
-<b></b></center>
+<center><b><span style="font-size: 9pt;">Revised 02/27/2018<br>
+<span style="color: red;">Red text depicts changes made since 02/06/2018</span></b><br>
+</center>
 <br>
 <br>
 <center>
 <table style="width: 90%;" border="1" cellpadding="5" cellspacing="0">
   <tbody>
     <tr>
-      <th>Number<br>
-(Section 4, octet 11)<br>
-      </th>
-      <th>Parameter</th>
-      <td style="text-align: center; vertical-align: middle;"><span
- style="font-weight: bold;">Units</span><br>
-      </td>
-      <td
- style="text-align: center; vertical-align: middle; font-weight: bold;">Abbrev<br>
-      </td>
+      <th style="text-align: center; background-color: lightgrey;">Number<br>(In Section 4, octet 11)<br></th>
+      <th style="text-align: center; background-color: lightgrey;">Parameter</th>
+      <td style="text-align: center; vertical-align: middle; background-color: lightgrey; font-weight: bold;">Units<br></td>
+      <td style="vertical-align: middle; font-weight: bold;  background-color: lightgrey; text-align: center;">Abbrev</td>
     </tr>
     <tr>
-      <td style="text-align: center;">0<br>
-      </td>
-      <td>Wind Direction (from which blowing)<br>
-      </td>
-      <td style="vertical-align: top;">Degree<br>
-true<br>
-      </td>
-      <td style="vertical-align: top;">WDIR </td>
+      <td style="text-align: center;">0<br></td>
+      <td>Wind Direction (from which blowing)<br></td>
+      <td style="vertical-align: top;">&#176; true</td>
+      <td style="vertical-align: top;">WDIR</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center;">1<br>
-      </td>
-      <td style="vertical-align: top;">Wind Speed<br>
-      </td>
-      <td style="vertical-align: top;">m s<sup>-1</sup><br>
-      </td>
-      <td style="vertical-align: top;">WIND </td>
+      <td style="vertical-align: top; text-align: center;">1<br></td>
+      <td style="vertical-align: top;">Wind Speed<br></td>
+      <td style="vertical-align: top;">m s<sup>-1</sup><br></td>
+      <td style="vertical-align: top;">WIND</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">2<br>
@@ -69,14 +47,14 @@ true<br>
       <td style="vertical-align: top;">U-Component of Wind<br>
       </td>
       <td style="vertical-align: top;">m s<sup>-1</sup></td>
-      <td style="vertical-align: top;">U GRD </td>
+      <td style="vertical-align: top;">UGRD </td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">3<br>
       </td>
       <td style="vertical-align: top;">V-Component of Wind</td>
       <td style="vertical-align: top;">m s<sup>-1</sup></td>
-      <td style="vertical-align: top;">V GRD </td>
+      <td style="vertical-align: top;">VGRD </td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">4<br>
@@ -92,14 +70,14 @@ true<br>
       <td style="vertical-align: top;">Velocity Potential<br>
       </td>
       <td style="vertical-align: top;">m<sup>2</sup> s<sup>-1</sup></td>
-      <td style="vertical-align: top;">V POT </td>
+      <td style="vertical-align: top;">VPOT </td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">6<br>
       </td>
       <td style="vertical-align: top;">Montgomery Stream Function</td>
-      <td style="vertical-align: top;">m<sup>2</sup> s<sup>-1</sup></td>
-      <td style="vertical-align: top;">MNTSF </td>
+      <td style="vertical-align: top;">m<sup>2</sup> s<sup>-2</sup></td>
+      <td style="vertical-align: top;">MNTSF</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">7<br>
@@ -108,7 +86,7 @@ true<br>
 Velocity<br>
       </td>
       <td style="vertical-align: top;">s<sup>-1</sup></td>
-      <td style="vertical-align: top;">SGCVV </td>
+      <td style="vertical-align: top;">SGCVV</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">8<br>
@@ -116,14 +94,14 @@ Velocity<br>
       <td style="vertical-align: top;">Vertical Velocity (Pressure)<br>
       </td>
       <td style="vertical-align: top;">Pa s<sup>-1</sup></td>
-      <td style="vertical-align: top;">V VEL </td>
+      <td style="vertical-align: top;">VVEL</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">9<br>
       </td>
       <td style="vertical-align: top;">Vertical Velocity (Geometric)</td>
       <td style="vertical-align: top;">m s<sup>-1</sup></td>
-      <td style="vertical-align: top;">DZDT </td>
+      <td style="vertical-align: top;">DZDT</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">10<br>
@@ -131,7 +109,7 @@ Velocity<br>
       <td style="vertical-align: top;">Absolute Vorticity<br>
       </td>
       <td style="vertical-align: top;">s<sup>-1</sup></td>
-      <td style="vertical-align: top;">ABS V </td>
+      <td style="vertical-align: top;">ABSV</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">11<br>
@@ -139,7 +117,7 @@ Velocity<br>
       <td style="vertical-align: top;">Absolute Divergence<br>
       </td>
       <td style="vertical-align: top;">s<sup>-1</sup></td>
-      <td style="vertical-align: top;">ABS D </td>
+      <td style="vertical-align: top;">ABSD</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">12<br>
@@ -147,7 +125,7 @@ Velocity<br>
       <td style="vertical-align: top;">Relative Vorticity<br>
       </td>
       <td style="vertical-align: top;">s<sup>-1</sup></td>
-      <td style="vertical-align: top;">REL V </td>
+      <td style="vertical-align: top;">RELV</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">13<br>
@@ -155,7 +133,7 @@ Velocity<br>
       <td style="vertical-align: top;">Relative Divergence<br>
       </td>
       <td style="vertical-align: top;">s<sup>-1</sup></td>
-      <td style="vertical-align: top;">REL D </td>
+      <td style="vertical-align: top;">RELD</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">14<br>
@@ -169,32 +147,32 @@ Velocity<br>
     <tr>
       <td style="vertical-align: top; text-align: center;">15<br>
       </td>
-      <td style="vertical-align: top;">Vertical U-Component of Shear<br>
+      <td style="vertical-align: top;">Vertical U-Component Shear<br>
       </td>
       <td style="vertical-align: top;">s<sup>-1</sup></td>
-      <td style="vertical-align: top;">VUCSH </td>
+      <td style="vertical-align: top;">VUCSH</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">16<br>
       </td>
-      <td style="vertical-align: top;">Vertical V-Component of Shear<br>
+      <td style="vertical-align: top;">Vertical V-Component Shear<br>
       </td>
       <td style="vertical-align: top;">s<sup>-1</sup></td>
-      <td style="vertical-align: top;">VVCSH </td>
+      <td style="vertical-align: top;">VVCSH</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">17<br>
       </td>
       <td style="vertical-align: top;">Momentum Flux, U-Component</td>
       <td style="vertical-align: top;">N m<sup>-2</sup></td>
-      <td style="vertical-align: top;">U FLX </td>
+      <td style="vertical-align: top;">UFLX</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">18<br>
       </td>
       <td style="vertical-align: top;">Momentum Flux, V-Component</td>
       <td style="vertical-align: top;">N m<sup>-2</sup></td>
-      <td style="vertical-align: top;">V FLX </td>
+      <td style="vertical-align: top;">VFLX</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">19<br>
@@ -203,7 +181,7 @@ Velocity<br>
       </td>
       <td style="vertical-align: top;">J<br>
       </td>
-      <td style="vertical-align: top;">WMIXE </td>
+      <td style="vertical-align: top;">WMIXE</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">20<br>
@@ -217,8 +195,7 @@ Velocity<br>
     <tr>
       <td style="vertical-align: top; text-align: center;">21<br>
       </td>
-      <td style="vertical-align: top;">Maximum Wind Speed<br>
-      </td>
+      <td style="vertical-align: top;">Maximum Wind Speed <span style="color: red;">*</span></td>
       <td style="vertical-align: top;">m s<sup>-1</sup></td>
       <td style="vertical-align: top;">MAXGUST</td>
     </tr>
@@ -236,42 +213,42 @@ Velocity<br>
       </td>
       <td style="vertical-align: top;">U-Component of Wind (Gust)</td>
       <td style="vertical-align: top;">m s<sup>-1</sup></td>
-      <td style="vertical-align: top;">U GUST</td>
+      <td style="vertical-align: top;">UGUST</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">24<br>
       </td>
       <td style="vertical-align: top;">V-Component of Wind (Gust)</td>
       <td style="vertical-align: top;">m s<sup>-1</sup></td>
-      <td style="vertical-align: top;">V GUST</td>
+      <td style="vertical-align: top;">VGUST</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">25<br>
       </td>
-      <td style="vertical-align: top;">Vertical speed sheer</td>
+      <td style="vertical-align: top;">Vertical Speed Shear</td>
       <td style="vertical-align: top;">s<sup>-1</sup></td>
-      <td style="vertical-align: top;">VW SH</td>
+      <td style="vertical-align: top;">VWSH</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">26<br>
       </td>
       <td style="vertical-align: top;">Horizontal Momentum Flux</td>
       <td style="vertical-align: top;">N m<sup>-2</sup></td>
-      <td style="vertical-align: top;">M FLX </td>
+      <td style="vertical-align: top;">MFLX</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">27<br>
       </td>
       <td style="vertical-align: top;">U-Component Storm Motion</td>
       <td style="vertical-align: top;">m s<sup>-1</sup></td>
-      <td style="vertical-align: top;">USTM </td>
+      <td style="vertical-align: top;">USTM</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">28<br>
       </td>
       <td style="vertical-align: top;">V-Component Storm Motion</td>
       <td style="vertical-align: top;">m s<sup>-1</sup></td>
-      <td style="vertical-align: top;">VSTM </td>
+      <td style="vertical-align: top;">VSTM</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">29<br>
@@ -289,42 +266,135 @@ Velocity<br>
       <td style="vertical-align: top;">FRICV </td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center;">31-191<br>
-      </td>
+      <td style="vertical-align: top; text-align: center;">31<br></td>
+      <td style="vertical-align: top; ">Turbulent Diffusion Coefficient for Momentum</td>
+      <td style="vertical-align: top; ">m<sup>2</sup> s<sup>-1</sup></td>
+      <td style="vertical-align: top; ">TDCMOM</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; ">32<br></td>
+      <td style="vertical-align: top; ">Eta Coordinate Vertical Velocity</td>
+      <td style="vertical-align: top; ">s<sup>-1</sup></td>
+      <td style="vertical-align: top; ">ETACVV</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; ">33<br></td>
+      <td style="vertical-align: top; ">Wind Fetch</td>
+      <td style="vertical-align: top; ">m</td>
+      <td style="vertical-align: top; ">WINDF</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">34<br></td>
+      <td style="vertical-align: top; ">Normal Wind Component **</td>
+      <td style="vertical-align: top; ">m s<sup>-1</sup></td>
+      <td style="vertical-align: top; ">NWIND</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">35<br></td>
+      <td style="vertical-align: top; ">Tangential Wind Component **</td>
+      <td style="vertical-align: top; ">m s<sup>-1</sup></td>
+      <td style="vertical-align: top; ">TWIND</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color:black; text-align: center;">36<br></td>
+      <td style="vertical-align: top; color:black;">Amplitude Function for Rossby Wave Envelope for Meridional Wind ***</td>
+      <td style="vertical-align: top; color:black;">m s<sup>-1</sup></td>
+      <td style="vertical-align: top; color:black;">AFRWE</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color:black; text-align: center;">37<br></td>
+      <td style="vertical-align: top; color:black;">Northward Turbulent Surface Stress ****</td>
+      <td style="vertical-align: top; color:black;">N m<sup>-2</sup> s</td>
+      <td style="vertical-align: top; color:black;">NTSS</td>
+    </tr> 
+    <tr>
+      <td style="vertical-align: top; color:black; text-align: center;">38<br></td>
+      <td style="vertical-align: top; color:black;">Eastward Turbulent Surface Stress ****</td>
+      <td style="vertical-align: top; color:black;">N m<sup>-2</sup> s</td>
+      <td style="vertical-align: top; color:black;">ETSS</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color:black; text-align: center;">39</td>
+      <td style="vertical-align: top; color:black;">Eastward Wind Tendency Due to Parameterizations</td>
+      <td style="vertical-align: top; color:black;">m s<sup>-2</sup></td>
+      <td style="vertical-align: top; color:black;">EWTPARM</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color:black; text-align: center;">40</td>
+      <td style="vertical-align: top; color:black;">Northward Wind Tendency Due to Parameterizations</td>
+      <td style="vertical-align: top; color:black;">m s<sup>-2</sup></td>
+      <td style="vertical-align: top; color:black;">NWTPARM</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color:black; text-align: center;">41</td>
+      <td style="vertical-align: top; color:black;">U-Component of Geostrophic Wind</td>
+      <td style="vertical-align: top; color:black;">m s<sup>-1</sup></td>
+      <td style="vertical-align: top; color:black;">UGWIND</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color:black; text-align: center;">42</td>
+      <td style="vertical-align: top; color:black;">V-Component of Geostrophic Wind</td>
+      <td style="vertical-align: top; color:black;">m s<sup>-1</sup></td>
+      <td style="vertical-align: top; color:black;">VGWIND</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color:black; text-align: center;">43</td>
+      <td style="vertical-align: top; color:black;">Geostrophic Wind Direction</td>
+      <td style="vertical-align: top; color:black;">degree true</td>
+      <td style="vertical-align: top; color:black;">GEOWD</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color:black; text-align: center;">44</td>
+      <td style="vertical-align: top; color:black;">Geostrophic Wind Speed</td>
+      <td style="vertical-align: top; color:black;">m s<sup>-1</sup></td>
+      <td style="vertical-align: top; color:black;">GEOWS</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color:red; text-align: center;">45</td>
+      <td style="vertical-align: top; color:red;">Unbalanced Component of Divergence</td>
+      <td style="vertical-align: top; color:red;">s<sup>-1</sup></td>
+      <td style="vertical-align: top; color:red;">UNDIV</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color:red; text-align: center;">46</td>
+      <td style="vertical-align: top; color:red;">Vorticity Advection</td>
+      <td style="vertical-align: top; color:red;">s<sup>-2</sup></td>
+      <td style="vertical-align: top; color:red;">VORTADV</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;"><span style="color:red;">47</span>-191<br></td>
       <td style="vertical-align: top;">Reserved</td>
-      <td style="vertical-align: top;"><br>
-      </td>
-      <td style="vertical-align: top;"><br>
-      </td>
+      <td style="vertical-align: top;"><br></td>
+      <td style="vertical-align: top;"><br></td>
     </tr>
     <tr>
       <td
- style="vertical-align: top; text-align: center; background-color: rgb(204, 204, 204);">192-254<br>
+ style="vertical-align: top; text-align: center; background-color: lightgrey;">192-254<br>
       </td>
       <td
- style="vertical-align: top; background-color: rgb(204, 204, 204);">Reserved
+ style="vertical-align: top; background-color: lightgrey;">Reserved
 for Local Use<br>
       </td>
       <td
- style="vertical-align: top; background-color: rgb(204, 204, 204);"><br>
+ style="vertical-align: top; background-color: lightgrey;"><br>
       </td>
       <td
- style="vertical-align: top; background-color: rgb(204, 204, 204);"><br>
+ style="vertical-align: top; background-color: lightgrey;"><br>
       </td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">192<br>
       </td>
-      <td style="vertical-align: top;">Vertical speed sheer</td>
+      <td style="vertical-align: top;">Vertical Speed Shear</td>
       <td style="vertical-align: top;">s<sup>-1</sup></td>
-      <td style="vertical-align: top;">VW SH </td>
+      <td style="vertical-align: top;">VWSH </td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">193<br>
       </td>
       <td style="vertical-align: top;">Horizontal Momentum Flux</td>
       <td style="vertical-align: top;">N m<sup>-2</sup></td>
-      <td style="vertical-align: top;">M FLX </td>
+      <td style="vertical-align: top;">MFLX </td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">194<br>
@@ -355,149 +425,215 @@ for Local Use<br>
       <td style="vertical-align: top;">FRICV </td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: red ;">198<br>
+      <td style="vertical-align: top; text-align: center; ">198<br>
       </td>
-      <td style="vertical-align: top; color: red ;">Latitude of U Wind Component of
+      <td style="vertical-align: top; ">Latitude of U Wind Component of
           Velocity</td>
-      <td style="vertical-align: top; color: red ;">deg</td>
-      <td style="vertical-align: top; color: red ;">LAUV</td>
+      <td style="vertical-align: top; ">deg</td>
+      <td style="vertical-align: top; ">LAUV</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: red ;">199<br>
+      <td style="vertical-align: top; text-align: center; ">199<br>
       </td>
-      <td style="vertical-align: top; color: red ;">Longitude of U Wind Component of 
+      <td style="vertical-align: top; ">Longitude of U Wind Component of 
           Velocity</td>
-      <td style="vertical-align: top; color: red ;">deg</td>
-      <td style="vertical-align: top; color: red ;">LOUV</td>
+      <td style="vertical-align: top; ">deg</td>
+      <td style="vertical-align: top; ">LOUV</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: red ;">200<br>
+      <td style="vertical-align: top; text-align: center; ">200<br></td>
+      <td style="vertical-align: top; ">Latitude of V Wind Component of Velocity</td>
+      <td style="vertical-align: top; ">deg</td>
+      <td style="vertical-align: top; ">LAVV</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; ">201<br>
       </td>
-      <td style="vertical-align: top; color: red ;">Latitude of V Wind Component of 
+      <td style="vertical-align: top; ">Longitude of V Wind Component of        
           Velocity</td>
-      <td style="vertical-align: top; color: red ;">deg</td>
-      <td style="vertical-align: top; color: red ;">LAVV</td>
+      <td style="vertical-align: top; ">deg</td>
+      <td style="vertical-align: top; ">LOVV</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: red ;">201<br>
+      <td style="vertical-align: top; text-align: center; ">202<br>
       </td>
-      <td style="vertical-align: top; color: red ;">Longitude of V Wind Component of        
-          Velocity</td>
-      <td style="vertical-align: top; color: red ;">deg</td>
-      <td style="vertical-align: top; color: red ;">LOVV</td>
+      <td style="vertical-align: top; ">Latitude of Presure Point</td>
+      <td style="vertical-align: top; ">deg</td>
+      <td style="vertical-align: top; ">LAPP</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: red ;">202<br>
+      <td style="vertical-align: top; text-align: center; ">203<br>
       </td>
-      <td style="vertical-align: top; color: red ;">Latitude of Presure Point</td>
-      <td style="vertical-align: top; color: red ;">deg</td>
-      <td style="vertical-align: top; color: red ;">LAPP</td>
+      <td style="vertical-align: top; ">Longitude of Presure Point</td>
+      <td style="vertical-align: top; ">deg</td>
+      <td style="vertical-align: top; ">LOPP</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: red ;">203<br>
-      </td>
-      <td style="vertical-align: top; color: red ;">Longitude of Presure Point</td>
-      <td style="vertical-align: top; color: red ;">deg</td>
-      <td style="vertical-align: top; color: red ;">LOPP</td>
+      <td style="vertical-align: top; text-align: center; ">204<br></td>
+      <td style="vertical-align: top; ">Vertical Eddy Diffusivity Heat exchange</td>
+      <td style="vertical-align: top; ">m<sup>2</sup> s<sup>-1</sup></td>
+      <td style="vertical-align: top; ">VEDH</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: red ;">204<br></td>
-      <td style="vertical-align: top; color: red ;">Vertical Eddy Diffusivity Heat exchange</td>
-      <td style="vertical-align: top; color: red ;">m<sup>2</sup> s<sup>-1</sup></td>
-      <td style="vertical-align: top; color: red ;">VEDH</td>
-    </tr>
-    <tr>
-      <td style="vertical-align: top; text-align: center; color: red ;">205<br></td>
-      <td style="vertical-align: top; color: red ;">Covariance between Meridional and Zonal<br>
+      <td style="vertical-align: top; text-align: center; ">205<br></td>
+      <td style="vertical-align: top; ">Covariance between Meridional and Zonal<br>
        Components of the wind.</td>
-      <td style="vertical-align: top; color: red ;">m<sup>2</sup> s<sup>-2</sup></td>
-      <td style="vertical-align: top; color: red ;">COVMZ</td>
+      <td style="vertical-align: top; ">m<sup>2</sup> s<sup>-2</sup></td>
+      <td style="vertical-align: top; ">COVMZ</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: red ;">206<br></td>
-      <td style="vertical-align: top; color: red ;">Covariance between Temperature and Zonal<br>
+      <td style="vertical-align: top; text-align: center; ">206<br></td>
+      <td style="vertical-align: top; ">Covariance between Temperature and Zonal<br>
        Components of the wind.</td>
-      <td style="vertical-align: top; color: red ;">K*m s<sup>-1</sup></td>
-      <td style="vertical-align: top; color: red ;">COVTZ</td>
+      <td style="vertical-align: top; ">K*m s<sup>-1</sup></td>
+      <td style="vertical-align: top; ">COVTZ</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: red ;">207<br></td>
-      <td style="vertical-align: top; color: red ;">Covariance between Temperature and Meridional<br>
+      <td style="vertical-align: top; text-align: center; ">207<br></td>
+      <td style="vertical-align: top; ">Covariance between Temperature and Meridional<br>
        Components of the wind.</td>
-      <td style="vertical-align: top; color: red ;">K*m s<sup>-1</sup></td>
-      <td style="vertical-align: top; color: red ;">COVTM</td>
+      <td style="vertical-align: top; ">K*m s<sup>-1</sup></td>
+      <td style="vertical-align: top; ">COVTM</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: red ;">208<br></td>
-      <td style="vertical-align: top; color: red ;">Vertical Diffusion Zonal Acceleration<br></td>
-      <td style="vertical-align: top; color: red ;">m s<sup>-2</sup></td>
-      <td style="vertical-align: top; color: red ;">VDFUA</td>
+      <td style="vertical-align: top; text-align: center; ">208<br></td>
+      <td style="vertical-align: top; ">Vertical Diffusion Zonal Acceleration<br></td>
+      <td style="vertical-align: top; ">m s<sup>-2</sup></td>
+      <td style="vertical-align: top; ">VDFUA</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: red ;">209<br></td>
-      <td style="vertical-align: top; color: red ;">Vertical Diffusion Meridional Acceleration<br></td>
-      <td style="vertical-align: top; color: red ;">m s<sup>-2</sup></td>
-      <td style="vertical-align: top; color: red ;">VDFVA</td>
+      <td style="vertical-align: top; text-align: center; ">209<br></td>
+      <td style="vertical-align: top; ">Vertical Diffusion Meridional Acceleration<br></td>
+      <td style="vertical-align: top; ">m s<sup>-2</sup></td>
+      <td style="vertical-align: top; ">VDFVA</td>
     </tr>
     <tr>
-      <td style="text-align: center; color: red;">210<br></td>
-      <td style="vertical-align: top; color: red;">Gravity wave drag zonal acceleration<br></td>
-      <td style="vertical-align: top; color: red;">m s<sup>-2</sup><br></td>
-      <td style="vertical-align: top; color: red;">GWDU<br></td>
+      <td style="text-align: center; ">210<br></td>
+      <td style="vertical-align: top; ">Gravity wave drag zonal acceleration<br></td>
+      <td style="vertical-align: top; ">m s<sup>-2</sup><br></td>
+      <td style="vertical-align: top; ">GWDU<br></td>
     </tr>
     <tr>
-      <td style="text-align: center; color: red;">211<br></td>
-      <td style="vertical-align: top; color: red;">Gravity wave drag meridional acceleration<br></td>
-      <td style="vertical-align: top; color: red;">m s<sup>-2</sup><br></td>
-      <td style="vertical-align: top; color: red;">GWDV<br></td>
+      <td style="text-align: center; ">211<br></td>
+      <td style="vertical-align: top; ">Gravity wave drag meridional acceleration<br></td>
+      <td style="vertical-align: top; ">m s<sup>-2</sup><br></td>
+      <td style="vertical-align: top; ">GWDV<br></td>
     </tr>
     <tr>
-      <td style="text-align: center; color: red;">212<br> </td>
-      <td style="vertical-align: top; color: red;">Convective zonal momentum mixing acceleration<br> </td>
-      <td style="vertical-align: top; color: red;">m s<sup>-2</sup><br> </td>
-      <td style="vertical-align: top; color: red;">CNVU<br> </td>
+      <td style="text-align: center; ">212<br> </td>
+      <td style="vertical-align: top; ">Convective zonal momentum mixing acceleration<br> </td>
+      <td style="vertical-align: top; ">m s<sup>-2</sup><br> </td>
+      <td style="vertical-align: top; ">CNVU<br> </td>
     </tr>
     <tr>
-      <td style="text-align: center; color: red;">213<br> </td>
-      <td style="vertical-align: top; color: red;">Convective meridional momentum mixing acceleration<br> </td>
-      <td style="vertical-align: top; color: red;">m s<sup>-2</sup><br> </td>
-      <td style="vertical-align: top; color: red;">CNVV<br> </td>
+      <td style="text-align: center; ">213<br> </td>
+      <td style="vertical-align: top; ">Convective meridional momentum mixing acceleration<br> </td>
+      <td style="vertical-align: top; ">m s<sup>-2</sup><br> </td>
+      <td style="vertical-align: top; ">CNVV<br> </td>
     </tr>
     <tr>
-      <td style="text-align: center; color: red;">214<br></td>
-      <td style="vertical-align: top; color: red;">Tendency of vertical velocity</td>
-      <td style="vertical-align: top; color: red;">m/s<sup>2</sup><br></td>
-      <td style="vertical-align: top; color: red;">WTEND<br>
+      <td style="text-align: center; ">214<br></td>
+      <td style="vertical-align: top; ">Tendency of vertical velocity</td>
+      <td style="vertical-align: top; ">m s<sup>-2</sup><br> </td>
+      <td style="vertical-align: top; ">WTEND<br>
     </tr>
     <tr>
-      <td style="text-align: center; color: red;">215<br></td>
-      <td style="vertical-align: top; color: red;">Omega (Dp/Dt) divide by density</td>
-      <td style="vertical-align: top; color: red;">K<br></td>
-      <td style="vertical-align: top; color: red;">OMGALF<br>
+      <td style="text-align: center; ">215<br></td>
+      <td style="vertical-align: top; ">Omega (Dp/Dt) divide by density</td>
+      <td style="vertical-align: top; ">K<br></td>
+      <td style="vertical-align: top; ">OMGALF<br>
     </tr>
     <tr>
-      <td style="text-align: center; color: red;">216<br> </td>
-      <td style="vertical-align: top; color: red;">Convective Gravity wave drag zonal acceleration<br> </td>
-      <td style="vertical-align: top; color: red;">m/s<sup>2</sup><br> </td>
-      <td style="vertical-align: top; color: red;">CNGWDU<br> </td>
+      <td style="text-align: center; ">216<br> </td>
+      <td style="vertical-align: top; ">Convective Gravity wave drag zonal acceleration<br> </td>
+      <td style="vertical-align: top; ">m s<sup>-2</sup><br> </td>
+      <td style="vertical-align: top; ">CNGWDU<br> </td>
     </tr>
     <tr>
-      <td style="text-align: center; color: red;">217<br> </td>
-      <td style="vertical-align: top; color: red;">Convective Gravity wave drag meridional acceleration<br></td>
-      <td style="vertical-align: top; color: red;">m/s<sup>2</sup><br> </td>
-      <td style="vertical-align: top; color: red;">CNGWDV<br> </td>
+      <td style="text-align: center; ">217<br> </td>
+      <td style="vertical-align: top; ">Convective Gravity wave drag meridional acceleration<br></td>
+      <td style="vertical-align: top; ">m s<sup>-2</sup><br> </td>
+      <td style="vertical-align: top; ">CNGWDV<br> </td>
     </tr>
     <tr>
-      <td style="text-align: center; color: red;">218<br> </td>
-      <td style="vertical-align: top; color: red;">Velocity Point Model Surface</td>
-      <td style="vertical-align: top; color: red;"><br></td>
-      <td style="vertical-align: top; color: red;">LMV</td>
+      <td style="text-align: center; ">218<br> </td>
+      <td style="vertical-align: top; ">Velocity Point Model Surface</td>
+      <td style="vertical-align: top; "><br></td>
+      <td style="vertical-align: top; ">LMV</td>
     </tr>
     <tr>
-      <td style="text-align: center; color: red;">219<br> </td>
-      <td style="vertical-align: top; color: red;">Potential Vorticity (Mass-Weighted)</td>
-      <td style="vertical-align: top; color: red;">1/s/m</td>
-      <td style="vertical-align: top; color: red;">PVMWW</td>
+      <td style="text-align: center; ">219<br> </td>
+      <td style="vertical-align: top; ">Potential Vorticity (Mass-Weighted)</td>
+      <td style="vertical-align: top; ">1/s/m</td>
+      <td style="vertical-align: top; ">PVMWW</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; ">220<br></td>
+      <td style="vertical-align: top; ">Hourly Maximum of Upward Vertical Velocity <br>
+       in the lowest 400hPa</td>
+      <td style="vertical-align: top; ">m s<sup>-1</sup><br> </td>
+      <td style="vertical-align: top; ">MAXUVV<br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; ">221<br></td>
+      <td style="vertical-align: top; ">Hourly Maximum of Downward Vertical Velocity <br>
+       in the lowest 400hPa</td>
+      <td style="vertical-align: top; ">m s<sup>-1</sup><br> </td>
+      <td style="vertical-align: top; ">MAXDVV<br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; ">222<br></td>
+      <td style="vertical-align: top; ">U Component of Hourly Maximum 10m Wind Speed </td>
+      <td style="vertical-align: top; ">m s<sup>-1</sup><br> </td>
+      <td style="vertical-align: top; ">MAXUW<br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; ">223<br></td>
+      <td style="vertical-align: top; ">V Component of Hourly Maximum 10m Wind Speed</td>
+      <td style="vertical-align: top; ">m s<sup>-1</sup><br> </td>
+      <td style="vertical-align: top; ">MAXVW<br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; ">224<br></td>
+      <td style="vertical-align: top; ">Ventilation Rate</td>
+      <td style="vertical-align: top; ">m<sup>2</sup> s<sup>-1</sup><br> </td>
+      <td style="vertical-align: top; ">VRATE<br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color:red; text-align: center;">225</td>
+      <td style="vertical-align: top; color:red;">Transport Wind Speed</td>
+      <td style="vertical-align: top; color:red;">m s<sup>-1</sup></td>
+      <td style="vertical-align: top; color:red;">TRWSPD</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color:red; text-align: center;">226</td>
+      <td style="vertical-align: top; color:red;">Transport Wind Direction</td>
+      <td style="vertical-align: top; color:red;">Deg</td>
+      <td style="vertical-align: top; color:red;">TRWDIR</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color:red; text-align: center;">227</td>
+      <td style="vertical-align: top; color:red;">Earliest Reasonable Arrival Time (10% exceedance)</td>
+      <td style="vertical-align: top; color:red;">s</td>
+      <td style="vertical-align: top; color:red;">TOA10</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color:red; text-align: center;">228</td>
+      <td style="vertical-align: top; color:red;">Most Likely Arrival Time (50% exceedance)</td>
+      <td style="vertical-align: top; color:red;">s</td>
+      <td style="vertical-align: top; color:red;">TOA50</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color:red; text-align: center;">229</td>
+      <td style="vertical-align: top; color:red;">Most Likely Departure Time (50% exceedance)</td>
+      <td style="vertical-align: top; color:red;">s</td>
+      <td style="vertical-align: top; color:red;">TOD50</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; color:red; text-align: center;">230</td>
+      <td style="vertical-align: top; color:red;">Latest Reasonable Departure Time (90% exceedance)</td>
+      <td style="vertical-align: top; color:red;">s</td>
+      <td style="vertical-align: top; color:red;">TOD90</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">255<br>
@@ -512,6 +648,31 @@ for Local Use<br>
   </tbody>
 </table>
 </center>
+<br>
+<br>
+<table
+ style="margin-left: auto; margin-right: auto; width: 80%; text-align: left;"
+ border="0" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;"><b>Notes:</b><br>
+      <br>
+<b>*</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Parameter deprecated - See Regulation 92.6.2 and use another parameter instead.<br>
+<b>**</b>&nbsp;&nbsp;&nbsp;&nbsp; In relation to local coordinate axes at a cell edge.<br>
+<b>***</b>&nbsp;&nbsp; This parameter is described in more detail by <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (a) Lee, S., and I.M. Held, 1993: Baroclinic wave packets in models and <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; observations. J Atmos. Sci., 50, 1413-1428.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (b) Change, E.K.M., 1993: Downstream development of baroclinic waves <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; as inferred from regression analysis. J. Atmos. Sci., 50, 2038-2053. <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (c) Archambault, H.M., D. Keyser, and L.F. Bosart, 2010: Relationships <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; between large-scale regime transitions and majpr cool-season precipitation<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; events in the northeastern United States. Mon Wea. Rev., 138, 3454-3473<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (d) Zimin, A.V., I. Szunyogh, B.R. Hung, and E. Orr, 2006: Extracting envelopes<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; of nonzonally propogating Rossby waves packets. Mon. Wea. Review, 134, 1329-1333.<br>
+<b>****</b> Statistical process 1 (Accumulation) does not change units.<br>
+    </tr>
+  </tbody>
+</table>
 <br>
 <br>
 <center><a href="/pmb/docs/grib2/grib2_doc.shtml">Back</a></center>

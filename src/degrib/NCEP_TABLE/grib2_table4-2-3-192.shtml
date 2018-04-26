@@ -4,100 +4,310 @@
   <meta name="Keywords" content="GRIB">
   <title>GRIBv2 - Table 4.2-3-192 Space - Forecast Satellite Imagery</title>
 </head>
-<body style="color: rgb(0, 0, 0); background-color: white;"
+<body style="color: black; background-color: white;"
  alink="#ff0000" link="#0000ff" vlink="#551a8b">
 <br>
 <center>
-<big><big><big><b>GRIB2 - TABLE 4.2-3-192</b></big></big></big><br>
-<span style="font-weight: bold;"><br>
-</span><b>&nbsp;<big><big> PARAMETERS FOR DISCIPLINE 3<br>
-CATEGORY 192<br>
-<small style="color: rgb(51, 51, 255);">(Space products, Forecast Satellite Imagery)</small><br>
-</big></big></b><big><big><br>
-</big></big><big><big><big><small>Section 0 , Octet 7 = 3</small></big></big></big><b><big><big><big><small><br>
-</small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 192<br>
-</big></big></center>
-<br>
-<center><b>Created 07/16/07<br>
-</b></center>
+<h3>GRIB2 - TABLE 4.2-3-192</h3>
+<h4>PARAMETERS FOR DISCIPLINE 3<br>CATEGORY 192</h4>
+<h4><span style="color: blue;">(Space products,
+Forecast Satellite Imagery category)</span></h4>
+<h4>In Section 0, Octet 7 = 3<br>
+In Section 4, Octet 10 = 192</h4>
+</center>
+<center><b><span style="font-size: 9pt;">Revised 07/15/2014<br>
+<span style="color: red;">Red text depicts changes made since 03/11/2011</span></b><br>
+</center>
 <br>
 <br>
+</span></center>
 <center>
 <table style="width: 90%;" border="1" cellpadding="5" cellspacing="0">
   <tbody>
     <tr>
-      <th>Number<br>
-(Section 4, octet 11)<br>
-      </th>
-      <th>Parameter</th>
-      <td
- style="text-align: center; vertical-align: middle; font-weight: bold;">Units<br>
-      </td>
-      <td
- style="vertical-align: middle; font-weight: bold; text-align: center;">Abbrev</td>
+      <th style="text-align: center; background-color: lightgrey;">Number<br>(In Section 4, octet 11)<br></th>
+      <th style="text-align: center; background-color: lightgrey;">Parameter</th>
+      <td style="text-align: center; vertical-align: middle; background-color: lightgrey; font-weight: bold;">Units<br></td>
+      <td style="vertical-align: middle; font-weight: bold;  background-color: lightgrey; text-align: center;">Abbrev</td>
     </tr>
     <tr>
-      <td style="text-align: center; color: red;">0<br>
-      </td>
-      <td style="vertical-align: top;color: red;">Simulated Brightness Temperature for GOES 12, Channel 2<br>
-      </td>
-      <td style="vertical-align: top;color: red;">K</sup><br>
-      </td>
-      <td style="vertical-align: top;color: red;">SBT122<br>
-      </td>
+      <td style="text-align: center; ">0<br></td>
+      <td style="vertical-align: top;">Simulated Brightness Temperature for GOES 12, Channel 2<br></td>
+      <td style="vertical-align: top;">K</sup><br></td>
+      <td style="vertical-align: top;">SBT122<br></td>
     </tr>
     <tr>
-      <td style="text-align: center; color: red;">1<br>
-      </td>
-      <td style="vertical-align: top;color: red;">Simulated Brightness Temperature for GOES 12, Channel 3<br>
-      </td>
-      <td style="vertical-align: top;color: red;">K</sup><br>
-      </td>
-      <td style="vertical-align: top;color: red;">SBT123<br>
-      </td>
+      <td style="text-align: center; ">1<br></td>
+      <td style="vertical-align: top;">Simulated Brightness Temperature for GOES 12, Channel 3<br></td>
+      <td style="vertical-align: top;">K</sup><br></td>
+      <td style="vertical-align: top;">SBT123<br></td>
     </tr>
     <tr>
-      <td style="text-align: center; color: red;">2<br>
-      </td>
-      <td style="vertical-align: top;color: red;">Simulated Brightness Temperature for GOES 12, Channel 4<br>
-      </td>
-      <td style="vertical-align: top;color: red;">K</sup><br>
-      </td>
-      <td style="vertical-align: top;color: red;">SBT124<br>
-      </td>
+      <td style="text-align: center; ">2<br></td>
+      <td style="vertical-align: top;">Simulated Brightness Temperature for GOES 12, Channel 4<br></td>
+      <td style="vertical-align: top;">K</sup><br></td>
+      <td style="vertical-align: top;">SBT124<br></td>
     </tr>
     <tr>
-      <td style="text-align: center; color: red;">3<br>
-      </td>
-      <td style="vertical-align: top;color: red;">Simulated Brightness Temperature for GOES 12, Channel 5<br>
-      </td>
-      <td style="vertical-align: top;color: red;">K</sup><br>
-      </td>
-      <td style="vertical-align: top;color: red;">SBT125<br>
-      </td>
+      <td style="text-align: center; ">3<br></td>
+      <td style="vertical-align: top;">Simulated Brightness Temperature for GOES 12, Channel 6<br></td>
+      <td style="vertical-align: top;">K</sup><br></td>
+      <td style="vertical-align: top;">SBT126<br></td>
     </tr>
     <tr>
-      <td style="text-align: center; color: red;">4<br>
-      </td>
-      <td style="vertical-align: top;color: red;">Simulated Brightness Counts for GOES 12, Channel 3<br>
-      </td>
-      <td style="vertical-align: top;color: red;">Byte</sup><br>
-      </td>
-      <td style="vertical-align: top;color: red;">SBC123<br>
-      </td>
+      <td style="text-align: center; ">4<br></td>
+      <td style="vertical-align: top;">Simulated Brightness Counts for GOES 12, Channel 3<br></td>
+      <td style="vertical-align: top;">Byte</sup><br></td>
+      <td style="vertical-align: top;">SBC123<br></td>
     </tr>
     <tr>
-      <td style="text-align: center; color: red;">5<br>
-      </td>
-      <td style="vertical-align: top;color: red;">Simulated Brightness Counts for GOES 12, Channel 4<br>
-      </td>
-      <td style="vertical-align: top;color: red;">Byte</sup><br>
-      </td>
-      <td style="vertical-align: top;color: red;">SBC124<br>
-      </td>
+      <td style="text-align: center; ">5<br></td>
+      <td style="vertical-align: top;">Simulated Brightness Counts for GOES 12, Channel 4</td>
+      <td style="vertical-align: top;">Byte</td>
+      <td style="vertical-align: top;">SBC124</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center;">6-191<br>
+      <td style="text-align: center; ">6<br></td>
+      <td style="vertical-align: top;">Simulated Brightness Temperature for GOES 11, Channel 2<br></td>
+      <td style="vertical-align: top;">K</sup><br></td>
+      <td style="vertical-align: top;">SBT112<br></td>
+    </tr>
+    <tr>
+      <td style="text-align: center; ">7<br></td>
+      <td style="vertical-align: top;">Simulated Brightness Temperature for GOES 11, Channel 3<br></td>
+      <td style="vertical-align: top;">K</sup><br></td>
+      <td style="vertical-align: top;">SBT113</td>
+    </tr>
+    <tr>
+      <td style="text-align: center; ">8<br></td>
+      <td style="vertical-align: top;">Simulated Brightness Temperature for GOES 11, Channel 4<br></td>
+      <td style="vertical-align: top;">K</sup><br></td>
+      <td style="vertical-align: top;">SBT114<br></td>
+    </tr>
+    <tr>
+      <td style="text-align: center; ">9<br></td>
+      <td style="vertical-align: top;">Simulated Brightness Temperature for GOES 11, Channel 5<br></td>
+      <td style="vertical-align: top;">K</sup><br></td>
+      <td style="vertical-align: top;">SBT115<br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; ">10<br></td>
+      <td style="vertical-align: top; ">Simulated Brightness Temperature for AMSRE on Aqua, Channel 9<br></td>
+      <td style="vertical-align: top; ">K<br></td>
+      <td style="vertical-align: top; ">AMSRE9<br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; ">11<br></td>
+      <td style="vertical-align: top; ">Simulated Brightness Temperature for AMSRE on Aqua, Channel 10<br></td>
+      <td style="vertical-align: top; ">K<br></td>
+      <td style="vertical-align: top; ">AMSRE10<br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; ">12<br></td>
+      <td style="vertical-align: top; ">Simulated Brightness Temperature for AMSRE on Aqua, Channel 11<br></td>
+      <td style="vertical-align: top; ">K<br></td>
+      <td style="vertical-align: top; ">AMSRE11<br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; ">13<br></td>
+      <td style="vertical-align: top; ">Simulated Brightness Temperature for AMSRE on Aqua, Channel 12<br></td>
+      <td style="vertical-align: top; ">K<br></td>
+      <td style="vertical-align: top; ">AMSRE12<br></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">14</td>
+      <td style="vertical-align: top; color: red;">Simulated Reflectance Factor for ABI GOES-16, Band-1</td>
+      <td style="vertical-align: top; color: red;"><br></td>
+      <td style="vertical-align: top; color: red;">SRFA161</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">15</td>
+      <td style="vertical-align: top; color: red;">Simulated Reflectance Factor for ABI GOES-16, Band-2</td>
+      <td style="vertical-align: top; color: red;"><br></td>
+      <td style="vertical-align: top; color: red;">SRFA162</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">16</td>
+      <td style="vertical-align: top; color: red;">Simulated Reflectance Factor for ABI GOES-16, Band-3</td>
+      <td style="vertical-align: top; color: red;"><br></td>
+      <td style="vertical-align: top; color: red;">SRFA163</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">17</td>
+      <td style="vertical-align: top; color: red;">Simulated Reflectance Factor for ABI GOES-16, Band-4</td>
+      <td style="vertical-align: top; color: red;"><br></td>
+      <td style="vertical-align: top; color: red;">SRFA164</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">18</td>
+      <td style="vertical-align: top; color: red;">Simulated Reflectance Factor for ABI GOES-16, Band-5</td>
+      <td style="vertical-align: top; color: red;"><br></td>
+      <td style="vertical-align: top; color: red;">SRFA165</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">19</td>
+      <td style="vertical-align: top; color: red;">Simulated Reflectance Factor for ABI GOES-16, Band-6</td>
+      <td style="vertical-align: top; color: red;"><br></td>
+      <td style="vertical-align: top; color: red;">SRFA166</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">20</td>
+      <td style="vertical-align: top; color: red;">Simulated Brightness Temperature for ABI GOES-16, Band-7</td>
+      <td style="vertical-align: top; color: red;">K</td>
+      <td style="vertical-align: top; color: red;">SBTA167</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">21</td>
+      <td style="vertical-align: top; color: red;">Simulated Brightness Temperature for ABI GOES-16, Band-8</td>
+      <td style="vertical-align: top; color: red;">K</td>
+      <td style="vertical-align: top; color: red;">SBTA168</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">22</td>
+      <td style="vertical-align: top; color: red;">Simulated Brightness Temperature for ABI GOES-16, Band-9</td>
+      <td style="vertical-align: top; color: red;">K</td>
+      <td style="vertical-align: top; color: red;">SBTA169</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">23<br></td>
+      <td style="vertical-align: top; color: red;">Simulated Brightness Temperature for ABI GOES-16, Band-10</td>
+      <td style="vertical-align: top; color: red;">K</td>
+      <td style="vertical-align: top; color: red;">SBTA1610</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">24</td>
+      <td style="vertical-align: top; color: red;">Simulated Brightness Temperature for ABI GOES-16, Band-11</td>
+      <td style="vertical-align: top; color: red;">K</td>
+      <td style="vertical-align: top; color: red;">SBTA1611</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">25</td>
+      <td style="vertical-align: top; color: red;">Simulated Brightness Temperature for ABI GOES-16, Band-12</td>
+      <td style="vertical-align: top; color: red;">K</td>
+      <td style="vertical-align: top; color: red;">SBTA1612</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">26</td>
+      <td style="vertical-align: top; color: red;">Simulated Brightness Temperature for ABI GOES-16, Band-13</td>
+      <td style="vertical-align: top; color: red;">K</td>
+      <td style="vertical-align: top; color: red;">SBTA1613</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">27</td>
+      <td style="vertical-align: top; color: red;">Simulated Brightness Temperature for ABI GOES-16, Band-14</td>
+      <td style="vertical-align: top; color: red;">K</td>
+      <td style="vertical-align: top; color: red;">SBTA1614</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">28</td>
+      <td style="vertical-align: top; color: red;">Simulated Brightness Temperature for ABI GOES-16, Band-15</td>
+      <td style="vertical-align: top; color: red;">K</td>
+      <td style="vertical-align: top; color: red;">SBTA1615</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">29</td>
+      <td style="vertical-align: top; color: red;">Simulated Brightness Temperature for ABI GOES-16, Band-16</td>
+      <td style="vertical-align: top; color: red;">K</td>
+      <td style="vertical-align: top; color: red;">SBTA1616</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">30</td>
+      <td style="vertical-align: top; color: red;">Simulated Reflectance Factor for ABI GOES-17, Band-1</td>
+      <td style="vertical-align: top; color: red;"><br></td>
+      <td style="vertical-align: top; color: red;">SRFA171</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">31</td>
+      <td style="vertical-align: top; color: red;">Simulated Reflectance Factor for ABI GOES-17, Band-2</td>
+      <td style="vertical-align: top; color: red;"><br></td>
+      <td style="vertical-align: top; color: red;">SRFA172</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">32</td>
+      <td style="vertical-align: top; color: red;">Simulated Reflectance Factor for ABI GOES-17, Band-3</td>
+      <td style="vertical-align: top; color: red;"><br></td>
+      <td style="vertical-align: top; color: red;">SRFA173</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">33</td>
+      <td style="vertical-align: top; color: red;">Simulated Reflectance Factor for ABI GOES-17, Band-4</td>
+      <td style="vertical-align: top; color: red;"><br></td>
+      <td style="vertical-align: top; color: red;">SRFA174</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">34</td>
+      <td style="vertical-align: top; color: red;">Simulated Reflectance Factor for ABI GOES-17, Band-5</td>
+      <td style="vertical-align: top; color: red;"><br></td>
+      <td style="vertical-align: top; color: red;">SRFA175</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">35</td>
+      <td style="vertical-align: top; color: red;">Simulated Reflectance Factor for ABI GOES-17, Band-6</td>
+      <td style="vertical-align: top; color: red;"><br></td>
+      <td style="vertical-align: top; color: red;">SRFA176</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">36</td>
+      <td style="vertical-align: top; color: red;">Simulated Brightness Temperature for ABI GOES-17, Band-7</td>
+      <td style="vertical-align: top; color: red;">K</td>
+      <td style="vertical-align: top; color: red;">SBTA177</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">37</td>
+      <td style="vertical-align: top; color: red;">Simulated Brightness Temperature for ABI GOES-17, Band-8</td>
+      <td style="vertical-align: top; color: red;">K</td>
+      <td style="vertical-align: top; color: red;">SBTA178</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">38</td>
+      <td style="vertical-align: top; color: red;">Simulated Brightness Temperature for ABI GOES-17, Band-9</td>
+      <td style="vertical-align: top; color: red;">K</td>
+      <td style="vertical-align: top; color: red;">SBTA179</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">39</td>
+      <td style="vertical-align: top; color: red;">Simulated Brightness Temperature for ABI GOES-17, Band-10</td>
+      <td style="vertical-align: top; color: red;">K</td>
+      <td style="vertical-align: top; color: red;">SBTA1710</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">40</td>
+      <td style="vertical-align: top; color: red;">Simulated Brightness Temperature for ABI GOES-17, Band-11</td>
+      <td style="vertical-align: top; color: red;">K</td>
+      <td style="vertical-align: top; color: red;">SBTA1711</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">41</td>
+      <td style="vertical-align: top; color: red;">Simulated Brightness Temperature for ABI GOES-17, Band-12</td>
+      <td style="vertical-align: top; color: red;">K</td>
+      <td style="vertical-align: top; color: red;">SBTA1712</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">42</td>
+      <td style="vertical-align: top; color: red;">Simulated Brightness Temperature for ABI GOES-17, Band-13</td>
+      <td style="vertical-align: top; color: red;">K</td>
+      <td style="vertical-align: top; color: red;">SBTA1713</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">43</td>
+      <td style="vertical-align: top; color: red;">Simulated Brightness Temperature for ABI GOES-17, Band-14</td>
+      <td style="vertical-align: top; color: red;">K</td>
+      <td style="vertical-align: top; color: red;">SBTA1714</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">44</td>
+      <td style="vertical-align: top; color: red;">Simulated Brightness Temperature for ABI GOES-17, Band-15</td>
+      <td style="vertical-align: top; color: red;">K</td>
+      <td style="vertical-align: top; color: red;">SBTA1715</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">45</td>
+      <td style="vertical-align: top; color: red;">Simulated Brightness Temperature for ABI GOES-17, Band-16</td>
+      <td style="vertical-align: top; color: red;">K</td>
+      <td style="vertical-align: top; color: red;">SBTA1716</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;">46-191<br>
       </td>
       <td style="vertical-align: top;">Reserved</td>
       <td style="vertical-align: top;"><br>
@@ -107,16 +317,16 @@ CATEGORY 192<br>
     </tr>
     <tr>
       <td
- style="vertical-align: top; text-align: center; background-color: rgb(192, 192, 192);">192-254
+ style="vertical-align: top; text-align: center; background-color: lightgrey;">192-254
       </td>
       <td
- style="vertical-align: top; background-color: rgb(192, 192, 192);">Reserved
+ style="vertical-align: top; background-color: lightgrey;">Reserved
 for Local Use</td>
       <td
- style="vertical-align: top; background-color: rgb(192, 192, 192);"><br>
+ style="vertical-align: top; background-color: lightgrey;"><br>
       </td>
       <td
- style="vertical-align: top; background-color: rgb(192, 192, 192);"><br>
+ style="vertical-align: top; background-color: lightgrey;"><br>
       </td>
     </tr>
     <tr>

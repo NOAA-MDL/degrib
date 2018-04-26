@@ -8,40 +8,31 @@
  alink="#ff0000" link="#0000ff" vlink="#551a8b">
 <br>
 <center>
-<big><big><big><b>GRIB2 - TABLE 4.2-0-5</b></big></big></big><br>
-<span style="font-weight: bold;"><br>
-</span><b>&nbsp;<big><big> PARAMETERS FOR DISCIPLINE 0<br>
-CATEGORY 5<br>
-<small style="color: rgb(51, 51, 255);">(Meteorological products,
-long-wave radiation category)</small><br>
-</big></big></b><big><big><br>
-</big></big><big><big><big><small>Section 0 , Octet 7 = 0</small></big></big></big><b><big><big><big><small><br>
-</small></big></big></big></b><big><big>&nbsp;Section 4, Octet 10 = 5<br>
-</big></big></center>
-<br>
-<center><b>Revised 02/26/2009</b><br>
-<span style="color: red; font-size: 10pt;"><b>Red text depicts changes
-made since 06/20/2008</b></span></center>
+<h3>GRIB2 - TABLE 4.2-0-5</h3>
+<h4>PARAMETERS FOR DISCIPLINE 0<br>CATEGORY 5</h4>
+<h4><span style="color: blue;">(Meteorological products,
+Long-wave radiation category)</span></h4>
+<h4>In Section 0, Octet 7 = 0<br>
+In Section 4, Octet 10 = 5</h4>
+</center>
+<center><b><span style="font-size: 9pt;">Revised 07/13/2016<br>
+<span style="color: red;">Red text depicts changes made since 08/19/2015</span></b><br>
+</center>
 <br>
 <br>
 <center>
 <table style="width: 90%;" border="1" cellpadding="5" cellspacing="0">
   <tbody>
     <tr>
-      <th>Number<br>
-(Section 4, octet 11)<br>
-      </th>
-      <th>Parameter</th>
-      <td
- style="text-align: center; vertical-align: middle; font-weight: bold;">Units<br>
-      </td>
-      <td
- style="vertical-align: middle; font-weight: bold; text-align: center;">Abbrev</td>
+      <th style="text-align: center; background-color: lightgrey;">Number<br>(In Section 4, octet 11)<br></th>
+      <th style="text-align: center; background-color: lightgrey;">Parameter</th>
+      <td style="text-align: center; vertical-align: middle; background-color: lightgrey; font-weight: bold;">Units<br></td>
+      <td style="vertical-align: middle; font-weight: bold;  background-color: lightgrey; text-align: center;">Abbrev</td>
     </tr>
     <tr>
       <td style="text-align: center;">0<br>
       </td>
-      <td>Net Long-Wave Radiation Flux (Surface)<br>
+      <td>Net Long-Wave Radiation Flux (Surface)<sup><b>*</b></sup><br>
       </td>
       <td style="vertical-align: top;">W m<sup>-2</sup><br>
       </td>
@@ -51,14 +42,14 @@ made since 06/20/2008</b></span></center>
       <td style="vertical-align: top; text-align: center;">1<br>
       </td>
       <td style="vertical-align: top;">Net Long-Wave Radiation Flux
-(Top of Atmosphere)</td>
+(Top of Atmosphere)<sup><b>*</b></sup></td>
       <td style="vertical-align: top;">W m<sup>-2</sup></td>
       <td style="vertical-align: top;">NLWRT </td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">2<br>
       </td>
-      <td style="vertical-align: top;">Long-Wave Radiation Flux</td>
+      <td style="vertical-align: top;">Long-Wave Radiation Flux<sup><b>*</b></sup></td>
       <td style="vertical-align: top;">W m<sup>-2</sup></td>
       <td style="vertical-align: top;">LWAVR </td>
     </tr>
@@ -77,34 +68,45 @@ made since 06/20/2008</b></span></center>
       <td style="vertical-align: top;">ULWRF</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">5<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Net Long-Wave Radiation Flux</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">W m<sup>-2</sup></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">NLWRF<br></td>
+      <td style="vertical-align: top; text-align: center; color: black;">5<br></td>
+      <td style="vertical-align: top; color: black;">Net Long-Wave Radiation Flux</td>
+      <td style="vertical-align: top; color: black;">W m<sup>-2</sup></td>
+      <td style="vertical-align: top; color: black;">NLWRF<br></td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">6<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Net Long-Wave Radiation Flux, Clear Sky</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">W m<sup>-2</sup></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">NLWRCS<br></td>
+      <td style="vertical-align: top; text-align: center; color: black;">6<br></td>
+      <td style="vertical-align: top; color: black;">Net Long-Wave Radiation Flux, Clear Sky</td>
+      <td style="vertical-align: top; color: black;">W m<sup>-2</sup></td>
+      <td style="vertical-align: top; color: black;">NLWRCS<br></td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center;">7-191<br>
-      </td>
+      <td style="vertical-align: top; text-align: center; color: red;">7</td>
+      <td style="vertical-align: top; color: red;">Brightness Temperature</td>
+      <td style="vertical-align: top; color: red;">K</td>
+      <td style="vertical-align: top; color: red;">BRTEMP</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center; color: red;">8</td>
+      <td style="vertical-align: top; color: red;">Downward Long-Wave Radiation Flux, Clear Sky</td>
+      <td style="vertical-align: top; color: red;">W m<sup>-2</sup></td>
+      <td style="vertical-align: top; color: red;">DLWRFCS</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: center;"><span style="color:red;">9</span>-191</td>
       <td style="vertical-align: top;">Reserved</td>
       <td style="vertical-align: top;"><br></td>
       <td style="vertical-align: top;"><br></td>
     </tr>
     <tr>
       <td
- style="vertical-align: top; text-align: center; background-color: rgb(204, 204, 204);">192-254<br>
+ style="vertical-align: top; text-align: center; background-color: lightgrey;">192-254<br>
       </td>
       <td
- style="vertical-align: top; background-color: rgb(204, 204, 204);">Reserved
+ style="vertical-align: top; background-color: lightgrey;">Reserved
 for Local Use<br>
       </td>
-      <td style="vertical-align: top; background-color: rgb(204, 204, 204);"><br></td>
-      <td style="vertical-align: top; background-color: rgb(204, 204, 204);"><br></td>
+      <td style="vertical-align: top; background-color: lightgrey;"><br></td>
+      <td style="vertical-align: top; background-color: lightgrey;"><br></td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">192<br>
@@ -120,28 +122,28 @@ for Local Use<br>
       <td style="vertical-align: top;">ULWRF</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">194<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Long-Wave Radiative Heating Rate</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">K s<sup>-1</sup></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">LWHR</td>
+      <td style="vertical-align: top; text-align: center; color: black;">194<br></td>
+      <td style="vertical-align: top; color: black;">Long-Wave Radiative Heating Rate</td>
+      <td style="vertical-align: top; color: black;">K s<sup>-1</sup></td>
+      <td style="vertical-align: top; color: black;">LWHR</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">195<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Clear Sky Upward Long Wave Flux</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">W m<sup>-2</sup></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">CSULF</td>
+      <td style="vertical-align: top; text-align: center; color: black;">195<br></td>
+      <td style="vertical-align: top; color: black;">Clear Sky Upward Long Wave Flux</td>
+      <td style="vertical-align: top; color: black;">W m<sup>-2</sup></td>
+      <td style="vertical-align: top; color: black;">CSULF</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">196<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Clear Sky Downward Long Wave Flux</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">W m<sup>-2</sup></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">CSDLF</td>
+      <td style="vertical-align: top; text-align: center; color: black;">196<br></td>
+      <td style="vertical-align: top; color: black;">Clear Sky Downward Long Wave Flux</td>
+      <td style="vertical-align: top; color: black;">W m<sup>-2</sup></td>
+      <td style="vertical-align: top; color: black;">CSDLF</td>
     </tr>
     <tr>
-      <td style="vertical-align: top; text-align: center; color: rgb(255, 0, 0);">197<br></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">Cloud Forcing Net Long Wave Flux</td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">W m<sup>-2</sup></td>
-      <td style="vertical-align: top; color: rgb(255, 0, 0);">CFNLF</td>
+      <td style="vertical-align: top; text-align: center; color: black;">197<br></td>
+      <td style="vertical-align: top; color: black;">Cloud Forcing Net Long Wave Flux</td>
+      <td style="vertical-align: top; color: black;">W m<sup>-2</sup></td>
+      <td style="vertical-align: top; color: black;">CFNLF</td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: center;">255<br></td>
@@ -152,6 +154,17 @@ for Local Use<br>
   </tbody>
 </table>
 </center>
+<br>
+<br>
+<table align="center" width="80%">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;"><b>Notes:</b><br>
+      <br>
+<b>*</b>  Parameter deprecated - See Regulation 92.6.2 and use another parameter instead.<br>
+    </tr>
+  </tbody>
+</table>
 <br>
 <br>
 <center><a href="/pmb/docs/grib2/grib2_doc.shtml">Back</a></center>
