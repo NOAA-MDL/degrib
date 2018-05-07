@@ -1409,7 +1409,7 @@ proc Usage {argv0} {
   set optDes [list \
      "Data set to use (ndfd, ndfdExpr, ndgd or ndgdExpr)" \
      "sector to use (-dataSet ndfd):\n\
-      \t\tconus, hawaii, puertori, guam, alaska, nhemi, npacocn, custom,\n\
+      \t\tconus, hawaii, puertori, guam, alaska, nhemi, oceanic, npacocn, custom,\n\
       \t\tpacnwest, pacswest, nrockies, crrocks, srockies, nplains,\n\
       \t\tcrplains, splains, umissvly, crmissvy, smissvly, crgrlake,\n\
       \t\tergrlake, neast, seast, midatlan" \
@@ -1499,8 +1499,8 @@ if {![info exists usr(-variable)]} {
   set usr(-variable) [split $usr(-variable) ,]
 }
 if {($usr(-dataSet) == "ndfd") || ($usr(-dataSet) == "ndfdExpr")} {
-  set valSector [list "conus" "hawaii" "puertori" "guam" "alaska" "nhemi" "npacocn"]
-  set shortSector [list conus hi pr gu ak nhemi npacocn]
+  set valSector [list "conus" "hawaii" "puertori" "guam" "alaska" "nhemi" "npacocn" "oceanic"]
+  set shortSector [list conus hi pr gu ak nhemi npacocn oceanic]
   set valSubSector [list "pacnwest" "pacswest" "nrockies" "crrocks" "srockies" "nplains" \
                  "crplains" "splains" "umissvly" "crmissvy" "smissvly" "crgrlake" \
                  "ergrlake" "neast" "seast" "midatlan"]
