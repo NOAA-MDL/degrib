@@ -557,17 +557,22 @@ static void GRIB2ProbeStyle1 (FILE **pnt_fps,
                   myRound (newY, usr->LatLon_Decimal), lat, lon,
                   usr->separator);
          if (f_comment) {
-            ptr = (char *) malloc (strlen (meta->comment) + 1);
-            for (j = 0; j < strlen (meta->comment); j++) {
-               if (meta->comment[j] != ' ') {
-                  ptr[j] = meta->comment[j];
-               } else {
-                  ptr[j] = '_';
-               }
+            if(strcmp(meta->element, "unknown") == 0){
+               fprintf (pnt_fps[i], "%s%s", "unknown[-]", usr->separator);
             }
-            ptr[j] = '\0';
-            fprintf (pnt_fps[i], "%s%s", ptr, usr->separator);
-            free (ptr);
+            else{
+               ptr = (char *) malloc (strlen (meta->comment) + 1);
+               for (j = 0; j < strlen (meta->comment); j++) {
+                  if (meta->comment[j] != ' ') {
+                     ptr[j] = meta->comment[j];
+                  } else {
+                     ptr[j] = '_';
+                  }
+               }
+               ptr[j] = '\0';
+               fprintf (pnt_fps[i], "%s%s", ptr, usr->separator);
+               free (ptr);
+             }
          } else {
             fprintf (pnt_fps[0], "%s", meta->element);
             if (meta->unitName != NULL) {
@@ -611,17 +616,23 @@ static void GRIB2ProbeStyle1 (FILE **pnt_fps,
             fprintf (pnt_fps[i], "%s%s", labels[i], usr->separator);
          }
          if (f_comment) {
-            ptr = (char *) malloc (strlen (meta->comment) + 1);
-            for (j = 0; j < strlen (meta->comment); j++) {
-               if (meta->comment[j] != ' ') {
-                  ptr[j] = meta->comment[j];
-               } else {
-                  ptr[j] = '_';
-               }
+            if(strcmp(meta->element, "unknown") == 0){
+               fprintf (pnt_fps[i], "%s%s", "unknown[-]", usr->separator);
             }
-            ptr[j] = '\0';
-            fprintf (pnt_fps[i], "%s%s", ptr, usr->separator);
-            free (ptr);
+            else{ 
+               ptr = (char *) malloc (strlen (meta->comment) + 1);
+               for (j = 0; j < strlen (meta->comment); j++) {
+                  if (meta->comment[j] != ' ') {
+                     ptr[j] = meta->comment[j];
+                  } else {
+                     ptr[j] = '_';
+                  }
+               }
+               ptr[j] = '\0';
+               fprintf (pnt_fps[i], "%s%s", ptr, usr->separator);
+               free (ptr);
+            }
+
          } else {
             fprintf (pnt_fps[i], "%s", meta->element);
             if (meta->unitName != NULL) {
