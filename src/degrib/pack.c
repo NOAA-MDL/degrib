@@ -25,16 +25,19 @@
 #include "myutil.h"
 #include "clock.h"
 
+/*
 #ifdef FORTRAN_GRIB2
 static sInt4 NearestInt (double a)
 {
    return (sInt4) floor (a + .5);
 }
 #endif
+*/
 
+/*
 #ifdef FORTRAN_GRIB2
-/* Skipped over type 5 (Don't know WGS84 sphere) */
-/* Skipped over type 4 (minEarth in mm?) */
+** Skipped over type 5 (Don't know WGS84 sphere) **
+** Skipped over type 4 (minEarth in mm?) **
 static void InitEarth (grib_MetaData *meta, IS_dataType *is)
 {
    if (meta->gds.f_sphere) {
@@ -73,8 +76,8 @@ static void InitEarth (grib_MetaData *meta, IS_dataType *is)
          is->is[3][26 - 1] = 0;
          is->is[3][27 - 1] = 6356775;
       } else {
-         /* Based on Version 3, code table 7 takes m, 3 takes km */
-         /* is->is[3][15 - 1] = 3; */
+         ** Based on Version 3, code table 7 takes m, 3 takes km **
+         ** is->is[3][15 - 1] = 3; **
          is->is[3][15 - 1] = 7;
          is->is[3][16 - 1] = 0;
          is->is[3][17 - 1] = 0;
@@ -86,7 +89,9 @@ static void InitEarth (grib_MetaData *meta, IS_dataType *is)
    }
 }
 #endif
+*/
 
+/*
 #ifdef FORTRAN_GRIB2
 static void PackSect2_Wx (grib_MetaData *meta, IS_dataType *is)
 {
@@ -94,14 +99,14 @@ static void PackSect2_Wx (grib_MetaData *meta, IS_dataType *is)
    int count;
    int nidat;
 
-   /* Get a maximum estimate for how big this section is going to be. */
+   ** Get a maximum estimate for how big this section is going to be. **
    nidat = 32 + meta->pds2.sect2.wx.maxLen * meta->pds2.sect2.wx.dataLen;
    if (nidat > is->nidat) {
       is->nidat = nidat;
       is->idat = (sInt4 *) realloc ((void *) is->idat,
                                     is->nidat * sizeof (sInt4));
    }
-   is->idat[2 - 1] = 0; /* 0 decimal scale factor */
+   is->idat[2 - 1] = 0; ** 0 decimal scale factor **
    count = 0;
    for (i = 0; i < meta->pds2.sect2.wx.dataLen; i++) {
       for (j = 0; j < strlen (meta->pds2.sect2.wx.data[i]); j++) {
@@ -114,11 +119,12 @@ static void PackSect2_Wx (grib_MetaData *meta, IS_dataType *is)
       }
    }
    is->idat[1 - 1] = count;
-   /* Following tells packer to stop packing section2 data. */
+   ** Following tells packer to stop packing section2 data. **
    is->idat[3 - 1 + count] = 0;
    is->rdat[0] = 0;
 }
 #endif
+*/
 
 /* compute number of bits needed to store val */
 static int power (uInt4 val)
@@ -134,8 +140,9 @@ static int power (uInt4 val)
    return i;
 }
 
-void fillSect2_Wx (enGribMeta *en, grib_MetaData *meta, sChar f_mdlPack)
+static void fillSect2_Wx_OR_Hazard (enGribMeta *en, grib_MetaData *meta, int f_wx)
 {
+   sChar f_mdlPack = 1; /* Use MDLPack for Section 2. */
    int i;
    size_t count;
    uChar *ray;
@@ -156,17 +163,31 @@ void fillSect2_Wx (enGribMeta *en, grib_MetaData *meta, sChar f_mdlPack)
 
    /* Count the number of characters needed. */
    count = 0;
-   for (i = 0; i < meta->pds2.sect2.wx.dataLen; i++) {
-      count += strlen (meta->pds2.sect2.wx.data[i]) + 1;
+   if (f_wx == 1) {
+      for (i = 0; i < meta->pds2.sect2.wx.dataLen; i++) {
+         count += strlen (meta->pds2.sect2.wx.data[i]) + 1;
+      }
+   } else {
+      for (i = 0; i < meta->pds2.sect2.hazard.dataLen; i++) {
+         count += strlen (meta->pds2.sect2.hazard.data[i]) + 1;
+      }
    }
 
    /* Set up array */
    ray = (uChar *) malloc (count * sizeof (char));
    count = 0;
-   for (i = 0; i < meta->pds2.sect2.wx.dataLen; ++i) {
-      memcpy (ray + count, meta->pds2.sect2.wx.data[i],
-              strlen (meta->pds2.sect2.wx.data[i]) + 1);
-      count += strlen (meta->pds2.sect2.wx.data[i]) + 1;
+   if (f_wx == 1) {
+      for (i = 0; i < meta->pds2.sect2.wx.dataLen; ++i) {
+         memcpy (ray + count, meta->pds2.sect2.wx.data[i],
+                 strlen (meta->pds2.sect2.wx.data[i]) + 1);
+         count += strlen (meta->pds2.sect2.wx.data[i]) + 1;
+      }
+   } else {
+      for (i = 0; i < meta->pds2.sect2.hazard.dataLen; ++i) {
+         memcpy (ray + count, meta->pds2.sect2.hazard.data[i],
+                 strlen (meta->pds2.sect2.hazard.data[i]) + 1);
+         count += strlen (meta->pds2.sect2.hazard.data[i]) + 1;
+      }
    }
 
    /* Check if we don't want to apply mdl_sect2Pack */
@@ -527,7 +548,9 @@ int WriteGrib2Record2 (grib_MetaData *meta, double *Grib_Data,
    if (meta->pds2.f_sect2) {
       if (meta->pds2.sect2.ptrType == GS2_WXTYPE) {
          /* The 1 is because we want to use the MDL Sect2 SimpPack method */
-         fillSect2_Wx (&en, meta, 1);
+         fillSect2_Wx_OR_Hazard (&en, meta, 1);
+      } else if (meta->pds2.sect2.ptrType == GS2_HAZARD) {
+         fillSect2_Wx_OR_Hazard (&en, meta, 0);
       } else {
          printf ("ERROR (pack.c): Don't handle this yet\n");
          return -3;
