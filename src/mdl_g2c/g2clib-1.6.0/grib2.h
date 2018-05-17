@@ -155,8 +155,14 @@
 typedef int g2int;
 typedef unsigned int g2intu;
 #else
+/* Inserted SIZEOF_LONG_INT test: Arthur/MPA 10/2017 */
+#if SIZEOF_LONG_INT != 4
+typedef int g2int;
+typedef unsigned int g2intu;
+#else
 typedef long g2int;
 typedef unsigned long g2intu;
+#endif
 #endif
 typedef float g2float;
 

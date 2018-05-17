@@ -175,7 +175,12 @@ void simpack(g2float *fld,g2int ndpts,g2int *idrstmpl,unsigned char *cpack,g2int
       mkieee(&rmin,idrstmpl+0,1);   // ensure reference value is IEEE format
       //printf("SAGmkieee %ld\n",idrstmpl[0]);
       idrstmpl[3]=nbits;
-      idrstmpl[4]=0;         // original data were reals
+      //
+      //  The user may have intentionally set the field type to 1 (integer) since
+      //  their data was integer before casting it to float to call these routines.
+      //
+      if (idrstmpl[4] != 1)
+         idrstmpl[4]=0;         // original data were reals
 
       free(ifld);
 }
