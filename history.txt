@@ -1,4 +1,10 @@
 #
+#----- Release: Version 2.17 05/21/2018 -----
+#
+ 5/21 Added "-pntStyle 3" to display a more descriptive Element. Also updated 
+tkdegrib, NDFD GRIB2 Decoder and Download Program, to reflect what elements 
+are currently available in NDGD.
+#
 #----- Release: Version 2.16 05/08/2018 -----
 #
  5/8 MPA Updated NCEP Tables to include new NCEP elements. Also updated tkdegrib,
