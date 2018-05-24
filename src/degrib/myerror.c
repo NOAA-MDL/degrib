@@ -233,8 +233,11 @@ static void AllocSprintf (char **Ptr, size_t *LenBuff, const char *fmt,
                   slen = strlen (sval);
                   lenBuff += slen;
                   buffer = (char *) realloc ((void *) buffer, lenBuff);
-                  strncpy (buffer + ipos, sval, slen + 1); /*  +1 to make room for a fucking NULL.
-		                                            *  This problem is probably everywhere */
+                  strncpy (buffer + ipos, sval, slen);
+                  /* Tim Kempisty hack - The +1 in the following is to make room for a NULL. 
+                   * strncpy (buffer + ipos, sval, slen + 1); */
+                  /* Correction: Room is allocated at the start of the procedure.
+                   * and the null char is added at the end of the procedure. */
                   ipos = lenBuff - 1;
                   break;
                }
@@ -268,6 +271,8 @@ static void AllocSprintf (char **Ptr, size_t *LenBuff, const char *fmt,
       }
       p = p1 + 1;
    }
+   /* The following is needed to set the NULL at the end of the string. */
+   buffer[lenBuff - 1] = '\0';
    *Ptr = buffer;
    *LenBuff = lenBuff;
 }
