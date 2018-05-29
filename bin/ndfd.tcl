@@ -580,10 +580,10 @@ proc About {rayName} {
 
   $tl.txt insert end "NDFD GRIB2 Decoder & Download Program ($Version)\n"
   $tl.txt insert end "Date: $Date\n"
-  $tl.txt insert end "Author: Arthur Taylor\n"
+  $tl.txt insert end "Author: Arthur Taylor and Michael Allard\n"
   $tl.txt insert end "(MDL-NWS-NOAA)\n\n"
   $tl.txt insert end "The NDFD GRIB2 Decoder Page:\n"
-  $tl.txt insert end "www.nws.noaa.gov/mdl/degrib/\n\n"
+  $tl.txt insert end "https://www.weather.gov/mdl/degrib_home/\n\n"
 #  $tl.txt insert end "For images, the NDFD GRIB2 Decoder currently uses:\n"
 #  $tl.txt insert end "NDFD superImageGen (MS-Windows only)\n"
 #  $tl.txt insert end "Date: 8/11/2003\n"
@@ -1766,7 +1766,7 @@ proc main {rayName} {
     $cur1 add command -label "Configure" -command "Configure $rayName" -state disabled
     $cur1 add separator
     $cur1 add command -label "Download-http" -command "HttpDownload_Select $rayName 1"
-    $cur1 add command -label "Download-ftp" -command "HttpDownload_Select $rayName 0"
+#    $cur1 add command -label "Download-ftp" -command "HttpDownload_Select $rayName 0"
     if {$f_imgGen} {
       $cur1 add command -label "Draw Images" -command "DrawImages $rayName"
     }
