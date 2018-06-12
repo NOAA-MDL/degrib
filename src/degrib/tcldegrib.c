@@ -191,7 +191,7 @@ static int Grib2ParseObj (Grib2Type * grib, Tcl_Interp * interp, int objc,
    };
    enum {
       INFILE, FLT, SHP, META, MSG_NUM, NAME_STYLE, OUTFILE, INTERPOLATE,
-      REVFLT, MSB, UNIT, NAMEPATH, NO_MSB, LITTLE_ENDIAN, NO_FLT, NO_SHP, NO_META, RESET,
+      REVFLT, MSB, UNIT, NAMEPATH, NO_MSB, LIT_ENDIAN, NO_FLT, NO_SHP, NO_META, RESET,
       POLY, NOMISS_SHP, DECIMAL, IS0, GRADS, SIMPLEWX, RADEARTH, CSV, NO_CSV,
       MAJEARTH, MINEARTH, NETCDF, VERBOSESHP, ASCGRID, SIMPLEVER
    };
@@ -683,7 +683,7 @@ static int Grib2ParseObj (Grib2Type * grib, Tcl_Interp * interp, int objc,
                useArgs = 2;
             }
             break;
-         case LITTLE_ENDIAN:
+         case LIT_ENDIAN:
             if ((objc == 1) ||
                 (Tcl_GetBooleanFromObj (interp, objPtr[1], &i_temp) !=
                  TCL_OK)) {
