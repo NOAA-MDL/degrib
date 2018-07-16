@@ -1,7 +1,7 @@
 #
-#----- Release: Version 2.18 07/16/2018 -----
+#----- Release: Version 2.19 07/16/2018 -----
 #
- 7/16 Updated the g2clib from 1.0.5 to 1.6.0 in the src/mdl_g2c dir. 
+ 7/16 Updated the g2clib from 1.0.5 to 1.6.0 in the src/mdl_g2c dir.
 #
 #----- Release: Version 2.18 06/12/2018 -----
 #
