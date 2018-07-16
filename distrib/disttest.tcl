@@ -19,7 +19,7 @@ if {[file pathtype $src_dir] != "absolute"} {
   set src_dir [pwd]
   cd $cur_dir
 }
-
+
 #
 # This script packs up and distributes the tests.
 #
