@@ -1998,7 +1998,6 @@ int MetaParse (grib_MetaData *meta, sInt4 *is0, sInt4 ns0,
    uChar incrType;
    uChar statProcessID; /* Statistical process id or 255 for missing */
    uChar fstSurfType;   /* Type of the first fixed surface. */
-   sInt4 value;         /* The scaled value from GRIB2 file. */
    sChar scale;         /* Surface scale as opposed to probility factor. */
    double fstSurfValue; /* Value of first fixed surface. */
    sChar f_fstValue;    /* flag if FstValue is valid. */
@@ -2141,24 +2140,26 @@ int MetaParse (grib_MetaData *meta, sInt4 *is0, sInt4 ns0,
    } else {
       fstSurfType = meta->pds2.sect4.fstSurfType;
       scale = meta->pds2.sect4.fstSurfScale;
-      value = meta->pds2.sect4.fstSurfValue;
-      if ((value == GRIB2MISSING_s4) || (scale == GRIB2MISSING_s1) ||
+      fstSurfValue = meta->pds2.sect4.fstSurfValue;
+      if ((fstSurfValue == GRIB2MISSING_s4) || (scale == GRIB2MISSING_s1) ||
           (fstSurfType == GRIB2MISSING_u1)) {
          fstSurfValue = 0;
          f_fstValue = 1;
       } else {
-         fstSurfValue = value * pow (10, (int) (-1 * scale));
+/* Don't need to do the following as meta->pds.sect4.fstSurfValue already did it. */
+/*         fstSurfValue = value * pow (10, (int) (-1 * scale)); */
          f_fstValue = 1;
       }
       sndSurfType = meta->pds2.sect4.sndSurfType;
       scale = meta->pds2.sect4.sndSurfScale;
-      value = meta->pds2.sect4.sndSurfValue;
-      if ((value == GRIB2MISSING_s4) || (scale == GRIB2MISSING_s1) ||
+      sndSurfValue = meta->pds2.sect4.sndSurfValue;
+      if ((sndSurfValue == GRIB2MISSING_s4) || (scale == GRIB2MISSING_s1) ||
           (sndSurfType == GRIB2MISSING_u1)) {
          sndSurfValue = 0;
          f_sndValue = 0;
       } else {
-         sndSurfValue = value * pow (10, -1 * scale);
+/* Don't need to do the following as meta->pds.sect4.sndSurfValue already did it. */
+/*         sndSurfValue = value * pow (10, -1 * scale); */
          f_sndValue = 1;
       }
    }
