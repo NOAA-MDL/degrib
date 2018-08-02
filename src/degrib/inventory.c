@@ -701,6 +701,10 @@ enum { GS4_ANALYSIS, GS4_ENSEMBLE, GS4_DERIVED, GS4_PROBABIL_PNT = 5,
    } else {
       fstSurfType = (*buffer)[23 - 5];
       scale = (*buffer)[24 - 5];
+      /* Handle the case where the scale is negative and stored with 1's complement */
+      if (scale < 0) {
+         scale = -1 * (128 + scale);
+      }
       MEMCPY_BIG (&value, *buffer + 25 - 5, sizeof (sInt4));
       if ((value == GRIB2MISSING_s4) || (scale == GRIB2MISSING_s1) ||
           (fstSurfType == GRIB2MISSING_u1)) {
@@ -712,6 +716,10 @@ enum { GS4_ANALYSIS, GS4_ENSEMBLE, GS4_DERIVED, GS4_PROBABIL_PNT = 5,
       }
       sndSurfType = (*buffer)[29 - 5];
       scale = (*buffer)[30 - 5];
+      /* Handle the case where the scale is negative and stored with 1's complement */
+      if (scale < 0) {
+         scale = -1 * (128 + scale);
+      }
       MEMCPY_BIG (&value, *buffer + 31 - 5, sizeof (sInt4));
       if ((value == GRIB2MISSING_s4) || (scale == GRIB2MISSING_s1) ||
           (sndSurfType == GRIB2MISSING_u1)) {
