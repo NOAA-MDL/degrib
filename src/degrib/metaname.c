@@ -1828,6 +1828,16 @@ GRIB2LocalTable HPC_LclTable[] = {
    /* 0 */ {0, 1, 192, "HPC-Wx", "HPC Code", "-", UC_NONE},
 };
 
+
+GRIB2LocalTable Canada_LclTable[] = {
+   /* 0 */ {0, 4, 192, "DSWRF_SFC_0", "Downward incident solar flux", "W/m^2", UC_NONE},
+   /* 0 */ {0, 4, 193, "USWRF_SFC_0", "Upward short wave radiative flux", "W/m^2", UC_NONE},
+   /* 0 */ {0, 5, 192, "DLWRF_SFC_0", "Downward Long Wave Radiative Flux", "W/m^2", UC_NONE},
+   /* 0 */ {0, 5, 193, "ULWRF_0", "Outgoing Long Wave Radiative Flux", "W/m^2", UC_NONE}
+};
+
+
+
 /* See ./degrib/MRMS folder (specifically run ./reformat.tcl > degribtab.c) */
 /* 10/21/2014 */
 GRIB2LocalTable MRMS_LclTable[] = {
@@ -2501,6 +2511,9 @@ static GRIB2LocalTable *Choose_LocalParmTable (unsigned short int center,
                *tableLen = 0;
                return NULL;
          }
+      case 54:
+         *tableLen = sizeof (Canada_LclTable) / sizeof (GRIB2LocalTable);
+         return &Canada_LclTable[0];
       case 161:
          *tableLen = sizeof (MRMS_LclTable) / sizeof (GRIB2LocalTable);
          return &MRMS_LclTable[0];
