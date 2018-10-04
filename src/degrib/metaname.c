@@ -1813,6 +1813,7 @@ GRIB2LocalTable NDFD_LclTable[] = {
            {0, 19, 204, "TotalXtrmProb", "Total Probability of Extreme Severe Thunderstorms", "%", UC_NONE},
            {0, 192, 192, "FireWx", "Critical Fire Weather", "%", UC_NONE},
            {0, 192, 194, "DryLightning", "Dry Lightning", "%", UC_NONE},
+           {1, 19, 236, "SNOWLVL", "Snow Level", "m", UC_NONE},
    /* Mike added 1/13 */
            {2, 1, 192, "CANL", "Cold Advisory for Newborn Livestock", "0=none; 2=slight; 4=mild; 6=moderate; 8=severe; 10=extreme", UC_NONE},
    /* Arthur Added this to both NDFD and NCEP local tables. (5/1/2006) */
@@ -3780,13 +3781,15 @@ GRIB2SurfTable Surface[] = {
    /* 22: 109 */ {"PVL", "Potential vorticity surface", "(K m^2)/(kg s)"},
    /* 23: 110 */ {"RESERVED", "Reserved", "-"},
    /* 24: 111 */ {"EtaL", "Eta* level", "-"},
-   /* 25: 112-116 */ {"RESERVED", "Reserved", "-"},
-   /* 26: 117 */ {"unknown", "Mixed layer depth", "m"}, /* unknown abbrev */
-   /* 27: 118-159 */ {"RESERVED", "Reserved", "-"},
-   /* 28: 160 */ {"DBSL", "Depth below sea level", "m"},
-   /* 29: 161-191 */ {"RESERVED", "Reserved", "-"},
-   /* 30: 192-254 */ {"RESERVED", "Reserved Local use", "-"},
-   /* 31: 255 */ {"MISSING", "Missing", "-"},
+   /* 25: 112-113 */ {"RESERVED", "Reserved", "-"},
+   /* 26: 114 */ {"SNOWLVL", "Snow Level", "m"},
+   /* 27: 115-116 */ {"RESERVED", "Reserved", "-"},
+   /* 28: 117 */ {"unknown", "Mixed layer depth", "m"}, /* unknown abbrev */
+   /* 29: 118-159 */ {"RESERVED", "Reserved", "-"},
+   /* 30: 160 */ {"DBSL", "Depth below sea level", "m"},
+   /* 31: 161-191 */ {"RESERVED", "Reserved", "-"},
+   /* 32: 192-254 */ {"RESERVED", "Reserved Local use", "-"},
+   /* 33: 255 */ {"MISSING", "Missing", "-"},
 };
 
 typedef struct {
@@ -3870,7 +3873,7 @@ GRIB2SurfTable Table45Index (int i, int *f_reserved, uShort2 center,
       return Surface[0];
    }
    if (i == 255)
-      return Surface[31];
+      return Surface[33];
    if (i > 191) {
       if (center == 7) {
          for (j = 0; j < sizeof (NCEP_Surface) / sizeof (NCEP_Surface[0]);
@@ -3881,20 +3884,26 @@ GRIB2SurfTable Table45Index (int i, int *f_reserved, uShort2 center,
             }
          }
       }
-      return Surface[30];
+      return Surface[32];
    }
    if (i > 160)
-      return Surface[29];
+      return Surface[31];
    if (i == 160) {
+      *f_reserved = 0;
+      return Surface[30];
+   }
+   if (i > 117)
+      return Surface[29];
+   if (i == 117) {
       *f_reserved = 0;
       return Surface[28];
    }
-   if (i > 117)
+   if (i > 114)
       return Surface[27];
-   if (i == 117) {
+   if (i == 114){
       *f_reserved = 0;
       return Surface[26];
-   }
+   }  
    if (i > 111)
       return Surface[25];
    if (i == 111) {
