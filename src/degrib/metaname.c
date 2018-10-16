@@ -1274,7 +1274,7 @@ GRIB2ParmTable MeteoMisc[] = {
 
 /* GRIB2 Code table 4.2 : 1.0 */
 GRIB2ParmTable HydroBasic[] = {
-   /* 0 */ {"FFLDG", "Flash flood guidance", "kg/(m^2)", UC_NONE},
+   /* 0 */ {"FFLDG", "Flash flood guidance", "kg/(m^2)", UC_InchWater},
    /* 1 */ {"FFLDRO", "Flash flood runoff", "kg/(m^2)", UC_NONE},
    /* 2 */ {"RSSC", "Remotely sensed snow cover", "50=no-snow/no-cloud; "
             "100=Clouds; 250=Snow; 255=missing", UC_NONE},
@@ -1808,12 +1808,12 @@ GRIB2LocalTable NDFD_LclTable[] = {
            {0, 19, 236, "TCSurge", "Tropical Cyclone Storm Surge Threat", "0=none; 4=low; 6=moderate; 8=high; 10=extreme", UC_NONE},          
            {0, 19, 238, "TCRain", "Tropical Cyclone Flooding Rain Threat", "0=none; 4=low; 6=moderate; 8=high; 10=extreme", UC_NONE},
            {0, 19, 239, "TCTornado", "Tropical Cyclone Tornado Threat", "0=none; 4=low; 6=moderate; 8=high; 10=extreme", UC_NONE},
+           {1, 19, 246, "SNOWLVL", "Snow Level", "m", UC_NONE},
 /* Leaving next two lines in for grandfathering sake. 9/19/2007... Probably can remove in future. */
            {0, 19, 203, "TotalSvrProb", "Total Probability of Severe Thunderstorms", "%", UC_NONE},
            {0, 19, 204, "TotalXtrmProb", "Total Probability of Extreme Severe Thunderstorms", "%", UC_NONE},
            {0, 192, 192, "FireWx", "Critical Fire Weather", "%", UC_NONE},
            {0, 192, 194, "DryLightning", "Dry Lightning", "%", UC_NONE},
-           {1, 19, 236, "SNOWLVL", "Snow Level", "m", UC_NONE},
    /* Mike added 1/13 */
            {2, 1, 192, "CANL", "Cold Advisory for Newborn Livestock", "0=none; 2=slight; 4=mild; 6=moderate; 8=severe; 10=extreme", UC_NONE},
    /* Arthur Added this to both NDFD and NCEP local tables. (5/1/2006) */
