@@ -553,8 +553,14 @@ static int PrintSect4 (grib_MetaData *meta, sChar f_unit)
             "interval",
       "Individual ensemble forecast at a horizontal layer or level in a time"
             " interval",
-      "Derived forecasts based in all ensemble members at a horizontal level "
+      "Derived forecasts based on all ensemble members at a horizontal level "
             "or layer in a time interval",
+      "Derived forecasts based on a cluster of ensemble members over a rectangular "
+            "area at a horizontal level or layer, in a time interval.",
+      "Derived forecasts based on a cluster of ensemble members over a circular "
+            "area at a horizontal level or layer, in a time interval.",
+      "Statistically processed data over a spatial area at a horizontal level "
+            "or layer at a point in time.",
       "Radar product", "Satellite product"
    };
 
@@ -624,6 +630,23 @@ static int PrintSect4 (grib_MetaData *meta, sChar f_unit)
       "Floating subinterval of time between forecast time, and end"
    };
 
+   /* Based on GRIB2 Code Table 4.15 */
+   static char *tbl415[] = {
+      "Data is calculated directly from the source grid with no interpolation",
+      "Bi-linear interpolation using the 4 source grid grid-point values surrounding "
+            "the nominal grid-point",
+      "Bi-cubic interpolation using the 4 source grid grid-point values surrounding "
+            "the nominal grid-point",
+      "Using the value from the source grid grid-point which is nearest to the "
+            "nominal grid-point",
+      "Budget interpolation using the 4 source grid grid-point values surrounding "
+            "the nominal grid-point",
+      "Spectral interpolation using the 4 source grid grid-point values surrounding "
+            "the nominal grid-point",
+      "Neighbor-budget interpolation using the 4 source grid grid-point values "
+            "surrounding the nominal grid-point"
+   };
+
    char buffer[50];     /* Temp storage for various uses including time
                          * format. */
    int i;               /* counter for templat 4.8/4.9 for num time range
@@ -661,16 +684,19 @@ static int PrintSect4 (grib_MetaData *meta, sChar f_unit)
       case GS4_DERIVED_INTERVAL:
          Print ("PDS-S4", "Product type", Prt_DS, sect4->templat, tbl40[9]);
          break;
+      case GS4_SPATIAL_STAT:
+         Print ("PDS-S4", "Product type", Prt_DS, sect4->templat, tbl40[12]);
+         break;
 /*
  * The following lines were removed until such time that the rest of this
  * procedure can properly handle this template type.
  *
       case GS4_RADAR:
-         Print ("PDS-S4", "Product type", Prt_DS, sect4->templat, tbl40[10]);
+         Print ("PDS-S4", "Product type", Prt_DS, sect4->templat, tbl40[13]);
          break;
 */
       case GS4_SATELLITE:
-         Print ("PDS-S4", "Product type", Prt_DS, sect4->templat, tbl40[11]);
+         Print ("PDS-S4", "Product type", Prt_DS, sect4->templat, tbl40[14]);
          break;
       default:
          Print ("PDS-S4", "Product type", Prt_D, sect4->templat);
@@ -683,7 +709,7 @@ static int PrintSect4 (grib_MetaData *meta, sChar f_unit)
           meta->comment);
 
    if (f_unit == 1) {
-      Print ("PDS-S4", "Output grid, (COMPUTED) english unit is", Prt_S,
+      Print ("PDS-S4", "Output grid, (COMPUTED) English unit is", Prt_S,
              meta->unitName);
    } else if (f_unit == 2) {
       Print ("PDS-S4", "Output grid, (COMPUTED) metric unit is", Prt_S,
@@ -956,6 +982,17 @@ static int PrintSect4 (grib_MetaData *meta, sChar f_unit)
                              sect4->Interval[i].incrUnit));
             Print ("PDS-S4", "Time increment", Prt_S, buffer);
          }
+         break;
+      case GS4_SPATIAL_STAT:
+         /* Do we need to parse octets 35,36,37? */
+         Print ("PDS-S4", "Statistical process", Prt_DS,
+                sect4->statProcess,
+                Lookup (tbl410, sizeof (tbl410), sect4->statProcess));
+         Print ("PDS-S4", "Spatial process", Prt_DS,
+                sect4->spatialMethod,
+                Lookup (tbl415, sizeof (tbl415), sect4->spatialMethod));
+         Print ("PDS-S4", "Number of points used in spatial process", Prt_D,
+                sect4->numPntInSpatial);
          break;
       default:
          /* This case should have been handled in first switch statement of

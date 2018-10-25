@@ -263,7 +263,8 @@ typedef struct {  /* See Template 4.30. */
 enum { GS4_ANALYSIS, GS4_ENSEMBLE, GS4_DERIVED, GS4_PROBABIL_PNT = 5,
        GS4_PERCENT_PNT = 6, GS4_ERROR = 7, GS4_STATISTIC = 8,
        GS4_PROBABIL_TIME = 9, GS4_PERCENT_TIME = 10, GS4_ENSEMBLE_STAT = 11,
-       GS4_DERIVED_INTERVAL = 12, GS4_RADAR = 20, GS4_SATELLITE = 30
+       GS4_DERIVED_INTERVAL = 12, GS4_SPATIAL_STAT = 15,
+       GS4_RADAR = 20, GS4_SATELLITE = 30
 };
 
 typedef struct {
@@ -300,6 +301,9 @@ typedef struct {
    sInt4 numMissing;         /* Number of missing values. Template 4.8,4.9 */
    sect4_IntervalType *Interval; /* Stores the array of time intervals.
                                 Template 4.8,4.9 */
+   uChar statProcess;        /* Statistical process method used. Template 4.15 */
+   uChar spatialMethod;      /* Spatial method used in Template 4.15 */
+   sInt4 numPntInSpatial;    /* Number of points in spatial processing 4.15 */
    uChar numBands;           /* Number of Spectral Bands. Template 4.30 */
    sect4_BandType *bands;    /* Holds info about each Band Template 4.30 */
    uChar percentile;         /* Which percentile this forecast is for */

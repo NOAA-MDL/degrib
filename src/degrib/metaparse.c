@@ -1430,7 +1430,8 @@ static int ParseSect4 (sInt4 *is4, sInt4 ns4, grib_MetaData *meta)
        (is4[7] != GS4_PERCENT_PNT) && (is4[7] != GS4_ERROR) &&
        (is4[7] != GS4_STATISTIC) && (is4[7] != GS4_PROBABIL_TIME) &&
        (is4[7] != GS4_PERCENT_TIME) && (is4[7] != GS4_ENSEMBLE_STAT) &&
-       (is4[7] != GS4_SATELLITE) && (is4[7] != GS4_DERIVED_INTERVAL)) {
+       (is4[7] != GS4_SATELLITE) && (is4[7] != GS4_DERIVED_INTERVAL) &&
+       (is4[7] != GS4_SPATIAL_STAT)) {
 #ifdef DEBUG
       printf ("Un-supported Template. %ld\n", is4[7]);
 #endif
@@ -1657,6 +1658,12 @@ static int ParseSect4 (sInt4 *is4, sInt4 ns4, grib_MetaData *meta)
 #endif
             meta->pds2.sect4.numMissing = is4[44];
          }
+         break;
+      case GS4_SPATIAL_STAT: /* 4.15 */
+         /* Do we need to parse octets 35,36,37? */
+         meta->pds2.sect4.statProcess = (uChar) is4[35 - 1];
+         meta->pds2.sect4.spatialMethod = (uChar) is4[36 - 1];
+         meta->pds2.sect4.numPntInSpatial = is4[37 - 1];
          break;
       case GS4_STATISTIC: /* 4.8 */
          if (ParseTime (&(meta->pds2.sect4.validTime), is4[34], is4[36],

@@ -81,7 +81,7 @@ void GRIB2InventoryFree (inventoryType *inv)
  *
  * PURPOSE
  *   Prints to standard out, an inventory of the file, assuming one has an
- * array of invenories of single grib messages.
+ * array of inventories of single GRIB messages.
  *
  * ARGUMENTS
  *    Inv = Pointer to an Array of inventories to print. (Input)
@@ -363,7 +363,7 @@ static int GRIB2SectJump (FILE *fp, sInt4 gribLen, sChar *sect, uInt4 *secLen)
  * ARGUMENTS
  *   sectNum = Which section we are currently reading. (Input)
  *        fp = An opened file pointer to the file to the inventory of (In/Out)
- *   gribLen = The total length of the grib message. (Input)
+ *   gribLen = The total length of the GRIB message. (Input)
  *   buffLen = length of buffer. (Input)
  *    buffer = Holds a given section. (Input)
  *       inv = The current inventory record to fill out. (Output)
@@ -418,14 +418,14 @@ static int GRIB2Inventory2to7 (sChar sectNum, FILE *fp, sInt4 gribLen,
    double fstSurfValue; /* Value of first fixed surface. */
    sInt4 value;         /* The scaled value from GRIB2 file. */
    sChar factor;        /* The scaled factor from GRIB2 file */
-   sChar scale;         /* Surface scale as opposed to probility factor. */
+   sChar scale;         /* Surface scale as opposed to probability factor. */
    uChar sndSurfType;   /* Type of the second fixed surface. */
    double sndSurfValue; /* Value of second fixed surface. */
    sChar f_sndValue;    /* flag if SndValue is valid. */
    sChar f_fstValue;    /* flag if FstValue is valid. */
    uChar timeRangeUnit;
    uChar statProcessID = 255;
-   sInt4 lenTime;       /* Used by parseTime to tell difference betweeen 8hr
+   sInt4 lenTime;       /* Used by parseTime to tell difference between 8hr
                          * average and 1hr average ozone. */
    uChar genID;         /* The Generating process ID (used for GFS MOS) */
    uChar probType;      /* The probability type */
@@ -444,7 +444,7 @@ static int GRIB2Inventory2to7 (sChar sectNum, FILE *fp, sInt4 gribLen,
          return -6;
       }
       if ((sectNum != 2) && (sectNum != 3)) {
-         errSprintf ("ERROR: Section 2 or 3 misslabeled\n");
+         errSprintf ("ERROR: Section 2 or 3 miss-labeled\n");
          return -5;
       } else if (sectNum == 2) {
          /* Jump past section 3. */
@@ -474,13 +474,13 @@ enum { GS4_ANALYSIS, GS4_ENSEMBLE, GS4_DERIVED, GS4_PROBABIL_PNT = 5,
        && (templat != GS4_DERIVED)
        && (templat != GS4_PROBABIL_PNT) && (templat != GS4_PERCENT_PNT)
        && (templat != GS4_ERROR)
-       && (templat != GS4_STATISTIC)
+       && (templat != GS4_STATISTIC) && (templat != GS4_SPATIAL_STAT)
        && (templat != GS4_PROBABIL_TIME) && (templat != GS4_PERCENT_TIME)
        && (templat != GS4_ENSEMBLE_STAT)
        && (templat != GS4_RADAR) && (templat != GS4_SATELLITE)
        && (templat != GS4_DERIVED_INTERVAL)) {
       errSprintf ("This was only designed for templates 0, 1, 2, 5, 6, 7, 8, 9, "
-                  "10, 11, 12, 20, 30\n");
+                  "10, 11, 12, 15, 20, 30\n");
       return -8;
    }
    cat = (*buffer)[10 - 5];
@@ -577,6 +577,14 @@ enum { GS4_ANALYSIS, GS4_ENSEMBLE, GS4_DERIVED, GS4_PROBABIL_PNT = 5,
                lenTime = (inv->validTime -
                           (inv->refTime + inv->foreSec)) / 3600;
             }
+*/
+            break;
+         case GS4_SPATIAL_STAT: /* 4.15 */
+            /* Do we need to parse octets 35,36,37? */
+            statProcessID = (*buffer)[35 -5];
+/*
+            printf ("\n\n%d %d %d %d %d\n\n", (*buffer)[34-5], (uChar) (*buffer)[35-5],
+                    (uChar) (*buffer)[36-5], (uChar) (*buffer)[37-5], (uChar) (*buffer)[38-5]);
 */
             break;
          case GS4_ENSEMBLE_STAT: /* 4.11 */
