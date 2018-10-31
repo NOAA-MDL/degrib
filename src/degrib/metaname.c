@@ -1471,7 +1471,7 @@ GRIB2ParmTable OceanWaves[] = {
    /* 0 */ {"WVSP1", "Wave spectra (1)", "-", UC_NONE},
    /* 1 */ {"WVSP2", "Wave spectra (2)", "-", UC_NONE},
    /* 2 */ {"WVSP3", "Wave spectra (3)", "-", UC_NONE},
-   /* 3 */ {"HTSGW", "Significant height of combined wind waves and swell", "m", UC_NONE}, /* NDFD override needed WaveHeight */
+   /* 3 */ {"HTSGW", "Significant height of combined wind waves and swell", "m", UC_M2Feet}, /* NDFD override needed WaveHeight */
    /* 4 */ {"WVDIR", "Direction of wind waves", "Degree true", UC_NONE},
    /* 5 */ {"WVHGT", "Significant height of wind waves", "m", UC_M2Feet}, /* NDFD override needed WaveHeight */
    /* 6 */ {"WVPER", "Mean period of wind waves", "s", UC_NONE},
@@ -1808,7 +1808,7 @@ GRIB2LocalTable NDFD_LclTable[] = {
            {0, 19, 236, "TCSurge", "Tropical Cyclone Storm Surge Threat", "0=none; 4=low; 6=moderate; 8=high; 10=extreme", UC_NONE},          
            {0, 19, 238, "TCRain", "Tropical Cyclone Flooding Rain Threat", "0=none; 4=low; 6=moderate; 8=high; 10=extreme", UC_NONE},
            {0, 19, 239, "TCTornado", "Tropical Cyclone Tornado Threat", "0=none; 4=low; 6=moderate; 8=high; 10=extreme", UC_NONE},
-           {0, 19, 246, "SNOWLVL", "Snow Level", "m", UC_NONE},
+           {0, 19, 246, "SNOWLVL", "Snow Level", "m", UC_M2Feet},
 /* Leaving next two lines in for grandfathering sake. 9/19/2007... Probably can remove in future. */
            {0, 19, 203, "TotalSvrProb", "Total Probability of Severe Thunderstorms", "%", UC_NONE},
            {0, 19, 204, "TotalXtrmProb", "Total Probability of Extreme Severe Thunderstorms", "%", UC_NONE},
