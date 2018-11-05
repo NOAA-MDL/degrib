@@ -1,4 +1,8 @@
 #
+#----- Release: Version 2.21 11/5/2018 -----
+#
+ 11/5  Updated code for bug fixes to the -XML option and SnowLvl.
+#
 #----- Release: Version 2.20 10/4/2018 -----
 #
  10/4  Added NDFD's new experimental element SnowLvl for CONUS Days 1-3.
