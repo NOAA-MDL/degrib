@@ -1,4 +1,9 @@
 #
+#----- Release: Version 2.22 11/15/2018 -----
+#
+ 11/5  Added code to handle NDFD's new experimental 24-h, 48-h, 72-hr 10% 
+and 90% Snow Amounts.
+#
 #----- Release: Version 2.21 11/5/2018 -----
 #
  11/5  Updated code for bug fixes to the -XML option and SnowLvl.
