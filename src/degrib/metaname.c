@@ -28,7 +28,7 @@ char *centerLookup (unsigned short int center)
     * http://www.wmo.ch/web/www/WMOCodes/Operational/CommonTables/BUFRCommon-2005feb.pdf
     * http://www.wmo.int/web/www/WMOCodes/Operational/CommonTables/BUFRCommon-2005nov.pdf
     * also see:
-    * http://www.nco.ncep.noaa.gov/pmb/docs/on388/table0.html 
+    * http://www.nco.ncep.noaa.gov/pmb/docs/on388/table0.html
     * I typed this in on 11/2/2006 */
 /* *INDENT-OFF* */
    static struct {
@@ -60,7 +60,7 @@ char *centerLookup (unsigned short int center)
       {22, "ACMAD"},
       {23, "Mozambique"},
       {24, "Pretoria"},
-      {25, "La Réunion"},
+      {25, "La RÃ©union"},
       {26, "Khabarovsk"},
       {27, ") Khabarovsk"},
       {28, "New Delhi"},
@@ -117,8 +117,8 @@ char *centerLookup (unsigned short int center)
       {79, ") Offenbach"},
       {80, "Rome"},
       {81, ") Rome"},
-      {82, "Norrköping"},
-      {83, ") Norrköping"},
+      {82, "NorrkÃ¶ping"},
+      {83, ") NorrkÃ¶ping"},
       {84, "Toulouse"},
       {85, "Toulouse"},
       {86, "Helsinki"},
@@ -250,7 +250,7 @@ char *centerLookup (unsigned short int center)
       {212, "Lisboa"},
       {213, "Reykiavik"},
       {214, "Madrid"},
-      {215, "Zürich"},
+      {215, "ZÃ¼rich"},
       {216, "Service ARGOS Toulouse"},
       {217, "Bratislava"},
       {218, "Budapest"},
@@ -383,7 +383,7 @@ char *subCenterLookup (unsigned short int center,
       {74, 27, "Nordic Commission of Geodesy (Norway)"},
       {74, 28, "Nordic Commission of Geodesy (Sweden)"},
       {74, 29, "Institute de Geodesie National (France)"},
-      {74, 30, "Bundesamt für Kartographie und Geodäsie (Germany)"},
+      {74, 30, "Bundesamt fÃ¼r Kartographie und GeodÃ¤sie (Germany)"},
       {74, 31, "Institute of Engineering Satellite Surveying and Geodesy (U.K.)"},
       {254, 10, "Tromso (Norway)"}, {254, 10, "Maspalomas (Spain)"},
       {254, 30, "Kangerlussuaq (Greenland)"}, {254, 40, "Edmonton (Canada)"},
@@ -720,7 +720,7 @@ GRIB2ParmTable MeteoMoist[] = {
 /* 110 */    {"SMLWHMA", "Specific Mass of Liquid Water Coating on Hail Expressed as "
               "Mass of Liquid Water per Unit Mass of Moist Air", "kg/kg", UC_NONE},
 /* 111 */    {"MMLWHDA", "Mass Mixing Ratio of Liquid Water Coating on Hail Expressed as "
-              "Mass of Liquid Water per Unit Mass of Dry Air", "kg/kg", UC_NONE}, 
+              "Mass of Liquid Water per Unit Mass of Dry Air", "kg/kg", UC_NONE},
 /* 112 */    {"MDLWGVA", "Mass Density of Liquid Water Coating on Graupel Expressed as "
               "Mass of Liquid Water per Unit Volume of Air", "kg/m^3", UC_NONE},
 /* 113 */    {"SMLWGMA", "Specific Mass of Liquid Water Coating on Graupel Expressed as "
@@ -1099,15 +1099,15 @@ GRIB2ParmTable MeteoAtmos[] = {
             {"SLDP", "Supercooled Large Droplet Probability", "%", UC_NONE},
 /* Mike added 3/2012 */
 /* 24 */    {"CONTKE", "Convective Turbulent Kinetic Energy", "J/kg", UC_NONE},
-/* 25 */    {"WIWW", "Weather Interpretation ww (WMO)", " ", UC_NONE},          	
+/* 25 */    {"WIWW", "Weather Interpretation ww (WMO)", " ", UC_NONE},
 /* 26 */    {"CONVO", "Convective Outlook",  "0=No Risk Area; 1=Reserved; "
              "2=General Thunderstorm Risk Area; 3=Reserved; 4=Slight Risk Area; "
              "5=Reserved; 6=Moderate Risk Area;  7=Reserved; 8=High Risk Area; "
              "9-10=Reserved; 11=Dry Thunderstorm (Dry Lightning) Risk Area; "
-             "12-13=Reserved; 14=Critical Risk Area; 15-17=Reserved" 
+             "12-13=Reserved; 14=Critical Risk Area; 15-17=Reserved"
              "18=Extremely Critical Risk Area; 255=missing", UC_NONE},
 /* 27 */    {"ICESC", "Icing Scenario", "0=None; 1=General, 2=Convective "
-             "3=Stratiform; 4=Freezing; 5-191=Reserved; 255=missing", UC_NONE},          	
+             "3=Stratiform; 4=Freezing; 5-191=Reserved; 255=missing", UC_NONE},
 /* 28 */    {"MWTURB", "Mountain Wave Turbulence (Eddy Dissipation Rate)", "m^(2/3)/s" , UC_NONE},
 /* 29 */    {"CATEDR", "Clear Air Turbulence (CAT) (Eddy Dissipation Rate)", "m^(2/3)/s", UC_NONE},
 /* 30 */    {"EDPARM", "Eddy Dissipation Parameter", "m^(2/3)/s", UC_NONE},
@@ -1454,9 +1454,9 @@ GRIB2ParmTable SpaceQuantitative[] = {
 /* 17 */ {"CSKYRAD", "Clear Sky Radiance (with respect to wave number)", "W/(m*sr)", UC_NONE},
 /* 18 */ {"", "Reserved", "-", UC_NONE},
 /* 19 */ {"WINDS", "Wind Speed", "m/s", UC_NONE},
-/* 20 */ {"AOT06", "Aerosol Optical Thickness at 0.635 µm", "", UC_NONE},
-/* 21 */ {"AOT08", "Aerosol Optical Thickness at 0.810 µm", "", UC_NONE},
-/* 22 */ {"AOT16", "Aerosol Optical Thickness at 1.640 µm", "", UC_NONE},
+/* 20 */ {"AOT06", "Aerosol Optical Thickness at 0.635 Âµm", "", UC_NONE},
+/* 21 */ {"AOT08", "Aerosol Optical Thickness at 0.810 Âµm", "", UC_NONE},
+/* 22 */ {"AOT16", "Aerosol Optical Thickness at 1.640 Âµm", "", UC_NONE},
 /* 23 */ {"ANGCOE", "Angstrom Coefficient", "", UC_NONE},
 /* 24 */ {"", "Reserved", "-", UC_NONE},
 /* 25 */ {"", "Reserved", "-", UC_NONE},
@@ -1774,7 +1774,7 @@ NDFD_AbrevOverideTable NDFD_Overide[] = {
    /* 10 */ {"ASNOW", "SnowAmt"},
    /* 11 */ {"GUST", "WindGust"},
    /* 12 */ {"MAXRH", "MaxRH"},                /* MPA added 201202 */
-   /* 13 */ {"HTSGW", "WaveHeight"},           /* MPA added 201709 */      
+   /* 13 */ {"HTSGW", "WaveHeight"},           /* MPA added 201709 */
 };
 
 GRIB2LocalTable NDFD_LclTable[] = {
@@ -1805,7 +1805,7 @@ GRIB2LocalTable NDFD_LclTable[] = {
            {0, 19, 216, "TotalXtrmProb", "Total Probability of Extreme Severe Thunderstorms", "%", UC_NONE},
            {0, 19, 217, "WWA", "Watch Warning Advisory", "-", UC_NONE},
            {0, 19, 235, "TCWind", "Tropical Cyclone Wind Threat", "0=none; 4=low; 6=moderate; 8=high; 10=extreme", UC_NONE},
-           {0, 19, 236, "TCSurge", "Tropical Cyclone Storm Surge Threat", "0=none; 4=low; 6=moderate; 8=high; 10=extreme", UC_NONE},          
+           {0, 19, 236, "TCSurge", "Tropical Cyclone Storm Surge Threat", "0=none; 4=low; 6=moderate; 8=high; 10=extreme", UC_NONE},
            {0, 19, 238, "TCRain", "Tropical Cyclone Flooding Rain Threat", "0=none; 4=low; 6=moderate; 8=high; 10=extreme", UC_NONE},
            {0, 19, 239, "TCTornado", "Tropical Cyclone Tornado Threat", "0=none; 4=low; 6=moderate; 8=high; 10=extreme", UC_NONE},
            {0, 19, 246, "SNOWLVL", "Snow Level", "m", UC_M2Feet},
@@ -1823,7 +1823,7 @@ GRIB2LocalTable NDFD_LclTable[] = {
            {10, 3, 251, "Tide", "Tide", "m", UC_M2Feet},
    /* Mike added 2/2012 */
            {0, 1, 198, "MinRH", "Minimum Relative Humidity", "%", UC_NONE}
-}; 
+};
 
 GRIB2LocalTable HPC_LclTable[] = {
    /* 0 */ {0, 1, 192, "HPC-Wx", "HPC Code", "-", UC_NONE},
@@ -2063,16 +2063,16 @@ GRIB2LocalTable NCEP_LclTable[] = {
             {0, 2, 218, "LMV", "Velocity point model surface", "-", UC_NONE},
             {0, 2, 219, "PVMWW", "Potential vorticity (mass-weighted)", "1/(s/m)", UC_NONE},
             {0, 2, 220, "MAXUVV", "Hourly Maximum of Downward Vertical Velocity in the lowest 400hPa", "m/s", UC_NONE},
-            {0, 2, 221, "MAXDVV", "Hourly Maximum of Downward Vertical Velocity", "m/s", UC_NONE}, 
-            {0, 2, 222, "MAXUW", "U Component of Hourly Maximum 10m Wind Speed", "m/s", UC_NONE}, 
-            {0, 2, 223, "MAXVW", "V Component of Hourly Maximum 10m Wind Speed", "m/s", UC_NONE}, 
-            {0, 2, 224, "VRATE", "Ventilation Rate", "m^2/s", UC_NONE}, 
-            {0, 2, 225, "TRWSPD", "Transport Wind Speed", "m/s", UC_NONE}, 
-            {0, 2, 226, "TRWDIR", "Transport Wind Direction", "deg", UC_NONE}, 
-            {0, 2, 227, "TOA10", "Earliest Reasonable Arrival Time (10% exceedance)", "s", UC_NONE}, 
-            {0, 2, 228, "TOA50", "Most Likely Arrival Time (50% exceedance)", "s", UC_NONE}, 
-            {0, 2, 229, "TOD50", "Most Likely Departure Time (50% exceedance)", "s", UC_NONE}, 
-            {0, 2, 230, "TOD90", "Latest Reasonable Departure Time (90% exceedance)", "s", UC_NONE}, 
+            {0, 2, 221, "MAXDVV", "Hourly Maximum of Downward Vertical Velocity", "m/s", UC_NONE},
+            {0, 2, 222, "MAXUW", "U Component of Hourly Maximum 10m Wind Speed", "m/s", UC_NONE},
+            {0, 2, 223, "MAXVW", "V Component of Hourly Maximum 10m Wind Speed", "m/s", UC_NONE},
+            {0, 2, 224, "VRATE", "Ventilation Rate", "m^2/s", UC_NONE},
+            {0, 2, 225, "TRWSPD", "Transport Wind Speed", "m/s", UC_NONE},
+            {0, 2, 226, "TRWDIR", "Transport Wind Direction", "deg", UC_NONE},
+            {0, 2, 227, "TOA10", "Earliest Reasonable Arrival Time (10% exceedance)", "s", UC_NONE},
+            {0, 2, 228, "TOA50", "Most Likely Arrival Time (50% exceedance)", "s", UC_NONE},
+            {0, 2, 229, "TOD50", "Most Likely Departure Time (50% exceedance)", "s", UC_NONE},
+            {0, 2, 230, "TOD90", "Latest Reasonable Departure Time (90% exceedance)", "s", UC_NONE},
 /* Removed 8/19/2008 */ /*           {0, 2, 220, "MFLX", "Momentum flux", "N/m^2", UC_NONE},*/
 
    /* 21 */ {0, 3, 192, "MSLET", "MSLP (Eta model reduction)", "Pa", UC_NONE},
@@ -2246,10 +2246,10 @@ GRIB2LocalTable NCEP_LclTable[] = {
 */
             {0, 19, 232, "VAFTD", "Volcanic Ash Forecast Transport and Dispersion", "log10(kg/m^3)", UC_NONE},
             {0, 19, 233, "ICPRB", "Icing probability", "-", UC_NONE},
-            {0, 19, 234, "ICSEV", "Icing severity", "-", UC_NONE}, 
-            {0, 19, 235, "JFWPRB", "Joint Fire Weather Probability", "%", UC_NONE}, 
-            {0, 19, 236, "SNOWLVL", "Snow Level", "m", UC_NONE}, 
-            {0, 19, 237, "DRYTPROB", "Dry Thunderstorm Probability", "%", UC_NONE}, 
+            {0, 19, 234, "ICSEV", "Icing severity", "-", UC_NONE},
+            {0, 19, 235, "JFWPRB", "Joint Fire Weather Probability", "%", UC_NONE},
+            {0, 19, 236, "SNOWLVL", "Snow Level", "m", UC_NONE},
+            {0, 19, 237, "DRYTPROB", "Dry Thunderstorm Probability", "%", UC_NONE},
 
    /* 47 */ {0, 191, 192, "NLAT", "Latitude (-90 to 90)", "deg", UC_NONE},
    /* 48 */ {0, 191, 193, "ELON", "East Longitude (0 to 360)", "deg", UC_NONE},
@@ -2518,7 +2518,7 @@ static GRIB2LocalTable *Choose_LocalParmTable (unsigned short int center,
       case 161:
          *tableLen = sizeof (MRMS_LclTable) / sizeof (GRIB2LocalTable);
          return &MRMS_LclTable[0];
-       
+
       default:
          *tableLen = 0;
          return NULL;
@@ -2743,7 +2743,7 @@ static void ElemNameProb (uChar mstrVersion, uShort2 center, uShort2 subcenter, 
    } else {
       table = NULL;
    }
-   
+
    if (table != NULL) {
       if (subcat < tableLen) {
          /* Check for NDFD over-rides. */
@@ -2928,7 +2928,7 @@ static void ElemNamePerc (uChar mstrVersion, uShort2 center, uShort2 subcenter, 
    } else {
       table = NULL;
    }
-   
+
    if (table != NULL) {
       if (subcat < tableLen) {
          /* Check for NDFD over-rides. */
@@ -3142,7 +3142,7 @@ static void ElemNameNorm (uChar mstrVersion, uShort2 center, uShort2 subcenter, 
    } else {
       table = NULL;
    }
-   
+
    if (table != NULL) {
       if (subcat < tableLen) {
          /* Check for NDFD over-rides. */
@@ -3188,16 +3188,16 @@ static void ElemNameNorm (uChar mstrVersion, uShort2 center, uShort2 subcenter, 
             if (strcmp (table[subcat].name, "EVP") == 0) {
                if (statProcessID == 10) {
                   mallocSprintf (name, "%s%02d", "EvpDep", lenTime);
-                  mallocSprintf (comment, "%02d hr Evapo-Transpiration departure from normal", 
+                  mallocSprintf (comment, "%02d hr Evapo-Transpiration departure from normal",
                                  lenTime);
                } else {
-                  mallocSprintf (name, "%s%02d", "Evp", lenTime);              
+                  mallocSprintf (name, "%s%02d", "Evp", lenTime);
                   mallocSprintf (comment, "%02d hr Evapo-Transpiration", lenTime);
                }
                mallocSprintf (unit, "[%s]", table[subcat].unit);
                *convert = table[subcat].convert;
                return;
-            }   
+            }
             for (i = 0; i < (sizeof (NDFD_Overide) /
                              sizeof (NDFD_AbrevOverideTable)); i++) {
                if (strcmp (NDFD_Overide[i].GRIB2name, table[subcat].name) ==
@@ -3290,7 +3290,7 @@ static void ElemNameNorm (uChar mstrVersion, uShort2 center, uShort2 subcenter, 
    return;
 }
 
-void ParseElemName (uChar mstrVersion, uShort2 center, uShort2 subcenter, 
+void ParseElemName (uChar mstrVersion, uShort2 center, uShort2 subcenter,
                     int prodType,
                     int templat, int cat, int subcat, sInt4 lenTime,
                     uChar timeRangeUnit, uChar statProcessID,
@@ -3313,7 +3313,7 @@ void ParseElemName (uChar mstrVersion, uShort2 center, uShort2 subcenter,
          ElemNameNorm (mstrVersion, center, subcenter, prodType, templat, cat, subcat,
                        lenTime, timeRangeUnit, statProcessID, timeIncrType, genID, probType, lowerProb,
                        upperProb, name, comment, unit, convert, f_fstValue, fstSurfValue,
-                       f_sndValue, sndSurfValue);       
+                       f_sndValue, sndSurfValue);
 
       } else {
          ElemNameProb (mstrVersion, center, subcenter, prodType, templat, cat, subcat,
@@ -3561,7 +3561,7 @@ int ComputeUnit (int convert, char *origName, sChar f_unit, double *unitM,
       case UC_InchWater: /* Convert from kg/(m^2) to inches water. */
          if (f_unit == 1) {
             strcpy (name, "[inch]");
-            /* 
+            /*
              * kg/m**2 / density of water (1000 kg/m**3)
              * 1/1000 m * 1/2.54 in/cm * 100 cm/m = 1/25.4 inches
              */
@@ -3900,10 +3900,10 @@ GRIB2SurfTable Table45Index (int i, int *f_reserved, uShort2 center,
    }
    if (i > 114)
       return Surface[27];
-   if (i == 114){
+   if (i == 114) {
       *f_reserved = 0;
       return Surface[26];
-   }  
+   }
    if (i > 111)
       return Surface[25];
    if (i == 111) {
