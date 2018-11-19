@@ -347,7 +347,7 @@ static int ParseSect1 (sInt4 *is1, sInt4 ns1, grib_MetaData *meta)
    meta->subcenter = (unsigned short int) is1[7];
    meta->pds2.mstrVersion = (uChar) is1[9];
    meta->pds2.lclVersion = (uChar) is1[10];
-   if (((meta->pds2.mstrVersion < 1) || (meta->pds2.mstrVersion > 5)) ||
+   if (((meta->pds2.mstrVersion < 1) || (meta->pds2.mstrVersion > 20)) ||
        (meta->pds2.lclVersion > 1)) {
       if (meta->pds2.mstrVersion == 0) {
          printf ("Warning: Master table version == 0, was experimental\n"
