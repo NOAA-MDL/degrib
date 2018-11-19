@@ -347,15 +347,16 @@ static int ParseSect1 (sInt4 *is1, sInt4 ns1, grib_MetaData *meta)
    meta->subcenter = (unsigned short int) is1[7];
    meta->pds2.mstrVersion = (uChar) is1[9];
    meta->pds2.lclVersion = (uChar) is1[10];
-   if (((meta->pds2.mstrVersion < 1) || (meta->pds2.mstrVersion > 20)) ||
-       (meta->pds2.lclVersion > 1)) {
+   if ((((meta->pds2.mstrVersion < 1) || (meta->pds2.mstrVersion > 7)) && 
+      ((meta->pds2.mstrVersion < 13) || (meta->pds2.mstrVersion > 20))) ||
+      (meta->pds2.lclVersion > 1)) {
       if (meta->pds2.mstrVersion == 0) {
          printf ("Warning: Master table version == 0, was experimental\n"
                  "I don't have a copy, and don't know where to get one\n"
                  "Use meta data at your own risk.\n");
       } else if (meta->pds2.mstrVersion != 255) {
          printf ("Warning: use meta data at your own risk.\n");
-         printf ("Supported master table versions: (1,2,3,..19,20) yours is %d... ", 
+         printf ("Supported master table versions: (1-7,13-20) yours is %d... ", 
                  meta->pds2.mstrVersion);
          printf ("Supported local table version supported (0,1) yours is %d...\n", 
                  meta->pds2.lclVersion);
