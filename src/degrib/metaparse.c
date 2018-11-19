@@ -355,7 +355,7 @@ static int ParseSect1 (sInt4 *is1, sInt4 ns1, grib_MetaData *meta)
                  "Use meta data at your own risk.\n");
       } else if (meta->pds2.mstrVersion != 255) {
          printf ("Warning: use meta data at your own risk.\n");
-         printf ("Supported master table versions: (1,2,3,4,5) yours is %d... ", 
+         printf ("Supported master table versions: (1,2,3,..19,20) yours is %d... ", 
                  meta->pds2.mstrVersion);
          printf ("Supported local table version supported (0,1) yours is %d...\n", 
                  meta->pds2.lclVersion);
