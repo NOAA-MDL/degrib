@@ -3,6 +3,8 @@
 exec /usr/bin/tclsh "$0" "$@"
 
 package require http 2.0
+package require tls
+http::register https 443 [list ::tls::socket -tls1 1]
 #*****************************************************************************
 # http::copy() --
 #

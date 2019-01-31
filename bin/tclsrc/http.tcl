@@ -1,4 +1,6 @@
 package require http 2.0
+package require tls
+http::register https 443 [list ::tls::socket -tls1 1]
 
 #*****************************************************************************
 # Procedure http::copy
