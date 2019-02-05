@@ -1,4 +1,8 @@
 #
+#----- Release: Version 2.23 2/5/2019 -----
+#
+ 2/5  Added code to handle https downloads.
+#
 #----- Release: Version 2.22 11/15/2018 -----
 #
  11/15  Added code to handle NDFD's new experimental 24-h, 48-h, 72-hr 10%
