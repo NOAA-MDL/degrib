@@ -1,7 +1,7 @@
 #
 #----- Release: Version 2.23 02/06/2019 -----
 #
- 2/5  Added code to handle https downloads.
+2/6  Added code to handle https downloads.
 #
 #----- Release: Version 2.22 11/15/2018 -----
 #
