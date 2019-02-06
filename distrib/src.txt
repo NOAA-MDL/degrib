@@ -351,6 +351,7 @@ G,S,AMS:degrib/bin/ndfd.ini
 G,S,AMS:degrib/lib/mkwidgets1.3/*.*
 G,S,AMS:degrib/lib/mkwidgets1.3/demos/*.*
 G,S,AMS:degrib/lib/mkwidgets1.3/demos/images/*.*
+G,S,AMS:degrib/lib/tls1.6.5/*.*
 
 # GUI Bin
 G:degrib/bin/tcl85.dll
