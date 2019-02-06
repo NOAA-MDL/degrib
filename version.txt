@@ -8,7 +8,7 @@
 
 [degrib]
 Version=2.23
-Date=2/5/2019
+Date=02/06/2019
 Web=http://www.weather.gov/mdl/degrib_download
 
 [emapf]
