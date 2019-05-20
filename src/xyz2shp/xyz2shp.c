@@ -38,7 +38,7 @@ typedef struct {
 typedef struct {
    char label[12];
    char type;           /* 'C' for character. 'N' for number. */
-   long int address;    /* Address of data if it is in memory? */
+   sInt4 address;    /* Address of data if it is in memory? */
    uChar fldLen;
    uChar fldDec;
 } dbfCol_type;
@@ -125,16 +125,16 @@ int stnCreateShpPnt (char *filename, statInfo_type * stat, int numStat,
    FILE *sfp;           /* The open file pointer for .shp */
    FILE *xfp;           /* The open file pointer for .shx. */
    int i;               /* A counter used for the shx values. */
-   long int Head1[7];   /* The Big endian part of the Header. */
-   long int Head2[2];   /* The Little endian part of the Header. */
+   sInt4 Head1[7];   /* The Big endian part of the Header. */
+   sInt4 Head2[2];   /* The Little endian part of the Header. */
    double Bounds[] = {
       0., 0., 0., 0., 0., 0., 0., 0.
    };                   /* Spatial bounds of the data. minLon, minLat,
                          * maxLon, maxLat, ... */
-   long int dataType = 1; /* Point shp type data. */
-   long int curRec[2];  /* rec number, and content length. */
+   sInt4 dataType = 1; /* Point shp type data. */
+   sInt4 curRec[2];  /* rec number, and content length. */
    int recLen;          /* Length in bytes of a record in the .shp file. */
-   long int numRec = numStat; /* The total number of records. */
+   sInt4 numRec = numStat; /* The total number of records. */
    int err = 0;         /* Internal err number. */
 
    strncpy (filename + strlen (filename) - 3, "shp", 3);
@@ -145,15 +145,15 @@ int stnCreateShpPnt (char *filename, statInfo_type * stat, int numStat,
 
    /* Start Writing header in first 100 bytes. */
    Head1[0] = 9994;     /* ArcView identifier. */
-   memset ((Head1 + 1), 0, 5 * sizeof (long int)); /* set 5 unused to 0 */
-   recLen = sizeof (long int) + 2 * sizeof (double);
+   memset ((Head1 + 1), 0, 5 * sizeof (sInt4)); /* set 5 unused to 0 */
+   recLen = sizeof (sInt4) + 2 * sizeof (double);
    /* .shp file size (in 2 byte words). */
    /* Initial guess (there may be some stations without lat/lon values) */
-   Head1[6] = (100 + (2 * sizeof (long int) + recLen) * numRec) / 2;
-   FWRITE_BIG (Head1, sizeof (long int), 7, sfp);
+   Head1[6] = (100 + (2 * sizeof (sInt4) + recLen) * numRec) / 2;
+   FWRITE_BIG (Head1, sizeof (sInt4), 7, sfp);
    Head2[0] = 1000;     /* ArcView version identifier. */
    Head2[1] = dataType; /* Signal that these are point data. */
-   FWRITE_LIT (Head2, sizeof (long int), 2, sfp);
+   FWRITE_LIT (Head2, sizeof (sInt4), 2, sfp);
    Bounds[0] = minLon;
    Bounds[1] = minLat;
    Bounds[2] = maxLon;
@@ -165,8 +165,8 @@ int stnCreateShpPnt (char *filename, statInfo_type * stat, int numStat,
    curRec[0] = 0;
    for (i = 0; i < numStat; i++) {
       curRec[0]++;
-      FWRITE_BIG (curRec, sizeof (long int), 2, sfp);
-      FWRITE_LIT (&dataType, sizeof (long int), 1, sfp);
+      FWRITE_BIG (curRec, sizeof (sInt4), 2, sfp);
+      FWRITE_LIT (&dataType, sizeof (sInt4), 1, sfp);
       FWRITE_LIT (&(stat[i].lon), sizeof (double), 1, sfp);
       FWRITE_LIT (&(stat[i].lat), sizeof (double), 1, sfp);
    }
@@ -174,9 +174,9 @@ int stnCreateShpPnt (char *filename, statInfo_type * stat, int numStat,
    /* .shp file size (in 2 byte words). */
    numRec = curRec[0];
    if (numStat != numRec) {
-      Head1[6] = (100 + (2 * sizeof (long int) + recLen) * numRec) / 2;
+      Head1[6] = (100 + (2 * sizeof (sInt4) + recLen) * numRec) / 2;
       fseek (sfp, 24, SEEK_SET);
-      FWRITE_BIG (&(Head1[6]), sizeof (long int), 1, sfp);
+      FWRITE_BIG (&(Head1[6]), sizeof (sInt4), 1, sfp);
    }
    fclose (sfp);
    if ((err = checkFileSize (filename, Head1[6] * 2)) != 0) {
@@ -190,15 +190,15 @@ int stnCreateShpPnt (char *filename, statInfo_type * stat, int numStat,
       return -1;
    }
    Head1[6] = (100 + 8 * numRec) / 2; /* shx file size (in words). */
-   FWRITE_BIG (Head1, sizeof (long int), 7, xfp);
-   FWRITE_LIT (Head2, sizeof (long int), 2, xfp);
+   FWRITE_BIG (Head1, sizeof (sInt4), 7, xfp);
+   FWRITE_LIT (Head2, sizeof (sInt4), 2, xfp);
    FWRITE_LIT (Bounds, sizeof (double), 8, xfp);
 
    curRec[0] = 50;      /* 100 bytes / 2 = 50 words */
    curRec[1] = recLen / 2; /* Content length in words (2 bytes) */
    for (i = 0; i < numRec; i++) {
-      FWRITE_BIG (curRec, sizeof (long int), 2, xfp);
-      curRec[0] += (recLen + 2 * sizeof (long int)) / 2; /* (2 byte words) */
+      FWRITE_BIG (curRec, sizeof (sInt4), 2, xfp);
+      curRec[0] += (recLen + 2 * sizeof (sInt4)) / 2; /* (2 byte words) */
    }
    fclose (xfp);
    if ((err = checkFileSize (filename, Head1[6] * 2)) != 0) {
@@ -234,15 +234,15 @@ int stnCreateShpPnt (char *filename, statInfo_type * stat, int numStat,
  * NOTES
  *****************************************************************************
  */
-int DbfInit (char *filename, dbfCol_type * col, int numCol, long int numRec)
+int DbfInit (char *filename, dbfCol_type * col, int numCol, sInt4 numRec)
 {
    FILE *fp;            /* The open .dbf file pointer. */
    unsigned short int recLen; /* Size of one cell of data */
    int i;               /* Counter variable. */
    unsigned short int headLen; /* Size of the header. */
-   unsigned long int totSize; /* Total size of the .dbf file. */
+   uInt4 totSize; /* Total size of the .dbf file. */
    uChar header[] = { 3, 101, 4, 20 }; /* Header info for dbf. */
-   long int reserved[] = { 0, 0, 0, 0, 0 }; /* need 20 bytes of 0. */
+   sInt4 reserved[] = { 0, 0, 0, 0, 0 }; /* need 20 bytes of 0. */
    uChar uc_temp;       /* Store the last character in the header. */
    char *buffer;        /* Used to store the "dummy records" */
 
@@ -261,7 +261,7 @@ int DbfInit (char *filename, dbfCol_type * col, int numCol, long int numRec)
 
    /* Start writing the header. */
    fwrite (header, sizeof (char), 4, fp);
-   FWRITE_LIT (&numRec, sizeof (long int), 1, fp);
+   FWRITE_LIT (&numRec, sizeof (sInt4), 1, fp);
    FWRITE_LIT (&headLen, sizeof (short int), 1, fp);
    FWRITE_LIT (&recLen, sizeof (short int), 1, fp);
    fwrite (reserved, sizeof (char), 20, fp);
@@ -270,7 +270,7 @@ int DbfInit (char *filename, dbfCol_type * col, int numCol, long int numRec)
    for (i = 0; i < numCol; i++) {
       fwrite (col[i].label, sizeof (char), 11, fp);
       fputc (col[i].type, fp);
-      FWRITE_LIT (&(col[i].address), sizeof (long int), 1, fp);
+      FWRITE_LIT (&(col[i].address), sizeof (sInt4), 1, fp);
       fputc (col[i].fldLen, fp);
       fputc (col[i].fldDec, fp);
       fwrite (reserved, sizeof (char), 14, fp);
@@ -447,7 +447,7 @@ int DbfWrite (char *filename, dbfCol_type * col, int numCol,
               statInfo_type * stat, int numStat)
 {
    FILE *fp;            /* The open .dbf file pointer. */
-   long int offset;
+   sInt4 offset;
    char *buffer;        /* Used to store the records */
    int i;
    int j;
