@@ -1,4 +1,8 @@
 #
+#----- Release: Version 2.24 06/20/2019 -----
+#
+6/20  Added support for WBGT.
+#
 #----- Release: Version 2.23 02/06/2019 -----
 #
 2/6  Added code to handle https downloads.
