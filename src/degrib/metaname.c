@@ -1779,6 +1779,7 @@ NDFD_AbrevOverideTable NDFD_Overide[] = {
 
 GRIB2LocalTable NDFD_LclTable[] = {
    /* 0 */ {0, 0, 193, "ApparentT", "Apparent Temperature", "K", UC_K2F},
+           {0, 0, 205, "WBGT", "Wet Bulb Globe Temperature", "K", UC_K2F},
    /* 1 */ {0, 1, 192, "Wx", "Weather string", "-", UC_NONE},
            {0, 1, 193, "PPI", "Precipitation Potential Index", "%", UC_NONE},
            {0, 1, 227, "IceAccum", "Ice Accumulation", "kg/m^2", UC_InchWater},
@@ -1981,7 +1982,7 @@ GRIB2LocalTable NCEP_LclTable[] = {
             {0, 0, 202, "VDFHR", "Vertical Diffusion Heating rate", "K/s", UC_NONE},
             {0, 0, 203, "THZ0", "Potential temperature at top of viscus sublayer", "K", UC_NONE},
             {0, 0, 204, "TCHP", "Tropical Cyclone Heat Potential", "J/(m^2*K)", UC_NONE},
-
+            
    /*  1 */ {0, 1, 192, "CRAIN", "Categorical Rain", "0=no; 1=yes", UC_NONE},
    /*  2 */ {0, 1, 193, "CFRZR", "Categorical Freezing Rain", "0=no; 1=yes", UC_NONE},
    /*  3 */ {0, 1, 194, "CICEP", "Categorical Ice Pellets", "0=no; 1=yes", UC_NONE},
