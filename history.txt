@@ -1,4 +1,8 @@
 #
+#----- Release: Version 2.25 06/15/2020 -----
+#
+6/15  MPA updated the ndfd.ini to reflect that Snow Level is now operational.
+#
 #----- Release: Version 2.24 06/20/2019 -----
 #
 6/20  Added support for WBGT.
