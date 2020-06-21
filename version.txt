@@ -7,8 +7,8 @@
 #   +1 is for a large set of new features
 
 [degrib]
-Version=2.25
-Date=06/15/2020
+Version=2.24
+Date=06/21/2020
 Web=http://www.weather.gov/mdl/degrib_download
 
 [emapf]
