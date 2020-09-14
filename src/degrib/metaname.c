@@ -799,7 +799,7 @@ GRIB2ParmTable MeteoMass[] = {
    /* 3 */ {"ICAHT", "ICAO Standard Atmosphere Reference Height", "m", UC_NONE},
    /* 4 */ {"GP", "Geopotential", "(m^2)/(s^2)", UC_NONE},
    /* 5 */ {"HGT", "Geopotential height", "gpm", UC_NONE},
-   /* 6 */ {"DIST", "Geometric height", "m", UC_NONE},
+   /* 6 */ {"DIST", "Geometric height", "m", UC_M2Feet},
    /* 7 */ {"HSTDV", "Standard deviation of height", "m", UC_NONE},
    /* 8 */ {"PRESA", "Pressure anomaly", "Pa", UC_NONE},
    /* 9 */ {"GPA", "Geopotential height anomally", "gpm", UC_NONE},
