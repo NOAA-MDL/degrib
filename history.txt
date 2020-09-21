@@ -1,11 +1,16 @@
 #
+#----- Release: Version 2.25 09/21/2020 -----
+#
+ 9/21  Low Level Wind Shear / Height (inventory reports as DIST) is now 
+converted to feet by default.
+#
 #----- Release: Version 2.24 06/20/2019 -----
 #
-6/20  Added support for WBGT.
+ 6/20  Added support for WBGT.
 #
 #----- Release: Version 2.23 02/06/2019 -----
 #
-2/6  Added code to handle https downloads.
+ 2/6  Added code to handle https downloads.
 #
 #----- Release: Version 2.22 11/15/2018 -----
 #
@@ -53,6 +58,8 @@ conus grid rather than the sub-sector.
 #----- Release: Version 2.13 09/26/2017 -----
 #
  9/26 MPA Modified "HTSGW", "Significant height of combined wind waves and swell",
+A
+w Level Wind Shear / Height (inventory reports as DIST) is now converted to feet by default.
 to display as "WaveHeight".
 #
 #----- Release: Version 2.12 07/06/2017 -----
