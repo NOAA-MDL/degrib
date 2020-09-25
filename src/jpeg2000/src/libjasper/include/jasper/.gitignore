@@ -1,0 +1,4 @@
+# To apply to svn, type: 'svn propset svn:ignore -F .gitignore .'
+Makefile
+jas_config.h
+stamp-h1
