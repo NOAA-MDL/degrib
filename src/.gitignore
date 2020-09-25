@@ -1,2 +1,8 @@
 # To apply to svn, type: 'svn propset svn:ignore -F .gitignore .'
+# To turn it off recursively:
+#   for f in $(find . -name '.gitignore' -print) ; do svn propdel svn:ignore $(dirname $f); done
+# To turn it on recursively:
+#   for f in $(find . -name '.gitignore' -print) ; do svn propset svn:ignore -F $f $(dirname $f); done
 config.status
+config.log
+Makefile

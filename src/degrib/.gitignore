@@ -1,7 +1,9 @@
 # To apply to svn, type: 'svn propset svn:ignore -F .gitignore .'
+Makefile
 clock.exe
 degrib.exe
-tkdegrib.exe
-tcldegrib.exe
-drawshp.exe
 degrib_DP.exe
+drawshp.exe
+tcldegrib.exe
+tcldegrib.obj
+tkdegrib.exe
