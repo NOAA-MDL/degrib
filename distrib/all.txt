@@ -380,10 +380,10 @@ G:degrib/lib/Tcl8.5/tzdata/*.*
 G:degrib/lib/Tcl8.5/tzdata/US/*.*
 G:degrib/lib/Tk8.5/*.*
 G:degrib/lib/Tk8.5/tclIndex
-G:degrib/lib/Tk8.5/demos/Readme
-G:degrib/lib/Tk8.5/demos/tclIndex
-G:degrib/lib/Tk8.5/demos/*.*
-G:degrib/lib/Tk8.5/demos/images/*.*
+#G:degrib/lib/Tk8.5/demos/Readme
+#G:degrib/lib/Tk8.5/demos/tclIndex
+#G:degrib/lib/Tk8.5/demos/*.*
+#G:degrib/lib/Tk8.5/demos/images/*.*
 G:degrib/lib/Tk8.5/images/Readme
 G:degrib/lib/Tk8.5/images/*.*
 G:degrib/lib/Tk8.5/msgs/*.*
