@@ -1,6 +1,6 @@
 # To apply to svn, type: 'svn propset svn:ignore -F .gitignore .'
-/Makefile
-/.deps
+Makefile
+.deps
 *.lo
 *.la
-/.libs
+.libs

@@ -1,7 +1,7 @@
 # To apply to svn, type: 'svn propset svn:ignore -F .gitignore .'
-/config.status
-/config.log
-/libtool
-/Makefile
-/jasper.spec
-/autom4te.cache
+config.status
+config.log
+libtool
+Makefile
+jasper.spec
+autom4te.cache
