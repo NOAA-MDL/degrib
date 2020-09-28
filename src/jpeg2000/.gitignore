@@ -4,3 +4,4 @@ config.log
 libtool
 Makefile
 jasper.spec
+autom4te.cache

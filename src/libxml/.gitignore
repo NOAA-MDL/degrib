@@ -11,3 +11,7 @@ libxml-2.0-uninstalled.pc
 libxml-2.0.pc
 libxml2.spec
 xml2-config
+*.lo
+.libs
+*.la
+autom4te.cache
