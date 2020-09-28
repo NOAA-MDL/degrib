@@ -1,5 +1,5 @@
 # To apply to svn, type: 'svn propset svn:ignore -F .gitignore .'
-config.status
-config.log
-config.cache
-macros.make
+/config.status
+/config.log
+/config.cache
+/macros.make

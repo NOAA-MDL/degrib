@@ -1,4 +1,4 @@
 # To apply to svn, type: 'svn propset svn:ignore -F .gitignore .'
-Makefile
-miniunz.exe
-minizip.exe
+/Makefile
+/miniunz.exe
+/minizip.exe
