@@ -249,10 +249,10 @@ proc DoIt {filename} {
   cd $DestDir
   if {$Zip_Also} {
     puts "Creating $ansFile.exe"
-    if {! [file isfile "c:/Arthur/myPrograms/WinZip_Self-Extractor/wzipse32.exe"]} {
+    if {! [file isfile "c:/sys/myApps/WinZip_Self-Extractor/wzipse32.exe"]} {
        puts "Couldn't find wzipse32.exe... no self extracting zip created"
     } else {
-       exec "c:/Arthur/myPrograms/WinZip_Self-Extractor/wzipse32.exe" $ansFile.zip \
+       exec "c:/sys/myApps/WinZip_Self-Extractor/wzipse32.exe" $ansFile.zip \
              -y -d c:\\ -le -overwrite
        file delete -force $ansFile.zip
     }

@@ -342,6 +342,7 @@ set date [lindex $argv 1]
 set date2 [clock format [clock scan $date] -format "%Y%m%d"]
 puts $date2
 puts $date
+exec mkdir -p [file join $webDir download archive]
 exec cp [file join $webDir download degrib-all.tar.gz] \
         [file join $webDir download archive degrib-$date2.tar.gz]
 exec cp [file join [file dirname $src_dir] history.txt] \
