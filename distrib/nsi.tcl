@@ -138,6 +138,13 @@ proc putPrjFiles {op {fileList all.txt}} {
   }
 }
 
+set icon "[file normalize [file dirname [info script]]/../bin/ndfd.ico]"
+set unIcon "[file normalize [file dirname [info script]]/uninst.ico]"
+catch {exec cygpath -d $icon} icon
+catch {exec cygpath -d $unIcon} unIcon
+# puts "$icon"
+# puts "$unIcon"
+
 set fp [open degrib.tpl r]
 set op [open degrib.nsi w]
 fconfigure $op -translation lf
@@ -147,6 +154,12 @@ while {[gets $fp line] >= 0} {
   }
   if {[set ans [string first PRJVER $line]] != -1} {
     set line "[string range $line 0 [expr $ans - 1]]$version[string range $line [expr $ans + 6] end]"
+  }
+  if {[set ans [string first PRJICON $line]] != -1} {
+    set line "[string range $line 0 [expr $ans -1]]$icon[string range $line [expr $ans + 7] end]"
+  }
+  if {[set ans [string first PRJUNICON $line]] != -1} {
+    set line "[string range $line 0 [expr $ans -1]]$unIcon[string range $line [expr $ans + 9] end]"
   }
   if {[set ans [string first PRJFILES $line]] != -1} {
     putPrjFiles $op all.txt
@@ -162,6 +175,14 @@ close $op
 close $fp
 
 #Mike catch {exec /arthur/myPrograms/nsis/makensis degrib.nsi} ans
-catch {exec /cygdrive/c/NSIS/makensis degrib.nsi} ans
+if {[file exists /cygdrive/c/NSIS/makensis]} {
+   catch {exec /cygdrive/c/NSIS/makensis degrib.nsi} ans
+} elseif {[file exists /cygdrive/c/sys/Portable/PortableApps/NSISPortable/App/NSIS/makensis]} {
+   catch {exec /cygdrive/c/sys/Portable/PortableApps/NSISPortable/App/NSIS/makensis degrib.nsi} ans
+} else {
+   set ans "Couldn't find makensis.\n"
+   append ans "Wasn't in c:/NSIS\n"
+   append ans "nor C:/sys/Portable/PorableApps/NSISPortable/App/NSIS"
+}
 # catch {exec /cygdrive/c/arthur/myPrograms/nsis/makensis degrib.nsi} ans
 puts $ans

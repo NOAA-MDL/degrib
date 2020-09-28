@@ -25,8 +25,8 @@ Var UninstLog_FP
 
 !include "MUI2.nsh"
 
-!define MUI_ICON c:/svn/degrib/bin/ndfd.ico
-!define MUI_UNICON c:/svn/degrib/distrib/uninst.ico
+!define MUI_ICON "PRJICON"
+!define MUI_UNICON "PRJUNICON"
 
 ;-----------------------------------------------------------------------------
 Function .onInit
