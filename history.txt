@@ -2,7 +2,7 @@
 #----- Release: Version 2.25 09/21/2020 -----
 #
  9/21  Low Level Wind Shear / Height (inventory reports as DIST) is now
-converted to feet by default.
+       converted to feet by default.
 #
 #----- Release: Version 2.24 06/20/2019 -----
 #
