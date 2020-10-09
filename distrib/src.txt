@@ -65,7 +65,7 @@ S:degrib/src/mdl_g2c/Makefile.in
 S:degrib/src/mdl_g2c/*.c
 S:degrib/src/mdl_g2c/*.h
 S:degrib/src/mdl_g2c/readme.txt
-S:degrib/src/mdl_g2c/scripts/makefile.*
+# S:degrib/src/mdl_g2c/scripts/makefile.*
 
 # libaat source
 S:degrib/src/libaat/configure.ac
@@ -75,7 +75,7 @@ S:degrib/src/libaat/Makefile.in
 S:degrib/src/libaat/*.c
 S:degrib/src/libaat/*.h
 S:degrib/src/libaat/readme.txt
-S:degrib/src/libaat/scripts/makefile*
+# S:degrib/src/libaat/scripts/makefile*
 
 # pnglib source
 #S:degrib/src/libpng/contrib/gregbook/LICENSE

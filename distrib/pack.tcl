@@ -151,6 +151,9 @@ proc DoIt {filename} {
   set StartDir [file dirname [file dirname $src_dir]]
 #  set DestDir $StartDir/degrib/distrib/webdir/download
   set DestDir $src_dir/webdir/download
+  if {! [file exists $DestDir]} {
+     file mkdir $DestDir
+  }
   set UpdatePages ""         ;# intended to be a list.
   set Version [FindVersion [file dirname $src_dir]]
   set DoGeneric true
