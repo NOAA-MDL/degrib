@@ -1,9 +1,9 @@
 Welcome to the NDFD Degrib program.
 
 The main web site for this project is currently at:
-http://www.nws.noaa.gov/mdl/NDFD_GRIB2Decoder/
+https://vlab.ncep.noaa.gov/web/mdl/degrib
 
------ Intro: -----
+----- Intro -----
 
 The NDFD (National Digital Forecast Database) will shortly be putting the
 national digital forecasts for the conus (continuous U.S.) on an anonymous
@@ -30,12 +30,12 @@ Thus the creation of the degrib (and tkdegrib) programs, which convert a grid
 in a GRIB2 message to a ".flt" file (ESRI Spatial Analyst file), or a .shp
 file (ESRI ArcView file).
 
------ Install: -----
+----- Install -----
 
 Please see:
 http://www.nws.noaa.gov/mdl/NDFD_GRIB2Decoder/howto.htm
 
------ Directory structure: -----
+----- Directory structure -----
 
 ./bin = Contains the programs (degrib, tkdegrib).
 ./docs = Contains project documentation.
@@ -57,7 +57,7 @@ The following are for testing, and are part of the test "suites".
 ./test = Contains test scripts, which should generate in ./test the files
        that are in ./ans.
 
------ Where to get more info: -----
+----- Where to get more info -----
 
 A history list of changes and the current version information are here:
 ./history.txt
