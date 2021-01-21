@@ -15,7 +15,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include "mdl_g2c.h"
+#include "degrib-core.h"
 
 #ifdef MEMWATCH
 #include "memwatch.h"

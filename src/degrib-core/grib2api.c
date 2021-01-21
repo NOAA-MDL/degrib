@@ -17,7 +17,7 @@
 #include <string.h>
 #include <math.h>
 #include "libaat.h"
-#include "mdl_g2c.h"
+#include "degrib-core.h"
 #include "grib2.h"
 
 #ifdef MEMWATCH

@@ -3,7 +3,7 @@
 # DEGRIB configure.ac : version 20070627
 
 AC_PREREQ(2.59)
-AC_INIT([mdl_g2c],[1.0],[arthur.taylor@noaa.gov])
+AC_INIT([degrib-core],[1.0],[arthur.taylor@noaa.gov])
 AC_SUBST(PACKAGE_DATE,'20070702')
 AC_CONFIG_SRCDIR([Makefile.in])
   # AC_CONFIG_HEADERS([config.h])

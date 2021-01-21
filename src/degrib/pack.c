@@ -19,7 +19,7 @@
 #include "meta.h"
 #include "metaname.h"
 #include "degrib2.h"
-#include "mdl_g2c.h"
+#include "degrib-core.h"
 #include "tendian.h"
 #include "pack.h"
 #include "myutil.h"

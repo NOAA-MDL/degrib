@@ -10,7 +10,7 @@ VPATH = ./g2clib-1.6.0
 AR=ar
 RANLIB=ranlib
 ARFLAGS=-r @ARFLAGS@
-LIBNAME=mdl_g2c
+LIBNAME=degrib-core
 LIBA=lib$(LIBNAME).a
 
 G2C_OBJS = $(LIBA)(gridtemplates.o) \
@@ -62,7 +62,7 @@ EXTRA_OBJS = $(LIBA)(scan.o) \
    $(LIBA)(engribapi.o) \
    $(LIBA)(grib2api.o)
 
-H_SOURCES = mdl_g2c.h
+H_SOURCES = degrib-core.h
 
 all: $(LIBA)
 

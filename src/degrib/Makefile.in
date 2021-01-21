@@ -26,7 +26,7 @@ XML_CLEAN = (cd ../dwmllib && make -f makefile clean)
 
 STD_DEF = @DSIZEOF_LONG_INT@ @DWORDS_BIGENDIAN@ @MEM_DEF@ @DDEBUG@ @DWINDOWS@ @DBAD_TCLSSH@ $(XML_DEF)
 STUB_DEF = -DUSE_TCL_STUBS @HALO_DEF@
-STD_INC = @MEM_STDINC@ -I../emapf-c -I../mdl_g2c -I../libaat -I../netcdf/libsrc -I../gd -I../zlib/contrib/minizip -I../zlib $(XML_INC)
+STD_INC = @MEM_STDINC@ -I../emapf-c -I../degrib-core -I../libaat -I../netcdf/libsrc -I../gd -I../zlib/contrib/minizip -I../zlib $(XML_INC)
 TCL_INC = -I$(TCL_PREFIX)/include
 TK_INC = -I$(TK_PREFIX)/include
 GUI_INC = $(TCL_INC) $(TK_INC) $(STD_INC)
@@ -40,7 +40,7 @@ DRAWSHP_LIB = @MEM_STDLIB@ -L../gd/ -lgd -L../libpng -lpng -L../zlib -lz \
           -L../emapf-c/ -lemapf -L/usr/lib -lm
 # XML_LIB has to come before zlib.
 # Found that gd has to come before tk (on some linux machines)
-STD_LIB1 = $(XML_LIB) -L../mdl_g2c -lmdl_g2c -L../emapf-c/ -lemapf \
+STD_LIB1 = $(XML_LIB) -L../degrib-core -ldegrib-core -L../emapf-c/ -lemapf \
           -L../netcdf/libsrc/ -lnetcdf \
           -L../jpeg2000/src/libjasper/jpc/.libs/ -ljpc \
           -L../jpeg2000/src/libjasper/base/.libs/ -lbase \
@@ -194,7 +194,7 @@ DP_MAIN = dpstart.c
 
 DRAWSHP_MAIN = drawshp.c
 
-LIB_DEPENDS = ../emapf-c/libemapf.a ../mdl_g2c/libmdl_g2c.a ../libaat/libaat.a \
+LIB_DEPENDS = ../emapf-c/libemapf.a ../degrib-core/libdegrib-core.a ../libaat/libaat.a \
             ../libpng/libpng.a ../zlib/libz.a ../zlib/contrib/minizip/libminizip.a \
             ../jpeg2000/src/libjasper/jpc/.libs/libjpc.a \
             ../jpeg2000/src/libjasper/base/.libs/libbase.a \

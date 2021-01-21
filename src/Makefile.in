@@ -18,7 +18,7 @@ LIB_DEPENDS = $(LIB_DEP1) \
               ./libpng/libpng.a \
               ./jpeg2000/src/libjasper/jpc/.libs/libjpc.a \
               ./jpeg2000/src/libjasper/base/.libs/libbase.a \
-              ./mdl_g2c/libmdl_g2c.a \
+              ./degrib-core/libdegrib-core.a \
               ./gd/libgd.a \
               ./emapf-c/libemapf.a \
               ./netcdf/libsrc/libnetcdf.a \
@@ -121,11 +121,11 @@ $(PRJ_NAME)/$(PRJ_NAME): $(LIB_DEPENDS)
 	@echo "-----------------------------"
 	@echo ""
 
-./mdl_g2c/libmdl_g2c.a: ./mdl_g2c/Makefile
+./degrib-core/libdegrib-core.a: ./degrib-core/Makefile
 	@echo "-----------------------------"
-	@echo "Attempting to compile mdl_g2c..."
-	(cd mdl_g2c && make)
-	@echo "Finished with mdl_g2c..."
+	@echo "Attempting to compile degrib-core..."
+	(cd degrib-core && make)
+	@echo "Finished with degrib-core..."
 	@echo "-----------------------------"
 	@echo ""
 
@@ -244,7 +244,7 @@ clean: ./emapf-c/Makefile ./netcdf/Makefile
 	- (cd ./libpng && make clean)
 	- (cd ./xyz2shp && make clean)
 	(cd ./libaat && make clean)
-	(cd ./mdl_g2c && make clean)
+	(cd ./degrib-core && make clean)
 	- (cd ./gd && make clean)
 	- (cd ./emapf-c && make clean)
 	- (cd ./netcdf && make clean)
@@ -265,7 +265,7 @@ distclean: ./emapf-c/Makefile ./netcdf/Makefile
 	- (cd ./libpng && make distclean)
 	- (cd ./xyz2shp && make distclean)
 	(cd ./libaat && make distclean)
-	(cd ./mdl_g2c && make distclean)
+	(cd ./degrib-core && make distclean)
 	- (cd ./gd && make distclean)
 	- (cd ./emapf-c && make distclean)
 	- (cd ./netcdf && make distclean && rm macros.make)

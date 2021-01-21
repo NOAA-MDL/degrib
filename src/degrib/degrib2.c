@@ -27,7 +27,7 @@
 #include "degrib2.h"
 #include "degrib1.h"
 #include "tdlpack.h"
-#include "mdl_g2c.h"
+#include "degrib-core.h"
 #include "mymapf.h"
 #include "clock.h"
 
