@@ -688,7 +688,7 @@ size_t FWRITE_ODDINT_LIT(const sInt4 *src, uChar len, FILE *fp)
  *
  * NOTES
  ****************************************************************************/
-int fileBitRead(void *Dst, size_t dstLen, FILE *fp, size_t numBits,
+int fileBitRead(void *Dst, size_t dstLen, size_t numBits, FILE *fp,
                 uChar *gbuf, sChar *gbufLoc)
 {
    uChar *dst = (uChar *)Dst; /* Allows us to treat Dst as array of char. */
@@ -820,7 +820,7 @@ int fileBitRead(void *Dst, size_t dstLen, FILE *fp, size_t numBits,
  *
  * NOTES
  ****************************************************************************/
-int fileBitWrite(const void *Src, size_t srcLen, FILE *fp, size_t numBits,
+int fileBitWrite(const void *Src, size_t srcLen, size_t numBits, FILE *fp,
                  uChar *pbuf, sChar *pbufLoc)
 {
    uChar *src = (uChar *)Src; /* Allows us to treat Src as array of char. */

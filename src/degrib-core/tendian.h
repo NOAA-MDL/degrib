@@ -43,8 +43,8 @@ size_t FREAD_ODDINT_BIG(sInt4 *dst, uChar len, FILE *fp);
 size_t FREAD_ODDINT_LIT(sInt4 *dst, uChar len, FILE *fp);
 size_t FWRITE_ODDINT_BIG(const sInt4 *src, uChar len, FILE *fp);
 size_t FWRITE_ODDINT_LIT(const sInt4 *src, uChar len, FILE *fp);
-int fileBitRead(void *Dst, size_t dstLen, FILE *fp, size_t numBits,
+int fileBitRead(void *Dst, size_t dstLen, size_t numBits, FILE *fp,
                 uChar *gbuf, sChar *gbufLoc);
-int fileBitWrite(const void *Src, size_t srcLen, FILE *fp, size_t numBits,
+int fileBitWrite(const void *Src, size_t srcLen, size_t numBits, FILE *fp,
                  uChar *pbuf, sChar *pbufLoc);
 #endif

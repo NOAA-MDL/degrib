@@ -15,7 +15,6 @@
 #include <stdio.h>
 #include <string.h>
 #include "tendian.h"
-#include "mywarn.h"
 
 #ifndef TENDIAN_BITMASK
 #define TENDIAN_BITMASK
@@ -202,7 +201,7 @@ int memBitRead(void *Dst, size_t dstLen, const void *Src, size_t numBits,
    numBytes = ((--numBits) / 8) + 1;
    /* Check if dst has enough room. */
    if (dstLen < numBytes) {
-      myWarn_Err1Arg("Dst doesn't have enough space\n");
+      fprintf (stderr, "%s:%d: Dst doesn't have enough space\n", __FILE__, __LINE__);
       return 1;
    }
    memset(Dst, 0, dstLen);
@@ -334,7 +333,7 @@ int memBitWrite(const void *Src, size_t srcLen, void *Dst, size_t numBits,
    /* Since numBits is always used with -1, may as well do --numBits here. */
    numBytes = ((--numBits) / 8) + 1;
    if (srcLen < numBytes) {
-      myWarn_Err1Arg("Src doesn't have enough space\n");
+      fprintf (stderr, "%s:%d: Src doesn't have enough space\n", __FILE__, __LINE__);
       return 1;
    }
    srcLoc = (numBits % 8) + 1;
@@ -689,7 +688,7 @@ size_t FWRITE_ODDINT_LIT(const sInt4 *src, uChar len, FILE *fp)
  *
  * NOTES
  ****************************************************************************/
-int fileBitRead(void *Dst, size_t dstLen, FILE *fp, size_t numBits,
+int fileBitRead(void *Dst, size_t dstLen, size_t numBits, FILE *fp,
                 uChar *gbuf, sChar *gbufLoc)
 {
    uChar *dst = (uChar *)Dst; /* Allows us to treat Dst as array of char. */
@@ -711,7 +710,7 @@ int fileBitRead(void *Dst, size_t dstLen, FILE *fp, size_t numBits,
    numBytes = ((--numBits) / 8) + 1;
    /* Check if dst has enough room. */
    if (dstLen < numBytes) {
-      myWarn_Err1Arg("Dst doesn't have enough space\n");
+      fprintf (stderr, "%s:%d: Dst doesn't have enough space\n", __FILE__, __LINE__);
       return 1;
    }
    memset(Dst, 0, dstLen);
@@ -821,7 +820,7 @@ int fileBitRead(void *Dst, size_t dstLen, FILE *fp, size_t numBits,
  *
  * NOTES
  ****************************************************************************/
-int fileBitWrite(const void *Src, size_t srcLen, FILE *fp, size_t numBits,
+int fileBitWrite(const void *Src, size_t srcLen, size_t numBits, FILE *fp,
                  uChar *pbuf, sChar *pbufLoc)
 {
    uChar *src = (uChar *)Src; /* Allows us to treat Src as array of char. */
@@ -837,8 +836,8 @@ int fileBitWrite(const void *Src, size_t srcLen, FILE *fp, size_t numBits,
          *pbuf = 0;
          *pbufLoc = 8;
 /*         return 8; */
-         myWarn_Note1Arg("Changed return value from 8 to 0 (is this an "
-                         "introduced bug?\n");
+         fprintf (stderr, "%s:%d: Changed return value from 8 to 0 (is this an "
+                         "introduced bug?\n", __FILE__, __LINE__);
          return 0;
       } else {
          /* Assert: *pbufLoc == 8 */
@@ -849,7 +848,7 @@ int fileBitWrite(const void *Src, size_t srcLen, FILE *fp, size_t numBits,
    /* Since numBits is always used with -1, may as well do --numBits here. */
    numBytes = ((--numBits) / 8) + 1;
    if (srcLen < numBytes) {
-      myWarn_Err1Arg("Src doesn't have enough space\n");
+      fprintf (stderr, "%s:%d: Src doesn't have enough space\n", __FILE__, __LINE__);
       return 1;
    }
    srcLoc = (numBits % 8) + 1;
@@ -881,7 +880,7 @@ int fileBitWrite(const void *Src, size_t srcLen, FILE *fp, size_t numBits,
       if (fputc((int)buf, fp) == EOF) {
          *pbufLoc = bufLoc;
          *pbuf = buf;
-         myWarn_Err1Arg("Problems writing to file\n");
+         fprintf (stderr, "%s:%d: Problems writing to file\n", __FILE__, __LINE__);
          return 1;
       }
       buf = 0;
@@ -911,7 +910,7 @@ int fileBitWrite(const void *Src, size_t srcLen, FILE *fp, size_t numBits,
          if (fputc((int)buf, fp) == EOF) {
             *pbufLoc = bufLoc;
             *pbuf = buf;
-            myWarn_Err1Arg("Problems writing to file\n");
+            fprintf (stderr, "%s:%d: Problems writing to file\n", __FILE__, __LINE__);
             return 1;
          }
 #ifndef WORDS_BIGENDIAN
@@ -924,7 +923,7 @@ int fileBitWrite(const void *Src, size_t srcLen, FILE *fp, size_t numBits,
          if (fputc((int)buf, fp) == EOF) {
             *pbufLoc = bufLoc;
             *pbuf = buf;
-            myWarn_Err1Arg("Problems writing to file\n");
+            fprintf (stderr, "%s:%d: Problems writing to file\n", __FILE__, __LINE__);
             return 1;
          }
          buf = 0;
@@ -939,7 +938,7 @@ int fileBitWrite(const void *Src, size_t srcLen, FILE *fp, size_t numBits,
       if (fputc((int)buf, fp) == EOF) {
          *pbufLoc = bufLoc;
          *pbuf = buf;
-         myWarn_Err1Arg("Problems writing to file\n");
+         fprintf (stderr, "%s:%d: Problems writing to file\n", __FILE__, __LINE__);
          return 1;
       }
       bufLoc = 8;
