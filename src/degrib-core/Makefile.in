@@ -3,7 +3,7 @@ SHELL = @SHELL@
 CC=@CC@
 STD_FLAGS=@CFLAGS@
 STD_DEF=-DUSE_JPEG2000 -DUSE_PNG @DSIZEOF_LONG_INT@ @DWORDS_BIGENDIAN@
-STD_INC=-I./g2clib-1.6.0 -I@JPEG2000_PATH@ -I@LIBPNG_PATH@ -I@ZLIB_PATH@ -I@LIBAAT_PATH@
+STD_INC=-I./g2clib-1.6.0 -I@JPEG2000_PATH@ -I@LIBPNG_PATH@ -I@ZLIB_PATH@
 CFLAGS=$(STD_FLAGS) $(STD_DEF) $(STD_INC)
 
 VPATH = ./g2clib-1.6.0
@@ -58,11 +58,9 @@ G2C_OBJS = $(LIBA)(gridtemplates.o) \
    $(LIBA)(pack_gp.o) \
    $(LIBA)(reduce.o)
 
-EXTRA_OBJS = $(LIBA)(allocSprintf.o) \
-   $(LIBA)(engribapi.o) \
+EXTRA_OBJS = $(LIBA)(engribapi.o) \
    $(LIBA)(grib2api.o) \
 	$(LIBA)(myassert.o) \
-	$(LIBA)(mywarn.o) \
    $(LIBA)(scan.o) \
 	$(LIBA)(tendian.o)
 
