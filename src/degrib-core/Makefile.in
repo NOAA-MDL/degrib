@@ -73,7 +73,6 @@ all: $(LIBA)
 
 $(LIBA): $(G2C_OBJS) $(EXTRA_OBJS)
 	$(RANLIB) $(LIBA)
-	rm -f *.o
 
 install:
 
@@ -91,7 +90,7 @@ distclean: clean
 
 .o.a:
 	$(AR) $(ARFLAGS) $@ $<
-#	rm -f $<
+	rm -f $<
 
 .c.a:
 	$(CC) $(CFLAGS) -c $<

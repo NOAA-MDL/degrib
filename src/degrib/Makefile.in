@@ -80,7 +80,6 @@ C_OBJECTS = myutil.o \
             myerror.o \
             myassert.o \
             tendian.o \
-            scan.o \
             metaname.o \
             metaparse.o \
             hazard.o \
@@ -123,7 +122,6 @@ H_SOURCES = type.h \
             myassert.h \
             mymapf.h \
             tendian.h \
-            scan.h \
             meta.h \
             metaname.h \
             hazard.h \
