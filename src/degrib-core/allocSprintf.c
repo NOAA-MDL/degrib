@@ -20,7 +20,10 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
-#include "libaat.h"
+#include <stdio.h>
+#include "libaat_type.h"
+#include "allocSprintf.h"
+#include "myassert.h"
 #ifdef MEMWATCH
 #include "memwatch.h"
 #endif

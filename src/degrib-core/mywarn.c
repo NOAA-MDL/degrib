@@ -10,7 +10,8 @@
  * NOTES
  * Originally this was part of "myerror.c"
  ****************************************************************************/
-#include "libaat.h"
+#include "mywarn.h"
+#include "allocSprintf.h"
 
 typedef struct {
    /* Following flags are as follows: 0=don't output here, 1=notes+warn+err,

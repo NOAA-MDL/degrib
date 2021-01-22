@@ -12,8 +12,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "libaat.h"
+#include "myopt.h"
 #include "xyzuser.h"
+#include "mywarn.h"
+
 #ifdef MEMWATCH
 #include "memwatch.h"
 #endif

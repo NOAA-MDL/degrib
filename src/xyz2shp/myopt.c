@@ -11,7 +11,8 @@
  ****************************************************************************/
 #include <stdio.h>
 #include <string.h>
-#include "libaat.h"
+#include "myopt.h"
+#include "mywarn.h"
 
 /*****************************************************************************
  * myUsage() -- Arthur Taylor / MDL

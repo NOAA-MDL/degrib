@@ -1,5 +1,5 @@
-#ifndef MDL_G2C_H
-#define MDL_G2C_H
+#ifndef DEGRIB_CORE_H
+#define DEGRIB_CORE_H
 
 /* Pays attention to the following compile time #defines:
  * 1a) __64BIT__ => use 64 bit compilation as opposed to 32 bit

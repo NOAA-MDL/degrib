@@ -631,7 +631,6 @@ ZLIB_DEBUG
 PNGDEBUG
 DDEBUG
 JPEG2000_PATH
-LIBAAT_PATH
 LIBPNG_PATH
 ZLIB_PATH
 DLLFLAGS
@@ -747,7 +746,6 @@ with_badtclssh
 with_tkputs
 with_zlib
 with_libpng
-with_libaat
 with_jpeg2000
 with_debug
 with_extradebug
@@ -1404,7 +1402,6 @@ Optional Packages:
                           window)
   --with-zlib             Path to the include directory for zlib
   --with-libpng           Path to the include directory for libpng
-  --with-libaat           Path to the include directory for libaat
   --with-jpeg2000         Path to the include directory for jpeg2000
   --with-debug            set debug defines (default=no)
   --with-extradebug       set extra debug defines (default=no)
@@ -5518,17 +5515,6 @@ fi
 
 
 
-# Check whether --with-libaat was given.
-if test "${with_libaat+set}" = set; then :
-  withval=$with_libaat; LIBAAT_PATH=$with_libaat
-
-else
-  LIBAAT_PATH=../libaat
-
-fi
-
-
-
 # Check whether --with-jpeg2000 was given.
 if test "${with_jpeg2000+set}" = set; then :
   withval=$with_jpeg2000; JPEG2000_PATH=$with_jpeg2000
@@ -5601,9 +5587,9 @@ ac_config_files="$ac_config_files zlib/contrib/minizip/Makefile"
 
 ac_config_files="$ac_config_files libpng/Makefile:libpng/scripts/Makefile.in"
 
-ac_config_files="$ac_config_files libaat/Makefile"
-
 ac_config_files="$ac_config_files degrib-core/Makefile"
+
+ac_config_files="$ac_config_files driver/Makefile"
 
 ac_config_files="$ac_config_files gd/Makefile:gd/scripts/Makefile.in"
 
@@ -6307,8 +6293,8 @@ do
     "zlib/Makefile") CONFIG_FILES="$CONFIG_FILES zlib/Makefile:zlib/scripts/Makefile.in" ;;
     "zlib/contrib/minizip/Makefile") CONFIG_FILES="$CONFIG_FILES zlib/contrib/minizip/Makefile" ;;
     "libpng/Makefile") CONFIG_FILES="$CONFIG_FILES libpng/Makefile:libpng/scripts/Makefile.in" ;;
-    "libaat/Makefile") CONFIG_FILES="$CONFIG_FILES libaat/Makefile" ;;
     "degrib-core/Makefile") CONFIG_FILES="$CONFIG_FILES degrib-core/Makefile" ;;
+    "driver/Makefile") CONFIG_FILES="$CONFIG_FILES driver/Makefile" ;;
     "gd/Makefile") CONFIG_FILES="$CONFIG_FILES gd/Makefile:gd/scripts/Makefile.in" ;;
     "degrib/Makefile") CONFIG_FILES="$CONFIG_FILES degrib/Makefile" ;;
     "xyz2shp/Makefile") CONFIG_FILES="$CONFIG_FILES xyz2shp/Makefile" ;;

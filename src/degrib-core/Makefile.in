@@ -58,30 +58,26 @@ G2C_OBJS = $(LIBA)(gridtemplates.o) \
    $(LIBA)(pack_gp.o) \
    $(LIBA)(reduce.o)
 
-EXTRA_OBJS = $(LIBA)(scan.o) \
+EXTRA_OBJS = $(LIBA)(allocSprintf.o) \
    $(LIBA)(engribapi.o) \
-   $(LIBA)(grib2api.o)
+   $(LIBA)(grib2api.o) \
+	$(LIBA)(myassert.o) \
+	$(LIBA)(mywarn.o) \
+   $(LIBA)(scan.o) \
+	$(LIBA)(tendian.o)
 
 H_SOURCES = degrib-core.h
 
+############################
+# TARGETS
+############################
 all: $(LIBA)
 
 $(LIBA): $(G2C_OBJS) $(EXTRA_OBJS)
 	$(RANLIB) $(LIBA)
+	rm -f *.o
 
 install:
-
-.c.o: $(H_SOURCES)
-	$(CC) -c $(CFLAGS) $< -o $@
-
-.o.a:
-	$(AR) $(ARFLAGS) $@ $<
-	rm -f $<
-
-.c.a:
-	$(CC) $(CFLAGS) -c $<
-	$(AR) $(ARFLAGS) $@ $*.o
-	rm -f $*.o
 
 clean:
 	rm -f *.o *.a *.bak
@@ -89,3 +85,17 @@ clean:
 distclean: clean
 	rm -r -f config.status config.log Makefile autom4te.cache
 
+############################
+# SUFFIXES
+############################
+.c.o: $(H_SOURCES)
+	$(CC) -c $(CFLAGS) $< -o $@
+
+.o.a:
+	$(AR) $(ARFLAGS) $@ $<
+#	rm -f $<
+
+.c.a:
+	$(CC) $(CFLAGS) -c $<
+	$(AR) $(ARFLAGS) $@ $*.o
+#	rm -f $*.o

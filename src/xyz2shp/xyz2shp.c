@@ -22,8 +22,13 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "libaat.h"
+/* #include "libaat.h" */
 #include "xyzuser.h"
+#include "libaat_type.h"
+#include "tendian.h"
+#include "myassert.h"
+#include "myutil.h"
+#include "mywarn.h"
 
 #ifdef MEMWATCH
 #include "memwatch.h"

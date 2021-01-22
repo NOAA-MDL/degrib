@@ -9,8 +9,7 @@ CFLAGS = @CFLAGS@
 ARFLAGS = @ARFLAGS@
 EXEEXT = @EXEEXT@
 
-LIB_DEP1 = @MEM_LIBDEP@ \
-           ./libaat/libaat.a
+LIB_DEP1 = @MEM_LIBDEP@
 
 LIB_DEPENDS = $(LIB_DEP1) \
               ./zlib/libz.a \
@@ -113,14 +112,6 @@ $(PRJ_NAME)/$(PRJ_NAME): $(LIB_DEPENDS)
 	@echo "-----------------------------"
 	@echo ""
 
-./libaat/libaat.a: ./libaat/Makefile
-	@echo "-----------------------------"
-	@echo "Attempting to compile libaat..."
-	(cd libaat && make)
-	@echo "Finished with libaat..."
-	@echo "-----------------------------"
-	@echo ""
-
 ./degrib-core/libdegrib-core.a: ./degrib-core/Makefile
 	@echo "-----------------------------"
 	@echo "Attempting to compile degrib-core..."
@@ -190,14 +181,6 @@ ${top_srcdir}/@MEM_NAME@/Makefile: ${top_srcdir}/@MEM_NAME@/configure
 	@echo "-----------------------------"
 	@echo ""
 
-# Following handled by configure.ac
-#./libaat/Makefile: ./libaat/configure
-#	@echo "-----------------------------"
-#	@echo "Attempting to configure libaat..."
-#	(cd ./libaat && ./configure)
-#	@echo "-----------------------------"
-#	@echo ""
-
 ./emapf-c/Makefile: ./emapf-c/configure
 	@echo "-----------------------------"
 	@echo "Attempting to configure emapf-c..."
@@ -243,7 +226,6 @@ clean: ./emapf-c/Makefile ./netcdf/Makefile
 	- (cd ./zlib/contrib/minizip && make clean)
 	- (cd ./libpng && make clean)
 	- (cd ./xyz2shp && make clean)
-	(cd ./libaat && make clean)
 	(cd ./degrib-core && make clean)
 	- (cd ./gd && make clean)
 	- (cd ./emapf-c && make clean)
@@ -264,7 +246,6 @@ distclean: ./emapf-c/Makefile ./netcdf/Makefile
 	- (cd ./zlib/contrib/minizip && make distclean)
 	- (cd ./libpng && make distclean)
 	- (cd ./xyz2shp && make distclean)
-	(cd ./libaat && make distclean)
 	(cd ./degrib-core && make distclean)
 	- (cd ./gd && make distclean)
 	- (cd ./emapf-c && make distclean)

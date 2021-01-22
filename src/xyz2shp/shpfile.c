@@ -13,7 +13,11 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "libaat.h"
+#include "shpfile.h"
+#include "myutil.h"
+#include "mywarn.h"
+#include "libaat_type.h"
+#include "tendian.h"
 
 #ifdef MEMWATCH
 #include "memwatch.h"

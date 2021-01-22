@@ -11,7 +11,12 @@
  ****************************************************************************/
 #include <stdlib.h>
 #include <string.h>
-#include "libaat.h"
+#include <stdarg.h>
+
+#include "dbffile.h"
+#include "mywarn.h"
+#include "myutil.h"
+#include "tendian.h"
 
 #ifdef MEMWATCH
 #include "memwatch.h"

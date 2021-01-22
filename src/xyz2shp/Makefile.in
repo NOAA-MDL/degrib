@@ -9,9 +9,9 @@ STD_FLAGS = @CFLAGS@ @ANSIFLAG@
 EXEEXT = @EXEEXT@
 
 STD_DEF = @DSIZEOF_LONG_INT@ @DWORDS_BIGENDIAN@ @MEM_DEF@ @DDEBUG@
-STD_INC = @MEM_STDINC@ -I${top_srcdir}/libaat
+STD_INC = @MEM_STDINC@
 
-STD_LIB = @MEM_STDLIB@ -L${top_srcdir}/libaat/ -laat -L/usr/lib/ -lm
+STD_LIB = @MEM_STDLIB@ -L/usr/lib/ -lm
 
 PRJ_NAME = xyz2shp
 
@@ -21,15 +21,31 @@ MAINFLAGS = $(CFLAGS) -DPKGVERS=\"@PACKAGE_VERSION@\" -DPKGDATE=\"@PACKAGE_DATE@
 ############################
 # FILES
 ############################
-SOURCE = xyzuser.c
+SOURCE = myassert.c \
+         allocSprintf.c \
+         mywarn.c \
+         myopt.c \
+			tendian.c \
+			myutil.c \
+         dbffile.c \
+			shpfile.c \
+         xyzuser.c
 
 OBJECTS = $(SOURCE:.c=.o)
 
-HEADERS = xyzuser.h 
+HEADERS = myassert.h \
+          allocSprintf.h \
+          mywarn.h \
+          myopt.h \
+			 tendian.h \
+			 myutil.h \
+          dbffile.h \
+			 shpfile.h \
+			 xyzuser.h 
 
 MAIN = xyz2shp.c
 
-LIB_DEPENDS = @MEM_LIBDEP@ ${top_srcdir}/libaat/libaat.a
+LIB_DEPENDS = @MEM_LIBDEP@
 
 ############################
 # TARGETS

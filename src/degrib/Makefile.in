@@ -26,15 +26,14 @@ XML_CLEAN = (cd ../dwmllib && make -f makefile clean)
 
 STD_DEF = @DSIZEOF_LONG_INT@ @DWORDS_BIGENDIAN@ @MEM_DEF@ @DDEBUG@ @DWINDOWS@ @DBAD_TCLSSH@ $(XML_DEF)
 STUB_DEF = -DUSE_TCL_STUBS @HALO_DEF@
-STD_INC = @MEM_STDINC@ -I../emapf-c -I../degrib-core -I../libaat -I../netcdf/libsrc -I../gd -I../zlib/contrib/minizip -I../zlib $(XML_INC)
+STD_INC = @MEM_STDINC@ -I../emapf-c -I../degrib-core -I../netcdf/libsrc -I../gd -I../zlib/contrib/minizip -I../zlib $(XML_INC)
 TCL_INC = -I$(TCL_PREFIX)/include
 TK_INC = -I$(TK_PREFIX)/include
 GUI_INC = $(TCL_INC) $(TK_INC) $(STD_INC)
 
 CLOCK_LIB = @MEM_STDLIB@ -L/usr/lib -lm
 
-# The libaat dependence is just if we have debug on.
-DP_LIB = -L../libaat -laat @MEM_STDLIB@ -L../emapf-c/ -lemapf $(XML_LIB) -L../zlib/contrib/minizip -lminizip -L../zlib -lz -L/usr/lib -lm
+DP_LIB = @MEM_STDLIB@ -L../emapf-c/ -lemapf $(XML_LIB) -L../zlib/contrib/minizip -lminizip -L../zlib -lz -L/usr/lib -lm
 
 DRAWSHP_LIB = @MEM_STDLIB@ -L../gd/ -lgd -L../libpng -lpng -L../zlib -lz \
           -L../emapf-c/ -lemapf -L/usr/lib -lm
@@ -45,7 +44,7 @@ STD_LIB1 = $(XML_LIB) -L../degrib-core -ldegrib-core -L../emapf-c/ -lemapf \
           -L../jpeg2000/src/libjasper/jpc/.libs/ -ljpc \
           -L../jpeg2000/src/libjasper/base/.libs/ -lbase \
           -L../libpng -lpng -L../zlib/contrib/minizip -lminizip -L../zlib -lz \
-          -L../libaat -laat @MEM_STDLIB@ \
+          @MEM_STDLIB@ \
           -L/usr/lib -lm
 STD_LIB = -L../gd -lgd $(STD_LIB1)
 
@@ -194,7 +193,7 @@ DP_MAIN = dpstart.c
 
 DRAWSHP_MAIN = drawshp.c
 
-LIB_DEPENDS = ../emapf-c/libemapf.a ../degrib-core/libdegrib-core.a ../libaat/libaat.a \
+LIB_DEPENDS = ../emapf-c/libemapf.a ../degrib-core/libdegrib-core.a \
             ../libpng/libpng.a ../zlib/libz.a ../zlib/contrib/minizip/libminizip.a \
             ../jpeg2000/src/libjasper/jpc/.libs/libjpc.a \
             ../jpeg2000/src/libjasper/base/.libs/libbase.a \

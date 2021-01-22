@@ -134,11 +134,6 @@ AC_ARG_WITH([libpng],
   [AC_SUBST([LIBPNG_PATH],$with_libpng)],
   [AC_SUBST([LIBPNG_PATH],../libpng)])
 
-AC_ARG_WITH([libaat],
-  [AS_HELP_STRING([--with-libaat], [Path to the include directory for libaat])],
-  [AC_SUBST([LIBAAT_PATH],$with_libaat)],
-  [AC_SUBST([LIBAAT_PATH],../libaat)])
-
 AC_ARG_WITH([jpeg2000],
   [AS_HELP_STRING([--with-jpeg2000], [Path to the include directory for jpeg2000])],
   [AC_SUBST([JPEG2000_PATH],$with_jpeg2000)],
@@ -189,8 +184,8 @@ AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([zlib/Makefile:zlib/scripts/Makefile.in])
 AC_CONFIG_FILES([zlib/contrib/minizip/Makefile])
 AC_CONFIG_FILES([libpng/Makefile:libpng/scripts/Makefile.in])
-AC_CONFIG_FILES([libaat/Makefile])
 AC_CONFIG_FILES([degrib-core/Makefile])
+AC_CONFIG_FILES([driver/Makefile])
 AC_CONFIG_FILES([gd/Makefile:gd/scripts/Makefile.in])
 AC_CONFIG_FILES([degrib/Makefile])
 AC_CONFIG_FILES([xyz2shp/Makefile])

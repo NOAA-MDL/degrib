@@ -16,9 +16,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include "libaat.h"
 #include "degrib-core.h"
+#include "tendian.h"
 #include "grib2.h"
+#include "myassert.h"
 
 #ifdef MEMWATCH
 #include "memwatch.h"

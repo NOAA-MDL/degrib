@@ -14,7 +14,8 @@
  ****************************************************************************/
 #include <stdio.h>
 #include <string.h>
-#include "libaat.h"
+#include "tendian.h"
+#include "mywarn.h"
 
 #ifndef TENDIAN_BITMASK
 #define TENDIAN_BITMASK

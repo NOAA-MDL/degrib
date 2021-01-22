@@ -1220,7 +1220,7 @@ int DegribIt (userType *usr)
             } else {
                grib_fp = stdin;
             }
-                
+
             if (StormTotal (usr, grib_fp, &is, &meta) != 0) {
                msg = errSprintf (NULL);
                printf ("ERROR: In call to StormTotal.\n%s\n", msg);

@@ -15,7 +15,9 @@
 #include <string.h>
 #include <math.h>
 #include <errno.h>
-#include "libaat.h"
+#include "myassert.h"
+#include "mywarn.h"
+ /* #include "libaat.h" */
 
 #ifdef MEMWATCH
 #include "memwatch.h"
