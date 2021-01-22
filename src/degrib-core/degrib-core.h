@@ -14,18 +14,7 @@
 
 #include "libaat_type.h"
 
-/* From scan.h */
-#ifndef GRIB2BIT_ENUM
-#define GRIB2BIT_ENUM
-/* See rule (8) bit 1 is most significant, bit 8 least significant. */
-enum {GRIB2BIT_1=128, GRIB2BIT_2=64, GRIB2BIT_3=32, GRIB2BIT_4=16,
-      GRIB2BIT_5=8, GRIB2BIT_6=4, GRIB2BIT_7=2, GRIB2BIT_8=1};
-#endif
-
-void XY2ScanIndex (sInt4 *Row, sInt4 x, sInt4 y, uChar scan, sInt4 Nx,
-                   sInt4 Ny);
-void ScanIndex2XY (sInt4 row, sInt4 *X, sInt4 *Y, uChar scan, sInt4 Nx,
-                   sInt4 Ny);
+#include "scan.h"
 
 /* From grib2api.h */
 void unpk_grib2 (sInt4 *kfildo, float *ain, sInt4 *iain, sInt4 *nd2x3,
