@@ -3,7 +3,7 @@
 Welcome to the NDFD Degrib program.
 
 The main web site for this project is currently at:
-https://vlab.ncep.noaa.gov/web/mdl/degrib
+https://vlab.noaa.gov/web/mdl/degrib
 
 ## Introduction
 
